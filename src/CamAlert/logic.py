@@ -432,6 +432,8 @@ def key_action(code):
         return "close"
     if code in PASS_KEYS:
         return "pass"
+    if code == KEY_YELLOW:
+        return "ptz"
     return "close_pass"  # close the window and let the key do its normal job (zapping, numbers, menu, ...)
 
 
@@ -594,3 +596,196 @@ def strip_geometry(n, layout, position, size, screen_w, screen_h):
     y = margin if position in ("top_left", "top_right") else screen_h - h - title - margin
     tiles = [((i % cols) * (tw + gap), title + (i // cols) * (th + gap), tw, th) for i in range(n)]
     return x, y, w, h, title, tiles
+
+
+# --- camera devices (Foscam alarm polling, PTZ via ONVIF or Foscam CGI) -----------------------------------------
+# Credentials live only in a local file on the receiver (DEVICES_FILE), never in the settings or in logs.
+DEVICES_FILE = "/etc/enigma2/camalert_devices.conf"
+DEVICE_TYPES = ("foscam", "onvif")
+PTZ_ACTIONS = ("up", "down", "left", "right", "zoom_in", "zoom_out", "home", "stop")
+KEY_UP, KEY_DOWN, KEY_YELLOW, KEY_CHANNELUP, KEY_CHANNELDOWN = 103, 108, 400, 402, 403
+
+
+def parse_devices(text):
+    """Lines 'name|type|host:port|user|password' (# = comment) -> {name: {type, host, port, user, password}}.
+    The password is the rest of the line, so it may contain '|'. Unknown types and broken lines are skipped."""
+    out = {}
+    for line in (text or "").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split("|", 4)
+        if len(parts) < 3:
+            continue
+        name, kind, addr = parts[0].strip(), parts[1].strip().lower(), parts[2].strip()
+        if not name or kind not in DEVICE_TYPES or not addr:
+            continue
+        host, _sep, port = addr.rpartition(":") if addr.count(":") == 1 else (addr, "", "")
+        default = 88 if kind == "foscam" else 80
+        out[name] = {"type": kind, "host": host, "port": valid_port(port, default) if port else default,
+                     "user": parts[3].strip() if len(parts) > 3 else "",
+                     "password": parts[4] if len(parts) > 4 else ""}
+    return out
+
+
+def device_base(dev):
+    return "http://%s:%d" % (dev["host"], dev["port"])
+
+
+def foscam_url(dev, cmd, **params):
+    """CGI url of a Foscam camera (HD models: cgi-bin/CGIProxy.fcgi)."""
+    q = [("cmd", cmd)] + sorted(params.items()) + [("usr", dev.get("user", "")), ("pwd", dev.get("password", ""))]
+    return "%s/cgi-bin/CGIProxy.fcgi?%s" % (device_base(dev), "&".join("%s=%s" % (k, quote(str(v), safe="")) for k, v in q))
+
+
+def foscam_values(xml):
+    """<CGI_Result><result>0</result><motionDetectAlarm>2</motionDetectAlarm>...</CGI_Result> -> {tag: text}."""
+    return dict(re.findall(r"<(\w+)>([^<]*)</\1>", xml or ""))
+
+
+def foscam_alarm(xml):
+    """True if a getDevState answer reports an active motion or sound alarm (value 2; 0 = off, 1 = no alarm)."""
+    v = foscam_values(xml)
+    if v.get("result", "0") != "0":
+        return False
+    return any(v.get(k) == "2" for k in ("motionDetectAlarm", "soundAlarm", "humanDetectAlarmState"))
+
+
+def alarm_edge(previous, now):
+    """Show the camera only when an alarm starts, not on every poll while it lasts."""
+    return bool(now) and not previous
+
+
+FOSCAM_PTZ = {"up": "ptzMoveUp", "down": "ptzMoveDown", "left": "ptzMoveLeft", "right": "ptzMoveRight",
+              "zoom_in": "zoomIn", "zoom_out": "zoomOut", "home": "ptzReset"}
+
+
+def foscam_ptz(action):
+    """(start command, stop command or None) for a PTZ action on a Foscam camera."""
+    if action in ("zoom_in", "zoom_out"):
+        return FOSCAM_PTZ[action], "zoomStop"
+    if action == "home":
+        return "ptzReset", None
+    if action == "stop":
+        return "ptzStopRun", None
+    return FOSCAM_PTZ[action], "ptzStopRun"
+
+
+PTZ_VECTORS = {"up": (0, 0.5, 0), "down": (0, -0.5, 0), "left": (-0.5, 0, 0), "right": (0.5, 0, 0),
+               "zoom_in": (0, 0, 0.5), "zoom_out": (0, 0, -0.5)}
+
+
+def ptz_key(code):
+    """What a remote key does in PTZ mode: up/down/left/right/zoom_in/zoom_out/home/leave, None = let it pass."""
+    return {KEY_UP: "up", KEY_DOWN: "down", KEY_LEFT: "left", KEY_RIGHT: "right", KEY_CHANNELUP: "zoom_in",
+            KEY_CHANNELDOWN: "zoom_out", KEY_OK: "home", KEY_EXIT: "leave", KEY_YELLOW: "leave"}.get(code)
+
+
+# ONVIF (SOAP 1.2) -------------------------------------------------------------------------------------------------
+ONVIF_NS = ('xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:tds="http://www.onvif.org/ver10/device/wsdl" '
+            'xmlns:trt="http://www.onvif.org/ver10/media/wsdl" xmlns:tptz="http://www.onvif.org/ver20/ptz/wsdl" '
+            'xmlns:tt="http://www.onvif.org/ver10/schema"')
+
+
+def wsse_digest(password, nonce, created):
+    """WS-Security UsernameToken PasswordDigest: Base64(SHA1(nonce + created + password)); nonce = raw bytes."""
+    import base64
+    import hashlib
+    return base64.b64encode(hashlib.sha1(nonce + created.encode("utf-8") + password.encode("utf-8")).digest()).decode("ascii")
+
+
+def onvif_created(timestamp):
+    """Unix time -> '2026-11-23T20:15:00Z' (UTC, as ONVIF wants it)."""
+    import time as _t
+    return _t.strftime("%Y-%m-%dT%H:%M:%SZ", _t.gmtime(int(timestamp)))
+
+
+def _xml(s):
+    return str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
+
+
+def onvif_envelope(body, user=None, password="", nonce=None, created=None):
+    """SOAP envelope; with a user a WS-Security UsernameToken (digest) header is added."""
+    header = ""
+    if user:
+        import base64
+        header = ('<s:Header><Security s:mustUnderstand="1" xmlns="http://docs.oasis-open.org/wss/2004/01/'
+                  'oasis-200401-wss-wssecurity-secext-1.0.xsd"><UsernameToken><Username>%s</Username>'
+                  '<Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0'
+                  '#PasswordDigest">%s</Password><Nonce EncodingType="http://docs.oasis-open.org/wss/2004/01/'
+                  'oasis-200401-wss-soap-message-security-1.0#Base64Binary">%s</Nonce><Created xmlns="http://docs.'
+                  'oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">%s</Created>'
+                  '</UsernameToken></Security></s:Header>'
+                  % (_xml(user), wsse_digest(password, nonce, created), base64.b64encode(nonce).decode("ascii"), created))
+    return '<?xml version="1.0" encoding="UTF-8"?><s:Envelope %s>%s<s:Body>%s</s:Body></s:Envelope>' % (ONVIF_NS, header, body)
+
+
+def onvif_body(action, token=None, vector=None):
+    """SOAP body for: GetSystemDateAndTime, GetCapabilities, GetProfiles, ContinuousMove, Stop, GotoHomePosition."""
+    if action == "GetSystemDateAndTime":
+        return "<tds:GetSystemDateAndTime/>"
+    if action == "GetCapabilities":
+        return "<tds:GetCapabilities><tds:Category>All</tds:Category></tds:GetCapabilities>"
+    if action == "GetProfiles":
+        return "<trt:GetProfiles/>"
+    tok = "<tptz:ProfileToken>%s</tptz:ProfileToken>" % _xml(token)
+    if action == "ContinuousMove":
+        x, y, z = vector
+        return ('<tptz:ContinuousMove>%s<tptz:Velocity><tt:PanTilt x="%g" y="%g"/><tt:Zoom x="%g"/></tptz:Velocity>'
+                '</tptz:ContinuousMove>' % (tok, x, y, z))
+    if action == "Stop":
+        return "<tptz:Stop>%s<tptz:PanTilt>true</tptz:PanTilt><tptz:Zoom>true</tptz:Zoom></tptz:Stop>" % tok
+    if action == "GotoHomePosition":
+        return "<tptz:GotoHomePosition>%s</tptz:GotoHomePosition>" % tok
+    raise ValueError(action)
+
+
+def _local(tag):
+    return tag.rsplit("}", 1)[-1]
+
+
+def onvif_xaddrs(xml):
+    """GetCapabilities answer -> {"media": url, "ptz": url} (only what the camera offers)."""
+    import xml.etree.ElementTree as ET
+    out = {}
+    for el in ET.fromstring(xml).iter():
+        name = _local(el.tag).lower()
+        if name in ("media", "ptz") and name not in out:
+            for child in el:
+                if _local(child.tag) == "XAddr" and child.text:
+                    out[name] = child.text.strip()
+    return out
+
+
+def onvif_profile_token(xml):
+    """First media profile token from GetProfiles (preferably one with a PTZ configuration)."""
+    import xml.etree.ElementTree as ET
+    first = None
+    for el in ET.fromstring(xml).iter():
+        if _local(el.tag) == "Profiles" and el.get("token"):
+            first = first or el.get("token")
+            if any(_local(c.tag) == "PTZConfiguration" for c in el):
+                return el.get("token")
+    return first
+
+
+def onvif_time(xml):
+    """GetSystemDateAndTime answer -> UTC unix time of the camera (None if missing); used to correct the clock."""
+    import calendar
+    import xml.etree.ElementTree as ET
+    root = ET.fromstring(xml)
+    for el in root.iter():
+        if _local(el.tag) == "UTCDateTime":
+            v = {}
+            for part in el.iter():
+                if _local(part.tag) in ("Year", "Month", "Day", "Hour", "Minute", "Second") and part.text:
+                    v[_local(part.tag)] = int(part.text)
+            if len(v) == 6:
+                return calendar.timegm((v["Year"], v["Month"], v["Day"], v["Hour"], v["Minute"], v["Second"], 0, 0, 0))
+    return None
+
+
+def onvif_fault(xml):
+    """Fault reason text of a SOAP answer, or None."""
+    m = re.search(r"<(?:\w+:)?Text[^>]*>([^<]*)</(?:\w+:)?Text>", xml or "") if "Fault" in (xml or "") else None
+    return (m.group(1) if m else "SOAP fault") if xml and "Fault>" in xml else None

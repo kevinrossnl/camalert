@@ -69,6 +69,7 @@ License: GPL-2.0-only
 Architecture: all
 Homepage: https://github.com/CAMALERT_OWNER/camalert
 Depends: enigma2, python3-twisted-web
+Recommends: python3-pillow
 Source: https://github.com/CAMALERT_OWNER/camalert
 """
 POSTINST = """#!/bin/sh

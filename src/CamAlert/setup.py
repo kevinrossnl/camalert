@@ -17,8 +17,8 @@ from twisted.internet import threads
 from . import _, __version__
 from . import server
 from . import mqtt
-from .display import CAMERA_FILE, Controller, all_camera_names, direct_cameras, open_url
-from .logic import (valid_port, format_titles, parse_titles, title_for, BOUQUET_FILE, add_to_bouquets, bouquet_text, display_name, normalize_server, parse_cams,
+from .display import CAMERA_FILE, Controller, all_camera_names, direct_cameras, open_url, pillow_available
+from .logic import (format_map, parse_map, parse_orientation, parse_refresh, valid_port, format_titles, parse_titles, title_for, BOUQUET_FILE, add_to_bouquets, bouquet_text, display_name, normalize_server, parse_cams,
                     streams_from_json)
 
 E2 = "/etc/enigma2/"
@@ -98,7 +98,9 @@ class CamAlertSetup(ConfigListScreen, Screen):
         if c.mode.value == "photo":
             items += [(_("Window position"), c.position, ""), (_("Window size"), c.size, ""),
                       (_("Remote control in photo window"), c.window_keys,
-                       _("OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too."))]
+                       _("OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too.")),
+                      (_("Layout with several cameras"), c.strip_layout,
+                       _("A request with 2-4 cameras shows them together in one corner window."))]
         if c.mode.value in ("photo", "notify"):
             items += [(_("Pause TV meanwhile"), c.pause_tv,
                        _("Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift."))]
@@ -107,10 +109,23 @@ class CamAlertSetup(ConfigListScreen, Screen):
                        _("Switch back to what you were watching when the time is up.")),
                       (_("Volume during live view (%)"), c.live_volume,
                        _("Percentage of the current volume while the camera is shown. 100 = unchanged."))]
+        if c.source.value == "go2rtc":
+            n_o = len(parse_orientation(c.orientation.value))
+            n_r = len(parse_refresh(c.refresh.value))
+            self.orientation_entry = ConfigSelection(choices=[("x", (_("%d cameras") % n_o) if n_o else _("normal"))])
+            self.refresh_entry = ConfigSelection(choices=[("x", (_("%d cameras") % n_r) if n_r else _("as fast as possible"))])
+            items += [(_("Turn or mirror image"), self.orientation_entry,
+                       _("Press OK to turn a camera that hangs upside down (needs python3-pillow).")),
+                      (_("Refresh interval"), self.refresh_entry,
+                       _("Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."))]
+        items += [(_("Do not disturb"), c.dnd, _("Blocks requests with normal priority. Also via the API, MQTT and Home Assistant.")),
+                  (_("Do not disturb blocks"), c.dnd_level, "")]
         items += [(_("Only between certain times"), c.limit_hours, _("Ignore requests outside the chosen times."))]
         if c.limit_hours.value:
             items += [(_("From"), c.from_time, ""), (_("Until"), c.until_time, _("May pass midnight, e.g. 07:00 to 23:00."))]
         items += [(_("Not during a recording"), c.skip_recording, _("Ignore requests while the receiver is recording.")),
+                  (_("Not while playing a recording or video"), c.skip_media,
+                   _("Ignore normal requests while you watch a recording or a video file.")),
                   (_("Wake receiver on alarm"), c.alarm_wake,
                    _("Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on.")),
                   (_("Tour: seconds per camera"), c.tour_interval, "")]
@@ -136,7 +151,17 @@ class CamAlertSetup(ConfigListScreen, Screen):
                 (_("MQTT password"), c.mqtt_password, ""),
                 (_("Home Assistant discovery"), c.mqtt_discovery, _("Creates a device with a button per camera in Home Assistant.")),
                 (_("Name in Home Assistant"), c.mqtt_name, _("Empty = CamAlert + the receiver's host name.")),
+                (_("Frigate events"), c.frigate_enabled,
+                 _("Shows the camera when Frigate detects something (via MQTT, without Home Assistant).")),
             ]
+            if c.frigate_enabled.value:
+                items += [
+                    (_("Frigate MQTT prefix"), c.frigate_prefix, _("Usually 'frigate'.")),
+                    (_("Frigate objects"), c.frigate_labels, _("Comma separated, e.g. person,car. Empty = all objects.")),
+                    (_("Frigate camera names"), c.frigate_map,
+                     _("Only if the names differ from go2rtc: frigate=go2rtc|other=other_stream")),
+                    (_("Frigate priority"), c.frigate_priority, ""),
+                ]
         self.help_texts = [i[2] for i in items]
         self["config"].list = [getConfigListEntry(i[0], i[1]) for i in items]
 
@@ -162,6 +187,14 @@ class CamAlertSetup(ConfigListScreen, Screen):
         if self["config"].getCurrent()[1] is getattr(self, "names_entry", None):
             if self.server():
                 threads.deferToThread(all_camera_names).addCallbacks(self.choose_title_camera, self.fetch_failed)
+        elif self["config"].getCurrent()[1] is getattr(self, "orientation_entry", None):
+            if self.server():
+                self.map_setting = "orientation"
+                threads.deferToThread(all_camera_names).addCallbacks(self.choose_map_camera, self.fetch_failed)
+        elif self["config"].getCurrent()[1] is getattr(self, "refresh_entry", None):
+            if self.server():
+                self.map_setting = "refresh"
+                threads.deferToThread(all_camera_names).addCallbacks(self.choose_map_camera, self.fetch_failed)
         elif self["config"].getCurrent()[1] is config.plugins.camalert.mosaic:
             if self.server():
                 threads.deferToThread(all_camera_names).addCallbacks(self.choose_mosaic, self.fetch_failed)
@@ -174,6 +207,45 @@ class CamAlertSetup(ConfigListScreen, Screen):
                 if handler:
                     handler()
                     break
+
+    def map_values(self):
+        """Choices for the per-camera setting being edited: [(label, value)], value "" = default."""
+        if self.map_setting == "orientation":
+            return [(_("normal"), ""), (_("mirror (left/right)"), "mirror"), (_("upside down (flip)"), "flip"),
+                    (_("turned 180 degrees"), "rot180")]
+        return [(_("as fast as possible"), "")] + [(_("every %s seconds") % v, v) for v in ("1", "2", "5", "10", "30", "60")]
+
+    def choose_map_camera(self, streams):
+        if not streams:
+            return
+        setting = getattr(config.plugins.camalert, self.map_setting)
+        current = parse_map(setting.value)
+        labels = dict((v, l) for l, v in self.map_values())
+        self.session.openWithCallback(self.map_camera_chosen, ChoiceBox, title=_("Choose camera"),
+                                      list=[("%s  ->  %s" % (self.titles().get(s, display_name(s)),
+                                                             labels.get(current.get(s, ""), current.get(s, ""))), s)
+                                            for s in streams])
+
+    def map_camera_chosen(self, choice):
+        if not choice:
+            return
+        self.map_camera = choice[1]
+        self.session.openWithCallback(self.map_value_chosen, ChoiceBox, title=choice[0], list=self.map_values())
+
+    def map_value_chosen(self, choice):
+        if choice is None:
+            return
+        setting = getattr(config.plugins.camalert, self.map_setting)
+        current = parse_map(setting.value)
+        if choice[1]:
+            current[self.map_camera] = choice[1]
+        else:
+            current.pop(self.map_camera, None)
+        setting.value = format_map(current)
+        if self.map_setting == "orientation" and choice[1] and not pillow_available():
+            self.session.open(MessageBox, _("Install python3-pillow to turn or mirror images:\nopkg install python3-pillow"),
+                              MessageBox.TYPE_INFO)
+        self.build()
 
     def fetch_failed(self, err):
         self.session.open(MessageBox, _("Could not reach go2rtc:\n%s") % err.getErrorMessage(), MessageBox.TYPE_ERROR)

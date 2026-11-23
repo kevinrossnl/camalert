@@ -17,7 +17,7 @@ from twisted.internet.protocol import Protocol, ReconnectingClientFactory
 from Components.config import config
 
 from .display import Controller, all_camera_names, camera_urls, log
-from .logic import (valid_port, MQTT_DISCONNECT, MQTT_PING, clamp_seconds, discovery, mqtt_command, mqtt_connect, mqtt_parse_publish,
+from .logic import (frigate_event, frigate_stream, valid_port, MQTT_DISCONNECT, MQTT_PING, clamp_seconds, discovery, mqtt_command, mqtt_connect, mqtt_parse_publish,
                     mqtt_publish, mqtt_split, mqtt_subscribe, slug)
 
 _connector = None
@@ -71,7 +71,11 @@ class CamAlertMqtt(Protocol):
         log("MQTT connected as", self.node)
         _factory.resetDelay()
         _factory.protocol_instance = self
-        self.transport.write(mqtt_subscribe(1, [self.prefix + "show", self.prefix + "mosaic", self.prefix + "hide"]))
+        topics = [self.prefix + "show", self.prefix + "mosaic", self.prefix + "hide", self.prefix + "dnd/set"]
+        c = config.plugins.camalert
+        if c.frigate_enabled.value:
+            topics.append("%s/events" % (c.frigate_prefix.value.strip().strip("/") or "frigate"))
+        self.transport.write(mqtt_subscribe(1, topics))
         self.publish("availability", "online", retain=True)
         self.publish_state()
         self.pinger = task.LoopingCall(lambda: self.transport.write(MQTT_PING))
@@ -94,11 +98,24 @@ class CamAlertMqtt(Protocol):
     def publish_state(self):
         st = Controller.instance.status() if Controller.instance else {}
         self.publish("state", st.get("window") or st.get("live") or "none", retain=True)
+        self.publish("dnd", "ON" if config.plugins.camalert.dnd.value else "OFF", retain=True)
 
     def command(self, topic, payload):
-        action = topic.rsplit("/", 1)[-1]
+        c = config.plugins.camalert
         ctl = Controller.instance
-        if not config.plugins.camalert.enabled.value or ctl is None:
+        if not c.enabled.value or ctl is None:
+            return
+        if c.frigate_enabled.value and topic == "%s/events" % (c.frigate_prefix.value.strip().strip("/") or "frigate"):
+            stream = frigate_stream(frigate_event(payload), c.frigate_labels.value, c.frigate_map.value)
+            if stream:
+                log("Frigate:", stream)
+                ctl.show(stream, None, None, c.frigate_priority.value)
+                reactor.callLater(0.5, self.publish_state)
+            return
+        action = topic.rsplit("/", 1)[-1]
+        if topic.endswith("/dnd/set"):
+            ctl.set_dnd(payload.decode("utf-8", "replace").strip().upper() in ("ON", "1", "TRUE"))
+            reactor.callLater(0.2, self.publish_state)
             return
         try:
             if action == "hide":

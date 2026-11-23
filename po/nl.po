@@ -336,3 +336,110 @@ msgstr "automatisch"
 msgid "Where I put it"
 msgstr "Waar ik hem neerzet"
 
+msgid "Block normal requests (doorbell and alarm still come through)"
+msgstr "Normale verzoeken blokkeren (deurbel en alarm komen door)"
+
+msgid "Block normal and doorbell requests (alarm still comes through)"
+msgstr "Normale en deurbelverzoeken blokkeren (alarm komt door)"
+
+msgid "Automatic"
+msgstr "Automatisch"
+
+msgid "Below each other"
+msgstr "Onder elkaar"
+
+msgid "Next to each other"
+msgstr "Naast elkaar"
+
+msgid "2 x 2"
+msgstr "2 x 2"
+
+msgid "Normal"
+msgstr "Normaal"
+
+msgid "High (doorbell)"
+msgstr "Hoog (deurbel)"
+
+msgid "Layout with several cameras"
+msgstr "Indeling bij meerdere camera's"
+
+msgid "A request with 2-4 cameras shows them together in one corner window."
+msgstr "Een verzoek met 2-4 camera's toont ze samen in één hoekvenster."
+
+msgid "%d cameras"
+msgstr "%d camera's"
+
+msgid "normal"
+msgstr "normaal"
+
+msgid "as fast as possible"
+msgstr "zo snel mogelijk"
+
+msgid "Turn or mirror image"
+msgstr "Beeld draaien of spiegelen"
+
+msgid "Press OK to turn a camera that hangs upside down (needs python3-pillow)."
+msgstr "Druk op OK om een camera die ondersteboven hangt te draaien (vereist python3-pillow)."
+
+msgid "Refresh interval"
+msgstr "Verversinterval"
+
+msgid "Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."
+msgstr "Druk op OK om foto's van een camera minder vaak op te halen (seconden), bijv. voor een trage camera."
+
+msgid "Do not disturb"
+msgstr "Niet storen"
+
+msgid "Blocks requests with normal priority. Also via the API, MQTT and Home Assistant."
+msgstr "Blokkeert verzoeken met normale prioriteit. Ook via de API, MQTT en Home Assistant."
+
+msgid "Do not disturb blocks"
+msgstr "Niet storen blokkeert"
+
+msgid "Not while playing a recording or video"
+msgstr "Niet tijdens afspelen van een opname of video"
+
+msgid "Ignore normal requests while you watch a recording or a video file."
+msgstr "Normale verzoeken negeren terwijl u een opname of videobestand kijkt."
+
+msgid "Frigate events"
+msgstr "Frigate-gebeurtenissen"
+
+msgid "Shows the camera when Frigate detects something (via MQTT, without Home Assistant)."
+msgstr "Toont de camera als Frigate iets detecteert (via MQTT, zonder Home Assistant)."
+
+msgid "Frigate MQTT prefix"
+msgstr "Frigate MQTT-prefix"
+
+msgid "Usually 'frigate'."
+msgstr "Meestal 'frigate'."
+
+msgid "Frigate objects"
+msgstr "Frigate-objecten"
+
+msgid "Comma separated, e.g. person,car. Empty = all objects."
+msgstr "Gescheiden door komma's, bijv. person,car. Leeg = alle objecten."
+
+msgid "Frigate camera names"
+msgstr "Frigate-cameranamen"
+
+msgid "Only if the names differ from go2rtc: frigate=go2rtc|other=other_stream"
+msgstr "Alleen als de namen afwijken van go2rtc: frigate=go2rtc|other=other_stream"
+
+msgid "Frigate priority"
+msgstr "Frigate-prioriteit"
+
+msgid "mirror (left/right)"
+msgstr "spiegelen (links/rechts)"
+
+msgid "upside down (flip)"
+msgstr "ondersteboven (kantelen)"
+
+msgid "turned 180 degrees"
+msgstr "180 graden gedraaid"
+
+msgid "every %s seconds"
+msgstr "elke %s seconden"
+
+msgid "Install python3-pillow to turn or mirror images:\nopkg install python3-pillow"
+msgstr "Installeer python3-pillow om beelden te draaien of spiegelen:\nopkg install python3-pillow"

@@ -3,10 +3,11 @@
 # Copyright (C) 2026 CamAlert developers. Licensed under the GNU GPL v2 (see LICENSE).
 """Small HTTP API on the receiver:
 
-    GET /camalert/show?cam=front_door&sec=30&mode=photo|live|notify&priority=normal|high|alarm[&token=...]
+    GET /camalert/show?cam=front_door&sec=30&mode=photo|live|notify|strip&priority=normal|high|alarm[&token=...]
     GET /camalert/mosaic?cam=front_door,garden,drive&sec=60
     GET /camalert/cameras
     GET /camalert/tour?cam=front_door,garden&interval=8
+    GET /camalert/dnd?on=1|0         (do not disturb; without "on" it only reports the state)
     GET /camalert/hide
     GET /camalert/status
 """
@@ -70,6 +71,10 @@ class Api(resource.Resource):
             if action == "hide":
                 ctl.hide()
                 out = {"result": True, "action": "hide"}
+            elif action == "dnd":
+                if "on" in args:
+                    ctl.set_dnd(args["on"].lower() in ("1", "true", "on", "yes"))
+                out = {"result": True, "dnd": bool(c.dnd.value)}
             elif action == "mosaic":
                 sec = clamp_seconds(args.get("sec"), 60) if args.get("sec") else 60
                 res = ctl.mosaic(args.get("cam"), sec)

@@ -20,7 +20,8 @@ from twisted.internet import reactor, threads
 from . import _
 from Components.ActionMap import ActionMap
 
-from .logic import (valid_port, parse_titles, title_for, blocked_by_rules, clock_tuple, key_action, known_camera, neighbour, pick_priority, decide, display_name, grid, in_time_window, lowered_volume, normalize_server, parse_camera_file,
+from .logic import (dnd_blocks, is_media_ref, parse_orientation, parse_refresh, refresh_delay, strip_geometry,
+                    valid_port, parse_titles, title_for, blocked_by_rules, clock_tuple, key_action, known_camera, neighbour, pick_priority, decide, display_name, grid, in_time_window, lowered_volume, normalize_server, parse_camera_file,
                     parse_cams, pick_mode, rtsp_url, service_ref, should_pause, snapshot_url, split_credentials,
                     stream_from_ref, tcp_url, window_geometry)
 
@@ -82,11 +83,36 @@ def all_camera_names():
     return fetch_streams(normalize_server(config.plugins.camalert.server.value))
 
 
-def _download(url, path=PHOTO):
+try:  # optional: python3-pillow turns/mirrors snapshots of cameras that hang upside down
+    from PIL import Image
+except Exception:  # pragma: no cover - not installed on every receiver
+    Image = None
+
+
+def pillow_available():
+    return Image is not None
+
+
+def orientation_for(name):
+    return parse_orientation(config.plugins.camalert.orientation.value).get(name)
+
+
+def delay_for(name, minimum=0.2):
+    return refresh_delay(name, parse_refresh(config.plugins.camalert.refresh.value), minimum)
+
+
+def _download(url, path=PHOTO, orientation=None):
     with open_url(url) as r:
         data = r.read()
     with open(path + ".tmp", "wb") as f:
         f.write(data)
+    if orientation and Image is not None:
+        try:
+            op = {"mirror": Image.FLIP_LEFT_RIGHT, "flip": Image.FLIP_TOP_BOTTOM, "rot180": Image.ROTATE_180}[orientation]
+            with Image.open(path + ".tmp") as im:
+                im.transpose(op).save(path + ".tmp", "JPEG", quality=85)
+        except Exception as e:
+            log("orientation failed:", e)
     os.replace(path + ".tmp", path)
     return path
 
@@ -104,7 +130,8 @@ class Tile(object):
         if not getattr(self.screen, "active", False) or self.busy or not self.url:
             return
         self.busy = True
-        threads.deferToThread(_download, self.url, self.path).addCallbacks(self.loaded, self.failed)
+        threads.deferToThread(_download, self.url, self.path, orientation_for(self.stream)).addCallbacks(
+            self.loaded, self.failed)
 
     def loaded(self, _path):
         self.busy = False
@@ -118,7 +145,7 @@ class Tile(object):
                     self.screen[self.key].instance.setPixmap(ptr)
         except Exception as e:
             log("mosaic tile failed:", e)
-        reactor.callLater(0.3, self.fetch)
+        reactor.callLater(delay_for(self.stream, 0.3), self.fetch)
 
     def failed(self, err):
         self.busy = False
@@ -210,7 +237,8 @@ class PhotoWindow(Screen):
         if not getattr(self, "active", False) or self.busy:
             return
         self.busy = True
-        threads.deferToThread(_download, self.url).addCallbacks(self.loaded, self.failed)
+        threads.deferToThread(_download, self.url, PHOTO, orientation_for(self.stream)).addCallbacks(
+            self.loaded, self.failed)
 
     def loaded(self, _result):
         self.busy = False
@@ -224,13 +252,64 @@ class PhotoWindow(Screen):
                     self["photo"].instance.setPixmap(ptr)
         except Exception as e:
             log("showing photo failed:", e)
-        reactor.callLater(0.2, self.fetch)
+        reactor.callLater(delay_for(self.stream), self.fetch)
 
     def failed(self, err):
         self.busy = False
         log("snapshot failed:", err.getErrorMessage())
         if getattr(self, "active", False):
             reactor.callLater(2, self.fetch)
+
+    def stop(self):
+        self.active = False
+        self.close_timer.stop()
+        self.hide()
+        Controller.instance.window_closed(self)
+
+
+class StripWindow(Screen):
+    """One corner window with 2-4 cameras (below each other, next to each other or 2 x 2); TV stays visible."""
+
+    def __init__(self, session, cams, hint=False):
+        """cams: list of (name, title, snapshot url)."""
+        c = config.plugins.camalert
+        size = getDesktop(0).size()
+        x, y, w, h, t, tiles = strip_geometry(len(cams), c.strip_layout.value, c.position.value, c.size.value,
+                                              size.width(), size.height())
+        f = size.width() / 1920.0
+        parts = ['<screen name="CamAlertStrip" position="%d,%d" size="%d,%d" flags="wfNoBorder" backgroundColor="#ff000000" zPosition="10">' % (x, y, w, h + t),
+                 '<eLabel position="0,0" size="%d,%d" backgroundColor="#202020" zPosition="0" />' % (w, h + t),
+                 '<widget name="title" position="%d,0" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" valign="center" zPosition="2" />'
+                 % (int(10 * f), w - int(20 * f), t, int(26 * f))]
+        for i, (tx, ty, tw, th) in enumerate(tiles):
+            parts.append('<widget name="tile%d" position="%d,%d" size="%d,%d" alphatest="off" zPosition="1" />' % (i, tx, ty, tw, th))
+            parts.append('<widget name="label%d" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" zPosition="3" />'
+                         % (i, tx + int(6 * f), ty + int(6 * f), tw // 2, int(30 * f), int(22 * f)))
+        parts.append("</screen>")
+        self.skin = "".join(parts)
+        Screen.__init__(self, session)
+        self.names = [n for n, _t, _u in cams]
+        self.stream = ",".join(self.names)
+        self["title"] = Label("  ·  ".join(t for _n, t, _u in cams) + ("   OK = live  EXIT" if hint else ""))
+        self.tiles = []
+        for i, ((name, title, url), (tx, ty, tw, th)) in enumerate(zip(cams, tiles)):
+            self["tile%d" % i] = Pixmap()
+            self["label%d" % i] = Label(" " + title + " ")
+            url = url.replace("width=640", "width=%d" % min(960, tw)) if "/api/frame.jpeg" in url else url
+            self.tiles.append(Tile(self, "tile%d" % i, name, url, (tw, th)))
+        self.active = False
+        self.close_timer = eTimer()
+        self.close_timer.callback.append(self.stop)
+
+    def start(self, seconds):
+        self.active = True
+        self.show()
+        self.close_timer.start(seconds * 1000, True)
+        for t in self.tiles:
+            t.fetch()
+
+    def extend(self, seconds):
+        self.close_timer.start(seconds * 1000, True)
 
     def stop(self):
         self.active = False
@@ -272,10 +351,10 @@ class KeyHook(object):
         if action == "close":
             reactor.callLater(0, ctl.hide)
         elif action == "live":
-            stream = ctl.window.stream if ctl.window else None
+            stream = ctl.window.stream.split(",")[0] if ctl.window else None
             if stream:
                 reactor.callLater(0, ctl.window_to_live, stream)
-        else:
+        elif not isinstance(ctl.window, StripWindow):
             ctl.other_camera(-1 if action == "prev" else 1)
         return 1
 
@@ -386,6 +465,36 @@ class Controller(object):
         direct = config.plugins.camalert.source.value == "direct"
         return stream_from_ref(ref.toString(), direct_cameras() if direct else None)
 
+    def playing_media(self):
+        ref = self.session.nav.getCurrentlyPlayingServiceReference()
+        return bool(ref) and is_media_ref(ref.toString())
+
+    def blocked(self, priority, what):
+        """Receiver rules: do not disturb, active hours, recording, media playback. Logs and returns True if blocked."""
+        c = config.plugins.camalert
+        if dnd_blocks(priority, c.dnd.value, c.dnd_level.value):
+            log("request", what, "ignored: do not disturb")
+            return True
+        t = time.localtime()
+        in_hours = in_time_window((t.tm_hour, t.tm_min), clock_tuple(c.from_time.value), clock_tuple(c.until_time.value))
+        if blocked_by_rules(priority, c.limit_hours.value, in_hours, c.skip_recording.value,
+                            bool(self.session.nav.getRecordings()), c.skip_media.value, self.playing_media()):
+            log("request", what, "ignored by the receiver rules (active hours / recording / media)")
+            return True
+        return False
+
+    def set_dnd(self, on):
+        c = config.plugins.camalert
+        c.dnd.value = bool(on)
+        c.dnd.save()
+        try:
+            from Components.config import configfile
+            configfile.save()
+        except Exception:
+            pass
+        log("do not disturb", "on" if on else "off")
+        reactor.callLater(0.1, _notify)
+
     # --- public ----------------------------------------------------------------------------------------------
     def show(self, stream=None, seconds=None, mode=None, priority=None):
         from Screens import Standby
@@ -405,6 +514,10 @@ class Controller(object):
         inStandby = None
         cams = parse_cams(stream)
         if len(cams) > 1:
+            if self.blocked(priority, ",".join(cams)):
+                return "ignore"
+            if len(cams) <= 4 and pick_mode(mode, c.mode.value) in ("photo", "strip") or mode == "strip":
+                return self.strip(cams[:4], seconds or int(c.duration.value))
             return self.mosaic(cams, seconds or int(c.duration.value))
         stream = stream or c.camera.value
         if not stream:
@@ -425,11 +538,7 @@ class Controller(object):
         live_url, snap_url, title = urls
         if mode == "photo" and not snap_url:
             mode = "live"  # camera has no snapshot address (direct mode)
-        t = time.localtime()
-        in_hours = in_time_window((t.tm_hour, t.tm_min), clock_tuple(c.from_time.value), clock_tuple(c.until_time.value))
-        if blocked_by_rules(priority, c.limit_hours.value, in_hours, c.skip_recording.value,
-                            bool(self.session.nav.getRecordings())):
-            log("request", stream, "ignored by the receiver rules (active hours / recording)")
+        if self.blocked(priority, stream):
             return "ignore"
         window_stream = self.window.stream if self.window else (self.live_stream if mode == "live" else None)
         action = decide(inStandby is not None, self.current_stream() if self.live_stream is None else None,
@@ -471,6 +580,26 @@ class Controller(object):
             if self.paused:
                 self.notify_timer.start(seconds * 1000, True)
         return action
+
+    def strip(self, names, seconds):
+        """2-4 cameras in one corner window (photo mode); falls back to the mosaic without snapshots."""
+        cams = [(n, u[2], u[1]) for n, u in ((n, camera_urls(n)) for n in names) if u and u[1]]
+        if len(cams) < 2:
+            return self.show(cams[0][0], seconds, "photo", "high") if cams else "error"
+        key = ",".join(n for n, _t, _u in cams)
+        if self.window is not None and self.window.stream == key:
+            self.window.extend(seconds)
+            return "extend"
+        self.hide(resume=False)
+        keys = config.plugins.camalert.window_keys.value and self._tv_on_top()
+        self.window = self.session.instantiateDialog(StripWindow, cams, keys)
+        self.window.start(seconds)
+        if keys:
+            self.close_keys()
+            self.keys = KeyHook()
+        reactor.callLater(0.5, _notify)
+        log("strip", key, seconds)
+        return "show"
 
     def _streams(self, streams, then):
         """Resolves the camera list (argument, 'mosaic cameras' setting, or all cameras via a thread) and calls
@@ -646,4 +775,5 @@ class Controller(object):
         self.previous_ref = None
 
     def status(self):
-        return {"window": self.window.stream if self.window else None, "live": self.live_stream, "paused": self.paused}
+        return {"window": self.window.stream if self.window else None, "live": self.live_stream, "paused": self.paused,
+                "dnd": bool(config.plugins.camalert.dnd.value)}

@@ -336,3 +336,110 @@ msgstr "automatico"
 msgid "Where I put it"
 msgstr "Dove la metto io"
 
+msgid "Block normal requests (doorbell and alarm still come through)"
+msgstr "Blocca le richieste normali (campanello e allarme passano)"
+
+msgid "Block normal and doorbell requests (alarm still comes through)"
+msgstr "Blocca richieste normali e del campanello (l'allarme passa)"
+
+msgid "Automatic"
+msgstr "Automatico"
+
+msgid "Below each other"
+msgstr "Una sotto l'altra"
+
+msgid "Next to each other"
+msgstr "Una accanto all'altra"
+
+msgid "2 x 2"
+msgstr "2 x 2"
+
+msgid "Normal"
+msgstr "Normale"
+
+msgid "High (doorbell)"
+msgstr "Alta (campanello)"
+
+msgid "Layout with several cameras"
+msgstr "Disposizione con più telecamere"
+
+msgid "A request with 2-4 cameras shows them together in one corner window."
+msgstr "Una richiesta con 2-4 telecamere le mostra insieme in una finestra d'angolo."
+
+msgid "%d cameras"
+msgstr "%d telecamere"
+
+msgid "normal"
+msgstr "normale"
+
+msgid "as fast as possible"
+msgstr "il più veloce possibile"
+
+msgid "Turn or mirror image"
+msgstr "Ruota o specchia l'immagine"
+
+msgid "Press OK to turn a camera that hangs upside down (needs python3-pillow)."
+msgstr "Premi OK per ruotare una telecamera montata capovolta (richiede python3-pillow)."
+
+msgid "Refresh interval"
+msgstr "Intervallo di aggiornamento"
+
+msgid "Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."
+msgstr "Premi OK per scaricare meno spesso le foto di una telecamera (secondi), ad es. per una telecamera lenta."
+
+msgid "Do not disturb"
+msgstr "Non disturbare"
+
+msgid "Blocks requests with normal priority. Also via the API, MQTT and Home Assistant."
+msgstr "Blocca le richieste con priorità normale. Anche tramite API, MQTT e Home Assistant."
+
+msgid "Do not disturb blocks"
+msgstr "Non disturbare blocca"
+
+msgid "Not while playing a recording or video"
+msgstr "Non durante la riproduzione di una registrazione o di un video"
+
+msgid "Ignore normal requests while you watch a recording or a video file."
+msgstr "Ignora le richieste normali mentre guardi una registrazione o un file video."
+
+msgid "Frigate events"
+msgstr "Eventi Frigate"
+
+msgid "Shows the camera when Frigate detects something (via MQTT, without Home Assistant)."
+msgstr "Mostra la telecamera quando Frigate rileva qualcosa (via MQTT, senza Home Assistant)."
+
+msgid "Frigate MQTT prefix"
+msgstr "Prefisso MQTT di Frigate"
+
+msgid "Usually 'frigate'."
+msgstr "Di solito 'frigate'."
+
+msgid "Frigate objects"
+msgstr "Oggetti Frigate"
+
+msgid "Comma separated, e.g. person,car. Empty = all objects."
+msgstr "Separati da virgole, ad es. person,car. Vuoto = tutti gli oggetti."
+
+msgid "Frigate camera names"
+msgstr "Nomi delle telecamere Frigate"
+
+msgid "Only if the names differ from go2rtc: frigate=go2rtc|other=other_stream"
+msgstr "Solo se i nomi differiscono da go2rtc: frigate=go2rtc|other=other_stream"
+
+msgid "Frigate priority"
+msgstr "Priorità Frigate"
+
+msgid "mirror (left/right)"
+msgstr "specchia (sinistra/destra)"
+
+msgid "upside down (flip)"
+msgstr "capovolto"
+
+msgid "turned 180 degrees"
+msgstr "ruotato di 180 gradi"
+
+msgid "every %s seconds"
+msgstr "ogni %s secondi"
+
+msgid "Install python3-pillow to turn or mirror images:\nopkg install python3-pillow"
+msgstr "Installa python3-pillow per ruotare o specchiare le immagini:\nopkg install python3-pillow"

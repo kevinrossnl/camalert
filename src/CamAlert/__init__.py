@@ -90,3 +90,19 @@ _add("titles", lambda: ConfigText(default="", fixed_size=False))
 _add("auto_bouquet", lambda: ConfigYesNo(default=True))
 _add("bouquet_position", lambda: ConfigSelection(default="keep", choices=[
     ("keep", _("Where I put it")), ("bottom", _("At the bottom")), ("top", _("At the top"))]))
+_add("dnd", lambda: ConfigYesNo(default=False))
+_add("dnd_level", lambda: ConfigSelection(default="normal", choices=[
+    ("normal", _("Block normal requests (doorbell and alarm still come through)")),
+    ("high", _("Block normal and doorbell requests (alarm still comes through)"))]))
+_add("skip_media", lambda: ConfigYesNo(default=False))
+_add("orientation", lambda: ConfigText(default="", fixed_size=False))
+_add("refresh", lambda: ConfigText(default="", fixed_size=False))
+_add("strip_layout", lambda: ConfigSelection(default="auto", choices=[
+    ("auto", _("Automatic")), ("vertical", _("Below each other")), ("horizontal", _("Next to each other")),
+    ("grid", _("2 x 2"))]))
+_add("frigate_enabled", lambda: ConfigYesNo(default=False))
+_add("frigate_prefix", lambda: ConfigText(default="frigate", fixed_size=False))
+_add("frigate_labels", lambda: ConfigText(default="person", fixed_size=False))
+_add("frigate_map", lambda: ConfigText(default="", fixed_size=False))
+_add("frigate_priority", lambda: ConfigSelection(default="normal", choices=[
+    ("normal", _("Normal")), ("high", _("High (doorbell)"))]))

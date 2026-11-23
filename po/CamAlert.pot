@@ -53,6 +53,30 @@ msgstr ""
 msgid "At the top"
 msgstr ""
 
+msgid "Block normal requests (doorbell and alarm still come through)"
+msgstr ""
+
+msgid "Block normal and doorbell requests (alarm still comes through)"
+msgstr ""
+
+msgid "Automatic"
+msgstr ""
+
+msgid "Below each other"
+msgstr ""
+
+msgid "Next to each other"
+msgstr ""
+
+msgid "2 x 2"
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "High (doorbell)"
+msgstr ""
+
 msgid "Cameras"
 msgstr ""
 
@@ -170,6 +194,12 @@ msgstr ""
 msgid "OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too."
 msgstr ""
 
+msgid "Layout with several cameras"
+msgstr ""
+
+msgid "A request with 2-4 cameras shows them together in one corner window."
+msgstr ""
+
 msgid "Pause TV meanwhile"
 msgstr ""
 
@@ -186,6 +216,36 @@ msgid "Volume during live view (%)"
 msgstr ""
 
 msgid "Percentage of the current volume while the camera is shown. 100 = unchanged."
+msgstr ""
+
+msgid "%d cameras"
+msgstr ""
+
+msgid "normal"
+msgstr ""
+
+msgid "as fast as possible"
+msgstr ""
+
+msgid "Turn or mirror image"
+msgstr ""
+
+msgid "Press OK to turn a camera that hangs upside down (needs python3-pillow)."
+msgstr ""
+
+msgid "Refresh interval"
+msgstr ""
+
+msgid "Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."
+msgstr ""
+
+msgid "Do not disturb"
+msgstr ""
+
+msgid "Blocks requests with normal priority. Also via the API, MQTT and Home Assistant."
+msgstr ""
+
+msgid "Do not disturb blocks"
 msgstr ""
 
 msgid "Only between certain times"
@@ -207,6 +267,12 @@ msgid "Not during a recording"
 msgstr ""
 
 msgid "Ignore requests while the receiver is recording."
+msgstr ""
+
+msgid "Not while playing a recording or video"
+msgstr ""
+
+msgid "Ignore normal requests while you watch a recording or a video file."
 msgstr ""
 
 msgid "Wake receiver on alarm"
@@ -302,19 +368,61 @@ msgstr ""
 msgid "Empty = CamAlert + the receiver's host name."
 msgstr ""
 
+msgid "Frigate events"
+msgstr ""
+
+msgid "Shows the camera when Frigate detects something (via MQTT, without Home Assistant)."
+msgstr ""
+
+msgid "Frigate MQTT prefix"
+msgstr ""
+
+msgid "Usually 'frigate'."
+msgstr ""
+
+msgid "Frigate objects"
+msgstr ""
+
+msgid "Comma separated, e.g. person,car. Empty = all objects."
+msgstr ""
+
+msgid "Frigate camera names"
+msgstr ""
+
+msgid "Only if the names differ from go2rtc: frigate=go2rtc|other=other_stream"
+msgstr ""
+
+msgid "Frigate priority"
+msgstr ""
+
 msgid "No cameras found in %s.\nSee the guide for the format."
 msgstr ""
 
 msgid "Please enter a valid go2rtc address first."
 msgstr ""
 
+msgid "mirror (left/right)"
+msgstr ""
+
+msgid "upside down (flip)"
+msgstr ""
+
+msgid "turned 180 degrees"
+msgstr ""
+
+msgid "every %s seconds"
+msgstr ""
+
+msgid "Choose camera"
+msgstr ""
+
+msgid "Install python3-pillow to turn or mirror images:\nopkg install python3-pillow"
+msgstr ""
+
 msgid "Could not reach go2rtc:\n%s"
 msgstr ""
 
 msgid "go2rtc has no cameras configured."
-msgstr ""
-
-msgid "Choose camera"
 msgstr ""
 
 msgid "Name for %s (empty = automatic)"

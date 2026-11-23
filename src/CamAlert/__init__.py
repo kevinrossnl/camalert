@@ -6,7 +6,7 @@ import gettext
 from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 from Components.config import config, ConfigSubsection, ConfigYesNo, ConfigText, ConfigInteger, \
-    ConfigSelection, ConfigSelectionNumber, ConfigClock, ConfigPassword
+    ConfigSelection, ConfigSelectionNumber, ConfigClock, ConfigPassword, ConfigNumber
 
 __version__ = "1.0.0"
 PluginLanguageDomain = "CamAlert"
@@ -49,7 +49,7 @@ _add("enabled", lambda: ConfigYesNo(default=True))
 _add("source", lambda: ConfigSelection(default="go2rtc", choices=[
     ("go2rtc", _("go2rtc server")), ("direct", _("Directly from the cameras"))]))
 _add("server", lambda: ConfigText(default="http://192.168.1.10:1984", fixed_size=False))
-_add("rtsp_port", lambda: ConfigInteger(default=8554, limits=(1, 65535)))
+_add("rtsp_port", lambda: ConfigNumber(default=8554))
 _add("camera", lambda: ConfigText(default="", fixed_size=False))
 _add("mode", lambda: ConfigSelection(default="photo", choices=[
     ("photo", _("Photo window")),
@@ -70,7 +70,7 @@ _add("from_time", lambda: ConfigClock(default=7 * 3600))
 _add("until_time", lambda: ConfigClock(default=23 * 3600))
 _add("verify_ssl", lambda: ConfigYesNo(default=True))
 _add("api_https", lambda: ConfigYesNo(default=False))
-_add("http_port", lambda: ConfigInteger(default=8099, limits=(1024, 65535)))
+_add("http_port", lambda: ConfigNumber(default=8099))
 _add("allow", lambda: ConfigSelection(default="lan", choices=[
     ("lan", _("Local network only")), ("any", _("Any address"))]))
 _add("token", lambda: ConfigText(default="", fixed_size=False))
@@ -81,7 +81,7 @@ _add("window_keys", lambda: ConfigYesNo(default=True))
 _add("tour_interval", lambda: ConfigSelectionNumber(3, 60, 1, default=8))
 _add("mqtt_enabled", lambda: ConfigYesNo(default=False))
 _add("mqtt_host", lambda: ConfigText(default="", fixed_size=False))
-_add("mqtt_port", lambda: ConfigInteger(default=1883, limits=(1, 65535)))
+_add("mqtt_port", lambda: ConfigNumber(default=1883))
 _add("mqtt_user", lambda: ConfigText(default="", fixed_size=False))
 _add("mqtt_password", lambda: ConfigPassword(default="", fixed_size=False))
 _add("mqtt_discovery", lambda: ConfigYesNo(default=True))

@@ -20,7 +20,7 @@ from twisted.internet import reactor, threads
 from . import _
 from Components.ActionMap import ActionMap
 
-from .logic import (blocked_by_rules, clock_tuple, key_action, known_camera, neighbour, pick_priority, decide, display_name, grid, in_time_window, lowered_volume, normalize_server, parse_camera_file,
+from .logic import (valid_port, blocked_by_rules, clock_tuple, key_action, known_camera, neighbour, pick_priority, decide, display_name, grid, in_time_window, lowered_volume, normalize_server, parse_camera_file,
                     parse_cams, pick_mode, rtsp_url, service_ref, should_pause, snapshot_url, split_credentials,
                     stream_from_ref, tcp_url, window_geometry)
 
@@ -70,7 +70,7 @@ def camera_urls(name):
     server = normalize_server(c.server.value)
     if not server:
         return None
-    return rtsp_url(server, name, int(c.rtsp_port.value)), snapshot_url(server, name), display_name(name)
+    return rtsp_url(server, name, valid_port(c.rtsp_port.value, 8554)), snapshot_url(server, name), display_name(name)
 
 
 def all_camera_names():
@@ -366,6 +366,7 @@ class Controller(object):
         self.live_timer = eTimer()
         self.live_timer.callback.append(self.end_live)
         self._names = []
+        self._names_at = 0
         reactor.callLater(20, self.refresh_names)
         self.paused = False
         self.saved_volume = None
@@ -408,9 +409,12 @@ class Controller(object):
         if not stream:
             log("no camera given and no default camera set")
             return "error"
-        if not known_camera(stream, self._names):
+        fresh = time.time() - self._names_at < 60
+        if not known_camera(stream, self._names if fresh else []):
             log("unknown camera:", stream)
             return "error"
+        if not fresh:
+            self.refresh_names()  # camera list older than a minute: refresh it in the background
         seconds = seconds or int(c.duration.value)
         mode = pick_mode(mode, c.mode.value)
         urls = camera_urls(stream)
@@ -480,6 +484,7 @@ class Controller(object):
 
         def fetched(names):
             self._names = names
+            self._names_at = time.time()
             then(names[:9])
         threads.deferToThread(all_camera_names).addCallbacks(fetched, lambda e: log("no cameras:", e.getErrorMessage()))
         return "show"
@@ -534,6 +539,7 @@ class Controller(object):
         """Caches the camera list (go2rtc mode needs the network) for LEFT/RIGHT in the photo window."""
         def done(names):
             self._names = names
+            self._names_at = time.time()
         threads.deferToThread(all_camera_names).addCallbacks(done, lambda e: None)
 
     def tour(self, streams=None, interval=None):

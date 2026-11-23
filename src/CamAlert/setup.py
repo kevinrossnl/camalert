@@ -11,14 +11,14 @@ from Screens.MessageBox import MessageBox
 from Components.ActionMap import ActionMap
 from Components.ConfigList import ConfigListScreen
 from Components.Sources.StaticText import StaticText
-from Components.config import config, getConfigListEntry
+from Components.config import config, configfile, getConfigListEntry
 from twisted.internet import threads
 
 from . import _, __version__
 from . import server
 from . import mqtt
 from .display import CAMERA_FILE, Controller, all_camera_names, direct_cameras, open_url
-from .logic import (BOUQUET_FILE, add_to_bouquets, bouquet_text, display_name, normalize_server, parse_cams,
+from .logic import (valid_port, BOUQUET_FILE, add_to_bouquets, bouquet_text, display_name, normalize_server, parse_cams,
                     streams_from_json)
 
 E2 = "/etc/enigma2/"
@@ -36,6 +36,8 @@ class CamAlertSetup(ConfigListScreen, Screen):
         <widget source="key_red" render="Label" position="20,645" size="250,40" backgroundColor="#9f1313" font="Regular;24" halign="center" valign="center" />
         <widget source="key_green" render="Label" position="290,645" size="250,40" backgroundColor="#1f771f" font="Regular;24" halign="center" valign="center" />
         <widget source="key_yellow" render="Label" position="560,645" size="250,40" backgroundColor="#a08000" font="Regular;24" halign="center" valign="center" />
+        <widget name="HelpWindow" position="0,0" size="1,1" zPosition="1" transparent="1" alphatest="on" />
+        <widget source="VKeyIcon" render="Pixmap" position="0,0" size="1,1" conditional="VKeyIcon"><convert type="ConditionalShowHide" /></widget>
         <widget source="key_blue" render="Label" position="830,645" size="250,40" backgroundColor="#18188b" font="Regular;24" halign="center" valign="center" />
     </screen>"""
 
@@ -209,7 +211,7 @@ class CamAlertSetup(ConfigListScreen, Screen):
         with open(E2 + BOUQUET_FILE + ".tmp", "w") as f:
             direct = direct_cameras() if c.source.value == "direct" else None
             f.write(bouquet_text(c.bouquet_name.value or "Cameras", normalize_server(c.server.value), streams,
-                                 int(c.rtsp_port.value), cameras=direct))
+                                 valid_port(c.rtsp_port.value, 8554), cameras=direct))
         os.replace(E2 + BOUQUET_FILE + ".tmp", E2 + BOUQUET_FILE)
         with open(E2 + "bouquets.tv") as f:
             old = f.read()
@@ -247,10 +249,13 @@ class CamAlertSetup(ConfigListScreen, Screen):
         for x in self["config"].list:
             x[1].save()
         config.plugins.camalert.save()
+        configfile.save()  # write /etc/enigma2/settings now, not only at shutdown
         if port_changed:
             server.start()
         if mqtt_changed:
             mqtt.start()
+        if Controller.instance:
+            Controller.instance.refresh_names()
         if close:
             self.close()
 

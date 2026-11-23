@@ -172,6 +172,12 @@ Garden | rtsp://192.168.1.22/dup
         self.assertEqual(L.clock_tuple(23 * 3600 + 60), (23, 1))
         self.assertEqual(L.clock_tuple(None), (0, 0))
 
+    def test_valid_port(self):
+        self.assertEqual(L.valid_port("8554", 1), 8554)
+        self.assertEqual(L.valid_port(0, 8099), 8099)
+        self.assertEqual(L.valid_port("x", 1883), 1883)
+        self.assertEqual(L.valid_port(70000, 1883), 1883)
+
     def test_neighbour(self):
         self.assertEqual(L.neighbour(["a", "b", "c"], "c", 1), "a")
         self.assertEqual(L.neighbour(["a", "b", "c"], "a", -1), "c")

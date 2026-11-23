@@ -425,3 +425,12 @@ def clock_tuple(value):
     except (TypeError, ValueError):
         return 0, 0
     return (n // 3600) % 24, (n // 60) % 60
+
+
+def valid_port(value, default):
+    """Port number 1..65535, otherwise the default (ports are free number fields in the settings)."""
+    try:
+        p = int(value)
+    except (TypeError, ValueError):
+        return default
+    return p if 1 <= p <= 65535 else default

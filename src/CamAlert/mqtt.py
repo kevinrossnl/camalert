@@ -17,7 +17,7 @@ from twisted.internet.protocol import Protocol, ReconnectingClientFactory
 from Components.config import config
 
 from .display import Controller, all_camera_names, camera_urls, log
-from .logic import (MQTT_DISCONNECT, MQTT_PING, clamp_seconds, discovery, mqtt_command, mqtt_connect, mqtt_parse_publish,
+from .logic import (valid_port, MQTT_DISCONNECT, MQTT_PING, clamp_seconds, discovery, mqtt_command, mqtt_connect, mqtt_parse_publish,
                     mqtt_publish, mqtt_split, mqtt_subscribe, slug)
 
 _connector = None
@@ -161,7 +161,7 @@ def start():
     if not c.mqtt_enabled.value or not c.mqtt_host.value.strip():
         return
     _factory = CamAlertMqttFactory()
-    _connector = reactor.connectTCP(c.mqtt_host.value.strip(), int(c.mqtt_port.value), _factory, timeout=10)
+    _connector = reactor.connectTCP(c.mqtt_host.value.strip(), valid_port(c.mqtt_port.value, 1883), _factory, timeout=10)
 
 
 def stop():

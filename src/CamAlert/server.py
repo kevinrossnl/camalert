@@ -20,7 +20,7 @@ from Components.config import config
 
 from . import __version__
 from .display import Controller, all_camera_names, camera_urls, log
-from .logic import client_allowed, clamp_seconds, token_ok
+from .logic import valid_port, client_allowed, clamp_seconds, token_ok
 
 _port = None
 CERT = "/etc/enigma2/camalert.crt"
@@ -89,7 +89,9 @@ class Api(resource.Resource):
 
                 def done(cams):
                     if Controller.instance:
+                        import time
                         Controller.instance._names = [c["name"] for c in cams]
+                        Controller.instance._names_at = time.time()
                     finish(req, {"result": True, "cameras": cams})
 
                 def failed(err):
@@ -124,11 +126,11 @@ def start():
         if c.api_https.value and ensure_certificate():
             from twisted.internet import ssl
             ctx = ssl.DefaultOpenSSLContextFactory(KEY, CERT)
-            _port = reactor.listenSSL(int(c.http_port.value), server.Site(root), ctx)
-            log("listening on port", c.http_port.value, "(https)")
+            _port = reactor.listenSSL(valid_port(c.http_port.value, 8099), server.Site(root), ctx)
+            log("listening on port", valid_port(c.http_port.value, 8099), "(https)")
         else:
-            _port = reactor.listenTCP(int(c.http_port.value), server.Site(root))
-            log("listening on port", c.http_port.value)
+            _port = reactor.listenTCP(valid_port(c.http_port.value, 8099), server.Site(root))
+            log("listening on port", valid_port(c.http_port.value, 8099))
     except Exception as e:
         log("could not start HTTP API:", e)
 

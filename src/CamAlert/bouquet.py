@@ -63,11 +63,15 @@ def apply(names, force=False):
 
 
 def reload():
+    """Reloads the bouquets. The channel list screen reads them again when it is opened; on images where the
+    channel selection has its own reload method (not openATV 8) that is called as well."""
     eDVBDB.getInstance().reloadBouquets()
     try:
         from Screens.InfoBar import InfoBar
-        if InfoBar.instance and hasattr(InfoBar.instance, "servicelist"):
-            InfoBar.instance.servicelist.reloadBouquets()
+        sl = getattr(InfoBar.instance, "servicelist", None) if InfoBar.instance else None
+        fn = getattr(sl, "reloadBouquets", None)
+        if callable(fn):
+            fn()
     except Exception as e:
         log("service list reload failed:", e)
 

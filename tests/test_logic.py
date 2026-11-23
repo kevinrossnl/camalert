@@ -157,6 +157,21 @@ Garden | rtsp://192.168.1.22/dup
         self.assertFalse(L.known_camera("x", ["a", "b"]))
         self.assertFalse(L.known_camera("", ["a"]))
 
+    def test_key_action(self):
+        self.assertEqual(L.key_action(352), "live")
+        self.assertEqual(L.key_action(105), "prev")
+        self.assertEqual(L.key_action(106), "next")
+        self.assertEqual(L.key_action(174), "close")
+        self.assertEqual(L.key_action(115), "pass")
+        self.assertEqual(L.key_action(3), "close_pass")  # number 2
+        self.assertEqual(L.key_action(402), "close_pass")  # channel up
+
+    def test_clock_tuple(self):
+        self.assertEqual(L.clock_tuple([7, 30]), (7, 30))
+        self.assertEqual(L.clock_tuple("03:05"), (3, 5))
+        self.assertEqual(L.clock_tuple(23 * 3600 + 60), (23, 1))
+        self.assertEqual(L.clock_tuple(None), (0, 0))
+
     def test_neighbour(self):
         self.assertEqual(L.neighbour(["a", "b", "c"], "c", 1), "a")
         self.assertEqual(L.neighbour(["a", "b", "c"], "a", -1), "c")

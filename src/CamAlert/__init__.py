@@ -29,44 +29,60 @@ language.addCallback(localeInit)
 
 config.plugins.camalert = ConfigSubsection()
 c = config.plugins.camalert
-c.enabled = ConfigYesNo(default=True)
-c.source = ConfigSelection(default="go2rtc", choices=[
-    ("go2rtc", _("go2rtc server")), ("direct", _("Directly from the cameras"))])
-c.server = ConfigText(default="http://192.168.1.10:1984", fixed_size=False)
-c.rtsp_port = ConfigInteger(default=8554, limits=(1, 65535))
-c.camera = ConfigText(default="", fixed_size=False)
-c.mode = ConfigSelection(default="photo", choices=[
+
+
+def _add(name, factory):
+    """Adds a setting. A broken saved value (e.g. edited by hand) must never stop the plugin from loading:
+    then the saved value is dropped and the default is used."""
+    try:
+        setattr(c, name, factory())
+    except Exception as e:
+        print("[CamAlert] invalid saved value for %s (%s), using the default" % (name, e))
+        try:
+            c.content.stored_values.pop(name, None)
+        except Exception:
+            pass
+        setattr(c, name, factory())
+
+
+_add("enabled", lambda: ConfigYesNo(default=True))
+_add("source", lambda: ConfigSelection(default="go2rtc", choices=[
+    ("go2rtc", _("go2rtc server")), ("direct", _("Directly from the cameras"))]))
+_add("server", lambda: ConfigText(default="http://192.168.1.10:1984", fixed_size=False))
+_add("rtsp_port", lambda: ConfigInteger(default=8554, limits=(1, 65535)))
+_add("camera", lambda: ConfigText(default="", fixed_size=False))
+_add("mode", lambda: ConfigSelection(default="photo", choices=[
     ("photo", _("Photo window")),
     ("live", _("Switch to live stream")),
-    ("notify", _("Notification only"))])
-c.duration = ConfigSelectionNumber(5, 300, 5, default=30)
-c.position = ConfigSelection(default="top_right", choices=[
+    ("notify", _("Notification only"))]))
+_add("duration", lambda: ConfigSelectionNumber(5, 300, 5, default=30))
+_add("position", lambda: ConfigSelection(default="top_right", choices=[
     ("top_right", _("Top right")), ("top_left", _("Top left")),
-    ("bottom_right", _("Bottom right")), ("bottom_left", _("Bottom left"))])
-c.size = ConfigSelection(default="medium", choices=[
-    ("small", _("Small")), ("medium", _("Medium")), ("large", _("Large"))])
-c.live_return = ConfigYesNo(default=True)
-c.pause_tv = ConfigYesNo(default=False)
-c.live_volume = ConfigSelectionNumber(0, 100, 10, default=100)
-c.skip_recording = ConfigYesNo(default=False)
-c.limit_hours = ConfigYesNo(default=False)
-c.from_time = ConfigClock(default=7 * 3600)
-c.until_time = ConfigClock(default=23 * 3600)
-c.verify_ssl = ConfigYesNo(default=True)
-c.api_https = ConfigYesNo(default=False)
-c.http_port = ConfigInteger(default=8099, limits=(1024, 65535))
-c.allow = ConfigSelection(default="lan", choices=[
-    ("lan", _("Local network only")), ("any", _("Any address"))])
-c.token = ConfigText(default="", fixed_size=False)
-c.bouquet_name = ConfigText(default="Cameras", fixed_size=False)
-c.mosaic = ConfigText(default="", fixed_size=False)
-c.alarm_wake = ConfigYesNo(default=False)
-c.window_keys = ConfigYesNo(default=True)
-c.tour_interval = ConfigSelectionNumber(3, 60, 1, default=8)
-c.mqtt_enabled = ConfigYesNo(default=False)
-c.mqtt_host = ConfigText(default="", fixed_size=False)
-c.mqtt_port = ConfigInteger(default=1883, limits=(1, 65535))
-c.mqtt_user = ConfigText(default="", fixed_size=False)
-c.mqtt_password = ConfigPassword(default="", fixed_size=False)
-c.mqtt_discovery = ConfigYesNo(default=True)
-c.mqtt_name = ConfigText(default="", fixed_size=False)
+    ("bottom_right", _("Bottom right")), ("bottom_left", _("Bottom left"))]))
+_add("size", lambda: ConfigSelection(default="medium", choices=[
+    ("small", _("Small")), ("medium", _("Medium")), ("large", _("Large"))]))
+_add("live_return", lambda: ConfigYesNo(default=True))
+_add("pause_tv", lambda: ConfigYesNo(default=False))
+_add("live_volume", lambda: ConfigSelectionNumber(0, 100, 10, default=100))
+_add("skip_recording", lambda: ConfigYesNo(default=False))
+_add("limit_hours", lambda: ConfigYesNo(default=False))
+_add("from_time", lambda: ConfigClock(default=7 * 3600))
+_add("until_time", lambda: ConfigClock(default=23 * 3600))
+_add("verify_ssl", lambda: ConfigYesNo(default=True))
+_add("api_https", lambda: ConfigYesNo(default=False))
+_add("http_port", lambda: ConfigInteger(default=8099, limits=(1024, 65535)))
+_add("allow", lambda: ConfigSelection(default="lan", choices=[
+    ("lan", _("Local network only")), ("any", _("Any address"))]))
+_add("token", lambda: ConfigText(default="", fixed_size=False))
+_add("bouquet_name", lambda: ConfigText(default="Cameras", fixed_size=False))
+_add("mosaic", lambda: ConfigText(default="", fixed_size=False))
+_add("alarm_wake", lambda: ConfigYesNo(default=False))
+_add("window_keys", lambda: ConfigYesNo(default=True))
+_add("tour_interval", lambda: ConfigSelectionNumber(3, 60, 1, default=8))
+_add("mqtt_enabled", lambda: ConfigYesNo(default=False))
+_add("mqtt_host", lambda: ConfigText(default="", fixed_size=False))
+_add("mqtt_port", lambda: ConfigInteger(default=1883, limits=(1, 65535)))
+_add("mqtt_user", lambda: ConfigText(default="", fixed_size=False))
+_add("mqtt_password", lambda: ConfigPassword(default="", fixed_size=False))
+_add("mqtt_discovery", lambda: ConfigYesNo(default=True))
+_add("mqtt_name", lambda: ConfigText(default="", fixed_size=False))

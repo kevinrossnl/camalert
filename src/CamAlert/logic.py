@@ -392,3 +392,36 @@ def neighbour(items, current, step):
 def known_camera(name, names):
     """False only if we know the camera list and the name is not in it (an empty list = unknown, allow)."""
     return bool(name) and (not names or name in names)
+
+
+KEY_OK, KEY_EXIT, KEY_LEFT, KEY_RIGHT = 352, 174, 105, 106
+PASS_KEYS = {113, 114, 115}  # mute, volume down, volume up: leave the window open
+
+
+def key_action(code):
+    """What a remote key does while the photo window is open: live / prev / next / close / pass / close_pass."""
+    if code == KEY_OK:
+        return "live"
+    if code == KEY_LEFT:
+        return "prev"
+    if code == KEY_RIGHT:
+        return "next"
+    if code == KEY_EXIT:
+        return "close"
+    if code in PASS_KEYS:
+        return "pass"
+    return "close_pass"  # close the window and let the key do its normal job (zapping, numbers, menu, ...)
+
+
+def clock_tuple(value):
+    """(hour, minute) from a ConfigClock value: [h, m], (h, m), 'HH:MM' or seconds since midnight."""
+    if isinstance(value, (list, tuple)) and len(value) >= 2:
+        return int(value[0]) % 24, int(value[1]) % 60
+    if isinstance(value, str) and ":" in value:
+        h, m = value.strip().split(":")[:2]
+        return int(h) % 24, int(m) % 60
+    try:
+        n = int(value)
+    except (TypeError, ValueError):
+        return 0, 0
+    return (n // 3600) % 24, (n // 60) % 60

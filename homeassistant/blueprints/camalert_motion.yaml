@@ -2,7 +2,8 @@ blueprint:
   name: CamAlert - motion when armed or at set times
   description: >-
     Shows the camera(s) on your TV when there is motion, but only when your alarm is armed and/or between the
-    times you choose. Several cameras are shown as a mosaic. Needs the CamAlert integration.
+    times you choose. 2-4 cameras are shown together in one corner window (or as a full-screen mosaic, see
+    below); the title says what was seen (Person / Motion). Needs the CamAlert integration.
   domain: automation
   source_url: https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_motion.yaml
   input:
@@ -69,14 +70,26 @@ blueprint:
             - {label: Photo window, value: photo}
             - {label: Switch to live stream, value: live}
             - {label: Notification only, value: notify}
+    several:
+      name: Several cameras
+      default: strip
+      selector:
+        select:
+          options:
+            - {label: "One corner window (2-4 cameras, TV stays visible)", value: strip}
+            - {label: Full-screen mosaic, value: mosaic}
 mode: single
 max_exceeded: silent
 variables:
   when: !input when
+  mode_single: !input mode
   panel: !input alarm_panel
   start: !input from_time
   end: !input until_time
   cams_in: !input cameras
+  several: !input several
+  label: >-
+    {% set s = trigger.entity_id.split('.')[1] %}{{ 'Person' if 'person' in s else 'Motion' }}
   armed: >-
     {{ panel != '' and states(panel).startswith('armed') }}
   in_time: >-
@@ -101,7 +114,7 @@ conditions:
 actions:
   - if:
       - condition: template
-        value_template: "{{ cams | length > 1 }}"
+        value_template: "{{ cams | length > 1 and (several == 'mosaic' or cams | length > 4) }}"
     then:
       - action: camalert.mosaic
         target:
@@ -115,8 +128,9 @@ actions:
         target:
           device_id: !input receivers
         data:
-          camera: "{{ cams[0] }}"
+          camera: "{{ cams if cams | length > 1 else cams[0] }}"
           seconds: !input seconds
-          mode: !input mode
+          mode: "{{ 'strip' if cams | length > 1 else mode_single }}"
           priority: high
+          label: "{{ label }}"
         continue_on_error: true

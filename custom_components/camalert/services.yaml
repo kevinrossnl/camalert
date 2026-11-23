@@ -7,6 +7,7 @@ show:
       example: front_door
       selector:
         text:
+          multiple: true
     seconds:
       example: 30
       selector:
@@ -23,6 +24,7 @@ show:
             - photo
             - live
             - notify
+            - strip
     priority:
       selector:
         select:
@@ -31,6 +33,10 @@ show:
             - normal
             - high
             - alarm
+    label:
+      example: Person
+      selector:
+        text:
 mosaic:
   target:
     device:
@@ -53,3 +59,27 @@ hide:
   target:
     device:
       integration: camalert
+ptz:
+  target:
+    device:
+      integration: camalert
+  fields:
+    camera:
+      required: true
+      example: garden
+      selector:
+        text:
+    move:
+      required: true
+      selector:
+        select:
+          translation_key: move
+          options:
+            - up
+            - down
+            - left
+            - right
+            - zoom_in
+            - zoom_out
+            - home
+            - stop

@@ -38,6 +38,26 @@
       "on_screen": {
         "name": "Camera in beeld"
       }
+    },
+    "switch": {
+      "dnd": {
+        "name": "Niet storen"
+      }
+    },
+    "event": {
+      "remote_button": {
+        "name": "Afstandsbedieningsknop",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "red": "Rood",
+              "green": "Groen",
+              "yellow": "Geel",
+              "blue": "Blauw"
+            }
+          }
+        }
+      }
     }
   },
   "selector": {
@@ -45,7 +65,8 @@
       "options": {
         "photo": "Foto-venster",
         "live": "Omschakelen naar live beeld",
-        "notify": "Alleen melding"
+        "notify": "Alleen melding",
+        "strip": "Meerdere camera's in één venster"
       }
     },
     "priority": {
@@ -53,6 +74,18 @@
         "normal": "Normaal",
         "high": "Hoog (deurbel)",
         "alarm": "Alarm (ontvanger wekken)"
+      }
+    },
+    "move": {
+      "options": {
+        "up": "Omhoog",
+        "down": "Omlaag",
+        "left": "Links",
+        "right": "Rechts",
+        "zoom_in": "Inzoomen",
+        "zoom_out": "Uitzoomen",
+        "home": "Beginstand",
+        "stop": "Stop"
       }
     }
   },
@@ -76,6 +109,10 @@
         "priority": {
           "name": "Prioriteit",
           "description": "normal: volgt de regels van de ontvanger (actieve uren, niet tijdens opname). high: altijd (deurbel). alarm: altijd, en mag de ontvanger wekken."
+        },
+        "label": {
+          "name": "Wie/wat",
+          "description": "Optionele tekst vóór de cameranaam in de titel, bijv. Persoon."
         }
       }
     },
@@ -96,6 +133,20 @@
     "hide": {
       "name": "Camera verbergen",
       "description": "Sluit de camera en gaat terug naar tv."
+    },
+    "ptz": {
+      "name": "Camera bewegen (PTZ)",
+      "description": "Draait, kantelt of zoomt een camera die met ONVIF of Foscam in het apparatenbestand van de ontvanger staat.",
+      "fields": {
+        "camera": {
+          "name": "Camera",
+          "description": "Naam van de camera zoals in het apparatenbestand."
+        },
+        "move": {
+          "name": "Beweging",
+          "description": "Beweegt ongeveer een halve seconde en stopt dan."
+        }
+      }
     }
   }
 }

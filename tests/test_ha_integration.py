@@ -51,6 +51,14 @@ class TestIntegration(unittest.TestCase):
                          "http://192.168.1.30:8099/camalert/show?cam=front+door&sec=20")
         self.assertEqual(api.build_url("fd00::5", 8099, True, "status"), "https://[fd00::5]:8099/camalert/status")
 
+    def test_show_params(self):
+        self.assertEqual(api.show_params(["a", "b"]), ("a,b", "strip"))
+        self.assertEqual(api.show_params("a, b,c"), ("a,b,c", "strip"))
+        self.assertEqual(api.show_params(["a", "b"], "live"), ("a,b", "live"))
+        self.assertEqual(api.show_params(["a"]), ("a", None))
+        self.assertEqual(api.show_params(list("abcde")), ("a,b,c,d,e", None))
+        self.assertEqual(api.show_params(None), (None, None))
+
     def test_sources_compile(self):
         for f in os.listdir(CC):
             if f.endswith(".py"):

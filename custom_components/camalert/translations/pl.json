@@ -38,6 +38,26 @@
       "on_screen": {
         "name": "Kamera na ekranie"
       }
+    },
+    "switch": {
+      "dnd": {
+        "name": "Nie przeszkadzać"
+      }
+    },
+    "event": {
+      "remote_button": {
+        "name": "Przycisk pilota",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "red": "Czerwony",
+              "green": "Zielony",
+              "yellow": "Żółty",
+              "blue": "Niebieski"
+            }
+          }
+        }
+      }
     }
   },
   "selector": {
@@ -45,7 +65,8 @@
       "options": {
         "photo": "Okno ze zdjęciem",
         "live": "Przełącz na obraz na żywo",
-        "notify": "Tylko powiadomienie"
+        "notify": "Tylko powiadomienie",
+        "strip": "Kilka kamer w jednym oknie"
       }
     },
     "priority": {
@@ -53,6 +74,18 @@
         "normal": "Normalny",
         "high": "Wysoki (dzwonek)",
         "alarm": "Alarm (wybudź odbiornik)"
+      }
+    },
+    "move": {
+      "options": {
+        "up": "Góra",
+        "down": "Dół",
+        "left": "Lewo",
+        "right": "Prawo",
+        "zoom_in": "Przybliż",
+        "zoom_out": "Oddal",
+        "home": "Pozycja domowa",
+        "stop": "Stop"
       }
     }
   },
@@ -76,6 +109,10 @@
         "priority": {
           "name": "Priorytet",
           "description": "normal: według reguł odbiornika (godziny, nie podczas nagrywania). high: zawsze (dzwonek). alarm: zawsze i może wybudzić odbiornik."
+        },
+        "label": {
+          "name": "Kto/co",
+          "description": "Opcjonalny tekst przed nazwą kamery w tytule, np. Osoba."
         }
       }
     },
@@ -96,6 +133,20 @@
     "hide": {
       "name": "Ukryj kamerę",
       "description": "Zamyka kamerę i wraca do telewizji."
+    },
+    "ptz": {
+      "name": "Porusz kamerą (PTZ)",
+      "description": "Obraca, pochyla lub przybliża kamerę wpisaną z ONVIF lub Foscam w pliku urządzeń odbiornika.",
+      "fields": {
+        "camera": {
+          "name": "Kamera",
+          "description": "Nazwa kamery jak w pliku urządzeń."
+        },
+        "move": {
+          "name": "Ruch",
+          "description": "Porusza się około pół sekundy, potem się zatrzymuje."
+        }
+      }
     }
   }
 }

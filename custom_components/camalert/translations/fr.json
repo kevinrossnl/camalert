@@ -38,6 +38,26 @@
       "on_screen": {
         "name": "Caméra à l'écran"
       }
+    },
+    "switch": {
+      "dnd": {
+        "name": "Ne pas déranger"
+      }
+    },
+    "event": {
+      "remote_button": {
+        "name": "Touche de la télécommande",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "red": "Rouge",
+              "green": "Vert",
+              "yellow": "Jaune",
+              "blue": "Bleu"
+            }
+          }
+        }
+      }
     }
   },
   "selector": {
@@ -45,7 +65,8 @@
       "options": {
         "photo": "Fenêtre photo",
         "live": "Basculer vers le direct",
-        "notify": "Notification seulement"
+        "notify": "Notification seulement",
+        "strip": "Plusieurs caméras dans une fenêtre"
       }
     },
     "priority": {
@@ -53,6 +74,18 @@
         "normal": "Normale",
         "high": "Haute (sonnette)",
         "alarm": "Alarme (réveiller le récepteur)"
+      }
+    },
+    "move": {
+      "options": {
+        "up": "Haut",
+        "down": "Bas",
+        "left": "Gauche",
+        "right": "Droite",
+        "zoom_in": "Zoom avant",
+        "zoom_out": "Zoom arrière",
+        "home": "Position d'origine",
+        "stop": "Arrêt"
       }
     }
   },
@@ -76,6 +109,10 @@
         "priority": {
           "name": "Priorité",
           "description": "normal : suit les règles du récepteur (heures actives, pas pendant un enregistrement). high : toujours (sonnette). alarm : toujours, et peut réveiller le récepteur."
+        },
+        "label": {
+          "name": "Qui/quoi",
+          "description": "Texte facultatif avant le nom de la caméra dans le titre, p. ex. Personne."
         }
       }
     },
@@ -96,6 +133,20 @@
     "hide": {
       "name": "Masquer la caméra",
       "description": "Ferme la caméra et revient à la TV."
+    },
+    "ptz": {
+      "name": "Déplacer la caméra (PTZ)",
+      "description": "Fait pivoter, incliner ou zoomer une caméra listée avec ONVIF ou Foscam dans le fichier des appareils du récepteur.",
+      "fields": {
+        "camera": {
+          "name": "Caméra",
+          "description": "Nom de la caméra comme dans le fichier des appareils."
+        },
+        "move": {
+          "name": "Mouvement",
+          "description": "Se déplace environ une demi-seconde puis s'arrête."
+        }
+      }
     }
   }
 }

@@ -38,6 +38,26 @@
       "on_screen": {
         "name": "Telecamera sullo schermo"
       }
+    },
+    "switch": {
+      "dnd": {
+        "name": "Non disturbare"
+      }
+    },
+    "event": {
+      "remote_button": {
+        "name": "Tasto del telecomando",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "red": "Rosso",
+              "green": "Verde",
+              "yellow": "Giallo",
+              "blue": "Blu"
+            }
+          }
+        }
+      }
     }
   },
   "selector": {
@@ -45,7 +65,8 @@
       "options": {
         "photo": "Finestra foto",
         "live": "Passa al flusso live",
-        "notify": "Solo notifica"
+        "notify": "Solo notifica",
+        "strip": "Più telecamere in una finestra"
       }
     },
     "priority": {
@@ -53,6 +74,18 @@
         "normal": "Normale",
         "high": "Alta (campanello)",
         "alarm": "Allarme (risveglia ricevitore)"
+      }
+    },
+    "move": {
+      "options": {
+        "up": "Su",
+        "down": "Giù",
+        "left": "Sinistra",
+        "right": "Destra",
+        "zoom_in": "Zoom avanti",
+        "zoom_out": "Zoom indietro",
+        "home": "Posizione iniziale",
+        "stop": "Stop"
       }
     }
   },
@@ -76,6 +109,10 @@
         "priority": {
           "name": "Priorità",
           "description": "normal: segue le regole del ricevitore (orari attivi, non durante la registrazione). high: sempre (campanello). alarm: sempre, e può risvegliare il ricevitore."
+        },
+        "label": {
+          "name": "Chi/cosa",
+          "description": "Testo facoltativo prima del nome della telecamera nel titolo, ad es. Persona."
         }
       }
     },
@@ -96,6 +133,20 @@
     "hide": {
       "name": "Nascondi telecamera",
       "description": "Chiude la telecamera e torna alla TV."
+    },
+    "ptz": {
+      "name": "Muovi telecamera (PTZ)",
+      "description": "Ruota, inclina o zooma una telecamera elencata con ONVIF o Foscam nel file dispositivi del ricevitore.",
+      "fields": {
+        "camera": {
+          "name": "Telecamera",
+          "description": "Nome della telecamera come nel file dispositivi."
+        },
+        "move": {
+          "name": "Movimento",
+          "description": "Si muove per circa mezzo secondo, poi si ferma."
+        }
+      }
     }
   }
 }

@@ -20,7 +20,7 @@ class TestBlueprints(unittest.TestCase):
 
     def test_inputs_declared_and_used(self):
         files = glob.glob(os.path.join(HERE, "..", "homeassistant", "blueprints", "*.yaml"))
-        self.assertEqual(len(files), 3)
+        self.assertEqual(len(files), 4)
         for f in files:
             d = self.load(f)
             used = set()
@@ -36,5 +36,5 @@ class TestBlueprints(unittest.TestCase):
                         walk(v)
             walk({k: v for k, v in d.items() if k != "blueprint"})
             self.assertEqual(used, set(d["blueprint"]["input"]), f)
-            self.assertIn("camalert.", str(d["actions"]), f)
+            self.assertIn("camalert", str(d["actions"]) + str(d["triggers"]), f)
             self.assertTrue(d["blueprint"]["source_url"].endswith(os.path.basename(f)), f)

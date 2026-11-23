@@ -11,10 +11,11 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.service import async_extract_config_entry_ids
 
 from .api import CamAlertApi, CamAlertError
-from .const import CONF_HTTPS, CONF_TOKEN, CONF_VERIFY_SSL, DEFAULT_PORT, DOMAIN, MODES, PRIORITIES
+from .const import (CONF_HTTPS, CONF_TOKEN, CONF_VERIFY_SSL, DEFAULT_PORT, DOMAIN, EVENT_BUTTON, MODES, PRIORITIES,
+                    PTZ_MOVES, SIGNAL_BUTTON)
 from .coordinator import CamAlertCoordinator
 
-PLATFORMS = [Platform.BUTTON, Platform.SENSOR]
+PLATFORMS = [Platform.BUTTON, Platform.SENSOR, Platform.SWITCH, Platform.EVENT]
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 # Target is optional: without a target the action goes to every loaded receiver.
@@ -26,10 +27,16 @@ TARGET = dict(getattr(cv, "TARGET_SERVICE_FIELDS", {})) or {
 
 SHOW_SCHEMA = vol.Schema({
     **TARGET,
-    vol.Optional("camera"): cv.string,
+    vol.Optional("camera"): vol.Any(cv.string, vol.All(cv.ensure_list, [cv.string])),
     vol.Optional("seconds"): vol.All(vol.Coerce(int), vol.Range(min=5, max=300)),
     vol.Optional("mode"): vol.In(MODES),
     vol.Optional("priority"): vol.In(PRIORITIES),
+    vol.Optional("label"): cv.string,
+})
+PTZ_SCHEMA = vol.Schema({
+    **TARGET,
+    vol.Required("camera"): cv.string,
+    vol.Required("move"): vol.In(PTZ_MOVES),
 })
 MOSAIC_SCHEMA = vol.Schema({
     **TARGET,
@@ -70,7 +77,10 @@ async def async_setup(hass: HomeAssistant, config) -> bool:
 
     async def show(call: ServiceCall):
         await run(call, lambda api: api.show(call.data.get("camera"), call.data.get("seconds"), call.data.get("mode"),
-                                             call.data.get("priority")))
+                                             call.data.get("priority"), call.data.get("label")))
+
+    async def ptz(call: ServiceCall):
+        await run(call, lambda api: api.ptz(call.data["camera"], call.data["move"]))
 
     async def mosaic(call: ServiceCall):
         await run(call, lambda api: api.mosaic(call.data.get("cameras"), call.data.get("seconds")))
@@ -81,6 +91,7 @@ async def async_setup(hass: HomeAssistant, config) -> bool:
     hass.services.async_register(DOMAIN, "show", show, schema=SHOW_SCHEMA)
     hass.services.async_register(DOMAIN, "mosaic", mosaic, schema=MOSAIC_SCHEMA)
     hass.services.async_register(DOMAIN, "hide", hide, schema=HIDE_SCHEMA)
+    hass.services.async_register(DOMAIN, "ptz", ptz, schema=PTZ_SCHEMA)
     return True
 
 
@@ -95,8 +106,64 @@ async def async_setup_entry(hass: HomeAssistant, entry) -> bool:
         raise ConfigEntryNotReady(str(err)) from err
     entry.runtime_data = coordinator
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    await _register_webhook(hass, entry, api)
     return True
 
 
+def _webhook_id(entry) -> str:
+    return "camalert_%s" % entry.entry_id
+
+
+async def _register_webhook(hass: HomeAssistant, entry, api) -> None:
+    """The receiver posts remote control colour keys to this webhook (only from the local network)."""
+    from homeassistant.components import webhook
+    from homeassistant.helpers import device_registry as dr
+    from homeassistant.helpers.dispatcher import async_dispatcher_send
+    from homeassistant.helpers.network import NoURLAvailableError, get_url
+
+    async def handle(hass, webhook_id, request):
+        try:
+            data = await request.json()
+        except ValueError:
+            return None
+        button = str(data.get("button") or "")
+        camera = str(data.get("camera") or "")
+        if button not in ("red", "green", "yellow", "blue"):
+            return None
+        device = dr.async_get(hass).async_get_device(identifiers={(DOMAIN, entry.unique_id or entry.entry_id)})
+        hass.bus.async_fire(EVENT_BUTTON, {"device_id": device.id if device else None, "receiver": entry.title,
+                                          "camera": camera, "button": button})
+        async_dispatcher_send(hass, SIGNAL_BUTTON % entry.entry_id, button, camera)
+        return None
+
+    wid = _webhook_id(entry)
+    try:
+        webhook.async_register(hass, DOMAIN, "CamAlert %s" % entry.title, wid, handle, local_only=True,
+                               allowed_methods=["POST"])
+    except ValueError:  # already registered (reload)
+        pass
+    try:
+        url = get_url(hass, allow_external=False, prefer_external=False) + webhook.async_generate_path(wid)
+    except NoURLAvailableError:
+        return
+    try:
+        await api.webhook(url)
+    except CamAlertError:  # older plugin without /webhook: buttons only via MQTT
+        pass
+
+
 async def async_unload_entry(hass: HomeAssistant, entry) -> bool:
+    from homeassistant.components import webhook
+    webhook.async_unregister(hass, _webhook_id(entry))
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+
+async def async_remove_entry(hass: HomeAssistant, entry) -> None:
+    """Receiver removed from Home Assistant: tell it to stop posting buttons."""
+    d = entry.data
+    api = CamAlertApi(async_get_clientsession(hass, verify_ssl=False), d[CONF_HOST], d.get(CONF_PORT, DEFAULT_PORT),
+                     d.get(CONF_HTTPS, False), d.get(CONF_VERIFY_SSL, False), d.get(CONF_TOKEN, ""))
+    try:
+        await api.webhook("")
+    except CamAlertError:
+        pass

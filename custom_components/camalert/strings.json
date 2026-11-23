@@ -38,6 +38,26 @@
       "on_screen": {
         "name": "Camera on screen"
       }
+    },
+    "switch": {
+      "dnd": {
+        "name": "Do not disturb"
+      }
+    },
+    "event": {
+      "remote_button": {
+        "name": "Remote button",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "red": "Red",
+              "green": "Green",
+              "yellow": "Yellow",
+              "blue": "Blue"
+            }
+          }
+        }
+      }
     }
   },
   "selector": {
@@ -45,7 +65,8 @@
       "options": {
         "photo": "Photo window",
         "live": "Switch to live stream",
-        "notify": "Notification only"
+        "notify": "Notification only",
+        "strip": "Several cameras in one window"
       }
     },
     "priority": {
@@ -53,6 +74,18 @@
         "normal": "Normal",
         "high": "High (doorbell)",
         "alarm": "Alarm (wake receiver)"
+      }
+    },
+    "move": {
+      "options": {
+        "up": "Up",
+        "down": "Down",
+        "left": "Left",
+        "right": "Right",
+        "zoom_in": "Zoom in",
+        "zoom_out": "Zoom out",
+        "home": "Home position",
+        "stop": "Stop"
       }
     }
   },
@@ -76,6 +109,10 @@
         "priority": {
           "name": "Priority",
           "description": "normal: follows the receiver's rules (active hours, not while recording). high: always (doorbell). alarm: always, and may wake the receiver."
+        },
+        "label": {
+          "name": "Who/what",
+          "description": "Optional text before the camera name in the title, e.g. Person."
         }
       }
     },
@@ -96,6 +133,20 @@
     "hide": {
       "name": "Hide camera",
       "description": "Closes the camera and returns to TV."
+    },
+    "ptz": {
+      "name": "Move camera (PTZ)",
+      "description": "Pans, tilts or zooms a camera listed with ONVIF or Foscam in the receiver's devices file.",
+      "fields": {
+        "camera": {
+          "name": "Camera",
+          "description": "Name of the camera as in the devices file."
+        },
+        "move": {
+          "name": "Movement",
+          "description": "Moves for about half a second, then stops."
+        }
+      }
     }
   }
 }

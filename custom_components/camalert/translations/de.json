@@ -38,6 +38,26 @@
       "on_screen": {
         "name": "Kamera im Bild"
       }
+    },
+    "switch": {
+      "dnd": {
+        "name": "Nicht stören"
+      }
+    },
+    "event": {
+      "remote_button": {
+        "name": "Fernbedienungstaste",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "red": "Rot",
+              "green": "Grün",
+              "yellow": "Gelb",
+              "blue": "Blau"
+            }
+          }
+        }
+      }
     }
   },
   "selector": {
@@ -45,7 +65,8 @@
       "options": {
         "photo": "Fotofenster",
         "live": "Auf Live-Bild umschalten",
-        "notify": "Nur Hinweis"
+        "notify": "Nur Hinweis",
+        "strip": "Mehrere Kameras in einem Fenster"
       }
     },
     "priority": {
@@ -53,6 +74,18 @@
         "normal": "Normal",
         "high": "Hoch (Türklingel)",
         "alarm": "Alarm (Receiver wecken)"
+      }
+    },
+    "move": {
+      "options": {
+        "up": "Hoch",
+        "down": "Runter",
+        "left": "Links",
+        "right": "Rechts",
+        "zoom_in": "Hineinzoomen",
+        "zoom_out": "Herauszoomen",
+        "home": "Grundstellung",
+        "stop": "Stopp"
       }
     }
   },
@@ -76,6 +109,10 @@
         "priority": {
           "name": "Priorität",
           "description": "normal: folgt den Regeln des Receivers (aktive Zeiten, nicht während Aufnahme). high: immer (Türklingel). alarm: immer, darf den Receiver wecken."
+        },
+        "label": {
+          "name": "Wer/was",
+          "description": "Optionaler Text vor dem Kameranamen im Titel, z. B. Person."
         }
       }
     },
@@ -96,6 +133,20 @@
     "hide": {
       "name": "Kamera ausblenden",
       "description": "Schließt die Kamera und kehrt zum Fernsehen zurück."
+    },
+    "ptz": {
+      "name": "Kamera bewegen (PTZ)",
+      "description": "Schwenkt, neigt oder zoomt eine Kamera, die mit ONVIF oder Foscam in der Gerätedatei des Receivers steht.",
+      "fields": {
+        "camera": {
+          "name": "Kamera",
+          "description": "Name der Kamera wie in der Gerätedatei."
+        },
+        "move": {
+          "name": "Bewegung",
+          "description": "Bewegt etwa eine halbe Sekunde und stoppt dann."
+        }
+      }
     }
   }
 }

@@ -49,6 +49,9 @@ See [Install](../README.md#install), then restart the GUI.
 
 Open **Menu › Plugins › CamAlert**:
 
+![CamAlert settings (1)](images/settings-1.png) ![CamAlert settings (2)](images/settings-2.png)
+
+
 1. **go2rtc address**: `http://<go2rtc-address>:1984` (for example `http://192.168.1.10:1984`).
 2. **Default camera**: select the line and press **OK**; choose your door camera from the list.
 3. **Display mode**: *Photo window* (you keep watching TV), *Switch to live stream* or *Notification only*.

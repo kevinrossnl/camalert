@@ -1,0 +1,47 @@
+show:
+  target:
+    device:
+      integration: camalert
+  fields:
+    camera:
+      example: front_door
+      selector:
+        text:
+    seconds:
+      example: 30
+      selector:
+        number:
+          min: 5
+          max: 300
+          step: 5
+          unit_of_measurement: s
+    mode:
+      selector:
+        select:
+          translation_key: mode
+          options:
+            - photo
+            - live
+            - notify
+mosaic:
+  target:
+    device:
+      integration: camalert
+  fields:
+    cameras:
+      example: "front_door, garden"
+      selector:
+        text:
+          multiple: true
+    seconds:
+      example: 60
+      selector:
+        number:
+          min: 5
+          max: 300
+          step: 5
+          unit_of_measurement: s
+hide:
+  target:
+    device:
+      integration: camalert

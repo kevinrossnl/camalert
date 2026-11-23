@@ -2,7 +2,7 @@ import os
 import sys
 import unittest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src", "DoorCam"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src", "CamAlert"))
 import logic as L  # noqa: E402
 
 
@@ -109,6 +109,38 @@ Garden | rtsp://192.168.1.22/dup
             self.assertLessEqual(abs(w * 9 // 16 - h), 1)
         self.assertEqual(len(L.grid(5, 1280, 720)), 5)
         self.assertEqual(L.grid(1, 1920, 1080)[0][2] > 1800, True)
+
+    def test_mqtt_packets(self):
+        c = L.mqtt_connect("dc1", "user", "pw", "camalert/x/availability")
+        self.assertEqual(c[0], 0x10)
+        self.assertIn(b"MQTT\x04", c)
+        self.assertEqual(c[c.index(b"MQTT") + 5], 0x02 | 0x04 | 0x20 | 0x80 | 0x40)
+        p = L.mqtt_publish("a/b", "x" * 200, retain=True)
+        self.assertEqual(p[0], 0x31)
+        self.assertEqual(p[1:3], bytes([0xCD, 0x01]))  # 205 = 0xCD 0x01 (variable length)
+        pk, rest = L.mqtt_split(p + b"\x20\x02\x00" )
+        self.assertEqual(len(pk), 1)
+        self.assertEqual(rest, b"\x20\x02\x00")
+        pk, rest = L.mqtt_split(rest + b"\x00")
+        self.assertEqual((pk[0][0], rest), (2, b""))
+        topic, payload = L.mqtt_parse_publish(0, L.mqtt_publish("camalert/x/show", "garden")[2:])
+        self.assertEqual((topic, payload), ("camalert/x/show", b"garden"))
+        self.assertEqual(L.mqtt_subscribe(1, ["a/#"]), b"\x82\x08\x00\x01\x00\x03a/#\x00")
+
+    def test_mqtt_command(self):
+        self.assertEqual(L.mqtt_command(b"garden"), {"cam": "garden"})
+        self.assertEqual(L.mqtt_command(b'{"cam": "garden", "sec": 20, "x": 1}'), {"cam": "garden", "sec": 20})
+        self.assertEqual(L.mqtt_command(b""), {})
+        self.assertEqual(L.mqtt_command(b"{bad"), {})
+
+    def test_discovery(self):
+        msgs = dict(L.discovery("abc123", "CamAlert kitchen", [("front_door", "Front door")]))
+        import json
+        btn = json.loads(msgs["homeassistant/button/camalert_abc123/show_front_door/config"])
+        self.assertEqual(btn["command_topic"], "camalert/abc123/show")
+        self.assertEqual(btn["payload_press"], "front_door")
+        self.assertEqual(btn["device"]["identifiers"], ["camalert_abc123"])
+        self.assertIn("homeassistant/sensor/camalert_abc123/on_screen/config", msgs)
 
     def test_geometry(self):
         self.assertEqual(L.window_geometry("top_right", "medium", 1920, 1080), (1240, 40, 640, 360, 40))

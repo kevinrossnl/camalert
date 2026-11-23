@@ -1,11 +1,11 @@
 blueprint:
-  name: DoorCam - show camera on TV
+  name: CamAlert - show camera on TV
   description: >-
-    Shows a camera on an Enigma2 receiver with the DoorCam plugin when a sensor turns on
-    (motion, person, doorbell). Needs the DoorCam package (rest_command.doorcam_show), see
-    https://github.com/OWNER/enigma2-plugin-doorcam/blob/main/docs/home-assistant.md
+    Shows a camera on an Enigma2 receiver with the CamAlert plugin when a sensor turns on
+    (motion, person, doorbell). Needs the CamAlert package (rest_command.camalert_show), see
+    https://github.com/kevinrossnl/camalert/blob/main/docs/home-assistant.md
   domain: automation
-  source_url: https://github.com/OWNER/enigma2-plugin-doorcam/blob/main/homeassistant/blueprints/doorcam_show_camera.yaml
+  source_url: https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_show_camera.yaml
   input:
     trigger_entity:
       name: Trigger
@@ -20,7 +20,7 @@ blueprint:
         text:
     receiver_player:
       name: Receiver media player (optional)
-      description: Only show the camera when this media player is on. Leave empty to always try (DoorCam itself ignores requests in standby).
+      description: Only show the camera when this media player is on. Leave empty to always try (CamAlert itself ignores requests in standby).
       default: ""
       selector:
         entity:
@@ -53,7 +53,7 @@ blueprint:
               value: notify
     https:
       name: Receiver uses HTTPS
-      description: Turn on if "Use HTTPS for the API" is enabled in DoorCam.
+      description: Turn on if "Use HTTPS for the API" is enabled in CamAlert.
       default: false
       selector:
         boolean:
@@ -75,7 +75,7 @@ conditions:
   - condition: template
     value_template: "{{ player == '' or is_state(player, 'on') }}"
 actions:
-  - action: rest_command.doorcam_show
+  - action: rest_command.camalert_show
     data:
       host: !input receiver_host
       cam: !input camera

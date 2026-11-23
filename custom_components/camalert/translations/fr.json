@@ -1,0 +1,90 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Ajouter un récepteur CamAlert",
+        "description": "Adresse IP du récepteur Enigma2 avec le plugin CamAlert. Port, HTTPS et jeton comme réglés dans CamAlert sur le récepteur.",
+        "data": {
+          "host": "Adresse IP du récepteur",
+          "port": "Port CamAlert",
+          "https": "Le récepteur utilise HTTPS",
+          "verify_ssl": "Vérifier le certificat (désactivé pour le certificat de CamAlert)",
+          "token": "Jeton d'accès (si défini dans CamAlert)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Récepteur injoignable. Est-il allumé, CamAlert est-il installé et le port est-il correct ?",
+      "forbidden": "Le récepteur refuse la demande : vérifiez le jeton ou « Appelants autorisés » dans CamAlert.",
+      "unknown": "Erreur inattendue"
+    },
+    "abort": {
+      "already_configured": "Ce récepteur est déjà ajouté."
+    }
+  },
+  "entity": {
+    "button": {
+      "show": {
+        "name": "Afficher {camera}"
+      },
+      "mosaic": {
+        "name": "Mosaïque"
+      },
+      "hide": {
+        "name": "Masquer la caméra"
+      }
+    },
+    "sensor": {
+      "on_screen": {
+        "name": "Caméra à l'écran"
+      }
+    }
+  },
+  "selector": {
+    "mode": {
+      "options": {
+        "photo": "Fenêtre photo",
+        "live": "Basculer vers le direct",
+        "notify": "Notification seulement"
+      }
+    }
+  },
+  "services": {
+    "show": {
+      "name": "Afficher une caméra",
+      "description": "Affiche une caméra sur la TV d'un ou plusieurs récepteurs.",
+      "fields": {
+        "camera": {
+          "name": "Caméra",
+          "description": "Nom de la caméra (comme dans go2rtc), p. ex. porte_entree. Vide = caméra par défaut du récepteur."
+        },
+        "seconds": {
+          "name": "Durée",
+          "description": "Durée d'affichage. Vide = réglage du récepteur."
+        },
+        "mode": {
+          "name": "Affichage",
+          "description": "Vide = réglage du récepteur."
+        }
+      }
+    },
+    "mosaic": {
+      "name": "Afficher la mosaïque",
+      "description": "Affiche plusieurs caméras à la fois (mosaïque photo).",
+      "fields": {
+        "cameras": {
+          "name": "Caméras",
+          "description": "Jusqu'à 9 caméras. Vide = réglage mosaïque du récepteur."
+        },
+        "seconds": {
+          "name": "Durée",
+          "description": "Durée d'affichage. Vide = réglage du récepteur."
+        }
+      }
+    },
+    "hide": {
+      "name": "Masquer la caméra",
+      "description": "Ferme la caméra et revient à la TV."
+    }
+  }
+}

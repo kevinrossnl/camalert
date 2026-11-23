@@ -57,8 +57,8 @@ msgstr "Cameralijst"
 msgid "Test"
 msgstr "Testen"
 
-msgid "Enable DoorCam"
-msgstr "DoorCam inschakelen"
+msgid "Enable CamAlert"
+msgstr "CamAlert inschakelen"
 
 msgid "Turn the HTTP API and pop-ups on or off."
 msgstr "Zet de HTTP-API en de pop-ups aan of uit."
@@ -108,8 +108,8 @@ msgstr "Schakel terug naar wat je keek als de tijd om is."
 msgid "HTTP port"
 msgstr "HTTP-poort"
 
-msgid "Port of the DoorCam API on this receiver (default 8099)."
-msgstr "Poort van de DoorCam-API op deze ontvanger (standaard 8099)."
+msgid "Port of the CamAlert API on this receiver (default 8099)."
+msgstr "Poort van de CamAlert-API op deze ontvanger (standaard 8099)."
 
 msgid "Allowed callers"
 msgstr "Toegestane aanroepers"
@@ -198,8 +198,8 @@ msgstr "Camera's"
 msgid "EXIT = close"
 msgstr "EXIT = sluiten"
 
-msgid "DoorCam mosaic"
-msgstr "DoorCam-mozaïek"
+msgid "CamAlert mosaic"
+msgstr "CamAlert-mozaïek"
 
 msgid "All cameras at once"
 msgstr "Alle camera's tegelijk"
@@ -233,4 +233,40 @@ msgstr "Certificaten controleren"
 
 msgid "No cameras found in %s.\nSee the guide for the format."
 msgstr "Geen camera's gevonden in %s.\nZie de handleiding voor de opbouw."
+
+msgid "MQTT (Home Assistant without YAML)"
+msgstr "MQTT (Home Assistant zonder YAML)"
+
+msgid "Connects to your MQTT broker; with discovery the receiver appears in Home Assistant automatically."
+msgstr "Maakt verbinding met je MQTT-broker; met discovery verschijnt de ontvanger vanzelf in Home Assistant."
+
+msgid "MQTT broker address"
+msgstr "Adres MQTT-broker"
+
+msgid "IP address or name of the MQTT broker, e.g. 192.168.1.10"
+msgstr "IP-adres of naam van de MQTT-broker, bijv. 192.168.1.10"
+
+msgid "MQTT port"
+msgstr "MQTT-poort"
+
+msgid "Usually 1883."
+msgstr "Meestal 1883."
+
+msgid "MQTT user"
+msgstr "MQTT-gebruiker"
+
+msgid "MQTT password"
+msgstr "MQTT-wachtwoord"
+
+msgid "Home Assistant discovery"
+msgstr "Home Assistant-discovery"
+
+msgid "Creates a device with a button per camera in Home Assistant."
+msgstr "Maakt in Home Assistant een apparaat met een knop per camera."
+
+msgid "Name in Home Assistant"
+msgstr "Naam in Home Assistant"
+
+msgid "Empty = CamAlert + the receiver's host name."
+msgstr "Leeg = CamAlert + de hostnaam van de ontvanger."
 

@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-# DoorCam - show IP cameras (via go2rtc) on an Enigma2 receiver.
-# Copyright (C) 2026 DoorCam developers. Licensed under the GNU GPL v2 (see LICENSE).
+# CamAlert - show IP cameras (via go2rtc) on an Enigma2 receiver.
+# Copyright (C) 2026 CamAlert developers. Licensed under the GNU GPL v2 (see LICENSE).
 """Small HTTP API on the receiver:
 
-    GET /doorcam/show?cam=front_door&sec=30&mode=photo|live|notify[&token=...]
-    GET /doorcam/mosaic?cam=front_door,garden,drive&sec=60
-    GET /doorcam/hide
-    GET /doorcam/status
+    GET /camalert/show?cam=front_door&sec=30&mode=photo|live|notify[&token=...]
+    GET /camalert/mosaic?cam=front_door,garden,drive&sec=60
+    GET /camalert/cameras
+    GET /camalert/hide
+    GET /camalert/status
 """
 import json
 import os
@@ -17,12 +18,12 @@ from twisted.internet import reactor
 from Components.config import config
 
 from . import __version__
-from .display import Controller, log
+from .display import Controller, all_camera_names, camera_urls, log
 from .logic import client_allowed, clamp_seconds, token_ok
 
 _port = None
-CERT = "/etc/enigma2/doorcam.crt"
-KEY = "/etc/enigma2/doorcam.key"
+CERT = "/etc/enigma2/camalert.crt"
+KEY = "/etc/enigma2/camalert.key"
 
 
 def ensure_certificate():
@@ -31,7 +32,7 @@ def ensure_certificate():
         return True
     try:
         subprocess.check_call(["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-days", "3650",
-                               "-subj", "/CN=DoorCam", "-keyout", KEY, "-out", CERT],
+                               "-subj", "/CN=CamAlert", "-keyout", KEY, "-out", CERT],
                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         os.chmod(KEY, 0o600)
         return True
@@ -44,10 +45,10 @@ class Api(resource.Resource):
     isLeaf = True
 
     def render_GET(self, req):
-        c = config.plugins.doorcam
+        c = config.plugins.camalert
         req.setHeader(b"content-type", b"application/json")
         args = {k.decode(): v[0].decode() for k, v in req.args.items()}
-        header = req.getHeader(b"x-doorcam-token")
+        header = req.getHeader(b"x-camalert-token")
         given = args.get("token") or (header.decode() if isinstance(header, bytes) else header or "")
         if not client_allowed(req.getClientAddress().host, c.allow.value) or not token_ok(c.token.value, given):
             req.setResponseCode(403)
@@ -64,9 +65,16 @@ class Api(resource.Resource):
                 sec = clamp_seconds(args.get("sec"), 60) if args.get("sec") else 60
                 res = ctl.mosaic(args.get("cam"), sec)
                 out = {"result": res == "show", "action": res}
+            elif action == "cameras":
+                cams = []
+                for n in all_camera_names():
+                    urls = camera_urls(n)
+                    cams.append({"name": n, "title": urls[2] if urls else n, "snapshot": bool(urls and urls[1])})
+                out = {"result": True, "cameras": cams}
             elif action == "status":
-                out = dict(ctl.status(), result=True, version=__version__)
-            elif action in ("show", "doorcam"):
+                from .mqtt import node_id, node_name
+                out = dict(ctl.status(), result=True, version=__version__, id=node_id(), name=node_name())
+            elif action in ("show", "camalert"):
                 sec = clamp_seconds(args.get("sec"), int(c.duration.value)) if args.get("sec") else None
                 res = ctl.show(args.get("cam"), sec, args.get("mode"))
                 out = {"result": res in ("show", "extend"), "action": res, "cam": args.get("cam") or c.camera.value}
@@ -84,8 +92,8 @@ def start():
     global _port
     stop()
     root = resource.Resource()
-    root.putChild(b"doorcam", Api())
-    c = config.plugins.doorcam
+    root.putChild(b"camalert", Api())
+    c = config.plugins.camalert
     try:
         if c.api_https.value and ensure_certificate():
             from twisted.internet import ssl
@@ -104,8 +112,8 @@ def stop():
     if _port is not None:
         _port.stopListening()
         _port = None
-CERT = "/etc/enigma2/doorcam.crt"
-KEY = "/etc/enigma2/doorcam.key"
+CERT = "/etc/enigma2/camalert.crt"
+KEY = "/etc/enigma2/camalert.key"
 
 
 def ensure_certificate():
@@ -114,7 +122,7 @@ def ensure_certificate():
         return True
     try:
         subprocess.check_call(["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-days", "3650",
-                               "-subj", "/CN=DoorCam", "-keyout", KEY, "-out", CERT],
+                               "-subj", "/CN=CamAlert", "-keyout", KEY, "-out", CERT],
                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         os.chmod(KEY, 0o600)
         return True

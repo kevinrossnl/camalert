@@ -1,0 +1,90 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Aggiungi un ricevitore CamAlert",
+        "description": "Indirizzo IP del ricevitore Enigma2 con il plugin CamAlert. Porta, HTTPS e token come impostati in CamAlert sul ricevitore.",
+        "data": {
+          "host": "Indirizzo IP del ricevitore",
+          "port": "Porta CamAlert",
+          "https": "Il ricevitore usa HTTPS",
+          "verify_ssl": "Verifica certificato (disattiva per il certificato di CamAlert)",
+          "token": "Token di accesso (se impostato in CamAlert)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Ricevitore non raggiungibile. È acceso, CamAlert è installato e la porta è corretta?",
+      "forbidden": "Il ricevitore rifiuta la richiesta: controlla il token o 'Chiamanti consentiti' in CamAlert.",
+      "unknown": "Errore imprevisto"
+    },
+    "abort": {
+      "already_configured": "Questo ricevitore è già stato aggiunto."
+    }
+  },
+  "entity": {
+    "button": {
+      "show": {
+        "name": "Mostra {camera}"
+      },
+      "mosaic": {
+        "name": "Mosaico"
+      },
+      "hide": {
+        "name": "Nascondi telecamera"
+      }
+    },
+    "sensor": {
+      "on_screen": {
+        "name": "Telecamera sullo schermo"
+      }
+    }
+  },
+  "selector": {
+    "mode": {
+      "options": {
+        "photo": "Finestra foto",
+        "live": "Passa al flusso live",
+        "notify": "Solo notifica"
+      }
+    }
+  },
+  "services": {
+    "show": {
+      "name": "Mostra telecamera",
+      "description": "Mostra una telecamera sulla TV di uno o più ricevitori.",
+      "fields": {
+        "camera": {
+          "name": "Telecamera",
+          "description": "Nome della telecamera (come in go2rtc), ad es. porta_ingresso. Vuoto = telecamera predefinita del ricevitore."
+        },
+        "seconds": {
+          "name": "Durata",
+          "description": "Per quanto tempo resta visibile. Vuoto = impostazione del ricevitore."
+        },
+        "mode": {
+          "name": "Visualizzazione",
+          "description": "Vuoto = impostazione del ricevitore."
+        }
+      }
+    },
+    "mosaic": {
+      "name": "Mostra mosaico",
+      "description": "Mostra più telecamere insieme (mosaico di foto).",
+      "fields": {
+        "cameras": {
+          "name": "Telecamere",
+          "description": "Fino a 9 telecamere. Vuoto = impostazione mosaico del ricevitore."
+        },
+        "seconds": {
+          "name": "Durata",
+          "description": "Per quanto tempo resta visibile. Vuoto = impostazione del ricevitore."
+        }
+      }
+    },
+    "hide": {
+      "name": "Nascondi telecamera",
+      "description": "Chiude la telecamera e torna alla TV."
+    }
+  }
+}

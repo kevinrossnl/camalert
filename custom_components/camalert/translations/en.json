@@ -1,0 +1,90 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add a CamAlert receiver",
+        "description": "IP address of the Enigma2 receiver with the CamAlert plugin. Port, HTTPS and token as set in CamAlert on the receiver.",
+        "data": {
+          "host": "IP address of the receiver",
+          "port": "CamAlert port",
+          "https": "Receiver uses HTTPS",
+          "verify_ssl": "Check certificate (off for CamAlert's own certificate)",
+          "token": "Access token (if set in CamAlert)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot reach the receiver. Is it on, is CamAlert installed and is the port correct?",
+      "forbidden": "The receiver refused the request: check the token, or 'Allowed callers' in CamAlert.",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "This receiver is already added."
+    }
+  },
+  "entity": {
+    "button": {
+      "show": {
+        "name": "Show {camera}"
+      },
+      "mosaic": {
+        "name": "Mosaic"
+      },
+      "hide": {
+        "name": "Hide camera"
+      }
+    },
+    "sensor": {
+      "on_screen": {
+        "name": "Camera on screen"
+      }
+    }
+  },
+  "selector": {
+    "mode": {
+      "options": {
+        "photo": "Photo window",
+        "live": "Switch to live stream",
+        "notify": "Notification only"
+      }
+    }
+  },
+  "services": {
+    "show": {
+      "name": "Show camera",
+      "description": "Shows a camera on the TV of one or more receivers.",
+      "fields": {
+        "camera": {
+          "name": "Camera",
+          "description": "Name of the camera (as in go2rtc), e.g. front_door. Empty = default camera of the receiver."
+        },
+        "seconds": {
+          "name": "Duration",
+          "description": "How long the camera stays on screen. Empty = setting of the receiver."
+        },
+        "mode": {
+          "name": "Display mode",
+          "description": "Empty = setting of the receiver."
+        }
+      }
+    },
+    "mosaic": {
+      "name": "Show mosaic",
+      "description": "Shows several cameras at once (photo mosaic).",
+      "fields": {
+        "cameras": {
+          "name": "Cameras",
+          "description": "Up to 9 cameras. Empty = mosaic setting of the receiver."
+        },
+        "seconds": {
+          "name": "Duration",
+          "description": "How long the camera stays on screen. Empty = setting of the receiver."
+        }
+      }
+    },
+    "hide": {
+      "name": "Hide camera",
+      "description": "Closes the camera and returns to TV."
+    }
+  }
+}

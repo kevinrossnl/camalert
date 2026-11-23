@@ -1,0 +1,90 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Dodaj odbiornik CamAlert",
+        "description": "Adres IP odbiornika Enigma2 z wtyczką CamAlert. Port, HTTPS i token jak ustawiono w CamAlert na odbiorniku.",
+        "data": {
+          "host": "Adres IP odbiornika",
+          "port": "Port CamAlert",
+          "https": "Odbiornik używa HTTPS",
+          "verify_ssl": "Sprawdzaj certyfikat (wyłącz dla certyfikatu CamAlert)",
+          "token": "Token dostępu (jeśli ustawiony w CamAlert)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Brak połączenia z odbiornikiem. Czy jest włączony, czy CamAlert jest zainstalowany i port jest poprawny?",
+      "forbidden": "Odbiornik odrzucił żądanie: sprawdź token lub 'Dozwoleni wywołujący' w CamAlert.",
+      "unknown": "Nieoczekiwany błąd"
+    },
+    "abort": {
+      "already_configured": "Ten odbiornik jest już dodany."
+    }
+  },
+  "entity": {
+    "button": {
+      "show": {
+        "name": "Pokaż {camera}"
+      },
+      "mosaic": {
+        "name": "Mozaika"
+      },
+      "hide": {
+        "name": "Ukryj kamerę"
+      }
+    },
+    "sensor": {
+      "on_screen": {
+        "name": "Kamera na ekranie"
+      }
+    }
+  },
+  "selector": {
+    "mode": {
+      "options": {
+        "photo": "Okno ze zdjęciem",
+        "live": "Przełącz na obraz na żywo",
+        "notify": "Tylko powiadomienie"
+      }
+    }
+  },
+  "services": {
+    "show": {
+      "name": "Pokaż kamerę",
+      "description": "Pokazuje kamerę na telewizorze jednego lub kilku odbiorników.",
+      "fields": {
+        "camera": {
+          "name": "Kamera",
+          "description": "Nazwa kamery (jak w go2rtc), np. drzwi. Puste = domyślna kamera odbiornika."
+        },
+        "seconds": {
+          "name": "Czas",
+          "description": "Jak długo kamera jest widoczna. Puste = ustawienie odbiornika."
+        },
+        "mode": {
+          "name": "Tryb wyświetlania",
+          "description": "Puste = ustawienie odbiornika."
+        }
+      }
+    },
+    "mosaic": {
+      "name": "Pokaż mozaikę",
+      "description": "Pokazuje kilka kamer naraz (mozaika zdjęć).",
+      "fields": {
+        "cameras": {
+          "name": "Kamery",
+          "description": "Do 9 kamer. Puste = ustawienie mozaiki odbiornika."
+        },
+        "seconds": {
+          "name": "Czas",
+          "description": "Jak długo kamera jest widoczna. Puste = ustawienie odbiornika."
+        }
+      }
+    },
+    "hide": {
+      "name": "Ukryj kamerę",
+      "description": "Zamyka kamerę i wraca do telewizji."
+    }
+  }
+}

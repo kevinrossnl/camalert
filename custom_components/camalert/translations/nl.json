@@ -1,0 +1,90 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "CamAlert-ontvanger toevoegen",
+        "description": "IP-adres van de Enigma2-ontvanger met de CamAlert-plugin. Poort, HTTPS en token zoals ingesteld in CamAlert op de ontvanger.",
+        "data": {
+          "host": "IP-adres van de ontvanger",
+          "port": "CamAlert-poort",
+          "https": "Ontvanger gebruikt HTTPS",
+          "verify_ssl": "Certificaat controleren (uit bij het eigen certificaat van CamAlert)",
+          "token": "Toegangstoken (als ingesteld in CamAlert)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Ontvanger niet bereikbaar. Staat hij aan, is CamAlert geïnstalleerd en klopt de poort?",
+      "forbidden": "De ontvanger weigert het verzoek: controleer het token of 'Toegestane aanroepers' in CamAlert.",
+      "unknown": "Onverwachte fout"
+    },
+    "abort": {
+      "already_configured": "Deze ontvanger is al toegevoegd."
+    }
+  },
+  "entity": {
+    "button": {
+      "show": {
+        "name": "Toon {camera}"
+      },
+      "mosaic": {
+        "name": "Mozaïek"
+      },
+      "hide": {
+        "name": "Camera verbergen"
+      }
+    },
+    "sensor": {
+      "on_screen": {
+        "name": "Camera in beeld"
+      }
+    }
+  },
+  "selector": {
+    "mode": {
+      "options": {
+        "photo": "Foto-venster",
+        "live": "Omschakelen naar live beeld",
+        "notify": "Alleen melding"
+      }
+    }
+  },
+  "services": {
+    "show": {
+      "name": "Camera tonen",
+      "description": "Toont een camera op de tv van een of meer ontvangers.",
+      "fields": {
+        "camera": {
+          "name": "Camera",
+          "description": "Naam van de camera (zoals in go2rtc), bijv. oprit. Leeg = standaardcamera van de ontvanger."
+        },
+        "seconds": {
+          "name": "Duur",
+          "description": "Hoe lang de camera in beeld blijft. Leeg = instelling van de ontvanger."
+        },
+        "mode": {
+          "name": "Weergave",
+          "description": "Leeg = instelling van de ontvanger."
+        }
+      }
+    },
+    "mosaic": {
+      "name": "Mozaïek tonen",
+      "description": "Toont meerdere camera's tegelijk (fotomozaïek).",
+      "fields": {
+        "cameras": {
+          "name": "Camera's",
+          "description": "Tot 9 camera's. Leeg = mozaïek-instelling van de ontvanger."
+        },
+        "seconds": {
+          "name": "Duur",
+          "description": "Hoe lang de camera in beeld blijft. Leeg = instelling van de ontvanger."
+        }
+      }
+    },
+    "hide": {
+      "name": "Camera verbergen",
+      "description": "Sluit de camera en gaat terug naar tv."
+    }
+  }
+}

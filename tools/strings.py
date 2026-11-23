@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-# Lists all translatable strings _("...") in the plugin source. Copyright (C) 2026 DoorCam developers, GPL v2.
+# Lists all translatable strings _("...") in the plugin source. Copyright (C) 2026 CamAlert developers, GPL v2.
 import ast
 import glob
 import os
 import re
 import sys
 
-ROOT = os.path.join(os.path.dirname(__file__), "..", "src", "DoorCam")
+ROOT = os.path.join(os.path.dirname(__file__), "..", "src", "CamAlert")
 
 
 def strings():

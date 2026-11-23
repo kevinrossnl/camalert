@@ -17,7 +17,7 @@ Test it on a computer with [VLC](https://www.videolan.org/): *Media › Open Net
 
 ## Step 2 – Install go2rtc
 
-(Don't want an extra server? Skip to [using DoorCam without go2rtc](without-go2rtc.md).)
+(Don't want an extra server? Skip to [using CamAlert without go2rtc](without-go2rtc.md).)
 
 Choose one:
 
@@ -39,13 +39,13 @@ Use simple names: lowercase letters, digits and `_` only. They become the camera
 
 Open `http://<go2rtc-address>:1984` in your browser: you should see your cameras there and can click them to watch.
 
-## Step 3 – Install DoorCam on the receiver
+## Step 3 – Install CamAlert on the receiver
 
 See [Install](../README.md#install), then restart the GUI.
 
-## Step 4 – Set up DoorCam
+## Step 4 – Set up CamAlert
 
-Open **Menu › Plugins › DoorCam**:
+Open **Menu › Plugins › CamAlert**:
 
 1. **go2rtc address**: `http://<go2rtc-address>:1984` (for example `http://192.168.1.10:1984`).
 2. **Default camera**: select the line and press **OK**; choose your door camera from the list.
@@ -61,6 +61,6 @@ You can now also zap to your cameras via the new channel list (press OK on a cha
 ## Step 5 – Show the camera automatically
 
 - **Home Assistant**: follow [home-assistant.md](home-assistant.md) (an automation with a ready-made blueprint).
-- **Anything else** (Node-RED, openHAB, a script): call `http://<receiver-ip>:8099/doorcam/show?cam=front_door` – see [api.md](api.md).
+- **Anything else** (Node-RED, openHAB, a script): call `http://<receiver-ip>:8099/camalert/show?cam=front_door` – see [api.md](api.md).
 
 Done! Something not working? See [troubleshooting.md](troubleshooting.md).

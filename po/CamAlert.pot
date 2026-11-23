@@ -56,7 +56,7 @@ msgstr ""
 msgid "Show IP cameras on your TV"
 msgstr ""
 
-msgid "DoorCam mosaic"
+msgid "CamAlert mosaic"
 msgstr ""
 
 msgid "All cameras at once"
@@ -74,7 +74,7 @@ msgstr ""
 msgid "Test"
 msgstr ""
 
-msgid "Enable DoorCam"
+msgid "Enable CamAlert"
 msgstr ""
 
 msgid "Turn the HTTP API and pop-ups on or off."
@@ -170,7 +170,7 @@ msgstr ""
 msgid "HTTP port"
 msgstr ""
 
-msgid "Port of the DoorCam API on this receiver (default 8099)."
+msgid "Port of the CamAlert API on this receiver (default 8099)."
 msgstr ""
 
 msgid "Use HTTPS for the API"
@@ -201,6 +201,42 @@ msgid "Mosaic cameras"
 msgstr ""
 
 msgid "Press OK to choose up to 9 cameras for the mosaic. Empty = all."
+msgstr ""
+
+msgid "MQTT (Home Assistant without YAML)"
+msgstr ""
+
+msgid "Connects to your MQTT broker; with discovery the receiver appears in Home Assistant automatically."
+msgstr ""
+
+msgid "MQTT broker address"
+msgstr ""
+
+msgid "IP address or name of the MQTT broker, e.g. 192.168.1.10"
+msgstr ""
+
+msgid "MQTT port"
+msgstr ""
+
+msgid "Usually 1883."
+msgstr ""
+
+msgid "MQTT user"
+msgstr ""
+
+msgid "MQTT password"
+msgstr ""
+
+msgid "Home Assistant discovery"
+msgstr ""
+
+msgid "Creates a device with a button per camera in Home Assistant."
+msgstr ""
+
+msgid "Name in Home Assistant"
+msgstr ""
+
+msgid "Empty = CamAlert + the receiver's host name."
 msgstr ""
 
 msgid "No cameras found in %s.\nSee the guide for the format."

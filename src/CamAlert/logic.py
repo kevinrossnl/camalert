@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# DoorCam - show IP cameras (via go2rtc) on an Enigma2 receiver.
-# Copyright (C) 2026 DoorCam developers. Licensed under the GNU GPL v2 (see LICENSE).
+# CamAlert - show IP cameras (via go2rtc) on an Enigma2 receiver.
+# Copyright (C) 2026 CamAlert developers. Licensed under the GNU GPL v2 (see LICENSE).
 """Pure helper functions without Enigma2 dependencies, so they can be unit tested."""
 import ipaddress
 import json
@@ -12,7 +12,7 @@ POSITIONS = ("top_right", "top_left", "bottom_right", "bottom_left")
 SIZES = {"small": (480, 270), "medium": (640, 360), "large": (960, 540)}
 MIN_SECONDS, MAX_SECONDS = 5, 300
 SERVICE_TYPE = 4097  # GStreamer media player
-BOUQUET_FILE = "userbouquet.doorcam.tv"
+BOUQUET_FILE = "userbouquet.camalert.tv"
 
 
 def slug(name):
@@ -247,3 +247,120 @@ def grid(n, screen_w, screen_h, gap=8):
     x0 = (screen_w - (w * cols + gap * (cols - 1))) // 2
     y0 = (screen_h - (h * rows + gap * (rows - 1))) // 2
     return [(x0 + (i % cols) * (w + gap), y0 + (i // cols) * (h + gap), w, h) for i in range(n)]
+
+
+# --- MQTT 3.1.1 (minimal, QoS 0 only) ------------------------------------------------------------------------
+def _mqtt_len(n):
+    out = bytearray()
+    while True:
+        b = n % 128
+        n //= 128
+        out.append(b | (0x80 if n else 0))
+        if not n:
+            return bytes(out)
+
+
+def _mqtt_str(s):
+    b = s.encode("utf-8") if isinstance(s, str) else s
+    return len(b).to_bytes(2, "big") + b
+
+
+def mqtt_connect(client_id, user=None, password=None, will_topic=None, will_payload=b"offline", keepalive=60):
+    flags = 0x02  # clean session
+    payload = _mqtt_str(client_id)
+    if will_topic:
+        flags |= 0x04 | 0x20  # will flag, will retain (QoS 0)
+        payload += _mqtt_str(will_topic) + _mqtt_str(will_payload)
+    if user:
+        flags |= 0x80
+        payload += _mqtt_str(user)
+        if password:
+            flags |= 0x40
+            payload += _mqtt_str(password)
+    var = _mqtt_str("MQTT") + bytes([4, flags]) + keepalive.to_bytes(2, "big")
+    body = var + payload
+    return bytes([0x10]) + _mqtt_len(len(body)) + body
+
+
+def mqtt_publish(topic, payload, retain=False):
+    if isinstance(payload, str):
+        payload = payload.encode("utf-8")
+    body = _mqtt_str(topic) + payload
+    return bytes([0x30 | (1 if retain else 0)]) + _mqtt_len(len(body)) + body
+
+
+def mqtt_subscribe(packet_id, topics):
+    body = packet_id.to_bytes(2, "big") + b"".join(_mqtt_str(t) + b"\x00" for t in topics)
+    return bytes([0x82]) + _mqtt_len(len(body)) + body
+
+
+MQTT_PING = b"\xc0\x00"
+MQTT_DISCONNECT = b"\xe0\x00"
+
+
+def mqtt_split(buffer):
+    """Splits a byte buffer into complete packets: returns ([(type, flags, body)], rest)."""
+    packets, i = [], 0
+    while True:
+        if len(buffer) - i < 2:
+            break
+        mult, length, j = 1, 0, i + 1
+        while True:
+            if j >= len(buffer):
+                return packets, buffer[i:]
+            b = buffer[j]
+            length += (b & 0x7F) * mult
+            mult *= 128
+            j += 1
+            if not b & 0x80:
+                break
+        if len(buffer) - j < length:
+            break
+        packets.append((buffer[i] >> 4, buffer[i] & 0x0F, buffer[j:j + length]))
+        i = j + length
+    return packets, buffer[i:]
+
+
+def mqtt_parse_publish(flags, body):
+    """(topic, payload) of an incoming PUBLISH packet."""
+    n = int.from_bytes(body[:2], "big")
+    topic = body[2:2 + n].decode("utf-8", "replace")
+    rest = body[2 + n:]
+    if (flags >> 1) & 0x03:  # QoS > 0 has a packet id
+        rest = rest[2:]
+    return topic, rest
+
+
+def mqtt_command(payload):
+    """Payload of a show command: 'front_door' or JSON {"cam": ..., "sec": ..., "mode": ...}."""
+    text = payload.decode("utf-8", "replace").strip() if isinstance(payload, bytes) else str(payload).strip()
+    if text.startswith("{"):
+        try:
+            d = json.loads(text)
+        except ValueError:
+            return {}
+        return {k: d[k] for k in ("cam", "sec", "mode") if k in d}
+    return {"cam": text} if text else {}
+
+
+def discovery(node, name, cameras, prefix="camalert", base="homeassistant"):
+    """Home Assistant MQTT discovery messages: [(topic, json payload)]. cameras: [(name, title)]."""
+    avail = "%s/%s/availability" % (prefix, node)
+    device = {"identifiers": ["camalert_%s" % node], "name": name, "manufacturer": "CamAlert", "model": "Enigma2 receiver"}
+    msgs = []
+
+    def add(kind, oid, conf):
+        conf.update({"unique_id": "camalert_%s_%s" % (node, oid), "object_id": "camalert_%s_%s" % (node, oid),
+                     "availability_topic": avail, "device": device})
+        msgs.append(("%s/%s/camalert_%s/%s/config" % (base, kind, node, oid), json.dumps(conf, sort_keys=True)))
+
+    for cam, title in cameras:
+        add("button", "show_" + cam, {"name": "Show %s" % title, "icon": "mdi:cctv",
+                                      "command_topic": "%s/%s/show" % (prefix, node), "payload_press": cam})
+    add("button", "mosaic", {"name": "Mosaic", "icon": "mdi:view-grid", "command_topic": "%s/%s/mosaic" % (prefix, node),
+                             "payload_press": ""})
+    add("button", "hide", {"name": "Hide camera", "icon": "mdi:close-box", "command_topic": "%s/%s/hide" % (prefix, node),
+                           "payload_press": ""})
+    add("sensor", "on_screen", {"name": "Camera on screen", "icon": "mdi:television",
+                                "state_topic": "%s/%s/state" % (prefix, node)})
+    return msgs

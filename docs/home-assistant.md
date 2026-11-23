@@ -1,6 +1,6 @@
 # Home Assistant: show a camera on motion or doorbell
 
-## 1. Add the DoorCam package
+## 1. Add the CamAlert package
 
 1. Make sure `configuration.yaml` contains:
 
@@ -9,17 +9,17 @@
      packages: !include_dir_named packages
    ```
 
-2. Copy [`homeassistant/doorcam_package.yaml`](../homeassistant/doorcam_package.yaml) to `<config>/packages/doorcam.yaml` (for example with the *File editor* app).
+2. Copy [`homeassistant/camalert_package.yaml`](../homeassistant/camalert_package.yaml) to `<config>/packages/camalert.yaml` (for example with the *File editor* app).
 3. **Developer tools › YAML › Check configuration**, then restart Home Assistant (first time only).
 
-You now have two actions: `rest_command.doorcam_show` and `rest_command.doorcam_hide`.
+You now have two actions: `rest_command.camalert_show` and `rest_command.camalert_hide`.
 
 ## 2. Import the blueprint
 
-[![Open your Home Assistant instance and show the blueprint import dialog.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2FOWNER%2Fenigma2-plugin-doorcam%2Fblob%2Fmain%2Fhomeassistant%2Fblueprints%2Fdoorcam_show_camera.yaml)
+[![Open your Home Assistant instance and show the blueprint import dialog.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fkevinrossnl%2Fcamalert%2Fblob%2Fmain%2Fhomeassistant%2Fblueprints%2Fcamalert_show_camera.yaml)
 
 Or: **Settings › Automations & scenes › Blueprints › Import blueprint** and paste
-`https://github.com/OWNER/enigma2-plugin-doorcam/blob/main/homeassistant/blueprints/doorcam_show_camera.yaml`
+`https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_show_camera.yaml`
 
 ## 3. Create the automation
 
@@ -43,7 +43,7 @@ Make one automation per receiver (living room, kitchen, ...).
 **Developer tools › Actions**:
 
 ```yaml
-action: rest_command.doorcam_show
+action: rest_command.camalert_show
 data:
   host: 192.168.1.30
   cam: front_door

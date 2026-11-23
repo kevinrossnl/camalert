@@ -57,8 +57,8 @@ msgstr "Elenco telecamere"
 msgid "Test"
 msgstr "Prova"
 
-msgid "Enable DoorCam"
-msgstr "Attiva DoorCam"
+msgid "Enable CamAlert"
+msgstr "Attiva CamAlert"
 
 msgid "Turn the HTTP API and pop-ups on or off."
 msgstr "Attiva o disattiva l'API HTTP e le finestre."
@@ -108,8 +108,8 @@ msgstr "Torna a ciò che stavi guardando allo scadere del tempo."
 msgid "HTTP port"
 msgstr "Porta HTTP"
 
-msgid "Port of the DoorCam API on this receiver (default 8099)."
-msgstr "Porta dell'API DoorCam su questo ricevitore (predefinita 8099)."
+msgid "Port of the CamAlert API on this receiver (default 8099)."
+msgstr "Porta dell'API CamAlert su questo ricevitore (predefinita 8099)."
 
 msgid "Allowed callers"
 msgstr "Chiamanti consentiti"
@@ -198,8 +198,8 @@ msgstr "Telecamere"
 msgid "EXIT = close"
 msgstr "EXIT = chiudi"
 
-msgid "DoorCam mosaic"
-msgstr "Mosaico DoorCam"
+msgid "CamAlert mosaic"
+msgstr "Mosaico CamAlert"
 
 msgid "All cameras at once"
 msgstr "Tutte le telecamere insieme"
@@ -233,4 +233,40 @@ msgstr "Verifica certificati"
 
 msgid "No cameras found in %s.\nSee the guide for the format."
 msgstr "Nessuna telecamera trovata in %s.\nVedi la guida per il formato."
+
+msgid "MQTT (Home Assistant without YAML)"
+msgstr "MQTT (Home Assistant senza YAML)"
+
+msgid "Connects to your MQTT broker; with discovery the receiver appears in Home Assistant automatically."
+msgstr "Si collega al broker MQTT; con il discovery il ricevitore compare da solo in Home Assistant."
+
+msgid "MQTT broker address"
+msgstr "Indirizzo broker MQTT"
+
+msgid "IP address or name of the MQTT broker, e.g. 192.168.1.10"
+msgstr "Indirizzo IP o nome del broker MQTT, ad es. 192.168.1.10"
+
+msgid "MQTT port"
+msgstr "Porta MQTT"
+
+msgid "Usually 1883."
+msgstr "Di solito 1883."
+
+msgid "MQTT user"
+msgstr "Utente MQTT"
+
+msgid "MQTT password"
+msgstr "Password MQTT"
+
+msgid "Home Assistant discovery"
+msgstr "Discovery di Home Assistant"
+
+msgid "Creates a device with a button per camera in Home Assistant."
+msgstr "Crea in Home Assistant un dispositivo con un pulsante per telecamera."
+
+msgid "Name in Home Assistant"
+msgstr "Nome in Home Assistant"
+
+msgid "Empty = CamAlert + the receiver's host name."
+msgstr "Vuoto = CamAlert + nome host del ricevitore."
 

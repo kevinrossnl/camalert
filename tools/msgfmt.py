@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Minimal .po -> .mo compiler (no gettext tools needed). Copyright (C) 2026 DoorCam developers, GPL v2.
+# Minimal .po -> .mo compiler (no gettext tools needed). Copyright (C) 2026 CamAlert developers, GPL v2.
 import ast
 import struct
 import sys

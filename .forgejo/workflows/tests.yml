@@ -12,17 +12,17 @@ jobs:
       - uses: actions/checkout@v4
       - name: unit tests
         env:
-          DOORCAM_DENYLIST: ${{ secrets.DOORCAM_DENYLIST }}
+          CAMALERT_DENYLIST: ${{ secrets.CAMALERT_DENYLIST }}
         run: python3 -m unittest discover -s tests -v
       - name: privacy check (blocks the GitHub mirror if anything personal slipped in)
         env:
-          DOORCAM_DENYLIST: ${{ secrets.DOORCAM_DENYLIST }}
+          CAMALERT_DENYLIST: ${{ secrets.CAMALERT_DENYLIST }}
         run: |
-          test -n "$DOORCAM_DENYLIST" || { echo "secret DOORCAM_DENYLIST missing"; exit 1; }
+          test -n "$CAMALERT_DENYLIST" || { echo "secret CAMALERT_DENYLIST missing"; exit 1; }
           python3 tools/check_private.py .
-          git log --format='%an %ae%n%B' | DOORCAM_DENYLIST="$DOORCAM_DENYLIST" python3 -c '
+          git log --format='%an %ae%n%B' | CAMALERT_DENYLIST="$CAMALERT_DENYLIST" python3 -c '
           import os,re,sys
-          deny=[w.strip().lower() for w in re.split(r"[\n,]",os.environ["DOORCAM_DENYLIST"]) if len(w.strip())>=3]
+          deny=[w.strip().lower() for w in re.split(r"[\n,]",os.environ["CAMALERT_DENYLIST"]) if len(w.strip())>=3]
           t=sys.stdin.read().lower(); bad=[i+1 for i,w in enumerate(deny) if w in t]
           print("commit history: %d problems" % len(bad)); sys.exit(1 if bad else 0)'
       - name: build package

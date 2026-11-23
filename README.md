@@ -1,6 +1,6 @@
-# DoorCam for Enigma2
+# CamAlert for Enigma2
 
-**DoorCam** shows your IP cameras on the TV of an Enigma2 receiver (openATV, OpenPLi, VTi, ... on VU+, Dreambox, Zgemma, Octagon and others).
+**CamAlert** shows your IP cameras on the TV of an Enigma2 receiver (openATV, OpenPLi, VTi, ... on VU+, Dreambox, Zgemma, Octagon and others).
 
 When someone rings the doorbell or walks up to the front door, your home automation (for example Home Assistant) asks the receiver to show that camera:
 
@@ -10,14 +10,14 @@ When someone rings the doorbell or walks up to the front door, your home automat
 
 It also creates a **channel list with all your cameras**, so you can zap to them like normal channels.
 
-DoorCam works with any camera that has an RTSP stream (UniFi Protect, Reolink, Hikvision, Dahua/Amcrest, TP-Link Tapo, Axis, ...), preferably through **[go2rtc](https://github.com/AlexxIT/go2rtc)**, a small free camera streaming server. It can also [connect to the cameras directly](docs/without-go2rtc.md).
+CamAlert works with any camera that has an RTSP stream (UniFi Protect, Reolink, Hikvision, Dahua/Amcrest, TP-Link Tapo, Axis, ...), preferably through **[go2rtc](https://github.com/AlexxIT/go2rtc)**, a small free camera streaming server. It can also [connect to the cameras directly](docs/without-go2rtc.md).
 
 > 📖 **New here? Follow the [step-by-step guide](docs/guide.md).** No programming needed.
 
 ## How it fits together
 
 ```
- cameras ──RTSP──▶ go2rtc ──RTSP / snapshots──▶ Enigma2 receiver (DoorCam) ──▶ TV
+ cameras ──RTSP──▶ go2rtc ──RTSP / snapshots──▶ Enigma2 receiver (CamAlert) ──▶ TV
                                                    ▲
  motion / doorbell ─▶ Home Assistant ──HTTP─────────┘
 ```
@@ -40,11 +40,11 @@ On the receiver (via Telnet/SSH), replace the version with the [latest release](
 
 ```sh
 cd /tmp
-wget -O doorcam.ipk https://github.com/OWNER/enigma2-plugin-doorcam/releases/download/v1.0.0/enigma2-plugin-extensions-doorcam_1.0.0_all.ipk
-opkg install /tmp/doorcam.ipk
+wget -O camalert.ipk https://github.com/kevinrossnl/camalert/releases/download/v1.0.0/enigma2-plugin-extensions-camalert_1.0.0_all.ipk
+opkg install /tmp/camalert.ipk
 ```
 
-Then restart the GUI and open **Menu › Plugins › DoorCam**.
+Then restart the GUI and open **Menu › Plugins › CamAlert**.
 
 ## Documentation
 
@@ -67,7 +67,7 @@ Enigma2 receivers can play RTSP, but connecting directly to every camera is slow
 
 ## Limitations
 
-- Hardware picture-in-picture on Enigma2 only plays TV channels, not network streams. That is why DoorCam uses a photo window instead of a real PiP.
+- Hardware picture-in-picture on Enigma2 only plays TV channels, not network streams. That is why CamAlert uses a photo window instead of a real PiP.
 - After switching to a camera it takes until the next key frame (usually 1–2 seconds) before the picture appears.
 
 ## License

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# Builds enigma2-plugin-extensions-doorcam_<version>_all.ipk without opkg tools.
-# Copyright (C) 2026 DoorCam developers, GPL v2.
+# Builds enigma2-plugin-extensions-camalert_<version>_all.ipk without opkg tools.
+# Copyright (C) 2026 CamAlert developers, GPL v2.
 import io
 import os
 import re
@@ -12,9 +12,9 @@ sys.path.insert(0, os.path.dirname(__file__))
 from msgfmt import make_mo, parse_po  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-SRC = os.path.join(ROOT, "src", "DoorCam")
-DEST = "usr/lib/enigma2/python/Plugins/Extensions/DoorCam"
-PKG = "enigma2-plugin-extensions-doorcam"
+SRC = os.path.join(ROOT, "src", "CamAlert")
+DEST = "usr/lib/enigma2/python/Plugins/Extensions/CamAlert"
+PKG = "enigma2-plugin-extensions-camalert"
 
 
 def version():
@@ -54,35 +54,35 @@ def data(tar):
             add_dir(tar, "./%s/locale/%s" % (DEST, lang))
             add_dir(tar, "./%s/locale/%s/LC_MESSAGES" % (DEST, lang))
             mo = make_mo(parse_po(open(os.path.join(ROOT, "po", po), encoding="utf-8").read()))
-            add(tar, "./%s/locale/%s/LC_MESSAGES/DoorCam.mo" % (DEST, lang), mo)
+            add(tar, "./%s/locale/%s/LC_MESSAGES/CamAlert.mo" % (DEST, lang), mo)
 
 
 CONTROL = """Package: %(pkg)s
 Version: %(ver)s
-Description: DoorCam - show IP cameras (via go2rtc) on your TV
+Description: CamAlert - show IP cameras (via go2rtc) on your TV
  Shows a camera as a photo window, switches to the live stream or shows a
  notification when called over HTTP (for example from Home Assistant on motion).
 Section: extra
 Priority: optional
-Maintainer: DoorCam developers
+Maintainer: CamAlert developers
 License: GPL-2.0-only
 Architecture: all
-Homepage: https://github.com/DOORCAM_OWNER/enigma2-plugin-doorcam
+Homepage: https://github.com/CAMALERT_OWNER/camalert
 Depends: enigma2, python3-twisted-web
-Source: https://github.com/DOORCAM_OWNER/enigma2-plugin-doorcam
+Source: https://github.com/CAMALERT_OWNER/camalert
 """
 POSTINST = """#!/bin/sh
-echo "DoorCam installed. Restart the GUI (Menu > Standby > Restart GUI) and open DoorCam in the plugin menu."
+echo "CamAlert installed. Restart the GUI (Menu > Standby > Restart GUI) and open CamAlert in the plugin menu."
 exit 0
 """
 POSTRM = """#!/bin/sh
-rm -rf /usr/lib/enigma2/python/Plugins/Extensions/DoorCam
+rm -rf /usr/lib/enigma2/python/Plugins/Extensions/CamAlert
 exit 0
 """
 
 
 def control(tar, owner):
-    add(tar, "./control", (CONTROL % {"pkg": PKG, "ver": version()}).replace("DOORCAM_OWNER", owner).encode())
+    add(tar, "./control", (CONTROL % {"pkg": PKG, "ver": version()}).replace("CAMALERT_OWNER", owner).encode())
     add(tar, "./postinst", POSTINST.encode(), 0o755)
     add(tar, "./postrm", POSTRM.encode(), 0o755)
 
@@ -95,7 +95,7 @@ def ar(members):
     return out
 
 
-def build(outdir, owner="OWNER"):
+def build(outdir, owner="kevinrossnl"):
     os.makedirs(outdir, exist_ok=True)
     path = os.path.join(outdir, "%s_%s_all.ipk" % (PKG, version()))
     blob = ar([("debian-binary", b"2.0\n"), ("control.tar.gz", targz(lambda t: control(t, owner))),
@@ -107,4 +107,4 @@ def build(outdir, owner="OWNER"):
 
 if __name__ == "__main__":
     print(build(sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "dist"),
-                os.environ.get("DOORCAM_OWNER", "OWNER")))
+                os.environ.get("CAMALERT_OWNER", "kevinrossnl")))

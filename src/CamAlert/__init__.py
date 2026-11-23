@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-# DoorCam - show IP cameras (via go2rtc) on an Enigma2 receiver.
-# Copyright (C) 2026 DoorCam developers. Licensed under the GNU GPL v2 (see LICENSE).
+# CamAlert - show IP cameras (via go2rtc) on an Enigma2 receiver.
+# Copyright (C) 2026 CamAlert developers. Licensed under the GNU GPL v2 (see LICENSE).
 import gettext
 
 from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 from Components.config import config, ConfigSubsection, ConfigYesNo, ConfigText, ConfigInteger, \
-    ConfigSelection, ConfigSelectionNumber, ConfigClock
+    ConfigSelection, ConfigSelectionNumber, ConfigClock, ConfigPassword
 
 __version__ = "1.0.0"
-PluginLanguageDomain = "DoorCam"
-PluginLanguagePath = "Extensions/DoorCam/locale"
+PluginLanguageDomain = "CamAlert"
+PluginLanguagePath = "Extensions/CamAlert/locale"
 
 
 def localeInit():
@@ -27,8 +27,8 @@ def _(txt):
 localeInit()
 language.addCallback(localeInit)
 
-config.plugins.doorcam = ConfigSubsection()
-c = config.plugins.doorcam
+config.plugins.camalert = ConfigSubsection()
+c = config.plugins.camalert
 c.enabled = ConfigYesNo(default=True)
 c.source = ConfigSelection(default="go2rtc", choices=[
     ("go2rtc", _("go2rtc server")), ("direct", _("Directly from the cameras"))])
@@ -60,3 +60,10 @@ c.allow = ConfigSelection(default="lan", choices=[
 c.token = ConfigText(default="", fixed_size=False)
 c.bouquet_name = ConfigText(default="Cameras", fixed_size=False)
 c.mosaic = ConfigText(default="", fixed_size=False)
+c.mqtt_enabled = ConfigYesNo(default=False)
+c.mqtt_host = ConfigText(default="", fixed_size=False)
+c.mqtt_port = ConfigInteger(default=1883, limits=(1, 65535))
+c.mqtt_user = ConfigText(default="", fixed_size=False)
+c.mqtt_password = ConfigPassword(default="", fixed_size=False)
+c.mqtt_discovery = ConfigYesNo(default=True)
+c.mqtt_name = ConfigText(default="", fixed_size=False)

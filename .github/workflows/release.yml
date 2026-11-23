@@ -5,6 +5,17 @@ on:
     tags: ["v*"]
   pull_request:
 jobs:
+  hassfest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: home-assistant/actions/hassfest@master
+  hacs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: hacs/action@main
+        with:
+          category: integration
   build:
     runs-on: ubuntu-latest
     permissions:
@@ -15,7 +26,7 @@ jobs:
         run: python3 -m unittest discover -s tests -v
       - name: build ipk
         env:
-          DOORCAM_OWNER: ${{ github.repository_owner }}
+          CAMALERT_OWNER: ${{ github.repository_owner }}
         run: python3 tools/build_ipk.py dist
       - uses: actions/upload-artifact@v4
         with:

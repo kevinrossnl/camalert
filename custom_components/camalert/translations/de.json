@@ -1,0 +1,90 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "CamAlert-Receiver hinzufügen",
+        "description": "IP-Adresse des Enigma2-Receivers mit dem CamAlert-Plugin. Port, HTTPS und Token wie in CamAlert auf dem Receiver eingestellt.",
+        "data": {
+          "host": "IP-Adresse des Receivers",
+          "port": "CamAlert-Port",
+          "https": "Receiver nutzt HTTPS",
+          "verify_ssl": "Zertifikat prüfen (aus beim eigenen Zertifikat von CamAlert)",
+          "token": "Zugriffstoken (falls in CamAlert gesetzt)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Receiver nicht erreichbar. Ist er an, ist CamAlert installiert und stimmt der Port?",
+      "forbidden": "Der Receiver lehnt die Anfrage ab: Token oder 'Erlaubte Aufrufer' in CamAlert prüfen.",
+      "unknown": "Unerwarteter Fehler"
+    },
+    "abort": {
+      "already_configured": "Dieser Receiver ist bereits hinzugefügt."
+    }
+  },
+  "entity": {
+    "button": {
+      "show": {
+        "name": "{camera} anzeigen"
+      },
+      "mosaic": {
+        "name": "Mosaik"
+      },
+      "hide": {
+        "name": "Kamera ausblenden"
+      }
+    },
+    "sensor": {
+      "on_screen": {
+        "name": "Kamera im Bild"
+      }
+    }
+  },
+  "selector": {
+    "mode": {
+      "options": {
+        "photo": "Fotofenster",
+        "live": "Auf Live-Bild umschalten",
+        "notify": "Nur Hinweis"
+      }
+    }
+  },
+  "services": {
+    "show": {
+      "name": "Kamera anzeigen",
+      "description": "Zeigt eine Kamera auf dem Fernseher eines oder mehrerer Receiver.",
+      "fields": {
+        "camera": {
+          "name": "Kamera",
+          "description": "Name der Kamera (wie in go2rtc), z. B. haustuer. Leer = Standardkamera des Receivers."
+        },
+        "seconds": {
+          "name": "Dauer",
+          "description": "Wie lange die Kamera angezeigt wird. Leer = Einstellung des Receivers."
+        },
+        "mode": {
+          "name": "Anzeige",
+          "description": "Leer = Einstellung des Receivers."
+        }
+      }
+    },
+    "mosaic": {
+      "name": "Mosaik anzeigen",
+      "description": "Zeigt mehrere Kameras gleichzeitig (Fotomosaik).",
+      "fields": {
+        "cameras": {
+          "name": "Kameras",
+          "description": "Bis zu 9 Kameras. Leer = Mosaik-Einstellung des Receivers."
+        },
+        "seconds": {
+          "name": "Dauer",
+          "description": "Wie lange die Kamera angezeigt wird. Leer = Einstellung des Receivers."
+        }
+      }
+    },
+    "hide": {
+      "name": "Kamera ausblenden",
+      "description": "Schließt die Kamera und kehrt zum Fernsehen zurück."
+    }
+  }
+}

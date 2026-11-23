@@ -1,11 +1,11 @@
-# Using DoorCam without go2rtc
+# Using CamAlert without go2rtc
 
-go2rtc is recommended (faster start, fewer connections to your cameras, snapshots for every camera). If you cannot run it, DoorCam can talk to the cameras directly.
+go2rtc is recommended (faster start, fewer connections to your cameras, snapshots for every camera). If you cannot run it, CamAlert can talk to the cameras directly.
 
 ## Set up
 
-1. In DoorCam set **Cameras via** to **Directly from the cameras**.
-2. Create the file `/etc/enigma2/doorcam_cameras.conf` on the receiver (for example with *FileCommander*, FTP/WinSCP, or a network share). One camera per line:
+1. In CamAlert set **Cameras via** to **Directly from the cameras**.
+2. Create the file `/etc/enigma2/camalert_cameras.conf` on the receiver (for example with *FileCommander*, FTP/WinSCP, or a network share). One camera per line:
 
    ```
    # name        | live stream (RTSP)                                         | snapshot (optional)
@@ -16,11 +16,11 @@ go2rtc is recommended (faster start, fewer connections to your cameras, snapshot
 
    - The **name** is what you see on screen; in requests you use it in lowercase with `_` (`Front door` → `front_door`).
    - Lines starting with `#` are ignored.
-3. Open DoorCam: choose the **Default camera** (OK), press **yellow** for the channel list and **blue** to test.
+3. Open CamAlert: choose the **Default camera** (OK), press **yellow** for the channel list and **blue** to test.
 
 ## Snapshot addresses
 
-The photo window and the mosaic need a snapshot (JPEG) address. Without one, DoorCam switches to the live stream instead.
+The photo window and the mosaic need a snapshot (JPEG) address. Without one, CamAlert switches to the live stream instead.
 
 | Brand | Snapshot address |
 |---|---|
@@ -35,7 +35,7 @@ The photo window and the mosaic need a snapshot (JPEG) address. Without one, Doo
 
 ## Security
 
-`/etc/enigma2/doorcam_cameras.conf` contains camera passwords. Give the cameras their own user with view-only rights, and do not share the file. Settings backups of the receiver may include it.
+`/etc/enigma2/camalert_cameras.conf` contains camera passwords. Give the cameras their own user with view-only rights, and do not share the file. Settings backups of the receiver may include it.
 
 ## Differences with go2rtc
 

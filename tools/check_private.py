@@ -4,9 +4,9 @@
     check_private.py [root]
 
 Generic checks: private keys, tokens, passwords in URLs. Personal words (own IP ranges, domains, names) come from
-the environment variable DOORCAM_DENYLIST (one entry per line or comma separated), stored as a CI secret so the
+the environment variable CAMALERT_DENYLIST (one entry per line or comma separated), stored as a CI secret so the
 list itself is never published.
-Copyright (C) 2026 DoorCam developers, GPL v2.
+Copyright (C) 2026 CamAlert developers, GPL v2.
 """
 import os
 import re
@@ -36,8 +36,12 @@ def files(root):
 
 
 def denylist():
-    raw = os.environ.get("DOORCAM_DENYLIST", "")
+    raw = os.environ.get("CAMALERT_DENYLIST", "")
     return [w.strip().lower() for w in re.split(r"[\n,]", raw) if len(w.strip()) >= 3]
+
+
+# Public names that may appear even though parts of them are on the denylist (the GitHub owner of the project).
+PUBLIC = ["kevinrossnl"]
 
 
 def problems(root, deny):
@@ -49,12 +53,14 @@ def problems(root, deny):
         except (UnicodeDecodeError, OSError):
             continue
         low = text.lower()
+        for name in PUBLIC:
+            low = low.replace(name, " ")
         for i, line in enumerate(text.splitlines(), 1):
             for pat, what in GENERIC:
                 if pat.search(line):
                     found.append("%s:%d: %s" % (rel, i, what))
         for w in deny:
-            if w in low or w in rel.lower():
+            if w in low or w in rel.lower().replace("kevinrossnl", " "):
                 found.append("%s: contains a denylisted word (#%d)" % (rel, deny.index(w) + 1))
     return found
 

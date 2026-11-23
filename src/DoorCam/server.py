@@ -4,6 +4,7 @@
 """Small HTTP API on the receiver:
 
     GET /doorcam/show?cam=front_door&sec=30&mode=photo|live|notify[&token=...]
+    GET /doorcam/mosaic?cam=front_door,garden,drive&sec=60
     GET /doorcam/hide
     GET /doorcam/status
 """
@@ -59,6 +60,10 @@ class Api(resource.Resource):
             if action == "hide":
                 ctl.hide()
                 out = {"result": True, "action": "hide"}
+            elif action == "mosaic":
+                sec = clamp_seconds(args.get("sec"), 60) if args.get("sec") else 60
+                res = ctl.mosaic(args.get("cam"), sec)
+                out = {"result": res == "show", "action": res}
             elif action == "status":
                 out = dict(ctl.status(), result=True, version=__version__)
             elif action in ("show", "doorcam"):

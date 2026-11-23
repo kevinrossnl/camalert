@@ -38,10 +38,22 @@ msgstr ""
 msgid "Any address"
 msgstr ""
 
+msgid "Cameras"
+msgstr ""
+
+msgid "EXIT = close"
+msgstr ""
+
 msgid "Camera: %s"
 msgstr ""
 
 msgid "Show IP cameras on your TV"
+msgstr ""
+
+msgid "DoorCam mosaic"
+msgstr ""
+
+msgid "All cameras at once"
 msgstr ""
 
 msgid "Cancel"
@@ -173,6 +185,12 @@ msgstr ""
 msgid "Name of the channel list created with the yellow button."
 msgstr ""
 
+msgid "Mosaic cameras"
+msgstr ""
+
+msgid "Press OK to choose up to 9 cameras for the mosaic. Empty = all."
+msgstr ""
+
 msgid "Please enter a valid go2rtc address first."
 msgstr ""
 
@@ -183,6 +201,12 @@ msgid "go2rtc has no cameras configured."
 msgstr ""
 
 msgid "Choose camera"
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+msgid "Start again"
 msgstr ""
 
 msgid "Channel list '%s' with %d cameras created."

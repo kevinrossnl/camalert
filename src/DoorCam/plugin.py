@@ -19,9 +19,16 @@ def main(session, **kwargs):
     session.open(DoorCamSetup)
 
 
+def mosaic(session, **kwargs):
+    Controller.instance.mosaic()
+
+
 def Plugins(**kwargs):
     return [
         PluginDescriptor(where=PluginDescriptor.WHERE_SESSIONSTART, fnc=sessionstart),
         PluginDescriptor(name="DoorCam", description=_("Show IP cameras on your TV"),
                          where=PluginDescriptor.WHERE_PLUGINMENU, icon="doorcam.png", fnc=main),
+        PluginDescriptor(name=_("DoorCam mosaic"), description=_("All cameras at once"),
+                         where=[PluginDescriptor.WHERE_PLUGINMENU, PluginDescriptor.WHERE_EXTENSIONSMENU],
+                         icon="doorcam.png", fnc=mosaic),
     ]

@@ -6,6 +6,7 @@ DoorCam listens on port **8099** (configurable). All requests are `GET` and retu
 |---|---|
 | `/doorcam/show` | Show the default camera with the default settings |
 | `/doorcam/show?cam=garden&sec=20&mode=live` | Show a specific camera; every parameter is optional |
+| `/doorcam/mosaic?cam=front_door,garden&sec=60` | Full-screen photo mosaic (up to 9 cameras; without `cam` the *Mosaic cameras* setting) |
 | `/doorcam/hide` | Close the photo window / return from live view now |
 | `/doorcam/status` | What is on screen, and the plugin version |
 

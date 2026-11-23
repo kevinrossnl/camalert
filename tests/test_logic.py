@@ -79,6 +79,17 @@ class TestLogic(unittest.TestCase):
         self.assertEqual(L.lowered_volume(60, 0), 0)
         self.assertEqual(L.lowered_volume(60, 150), 60)
 
+    def test_parse_cams_and_grid(self):
+        self.assertEqual(L.parse_cams("front_door, garden garden;x"), ["front_door", "garden"])
+        self.assertEqual(len(L.parse_cams(",".join("c%d" % i for i in range(12)))), 9)
+        tiles = L.grid(4, 1920, 1080)
+        self.assertEqual(len(tiles), 4)
+        for x, y, w, h in tiles:
+            self.assertTrue(0 <= x and x + w <= 1920 and 0 <= y and y + h <= 1080)
+            self.assertLessEqual(abs(w * 9 // 16 - h), 1)
+        self.assertEqual(len(L.grid(5, 1280, 720)), 5)
+        self.assertEqual(L.grid(1, 1920, 1080)[0][2] > 1800, True)
+
     def test_geometry(self):
         self.assertEqual(L.window_geometry("top_right", "medium", 1920, 1080), (1240, 40, 640, 360, 40))
         x, y, w, h, t = L.window_geometry("bottom_left", "small", 1280, 720)

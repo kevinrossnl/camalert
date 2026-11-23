@@ -192,3 +192,27 @@ msgstr "Nie podczas nagrywania"
 msgid "Ignore requests while the receiver is recording."
 msgstr "Ignoruj żądania podczas nagrywania."
 
+msgid "Cameras"
+msgstr "Kamery"
+
+msgid "EXIT = close"
+msgstr "EXIT = zamknij"
+
+msgid "DoorCam mosaic"
+msgstr "Mozaika DoorCam"
+
+msgid "All cameras at once"
+msgstr "Wszystkie kamery naraz"
+
+msgid "Mosaic cameras"
+msgstr "Kamery w mozaice"
+
+msgid "Press OK to choose up to 9 cameras for the mosaic. Empty = all."
+msgstr "Naciśnij OK, aby wybrać do 9 kamer. Puste = wszystkie."
+
+msgid "Done"
+msgstr "Gotowe"
+
+msgid "Start again"
+msgstr "Zacznij od nowa"
+

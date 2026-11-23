@@ -29,6 +29,7 @@ DoorCam works with any camera that has an RTSP stream (UniFi Protect, Reolink, H
 - Photo window: position (4 corners) and size (small / medium / large).
 - Live mode with automatic return to the previous channel.
 - One-button camera channel list ("bouquet").
+- Mosaic: up to 9 cameras at once (photo mosaic, or a live mosaic channel via go2rtc).
 - HTTP API for Home Assistant, Node-RED, openHAB, a doorbell script, ...
 - Only reacts when the receiver is on (not in standby) and you are not already watching that camera.
 - Local network only by default, optional access token.
@@ -54,6 +55,7 @@ Then restart the GUI and open **Menu › Plugins › DoorCam**.
 | [go2rtc in Docker / TrueNAS / Synology](docs/go2rtc-docker.md) | Run go2rtc as its own container |
 | [Camera stream addresses](docs/cameras.md) | RTSP URLs for popular camera brands |
 | [Home Assistant automation](docs/home-assistant.md) | Show a camera on motion or doorbell |
+| [Several cameras at once](docs/mosaic.md) | Photo mosaic or live mosaic channel |
 | [HTTP API](docs/api.md) | For other systems and scripts |
 | [Troubleshooting](docs/troubleshooting.md) | Black picture, slow start, no pop-up, ... |
 | [Translating](docs/translating.md) | Add or improve a language |

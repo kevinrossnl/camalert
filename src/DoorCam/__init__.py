@@ -57,3 +57,4 @@ c.allow = ConfigSelection(default="lan", choices=[
     ("lan", _("Local network only")), ("any", _("Any address"))])
 c.token = ConfigText(default="", fixed_size=False)
 c.bouquet_name = ConfigText(default="Cameras", fixed_size=False)
+c.mosaic = ConfigText(default="", fixed_size=False)

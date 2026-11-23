@@ -17,7 +17,7 @@ from twisted.internet import threads
 from . import _, __version__
 from . import server
 from .display import Controller, open_url
-from .logic import (BOUQUET_FILE, add_to_bouquets, bouquet_text, display_name, normalize_server,
+from .logic import (BOUQUET_FILE, add_to_bouquets, bouquet_text, display_name, normalize_server, parse_cams,
                     streams_from_json)
 
 E2 = "/etc/enigma2/"
@@ -90,6 +90,7 @@ class DoorCamSetup(ConfigListScreen, Screen):
             (_("Allowed callers"), c.allow, _("'Local network only' is recommended.")),
             (_("Access token (optional)"), c.token, _("If set, callers must add ?token=... to every request.")),
             (_("Camera list name"), c.bouquet_name, _("Name of the channel list created with the yellow button.")),
+            (_("Mosaic cameras"), c.mosaic, _("Press OK to choose up to 9 cameras for the mosaic. Empty = all.")),
         ]
         self.help_texts = [i[2] for i in items]
         self["config"].list = [getConfigListEntry(i[0], i[1]) for i in items]
@@ -105,7 +106,11 @@ class DoorCamSetup(ConfigListScreen, Screen):
         return srv
 
     def ok(self):
-        if self["config"].getCurrent()[1] is config.plugins.doorcam.camera:
+        if self["config"].getCurrent()[1] is config.plugins.doorcam.mosaic:
+            srv = self.server()
+            if srv:
+                threads.deferToThread(fetch_streams, srv).addCallbacks(self.choose_mosaic, self.fetch_failed)
+        elif self["config"].getCurrent()[1] is config.plugins.doorcam.camera:
             srv = self.server()
             if srv:
                 threads.deferToThread(fetch_streams, srv).addCallbacks(self.choose_camera, self.fetch_failed)
@@ -130,6 +135,34 @@ class DoorCamSetup(ConfigListScreen, Screen):
         if choice:
             config.plugins.doorcam.camera.value = choice[1]
             self["config"].invalidateCurrent()
+
+    def choose_mosaic(self, streams):
+        self.mosaic_pick = [s for s in parse_cams(config.plugins.doorcam.mosaic.value) if s in streams]
+        self.mosaic_all = streams
+        self.pick_next()
+
+    def pick_next(self):
+        rest = [s for s in self.mosaic_all if s not in self.mosaic_pick]
+        if not rest or len(self.mosaic_pick) >= 9:
+            return self.mosaic_done(None)
+        title = _("Choose camera") + " %d/9  (%s)" % (len(self.mosaic_pick) + 1, ", ".join(display_name(s) for s in self.mosaic_pick) or "-")
+        choices = [(_("Done"), None)] + [(display_name(s), s) for s in rest]
+        if self.mosaic_pick:
+            choices.insert(1, (_("Start again"), "__reset"))
+        self.session.openWithCallback(self.mosaic_chosen, ChoiceBox, title=title, list=choices)
+
+    def mosaic_chosen(self, choice):
+        if choice is None or choice[1] is None:
+            return self.mosaic_done(None)
+        if choice[1] == "__reset":
+            self.mosaic_pick = []
+        else:
+            self.mosaic_pick.append(choice[1])
+        self.pick_next()
+
+    def mosaic_done(self, _unused):
+        config.plugins.doorcam.mosaic.value = ",".join(self.mosaic_pick)
+        self["config"].invalidateCurrent()
 
     def make_bouquet(self):
         srv = self.server()

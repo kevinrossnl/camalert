@@ -178,3 +178,26 @@ def in_time_window(now, start, end):
 def lowered_volume(current, percent):
     """Volume while the live camera is shown: percent of the current volume (100 = unchanged)."""
     return max(0, min(100, int(round(current * max(0, min(100, int(percent))) / 100.0))))
+
+
+def parse_cams(value):
+    """'front_door, garden' -> ['front_door', 'garden'] (max 9, duplicates removed)."""
+    out = []
+    for c in re.split(r"[,\s]+", value or ""):
+        if re.match(r"^[A-Za-z0-9_.-]+$", c) and c not in out:
+            out.append(c)
+    return out[:9]
+
+
+def grid(n, screen_w, screen_h, gap=8):
+    """Tiles (x, y, w, h) for n cameras in a 1x1, 2x2 or 3x3 grid with 16:9 tiles, centred on the screen."""
+    cols = 1 if n <= 1 else 2 if n <= 4 else 3
+    rows = (n + cols - 1) // cols
+    w = (screen_w - gap * (cols + 1)) // cols
+    h = w * 9 // 16
+    if h * rows + gap * (rows + 1) > screen_h:
+        h = (screen_h - gap * (rows + 1)) // rows
+        w = h * 16 // 9
+    x0 = (screen_w - (w * cols + gap * (cols - 1))) // 2
+    y0 = (screen_h - (h * rows + gap * (rows - 1))) // 2
+    return [(x0 + (i % cols) * (w + gap), y0 + (i // cols) * (h + gap), w, h) for i in range(n)]

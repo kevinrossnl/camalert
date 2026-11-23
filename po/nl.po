@@ -192,3 +192,27 @@ msgstr "Niet tijdens een opname"
 msgid "Ignore requests while the receiver is recording."
 msgstr "Negeer verzoeken zolang de ontvanger opneemt."
 
+msgid "Cameras"
+msgstr "Camera's"
+
+msgid "EXIT = close"
+msgstr "EXIT = sluiten"
+
+msgid "DoorCam mosaic"
+msgstr "DoorCam-mozaïek"
+
+msgid "All cameras at once"
+msgstr "Alle camera's tegelijk"
+
+msgid "Mosaic cameras"
+msgstr "Camera's in mozaïek"
+
+msgid "Press OK to choose up to 9 cameras for the mosaic. Empty = all."
+msgstr "Druk op OK om tot 9 camera's voor het mozaïek te kiezen. Leeg = alle."
+
+msgid "Done"
+msgstr "Klaar"
+
+msgid "Start again"
+msgstr "Opnieuw beginnen"
+

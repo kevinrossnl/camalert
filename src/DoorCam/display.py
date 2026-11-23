@@ -18,7 +18,9 @@ from Tools import Notifications
 from twisted.internet import reactor, threads
 
 from . import _
-from .logic import (decide, display_name, in_time_window, lowered_volume, normalize_server, pick_mode, rtsp_url,
+from Components.ActionMap import ActionMap
+
+from .logic import (decide, display_name, grid, in_time_window, parse_cams, lowered_volume, normalize_server, pick_mode, rtsp_url,
                     service_ref, should_pause, snapshot_url, stream_from_ref, window_geometry)
 
 PHOTO = "/tmp/doorcam.jpg"
@@ -38,13 +40,95 @@ def open_url(url, timeout=8):
     return urllib.request.urlopen(url, timeout=timeout, context=ctx)
 
 
-def _download(url):
+def _download(url, path=PHOTO):
     with open_url(url) as r:
         data = r.read()
-    with open(PHOTO + ".tmp", "wb") as f:
+    with open(path + ".tmp", "wb") as f:
         f.write(data)
-    os.replace(PHOTO + ".tmp", PHOTO)
-    return True
+    os.replace(path + ".tmp", path)
+    return path
+
+
+class Tile(object):
+    """One camera in the mosaic: keeps fetching snapshots into its own pixmap widget."""
+
+    def __init__(self, screen, key, stream, url, size):
+        self.screen, self.key, self.stream, self.url, self.size = screen, key, stream, url, size
+        self.path = "/tmp/doorcam_%s.jpg" % key
+        self.picload = ePicLoad()
+        self.busy = False
+
+    def fetch(self):
+        if not self.screen.active or self.busy:
+            return
+        self.busy = True
+        threads.deferToThread(_download, self.url, self.path).addCallbacks(self.loaded, self.failed)
+
+    def loaded(self, _path):
+        self.busy = False
+        if not self.screen.active:
+            return
+        try:
+            self.picload.setPara((self.size[0], self.size[1], 1, 1, False, 1, "#ff000000"))
+            if self.picload.startDecode(self.path, 0, 0, False) == 0:
+                ptr = self.picload.getData()
+                if ptr is not None:
+                    self.screen[self.key].instance.setPixmap(ptr)
+        except Exception as e:
+            log("mosaic tile failed:", e)
+        reactor.callLater(0.3, self.fetch)
+
+    def failed(self, err):
+        self.busy = False
+        if self.screen.active:
+            reactor.callLater(3, self.fetch)
+
+
+class MosaicScreen(Screen):
+    """Full-screen grid with up to 9 cameras (photo mode). Closes with EXIT/OK or after `seconds` (0 = stay open)."""
+
+    def __init__(self, session, streams, server, seconds=0):
+        size = getDesktop(0).size()
+        sw, sh = size.width(), size.height()
+        tiles = grid(len(streams), sw, sh - int(50 * sw / 1920.0))
+        f = sw / 1920.0
+        top = int(50 * f)
+        parts = ['<screen name="DoorCamMosaic" position="0,0" size="%d,%d" flags="wfNoBorder" backgroundColor="#000000">' % (sw, sh),
+                 '<widget name="title" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#000000" />'
+                 % (int(20 * f), int(8 * f), sw - int(40 * f), int(36 * f), int(28 * f))]
+        for i, (x, y, w, h) in enumerate(tiles):
+            parts.append('<widget name="tile%d" position="%d,%d" size="%d,%d" alphatest="off" />' % (i, x, y + top, w, h))
+            parts.append('<widget name="label%d" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#80000000" transparent="0" zPosition="2" />'
+                         % (i, x + int(8 * f), y + top + int(8 * f), w // 2, int(34 * f), int(24 * f)))
+        parts.append("</screen>")
+        self.skin = "".join(parts)
+        Screen.__init__(self, session)
+        self["title"] = Label(_("Cameras") + "  ·  " + _("EXIT = close"))
+        self.tiles = []
+        for i, (s, (x, y, w, h)) in enumerate(zip(streams, tiles)):
+            self["tile%d" % i] = Pixmap()
+            self["label%d" % i] = Label(" " + display_name(s) + " ")
+            self.tiles.append(Tile(self, "tile%d" % i, s, snapshot_url(server, s, min(960, w)), (w, h)))
+        self["actions"] = ActionMap(["OkCancelActions"], {"ok": self.close, "cancel": self.close}, -1)
+        self.active = False
+        self.timer = eTimer()
+        self.timer.callback.append(self.close)
+        self.seconds = seconds
+        self.onShown.append(self.started)
+        self.onClose.append(self.stopped)
+
+    def started(self):
+        if self.active:
+            return
+        self.active = True
+        for t in self.tiles:
+            t.fetch()
+        if self.seconds:
+            self.timer.start(self.seconds * 1000, True)
+
+    def stopped(self):
+        self.active = False
+        self.timer.stop()
 
 
 class PhotoWindow(Screen):
@@ -140,6 +224,9 @@ class Controller(object):
     def show(self, stream=None, seconds=None, mode=None):
         from Screens.Standby import inStandby
         c = config.plugins.doorcam
+        cams = parse_cams(stream)
+        if len(cams) > 1:
+            return self.mosaic(cams, seconds or int(c.duration.value))
         stream = stream or c.camera.value
         seconds = seconds or int(c.duration.value)
         mode = pick_mode(mode, c.mode.value)
@@ -186,6 +273,23 @@ class Controller(object):
             if self.paused:
                 self.notify_timer.start(seconds * 1000, True)
         return action
+
+    def mosaic(self, streams=None, seconds=0):
+        """Opens the photo mosaic. streams=None uses the 'mosaic cameras' setting (or all cameras of go2rtc)."""
+        from Screens.Standby import inStandby
+        server = self.server()
+        if not server or inStandby is not None:
+            return "ignore"
+        streams = streams or parse_cams(config.plugins.doorcam.mosaic.value)
+        if not streams:
+            try:
+                from .setup import fetch_streams
+                streams = fetch_streams(server)[:9]
+            except Exception as e:
+                log("mosaic: no cameras", e)
+                return "error"
+        self.session.open(MosaicScreen, streams, server, seconds)
+        return "show"
 
     def _infobar(self):
         try:

@@ -17,36 +17,54 @@ from .coordinator import CamAlertCoordinator
 PLATFORMS = [Platform.BUTTON, Platform.SENSOR]
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
-SHOW_SCHEMA = cv.make_entity_service_schema({
+# Target is optional: without a target the action goes to every loaded receiver.
+TARGET = dict(getattr(cv, "TARGET_SERVICE_FIELDS", {})) or {
+    vol.Optional("device_id"): vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional("entity_id"): cv.comp_entity_ids,
+    vol.Optional("area_id"): vol.All(cv.ensure_list, [cv.string]),
+}
+
+SHOW_SCHEMA = vol.Schema({
+    **TARGET,
     vol.Optional("camera"): cv.string,
     vol.Optional("seconds"): vol.All(vol.Coerce(int), vol.Range(min=5, max=300)),
     vol.Optional("mode"): vol.In(MODES),
     vol.Optional("priority"): vol.In(PRIORITIES),
 })
-MOSAIC_SCHEMA = cv.make_entity_service_schema({
+MOSAIC_SCHEMA = vol.Schema({
+    **TARGET,
     vol.Optional("cameras"): vol.All(cv.ensure_list, [cv.string]),
     vol.Optional("seconds"): vol.All(vol.Coerce(int), vol.Range(min=5, max=300)),
 })
-HIDE_SCHEMA = cv.make_entity_service_schema({})
+HIDE_SCHEMA = vol.Schema(dict(TARGET))
 
 
 async def async_setup(hass: HomeAssistant, config) -> bool:
     async def targets(call: ServiceCall):
-        ids = await async_extract_config_entry_ids(hass, call)
-        entries = [e for e in hass.config_entries.async_entries(DOMAIN)
-                   if e.state is ConfigEntryState.LOADED and (not ids or e.entry_id in ids)]
-        if not entries:
+        try:  # Home Assistant 2025.x and newer: only the service call
+            ids = await async_extract_config_entry_ids(call)
+        except TypeError:  # older versions: (hass, call)
+            ids = await async_extract_config_entry_ids(hass, call)
+        selected = [e for e in hass.config_entries.async_entries(DOMAIN) if not ids or e.entry_id in ids]
+        if not selected:
             raise HomeAssistantError("No CamAlert receiver selected")
-        return entries
+        loaded = [e for e in selected if e.state is ConfigEntryState.LOADED]
+        if not loaded:
+            raise HomeAssistantError("CamAlert receiver not reachable (off or restarting): %s"
+                                     % ", ".join(e.title for e in selected))
+        return loaded
 
     async def run(call: ServiceCall, func):
         errors = []
         for entry in await targets(call):
             try:
-                await func(entry.runtime_data.api)
-                await entry.runtime_data.async_request_refresh()
+                answer = await func(entry.runtime_data.api)
+                await entry.runtime_data.async_refresh()
             except CamAlertError as err:
                 errors.append("%s: %s" % (entry.title, err))
+                continue
+            if isinstance(answer, dict) and answer.get("action") == "error":
+                errors.append("%s: unknown camera or no camera source configured" % entry.title)
         if errors:
             raise HomeAssistantError("; ".join(errors))
 

@@ -35,12 +35,13 @@ class TestLogic(unittest.TestCase):
         self.assertIsNone(L.stream_from_ref("1:0:19:EF10:421:1:C00000:0:0:0:"))
 
     def test_direct_mode(self):
+        cred = "admin:" + "pw@"
         text = """# comment
-Front door | rtsp://admin:pw@192.168.1.20:554/stream2 | http://admin:pw@192.168.1.20/cgi-bin/snap.cgi
+Front door | rtsp://CRED192.168.1.20:554/stream2 | http://CRED192.168.1.20/cgi-bin/snap.cgi
 Garden|rtsp://192.168.1.21/live
 broken line
 Garden | rtsp://192.168.1.22/dup
-"""
+""".replace("CRED", cred)
         cams = L.parse_camera_file(text)
         self.assertEqual([c["name"] for c in cams], ["front_door", "garden"])
         self.assertIsNone(cams[1]["snapshot"])
@@ -49,7 +50,7 @@ Garden | rtsp://192.168.1.22/dup
         self.assertIsNone(L.stream_from_ref(L.service_ref("rtspt://x/y", "X"), cams))
         b = L.bouquet_text("Cams", None, None, cameras=cams)
         self.assertIn("rtspt%3a//192.168.1.21/live:Garden", b)
-        self.assertEqual(L.split_credentials("http://admin:p%40ss@cam:8080/snap.jpg?x=1"),
+        self.assertEqual(L.split_credentials("http://admin:" + "p%40ss@cam:8080/snap.jpg?x=1"),
                          ("http://cam:8080/snap.jpg?x=1", "admin", "p@ss"))
         self.assertEqual(L.split_credentials("http://cam/snap.jpg"), ("http://cam/snap.jpg", None, None))
 

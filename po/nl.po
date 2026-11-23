@@ -216,3 +216,21 @@ msgstr "Klaar"
 msgid "Start again"
 msgstr "Opnieuw beginnen"
 
+msgid "go2rtc server"
+msgstr "go2rtc-server"
+
+msgid "Directly from the cameras"
+msgstr "Rechtstreeks van de camera's"
+
+msgid "Cameras via"
+msgstr "Camera's via"
+
+msgid "go2rtc is recommended. Without go2rtc, list your cameras in %s"
+msgstr "go2rtc wordt aangeraden. Zonder go2rtc zet je je camera's in %s"
+
+msgid "Check certificates"
+msgstr "Certificaten controleren"
+
+msgid "No cameras found in %s.\nSee the guide for the format."
+msgstr "Geen camera's gevonden in %s.\nZie de handleiding voor de opbouw."
+

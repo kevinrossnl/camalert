@@ -20,8 +20,9 @@ from twisted.internet import reactor, threads
 from . import _
 from Components.ActionMap import ActionMap
 
-from .logic import (decide, display_name, grid, in_time_window, parse_cams, lowered_volume, normalize_server, pick_mode, rtsp_url,
-                    service_ref, should_pause, snapshot_url, stream_from_ref, window_geometry)
+from .logic import (decide, display_name, grid, in_time_window, lowered_volume, normalize_server, parse_camera_file,
+                    parse_cams, pick_mode, rtsp_url, service_ref, should_pause, snapshot_url, split_credentials,
+                    stream_from_ref, tcp_url, window_geometry)
 
 PHOTO = "/tmp/doorcam.jpg"
 
@@ -30,14 +31,54 @@ def log(*args):
     print("[DoorCam]", *args)
 
 
+CAMERA_FILE = "/etc/enigma2/doorcam_cameras.conf"
+
+
 def open_url(url, timeout=8):
-    """urlopen that honours the 'check go2rtc certificate' setting for https addresses."""
-    ctx = None
+    """urlopen that honours the 'check certificate' setting and supports user:password@ (basic and digest)."""
+    url, user, password = split_credentials(url)
+    handlers = []
     if url.startswith("https://") and not config.plugins.doorcam.verify_ssl.value:
         ctx = ssl.create_default_context()
         ctx.check_hostname = False
         ctx.verify_mode = ssl.CERT_NONE
-    return urllib.request.urlopen(url, timeout=timeout, context=ctx)
+        handlers.append(urllib.request.HTTPSHandler(context=ctx))
+    if user is not None:
+        mgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
+        mgr.add_password(None, url, user, password)
+        handlers += [urllib.request.HTTPBasicAuthHandler(mgr), urllib.request.HTTPDigestAuthHandler(mgr)]
+    return urllib.request.build_opener(*handlers).open(url, timeout=timeout)
+
+
+def direct_cameras():
+    """Cameras from the camera file (direct mode), or [] if the file is missing."""
+    try:
+        with open(CAMERA_FILE, encoding="utf-8") as f:
+            return parse_camera_file(f.read())
+    except OSError:
+        return []
+
+
+def camera_urls(name):
+    """(live url, snapshot url or None, title) for a camera in the current mode; None if unknown."""
+    c = config.plugins.doorcam
+    if c.source.value == "direct":
+        for cam in direct_cameras():
+            if cam["name"] == name:
+                return tcp_url(cam["rtsp"]), cam["snapshot"], cam["title"]
+        return None
+    server = normalize_server(c.server.value)
+    if not server:
+        return None
+    return rtsp_url(server, name, int(c.rtsp_port.value)), snapshot_url(server, name), display_name(name)
+
+
+def all_camera_names():
+    """Camera names in the current mode (go2rtc mode needs a network call; call from a thread)."""
+    if config.plugins.doorcam.source.value == "direct":
+        return [cam["name"] for cam in direct_cameras()]
+    from .setup import fetch_streams
+    return fetch_streams(normalize_server(config.plugins.doorcam.server.value))
 
 
 def _download(url, path=PHOTO):
@@ -87,10 +128,11 @@ class Tile(object):
 class MosaicScreen(Screen):
     """Full-screen grid with up to 9 cameras (photo mode). Closes with EXIT/OK or after `seconds` (0 = stay open)."""
 
-    def __init__(self, session, streams, server, seconds=0):
+    def __init__(self, session, cams, seconds=0):
+        """cams: list of (name, title, snapshot url)."""
         size = getDesktop(0).size()
         sw, sh = size.width(), size.height()
-        tiles = grid(len(streams), sw, sh - int(50 * sw / 1920.0))
+        tiles = grid(len(cams), sw, sh - int(50 * sw / 1920.0))
         f = sw / 1920.0
         top = int(50 * f)
         parts = ['<screen name="DoorCamMosaic" position="0,0" size="%d,%d" flags="wfNoBorder" backgroundColor="#000000">' % (sw, sh),
@@ -105,10 +147,11 @@ class MosaicScreen(Screen):
         Screen.__init__(self, session)
         self["title"] = Label(_("Cameras") + "  ·  " + _("EXIT = close"))
         self.tiles = []
-        for i, (s, (x, y, w, h)) in enumerate(zip(streams, tiles)):
+        for i, ((name, title, url), (x, y, w, h)) in enumerate(zip(cams, tiles)):
             self["tile%d" % i] = Pixmap()
-            self["label%d" % i] = Label(" " + display_name(s) + " ")
-            self.tiles.append(Tile(self, "tile%d" % i, s, snapshot_url(server, s, min(960, w)), (w, h)))
+            self["label%d" % i] = Label(" " + title + " ")
+            url = url.replace("width=640", "width=%d" % min(960, w)) if "/api/frame.jpeg" in url else url
+            self.tiles.append(Tile(self, "tile%d" % i, name, url, (w, h)))
         self["actions"] = ActionMap(["OkCancelActions"], {"ok": self.close, "cancel": self.close}, -1)
         self.active = False
         self.timer = eTimer()
@@ -134,7 +177,7 @@ class MosaicScreen(Screen):
 class PhotoWindow(Screen):
     """Small always-on-top window that keeps fetching a fresh snapshot from go2rtc (about one every 1-2 s)."""
 
-    def __init__(self, session, stream, url):
+    def __init__(self, session, stream, url, title=None):
         c = config.plugins.doorcam
         size = getDesktop(0).size()
         x, y, w, h, t = window_geometry(c.position.value, c.size.value, size.width(), size.height())
@@ -146,7 +189,7 @@ class PhotoWindow(Screen):
         </screen>""" % (x, y, w, h + t, w, h + t, int(10 * f), w - int(20 * f), t, int(26 * f), t, w, h)
         Screen.__init__(self, session)
         self.stream, self.url, self.size = stream, url, (w, h)
-        self["title"] = Label(display_name(stream))
+        self["title"] = Label(title or display_name(stream))
         self["photo"] = Pixmap()
         self.picload = ePicLoad()
         self.busy = self.active = False
@@ -218,7 +261,10 @@ class Controller(object):
 
     def current_stream(self):
         ref = self.session.nav.getCurrentlyPlayingServiceReference()
-        return stream_from_ref(ref.toString()) if ref else None
+        if not ref:
+            return None
+        direct = config.plugins.doorcam.source.value == "direct"
+        return stream_from_ref(ref.toString(), direct_cameras() if direct else None)
 
     # --- public ----------------------------------------------------------------------------------------------
     def show(self, stream=None, seconds=None, mode=None):
@@ -230,10 +276,13 @@ class Controller(object):
         stream = stream or c.camera.value
         seconds = seconds or int(c.duration.value)
         mode = pick_mode(mode, c.mode.value)
-        server = self.server()
-        if not server:
-            log("no valid go2rtc address configured")
+        urls = camera_urls(stream)
+        if not urls:
+            log("unknown camera or no valid go2rtc address:", stream)
             return "error"
+        live_url, snap_url, title = urls
+        if mode == "photo" and not snap_url:
+            mode = "live"  # camera has no snapshot address (direct mode)
         if c.limit_hours.value:
             t = time.localtime()
             if not in_time_window((t.tm_hour, t.tm_min), tuple(c.from_time.value), tuple(c.until_time.value)):
@@ -255,20 +304,19 @@ class Controller(object):
                 self.window.extend(seconds)
             else:
                 self.hide()
-                self.window = self.session.instantiateDialog(PhotoWindow, stream, snapshot_url(server, stream))
+                self.window = self.session.instantiateDialog(PhotoWindow, stream, snap_url, title)
                 self.window.start(seconds)
         elif mode == "live":
             if action == "show":
                 if self.live_stream is None:
                     cur = self.session.nav.getCurrentlyPlayingServiceOrGroup()
                     self.previous_ref = cur.toString() if cur else None
-                url = rtsp_url(server, stream, int(c.rtsp_port.value))
-                self.session.nav.playService(eServiceReference(service_ref(url, display_name(stream))))
+                self.session.nav.playService(eServiceReference(service_ref(live_url, title)))
                 self.live_stream = stream
                 self.lower_volume(int(c.live_volume.value))
             self.live_timer.start(seconds * 1000, True)
         else:
-            Notifications.AddPopup(_("Camera: %s") % display_name(stream), MessageBox.TYPE_INFO, seconds,
+            Notifications.AddPopup(_("Camera: %s") % title, MessageBox.TYPE_INFO, seconds,
                                    id="DoorCam")
             if self.paused:
                 self.notify_timer.start(seconds * 1000, True)
@@ -277,18 +325,24 @@ class Controller(object):
     def mosaic(self, streams=None, seconds=0):
         """Opens the photo mosaic. streams=None uses the 'mosaic cameras' setting (or all cameras of go2rtc)."""
         from Screens.Standby import inStandby
-        server = self.server()
-        if not server or inStandby is not None:
+        if inStandby is not None:
             return "ignore"
         streams = streams or parse_cams(config.plugins.doorcam.mosaic.value)
         if not streams:
             try:
-                from .setup import fetch_streams
-                streams = fetch_streams(server)[:9]
+                streams = all_camera_names()
             except Exception as e:
                 log("mosaic: no cameras", e)
                 return "error"
-        self.session.open(MosaicScreen, streams, server, seconds)
+        tiles = []
+        for s in streams:
+            urls = camera_urls(s)
+            if urls and urls[1]:
+                tiles.append((s, urls[2], urls[1]))
+        if not tiles:
+            log("mosaic: no cameras with a snapshot address")
+            return "error"
+        self.session.open(MosaicScreen, tiles[:9], seconds)
         return "show"
 
     def _infobar(self):

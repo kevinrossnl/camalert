@@ -216,3 +216,21 @@ msgstr "Gotowe"
 msgid "Start again"
 msgstr "Zacznij od nowa"
 
+msgid "go2rtc server"
+msgstr "Serwer go2rtc"
+
+msgid "Directly from the cameras"
+msgstr "Bezpośrednio z kamer"
+
+msgid "Cameras via"
+msgstr "Kamery przez"
+
+msgid "go2rtc is recommended. Without go2rtc, list your cameras in %s"
+msgstr "Zalecane jest go2rtc. Bez go2rtc wpisz kamery do %s"
+
+msgid "Check certificates"
+msgstr "Sprawdzaj certyfikaty"
+
+msgid "No cameras found in %s.\nSee the guide for the format."
+msgstr "Nie znaleziono kamer w %s.\nFormat opisano w instrukcji."
+

@@ -16,7 +16,7 @@ from twisted.internet import threads
 
 from . import _, __version__
 from . import server
-from .display import Controller, open_url
+from .display import CAMERA_FILE, Controller, all_camera_names, direct_cameras, open_url
 from .logic import (BOUQUET_FILE, add_to_bouquets, bouquet_text, display_name, normalize_server, parse_cams,
                     streams_from_json)
 
@@ -58,11 +58,15 @@ class DoorCamSetup(ConfigListScreen, Screen):
         c = config.plugins.doorcam
         items = [
             (_("Enable DoorCam"), c.enabled, _("Turn the HTTP API and pop-ups on or off.")),
-            (_("go2rtc address"), c.server, _("Address of your go2rtc server, e.g. http://192.168.1.10:1984")),
-            (_("go2rtc RTSP port"), c.rtsp_port, _("Usually 8554. Used for live view and the camera list.")),
+            (_("Cameras via"), c.source, _("go2rtc is recommended. Without go2rtc, list your cameras in %s") % CAMERA_FILE),
         ]
-        if c.server.value.strip().lower().startswith("https"):
-            items += [(_("Check go2rtc certificate"), c.verify_ssl,
+        if c.source.value == "go2rtc":
+            items += [
+                (_("go2rtc address"), c.server, _("Address of your go2rtc server, e.g. http://192.168.1.10:1984")),
+                (_("go2rtc RTSP port"), c.rtsp_port, _("Usually 8554. Used for live view and the camera list.")),
+            ]
+        if c.source.value == "direct" or c.server.value.strip().lower().startswith("https"):
+            items += [(_("Check certificates"), c.verify_ssl,
                        _("Turn off for a self-signed certificate (only in your own network)."))]
         items += [
             (_("Default camera"), c.camera, _("Press OK to choose from the cameras in go2rtc.")),
@@ -100,20 +104,26 @@ class DoorCamSetup(ConfigListScreen, Screen):
         self["help"].text = self.help_texts[i] if 0 <= i < len(self.help_texts) else ""
 
     def server(self):
-        srv = normalize_server(config.plugins.doorcam.server.value)
-        if not srv:
+        """Checks the camera source; returns True if cameras can be listed."""
+        c = config.plugins.doorcam
+        if c.source.value == "direct":
+            if not direct_cameras():
+                self.session.open(MessageBox, _("No cameras found in %s.\nSee the guide for the format.") % CAMERA_FILE,
+                                  MessageBox.TYPE_ERROR)
+                return False
+            return True
+        if not normalize_server(c.server.value):
             self.session.open(MessageBox, _("Please enter a valid go2rtc address first."), MessageBox.TYPE_ERROR)
-        return srv
+            return False
+        return True
 
     def ok(self):
         if self["config"].getCurrent()[1] is config.plugins.doorcam.mosaic:
-            srv = self.server()
-            if srv:
-                threads.deferToThread(fetch_streams, srv).addCallbacks(self.choose_mosaic, self.fetch_failed)
+            if self.server():
+                threads.deferToThread(all_camera_names).addCallbacks(self.choose_mosaic, self.fetch_failed)
         elif self["config"].getCurrent()[1] is config.plugins.doorcam.camera:
-            srv = self.server()
-            if srv:
-                threads.deferToThread(fetch_streams, srv).addCallbacks(self.choose_camera, self.fetch_failed)
+            if self.server():
+                threads.deferToThread(all_camera_names).addCallbacks(self.choose_camera, self.fetch_failed)
         else:
             for name in ("keyOK", "keySelect", "keyText"):
                 handler = getattr(self, name, None)
@@ -124,12 +134,17 @@ class DoorCamSetup(ConfigListScreen, Screen):
     def fetch_failed(self, err):
         self.session.open(MessageBox, _("Could not reach go2rtc:\n%s") % err.getErrorMessage(), MessageBox.TYPE_ERROR)
 
+    def titles(self):
+        if config.plugins.doorcam.source.value == "direct":
+            return {cam["name"]: cam["title"] for cam in direct_cameras()}
+        return {}
+
     def choose_camera(self, streams):
         if not streams:
             self.session.open(MessageBox, _("go2rtc has no cameras configured."), MessageBox.TYPE_WARNING)
             return
         self.session.openWithCallback(self.camera_chosen, ChoiceBox, title=_("Choose camera"),
-                                      list=[(display_name(s), s) for s in streams])
+                                      list=[(self.titles().get(s, display_name(s)), s) for s in streams])
 
     def camera_chosen(self, choice):
         if choice:
@@ -165,18 +180,19 @@ class DoorCamSetup(ConfigListScreen, Screen):
         self["config"].invalidateCurrent()
 
     def make_bouquet(self):
-        srv = self.server()
-        if srv:
-            threads.deferToThread(fetch_streams, srv).addCallbacks(self.write_bouquet, self.fetch_failed)
+        if self.server():
+            threads.deferToThread(all_camera_names).addCallbacks(self.write_bouquet, self.fetch_failed)
 
     def write_bouquet(self, streams):
         c = config.plugins.doorcam
         if not streams:
             self.session.open(MessageBox, _("go2rtc has no cameras configured."), MessageBox.TYPE_WARNING)
             return
+        os.makedirs(E2, exist_ok=True)
         with open(E2 + BOUQUET_FILE + ".tmp", "w") as f:
+            direct = direct_cameras() if c.source.value == "direct" else None
             f.write(bouquet_text(c.bouquet_name.value or "Cameras", normalize_server(c.server.value), streams,
-                                 int(c.rtsp_port.value)))
+                                 int(c.rtsp_port.value), cameras=direct))
         os.replace(E2 + BOUQUET_FILE + ".tmp", E2 + BOUQUET_FILE)
         with open(E2 + "bouquets.tv") as f:
             old = f.read()

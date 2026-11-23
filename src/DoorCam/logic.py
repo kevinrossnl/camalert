@@ -81,21 +81,67 @@ def service_ref(url, name, number=1):
     return "%d:0:1:DC%02X:0:0:0:0:0:0:%s:%s" % (SERVICE_TYPE, number % 256, url.replace(":", "%3a"), name.replace(":", " "))
 
 
-def stream_from_ref(ref):
-    """Stream name from a DoorCam service reference, or None."""
+def url_from_ref(ref):
     parts = (ref or "").split(":")
     if len(parts) < 12:
         return None
-    url = unquote(":".join(parts[10:-1]))
+    return unquote(":".join(parts[10:-1]))
+
+
+def stream_from_ref(ref, cameras=None):
+    """Camera name from a service reference, or None. `cameras` (direct mode): list from parse_camera_file."""
+    url = url_from_ref(ref)
+    if not url:
+        return None
+    if cameras:
+        for cam in cameras:
+            if tcp_url(cam["rtsp"]) == url or cam["rtsp"] == url:
+                return cam["name"]
+        return None
     m = re.match(r"^rtspt?://[^/]+/([A-Za-z0-9_.-]+)$", url)
     return m.group(1) if m else None
 
 
-def bouquet_text(title, server, streams, port=8554):
+def tcp_url(url):
+    """rtsp:// -> rtspt:// (RTSP over TCP; UDP often fails between networks)."""
+    return "rtspt://" + url[len("rtsp://"):] if url.startswith("rtsp://") else url
+
+
+def parse_camera_file(text):
+    """Direct mode (no go2rtc). One camera per line:  name | rtsp-url | snapshot-url (optional).  # = comment."""
+    cams = []
+    for line in (text or "").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = [p.strip() for p in line.split("|")]
+        if len(parts) < 2 or not parts[1].startswith(("rtsp://", "rtsps://", "rtspt://", "http://", "https://")):
+            continue
+        name = slug(parts[0])
+        if not name or any(c["name"] == name for c in cams):
+            continue
+        snap = parts[2] if len(parts) > 2 and parts[2].startswith(("http://", "https://")) else None
+        cams.append({"name": name, "title": parts[0], "rtsp": parts[1], "snapshot": snap})
+    return cams
+
+
+def split_credentials(url):
+    """'http://user:pw@host/x' -> ('http://host/x', 'user', 'pw'); without credentials user/pw are None."""
+    p = urlsplit(url)
+    if p.username is None:
+        return url, None, None
+    host = p.hostname + (":%d" % p.port if p.port else "")
+    clean = "%s://%s%s%s" % (p.scheme, host, p.path, ("?" + p.query) if p.query else "")
+    return clean, unquote(p.username), unquote(p.password or "")
+
+
+def bouquet_text(title, server, streams, port=8554, cameras=None):
+    """Channel list. go2rtc mode: `streams` names via `server`; direct mode: `cameras` from parse_camera_file."""
     lines = ["#NAME %s" % title]
-    for i, s in enumerate(streams, 1):
-        name = display_name(s)
-        lines.append("#SERVICE " + service_ref(rtsp_url(server, s, port), name, i))
+    entries = [(c["title"], tcp_url(c["rtsp"])) for c in cameras] if cameras else \
+        [(display_name(s), rtsp_url(server, s, port)) for s in streams]
+    for i, (name, url) in enumerate(entries, 1):
+        lines.append("#SERVICE " + service_ref(url, name, i))
         lines.append("#DESCRIPTION " + name)
     return "\n".join(lines) + "\n"
 

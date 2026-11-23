@@ -2,6 +2,12 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
+msgid "go2rtc server"
+msgstr ""
+
+msgid "Directly from the cameras"
+msgstr ""
+
 msgid "Photo window"
 msgstr ""
 
@@ -74,6 +80,12 @@ msgstr ""
 msgid "Turn the HTTP API and pop-ups on or off."
 msgstr ""
 
+msgid "Cameras via"
+msgstr ""
+
+msgid "go2rtc is recommended. Without go2rtc, list your cameras in %s"
+msgstr ""
+
 msgid "go2rtc address"
 msgstr ""
 
@@ -86,7 +98,7 @@ msgstr ""
 msgid "Usually 8554. Used for live view and the camera list."
 msgstr ""
 
-msgid "Check go2rtc certificate"
+msgid "Check certificates"
 msgstr ""
 
 msgid "Turn off for a self-signed certificate (only in your own network)."
@@ -189,6 +201,9 @@ msgid "Mosaic cameras"
 msgstr ""
 
 msgid "Press OK to choose up to 9 cameras for the mosaic. Empty = all."
+msgstr ""
+
+msgid "No cameras found in %s.\nSee the guide for the format."
 msgstr ""
 
 msgid "Please enter a valid go2rtc address first."

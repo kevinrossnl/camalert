@@ -30,6 +30,8 @@ language.addCallback(localeInit)
 config.plugins.doorcam = ConfigSubsection()
 c = config.plugins.doorcam
 c.enabled = ConfigYesNo(default=True)
+c.source = ConfigSelection(default="go2rtc", choices=[
+    ("go2rtc", _("go2rtc server")), ("direct", _("Directly from the cameras"))])
 c.server = ConfigText(default="http://192.168.1.10:1984", fixed_size=False)
 c.rtsp_port = ConfigInteger(default=8554, limits=(1, 65535))
 c.camera = ConfigText(default="", fixed_size=False)

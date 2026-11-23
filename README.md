@@ -10,7 +10,7 @@ When someone rings the doorbell or walks up to the front door, your home automat
 
 It also creates a **channel list with all your cameras**, so you can zap to them like normal channels.
 
-DoorCam works with any camera that has an RTSP stream (UniFi Protect, Reolink, Hikvision, Dahua/Amcrest, TP-Link Tapo, Axis, ...) through **[go2rtc](https://github.com/AlexxIT/go2rtc)**, a small free camera streaming server.
+DoorCam works with any camera that has an RTSP stream (UniFi Protect, Reolink, Hikvision, Dahua/Amcrest, TP-Link Tapo, Axis, ...), preferably through **[go2rtc](https://github.com/AlexxIT/go2rtc)**, a small free camera streaming server. It can also [connect to the cameras directly](docs/without-go2rtc.md).
 
 > 📖 **New here? Follow the [step-by-step guide](docs/guide.md).** No programming needed.
 
@@ -54,6 +54,7 @@ Then restart the GUI and open **Menu › Plugins › DoorCam**.
 | [go2rtc as Home Assistant app](docs/go2rtc-home-assistant.md) | Easiest if you already run Home Assistant OS |
 | [go2rtc in Docker / TrueNAS / Synology](docs/go2rtc-docker.md) | Run go2rtc as its own container |
 | [Camera stream addresses](docs/cameras.md) | RTSP URLs for popular camera brands |
+| [Without go2rtc](docs/without-go2rtc.md) | Connect the receiver directly to the cameras |
 | [Home Assistant automation](docs/home-assistant.md) | Show a camera on motion or doorbell |
 | [Several cameras at once](docs/mosaic.md) | Photo mosaic or live mosaic channel |
 | [HTTP API](docs/api.md) | For other systems and scripts |

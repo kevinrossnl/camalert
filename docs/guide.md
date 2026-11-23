@@ -17,6 +17,8 @@ Test it on a computer with [VLC](https://www.videolan.org/): *Media › Open Net
 
 ## Step 2 – Install go2rtc
 
+(Don't want an extra server? Skip to [using DoorCam without go2rtc](without-go2rtc.md).)
+
 Choose one:
 
 - **A. You run Home Assistant OS** → [install the go2rtc app](go2rtc-home-assistant.md) (easiest).

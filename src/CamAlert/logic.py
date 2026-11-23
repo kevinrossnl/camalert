@@ -135,11 +135,11 @@ def split_credentials(url):
     return clean, unquote(p.username), unquote(p.password or "")
 
 
-def bouquet_text(title, server, streams, port=8554, cameras=None):
-    """Channel list. go2rtc mode: `streams` names via `server`; direct mode: `cameras` from parse_camera_file."""
+def bouquet_text(title, server, streams, port=8554, cameras=None, titles=None):
+    """Channel list. go2rtc mode: `streams` names via `server` (names from `titles`); direct mode: `cameras`."""
     lines = ["#NAME %s" % title]
     entries = [(c["title"], tcp_url(c["rtsp"])) for c in cameras] if cameras else \
-        [(display_name(s), rtsp_url(server, s, port)) for s in streams]
+        [((titles or {}).get(s) or display_name(s), rtsp_url(server, s, port)) for s in streams]
     for i, (name, url) in enumerate(entries, 1):
         lines.append("#SERVICE " + service_ref(url, name, i))
         lines.append("#DESCRIPTION " + name)
@@ -434,3 +434,43 @@ def valid_port(value, default):
     except (TypeError, ValueError):
         return default
     return p if 1 <= p <= 65535 else default
+
+
+# --- camera names (go2rtc mode) -------------------------------------------------------------------------------
+def parse_titles(text):
+    """'front_door=Front door|garden=Garden' -> {'front_door': 'Front door', 'garden': 'Garden'}."""
+    out = {}
+    for part in (text or "").split("|"):
+        if "=" in part:
+            k, v = part.split("=", 1)
+            k, v = k.strip(), v.strip()
+            if re.match(r"^[A-Za-z0-9_.-]+$", k) and v:
+                out[k] = v
+    return out
+
+
+def format_titles(titles):
+    """Inverse of parse_titles; empty names are dropped, '|' and newlines are removed from names."""
+    items = []
+    for k in sorted(titles):
+        v = re.sub(r"[|\r\n]", " ", titles[k] or "").strip()
+        if v:
+            items.append("%s=%s" % (k, v))
+    return "|".join(items)
+
+
+def title_for(name, titles):
+    return (titles or {}).get(name) or display_name(name)
+
+
+# --- automatic camera list ------------------------------------------------------------------------------------
+def place_in_bouquets(bouquets_tv, filename=BOUQUET_FILE, position="bottom"):
+    """bouquets.tv with our bouquet at the top (first bouquet) or bottom; every other line is kept as it is."""
+    line = '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "%s" ORDER BY bouquet' % filename
+    lines = [l for l in bouquets_tv.splitlines() if ('"%s"' % filename) not in l]
+    if position == "top":
+        at = 1 if lines and lines[0].startswith("#NAME") else 0
+        lines.insert(at, line)
+    else:
+        lines.append(line)
+    return "\n".join(lines) + "\n"

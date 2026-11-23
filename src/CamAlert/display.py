@@ -20,7 +20,7 @@ from twisted.internet import reactor, threads
 from . import _
 from Components.ActionMap import ActionMap
 
-from .logic import (valid_port, blocked_by_rules, clock_tuple, key_action, known_camera, neighbour, pick_priority, decide, display_name, grid, in_time_window, lowered_volume, normalize_server, parse_camera_file,
+from .logic import (valid_port, parse_titles, title_for, blocked_by_rules, clock_tuple, key_action, known_camera, neighbour, pick_priority, decide, display_name, grid, in_time_window, lowered_volume, normalize_server, parse_camera_file,
                     parse_cams, pick_mode, rtsp_url, service_ref, should_pause, snapshot_url, split_credentials,
                     stream_from_ref, tcp_url, window_geometry)
 
@@ -70,7 +70,8 @@ def camera_urls(name):
     server = normalize_server(c.server.value)
     if not server:
         return None
-    return rtsp_url(server, name, valid_port(c.rtsp_port.value, 8554)), snapshot_url(server, name), display_name(name)
+    title = title_for(name, parse_titles(c.titles.value))
+    return rtsp_url(server, name, valid_port(c.rtsp_port.value, 8554)), snapshot_url(server, name), title
 
 
 def all_camera_names():

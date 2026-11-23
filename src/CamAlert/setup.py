@@ -11,14 +11,14 @@ from Screens.MessageBox import MessageBox
 from Components.ActionMap import ActionMap
 from Components.ConfigList import ConfigListScreen
 from Components.Sources.StaticText import StaticText
-from Components.config import config, configfile, getConfigListEntry
+from Components.config import config, configfile, getConfigListEntry, ConfigSelection
 from twisted.internet import threads
 
 from . import _, __version__
 from . import server
 from . import mqtt
 from .display import CAMERA_FILE, Controller, all_camera_names, direct_cameras, open_url
-from .logic import (valid_port, BOUQUET_FILE, add_to_bouquets, bouquet_text, display_name, normalize_server, parse_cams,
+from .logic import (valid_port, format_titles, parse_titles, title_for, BOUQUET_FILE, add_to_bouquets, bouquet_text, display_name, normalize_server, parse_cams,
                     streams_from_json)
 
 E2 = "/etc/enigma2/"
@@ -30,18 +30,31 @@ def fetch_streams(srv):
 
 
 class CamAlertSetup(ConfigListScreen, Screen):
-    skin = """<screen name="CamAlertSetup" position="center,center" size="1100,700" title="CamAlert">
-        <widget name="config" position="20,20" size="1060,520" itemHeight="40" font="Regular;28" scrollbarMode="showOnDemand" />
-        <widget source="help" render="Label" position="20,550" size="1060,80" font="Regular;24" foregroundColor="#aaaaaa" />
-        <widget source="key_red" render="Label" position="20,645" size="250,40" backgroundColor="#9f1313" font="Regular;24" halign="center" valign="center" />
-        <widget source="key_green" render="Label" position="290,645" size="250,40" backgroundColor="#1f771f" font="Regular;24" halign="center" valign="center" />
-        <widget source="key_yellow" render="Label" position="560,645" size="250,40" backgroundColor="#a08000" font="Regular;24" halign="center" valign="center" />
+    # Designed for 1920x1080 and scaled to the receiver's skin resolution (many skins are 1280x720).
+    SKIN = """<screen name="CamAlertSetup" position="center,center" size="{W},{H}" title="CamAlert">
+        <widget name="config" position="{m},{m}" size="{cw},{ch}" itemHeight="{ih}" font="Regular;{fs}" scrollbarMode="showOnDemand" />
+        <widget source="help" render="Label" position="{m},{hy}" size="{cw},{hh}" font="Regular;{hf}" foregroundColor="#aaaaaa" />
         <widget name="HelpWindow" position="0,0" size="1,1" zPosition="1" transparent="1" alphatest="on" />
         <widget source="VKeyIcon" render="Pixmap" position="0,0" size="1,1" conditional="VKeyIcon"><convert type="ConditionalShowHide" /></widget>
-        <widget source="key_blue" render="Label" position="830,645" size="250,40" backgroundColor="#18188b" font="Regular;24" halign="center" valign="center" />
+        <widget source="key_red" render="Label" position="{k0},{ky}" size="{kw},{kh}" backgroundColor="#9f1313" font="Regular;{hf}" halign="center" valign="center" />
+        <widget source="key_green" render="Label" position="{k1},{ky}" size="{kw},{kh}" backgroundColor="#1f771f" font="Regular;{hf}" halign="center" valign="center" />
+        <widget source="key_yellow" render="Label" position="{k2},{ky}" size="{kw},{kh}" backgroundColor="#a08000" font="Regular;{hf}" halign="center" valign="center" />
+        <widget source="key_blue" render="Label" position="{k3},{ky}" size="{kw},{kh}" backgroundColor="#18188b" font="Regular;{hf}" halign="center" valign="center" />
     </screen>"""
 
+    @staticmethod
+    def build_skin(screen_w):
+        f = screen_w / 1920.0
+
+        def v(x):
+            return int(round(x * f))
+        return CamAlertSetup.SKIN.format(
+            W=v(1100), H=v(820), m=v(20), cw=v(1060), ch=v(600), ih=v(42), fs=v(30), hy=v(630), hh=v(100), hf=v(26),
+            ky=v(755), kw=v(250), kh=v(46), k0=v(20), k1=v(290), k2=v(560), k3=v(830))
+
     def __init__(self, session):
+        from enigma import getDesktop
+        self.skin = self.build_skin(getDesktop(0).size().width())
         Screen.__init__(self, session)
         self.setTitle("CamAlert %s" % __version__)
         self["key_red"] = StaticText(_("Cancel"))
@@ -73,6 +86,12 @@ class CamAlertSetup(ConfigListScreen, Screen):
                        _("Turn off for a self-signed certificate (only in your own network)."))]
         items += [
             (_("Default camera"), c.camera, _("Press OK to choose from the cameras in go2rtc.")),
+        ]
+        if c.source.value == "go2rtc":
+            n = len(parse_titles(c.titles.value))
+            self.names_entry = ConfigSelection(choices=[("x", (_("%d own names") % n) if n else _("automatic"))])
+            items += [(_("Camera names"), self.names_entry, _("Press OK to give a camera its own name (empty = automatic)."))]
+        items += [
             (_("Display mode"), c.mode, _("Photo window keeps watching TV; live switches the channel to the camera.")),
             (_("Duration (seconds)"), c.duration, _("How long the camera stays on screen.")),
         ]
@@ -102,6 +121,9 @@ class CamAlertSetup(ConfigListScreen, Screen):
             (_("Allowed callers"), c.allow, _("'Local network only' is recommended.")),
             (_("Access token (optional)"), c.token, _("If set, callers must add ?token=... to every request.")),
             (_("Camera list name"), c.bouquet_name, _("Name of the channel list created with the yellow button.")),
+            (_("Update camera list automatically"), c.auto_bouquet,
+             _("Checks every 30 minutes for new or removed cameras and updates the channel list.")),
+            (_("Camera list position"), c.bouquet_position, _("Where the camera list appears among your channel lists.")),
             (_("Mosaic cameras"), c.mosaic, _("Press OK to choose up to 9 cameras for the mosaic. Empty = all.")),
             (_("MQTT (Home Assistant without YAML)"), c.mqtt_enabled,
              _("Connects to your MQTT broker; with discovery the receiver appears in Home Assistant automatically.")),
@@ -137,7 +159,10 @@ class CamAlertSetup(ConfigListScreen, Screen):
         return True
 
     def ok(self):
-        if self["config"].getCurrent()[1] is config.plugins.camalert.mosaic:
+        if self["config"].getCurrent()[1] is getattr(self, "names_entry", None):
+            if self.server():
+                threads.deferToThread(all_camera_names).addCallbacks(self.choose_title_camera, self.fetch_failed)
+        elif self["config"].getCurrent()[1] is config.plugins.camalert.mosaic:
             if self.server():
                 threads.deferToThread(all_camera_names).addCallbacks(self.choose_mosaic, self.fetch_failed)
         elif self["config"].getCurrent()[1] is config.plugins.camalert.camera:
@@ -156,7 +181,7 @@ class CamAlertSetup(ConfigListScreen, Screen):
     def titles(self):
         if config.plugins.camalert.source.value == "direct":
             return {cam["name"]: cam["title"] for cam in direct_cameras()}
-        return {}
+        return parse_titles(config.plugins.camalert.titles.value)
 
     def choose_camera(self, streams):
         if not streams:
@@ -169,6 +194,33 @@ class CamAlertSetup(ConfigListScreen, Screen):
         if choice:
             config.plugins.camalert.camera.value = choice[1]
             self["config"].invalidateCurrent()
+
+    def choose_title_camera(self, streams):
+        if not streams:
+            return
+        titles = parse_titles(config.plugins.camalert.titles.value)
+        self.session.openWithCallback(self.title_camera_chosen, ChoiceBox, title=_("Camera names"),
+                                      list=[("%s  ->  %s" % (s, title_for(s, titles)), s) for s in streams])
+
+    def title_camera_chosen(self, choice):
+        if not choice:
+            return
+        from Screens.VirtualKeyBoard import VirtualKeyBoard
+        self.title_camera = choice[1]
+        current = parse_titles(config.plugins.camalert.titles.value).get(choice[1], "")
+        self.session.openWithCallback(self.title_typed, VirtualKeyBoard,
+                                      title=_("Name for %s (empty = automatic)") % choice[1], text=current)
+
+    def title_typed(self, text):
+        if text is None:
+            return
+        titles = parse_titles(config.plugins.camalert.titles.value)
+        if text.strip():
+            titles[self.title_camera] = text.strip()
+        else:
+            titles.pop(self.title_camera, None)
+        config.plugins.camalert.titles.value = format_titles(titles)
+        self.build()
 
     def choose_mosaic(self, streams):
         self.mosaic_pick = [s for s in parse_cams(config.plugins.camalert.mosaic.value) if s in streams]
@@ -200,37 +252,20 @@ class CamAlertSetup(ConfigListScreen, Screen):
 
     def make_bouquet(self):
         if self.server():
-            threads.deferToThread(all_camera_names).addCallbacks(self.write_bouquet, self.fetch_failed)
+            from . import bouquet
+            bouquet.update(True, self.bouquet_done, self.bouquet_failed)
 
-    def write_bouquet(self, streams):
-        c = config.plugins.camalert
-        if not streams:
+    def bouquet_done(self, changed, count):
+        if not count:
             self.session.open(MessageBox, _("go2rtc has no cameras configured."), MessageBox.TYPE_WARNING)
             return
-        os.makedirs(E2, exist_ok=True)
-        with open(E2 + BOUQUET_FILE + ".tmp", "w") as f:
-            direct = direct_cameras() if c.source.value == "direct" else None
-            f.write(bouquet_text(c.bouquet_name.value or "Cameras", normalize_server(c.server.value), streams,
-                                 valid_port(c.rtsp_port.value, 8554), cameras=direct))
-        os.replace(E2 + BOUQUET_FILE + ".tmp", E2 + BOUQUET_FILE)
-        with open(E2 + "bouquets.tv") as f:
-            old = f.read()
-        new = add_to_bouquets(old)
-        if new != old:
-            with open(E2 + "bouquets.tv.tmp", "w") as f:
-                f.write(new)
-            os.replace(E2 + "bouquets.tv.tmp", E2 + "bouquets.tv")
         if config.plugins.camalert.mqtt_enabled.value and config.plugins.camalert.mqtt_discovery.value:
             mqtt.announce()
-        db = eDVBDB.getInstance()
-        db.reloadBouquets()
-        try:
-            from Screens.InfoBar import InfoBar
-            InfoBar.instance.servicelist.reloadBouquets() if InfoBar.instance else None
-        except Exception:
-            pass
-        self.session.open(MessageBox, _("Channel list '%s' with %d cameras created.") % (c.bouquet_name.value, len(streams)),
-                          MessageBox.TYPE_INFO, timeout=5)
+        self.session.open(MessageBox, _("Channel list '%s' with %d cameras created.") % (
+            config.plugins.camalert.bouquet_name.value, count), MessageBox.TYPE_INFO, timeout=5)
+
+    def bouquet_failed(self, message):
+        self.session.open(MessageBox, _("Could not reach go2rtc:\n%s") % message, MessageBox.TYPE_ERROR)
 
     def test(self):
         c = config.plugins.camalert
@@ -248,6 +283,7 @@ class CamAlertSetup(ConfigListScreen, Screen):
                                                    c.mqtt_discovery, c.mqtt_name, c.source, c.server))
         for x in self["config"].list:
             x[1].save()
+        config.plugins.camalert.titles.save()
         config.plugins.camalert.save()
         configfile.save()  # write /etc/enigma2/settings now, not only at shutdown
         if port_changed:
@@ -262,4 +298,5 @@ class CamAlertSetup(ConfigListScreen, Screen):
     def cancel(self):
         for x in self["config"].list:
             x[1].cancel()
+        config.plugins.camalert.titles.cancel()
         self.close()

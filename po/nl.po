@@ -300,3 +300,36 @@ msgstr "Verzoeken met prioriteit 'alarm' zetten de ontvanger (en via HDMI-CEC de
 msgid "Tour: seconds per camera"
 msgstr "Rondgang: seconden per camera"
 
+msgid "At the bottom"
+msgstr "Onderaan"
+
+msgid "At the top"
+msgstr "Bovenaan"
+
+msgid "Camera names"
+msgstr "Cameranamen"
+
+msgid "Press OK to give a camera its own name (empty = automatic)."
+msgstr "Druk op OK om een camera een eigen naam te geven (leeg = automatisch)."
+
+msgid "Update camera list automatically"
+msgstr "Cameralijst automatisch bijwerken"
+
+msgid "Checks every 30 minutes for new or removed cameras and updates the channel list."
+msgstr "Kijkt elke 30 minuten of er camera's bij of af zijn en werkt de zenderlijst bij."
+
+msgid "Camera list position"
+msgstr "Plaats van de cameralijst"
+
+msgid "Where the camera list appears among your channel lists."
+msgstr "Waar de cameralijst tussen je zenderlijsten staat."
+
+msgid "Name for %s (empty = automatic)"
+msgstr "Naam voor %s (leeg = automatisch)"
+
+msgid "%d own names"
+msgstr "%d eigen namen"
+
+msgid "automatic"
+msgstr "automatisch"
+

@@ -178,6 +178,30 @@ Garden | rtsp://192.168.1.22/dup
         self.assertEqual(L.valid_port("x", 1883), 1883)
         self.assertEqual(L.valid_port(70000, 1883), 1883)
 
+    def test_titles(self):
+        t = L.parse_titles("front_door=Front door | garden=Back garden|bad name=x|empty=|novalue")
+        self.assertEqual(t, {"front_door": "Front door", "garden": "Back garden"})
+        self.assertEqual(L.format_titles({"garden": "Back | garden", "a": "", "front_door": "Front door"}),
+                         "front_door=Front door|garden=Back   garden")
+        self.assertEqual(L.parse_titles(L.format_titles(t)), t)
+        self.assertEqual(L.title_for("garden", t), "Back garden")
+        self.assertEqual(L.title_for("side_gate", t), "Side gate")
+        b = L.bouquet_text("Cams", "http://192.168.1.10:1984", ["front_door", "side_gate"], titles=t)
+        self.assertIn(":Front door\n", b)
+        self.assertIn("#DESCRIPTION Side gate", b)
+
+    def test_place_in_bouquets(self):
+        tv = '#NAME User - bouquets (TV)\n#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "userbouquet.fav.tv" ORDER BY bouquet\n'
+        bottom = L.place_in_bouquets(tv)
+        self.assertTrue(bottom.rstrip().endswith('"userbouquet.camalert.tv" ORDER BY bouquet'))
+        top = L.place_in_bouquets(bottom, position="top")
+        lines = top.splitlines()
+        self.assertTrue(lines[0].startswith("#NAME"))
+        self.assertIn("camalert", lines[1])
+        self.assertIn("userbouquet.fav.tv", lines[2])
+        self.assertEqual(top.count("camalert"), 1)
+        self.assertEqual(L.place_in_bouquets(top, position="top"), top)  # unchanged when already right
+
     def test_neighbour(self):
         self.assertEqual(L.neighbour(["a", "b", "c"], "c", 1), "a")
         self.assertEqual(L.neighbour(["a", "b", "c"], "a", -1), "c")

@@ -300,3 +300,36 @@ msgstr "Żądania z priorytetem 'alarm' włączają odbiornik (i telewizor przez
 msgid "Tour: seconds per camera"
 msgstr "Obchód: sekundy na kamerę"
 
+msgid "At the bottom"
+msgstr "Na dole"
+
+msgid "At the top"
+msgstr "Na górze"
+
+msgid "Camera names"
+msgstr "Nazwy kamer"
+
+msgid "Press OK to give a camera its own name (empty = automatic)."
+msgstr "Naciśnij OK, aby nadać kamerze własną nazwę (puste = automatycznie)."
+
+msgid "Update camera list automatically"
+msgstr "Aktualizuj listę kamer automatycznie"
+
+msgid "Checks every 30 minutes for new or removed cameras and updates the channel list."
+msgstr "Co 30 minut sprawdza nowe lub usunięte kamery i aktualizuje listę."
+
+msgid "Camera list position"
+msgstr "Pozycja listy kamer"
+
+msgid "Where the camera list appears among your channel lists."
+msgstr "Gdzie lista kamer pojawia się wśród list kanałów."
+
+msgid "Name for %s (empty = automatic)"
+msgstr "Nazwa dla %s (puste = automatycznie)"
+
+msgid "%d own names"
+msgstr "%d własnych nazw"
+
+msgid "automatic"
+msgstr "automatycznie"
+

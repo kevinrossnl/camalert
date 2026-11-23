@@ -54,7 +54,8 @@ Open **Menu › Plugins › CamAlert**:
 3. **Display mode**: *Photo window* (you keep watching TV), *Switch to live stream* or *Notification only*.
 4. **Duration**: how long the camera stays on screen.
    - Photo window / notification only: **Pause TV meanwhile** pauses the channel (timeshift) and continues where you left off. This needs a hard disk or USB stick that is set up for timeshift.
-5. Press **yellow** to create the channel list with all cameras.
+5. Press **yellow** to create the channel list with all cameras. CamAlert keeps that list up to date by itself (every 30 minutes, setting *Update camera list automatically*): new cameras in go2rtc appear, removed ones disappear. Choose with *Camera list position* whether the list is at the top or bottom of your channel lists.
+   - **Camera names**: press OK to give a camera its own name (for example `front_door` → "Front door (street)"). The name is used everywhere: channel list, photo window, mosaic, tour and Home Assistant.
 6. Press **blue** to test: the default camera appears for 15 seconds.
 7. Press **green** to save.
 

@@ -26,7 +26,7 @@ CamAlert works with any camera that has an RTSP stream (UniFi Protect, Reolink, 
 - Cameras are read from go2rtc automatically – choose them with the remote.
 - Photo window: position (4 corners) and size (small / medium / large).
 - Live mode with automatic return to the previous channel.
-- One-button camera channel list ("bouquet").
+- Camera channel list ("bouquet") that keeps itself up to date, with your own camera names.
 - Mosaic: up to 9 cameras at once (photo mosaic, or a live mosaic channel via go2rtc).
 - **Home Assistant integration** (UI only, no YAML) with ready-made blueprints: doorbell, motion when armed / at set times, alarm.
 - **MQTT** with Home Assistant discovery, and an HTTP API for Node-RED, openHAB, scripts, ...

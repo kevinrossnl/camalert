@@ -300,3 +300,36 @@ msgstr "Le richieste con priorità 'alarm' accendono il ricevitore (e la TV tram
 msgid "Tour: seconds per camera"
 msgstr "Giro: secondi per telecamera"
 
+msgid "At the bottom"
+msgstr "In fondo"
+
+msgid "At the top"
+msgstr "In cima"
+
+msgid "Camera names"
+msgstr "Nomi telecamere"
+
+msgid "Press OK to give a camera its own name (empty = automatic)."
+msgstr "Premi OK per dare un nome a una telecamera (vuoto = automatico)."
+
+msgid "Update camera list automatically"
+msgstr "Aggiorna l'elenco automaticamente"
+
+msgid "Checks every 30 minutes for new or removed cameras and updates the channel list."
+msgstr "Controlla ogni 30 minuti telecamere nuove o rimosse e aggiorna l'elenco."
+
+msgid "Camera list position"
+msgstr "Posizione dell'elenco"
+
+msgid "Where the camera list appears among your channel lists."
+msgstr "Dove appare l'elenco tra le tue liste di canali."
+
+msgid "Name for %s (empty = automatic)"
+msgstr "Nome per %s (vuoto = automatico)"
+
+msgid "%d own names"
+msgstr "%d nomi personalizzati"
+
+msgid "automatic"
+msgstr "automatico"
+

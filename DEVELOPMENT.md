@@ -9,13 +9,20 @@
 ## Layout
 | Path | What |
 |---|---|
-| `src/CamAlert/` | Enigma2 plugin (Python 3). `logic.py` = pure functions with unit tests; `display.py` (photo window, mosaic, tour, live, controller), `server.py` (HTTP API), `mqtt.py` (MQTT + discovery), `setup.py` (settings screen), `plugin.py` (entry points) |
+| `src/CamAlert/` | Enigma2 plugin (Python 3). `logic.py` = pure functions with unit tests; `display.py` (photo window, mosaic, tour, live, controller), `server.py` (HTTP API), `mqtt.py` (MQTT + discovery), `bouquet.py` (camera channel list, auto update), `setup.py` (settings screen), `plugin.py` (entry points) |
 | `custom_components/camalert/` | Home Assistant integration (config flow, buttons, sensor, actions `show`/`mosaic`/`hide`). Same version number as the plugin (`manifest.json` = `__version__`) |
 | `homeassistant/blueprints/` | Blueprints: doorbell, motion (armed / times), alarm |
 | `homeassistant/camalert_package.yaml` | REST-command alternative (YAML) |
 | `po/` | Plugin translations (gettext). `custom_components/camalert/translations/` = integration translations |
 | `tools/` | `build_ipk.py` (package), `msgfmt.py`, `strings.py` (POT), `check_private.py` |
 | `docs/` | User documentation (English) |
+
+## Rules (learned on real receivers)
+- Every setting is created through `_add()` in `__init__.py`: a broken saved value must never stop the plugin from loading.
+- Never do network calls on the Enigma2 main thread (it freezes the GUI): use `threads.deferToThread`.
+- Screens can be cleared by Enigma2 after closing: late callbacks must use `getattr(self, "active", False)`.
+- Skins are designed for 1920x1080 and scaled to the desktop width (many skins are 1280x720).
+- Settings are written with `configfile.save()` on save.
 
 ## Rules
 - Code, comments and docs in English; user-facing texts translated (en, nl, de, fr, it, pl). Tests check completeness:

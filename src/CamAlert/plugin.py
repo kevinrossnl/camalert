@@ -6,6 +6,7 @@ from Plugins.Plugin import PluginDescriptor
 from . import _
 from . import server
 from . import mqtt
+from . import bouquet
 from .display import Controller
 
 
@@ -14,6 +15,7 @@ def sessionstart(reason, session=None, **kwargs):
         Controller(session)
         server.start()
         mqtt.start()
+        bouquet.start()
 
 
 def main(session, **kwargs):

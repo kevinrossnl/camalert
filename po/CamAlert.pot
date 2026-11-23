@@ -44,6 +44,12 @@ msgstr ""
 msgid "Any address"
 msgstr ""
 
+msgid "At the bottom"
+msgstr ""
+
+msgid "At the top"
+msgstr ""
+
 msgid "Cameras"
 msgstr ""
 
@@ -123,6 +129,18 @@ msgid "Default camera"
 msgstr ""
 
 msgid "Press OK to choose from the cameras in go2rtc."
+msgstr ""
+
+msgid "%d own names"
+msgstr ""
+
+msgid "automatic"
+msgstr ""
+
+msgid "Camera names"
+msgstr ""
+
+msgid "Press OK to give a camera its own name (empty = automatic)."
 msgstr ""
 
 msgid "Display mode"
@@ -227,6 +245,18 @@ msgstr ""
 msgid "Name of the channel list created with the yellow button."
 msgstr ""
 
+msgid "Update camera list automatically"
+msgstr ""
+
+msgid "Checks every 30 minutes for new or removed cameras and updates the channel list."
+msgstr ""
+
+msgid "Camera list position"
+msgstr ""
+
+msgid "Where the camera list appears among your channel lists."
+msgstr ""
+
 msgid "Mosaic cameras"
 msgstr ""
 
@@ -282,6 +312,9 @@ msgid "go2rtc has no cameras configured."
 msgstr ""
 
 msgid "Choose camera"
+msgstr ""
+
+msgid "Name for %s (empty = automatic)"
 msgstr ""
 
 msgid "Done"

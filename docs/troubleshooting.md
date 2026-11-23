@@ -24,3 +24,7 @@
 
 **Logs**
 - Enable the debug log in the receiver's settings and look for lines with `[CamAlert]`.
+
+**The camera list does not change**
+- CamAlert only rewrites the list when the cameras or names changed, at most every 30 minutes. Press **yellow** in the settings to update it now.
+- If go2rtc is unreachable, the existing list is kept on purpose.

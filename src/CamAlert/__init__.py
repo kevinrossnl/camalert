@@ -86,3 +86,7 @@ _add("mqtt_user", lambda: ConfigText(default="", fixed_size=False))
 _add("mqtt_password", lambda: ConfigPassword(default="", fixed_size=False))
 _add("mqtt_discovery", lambda: ConfigYesNo(default=True))
 _add("mqtt_name", lambda: ConfigText(default="", fixed_size=False))
+_add("titles", lambda: ConfigText(default="", fixed_size=False))
+_add("auto_bouquet", lambda: ConfigYesNo(default=True))
+_add("bouquet_position", lambda: ConfigSelection(default="bottom", choices=[
+    ("bottom", _("At the bottom")), ("top", _("At the top"))]))

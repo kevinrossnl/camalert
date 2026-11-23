@@ -4,7 +4,7 @@
 """Minimal MQTT client (3.1.1, QoS 0) with Home Assistant discovery.
 
 Topics (node = receiver id):
-    camalert/<node>/show      payload: camera name, or JSON {"cam": ..., "sec": ..., "mode": ...}
+    camalert/<node>/show      payload: camera name, or JSON {"cam": ..., "sec": ..., "mode": ..., "priority": ...}
     camalert/<node>/mosaic    payload: empty or "cam1,cam2,..."
     camalert/<node>/hide
     camalert/<node>/state     published: camera on screen, or "none"
@@ -109,7 +109,7 @@ class CamAlertMqtt(Protocol):
             elif action == "show":
                 cmd = mqtt_command(payload)
                 sec = clamp_seconds(cmd.get("sec")) if cmd.get("sec") else None
-                ctl.show(cmd.get("cam"), sec, cmd.get("mode"))
+                ctl.show(cmd.get("cam"), sec, cmd.get("mode"), cmd.get("priority"))
         except Exception as e:
             log("MQTT command failed:", e)
         reactor.callLater(0.5, self.publish_state)

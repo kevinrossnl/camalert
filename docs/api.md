@@ -5,16 +5,19 @@ CamAlert listens on port **8099** (configurable). All requests are `GET` and ret
 | Request | What it does |
 |---|---|
 | `/camalert/show` | Show the default camera with the default settings |
-| `/camalert/show?cam=garden&sec=20&mode=live` | Show a specific camera; every parameter is optional |
+| `/camalert/show?cam=garden&sec=20&mode=live&priority=high` | Show a specific camera; every parameter is optional |
+| `/camalert/tour?cam=front_door,garden&interval=8` | Full-screen camera tour (◀ ▶ = previous/next, OK = hold, GREEN = live, EXIT) |
+| `/camalert/cameras` | List of cameras (name, title, has snapshot) |
 | `/camalert/mosaic?cam=front_door,garden&sec=60` | Full-screen photo mosaic (up to 9 cameras; without `cam` the *Mosaic cameras* setting) |
 | `/camalert/hide` | Close the photo window / return from live view now |
 | `/camalert/status` | What is on screen, and the plugin version |
 
-Parameters: `cam` (go2rtc stream name), `sec` (5–300), `mode` (`photo`, `live`, `notify`), `token` (only if you set an access token; can also be sent as header `X-CamAlert-Token`).
+Parameters: `cam` (go2rtc stream name), `sec` (5–300), `mode` (`photo`, `live`, `notify`), `priority` (`normal` follows the receiver's active hours and recording rule, `high` always, `alarm` always and may wake the receiver), `token` (only if you set an access token; can also be sent as header `X-CamAlert-Token`).
 
 Answer of `show`: `{"result": true, "action": "show", "cam": "garden"}`. `action` is
 
 - `show` – shown now,
+- `wake` – priority alarm: the receiver is being woken up, the camera follows a few seconds later,
 - `extend` – was already on screen, the time is extended,
 - `ignore` – not shown, because the receiver is in standby or you are already watching that camera,
 - `error` – no valid go2rtc address configured.

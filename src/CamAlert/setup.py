@@ -75,7 +75,9 @@ class CamAlertSetup(ConfigListScreen, Screen):
             (_("Duration (seconds)"), c.duration, _("How long the camera stays on screen.")),
         ]
         if c.mode.value == "photo":
-            items += [(_("Window position"), c.position, ""), (_("Window size"), c.size, "")]
+            items += [(_("Window position"), c.position, ""), (_("Window size"), c.size, ""),
+                      (_("Remote control in photo window"), c.window_keys,
+                       _("OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too."))]
         if c.mode.value in ("photo", "notify"):
             items += [(_("Pause TV meanwhile"), c.pause_tv,
                        _("Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift."))]
@@ -87,7 +89,10 @@ class CamAlertSetup(ConfigListScreen, Screen):
         items += [(_("Only between certain times"), c.limit_hours, _("Ignore requests outside the chosen times."))]
         if c.limit_hours.value:
             items += [(_("From"), c.from_time, ""), (_("Until"), c.until_time, _("May pass midnight, e.g. 07:00 to 23:00."))]
-        items += [(_("Not during a recording"), c.skip_recording, _("Ignore requests while the receiver is recording."))]
+        items += [(_("Not during a recording"), c.skip_recording, _("Ignore requests while the receiver is recording.")),
+                  (_("Wake receiver on alarm"), c.alarm_wake,
+                   _("Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on.")),
+                  (_("Tour: seconds per camera"), c.tour_interval, "")]
         items += [
             (_("HTTP port"), c.http_port, _("Port of the CamAlert API on this receiver (default 8099).")),
             (_("Use HTTPS for the API"), c.api_https,

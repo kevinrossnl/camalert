@@ -339,7 +339,7 @@ def mqtt_command(payload):
             d = json.loads(text)
         except ValueError:
             return {}
-        return {k: d[k] for k in ("cam", "sec", "mode") if k in d}
+        return {k: d[k] for k in ("cam", "sec", "mode", "priority") if k in d}
     return {"cam": text} if text else {}
 
 
@@ -364,3 +364,26 @@ def discovery(node, name, cameras, prefix="camalert", base="homeassistant"):
     add("sensor", "on_screen", {"name": "Camera on screen", "icon": "mdi:television",
                                 "state_topic": "%s/%s/state" % (prefix, node)})
     return msgs
+
+
+PRIORITIES = ("normal", "high", "alarm")
+
+
+def pick_priority(value):
+    return value if value in PRIORITIES else "normal"
+
+
+def blocked_by_rules(priority, limit_hours, in_hours, skip_recording, recording):
+    """Receiver rules (active hours, not while recording) only apply to normal priority."""
+    if priority != "normal":
+        return False
+    return (limit_hours and not in_hours) or (skip_recording and recording)
+
+
+def neighbour(items, current, step):
+    """Next/previous item in a list (wraps around); first item if current is unknown."""
+    if not items:
+        return None
+    if current not in items:
+        return items[0]
+    return items[(items.index(current) + step) % len(items)]

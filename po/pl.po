@@ -270,3 +270,33 @@ msgstr "Nazwa w Home Assistant"
 msgid "Empty = CamAlert + the receiver's host name."
 msgstr "Puste = CamAlert + nazwa hosta odbiornika."
 
+msgid "hold"
+msgstr "stop"
+
+msgid "tour"
+msgstr "obchód"
+
+msgid "GREEN = live"
+msgstr "ZIELONY = na żywo"
+
+msgid "CamAlert tour"
+msgstr "Obchód CamAlert"
+
+msgid "Cameras one after the other"
+msgstr "Kamery po kolei"
+
+msgid "Remote control in photo window"
+msgstr "Pilot w oknie zdjęcia"
+
+msgid "OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too."
+msgstr "OK = na żywo, LEWO/PRAWO = inna kamera, EXIT = zamknij. Inne klawisze też zamykają."
+
+msgid "Wake receiver on alarm"
+msgstr "Wybudź odbiornik przy alarmie"
+
+msgid "Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on."
+msgstr "Żądania z priorytetem 'alarm' włączają odbiornik (i telewizor przez HDMI-CEC)."
+
+msgid "Tour: seconds per camera"
+msgstr "Obchód: sekundy na kamerę"
+

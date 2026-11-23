@@ -23,6 +23,14 @@ show:
             - photo
             - live
             - notify
+    priority:
+      selector:
+        select:
+          translation_key: priority
+          options:
+            - normal
+            - high
+            - alarm
 mosaic:
   target:
     device:

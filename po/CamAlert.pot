@@ -50,6 +50,15 @@ msgstr ""
 msgid "EXIT = close"
 msgstr ""
 
+msgid "hold"
+msgstr ""
+
+msgid "tour"
+msgstr ""
+
+msgid "GREEN = live"
+msgstr ""
+
 msgid "Camera: %s"
 msgstr ""
 
@@ -60,6 +69,12 @@ msgid "CamAlert mosaic"
 msgstr ""
 
 msgid "All cameras at once"
+msgstr ""
+
+msgid "CamAlert tour"
+msgstr ""
+
+msgid "Cameras one after the other"
 msgstr ""
 
 msgid "Cancel"
@@ -128,6 +143,12 @@ msgstr ""
 msgid "Window size"
 msgstr ""
 
+msgid "Remote control in photo window"
+msgstr ""
+
+msgid "OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too."
+msgstr ""
+
 msgid "Pause TV meanwhile"
 msgstr ""
 
@@ -165,6 +186,15 @@ msgid "Not during a recording"
 msgstr ""
 
 msgid "Ignore requests while the receiver is recording."
+msgstr ""
+
+msgid "Wake receiver on alarm"
+msgstr ""
+
+msgid "Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on."
+msgstr ""
+
+msgid "Tour: seconds per camera"
 msgstr ""
 
 msgid "HTTP port"

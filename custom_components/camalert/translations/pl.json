@@ -47,6 +47,13 @@
         "live": "Przełącz na obraz na żywo",
         "notify": "Tylko powiadomienie"
       }
+    },
+    "priority": {
+      "options": {
+        "normal": "Normalny",
+        "high": "Wysoki (dzwonek)",
+        "alarm": "Alarm (wybudź odbiornik)"
+      }
     }
   },
   "services": {
@@ -65,6 +72,10 @@
         "mode": {
           "name": "Tryb wyświetlania",
           "description": "Puste = ustawienie odbiornika."
+        },
+        "priority": {
+          "name": "Priorytet",
+          "description": "normal: według reguł odbiornika (godziny, nie podczas nagrywania). high: zawsze (dzwonek). alarm: zawsze i może wybudzić odbiornik."
         }
       }
     },

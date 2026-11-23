@@ -1,0 +1,122 @@
+blueprint:
+  name: CamAlert - motion when armed or at set times
+  description: >-
+    Shows the camera(s) on your TV when there is motion, but only when your alarm is armed and/or between the
+    times you choose. Several cameras are shown as a mosaic. Needs the CamAlert integration.
+  domain: automation
+  source_url: https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_motion.yaml
+  input:
+    motion:
+      name: Motion sensors
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - domain: binary_sensor
+    cameras:
+      name: Cameras
+      description: >-
+        Camera names as in go2rtc, comma separated (e.g. front_door, garden). Leave empty to use the camera named
+        after the sensor that saw motion (binary_sensor.garden_motion -> garden).
+      default: ""
+      selector:
+        text:
+    receivers:
+      name: Receivers
+      selector:
+        device:
+          integration: camalert
+          multiple: true
+    when:
+      name: When
+      default: armed
+      selector:
+        select:
+          options:
+            - {label: Only when the alarm is armed, value: armed}
+            - {label: Only between the times below, value: time}
+            - {label: Alarm armed OR between the times, value: armed_or_time}
+            - {label: Alarm armed AND between the times, value: armed_and_time}
+            - {label: Always, value: always}
+    alarm_panel:
+      name: Alarm panel (optional)
+      default: ""
+      selector:
+        entity:
+          filter:
+            - domain: alarm_control_panel
+    from_time:
+      name: From
+      default: "22:00:00"
+      selector:
+        time:
+    until_time:
+      name: Until
+      default: "07:00:00"
+      selector:
+        time:
+    seconds:
+      name: Duration
+      default: 30
+      selector:
+        number: {min: 5, max: 300, step: 5, unit_of_measurement: s}
+    mode:
+      name: Display mode (single camera)
+      default: photo
+      selector:
+        select:
+          options:
+            - {label: Photo window, value: photo}
+            - {label: Switch to live stream, value: live}
+            - {label: Notification only, value: notify}
+mode: single
+max_exceeded: silent
+variables:
+  when: !input when
+  panel: !input alarm_panel
+  start: !input from_time
+  end: !input until_time
+  cams_in: !input cameras
+  armed: >-
+    {{ panel != '' and states(panel).startswith('armed') }}
+  in_time: >-
+    {% set n = now().strftime('%H:%M:%S') %}
+    {{ (start <= n < end) if start < end else (n >= start or n < end) }}
+  cams: >-
+    {% if cams_in | trim != '' %}{{ cams_in.split(',') | map('trim') | reject('eq', '') | list }}
+    {% else %}{{ [trigger.entity_id.split('.')[1] | regex_replace('_(motion|person_detected|person|occupancy)$', '')] }}{% endif %}
+triggers:
+  - trigger: state
+    entity_id: !input motion
+    from: "off"
+    to: "on"
+conditions:
+  - condition: template
+    value_template: >-
+      {{ when == 'always'
+         or (when == 'armed' and armed)
+         or (when == 'time' and in_time)
+         or (when == 'armed_or_time' and (armed or in_time))
+         or (when == 'armed_and_time' and armed and in_time) }}
+actions:
+  - if:
+      - condition: template
+        value_template: "{{ cams | length > 1 }}"
+    then:
+      - action: camalert.mosaic
+        target:
+          device_id: !input receivers
+        data:
+          cameras: "{{ cams }}"
+          seconds: !input seconds
+        continue_on_error: true
+    else:
+      - action: camalert.show
+        target:
+          device_id: !input receivers
+        data:
+          camera: "{{ cams[0] }}"
+          seconds: !input seconds
+          mode: !input mode
+          priority: high
+        continue_on_error: true

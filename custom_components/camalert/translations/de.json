@@ -47,6 +47,13 @@
         "live": "Auf Live-Bild umschalten",
         "notify": "Nur Hinweis"
       }
+    },
+    "priority": {
+      "options": {
+        "normal": "Normal",
+        "high": "Hoch (Türklingel)",
+        "alarm": "Alarm (Receiver wecken)"
+      }
     }
   },
   "services": {
@@ -65,6 +72,10 @@
         "mode": {
           "name": "Anzeige",
           "description": "Leer = Einstellung des Receivers."
+        },
+        "priority": {
+          "name": "Priorität",
+          "description": "normal: folgt den Regeln des Receivers (aktive Zeiten, nicht während Aufnahme). high: immer (Türklingel). alarm: immer, darf den Receiver wecken."
         }
       }
     },

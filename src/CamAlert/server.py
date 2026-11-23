@@ -3,9 +3,10 @@
 # Copyright (C) 2026 CamAlert developers. Licensed under the GNU GPL v2 (see LICENSE).
 """Small HTTP API on the receiver:
 
-    GET /camalert/show?cam=front_door&sec=30&mode=photo|live|notify[&token=...]
+    GET /camalert/show?cam=front_door&sec=30&mode=photo|live|notify&priority=normal|high|alarm[&token=...]
     GET /camalert/mosaic?cam=front_door,garden,drive&sec=60
     GET /camalert/cameras
+    GET /camalert/tour?cam=front_door,garden&interval=8
     GET /camalert/hide
     GET /camalert/status
 """
@@ -65,6 +66,10 @@ class Api(resource.Resource):
                 sec = clamp_seconds(args.get("sec"), 60) if args.get("sec") else 60
                 res = ctl.mosaic(args.get("cam"), sec)
                 out = {"result": res == "show", "action": res}
+            elif action == "tour":
+                iv = args.get("interval")
+                res = ctl.tour(args.get("cam"), max(3, min(60, int(iv))) if iv and iv.isdigit() else None)
+                out = {"result": res == "show", "action": res}
             elif action == "cameras":
                 cams = []
                 for n in all_camera_names():
@@ -76,8 +81,8 @@ class Api(resource.Resource):
                 out = dict(ctl.status(), result=True, version=__version__, id=node_id(), name=node_name())
             elif action in ("show", "camalert"):
                 sec = clamp_seconds(args.get("sec"), int(c.duration.value)) if args.get("sec") else None
-                res = ctl.show(args.get("cam"), sec, args.get("mode"))
-                out = {"result": res in ("show", "extend"), "action": res, "cam": args.get("cam") or c.camera.value}
+                res = ctl.show(args.get("cam"), sec, args.get("mode"), args.get("priority"))
+                out = {"result": res in ("show", "extend", "wake"), "action": res, "cam": args.get("cam") or c.camera.value}
             else:
                 req.setResponseCode(404)
                 out = {"result": False, "error": "unknown action"}

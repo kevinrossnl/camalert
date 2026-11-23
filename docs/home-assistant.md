@@ -1,51 +1,72 @@
-# Home Assistant: show a camera on motion or doorbell
+# Home Assistant
 
-## 1. Add the CamAlert package
+There are three ways to connect CamAlert to Home Assistant. **The integration is recommended**: everything is done in the user interface, no YAML.
 
-1. Make sure `configuration.yaml` contains:
+| | Integration (recommended) | MQTT | REST command |
+|---|---|---|---|
+| Set up via the UI only | yes | yes | no (YAML) |
+| Needs | nothing extra | an MQTT broker | nothing extra |
+| Works with blueprints below | yes | no | no |
 
-   ```yaml
-   homeassistant:
-     packages: !include_dir_named packages
-   ```
+## 1. Integration
 
-2. Copy [`homeassistant/camalert_package.yaml`](../homeassistant/camalert_package.yaml) to `<config>/packages/camalert.yaml` (for example with the *File editor* app).
-3. **Developer tools › YAML › Check configuration**, then restart Home Assistant (first time only).
+### Install
 
-You now have two actions: `rest_command.camalert_show` and `rest_command.camalert_hide`.
+1. Open **Settings › Marketplace** (in older versions: HACS) › menu **⋮ › Custom repositories**.
+2. Add `https://github.com/kevinrossnl/camalert`, type **Integration**.
+3. Search for **CamAlert**, install it and restart Home Assistant.
+4. **Settings › Devices & services › Add integration › CamAlert**. Enter the IP address of your receiver (and the port, HTTPS and token if you changed them in CamAlert). Repeat for every receiver.
 
-## 2. Import the blueprint
+### What you get per receiver
 
-[![Open your Home Assistant instance and show the blueprint import dialog.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fkevinrossnl%2Fcamalert%2Fblob%2Fmain%2Fhomeassistant%2Fblueprints%2Fcamalert_show_camera.yaml)
+- A **button per camera** ("Show Front door"), a **Mosaic** button and **Hide camera**.
+- A sensor **Camera on screen**.
+- Actions you can use in automations and scripts:
 
-Or: **Settings › Automations & scenes › Blueprints › Import blueprint** and paste
-`https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_show_camera.yaml`
-
-## 3. Create the automation
-
-Press **Create automation** on the blueprint and fill in:
-
-| Field | Example |
+| Action | Fields |
 |---|---|
-| Trigger | `binary_sensor.front_door_motion` (or a person / doorbell sensor) |
-| Receiver IP address | `192.168.1.30` |
-| Receiver media player | the receiver's media player from the *Enigma2* integration (optional) |
-| Camera | `front_door` (the name in go2rtc) |
-| Duration | 30 |
-| Display mode | Photo window |
+| `camalert.show` | receivers (target), camera, seconds, mode (photo / live / notify), priority (normal / high / alarm) |
+| `camalert.mosaic` | receivers, cameras (list), seconds |
+| `camalert.hide` | receivers |
 
-Make one automation per receiver (living room, kitchen, ...).
+### Priority
 
-**UniFi Protect users:** the camera's motion sensor only works when *motion detection* is enabled for that camera (switch `switch.<camera>_detections_motion`).
+| Priority | Use for | On the receiver |
+|---|---|---|
+| `normal` | motion around the house | follows the receiver's rules: active hours, not during a recording |
+| `high` | doorbell, person at the door | always (but never in standby) |
+| `alarm` | alarm goes off | always; wakes the receiver from standby if *Wake receiver on alarm* is on |
 
-## Manual test
+### Ready-made blueprints
 
-**Developer tools › Actions**:
+Import them via **Settings › Automations & scenes › Blueprints › Import blueprint** and paste the address:
 
-```yaml
-action: rest_command.camalert_show
-data:
-  host: 192.168.1.30
-  cam: front_door
-  sec: 15
-```
+| Blueprint | What it does |
+|---|---|
+| [Doorbell or person](../homeassistant/blueprints/camalert_doorbell.yaml) `https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_doorbell.yaml` | Always shows the door camera (priority high) |
+| [Motion when armed or at set times](../homeassistant/blueprints/camalert_motion.yaml) `https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_motion.yaml` | Motion → camera(s), only when the alarm is armed and/or between two times. Leave *Cameras* empty to show the camera named after the sensor (`binary_sensor.garden_motion` → `garden`) |
+| [Alarm triggered](../homeassistant/blueprints/camalert_alarm.yaml) `https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_alarm.yaml` | Wakes the receivers and shows a camera or live mosaic (priority alarm) |
+
+Then press **Create automation** on a blueprint and fill in the fields.
+
+**UniFi Protect users:** motion and person sensors only work when detection is enabled for that camera (`switch.<camera>_detections_motion`).
+
+## 2. MQTT (no integration needed)
+
+1. In CamAlert on the receiver: **MQTT** on, enter the broker address, user and password, keep **Home Assistant discovery** on, save.
+2. The receiver appears automatically under **Settings › Devices & services › MQTT** with the same buttons and sensor.
+3. In automations, use the action *Button: Press* on e.g. "Show Front door".
+
+Topics (`<id>` = receiver id, see the device in Home Assistant):
+
+| Topic | Payload |
+|---|---|
+| `camalert/<id>/show` | camera name, or JSON `{"cam": "garden", "sec": 20, "mode": "live", "priority": "high"}` |
+| `camalert/<id>/mosaic` | empty, or `cam1,cam2,...` |
+| `camalert/<id>/hide` | empty |
+| `camalert/<id>/state` | (published) camera on screen or `none` |
+| `camalert/<id>/availability` | (published) `online` / `offline` |
+
+## 3. REST command (YAML)
+
+For setups without the integration or MQTT: copy [`homeassistant/camalert_package.yaml`](../homeassistant/camalert_package.yaml) to `<config>/packages/camalert.yaml` (with `homeassistant: packages: !include_dir_named packages` in `configuration.yaml`) and restart. Then use `rest_command.camalert_show` with `host`, `cam`, `sec`, `mode`, `token`.

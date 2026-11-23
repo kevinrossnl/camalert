@@ -270,3 +270,33 @@ msgstr "Nom dans Home Assistant"
 msgid "Empty = CamAlert + the receiver's host name."
 msgstr "Vide = CamAlert + nom d'hôte du récepteur."
 
+msgid "hold"
+msgstr "fixe"
+
+msgid "tour"
+msgstr "tournée"
+
+msgid "GREEN = live"
+msgstr "VERT = direct"
+
+msgid "CamAlert tour"
+msgstr "Tournée CamAlert"
+
+msgid "Cameras one after the other"
+msgstr "Caméras l'une après l'autre"
+
+msgid "Remote control in photo window"
+msgstr "Télécommande dans la fenêtre photo"
+
+msgid "OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too."
+msgstr "OK = direct, GAUCHE/DROITE = autre caméra, EXIT = fermer. Les autres touches ferment aussi."
+
+msgid "Wake receiver on alarm"
+msgstr "Réveiller le récepteur en cas d'alarme"
+
+msgid "Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on."
+msgstr "Les demandes de priorité 'alarm' allument le récepteur (et la TV via HDMI-CEC)."
+
+msgid "Tour: seconds per camera"
+msgstr "Tournée : secondes par caméra"
+

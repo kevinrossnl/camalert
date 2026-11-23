@@ -1,8 +1,8 @@
-# CamAlert for Enigma2
+# CamAlert
 
 **CamAlert** shows your IP cameras on the TV of an Enigma2 receiver (openATV, OpenPLi, VTi, ... on VU+, Dreambox, Zgemma, Octagon and others).
 
-When someone rings the doorbell or walks up to the front door, your home automation (for example Home Assistant) asks the receiver to show that camera:
+When someone rings the doorbell, walks up to the door, or the alarm goes off, your home automation (for example Home Assistant) asks the receiver to show that camera:
 
 - **Photo window** – a small window in a corner of the screen with a fresh picture every 1–2 seconds; you keep watching TV.
 - **Live** – the receiver switches to the live camera stream and back to your channel when the time is up.
@@ -30,11 +30,19 @@ CamAlert works with any camera that has an RTSP stream (UniFi Protect, Reolink, 
 - Live mode with automatic return to the previous channel.
 - One-button camera channel list ("bouquet").
 - Mosaic: up to 9 cameras at once (photo mosaic, or a live mosaic channel via go2rtc).
-- HTTP API for Home Assistant, Node-RED, openHAB, a doorbell script, ...
+- **Home Assistant integration** (UI only, no YAML) with ready-made blueprints: doorbell, motion when armed / at set times, alarm.
+- **MQTT** with Home Assistant discovery, and an HTTP API for Node-RED, openHAB, scripts, ...
+- Priorities: *normal* follows the receiver's rules, *high* (doorbell) always comes through, *alarm* can wake the receiver.
+- Camera tour (one camera after the other, hold with OK) and a remote-controlled photo window (OK = live, ◀ ▶ = other camera).
 - Only reacts when the receiver is on (not in standby) and you are not already watching that camera.
 - Local network only by default, optional access token.
 
 ## Install
+
+### Home Assistant integration
+Marketplace (HACS) › Custom repositories › `https://github.com/kevinrossnl/camalert` (Integration), see [docs/home-assistant.md](docs/home-assistant.md).
+
+### Receiver plugin
 
 On the receiver (via Telnet/SSH), replace the version with the [latest release](../../releases/latest):
 
@@ -55,7 +63,7 @@ Then restart the GUI and open **Menu › Plugins › CamAlert**.
 | [go2rtc in Docker / TrueNAS / Synology](docs/go2rtc-docker.md) | Run go2rtc as its own container |
 | [Camera stream addresses](docs/cameras.md) | RTSP URLs for popular camera brands |
 | [Without go2rtc](docs/without-go2rtc.md) | Connect the receiver directly to the cameras |
-| [Home Assistant automation](docs/home-assistant.md) | Show a camera on motion or doorbell |
+| [Home Assistant](docs/home-assistant.md) | Integration, blueprints, MQTT, priorities |
 | [Several cameras at once](docs/mosaic.md) | Photo mosaic or live mosaic channel |
 | [HTTP API](docs/api.md) | For other systems and scripts |
 | [Troubleshooting](docs/troubleshooting.md) | Black picture, slow start, no pop-up, ... |

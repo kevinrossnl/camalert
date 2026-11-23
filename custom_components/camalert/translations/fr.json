@@ -47,6 +47,13 @@
         "live": "Basculer vers le direct",
         "notify": "Notification seulement"
       }
+    },
+    "priority": {
+      "options": {
+        "normal": "Normale",
+        "high": "Haute (sonnette)",
+        "alarm": "Alarme (réveiller le récepteur)"
+      }
     }
   },
   "services": {
@@ -65,6 +72,10 @@
         "mode": {
           "name": "Affichage",
           "description": "Vide = réglage du récepteur."
+        },
+        "priority": {
+          "name": "Priorité",
+          "description": "normal : suit les règles du récepteur (heures actives, pas pendant un enregistrement). high : toujours (sonnette). alarm : toujours, et peut réveiller le récepteur."
         }
       }
     },

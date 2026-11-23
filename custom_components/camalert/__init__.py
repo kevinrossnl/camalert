@@ -11,7 +11,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.service import async_extract_config_entry_ids
 
 from .api import CamAlertApi, CamAlertError
-from .const import CONF_HTTPS, CONF_TOKEN, CONF_VERIFY_SSL, DEFAULT_PORT, DOMAIN, MODES
+from .const import CONF_HTTPS, CONF_TOKEN, CONF_VERIFY_SSL, DEFAULT_PORT, DOMAIN, MODES, PRIORITIES
 from .coordinator import CamAlertCoordinator
 
 PLATFORMS = [Platform.BUTTON, Platform.SENSOR]
@@ -21,6 +21,7 @@ SHOW_SCHEMA = cv.make_entity_service_schema({
     vol.Optional("camera"): cv.string,
     vol.Optional("seconds"): vol.All(vol.Coerce(int), vol.Range(min=5, max=300)),
     vol.Optional("mode"): vol.In(MODES),
+    vol.Optional("priority"): vol.In(PRIORITIES),
 })
 MOSAIC_SCHEMA = cv.make_entity_service_schema({
     vol.Optional("cameras"): vol.All(cv.ensure_list, [cv.string]),
@@ -50,7 +51,8 @@ async def async_setup(hass: HomeAssistant, config) -> bool:
             raise HomeAssistantError("; ".join(errors))
 
     async def show(call: ServiceCall):
-        await run(call, lambda api: api.show(call.data.get("camera"), call.data.get("seconds"), call.data.get("mode")))
+        await run(call, lambda api: api.show(call.data.get("camera"), call.data.get("seconds"), call.data.get("mode"),
+                                             call.data.get("priority")))
 
     async def mosaic(call: ServiceCall):
         await run(call, lambda api: api.mosaic(call.data.get("cameras"), call.data.get("seconds")))

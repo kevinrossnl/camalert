@@ -142,6 +142,21 @@ Garden | rtsp://192.168.1.22/dup
         self.assertEqual(btn["device"]["identifiers"], ["camalert_abc123"])
         self.assertIn("homeassistant/sensor/camalert_abc123/on_screen/config", msgs)
 
+    def test_priority_rules(self):
+        self.assertEqual(L.pick_priority("alarm"), "alarm")
+        self.assertEqual(L.pick_priority("x"), "normal")
+        self.assertTrue(L.blocked_by_rules("normal", True, False, False, False))
+        self.assertTrue(L.blocked_by_rules("normal", False, True, True, True))
+        self.assertFalse(L.blocked_by_rules("normal", True, True, True, False))
+        self.assertFalse(L.blocked_by_rules("high", True, False, True, True))
+        self.assertFalse(L.blocked_by_rules("alarm", True, False, True, True))
+
+    def test_neighbour(self):
+        self.assertEqual(L.neighbour(["a", "b", "c"], "c", 1), "a")
+        self.assertEqual(L.neighbour(["a", "b", "c"], "a", -1), "c")
+        self.assertEqual(L.neighbour(["a", "b"], "x", 1), "a")
+        self.assertIsNone(L.neighbour([], "a", 1))
+
     def test_geometry(self):
         self.assertEqual(L.window_geometry("top_right", "medium", 1920, 1080), (1240, 40, 640, 360, 40))
         x, y, w, h, t = L.window_geometry("bottom_left", "small", 1280, 720)

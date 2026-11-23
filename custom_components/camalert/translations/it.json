@@ -47,6 +47,13 @@
         "live": "Passa al flusso live",
         "notify": "Solo notifica"
       }
+    },
+    "priority": {
+      "options": {
+        "normal": "Normale",
+        "high": "Alta (campanello)",
+        "alarm": "Allarme (risveglia ricevitore)"
+      }
     }
   },
   "services": {
@@ -65,6 +72,10 @@
         "mode": {
           "name": "Visualizzazione",
           "description": "Vuoto = impostazione del ricevitore."
+        },
+        "priority": {
+          "name": "Priorità",
+          "description": "normal: segue le regole del ricevitore (orari attivi, non durante la registrazione). high: sempre (campanello). alarm: sempre, e può risvegliare il ricevitore."
         }
       }
     },

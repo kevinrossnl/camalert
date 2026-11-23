@@ -47,6 +47,13 @@
         "live": "Switch to live stream",
         "notify": "Notification only"
       }
+    },
+    "priority": {
+      "options": {
+        "normal": "Normal",
+        "high": "High (doorbell)",
+        "alarm": "Alarm (wake receiver)"
+      }
     }
   },
   "services": {
@@ -65,6 +72,10 @@
         "mode": {
           "name": "Display mode",
           "description": "Empty = setting of the receiver."
+        },
+        "priority": {
+          "name": "Priority",
+          "description": "normal: follows the receiver's rules (active hours, not while recording). high: always (doorbell). alarm: always, and may wake the receiver."
         }
       }
     },

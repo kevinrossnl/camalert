@@ -46,8 +46,9 @@ class CamAlertApi:
     async def cameras(self) -> list[dict[str, Any]]:
         return (await self._get("cameras")).get("cameras", [])
 
-    async def show(self, cam: str | None = None, seconds: int | None = None, mode: str | None = None) -> dict:
-        return await self._get("show", {"cam": cam, "sec": seconds, "mode": mode})
+    async def show(self, cam: str | None = None, seconds: int | None = None, mode: str | None = None,
+                   priority: str | None = None) -> dict:
+        return await self._get("show", {"cam": cam, "sec": seconds, "mode": mode, "priority": priority})
 
     async def mosaic(self, cams: list[str] | None = None, seconds: int | None = None) -> dict:
         return await self._get("mosaic", {"cam": ",".join(cams) if cams else None, "sec": seconds})

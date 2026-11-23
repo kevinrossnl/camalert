@@ -10,6 +10,8 @@ jobs:
       image: node:20-bookworm
     steps:
       - uses: actions/checkout@v4
+      - name: tools
+        run: pip3 install --break-system-packages -q pyyaml || apt-get update -qq && apt-get install -y -qq python3-yaml
       - name: unit tests
         env:
           CAMALERT_DENYLIST: ${{ secrets.CAMALERT_DENYLIST }}

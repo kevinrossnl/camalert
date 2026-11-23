@@ -56,11 +56,13 @@ Open **Menu › Plugins › CamAlert**:
 6. Press **blue** to test: the default camera appears for 15 seconds.
 7. Press **green** to save.
 
-You can now also zap to your cameras via the new channel list (press OK on a channel, then the bouquet list).
+You can now also zap to your cameras via the new channel list (press OK on a channel, then the bouquet list), open **CamAlert mosaic** (all cameras at once) or **CamAlert tour** (one after the other) from the plugin menu or the blue button.
+
+When the photo window is on screen you can use the remote: **OK** switches to the live picture, **◀ ▶** shows another camera, **EXIT** closes it (any other key also closes it, so you can just keep zapping).
 
 ## Step 5 – Show the camera automatically
 
-- **Home Assistant**: follow [home-assistant.md](home-assistant.md) (an automation with a ready-made blueprint).
+- **Home Assistant**: install the CamAlert integration and use a ready-made blueprint, see [home-assistant.md](home-assistant.md). No YAML needed.
 - **Anything else** (Node-RED, openHAB, a script): call `http://<receiver-ip>:8099/camalert/show?cam=front_door` – see [api.md](api.md).
 
 Done! Something not working? See [troubleshooting.md](troubleshooting.md).

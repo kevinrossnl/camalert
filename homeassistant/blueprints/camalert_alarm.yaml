@@ -1,0 +1,46 @@
+blueprint:
+  name: CamAlert - alarm triggered
+  description: >-
+    When the alarm goes off: wakes the receivers (if "Wake receiver on alarm" is on in CamAlert), and shows the
+    camera or live mosaic channel in full screen. Needs the CamAlert integration.
+  domain: automation
+  source_url: https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_alarm.yaml
+  input:
+    alarm_panel:
+      name: Alarm panel
+      selector:
+        entity:
+          filter:
+            - domain: alarm_control_panel
+    receivers:
+      name: Receivers
+      selector:
+        device:
+          integration: camalert
+          multiple: true
+    camera:
+      name: Camera or mosaic stream
+      description: A camera name, or the name of a live mosaic stream in go2rtc (see docs/mosaic.md).
+      selector:
+        text:
+    seconds:
+      name: Duration
+      default: 300
+      selector:
+        number: {min: 5, max: 300, step: 5, unit_of_measurement: s}
+mode: single
+max_exceeded: silent
+triggers:
+  - trigger: state
+    entity_id: !input alarm_panel
+    to: triggered
+actions:
+  - action: camalert.show
+    target:
+      device_id: !input receivers
+    data:
+      camera: !input camera
+      seconds: !input seconds
+      mode: live
+      priority: alarm
+    continue_on_error: true

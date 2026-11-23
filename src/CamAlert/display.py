@@ -20,7 +20,7 @@ from twisted.internet import reactor, threads
 from . import _
 from Components.ActionMap import ActionMap
 
-from .logic import (decide, display_name, grid, in_time_window, lowered_volume, normalize_server, parse_camera_file,
+from .logic import (blocked_by_rules, neighbour, pick_priority, decide, display_name, grid, in_time_window, lowered_volume, normalize_server, parse_camera_file,
                     parse_cams, pick_mode, rtsp_url, service_ref, should_pause, snapshot_url, split_credentials,
                     stream_from_ref, tcp_url, window_geometry)
 
@@ -100,14 +100,14 @@ class Tile(object):
         self.busy = False
 
     def fetch(self):
-        if not self.screen.active or self.busy:
+        if not self.screen.active or self.busy or not self.url:
             return
         self.busy = True
         threads.deferToThread(_download, self.url, self.path).addCallbacks(self.loaded, self.failed)
 
     def loaded(self, _path):
         self.busy = False
-        if not self.screen.active:
+        if not self.screen.active or not self.url:
             return
         try:
             self.picload.setPara((self.size[0], self.size[1], 1, 1, False, 1, "#ff000000"))
@@ -177,7 +177,7 @@ class MosaicScreen(Screen):
 class PhotoWindow(Screen):
     """Small always-on-top window that keeps fetching a fresh snapshot from go2rtc (about one every 1-2 s)."""
 
-    def __init__(self, session, stream, url, title=None):
+    def __init__(self, session, stream, url, title=None, hint=False):
         c = config.plugins.camalert
         size = getDesktop(0).size()
         x, y, w, h, t = window_geometry(c.position.value, c.size.value, size.width(), size.height())
@@ -189,7 +189,7 @@ class PhotoWindow(Screen):
         </screen>""" % (x, y, w, h + t, w, h + t, int(10 * f), w - int(20 * f), t, int(26 * f), t, w, h)
         Screen.__init__(self, session)
         self.stream, self.url, self.size = stream, url, (w, h)
-        self["title"] = Label(title or display_name(stream))
+        self["title"] = Label((title or display_name(stream)) + ("   OK = live  ◀ ▶  EXIT" if hint else ""))
         self["photo"] = Pixmap()
         self.picload = ePicLoad()
         self.busy = self.active = False
@@ -238,6 +238,100 @@ class PhotoWindow(Screen):
         Controller.instance.window_closed(self)
 
 
+class PhotoKeys(Screen):
+    """Invisible screen that catches the remote while the photo window is open (only opened from the TV view).
+    OK = switch to live, LEFT/RIGHT = other camera, EXIT = close. Other keys close it as well, so zapping works."""
+    skin = """<screen name="CamAlertKeys" position="0,0" size="1,1" flags="wfNoBorder" backgroundColor="#ff000000" />"""
+
+    def __init__(self, session):
+        Screen.__init__(self, session)
+        self["actions"] = ActionMap(["OkCancelActions", "DirectionActions", "InfobarChannelSelection"], {
+            "ok": self.live, "cancel": self.exit, "left": lambda: self.other(-1), "right": lambda: self.other(1),
+            "up": self.exit, "down": self.exit, "switchChannelUp": self.exit, "switchChannelDown": self.exit,
+            "zapUp": self.exit, "zapDown": self.exit, "openServiceList": self.exit}, -1)
+
+    def live(self):
+        ctl = Controller.instance
+        stream = ctl.window.stream if ctl.window else None
+        self.close()
+        if stream:
+            ctl.hide()
+            ctl.show(stream, None, "live", "high")
+
+    def other(self, step):
+        Controller.instance.other_camera(step)
+
+    def exit(self):
+        self.close()
+        Controller.instance.hide()
+
+
+class TourScreen(Screen):
+    """Full-screen camera tour: shows one camera after the other. LEFT/RIGHT = previous/next, OK = hold,
+    GREEN = live, EXIT = close."""
+
+    def __init__(self, session, cams, interval):
+        size = getDesktop(0).size()
+        sw, sh = size.width(), size.height()
+        f = sw / 1920.0
+        self.skin = """<screen name="CamAlertTour" position="0,0" size="%d,%d" flags="wfNoBorder" backgroundColor="#000000">
+            <widget name="tile0" position="0,0" size="%d,%d" alphatest="off" />
+            <widget name="title" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#80000000" zPosition="2" />
+        </screen>""" % (sw, sh, sw, sh, int(30 * f), int(20 * f), sw - int(60 * f), int(46 * f), int(30 * f))
+        Screen.__init__(self, session)
+        self.cams, self.index, self.hold, self.interval = cams, 0, False, interval
+        self["tile0"] = Pixmap()
+        self["title"] = Label("")
+        self.active = False
+        self.tile = None
+        self.timer = eTimer()
+        self.timer.callback.append(lambda: self.step(1, auto=True))
+        self["actions"] = ActionMap(["OkCancelActions", "DirectionActions", "ColorActions"], {
+            "ok": self.toggle_hold, "cancel": self.close, "left": lambda: self.step(-1), "right": lambda: self.step(1),
+            "green": self.live}, -1)
+        self.onShown.append(self.started)
+        self.onClose.append(self.stopped)
+
+    def started(self):
+        if not self.active:
+            self.active = True
+            self.load()
+
+    def stopped(self):
+        self.active = False
+        self.timer.stop()
+
+    def load(self):
+        name, title, url = self.cams[self.index]
+        state = _("hold") if self.hold else _("tour")
+        self["title"].setText(" %s   (%d/%d, %s)   ◀ ▶  OK  %s  EXIT " % (title, self.index + 1, len(self.cams), state, _("GREEN = live")))
+        size = getDesktop(0).size()
+        url = url.replace("width=640", "width=1280") if "/api/frame.jpeg" in url else url
+        self.tile = Tile(self, "tile0", name, url, (size.width(), size.height()))
+        self.tile.fetch()
+        if not self.hold:
+            self.timer.start(self.interval * 1000, True)
+
+    def step(self, delta, auto=False):
+        if auto and self.hold:
+            return
+        self.timer.stop()
+        if self.tile:
+            self.tile.url = None
+        self.index = (self.index + delta) % len(self.cams)
+        self.load()
+
+    def toggle_hold(self):
+        self.hold = not self.hold
+        self.timer.stop()
+        self.load()
+
+    def live(self):
+        name = self.cams[self.index][0]
+        self.close()
+        Controller.instance.show(name, None, "live", "high")
+
+
 def _notify():
     try:
         from . import mqtt
@@ -258,8 +352,11 @@ class Controller(object):
         self.previous_ref = None
         self.live_timer = eTimer()
         self.live_timer.callback.append(self.end_live)
+        self._names = []
+        reactor.callLater(20, self.refresh_names)
         self.paused = False
         self.saved_volume = None
+        self.keys = None
         self.notify_timer = eTimer()
         self.notify_timer.callback.append(self.resume_tv)
 
@@ -275,9 +372,22 @@ class Controller(object):
         return stream_from_ref(ref.toString(), direct_cameras() if direct else None)
 
     # --- public ----------------------------------------------------------------------------------------------
-    def show(self, stream=None, seconds=None, mode=None):
-        from Screens.Standby import inStandby
+    def show(self, stream=None, seconds=None, mode=None, priority=None):
+        from Screens import Standby
         c = config.plugins.camalert
+        priority = pick_priority(priority)
+        if Standby.inStandby is not None:
+            if priority == "alarm" and c.alarm_wake.value:
+                log("alarm: waking the receiver")
+                try:
+                    Standby.inStandby.Power()
+                except Exception as e:
+                    log("wake failed:", e)
+                    return "ignore"
+                reactor.callLater(6, self.show, stream, seconds, mode, priority)
+                return "wake"
+            return "ignore"
+        inStandby = None
         cams = parse_cams(stream)
         if len(cams) > 1:
             return self.mosaic(cams, seconds or int(c.duration.value))
@@ -291,13 +401,11 @@ class Controller(object):
         live_url, snap_url, title = urls
         if mode == "photo" and not snap_url:
             mode = "live"  # camera has no snapshot address (direct mode)
-        if c.limit_hours.value:
-            t = time.localtime()
-            if not in_time_window((t.tm_hour, t.tm_min), tuple(c.from_time.value), tuple(c.until_time.value)):
-                log("request", stream, "outside active hours")
-                return "ignore"
-        if c.skip_recording.value and self.session.nav.getRecordings():
-            log("request", stream, "ignored: recording in progress")
+        t = time.localtime()
+        in_hours = in_time_window((t.tm_hour, t.tm_min), tuple(c.from_time.value), tuple(c.until_time.value))
+        if blocked_by_rules(priority, c.limit_hours.value, in_hours, c.skip_recording.value,
+                            bool(self.session.nav.getRecordings())):
+            log("request", stream, "ignored by the receiver rules (active hours / recording)")
             return "ignore"
         window_stream = self.window.stream if self.window else (self.live_stream if mode == "live" else None)
         action = decide(inStandby is not None, self.current_stream() if self.live_stream is None else None,
@@ -313,8 +421,11 @@ class Controller(object):
                 self.window.extend(seconds)
             else:
                 self.hide()
-                self.window = self.session.instantiateDialog(PhotoWindow, stream, snap_url, title)
+                keys = c.window_keys.value and self._tv_on_top()
+                self.window = self.session.instantiateDialog(PhotoWindow, stream, snap_url, title, keys)
                 self.window.start(seconds)
+                if keys:
+                    self.keys = self.session.open(PhotoKeys)
         elif mode == "live":
             if action == "show":
                 if self.live_stream is None:
@@ -322,7 +433,8 @@ class Controller(object):
                     self.previous_ref = cur.toString() if cur else None
                 self.session.nav.playService(eServiceReference(service_ref(live_url, title)))
                 self.live_stream = stream
-                self.lower_volume(int(c.live_volume.value))
+                if priority != "alarm":
+                    self.lower_volume(int(c.live_volume.value))
             self.live_timer.start(seconds * 1000, True)
         else:
             Notifications.AddPopup(_("Camera: %s") % title, MessageBox.TYPE_INFO, seconds,
@@ -354,6 +466,59 @@ class Controller(object):
         self.session.open(MosaicScreen, tiles[:9], seconds)
         return "show"
 
+    def _tv_on_top(self):
+        """True when the user is just watching TV (no menu or other screen open)."""
+        ib = self._infobar()
+        return ib is not None and getattr(self.session, "current_dialog", None) is ib
+
+    def close_keys(self):
+        k, self.keys = self.keys, None
+        if k is not None:
+            try:
+                k.close()
+            except Exception:
+                pass
+
+    def other_camera(self, step):
+        """LEFT/RIGHT in the photo window: show the previous/next camera."""
+        if self.window is None:
+            return
+        try:
+            names = all_camera_names() if config.plugins.camalert.source.value == "direct" else self._names
+        except Exception:
+            names = []
+        target = neighbour(names, self.window.stream, step)
+        urls = camera_urls(target) if target else None
+        if not urls or not urls[1]:
+            return
+        w = self.window
+        w.stream, w.url = target, urls[1]
+        w["title"].setText(urls[2] + "   OK = live  ◀ ▶  EXIT")
+        w.extend(int(config.plugins.camalert.duration.value))
+
+    def refresh_names(self):
+        """Caches the camera list (go2rtc mode needs the network) for LEFT/RIGHT in the photo window."""
+        def done(names):
+            self._names = names
+        threads.deferToThread(all_camera_names).addCallbacks(done, lambda e: None)
+
+    def tour(self, streams=None, interval=None):
+        from Screens.Standby import inStandby
+        if inStandby is not None:
+            return "ignore"
+        streams = streams or parse_cams(config.plugins.camalert.mosaic.value)
+        if not streams:
+            try:
+                streams = all_camera_names()
+            except Exception as e:
+                log("tour: no cameras", e)
+                return "error"
+        cams = [(s, u[2], u[1]) for s, u in ((s, camera_urls(s)) for s in streams) if u and u[1]]
+        if not cams:
+            return "error"
+        self.session.open(TourScreen, cams, interval or int(config.plugins.camalert.tour_interval.value))
+        return "show"
+
     def _infobar(self):
         try:
             from Screens.InfoBar import InfoBar
@@ -383,6 +548,7 @@ class Controller(object):
             log("resume failed:", e)
 
     def hide(self):
+        self.close_keys()
         if self.window is not None:
             w, self.window = self.window, None
             w.active = False
@@ -396,6 +562,7 @@ class Controller(object):
 
     def window_closed(self, w):
         reactor.callLater(0.1, _notify)
+        self.close_keys()
         if self.window is w:
             self.window = None
             self.session.deleteDialog(w)

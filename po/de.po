@@ -270,3 +270,33 @@ msgstr "Name in Home Assistant"
 msgid "Empty = CamAlert + the receiver's host name."
 msgstr "Leer = CamAlert + Hostname des Receivers."
 
+msgid "hold"
+msgstr "angehalten"
+
+msgid "tour"
+msgstr "Rundgang"
+
+msgid "GREEN = live"
+msgstr "GRÜN = live"
+
+msgid "CamAlert tour"
+msgstr "CamAlert-Rundgang"
+
+msgid "Cameras one after the other"
+msgstr "Kameras nacheinander"
+
+msgid "Remote control in photo window"
+msgstr "Fernbedienung im Fotofenster"
+
+msgid "OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too."
+msgstr "OK = live, LINKS/RECHTS = andere Kamera, EXIT = schließen. Andere Tasten schließen ebenfalls."
+
+msgid "Wake receiver on alarm"
+msgstr "Receiver bei Alarm wecken"
+
+msgid "Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on."
+msgstr "Anfragen mit Priorität 'alarm' schalten den Receiver (und per HDMI-CEC den Fernseher) ein."
+
+msgid "Tour: seconds per camera"
+msgstr "Rundgang: Sekunden pro Kamera"
+

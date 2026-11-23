@@ -47,6 +47,13 @@
         "live": "Omschakelen naar live beeld",
         "notify": "Alleen melding"
       }
+    },
+    "priority": {
+      "options": {
+        "normal": "Normaal",
+        "high": "Hoog (deurbel)",
+        "alarm": "Alarm (ontvanger wekken)"
+      }
     }
   },
   "services": {
@@ -65,6 +72,10 @@
         "mode": {
           "name": "Weergave",
           "description": "Leeg = instelling van de ontvanger."
+        },
+        "priority": {
+          "name": "Prioriteit",
+          "description": "normal: volgt de regels van de ontvanger (actieve uren, niet tijdens opname). high: altijd (deurbel). alarm: altijd, en mag de ontvanger wekken."
         }
       }
     },

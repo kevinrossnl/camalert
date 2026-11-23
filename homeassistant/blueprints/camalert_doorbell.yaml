@@ -1,0 +1,62 @@
+blueprint:
+  name: CamAlert - doorbell or person at the door
+  description: >-
+    Always shows a camera on your TV (priority "high": also outside the receiver's active hours and during
+    recordings) when the doorbell rings or a person is detected. Needs the CamAlert integration.
+  domain: automation
+  source_url: https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_doorbell.yaml
+  input:
+    triggers_in:
+      name: Doorbell / person sensor
+      description: Doorbell (event or binary sensor) or person detection. You can pick several.
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - domain: [binary_sensor, event]
+    receivers:
+      name: Receivers
+      description: CamAlert receivers that show the camera (receivers in standby ignore it).
+      selector:
+        device:
+          integration: camalert
+          multiple: true
+    camera:
+      name: Camera
+      description: Camera name as in go2rtc, e.g. front_door
+      selector:
+        text:
+    seconds:
+      name: Duration
+      default: 30
+      selector:
+        number: {min: 5, max: 300, step: 5, unit_of_measurement: s}
+    mode:
+      name: Display mode
+      default: photo
+      selector:
+        select:
+          options:
+            - {label: Photo window, value: photo}
+            - {label: Switch to live stream, value: live}
+            - {label: Notification only, value: notify}
+mode: single
+max_exceeded: silent
+triggers:
+  - trigger: state
+    entity_id: !input triggers_in
+conditions:
+  - condition: template
+    value_template: >-
+      {{ trigger.to_state is not none and trigger.to_state.state not in ['unavailable', 'unknown', 'off']
+         and (trigger.to_state.domain == 'event' or trigger.to_state.state == 'on') }}
+actions:
+  - action: camalert.show
+    target:
+      device_id: !input receivers
+    data:
+      camera: !input camera
+      seconds: !input seconds
+      mode: !input mode
+      priority: high
+    continue_on_error: true

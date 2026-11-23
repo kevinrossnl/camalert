@@ -23,7 +23,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: tests
-        run: python3 -m unittest discover -s tests -v
+        run: |
+          pip install pyyaml
+          python3 -m unittest discover -s tests -v
       - name: build ipk
         env:
           CAMALERT_OWNER: ${{ github.repository_owner }}

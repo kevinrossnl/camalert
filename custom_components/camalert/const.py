@@ -7,3 +7,4 @@ DEFAULT_PORT = 8099
 MODES = ["photo", "live", "notify"]
 SCAN_INTERVAL_SECONDS = 10
 CAMERA_REFRESH_SECONDS = 300
+PRIORITIES = ["normal", "high", "alarm"]

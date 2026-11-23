@@ -25,6 +25,10 @@ def mosaic(session, **kwargs):
     Controller.instance.mosaic()
 
 
+def tour(session, **kwargs):
+    Controller.instance.tour()
+
+
 def Plugins(**kwargs):
     return [
         PluginDescriptor(where=PluginDescriptor.WHERE_SESSIONSTART, fnc=sessionstart),
@@ -33,4 +37,7 @@ def Plugins(**kwargs):
         PluginDescriptor(name=_("CamAlert mosaic"), description=_("All cameras at once"),
                          where=[PluginDescriptor.WHERE_PLUGINMENU, PluginDescriptor.WHERE_EXTENSIONSMENU],
                          icon="camalert.png", fnc=mosaic),
+        PluginDescriptor(name=_("CamAlert tour"), description=_("Cameras one after the other"),
+                         where=[PluginDescriptor.WHERE_PLUGINMENU, PluginDescriptor.WHERE_EXTENSIONSMENU],
+                         icon="camalert.png", fnc=tour),
     ]

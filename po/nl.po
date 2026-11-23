@@ -333,3 +333,6 @@ msgstr "%d eigen namen"
 msgid "automatic"
 msgstr "automatisch"
 
+msgid "Where I put it"
+msgstr "Waar ik hem neerzet"
+

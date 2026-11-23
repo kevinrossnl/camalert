@@ -465,8 +465,11 @@ def title_for(name, titles):
 
 # --- automatic camera list ------------------------------------------------------------------------------------
 def place_in_bouquets(bouquets_tv, filename=BOUQUET_FILE, position="bottom"):
-    """bouquets.tv with our bouquet at the top (first bouquet) or bottom; every other line is kept as it is."""
+    """bouquets.tv with our bouquet at the top (first bouquet) or bottom; every other line is kept as it is.
+    position "keep": leave it where the user put it; only add it (at the bottom) when it is missing."""
     line = '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "%s" ORDER BY bouquet' % filename
+    if position == "keep" and ('"%s"' % filename) in bouquets_tv:
+        return bouquets_tv if bouquets_tv.endswith("\n") else bouquets_tv + "\n"
     lines = [l for l in bouquets_tv.splitlines() if ('"%s"' % filename) not in l]
     if position == "top":
         at = 1 if lines and lines[0].startswith("#NAME") else 0

@@ -88,5 +88,5 @@ _add("mqtt_discovery", lambda: ConfigYesNo(default=True))
 _add("mqtt_name", lambda: ConfigText(default="", fixed_size=False))
 _add("titles", lambda: ConfigText(default="", fixed_size=False))
 _add("auto_bouquet", lambda: ConfigYesNo(default=True))
-_add("bouquet_position", lambda: ConfigSelection(default="bottom", choices=[
-    ("bottom", _("At the bottom")), ("top", _("At the top"))]))
+_add("bouquet_position", lambda: ConfigSelection(default="keep", choices=[
+    ("keep", _("Where I put it")), ("bottom", _("At the bottom")), ("top", _("At the top"))]))

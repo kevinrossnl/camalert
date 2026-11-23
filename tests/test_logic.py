@@ -208,6 +208,16 @@ Garden | rtsp://192.168.1.22/dup
         self.assertEqual(L.neighbour(["a", "b"], "x", 1), "a")
         self.assertIsNone(L.neighbour([], "a", 1))
 
+    def test_place_keep(self):
+        tv = "#NAME User - bouquets (TV)\n#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET \"a.tv\" ORDER BY bouquet\n"
+        first = L.place_in_bouquets(tv, "cam.tv", "keep")
+        self.assertTrue(first.rstrip().endswith('"cam.tv" ORDER BY bouquet'))
+        moved = first.replace('#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "a.tv"', "X").replace(
+            "#NAME User - bouquets (TV)\n", "#NAME User - bouquets (TV)\n" + first.splitlines()[-1] + "\n", 1)
+        moved = "\n".join(l for i, l in enumerate(moved.splitlines()) if not (i == len(moved.splitlines()) - 1 and "cam.tv" in l)) + "\n"
+        self.assertEqual(L.place_in_bouquets(moved, "cam.tv", "keep"), moved)
+        self.assertNotEqual(L.place_in_bouquets(moved, "cam.tv", "bottom"), moved)
+
     def test_geometry(self):
         self.assertEqual(L.window_geometry("top_right", "medium", 1920, 1080), (1240, 40, 640, 360, 40))
         x, y, w, h, t = L.window_geometry("bottom_left", "small", 1280, 720)

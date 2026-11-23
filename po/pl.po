@@ -333,3 +333,6 @@ msgstr "%d własnych nazw"
 msgid "automatic"
 msgstr "automatycznie"
 
+msgid "Where I put it"
+msgstr "Tam, gdzie ją umieszczę"
+

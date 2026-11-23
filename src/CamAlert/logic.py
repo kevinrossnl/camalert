@@ -363,6 +363,9 @@ def discovery(node, name, cameras, prefix="camalert", base="homeassistant"):
                            "payload_press": ""})
     add("sensor", "on_screen", {"name": "Camera on screen", "icon": "mdi:television",
                                 "state_topic": "%s/%s/state" % (prefix, node)})
+    add("switch", "dnd", {"name": "Do not disturb", "icon": "mdi:bell-off",
+                          "command_topic": "%s/%s/dnd/set" % (prefix, node), "state_topic": "%s/%s/dnd" % (prefix, node),
+                          "payload_on": "ON", "payload_off": "OFF"})
     return msgs
 
 
@@ -373,11 +376,30 @@ def pick_priority(value):
     return value if value in PRIORITIES else "normal"
 
 
-def blocked_by_rules(priority, limit_hours, in_hours, skip_recording, recording):
-    """Receiver rules (active hours, not while recording) only apply to normal priority."""
+def blocked_by_rules(priority, limit_hours, in_hours, skip_recording, recording, skip_media=False, playing_media=False):
+    """Receiver rules (active hours, not while recording, not while playing a recording/media file) only apply
+    to normal priority."""
     if priority != "normal":
         return False
-    return (limit_hours and not in_hours) or (skip_recording and recording)
+    return bool((limit_hours and not in_hours) or (skip_recording and recording) or (skip_media and playing_media))
+
+
+DND_LEVELS = ("normal", "high")
+
+
+def dnd_blocks(priority, dnd_on, level="normal"):
+    """Do not disturb: blocks normal priority; with level 'high' also high priority. Alarm always passes."""
+    if not dnd_on or priority == "alarm":
+        return False
+    return priority == "normal" or (level == "high" and priority == "high")
+
+
+def is_media_ref(ref):
+    """True for a service reference that plays a file (recording, video on the NAS), not a TV channel or stream."""
+    parts = (ref or "").split(":")
+    if len(parts) < 11:
+        return False
+    return ":".join(parts[10:]).startswith("/")
 
 
 def neighbour(items, current, step):
@@ -477,3 +499,98 @@ def place_in_bouquets(bouquets_tv, filename=BOUQUET_FILE, position="bottom"):
     else:
         lines.append(line)
     return "\n".join(lines) + "\n"
+
+
+# --- per-camera settings (orientation, refresh interval, Frigate mapping) -------------------------------------
+ORIENTATIONS = ("mirror", "flip", "rot180")
+
+
+def parse_map(text):
+    """'cam=value|cam2=value2' -> {'cam': 'value', ...} (generic form of parse_titles)."""
+    return parse_titles(text)
+
+
+def format_map(values):
+    return format_titles(values)
+
+
+def parse_orientation(text):
+    """'garden=rot180|drive=mirror' -> {'garden': 'rot180', 'drive': 'mirror'}; unknown values are dropped."""
+    return {k: v.lower() for k, v in parse_map(text).items() if v.lower() in ORIENTATIONS}
+
+
+def parse_refresh(text):
+    """'garden=5|drive=2.5' -> seconds between snapshots per camera (0.5..300); invalid values are dropped."""
+    out = {}
+    for k, v in parse_map(text).items():
+        try:
+            f = float(v.replace(",", "."))
+        except ValueError:
+            continue
+        if f > 0:
+            out[k] = max(0.5, min(300.0, f))
+    return out
+
+
+def refresh_delay(name, refresh, minimum=0.2):
+    """Pause before the next snapshot of a camera: its own interval, or as fast as possible."""
+    return max(minimum, (refresh or {}).get(name, 0))
+
+
+# --- Frigate (motion/object detection without Home Assistant) -------------------------------------------------
+def frigate_event(payload):
+    """Parses a message from <prefix>/events. Returns {'type', 'camera', 'label', 'id', 'snapshot'} for a new or
+    updated detection, None for anything else (end events, false positives, broken JSON)."""
+    try:
+        d = json.loads(payload.decode("utf-8", "replace") if isinstance(payload, bytes) else payload)
+    except (ValueError, TypeError):
+        return None
+    if not isinstance(d, dict) or d.get("type") not in ("new", "update"):
+        return None
+    after = d.get("after") or {}
+    if not isinstance(after, dict) or after.get("false_positive") or not after.get("camera"):
+        return None
+    return {"type": d["type"], "camera": str(after["camera"]), "label": str(after.get("label") or ""),
+            "id": str(after.get("id") or ""), "snapshot": bool(after.get("has_snapshot"))}
+
+
+def frigate_stream(event, labels="", camera_map=""):
+    """Stream to show for a Frigate event, or None. labels: 'person,car' (empty = all);
+    camera_map: 'frigate_name=go2rtc_name|...' (default: same name)."""
+    if not event:
+        return None
+    wanted = [x.strip().lower() for x in (labels or "").split(",") if x.strip()]
+    if wanted and event["label"].lower() not in wanted:
+        return None
+    stream = parse_map(camera_map).get(event["camera"], event["camera"])
+    return stream if re.match(r"^[A-Za-z0-9_.-]+$", stream) else None
+
+
+# --- several cameras in one corner window ----------------------------------------------------------------------
+STRIP_LAYOUTS = ("auto", "vertical", "horizontal", "grid")
+
+
+def strip_layout(n, layout="auto"):
+    if layout in ("vertical", "horizontal", "grid"):
+        return layout
+    return "grid" if n >= 4 else "vertical"
+
+
+def strip_geometry(n, layout, position, size, screen_w, screen_h):
+    """One corner window with n (2..4) cameras. Returns (x, y, w, h, title_h, tiles) where tiles are (x, y, w, h)
+    relative to the window. Tiles use the photo window size and shrink to fit at most 90% of the screen."""
+    n = max(1, min(4, n))
+    lay = strip_layout(n, layout)
+    cols, rows = {"vertical": (1, n), "horizontal": (n, 1), "grid": (2, (n + 1) // 2)}[lay]
+    f = screen_w / 1920.0
+    tw, th = SIZES.get(size, SIZES["medium"])
+    tw, th = int(tw * f), int(th * f)
+    gap, title, margin = max(2, int(6 * f)), int(40 * f), int(40 * f)
+    max_w, max_h = int(screen_w * 0.9) - margin, int(screen_h * 0.9) - margin
+    scale = min(1.0, (max_w - gap * (cols - 1)) / float(tw * cols), (max_h - title - gap * (rows - 1)) / float(th * rows))
+    tw, th = int(tw * scale), int(th * scale)
+    w, h = tw * cols + gap * (cols - 1), th * rows + gap * (rows - 1)
+    x = margin if position in ("top_left", "bottom_left") else screen_w - w - margin
+    y = margin if position in ("top_left", "top_right") else screen_h - h - title - margin
+    tiles = [((i % cols) * (tw + gap), title + (i // cols) * (th + gap), tw, th) for i in range(n)]
+    return x, y, w, h, title, tiles

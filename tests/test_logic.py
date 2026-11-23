@@ -218,6 +218,60 @@ Garden | rtsp://192.168.1.22/dup
         self.assertEqual(L.place_in_bouquets(moved, "cam.tv", "keep"), moved)
         self.assertNotEqual(L.place_in_bouquets(moved, "cam.tv", "bottom"), moved)
 
+    def test_dnd_and_media(self):
+        self.assertTrue(L.dnd_blocks("normal", True))
+        self.assertFalse(L.dnd_blocks("high", True))
+        self.assertTrue(L.dnd_blocks("high", True, "high"))
+        self.assertFalse(L.dnd_blocks("alarm", True, "high"))
+        self.assertFalse(L.dnd_blocks("normal", False))
+        self.assertTrue(L.is_media_ref("1:0:0:0:0:0:0:0:0:0:/media/hdd/movie/x.ts"))
+        self.assertTrue(L.is_media_ref("4097:0:0:0:0:0:0:0:0:0:/media/autofs/Opnames/a b.mkv:a b"))
+        self.assertFalse(L.is_media_ref("1:0:19:EF10:421:1:C00000:0:0:0:"))
+        self.assertFalse(L.is_media_ref("4097:0:1:DC01:0:0:0:0:0:0:rtspt%3a//x/y:Y"))
+        self.assertTrue(L.blocked_by_rules("normal", False, True, False, False, True, True))
+        self.assertFalse(L.blocked_by_rules("high", False, True, False, False, True, True))
+
+    def test_orientation_refresh(self):
+        self.assertEqual(L.parse_orientation("garden=rot180|drive=Mirror|x=spin"), {"garden": "rot180", "drive": "mirror"})
+        r = L.parse_refresh("garden=5|drive=0,2|x=abc|y=999|z=0")
+        self.assertEqual(r, {"garden": 5.0, "drive": 0.5, "y": 300.0})
+        self.assertEqual(L.refresh_delay("garden", r), 5.0)
+        self.assertEqual(L.refresh_delay("other", r), 0.2)
+
+    def test_frigate(self):
+        new = '{"type": "new", "before": {}, "after": {"id": "1700000000.1-abc", "camera": "front_door", "label": "person", "has_snapshot": true, "false_positive": false}}'
+        ev = L.frigate_event(new.encode())
+        self.assertEqual((ev["type"], ev["camera"], ev["label"], ev["snapshot"]), ("new", "front_door", "person", True))
+        self.assertIsNone(L.frigate_event('{"type": "end", "after": {"camera": "x", "label": "person"}}'))
+        self.assertIsNone(L.frigate_event('{"type": "update", "after": {"camera": "x", "label": "car", "false_positive": true}}'))
+        self.assertIsNone(L.frigate_event(b"not json"))
+        self.assertEqual(L.frigate_stream(ev, "person, car"), "front_door")
+        self.assertIsNone(L.frigate_stream(ev, "car"))
+        self.assertEqual(L.frigate_stream(ev, "", "front_door=door_cam|x=y"), "door_cam")
+        self.assertIsNone(L.frigate_stream(None))
+
+    def test_strip(self):
+        self.assertEqual(L.strip_layout(2), "vertical")
+        self.assertEqual(L.strip_layout(4), "grid")
+        self.assertEqual(L.strip_layout(3, "horizontal"), "horizontal")
+        x, y, w, h, t, tiles = L.strip_geometry(3, "vertical", "top_right", "medium", 1920, 1080)
+        self.assertEqual(len(tiles), 3)
+        self.assertTrue(x + w <= 1920 and y + h + t <= 1080 and x >= 0 and y >= 0)
+        for tx, ty, tw, th in tiles:
+            self.assertTrue(tx + tw <= w and ty + th <= h + t)
+        x, y, w, h, t, tiles = L.strip_geometry(4, "grid", "bottom_left", "large", 1280, 720)
+        self.assertEqual(x, 26)
+        self.assertTrue(y + h + t <= 720)
+        x, y, w, h, t, tiles = L.strip_geometry(2, "horizontal", "top_left", "small", 1920, 1080)
+        self.assertEqual(tiles[1][0], tiles[0][2] + 6)
+
+    def test_discovery_dnd(self):
+        import json
+        msgs = dict(L.discovery("abc", "X", []))
+        sw = json.loads(msgs["homeassistant/switch/camalert_abc/dnd/config"])
+        self.assertEqual(sw["command_topic"], "camalert/abc/dnd/set")
+        self.assertEqual(sw["state_topic"], "camalert/abc/dnd")
+
     def test_geometry(self):
         self.assertEqual(L.window_geometry("top_right", "medium", 1920, 1080), (1240, 40, 640, 360, 40))
         x, y, w, h, t = L.window_geometry("bottom_left", "small", 1280, 720)

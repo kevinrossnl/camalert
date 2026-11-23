@@ -2,6 +2,8 @@
 
 **CamAlert** shows your IP cameras on the TV of an Enigma2 receiver (openATV, OpenPLi, VTi, ... on VU+, Dreambox, Zgemma, Octagon and others).
 
+![CamAlert photo window on top of a TV programme](docs/images/hero.jpg)
+
 When someone rings the doorbell, walks up to the door, or the alarm goes off, your home automation (for example Home Assistant) asks the receiver to show that camera:
 
 - **Photo window** – a small window in a corner of the screen with a fresh picture every 1–2 seconds; you keep watching TV.
@@ -16,11 +18,7 @@ CamAlert works with any camera that has an RTSP stream (UniFi Protect, Reolink, 
 
 ## How it fits together
 
-```
- cameras ──RTSP──▶ go2rtc ──RTSP / snapshots──▶ Enigma2 receiver (CamAlert) ──▶ TV
-                                                   ▲
- motion / doorbell ─▶ Home Assistant ──HTTP─────────┘
-```
+![Cameras → go2rtc → receiver with CamAlert → TV; Home Assistant tells the receiver what to show](docs/images/flow.png)
 
 ## Features
 
@@ -36,6 +34,14 @@ CamAlert works with any camera that has an RTSP stream (UniFi Protect, Reolink, 
 - Camera tour (one camera after the other, hold with OK) and a remote-controlled photo window (OK = live, ◀ ▶ = other camera).
 - Only reacts when the receiver is on (not in standby) and you are not already watching that camera.
 - Local network only by default, optional access token.
+
+## Screenshots
+
+*Illustrations: the camera pictures and the TV test picture are drawn, not real footage.*
+
+| Mosaic – up to 9 cameras at once | Camera tour – one after the other |
+|---|---|
+| ![Mosaic of four cameras](docs/images/mosaic.jpg) | ![Full-screen camera tour](docs/images/tour.jpg) |
 
 ## Install
 

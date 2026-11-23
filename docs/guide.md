@@ -1,5 +1,7 @@
 # Step-by-step guide
 
+![How CamAlert fits together](images/flow.png)
+
 This guide takes you from zero to a camera picture on your TV when someone is at the door. It takes about 30 minutes. You need:
 
 - An Enigma2 receiver with Python 3 (openATV 7 or newer, OpenPLi 9 or newer, ...).
@@ -57,6 +59,8 @@ Open **Menu › Plugins › CamAlert**:
 7. Press **green** to save.
 
 You can now also zap to your cameras via the new channel list (press OK on a channel, then the bouquet list), open **CamAlert mosaic** (all cameras at once) or **CamAlert tour** (one after the other) from the plugin menu or the blue button.
+
+![The photo window on top of a TV programme (illustration)](images/hero.jpg)
 
 When the photo window is on screen you can use the remote: **OK** switches to the live picture, **◀ ▶** shows another camera, **EXIT** closes it (any other key also closes it, so you can just keep zapping).
 

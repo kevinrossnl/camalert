@@ -123,7 +123,12 @@ class TestDeviceLogic(unittest.TestCase):
         self.assertEqual(L.ptz_key(L.KEY_OK), "home")
         self.assertEqual(L.ptz_key(L.KEY_EXIT), "leave")
         self.assertIsNone(L.ptz_key(115))
-        self.assertEqual(L.key_action(L.KEY_YELLOW), "ptz")
+        self.assertEqual(L.button_for(L.KEY_YELLOW, "yellow", has_ptz=True), "ptz")
+        self.assertEqual(L.button_for(L.KEY_YELLOW, "yellow", has_ptz=False), "yellow")
+        self.assertEqual(L.button_for(401, "blue", has_ptz=True), "ptz")
+        self.assertEqual(L.button_for(398, "blue", has_ptz=True), "red")
+        self.assertIsNone(L.button_for(398, "blue", enabled=False))
+        self.assertIsNone(L.button_for(352))
 
     def test_wsse_digest(self):
         # checked against: (nonce bytes; created; password) | openssl dgst -sha1 -binary | base64

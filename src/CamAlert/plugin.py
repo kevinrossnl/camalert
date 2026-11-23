@@ -31,6 +31,11 @@ def tour(session, **kwargs):
     Controller.instance.tour()
 
 
+def events(session, **kwargs):
+    from .diagnostics import EventsScreen
+    session.open(EventsScreen)
+
+
 def Plugins(**kwargs):
     return [
         PluginDescriptor(where=PluginDescriptor.WHERE_SESSIONSTART, fnc=sessionstart),
@@ -42,4 +47,6 @@ def Plugins(**kwargs):
         PluginDescriptor(name=_("CamAlert tour"), description=_("Cameras one after the other"),
                          where=[PluginDescriptor.WHERE_PLUGINMENU, PluginDescriptor.WHERE_EXTENSIONSMENU],
                          icon="camalert.png", fnc=tour),
+        PluginDescriptor(name=_("CamAlert events"), description=_("The last camera requests"),
+                         where=PluginDescriptor.WHERE_EXTENSIONSMENU, fnc=events),
     ]

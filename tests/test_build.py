@@ -25,6 +25,17 @@ class TestBuild(unittest.TestCase):
             self.assertIn("Version: " + build_ipk.version(), control)
             self.assertIn("github.com/someone/", control)
 
+    def test_feed(self):
+        import gzip
+        import build_feed
+        with tempfile.TemporaryDirectory() as d:
+            build_ipk.build(d, "someone")
+            text = build_feed.build(d)
+            self.assertIn("Package: enigma2-plugin-extensions-camalert", text)
+            self.assertIn("Filename: enigma2-plugin-extensions-camalert_%s_all.ipk" % build_ipk.version(), text)
+            self.assertRegex(text, r"SHA256sum: [0-9a-f]{64}")
+            self.assertEqual(gzip.open(os.path.join(d, "Packages.gz")).read().decode(), text)
+
     def test_sources_compile(self):
         src = os.path.join(HERE, "..", "src", "CamAlert")
         for f in os.listdir(src):

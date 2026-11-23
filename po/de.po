@@ -443,3 +443,180 @@ msgstr "alle %s Sekunden"
 
 msgid "Install python3-pillow to turn or mirror images:\nopkg install python3-pillow"
 msgstr "Installieren Sie python3-pillow, um Bilder zu drehen oder zu spiegeln:\nopkg install python3-pillow"
+
+msgid "Off"
+msgstr "Aus"
+
+msgid "Errors only"
+msgstr "Nur Fehler"
+
+msgid "Verbose"
+msgstr "Ausführlich"
+
+msgid "BLUE"
+msgstr "BLAU"
+
+msgid "YELLOW"
+msgstr "GELB"
+
+msgid "RED"
+msgstr "ROT"
+
+msgid "GREEN"
+msgstr "GRÜN"
+
+msgid "go2rtc reachable (%d cameras, %d ms)"
+msgstr "go2rtc erreichbar (%d Kameras, %d ms)"
+
+msgid "go2rtc not reachable: %s"
+msgstr "go2rtc nicht erreichbar: %s"
+
+msgid "No valid go2rtc address"
+msgstr "Keine gültige go2rtc-Adresse"
+
+msgid "%s: no snapshot address (live only)"
+msgstr "%s: keine Foto-Adresse (nur live)"
+
+msgid "%s: snapshot %d ms"
+msgstr "%s: Foto %d ms"
+
+msgid "%s: snapshot failed (%s)"
+msgstr "%s: Foto fehlgeschlagen (%s)"
+
+msgid "API listening on port %d"
+msgstr "API lauscht auf Port %d"
+
+msgid "API not listening on port %d"
+msgstr "API lauscht nicht auf Port %d"
+
+msgid "MQTT connected"
+msgstr "MQTT verbunden"
+
+msgid "MQTT not connected"
+msgstr "MQTT nicht verbunden"
+
+msgid "Last API call %s from %s (%s)"
+msgstr "Letzter API-Aufruf %s von %s (%s)"
+
+msgid "No API call since the last start"
+msgstr "Kein API-Aufruf seit dem letzten Start"
+
+msgid "Devices file: %s"
+msgstr "Gerätedatei: %s"
+
+msgid "Do not disturb is on"
+msgstr "Nicht stören ist an"
+
+msgid "Log: %s"
+msgstr "Log: %s"
+
+msgid "off"
+msgstr "aus"
+
+msgid "CamAlert diagnostics"
+msgstr "CamAlert-Diagnose"
+
+msgid "Checking..."
+msgstr "Wird geprüft..."
+
+msgid "Close"
+msgstr "Schließen"
+
+msgid "Check again"
+msgstr "Erneut prüfen"
+
+msgid "Last log lines:"
+msgstr "Letzte Logzeilen:"
+
+msgid "CamAlert events"
+msgstr "CamAlert-Ereignisse"
+
+msgid "No events yet"
+msgstr "Noch keine Ereignisse"
+
+msgid "Play clip"
+msgstr "Clip abspielen"
+
+msgid "Source"
+msgstr "Quelle"
+
+msgid "Priority"
+msgstr "Priorität"
+
+msgid "Result"
+msgstr "Ergebnis"
+
+msgid "Motion"
+msgstr "Bewegung"
+
+msgid "PTZ %s: arrows = move, CH+/CH- = zoom, OK = home, EXIT = done"
+msgstr "PTZ %s: Pfeile = bewegen, CH+/CH- = Zoom, OK = Grundstellung, EXIT = fertig"
+
+msgid "The last camera requests"
+msgstr "Die letzten Kamera-Anfragen"
+
+msgid "MENU = diagnostics / events"
+msgstr "MENU = Diagnose / Ereignisse"
+
+msgid "Title size"
+msgstr "Titelgröße"
+
+msgid "Frigate address (for clips)"
+msgstr "Frigate-Adresse (für Clips)"
+
+msgid "Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an event from the event list."
+msgstr "Optional, z. B. http://192.168.1.10:5000 - damit lässt sich der Clip eines Ereignisses aus der Ereignisliste abspielen."
+
+msgid "Colour keys to Home Assistant"
+msgstr "Farbtasten an Home Assistant"
+
+msgid "While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate)."
+msgstr "Solange eine Kamera angezeigt wird, senden die Farbtasten ein Ereignis an Home Assistant (z. B. Tor öffnen)."
+
+msgid "PTZ key"
+msgstr "PTZ-Taste"
+
+msgid "For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home)."
+msgstr "Für Kameras mit PTZ in %s: diese Taste schaltet den PTZ-Modus ein (Pfeile, CH+/CH-, OK = Grundstellung)."
+
+msgid "Foscam motion alarms"
+msgstr "Foscam-Bewegungsalarme"
+
+msgid "Asks Foscam cameras from %s every 2 seconds for a motion or sound alarm."
+msgstr "Fragt Foscam-Kameras aus %s alle 2 Sekunden nach einem Bewegungs- oder Geräuschalarm."
+
+msgid "Foscam priority"
+msgstr "Foscam-Priorität"
+
+msgid "Event snapshots folder"
+msgstr "Ordner für Ereignisfotos"
+
+msgid "Small photos of the last 20 events (default /tmp/camalert_events)."
+msgstr "Kleine Fotos der letzten 20 Ereignisse (Standard /tmp/camalert_events)."
+
+msgid "Log level"
+msgstr "Log-Stufe"
+
+msgid "camalert.log in /home/root/logs (or /tmp). Passwords and tokens are never logged."
+msgstr "camalert.log in /home/root/logs (oder /tmp). Passwörter und Tokens werden nie protokolliert."
+
+msgid "Remote syslog (host:port)"
+msgstr "Entferntes Syslog (Host:Port)"
+
+msgid "Optional: also send the log via UDP (RFC 5424), e.g. to Loki/Alloy."
+msgstr "Optional: Log zusätzlich per UDP (RFC 5424) senden, z. B. an Loki/Alloy."
+
+msgid "Check for updates"
+msgstr "Nach Updates suchen"
+
+msgid "Looks once a day on GitHub for a new version and shows a message."
+msgstr "Sucht einmal täglich auf GitHub nach einer neuen Version und zeigt eine Meldung."
+
+msgid "Diagnostics"
+msgstr "Diagnose"
+
+msgid "Event list"
+msgstr "Ereignisliste"
+
+msgid "CamAlert %s is available (installed: %s).\nUpdate via the software update or: opkg update && opkg upgrade"
+msgstr "CamAlert %s ist verfügbar (installiert: %s).\nUpdate über die Software-Aktualisierung oder: opkg update && opkg upgrade"

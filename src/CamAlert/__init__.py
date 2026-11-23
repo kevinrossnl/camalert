@@ -106,3 +106,20 @@ _add("frigate_labels", lambda: ConfigText(default="person", fixed_size=False))
 _add("frigate_map", lambda: ConfigText(default="", fixed_size=False))
 _add("frigate_priority", lambda: ConfigSelection(default="normal", choices=[
     ("normal", _("Normal")), ("high", _("High (doorbell)"))]))
+_add("log_level", lambda: ConfigSelection(default="normal", choices=[
+    ("off", _("Off")), ("errors", _("Errors only")), ("normal", _("Normal")), ("verbose", _("Verbose"))]))
+_add("log_syslog", lambda: ConfigText(default="", fixed_size=False))
+_add("ptz_key", lambda: ConfigSelection(default="blue", choices=[
+    ("blue", _("BLUE")), ("yellow", _("YELLOW")), ("red", _("RED")), ("green", _("GREEN")), ("off", _("Off"))]))
+_add("ha_buttons", lambda: ConfigYesNo(default=True))
+_add("ha_webhook", lambda: ConfigText(default="", fixed_size=False))
+_add("foscam_poll", lambda: ConfigYesNo(default=True))
+_add("device_priority", lambda: ConfigSelection(default="normal", choices=[
+    ("normal", _("Normal")), ("high", _("High (doorbell)"))]))
+_add("event_folder", lambda: ConfigText(default="/tmp/camalert_events", fixed_size=False))
+_add("title_size", lambda: ConfigSelection(default="normal", choices=[
+    ("small", _("Small")), ("normal", _("Normal")), ("large", _("Large"))]))
+_add("update_check", lambda: ConfigYesNo(default=True))
+_add("frigate_url", lambda: ConfigText(default="", fixed_size=False))
+_add("update_checked", lambda: ConfigText(default="0", fixed_size=False))  # internal: time of the last check
+_add("update_seen", lambda: ConfigText(default="", fixed_size=False))  # internal: newest version already announced

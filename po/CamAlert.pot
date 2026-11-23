@@ -77,6 +77,108 @@ msgstr ""
 msgid "High (doorbell)"
 msgstr ""
 
+msgid "Off"
+msgstr ""
+
+msgid "Errors only"
+msgstr ""
+
+msgid "Verbose"
+msgstr ""
+
+msgid "BLUE"
+msgstr ""
+
+msgid "YELLOW"
+msgstr ""
+
+msgid "RED"
+msgstr ""
+
+msgid "GREEN"
+msgstr ""
+
+msgid "go2rtc reachable (%d cameras, %d ms)"
+msgstr ""
+
+msgid "go2rtc not reachable: %s"
+msgstr ""
+
+msgid "No valid go2rtc address"
+msgstr ""
+
+msgid "%s: no snapshot address (live only)"
+msgstr ""
+
+msgid "%s: snapshot %d ms"
+msgstr ""
+
+msgid "%s: snapshot failed (%s)"
+msgstr ""
+
+msgid "API listening on port %d"
+msgstr ""
+
+msgid "API not listening on port %d"
+msgstr ""
+
+msgid "MQTT connected"
+msgstr ""
+
+msgid "MQTT not connected"
+msgstr ""
+
+msgid "Last API call %s from %s (%s)"
+msgstr ""
+
+msgid "No API call since the last start"
+msgstr ""
+
+msgid "Devices file: %s"
+msgstr ""
+
+msgid "Do not disturb is on"
+msgstr ""
+
+msgid "Log: %s"
+msgstr ""
+
+msgid "off"
+msgstr ""
+
+msgid "CamAlert diagnostics"
+msgstr ""
+
+msgid "Checking..."
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Check again"
+msgstr ""
+
+msgid "Last log lines:"
+msgstr ""
+
+msgid "CamAlert events"
+msgstr ""
+
+msgid "No events yet"
+msgstr ""
+
+msgid "Play clip"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+msgid "Priority"
+msgstr ""
+
+msgid "Result"
+msgstr ""
+
 msgid "Cameras"
 msgstr ""
 
@@ -95,6 +197,15 @@ msgstr ""
 msgid "Camera: %s"
 msgstr ""
 
+msgid "Motion"
+msgstr ""
+
+msgid "PTZ %s: arrows = move, CH+/CH- = zoom, OK = home, EXIT = done"
+msgstr ""
+
+msgid "CamAlert %s is available (installed: %s).\nUpdate via the software update or: opkg update && opkg upgrade"
+msgstr ""
+
 msgid "Show IP cameras on your TV"
 msgstr ""
 
@@ -108,6 +219,12 @@ msgid "CamAlert tour"
 msgstr ""
 
 msgid "Cameras one after the other"
+msgstr ""
+
+msgid "The last camera requests"
+msgstr ""
+
+msgid "MENU = diagnostics / events"
 msgstr ""
 
 msgid "Cancel"
@@ -192,6 +309,9 @@ msgid "Remote control in photo window"
 msgstr ""
 
 msgid "OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too."
+msgstr ""
+
+msgid "Title size"
 msgstr ""
 
 msgid "Layout with several cameras"
@@ -393,6 +513,63 @@ msgid "Only if the names differ from go2rtc: frigate=go2rtc|other=other_stream"
 msgstr ""
 
 msgid "Frigate priority"
+msgstr ""
+
+msgid "Frigate address (for clips)"
+msgstr ""
+
+msgid "Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an event from the event list."
+msgstr ""
+
+msgid "Colour keys to Home Assistant"
+msgstr ""
+
+msgid "While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate)."
+msgstr ""
+
+msgid "PTZ key"
+msgstr ""
+
+msgid "For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home)."
+msgstr ""
+
+msgid "Foscam motion alarms"
+msgstr ""
+
+msgid "Asks Foscam cameras from %s every 2 seconds for a motion or sound alarm."
+msgstr ""
+
+msgid "Foscam priority"
+msgstr ""
+
+msgid "Event snapshots folder"
+msgstr ""
+
+msgid "Small photos of the last 20 events (default /tmp/camalert_events)."
+msgstr ""
+
+msgid "Log level"
+msgstr ""
+
+msgid "camalert.log in /home/root/logs (or /tmp). Passwords and tokens are never logged."
+msgstr ""
+
+msgid "Remote syslog (host:port)"
+msgstr ""
+
+msgid "Optional: also send the log via UDP (RFC 5424), e.g. to Loki/Alloy."
+msgstr ""
+
+msgid "Check for updates"
+msgstr ""
+
+msgid "Looks once a day on GitHub for a new version and shows a message."
+msgstr ""
+
+msgid "Diagnostics"
+msgstr ""
+
+msgid "Event list"
 msgstr ""
 
 msgid "No cameras found in %s.\nSee the guide for the format."

@@ -17,7 +17,7 @@ from twisted.internet.protocol import Protocol, ReconnectingClientFactory
 from Components.config import config
 
 from .display import Controller, all_camera_names, camera_urls, log
-from .logic import (frigate_event, frigate_stream, valid_port, MQTT_DISCONNECT, MQTT_PING, clamp_seconds, discovery, mqtt_command, mqtt_connect, mqtt_parse_publish,
+from .logic import (button_event, frigate_event, frigate_stream, frigate_title, valid_port, MQTT_DISCONNECT, MQTT_PING, clamp_seconds, discovery, mqtt_command, mqtt_connect, mqtt_parse_publish,
                     mqtt_publish, mqtt_split, mqtt_subscribe, slug)
 
 _connector = None
@@ -106,10 +106,10 @@ class CamAlertMqtt(Protocol):
         if not c.enabled.value or ctl is None:
             return
         if c.frigate_enabled.value and topic == "%s/events" % (c.frigate_prefix.value.strip().strip("/") or "frigate"):
-            stream = frigate_stream(frigate_event(payload), c.frigate_labels.value, c.frigate_map.value)
+            event = frigate_event(payload)
+            stream = frigate_stream(event, c.frigate_labels.value, c.frigate_map.value)
             if stream:
-                log("Frigate:", stream)
-                ctl.show(stream, None, None, c.frigate_priority.value)
+                ctl.show(stream, None, None, c.frigate_priority.value, "frigate", frigate_title(event), event["id"])
                 reactor.callLater(0.5, self.publish_state)
             return
         action = topic.rsplit("/", 1)[-1]
@@ -126,7 +126,7 @@ class CamAlertMqtt(Protocol):
             elif action == "show":
                 cmd = mqtt_command(payload)
                 sec = clamp_seconds(cmd.get("sec")) if cmd.get("sec") else None
-                ctl.show(cmd.get("cam"), sec, cmd.get("mode"), cmd.get("priority"))
+                ctl.show(cmd.get("cam"), sec, cmd.get("mode"), cmd.get("priority"), "mqtt", cmd.get("label"))
         except Exception as e:
             log("MQTT command failed:", e)
         reactor.callLater(0.5, self.publish_state)
@@ -169,6 +169,16 @@ def state_changed():
     p = _factory.protocol_instance if _factory else None
     if p is not None:
         p.publish_state()
+
+
+def publish_button(camera, button):
+    p = _factory.protocol_instance if _factory else None
+    if p is not None:
+        p.publish("button", button_event(node_id(), camera, button))
+
+
+def connected():
+    return bool(_factory and _factory.protocol_instance)
 
 
 def start():

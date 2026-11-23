@@ -17,10 +17,12 @@ from Components.config import config
 from Tools import Notifications
 from twisted.internet import reactor, threads
 
-from . import _
+from . import _, __version__
+from .camlog import LOG
+from . import devices
 from Components.ActionMap import ActionMap
 
-from .logic import (dnd_blocks, is_media_ref, parse_orientation, parse_refresh, refresh_delay, strip_geometry,
+from .logic import (UPDATE_INTERVAL, github_repo, latest_tag, newer_version, title_font, add_event, alarm_edge, button_event, button_for, event_title, ptz_key, slug, redact, dnd_blocks, is_media_ref, parse_orientation, parse_refresh, refresh_delay, strip_geometry,
                     valid_port, parse_titles, title_for, blocked_by_rules, clock_tuple, key_action, known_camera, neighbour, pick_priority, decide, display_name, grid, in_time_window, lowered_volume, normalize_server, parse_camera_file,
                     parse_cams, pick_mode, rtsp_url, service_ref, should_pause, snapshot_url, split_credentials,
                     stream_from_ref, tcp_url, window_geometry)
@@ -28,8 +30,12 @@ from .logic import (dnd_blocks, is_media_ref, parse_orientation, parse_refresh, 
 PHOTO = "/tmp/camalert.jpg"
 
 
-def log(*args):
-    print("[CamAlert]", *args)
+def log(*args, **kw):
+    """Debug log of Enigma2 + camalert.log. level: error / normal / verbose (default: error if it failed)."""
+    text = " ".join(str(a) for a in args)
+    level = kw.get("level") or ("error" if "failed" in text or "error" in text.lower() else "normal")
+    print("[CamAlert]", redact(text))
+    LOG.write(level, text)
 
 
 CAMERA_FILE = "/etc/enigma2/camalert_cameras.conf"
@@ -208,13 +214,13 @@ class PhotoWindow(Screen):
     def __init__(self, session, stream, url, title=None, hint=False):
         c = config.plugins.camalert
         size = getDesktop(0).size()
-        x, y, w, h, t = window_geometry(c.position.value, c.size.value, size.width(), size.height())
+        x, y, w, h, t = window_geometry(c.position.value, c.size.value, size.width(), size.height(), c.title_size.value)
         f = size.width() / 1920.0
         self.skin = """<screen name="CamAlertPhoto" position="%d,%d" size="%d,%d" flags="wfNoBorder" backgroundColor="#ff000000" zPosition="10">
             <eLabel position="0,0" size="%d,%d" backgroundColor="#202020" zPosition="0" />
             <widget name="title" position="%d,0" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" valign="center" zPosition="2" />
             <widget name="photo" position="0,%d" size="%d,%d" alphatest="off" zPosition="1" />
-        </screen>""" % (x, y, w, h + t, w, h + t, int(10 * f), w - int(20 * f), t, int(26 * f), t, w, h)
+        </screen>""" % (x, y, w, h + t, w, h + t, int(10 * f), w - int(20 * f), t, title_font(c.title_size.value, size.width()), t, w, h)
         Screen.__init__(self, session)
         self.stream, self.url, self.size = stream, url, (w, h)
         self["title"] = Label((title or display_name(stream)) + ("   OK = live  < >  EXIT" if hint else ""))
@@ -270,7 +276,7 @@ class PhotoWindow(Screen):
 class StripWindow(Screen):
     """One corner window with 2-4 cameras (below each other, next to each other or 2 x 2); TV stays visible."""
 
-    def __init__(self, session, cams, hint=False):
+    def __init__(self, session, cams, hint=False, label=None):
         """cams: list of (name, title, snapshot url)."""
         c = config.plugins.camalert
         size = getDesktop(0).size()
@@ -280,7 +286,7 @@ class StripWindow(Screen):
         parts = ['<screen name="CamAlertStrip" position="%d,%d" size="%d,%d" flags="wfNoBorder" backgroundColor="#ff000000" zPosition="10">' % (x, y, w, h + t),
                  '<eLabel position="0,0" size="%d,%d" backgroundColor="#202020" zPosition="0" />' % (w, h + t),
                  '<widget name="title" position="%d,0" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" valign="center" zPosition="2" />'
-                 % (int(10 * f), w - int(20 * f), t, int(26 * f))]
+                 % (int(10 * f), w - int(20 * f), t, min(title_font(c.title_size.value, size.width()), int(t * 0.8)))]
         for i, (tx, ty, tw, th) in enumerate(tiles):
             parts.append('<widget name="tile%d" position="%d,%d" size="%d,%d" alphatest="off" zPosition="1" />' % (i, tx, ty, tw, th))
             parts.append('<widget name="label%d" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" zPosition="3" />'
@@ -290,7 +296,7 @@ class StripWindow(Screen):
         Screen.__init__(self, session)
         self.names = [n for n, _t, _u in cams]
         self.stream = ",".join(self.names)
-        self["title"] = Label("  ·  ".join(t for _n, t, _u in cams) + ("   OK = live  EXIT" if hint else ""))
+        self["title"] = Label(event_title("  ·  ".join(t for _n, t, _u in cams), label) + ("   OK = live  EXIT" if hint else ""))
         self.tiles = []
         for i, ((name, title, url), (tx, ty, tw, th)) in enumerate(zip(cams, tiles)):
             self["tile%d" % i] = Pixmap()
@@ -318,6 +324,93 @@ class StripWindow(Screen):
         Controller.instance.window_closed(self)
 
 
+def event_folder():
+    folder = config.plugins.camalert.event_folder.value.strip() or "/tmp/camalert_events"
+    try:
+        os.makedirs(folder, exist_ok=True)
+    except OSError:
+        folder = "/tmp"
+    return folder
+
+
+class PtzOverlay(Screen):
+    """Small hint at the top of the screen while PTZ mode is on (does not take the remote)."""
+
+    def __init__(self, session, text):
+        size = getDesktop(0).size()
+        f = size.width() / 1920.0
+        w, h = int(1100 * f), int(56 * f)
+        self.skin = ('<screen name="CamAlertPtz" position="%d,%d" size="%d,%d" flags="wfNoBorder" backgroundColor="#202020" zPosition="12">'
+                     '<widget name="text" position="0,0" size="%d,%d" font="Regular;%d" halign="center" valign="center" '
+                     'foregroundColor="#ffcc00" backgroundColor="#202020" /></screen>'
+                     % ((size.width() - w) // 2, size.height() - h - int(60 * f), w, h, w, h, int(28 * f)))
+        Screen.__init__(self, session)
+        self["text"] = Label(text)
+
+
+class GlobalKeys(object):
+    """Always active, but only acts while a camera is on screen: colour keys go to Home Assistant (event), the PTZ
+    key toggles PTZ mode for cameras with PTZ; in PTZ mode arrows move, CH+/CH- zoom, OK = home, EXIT = done."""
+
+    def __init__(self):
+        self.swallow = set()
+        eActionMap.getInstance().bindAction("", -0x7FFFFFFF, self.key)
+
+    def remove(self):
+        try:
+            eActionMap.getInstance().unbindAction("", self.key)
+        except Exception:
+            pass
+
+    def key(self, code, flag):
+        try:
+            return self._key(code, flag)
+        except Exception as e:
+            log("key handling failed:", e)
+            return 0
+
+    def _key(self, code, flag):
+        ctl = Controller.instance
+        if ctl is None:
+            return 0
+        if code in self.swallow:
+            if flag == 1:
+                self.swallow.discard(code)
+            elif flag == 2 and ctl.ptz_stream and ptz_key(code) in ("up", "down", "left", "right", "zoom_in", "zoom_out"):
+                ctl.ptz_move(ptz_key(code))  # key held: keep moving
+            return 1
+        if flag != 0:
+            return 0
+        c = config.plugins.camalert
+        if ctl.ptz_stream:
+            action = ptz_key(code)
+            if action is None and button_for(code, c.ptz_key.value, True) == "ptz":
+                action = "leave"
+            if action is None:
+                return 0 if code in (113, 114, 115) else 1  # volume passes, everything else is ignored in PTZ mode
+            self.swallow.add(code)
+            if action == "leave":
+                reactor.callLater(0, ctl.leave_ptz)
+            else:
+                ctl.ptz_move(action)
+            return 1
+        cam, consume = ctl.camera_on_screen()
+        if not cam:
+            return 0
+        what = button_for(code, c.ptz_key.value, ctl.has_ptz(cam), c.ha_buttons.value)
+        if what is None:
+            return 0
+        if what == "ptz":
+            self.swallow.add(code)
+            reactor.callLater(0, ctl.enter_ptz, cam)
+            return 1
+        ctl.send_button(cam, what)
+        if consume:
+            self.swallow.add(code)
+            return 1
+        return 0
+
+
 class KeyHook(object):
     """Catches the remote while the photo window is open (only when the user is just watching TV).
     OK = live, LEFT/RIGHT = other camera, EXIT = close; volume keys pass; any other key closes the window and
@@ -325,7 +418,7 @@ class KeyHook(object):
 
     def __init__(self):
         self.swallow = set()
-        eActionMap.getInstance().bindAction("", -0x7FFFFFFF, self.key)
+        eActionMap.getInstance().bindAction("", -0x7FFFFFFE, self.key)  # after GlobalKeys (PTZ / colour keys)
 
     def remove(self):
         try:
@@ -384,6 +477,9 @@ class TourScreen(Screen):
             "green": self.live}, -1)
         self.onShown.append(self.started)
         self.onClose.append(self.stopped)
+
+    def current_camera(self):
+        return self.cams[self.index][0] if self.cams else None
 
     def started(self):
         if not self.active:
@@ -453,6 +549,28 @@ class Controller(object):
         self.keys = None
         self.notify_timer = eTimer()
         self.notify_timer.callback.append(self.resume_tv)
+        self.events = []
+        self.reason = ""
+        self.label = None
+        self.last_caller = None  # (time, address, source) of the last API call
+        self.devices = {}
+        self.devices_mtime = None
+        self.alarms = {}
+        self.ptz_stream = None
+        self.ptz_hook = None
+        self.ptz_overlay = None
+        self.poll_timer = eTimer()
+        self.poll_timer.callback.append(self.poll_devices)
+        self.poll_timer.start(2000, False)
+        self.button_hook = GlobalKeys()
+        c = config.plugins.camalert
+        LOG.configure(c.log_level.value, c.log_syslog.value)
+        c.log_level.addNotifier(lambda _e: LOG.configure(c.log_level.value, c.log_syslog.value), initial_call=False)
+        c.log_syslog.addNotifier(lambda _e: LOG.configure(c.log_level.value, c.log_syslog.value), initial_call=False)
+        log("CamAlert %s started" % __version__)
+        self.update_timer = eTimer()
+        self.update_timer.callback.append(self.check_update)
+        self.update_timer.start(180 * 1000, True)
 
     # --- helpers -------------------------------------------------------------------------------------------
     def server(self):
@@ -473,13 +591,15 @@ class Controller(object):
         """Receiver rules: do not disturb, active hours, recording, media playback. Logs and returns True if blocked."""
         c = config.plugins.camalert
         if dnd_blocks(priority, c.dnd.value, c.dnd_level.value):
-            log("request", what, "ignored: do not disturb")
+            self.reason = "do not disturb"
             return True
         t = time.localtime()
         in_hours = in_time_window((t.tm_hour, t.tm_min), clock_tuple(c.from_time.value), clock_tuple(c.until_time.value))
-        if blocked_by_rules(priority, c.limit_hours.value, in_hours, c.skip_recording.value,
-                            bool(self.session.nav.getRecordings()), c.skip_media.value, self.playing_media()):
-            log("request", what, "ignored by the receiver rules (active hours / recording / media)")
+        recording, media = bool(self.session.nav.getRecordings()), self.playing_media()
+        if blocked_by_rules(priority, c.limit_hours.value, in_hours, c.skip_recording.value, recording,
+                            c.skip_media.value, media):
+            self.reason = ("outside active hours" if c.limit_hours.value and not in_hours else
+                           "recording" if c.skip_recording.value and recording else "media playback")
             return True
         return False
 
@@ -496,7 +616,42 @@ class Controller(object):
         reactor.callLater(0.1, _notify)
 
     # --- public ----------------------------------------------------------------------------------------------
-    def show(self, stream=None, seconds=None, mode=None, priority=None):
+    def show(self, stream=None, seconds=None, mode=None, priority=None, source="api", label=None, event_id=None):
+        """Handles a show request and logs it (source, decision and reason) in camalert.log and the event list."""
+        self.reason, self.label = "", (label or "").strip()[:40] or None
+        try:
+            result = self._show(stream, seconds, mode, priority)
+        finally:
+            self.label = None
+        cam = stream or config.plugins.camalert.camera.value
+        log("request from %s: camera=%s priority=%s mode=%s label=%s -> %s%s"
+            % (source, cam, pick_priority(priority), mode or "-", label or "-", result,
+               (" (%s)" % self.reason) if self.reason else ""), level="error" if result == "error" else "normal")
+        self.record_event(cam, label, source, pick_priority(priority), result, self.reason, event_id)
+        return result
+
+    def record_event(self, cam, label, source, priority, action, reason, event_id=None):
+        ev = {"time": time.time(), "camera": cam, "label": label or "", "source": source, "priority": priority,
+              "action": action, "reason": reason, "snapshot": None, "frigate_id": event_id}
+        for old in add_event(self.events, ev):
+            if old.get("snapshot"):
+                try:
+                    os.remove(old["snapshot"])
+                except OSError:
+                    pass
+        first = (cam or "").split(",")[0]
+        urls = camera_urls(first) if first and action in ("show", "extend", "wake") else None
+        if urls and urls[1]:
+            folder = event_folder()
+            path = os.path.join(folder, "%d_%s.jpg" % (int(ev["time"]), slug(first)))
+            url = urls[1].replace("width=640", "width=320")
+
+            def saved(_p):
+                ev["snapshot"] = path
+            threads.deferToThread(_download, url, path, orientation_for(first)).addCallbacks(
+                saved, lambda e: log("event snapshot failed:", e.getErrorMessage(), level="verbose"))
+
+    def _show(self, stream=None, seconds=None, mode=None, priority=None):
         from Screens import Standby
         c = config.plugins.camalert
         priority = pick_priority(priority)
@@ -508,8 +663,10 @@ class Controller(object):
                 except Exception as e:
                     log("wake failed:", e)
                     return "ignore"
-                reactor.callLater(6, self.show, stream, seconds, mode, priority)
+                reactor.callLater(6, self.show, stream, seconds, mode, priority, "wake")
+                self.reason = "receiver was in standby: woken up"
                 return "wake"
+            self.reason = "standby"
             return "ignore"
         inStandby = None
         cams = parse_cams(stream)
@@ -525,7 +682,7 @@ class Controller(object):
             return "error"
         fresh = time.time() - self._names_at < 60
         if not known_camera(stream, self._names if fresh else []):
-            log("unknown camera:", stream)
+            self.reason = "unknown camera"
             return "error"
         if not fresh:
             self.refresh_names()  # camera list older than a minute: refresh it in the background
@@ -533,9 +690,10 @@ class Controller(object):
         mode = pick_mode(mode, c.mode.value)
         urls = camera_urls(stream)
         if not urls:
-            log("unknown camera or no valid go2rtc address:", stream)
+            self.reason = "unknown camera or no valid go2rtc address"
             return "error"
         live_url, snap_url, title = urls
+        title = event_title(title, self.label)
         if mode == "photo" and not snap_url:
             mode = "live"  # camera has no snapshot address (direct mode)
         if self.blocked(priority, stream):
@@ -543,9 +701,10 @@ class Controller(object):
         window_stream = self.window.stream if self.window else (self.live_stream if mode == "live" else None)
         action = decide(inStandby is not None, self.current_stream() if self.live_stream is None else None,
                         window_stream, stream)
-        log("request", stream, seconds, mode, "->", action)
+        log("request", stream, seconds, mode, "->", action, level="verbose")
         reactor.callLater(0.5, _notify)
         if action == "ignore":
+            self.reason = "already on screen"
             return action
         pause = action == "show" and not self.paused and \
             should_pause(c.pause_tv.value, mode, self.current_stream() is not None)
@@ -592,7 +751,7 @@ class Controller(object):
             return "extend"
         self.hide(resume=False)
         keys = config.plugins.camalert.window_keys.value and self._tv_on_top()
-        self.window = self.session.instantiateDialog(StripWindow, cams, keys)
+        self.window = self.session.instantiateDialog(StripWindow, cams, keys, self.label)
         self.window.start(seconds)
         if keys:
             self.close_keys()
@@ -634,6 +793,145 @@ class Controller(object):
             return "show"
         return self._streams(streams, open_it)
 
+    # --- camera devices: Foscam alarms, PTZ ------------------------------------------------------------------------
+    def load_devices(self):
+        try:
+            mtime = os.path.getmtime(devices.DEVICES_FILE)
+        except OSError:
+            mtime = None
+        if mtime != self.devices_mtime:
+            self.devices_mtime = mtime
+            self.devices = devices.load_devices()
+            if self.devices:
+                log("devices file: %d cameras (%s)" % (len(self.devices), ", ".join(
+                    "%s=%s" % (n, d["type"]) for n, d in sorted(self.devices.items()))))
+        return self.devices
+
+    def poll_devices(self):
+        c = config.plugins.camalert
+        if not c.enabled.value or not c.foscam_poll.value:
+            return
+        for name, dev in self.load_devices().items():
+            if dev["type"] != "foscam" or self.alarms.get(name) == "busy":
+                continue
+            previous = self.alarms.get(name, False)
+            self.alarms[name] = "busy"
+
+            def done(alarm, name=name, previous=previous):
+                self.alarms[name] = alarm
+                if alarm_edge(previous, alarm):
+                    self.show(name, None, None, config.plugins.camalert.device_priority.value, "foscam", _("Motion"))
+
+            def failed(err, name=name, previous=previous):
+                self.alarms[name] = previous
+                if previous is not None:  # log once, not every 2 seconds
+                    log("Foscam %s: %s" % (name, err.getErrorMessage()), level="error")
+                self.alarms[name] = None
+            threads.deferToThread(devices.foscam_state, dev).addCallbacks(done, failed)
+
+    def has_ptz(self, name):
+        return bool(name) and name in self.load_devices()
+
+    def camera_on_screen(self):
+        """(camera name, True if colour keys should be swallowed) while a camera is shown, else (None, False)."""
+        if self.window is not None:
+            return self.window.stream.split(",")[0], True
+        dialog = getattr(self.session, "current_dialog", None)
+        if isinstance(dialog, (MosaicScreen, TourScreen)):
+            return getattr(dialog, "current_camera", lambda: "mosaic")(), False
+        stream = self.live_stream or self.current_stream()
+        if stream and self._tv_on_top():
+            return stream, True
+        return None, False
+
+    def enter_ptz(self, name):
+        if self.window is not None:
+            self.window.extend(120)
+        self.ptz_stream = name
+        self.ptz_overlay = self.session.instantiateDialog(
+            PtzOverlay, _("PTZ %s: arrows = move, CH+/CH- = zoom, OK = home, EXIT = done") % name)
+        self.ptz_overlay.show()
+        log("PTZ mode on:", name)
+
+    def leave_ptz(self):
+        if self.ptz_overlay is not None:
+            self.ptz_overlay.hide()
+            self.session.deleteDialog(self.ptz_overlay)
+            self.ptz_overlay = None
+        if self.ptz_stream:
+            log("PTZ mode off:", self.ptz_stream)
+        self.ptz_stream = None
+        if self.window is not None:
+            self.window.extend(int(config.plugins.camalert.duration.value))
+
+    def ptz_move(self, action, name=None):
+        name = name or self.ptz_stream
+        dev = self.load_devices().get(name)
+        if not dev or self.alarms.get(("ptz", name)):
+            return False
+        self.alarms[("ptz", name)] = True
+        if self.window is not None:
+            self.window.extend(120)
+
+        def done(_r):
+            self.alarms[("ptz", name)] = False
+
+        def failed(err):
+            self.alarms[("ptz", name)] = False
+            log("PTZ %s %s failed: %s" % (name, action, err.getErrorMessage()), level="error")
+        threads.deferToThread(devices.ptz, dev, action).addCallbacks(done, failed)
+        log("PTZ", name, action, level="verbose")
+        return True
+
+    # --- update check (at most once a day, GitHub releases) ------------------------------------------------------
+    def check_update(self):
+        self.update_timer.start(6 * 3600 * 1000, True)
+        c = config.plugins.camalert
+        try:
+            last = float(c.update_checked.value or 0)
+        except ValueError:
+            last = 0
+        if not c.update_check.value or time.time() - last < UPDATE_INTERVAL:
+            return
+
+        def fetch():
+            control = open("/var/lib/opkg/info/enigma2-plugin-extensions-camalert.control").read()
+            repo = github_repo(control) or "kevinrossnl/camalert"
+            req = urllib.request.Request("https://api.github.com/repos/%s/releases/latest" % repo,
+                                         headers={"Accept": "application/vnd.github+json",
+                                                  "User-Agent": "CamAlert/%s" % __version__})
+            with urllib.request.urlopen(req, timeout=15) as r:
+                return latest_tag(r.read().decode("utf-8", "replace"))
+
+        def done(tag):
+            c.update_checked.value = str(int(time.time()))
+            c.update_checked.save()
+            new = newer_version(__version__, tag)
+            log("update check: installed %s, latest %s" % (__version__, tag or "-"))
+            if new and new != c.update_seen.value:
+                c.update_seen.value = new
+                c.update_seen.save()
+                text = _("CamAlert %s is available (installed: %s).\nUpdate via the software update or: opkg update && opkg upgrade")
+                Notifications.AddPopup(text % (new, __version__), MessageBox.TYPE_INFO, 20, id="CamAlertUpdate")
+        threads.deferToThread(fetch).addCallbacks(done, lambda e: log("update check failed:", e.getErrorMessage(),
+                                                                     level="verbose"))
+
+    # --- colour buttons -> Home Assistant -------------------------------------------------------------------------
+    def send_button(self, camera, button):
+        from . import mqtt
+        log("button %s on camera %s -> Home Assistant" % (button, camera))
+        mqtt.publish_button(camera, button)
+        hook = config.plugins.camalert.ha_webhook.value.strip()
+        if hook:
+            from .mqtt import node_id
+            body = button_event(node_id(), camera, button).encode("utf-8")
+
+            def post():
+                req = urllib.request.Request(hook, data=body, headers={"Content-Type": "application/json"})
+                with urllib.request.urlopen(req, timeout=5) as r:
+                    return r.status
+            threads.deferToThread(post).addErrback(lambda e: log("button webhook failed:", e.getErrorMessage()))
+
     def _tv_on_top(self):
         """True when the user is just watching TV (no menu or other screen open)."""
         ib = self._infobar()
@@ -645,6 +943,7 @@ class Controller(object):
             k.remove()
 
     def window_to_live(self, stream):
+        self.leave_ptz()
         self.hide()
         self.show(stream, None, "live", "high")
 
@@ -723,6 +1022,8 @@ class Controller(object):
 
     def hide(self, resume=True):
         self.close_keys()
+        if self.ptz_stream:
+            self.leave_ptz()
         if self.window is not None:
             w, self.window = self.window, None
             w.active = False
@@ -738,6 +1039,8 @@ class Controller(object):
     def window_closed(self, w):
         reactor.callLater(0.1, _notify)
         self.close_keys()
+        if self.ptz_stream:
+            self.leave_ptz()
         if self.window is w:
             self.window = None
             self.session.deleteDialog(w)

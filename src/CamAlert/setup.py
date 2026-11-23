@@ -18,7 +18,7 @@ from . import _, __version__
 from . import server
 from . import mqtt
 from .display import CAMERA_FILE, Controller, all_camera_names, direct_cameras, open_url, pillow_available
-from .logic import (format_map, parse_map, parse_orientation, parse_refresh, valid_port, format_titles, parse_titles, title_for, BOUQUET_FILE, add_to_bouquets, bouquet_text, display_name, normalize_server, parse_cams,
+from .logic import (DEVICES_FILE, format_map, parse_map, parse_orientation, parse_refresh, valid_port, format_titles, parse_titles, title_for, BOUQUET_FILE, add_to_bouquets, bouquet_text, display_name, normalize_server, parse_cams,
                     streams_from_json)
 
 E2 = "/etc/enigma2/"
@@ -56,7 +56,7 @@ class CamAlertSetup(ConfigListScreen, Screen):
         from enigma import getDesktop
         self.skin = self.build_skin(getDesktop(0).size().width())
         Screen.__init__(self, session)
-        self.setTitle("CamAlert %s" % __version__)
+        self.setTitle("CamAlert %s   (%s)" % (__version__, _("MENU = diagnostics / events")))
         self["key_red"] = StaticText(_("Cancel"))
         self["key_green"] = StaticText(_("Save"))
         self["key_yellow"] = StaticText(_("Camera list"))
@@ -66,6 +66,7 @@ class CamAlertSetup(ConfigListScreen, Screen):
         self["actions"] = ActionMap(["SetupActions", "ColorActions"], {
             "cancel": self.cancel, "red": self.cancel, "green": self.save, "save": self.save,
             "ok": self.ok, "yellow": self.make_bouquet, "blue": self.test}, -2)
+        self["menu_actions"] = ActionMap(["MenuActions"], {"menu": self.menu}, -2)
         self.build()
         self.onLayoutFinish.append(self.update_help)
         self["config"].onSelectionChanged.append(self.update_help)
@@ -99,6 +100,7 @@ class CamAlertSetup(ConfigListScreen, Screen):
             items += [(_("Window position"), c.position, ""), (_("Window size"), c.size, ""),
                       (_("Remote control in photo window"), c.window_keys,
                        _("OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too.")),
+                      (_("Title size"), c.title_size, ""),
                       (_("Layout with several cameras"), c.strip_layout,
                        _("A request with 2-4 cameras shows them together in one corner window."))]
         if c.mode.value in ("photo", "notify"):
@@ -161,9 +163,33 @@ class CamAlertSetup(ConfigListScreen, Screen):
                     (_("Frigate camera names"), c.frigate_map,
                      _("Only if the names differ from go2rtc: frigate=go2rtc|other=other_stream")),
                     (_("Frigate priority"), c.frigate_priority, ""),
+                    (_("Frigate address (for clips)"), c.frigate_url,
+                     _("Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an event from the event list.")),
                 ]
+        items += [
+            (_("Colour keys to Home Assistant"), c.ha_buttons,
+             _("While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate).")),
+            (_("PTZ key"), c.ptz_key,
+             _("For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home).") % DEVICES_FILE),
+            (_("Foscam motion alarms"), c.foscam_poll,
+             _("Asks Foscam cameras from %s every 2 seconds for a motion or sound alarm.") % DEVICES_FILE),
+            (_("Foscam priority"), c.device_priority, ""),
+            (_("Event snapshots folder"), c.event_folder, _("Small photos of the last 20 events (default /tmp/camalert_events).")),
+            (_("Log level"), c.log_level, _("camalert.log in /home/root/logs (or /tmp). Passwords and tokens are never logged.")),
+            (_("Remote syslog (host:port)"), c.log_syslog, _("Optional: also send the log via UDP (RFC 5424), e.g. to Loki/Alloy.")),
+            (_("Check for updates"), c.update_check, _("Looks once a day on GitHub for a new version and shows a message.")),
+        ]
         self.help_texts = [i[2] for i in items]
         self["config"].list = [getConfigListEntry(i[0], i[1]) for i in items]
+
+    def menu(self):
+        self.session.openWithCallback(self.menu_chosen, ChoiceBox, title="CamAlert",
+                                      list=[(_("Diagnostics"), "diag"), (_("Event list"), "events")])
+
+    def menu_chosen(self, choice):
+        from .diagnostics import DiagnosticsScreen, EventsScreen
+        if choice:
+            self.session.open(DiagnosticsScreen if choice[1] == "diag" else EventsScreen)
 
     def update_help(self):
         i = self["config"].getCurrentIndex()

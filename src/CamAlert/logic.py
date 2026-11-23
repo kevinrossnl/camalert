@@ -178,12 +178,19 @@ def decide(in_standby, current_stream, window_stream, requested_stream):
     return "show"
 
 
-def window_geometry(position, size, screen_w, screen_h):
+TITLE_SIZES = {"small": (32, 22), "normal": (40, 26), "large": (56, 38)}  # (title bar height, font) at 1080p
+
+
+def title_font(title_size, screen_w):
+    return int(TITLE_SIZES.get(title_size, TITLE_SIZES["normal"])[1] * screen_w / 1920.0)
+
+
+def window_geometry(position, size, screen_w, screen_h, title_size="normal"):
     """(x, y, w, h, title_h) for the photo window, scaled from a 1920x1080 design."""
     f = screen_w / 1920.0
     w, h = SIZES.get(size, SIZES["medium"])
     w, h = int(w * f), int(h * f)
-    title, margin = int(40 * f), int(40 * f)
+    title, margin = int(TITLE_SIZES.get(title_size, TITLE_SIZES["normal"])[0] * f), int(40 * f)
     total_h = h + title
     x = margin if position in ("top_left", "bottom_left") else screen_w - w - margin
     y = margin if position in ("top_left", "top_right") else screen_h - total_h - margin
@@ -339,7 +346,7 @@ def mqtt_command(payload):
             d = json.loads(text)
         except ValueError:
             return {}
-        return {k: d[k] for k in ("cam", "sec", "mode", "priority") if k in d}
+        return {k: d[k] for k in ("cam", "sec", "mode", "priority", "label") if k in d}
     return {"cam": text} if text else {}
 
 
@@ -366,6 +373,8 @@ def discovery(node, name, cameras, prefix="camalert", base="homeassistant"):
     add("switch", "dnd", {"name": "Do not disturb", "icon": "mdi:bell-off",
                           "command_topic": "%s/%s/dnd/set" % (prefix, node), "state_topic": "%s/%s/dnd" % (prefix, node),
                           "payload_on": "ON", "payload_off": "OFF"})
+    add("event", "button", {"name": "Remote button", "icon": "mdi:remote", "state_topic": "%s/%s/button" % (prefix, node),
+                            "event_types": ["red", "green", "yellow", "blue"]})
     return msgs
 
 
@@ -432,8 +441,6 @@ def key_action(code):
         return "close"
     if code in PASS_KEYS:
         return "pass"
-    if code == KEY_YELLOW:
-        return "ptz"
     return "close_pass"  # close the window and let the key do its normal job (zapping, numbers, menu, ...)
 
 
@@ -552,8 +559,19 @@ def frigate_event(payload):
     after = d.get("after") or {}
     if not isinstance(after, dict) or after.get("false_positive") or not after.get("camera"):
         return None
+    sub = after.get("sub_label")
+    if isinstance(sub, (list, tuple)):  # Frigate 0.13+: [name, score]
+        sub = sub[0] if sub else None
     return {"type": d["type"], "camera": str(after["camera"]), "label": str(after.get("label") or ""),
-            "id": str(after.get("id") or ""), "snapshot": bool(after.get("has_snapshot"))}
+            "sub_label": str(sub or ""), "id": str(after.get("id") or ""), "snapshot": bool(after.get("has_snapshot")),
+            "clip": bool(after.get("has_clip"))}
+
+
+def frigate_title(event):
+    """Who/what for the window title: the sub label (a recognised face or plate) if any, else the label."""
+    if not event:
+        return None
+    return event.get("sub_label") or (event.get("label") or "").replace("_", " ").capitalize() or None
 
 
 def frigate_stream(event, labels="", camera_map=""):
@@ -789,3 +807,154 @@ def onvif_fault(xml):
     """Fault reason text of a SOAP answer, or None."""
     m = re.search(r"<(?:\w+:)?Text[^>]*>([^<]*)</(?:\w+:)?Text>", xml or "") if "Fault" in (xml or "") else None
     return (m.group(1) if m else "SOAP fault") if xml and "Fault>" in xml else None
+
+
+# --- logging ------------------------------------------------------------------------------------------------------
+LOG_LEVELS = ("off", "errors", "normal", "verbose")
+_LEVEL_RANK = {"error": 1, "normal": 2, "verbose": 3}
+LOG_MAX_BYTES = 1024 * 1024
+
+
+def log_allowed(setting, level):
+    """Does a message of `level` (error/normal/verbose) go to the log with the setting off/errors/normal/verbose?"""
+    limit = LOG_LEVELS.index(setting) if setting in LOG_LEVELS else 2
+    return _LEVEL_RANK.get(level, 2) <= limit
+
+
+_REDACT = [
+    (re.compile(r"(?i)(\b[a-z][a-z0-9+.-]*://)[^/\s:@]*:[^/\s@]*@"), r"\1***:***@"),  # user:pass@ in urls
+    (re.compile(r"(?i)(\b[a-z][a-z0-9+.-]*://)[^/\s:@]+@"), r"\1***@"),               # user@ (token as user)
+    (re.compile(r"(?i)([?&](?:token|pwd|pass|password|passwd|usr|user|key|apikey|api_key|access_token|auth)=)[^&\s\"']*"),
+     r"\1***"),
+    (re.compile(r"(?i)(\bauthorization\s*[:=]\s*)(?:bearer\s+|basic\s+)?[^\s,;\"']+"), r"\1***"),
+    (re.compile(r"(?i)(\"(?:token|password|pwd|access_token|api_key)\"\s*:\s*\")[^\"]*(\")"), r"\1***\2"),
+    (re.compile(r"(?i)(<(?:\w+:)?(?:Password|Nonce|Username)[^>]*>)[^<]*"), r"\1***"),
+    (re.compile(r"(?i)\b((?:password|passwd|token|pwd)\s*[=:]\s*)[^\s&,;|\"']+"), r"\1***"),
+]
+
+
+def redact(text):
+    """Removes passwords, tokens and user:pass@ from anything that goes to a log, a status page or diagnostics."""
+    text = "" if text is None else str(text)
+    for rx, repl in _REDACT:
+        text = rx.sub(repl, text)
+    return text
+
+
+SYSLOG_SEVERITY = {"error": 3, "normal": 6, "verbose": 7}
+
+
+def syslog_line(message, level, hostname, timestamp, app="camalert", facility=16):
+    """RFC 5424 line (local0 by default) for a remote syslog (Loki/Alloy, rsyslog, ...)."""
+    import time as _t
+    pri = facility * 8 + SYSLOG_SEVERITY.get(level, 6)
+    ts = _t.strftime("%Y-%m-%dT%H:%M:%S", _t.gmtime(timestamp)) + ".%03dZ" % (int(timestamp * 1000) % 1000)
+    host = re.sub(r"[^\x21-\x7e]", "_", hostname or "-")[:255] or "-"
+    return "<%d>1 %s %s %s - - - %s" % (pri, ts, host, app, redact(message).replace("\n", " "))
+
+
+def parse_hostport(text, default_port=514):
+    """'host:port' or 'host' -> (host, port) or None."""
+    text = (text or "").strip()
+    if not text:
+        return None
+    host, sep, port = text.rpartition(":")
+    if not sep or not port.isdigit():
+        return text, default_port
+    return host, valid_port(port, default_port)
+
+
+# --- event list ---------------------------------------------------------------------------------------------------
+EVENT_LIMIT = 20
+SOURCES = ("api", "ha", "mqtt", "frigate", "foscam", "menu")
+
+
+def add_event(events, event, limit=EVENT_LIMIT):
+    """Newest first, at most `limit`; returns the events that fell off (their snapshots can be removed)."""
+    events.insert(0, event)
+    dropped = events[limit:]
+    del events[limit:]
+    return dropped
+
+
+def caller_source(user_agent, path=""):
+    """Who called the API: 'ha' for Home Assistant (integration / rest_command use aiohttp), else 'api'."""
+    ua = (user_agent or "").lower()
+    return "ha" if "homeassistant" in ua or "home assistant" in ua or "aiohttp" in ua else "api"
+
+
+def event_title(title, label=None):
+    """'Person at Front door' style title (label translated by the caller)."""
+    return "%s · %s" % (label, title) if label else title
+
+
+# --- colour buttons -> Home Assistant -----------------------------------------------------------------------------
+COLOR_KEYS = {398: "red", 399: "green", 400: "yellow", 401: "blue"}
+PTZ_TOGGLE_KEYS = ("blue", "yellow", "red", "green", "off")
+
+
+def button_for(code, ptz_toggle="blue", has_ptz=False, enabled=True):
+    """('ptz' | colour name | None) for a key while a camera is on screen. The PTZ toggle key only counts as PTZ
+    for cameras that have PTZ; for all other cameras every colour key goes to Home Assistant."""
+    colour = COLOR_KEYS.get(code)
+    if colour is None:
+        return None
+    if has_ptz and colour == ptz_toggle:
+        return "ptz"
+    return colour if enabled else None
+
+
+def button_event(node, camera, button):
+    """Payload for camalert/<id>/button (MQTT event entity) and the Home Assistant webhook."""
+    return json.dumps({"event_type": button, "button": button, "camera": camera or "", "receiver": node},
+                      sort_keys=True)
+
+
+# --- diagnostics / event list -------------------------------------------------------------------------------------
+def diag_line(ok, text):
+    """One line of the diagnostics screen: ok True / False / None (= note)."""
+    return "%s  %s" % ({True: "[ OK ]", False: "[FAIL]", None: "[ -- ]"}[ok], redact(text))
+
+
+def event_line(e):
+    import time as _t
+    who = (" · " + e["label"]) if e.get("label") else ""
+    return "%s  %s%s  (%s, %s) -> %s" % (_t.strftime("%H:%M:%S", _t.localtime(e["time"])), e["camera"], who,
+                                          e["source"], e["priority"], e["action"])
+
+
+def frigate_clip_url(frigate_url, event_id):
+    """Frigate API url of an event clip, or None."""
+    base = (frigate_url or "").strip().rstrip("/")
+    if not base or not event_id or not re.match(r"^[\w.-]+$", event_id):
+        return None
+    if not base.startswith(("http://", "https://")):
+        base = "http://" + base
+    return "%s/api/events/%s/clip.mp4" % (base, event_id)
+
+
+# --- update check -------------------------------------------------------------------------------------------------
+UPDATE_INTERVAL = 24 * 3600
+
+
+def version_tuple(v):
+    return tuple(int(x) for x in re.findall(r"\d+", (v or "").lstrip("vV"))[:4]) or (0,)
+
+
+def newer_version(current, latest):
+    """The latest release tag if it is newer than the installed version, else None."""
+    return latest.lstrip("vV") if latest and version_tuple(latest) > version_tuple(current) else None
+
+
+def github_repo(control_text):
+    """'owner/camalert' from the Homepage line of the installed package's opkg control file."""
+    m = re.search(r"^Homepage:\s*https://github\.com/([\w.-]+/[\w.-]+?)/?\s*$", control_text or "", re.M)
+    return m.group(1) if m else None
+
+
+def latest_tag(release_json):
+    try:
+        d = json.loads(release_json)
+    except (ValueError, TypeError):
+        return None
+    return d.get("tag_name") if isinstance(d, dict) and not d.get("draft") and not d.get("prerelease") else None

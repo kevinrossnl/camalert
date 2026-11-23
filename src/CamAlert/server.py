@@ -8,20 +8,26 @@
     GET /camalert/cameras
     GET /camalert/tour?cam=front_door,garden&interval=8
     GET /camalert/dnd?on=1|0         (do not disturb; without "on" it only reports the state)
+    GET /camalert/ptz?cam=garden&move=up|down|left|right|zoom_in|zoom_out|home|stop
+    GET /camalert/webhook?url=...    (Home Assistant webhook for remote buttons; empty url removes it)
+    GET /camalert/log?lines=200      (camalert.log, redacted)
+    GET /camalert/events             (last 20 requests with decision)
     GET /camalert/hide
     GET /camalert/status
 """
 import json
 import os
 import subprocess
+import time
 
 from twisted.web import resource, server
 from twisted.internet import reactor, threads
-from Components.config import config
+from Components.config import config, configfile
 
 from . import __version__
 from .display import Controller, all_camera_names, camera_urls, log
-from .logic import valid_port, client_allowed, clamp_seconds, token_ok
+from .camlog import LOG
+from .logic import PTZ_ACTIONS, caller_source, redact, valid_port, client_allowed, clamp_seconds, token_ok
 
 _port = None
 CERT = "/etc/enigma2/camalert.crt"
@@ -67,10 +73,40 @@ class Api(resource.Resource):
             return b'{"result": false, "error": "disabled"}'
         action = req.path.decode().rstrip("/").rsplit("/", 1)[-1]
         ctl = Controller.instance
+        ua = req.getHeader(b"user-agent")
+        source = caller_source(ua.decode("utf-8", "replace") if isinstance(ua, bytes) else ua)
+        ctl.last_caller = (time.time(), req.getClientAddress().host, source)
+        log("API %s from %s (%s)" % (redact(req.uri.decode("utf-8", "replace")), req.getClientAddress().host, source),
+            level="verbose")
         try:
             if action == "hide":
                 ctl.hide()
                 out = {"result": True, "action": "hide"}
+            elif action == "ptz":
+                cam, move = args.get("cam"), args.get("move")
+                if move not in PTZ_ACTIONS or not ctl.has_ptz(cam):
+                    req.setResponseCode(400)
+                    out = {"result": False, "error": "camera without PTZ or unknown move"}
+                else:
+                    out = {"result": ctl.ptz_move(move, cam), "cam": cam, "move": move}
+            elif action == "webhook":
+                url = args.get("url", "")
+                if url and not url.startswith(("http://", "https://")):
+                    req.setResponseCode(400)
+                    out = {"result": False, "error": "url must start with http:// or https://"}
+                else:
+                    if url != c.ha_webhook.value:
+                        c.ha_webhook.value = url
+                        c.ha_webhook.save()
+                        configfile.save()
+                        log("Home Assistant webhook %s" % ("set" if url else "removed"))
+                    out = {"result": True, "webhook": bool(url)}
+            elif action == "log":
+                n = int(args["lines"]) if args.get("lines", "").isdigit() else 200
+                out = {"result": True, "lines": [redact(x) for x in LOG.tail(min(n, 2000))]}
+            elif action == "events":
+                out = {"result": True, "events": [{k: v for k, v in e.items() if k != "snapshot"}
+                                                  for e in ctl.events]}
             elif action == "dnd":
                 if "on" in args:
                     ctl.set_dnd(args["on"].lower() in ("1", "true", "on", "yes"))
@@ -109,7 +145,7 @@ class Api(resource.Resource):
                 out = dict(ctl.status(), result=True, version=__version__, id=node_id(), name=node_name())
             elif action in ("show", "camalert"):
                 sec = clamp_seconds(args.get("sec"), int(c.duration.value)) if args.get("sec") else None
-                res = ctl.show(args.get("cam"), sec, args.get("mode"), args.get("priority"))
+                res = ctl.show(args.get("cam"), sec, args.get("mode"), args.get("priority"), source, args.get("label"))
                 out = {"result": res in ("show", "extend", "wake"), "action": res, "cam": args.get("cam") or c.camera.value}
             else:
                 req.setResponseCode(404)

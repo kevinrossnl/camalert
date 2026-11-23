@@ -20,7 +20,7 @@ from twisted.internet import reactor, threads
 from . import _
 from Components.ActionMap import ActionMap
 
-from .logic import (blocked_by_rules, neighbour, pick_priority, decide, display_name, grid, in_time_window, lowered_volume, normalize_server, parse_camera_file,
+from .logic import (blocked_by_rules, known_camera, neighbour, pick_priority, decide, display_name, grid, in_time_window, lowered_volume, normalize_server, parse_camera_file,
                     parse_cams, pick_mode, rtsp_url, service_ref, should_pause, snapshot_url, split_credentials,
                     stream_from_ref, tcp_url, window_geometry)
 
@@ -392,6 +392,12 @@ class Controller(object):
         if len(cams) > 1:
             return self.mosaic(cams, seconds or int(c.duration.value))
         stream = stream or c.camera.value
+        if not stream:
+            log("no camera given and no default camera set")
+            return "error"
+        if not known_camera(stream, self._names):
+            log("unknown camera:", stream)
+            return "error"
         seconds = seconds or int(c.duration.value)
         mode = pick_mode(mode, c.mode.value)
         urls = camera_urls(stream)
@@ -443,28 +449,37 @@ class Controller(object):
                 self.notify_timer.start(seconds * 1000, True)
         return action
 
+    def _streams(self, streams, then):
+        """Resolves the camera list (argument, 'mosaic cameras' setting, or all cameras via a thread) and calls
+        then(list). Returns 'show' or 'error'."""
+        if isinstance(streams, str):
+            streams = parse_cams(streams)
+        streams = streams or parse_cams(config.plugins.camalert.mosaic.value)
+        if streams:
+            return then(streams)
+        if self._names:
+            return then(self._names[:9])
+
+        def fetched(names):
+            self._names = names
+            then(names[:9])
+        threads.deferToThread(all_camera_names).addCallbacks(fetched, lambda e: log("no cameras:", e.getErrorMessage()))
+        return "show"
+
     def mosaic(self, streams=None, seconds=0):
-        """Opens the photo mosaic. streams=None uses the 'mosaic cameras' setting (or all cameras of go2rtc)."""
+        """Opens the photo mosaic (up to 9 cameras)."""
         from Screens.Standby import inStandby
         if inStandby is not None:
             return "ignore"
-        streams = streams or parse_cams(config.plugins.camalert.mosaic.value)
-        if not streams:
-            try:
-                streams = all_camera_names()
-            except Exception as e:
-                log("mosaic: no cameras", e)
+
+        def open_it(names):
+            tiles = [(s, u[2], u[1]) for s, u in ((s, camera_urls(s)) for s in names) if u and u[1]]
+            if not tiles:
+                log("mosaic: no cameras with a snapshot address")
                 return "error"
-        tiles = []
-        for s in streams:
-            urls = camera_urls(s)
-            if urls and urls[1]:
-                tiles.append((s, urls[2], urls[1]))
-        if not tiles:
-            log("mosaic: no cameras with a snapshot address")
-            return "error"
-        self.session.open(MosaicScreen, tiles[:9], seconds)
-        return "show"
+            self.session.open(MosaicScreen, tiles[:9], seconds)
+            return "show"
+        return self._streams(streams, open_it)
 
     def _tv_on_top(self):
         """True when the user is just watching TV (no menu or other screen open)."""
@@ -506,18 +521,14 @@ class Controller(object):
         from Screens.Standby import inStandby
         if inStandby is not None:
             return "ignore"
-        streams = streams or parse_cams(config.plugins.camalert.mosaic.value)
-        if not streams:
-            try:
-                streams = all_camera_names()
-            except Exception as e:
-                log("tour: no cameras", e)
+
+        def open_it(names):
+            cams = [(s, u[2], u[1]) for s, u in ((s, camera_urls(s)) for s in names) if u and u[1]]
+            if not cams:
                 return "error"
-        cams = [(s, u[2], u[1]) for s, u in ((s, camera_urls(s)) for s in streams) if u and u[1]]
-        if not cams:
-            return "error"
-        self.session.open(TourScreen, cams, interval or int(config.plugins.camalert.tour_interval.value))
-        return "show"
+            self.session.open(TourScreen, cams, interval or int(config.plugins.camalert.tour_interval.value))
+            return "show"
+        return self._streams(streams, open_it)
 
     def _infobar(self):
         try:

@@ -151,6 +151,12 @@ Garden | rtsp://192.168.1.22/dup
         self.assertFalse(L.blocked_by_rules("high", True, False, True, True))
         self.assertFalse(L.blocked_by_rules("alarm", True, False, True, True))
 
+    def test_known_camera(self):
+        self.assertTrue(L.known_camera("a", []))
+        self.assertTrue(L.known_camera("a", ["a", "b"]))
+        self.assertFalse(L.known_camera("x", ["a", "b"]))
+        self.assertFalse(L.known_camera("", ["a"]))
+
     def test_neighbour(self):
         self.assertEqual(L.neighbour(["a", "b", "c"], "c", 1), "a")
         self.assertEqual(L.neighbour(["a", "b", "c"], "a", -1), "c")

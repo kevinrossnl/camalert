@@ -387,3 +387,8 @@ def neighbour(items, current, step):
     if current not in items:
         return items[0]
     return items[(items.index(current) + step) % len(items)]
+
+
+def known_camera(name, names):
+    """False only if we know the camera list and the name is not in it (an empty list = unknown, allow)."""
+    return bool(name) and (not names or name in names)

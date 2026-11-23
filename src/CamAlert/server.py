@@ -15,7 +15,7 @@ import os
 import subprocess
 
 from twisted.web import resource, server
-from twisted.internet import reactor
+from twisted.internet import reactor, threads
 from Components.config import config
 
 from . import __version__
@@ -40,6 +40,14 @@ def ensure_certificate():
     except (OSError, subprocess.CalledProcessError) as e:
         log("could not create certificate:", e)
         return False
+
+
+def finish(req, out):
+    try:
+        req.write(json.dumps(out).encode())
+        req.finish()
+    except Exception:  # client went away
+        pass
 
 
 class Api(resource.Resource):
@@ -71,11 +79,24 @@ class Api(resource.Resource):
                 res = ctl.tour(args.get("cam"), max(3, min(60, int(iv))) if iv and iv.isdigit() else None)
                 out = {"result": res == "show", "action": res}
             elif action == "cameras":
-                cams = []
-                for n in all_camera_names():
-                    urls = camera_urls(n)
-                    cams.append({"name": n, "title": urls[2] if urls else n, "snapshot": bool(urls and urls[1])})
-                out = {"result": True, "cameras": cams}
+                # go2rtc mode needs a network call: never block the GUI, answer from a thread
+                def collect():
+                    cams = []
+                    for n in all_camera_names():
+                        urls = camera_urls(n)
+                        cams.append({"name": n, "title": urls[2] if urls else n, "snapshot": bool(urls and urls[1])})
+                    return cams
+
+                def done(cams):
+                    if Controller.instance:
+                        Controller.instance._names = [c["name"] for c in cams]
+                    finish(req, {"result": True, "cameras": cams})
+
+                def failed(err):
+                    log("camera list failed:", err.getErrorMessage())
+                    finish(req, {"result": False, "error": "camera source not reachable"})
+                threads.deferToThread(collect).addCallbacks(done, failed)
+                return server.NOT_DONE_YET
             elif action == "status":
                 from .mqtt import node_id, node_name
                 out = dict(ctl.status(), result=True, version=__version__, id=node_id(), name=node_name())

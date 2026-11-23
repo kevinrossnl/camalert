@@ -1,0 +1,102 @@
+import os
+import sys
+import unittest
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src", "DoorCam"))
+import logic as L  # noqa: E402
+
+
+class TestLogic(unittest.TestCase):
+    def test_slug_and_names(self):
+        self.assertEqual(L.slug("Zürich Süd Straße"), "zuerich_sued_strasse")
+        self.assertEqual(L.display_name("front_door"), "Front door")
+
+    def test_normalize_server(self):
+        self.assertEqual(L.normalize_server("192.168.1.10"), "http://192.168.1.10:1984")
+        self.assertEqual(L.normalize_server("http://cam.local:1984/"), "http://cam.local:1984")
+        self.assertEqual(L.normalize_server("https://go2rtc.example"), "https://go2rtc.example:443")
+        self.assertIsNone(L.normalize_server(""))
+        self.assertIsNone(L.normalize_server("ftp://x"))
+
+    def test_streams_from_json(self):
+        self.assertEqual(L.streams_from_json('{"garden": {}, "front_door": {}, "bad name": {}}'), ["front_door", "garden"])
+        self.assertEqual(L.streams_from_json("not json"), [])
+        self.assertEqual(L.streams_from_json("[]"), [])
+
+    def test_urls_and_refs(self):
+        srv = "http://192.168.1.10:1984"
+        url = L.rtsp_url(srv, "front_door")
+        self.assertEqual(url, "rtspt://192.168.1.10:8554/front_door")
+        self.assertEqual(L.snapshot_url(srv, "front_door", 320), srv + "/api/frame.jpeg?src=front_door&width=320")
+        ref = L.service_ref(url, "Front door", 3)
+        self.assertTrue(ref.startswith("4097:0:1:DC03:"))
+        self.assertNotIn("rtspt://", ref)
+        self.assertEqual(L.stream_from_ref(ref), "front_door")
+        self.assertIsNone(L.stream_from_ref("1:0:19:EF10:421:1:C00000:0:0:0:"))
+
+    def test_bouquet(self):
+        b = L.bouquet_text("Cameras", "http://192.168.1.10:1984", ["front_door", "garden"])
+        self.assertTrue(b.startswith("#NAME Cameras\n"))
+        self.assertEqual(b.count("#SERVICE 4097"), 2)
+        self.assertIn("#DESCRIPTION Garden", b)
+        tv = "#NAME User - bouquets (TV)\n"
+        once = L.add_to_bouquets(tv)
+        self.assertIn(L.BOUQUET_FILE, once)
+        self.assertEqual(L.add_to_bouquets(once), once)
+
+    def test_clamp_and_mode(self):
+        self.assertEqual(L.clamp_seconds("2"), 5)
+        self.assertEqual(L.clamp_seconds("999"), 300)
+        self.assertEqual(L.clamp_seconds("x", 30), 30)
+        self.assertEqual(L.pick_mode("live"), "live")
+        self.assertEqual(L.pick_mode("evil", "photo"), "photo")
+
+    def test_decide(self):
+        self.assertEqual(L.decide(True, None, None, "a"), "ignore")
+        self.assertEqual(L.decide(False, None, None, ""), "ignore")
+        self.assertEqual(L.decide(False, "a", None, "a"), "ignore")
+        self.assertEqual(L.decide(False, None, "a", "a"), "extend")
+        self.assertEqual(L.decide(False, None, "b", "a"), "show")
+
+    def test_should_pause(self):
+        self.assertTrue(L.should_pause(True, "photo", False))
+        self.assertTrue(L.should_pause(True, "notify", False))
+        self.assertFalse(L.should_pause(True, "live", False))
+        self.assertFalse(L.should_pause(True, "photo", True))
+        self.assertFalse(L.should_pause(False, "photo", False))
+
+    def test_time_window(self):
+        self.assertTrue(L.in_time_window((12, 0), (7, 0), (23, 0)))
+        self.assertFalse(L.in_time_window((23, 0), (7, 0), (23, 0)))
+        self.assertFalse(L.in_time_window((6, 59), (7, 0), (23, 0)))
+        self.assertTrue(L.in_time_window((1, 0), (22, 0), (6, 0)))
+        self.assertFalse(L.in_time_window((12, 0), (22, 0), (6, 0)))
+        self.assertTrue(L.in_time_window((3, 3), (8, 0), (8, 0)))
+
+    def test_lowered_volume(self):
+        self.assertEqual(L.lowered_volume(60, 50), 30)
+        self.assertEqual(L.lowered_volume(60, 100), 60)
+        self.assertEqual(L.lowered_volume(60, 0), 0)
+        self.assertEqual(L.lowered_volume(60, 150), 60)
+
+    def test_geometry(self):
+        self.assertEqual(L.window_geometry("top_right", "medium", 1920, 1080), (1240, 40, 640, 360, 40))
+        x, y, w, h, t = L.window_geometry("bottom_left", "small", 1280, 720)
+        self.assertEqual((x, w), (26, 320))
+        self.assertEqual(y + h + t, 720 - 26)
+
+    def test_access(self):
+        self.assertTrue(L.client_allowed("192.168.1.5"))
+        self.assertTrue(L.client_allowed("::ffff:10.0.0.2"))
+        self.assertTrue(L.client_allowed("127.0.0.1"))
+        self.assertFalse(L.client_allowed("8.8.8.8"))
+        self.assertTrue(L.client_allowed("8.8.8.8", "any"))
+        self.assertFalse(L.client_allowed("garbage"))
+        self.assertTrue(L.token_ok("", None))
+        self.assertTrue(L.token_ok("s3cret", "s3cret"))
+        self.assertFalse(L.token_ok("s3cret", "nope"))
+        self.assertFalse(L.token_ok("s3cret", None))
+
+
+if __name__ == "__main__":
+    unittest.main()

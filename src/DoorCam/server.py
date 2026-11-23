@@ -1,0 +1,118 @@
+# -*- coding: utf-8 -*-
+# DoorCam - show IP cameras (via go2rtc) on an Enigma2 receiver.
+# Copyright (C) 2026 DoorCam developers. Licensed under the GNU GPL v2 (see LICENSE).
+"""Small HTTP API on the receiver:
+
+    GET /doorcam/show?cam=front_door&sec=30&mode=photo|live|notify[&token=...]
+    GET /doorcam/hide
+    GET /doorcam/status
+"""
+import json
+import os
+import subprocess
+
+from twisted.web import resource, server
+from twisted.internet import reactor
+from Components.config import config
+
+from . import __version__
+from .display import Controller, log
+from .logic import client_allowed, clamp_seconds, token_ok
+
+_port = None
+CERT = "/etc/enigma2/doorcam.crt"
+KEY = "/etc/enigma2/doorcam.key"
+
+
+def ensure_certificate():
+    """Creates a self-signed certificate (10 years) for the HTTPS API if there is none yet."""
+    if os.path.exists(CERT) and os.path.exists(KEY):
+        return True
+    try:
+        subprocess.check_call(["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-days", "3650",
+                               "-subj", "/CN=DoorCam", "-keyout", KEY, "-out", CERT],
+                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        os.chmod(KEY, 0o600)
+        return True
+    except (OSError, subprocess.CalledProcessError) as e:
+        log("could not create certificate:", e)
+        return False
+
+
+class Api(resource.Resource):
+    isLeaf = True
+
+    def render_GET(self, req):
+        c = config.plugins.doorcam
+        req.setHeader(b"content-type", b"application/json")
+        args = {k.decode(): v[0].decode() for k, v in req.args.items()}
+        header = req.getHeader(b"x-doorcam-token")
+        given = args.get("token") or (header.decode() if isinstance(header, bytes) else header or "")
+        if not client_allowed(req.getClientAddress().host, c.allow.value) or not token_ok(c.token.value, given):
+            req.setResponseCode(403)
+            return b'{"result": false, "error": "forbidden"}'
+        if not c.enabled.value:
+            return b'{"result": false, "error": "disabled"}'
+        action = req.path.decode().rstrip("/").rsplit("/", 1)[-1]
+        ctl = Controller.instance
+        try:
+            if action == "hide":
+                ctl.hide()
+                out = {"result": True, "action": "hide"}
+            elif action == "status":
+                out = dict(ctl.status(), result=True, version=__version__)
+            elif action in ("show", "doorcam"):
+                sec = clamp_seconds(args.get("sec"), int(c.duration.value)) if args.get("sec") else None
+                res = ctl.show(args.get("cam"), sec, args.get("mode"))
+                out = {"result": res in ("show", "extend"), "action": res, "cam": args.get("cam") or c.camera.value}
+            else:
+                req.setResponseCode(404)
+                out = {"result": False, "error": "unknown action"}
+        except Exception as e:
+            log("request failed:", e)
+            req.setResponseCode(500)
+            out = {"result": False, "error": "internal error"}
+        return json.dumps(out).encode()
+
+
+def start():
+    global _port
+    stop()
+    root = resource.Resource()
+    root.putChild(b"doorcam", Api())
+    c = config.plugins.doorcam
+    try:
+        if c.api_https.value and ensure_certificate():
+            from twisted.internet import ssl
+            ctx = ssl.DefaultOpenSSLContextFactory(KEY, CERT)
+            _port = reactor.listenSSL(int(c.http_port.value), server.Site(root), ctx)
+            log("listening on port", c.http_port.value, "(https)")
+        else:
+            _port = reactor.listenTCP(int(c.http_port.value), server.Site(root))
+            log("listening on port", c.http_port.value)
+    except Exception as e:
+        log("could not start HTTP API:", e)
+
+
+def stop():
+    global _port
+    if _port is not None:
+        _port.stopListening()
+        _port = None
+CERT = "/etc/enigma2/doorcam.crt"
+KEY = "/etc/enigma2/doorcam.key"
+
+
+def ensure_certificate():
+    """Creates a self-signed certificate (10 years) for the HTTPS API if there is none yet."""
+    if os.path.exists(CERT) and os.path.exists(KEY):
+        return True
+    try:
+        subprocess.check_call(["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-days", "3650",
+                               "-subj", "/CN=DoorCam", "-keyout", KEY, "-out", CERT],
+                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        os.chmod(KEY, 0o600)
+        return True
+    except (OSError, subprocess.CalledProcessError) as e:
+        log("could not create certificate:", e)
+        return False

@@ -1,0 +1,194 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: nl\n"
+
+msgid "Photo window"
+msgstr "Foto-venster"
+
+msgid "Switch to live stream"
+msgstr "Omschakelen naar live beeld"
+
+msgid "Notification only"
+msgstr "Alleen melding"
+
+msgid "Top right"
+msgstr "Rechtsboven"
+
+msgid "Top left"
+msgstr "Linksboven"
+
+msgid "Bottom right"
+msgstr "Rechtsonder"
+
+msgid "Bottom left"
+msgstr "Linksonder"
+
+msgid "Small"
+msgstr "Klein"
+
+msgid "Medium"
+msgstr "Middel"
+
+msgid "Large"
+msgstr "Groot"
+
+msgid "Local network only"
+msgstr "Alleen lokaal netwerk"
+
+msgid "Any address"
+msgstr "Elk adres"
+
+msgid "Camera: %s"
+msgstr "Camera: %s"
+
+msgid "Show IP cameras on your TV"
+msgstr "Toon IP-camera's op je tv"
+
+msgid "Cancel"
+msgstr "Annuleren"
+
+msgid "Save"
+msgstr "Opslaan"
+
+msgid "Camera list"
+msgstr "Cameralijst"
+
+msgid "Test"
+msgstr "Testen"
+
+msgid "Enable DoorCam"
+msgstr "DoorCam inschakelen"
+
+msgid "Turn the HTTP API and pop-ups on or off."
+msgstr "Zet de HTTP-API en de pop-ups aan of uit."
+
+msgid "go2rtc address"
+msgstr "go2rtc-adres"
+
+msgid "Address of your go2rtc server, e.g. http://192.168.1.10:1984"
+msgstr "Adres van je go2rtc-server, bijv. http://192.168.1.10:1984"
+
+msgid "go2rtc RTSP port"
+msgstr "go2rtc RTSP-poort"
+
+msgid "Usually 8554. Used for live view and the camera list."
+msgstr "Meestal 8554. Gebruikt voor live beeld en de cameralijst."
+
+msgid "Default camera"
+msgstr "Standaardcamera"
+
+msgid "Press OK to choose from the cameras in go2rtc."
+msgstr "Druk op OK om een camera uit go2rtc te kiezen."
+
+msgid "Display mode"
+msgstr "Weergave"
+
+msgid "Photo window keeps watching TV; live switches the channel to the camera."
+msgstr "Foto-venster: tv kijken gaat door. Live: zender schakelt naar de camera."
+
+msgid "Duration (seconds)"
+msgstr "Duur (seconden)"
+
+msgid "How long the camera stays on screen."
+msgstr "Hoe lang de camera in beeld blijft."
+
+msgid "Window position"
+msgstr "Positie venster"
+
+msgid "Window size"
+msgstr "Grootte venster"
+
+msgid "Return to previous channel"
+msgstr "Terug naar vorige zender"
+
+msgid "Switch back to what you were watching when the time is up."
+msgstr "Schakel terug naar wat je keek als de tijd om is."
+
+msgid "HTTP port"
+msgstr "HTTP-poort"
+
+msgid "Port of the DoorCam API on this receiver (default 8099)."
+msgstr "Poort van de DoorCam-API op deze ontvanger (standaard 8099)."
+
+msgid "Allowed callers"
+msgstr "Toegestane aanroepers"
+
+msgid "'Local network only' is recommended."
+msgstr "'Alleen lokaal netwerk' wordt aangeraden."
+
+msgid "Access token (optional)"
+msgstr "Toegangstoken (optioneel)"
+
+msgid "If set, callers must add ?token=... to every request."
+msgstr "Indien ingevuld moet elk verzoek ?token=... bevatten."
+
+msgid "Camera list name"
+msgstr "Naam cameralijst"
+
+msgid "Name of the channel list created with the yellow button."
+msgstr "Naam van de zenderlijst die de gele knop maakt."
+
+msgid "Please enter a valid go2rtc address first."
+msgstr "Vul eerst een geldig go2rtc-adres in."
+
+msgid "Could not reach go2rtc:\n%s"
+msgstr "go2rtc is niet bereikbaar:\n%s"
+
+msgid "go2rtc has no cameras configured."
+msgstr "Er staan geen camera's in go2rtc."
+
+msgid "Choose camera"
+msgstr "Kies camera"
+
+msgid "Channel list '%s' with %d cameras created."
+msgstr "Zenderlijst '%s' met %d camera's aangemaakt."
+
+msgid "Choose a default camera first."
+msgstr "Kies eerst een standaardcamera."
+
+msgid "Check go2rtc certificate"
+msgstr "go2rtc-certificaat controleren"
+
+msgid "Turn off for a self-signed certificate (only in your own network)."
+msgstr "Zet uit bij een zelfgemaakt certificaat (alleen in je eigen netwerk)."
+
+msgid "Pause TV meanwhile"
+msgstr "Tv intussen pauzeren"
+
+msgid "Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift."
+msgstr "Pauzeert de zender (timeshift) zolang de camera in beeld is. Vereist een harde schijf of USB-stick voor timeshift."
+
+msgid "Use HTTPS for the API"
+msgstr "HTTPS gebruiken voor de API"
+
+msgid "Uses a self-signed certificate; callers must turn off certificate checking."
+msgstr "Gebruikt een zelfgemaakt certificaat; aanroepers moeten certificaatcontrole uitzetten."
+
+msgid "Volume during live view (%)"
+msgstr "Volume tijdens live beeld (%)"
+
+msgid "Percentage of the current volume while the camera is shown. 100 = unchanged."
+msgstr "Percentage van het huidige volume zolang de camera in beeld is. 100 = ongewijzigd."
+
+msgid "Only between certain times"
+msgstr "Alleen tussen bepaalde tijden"
+
+msgid "Ignore requests outside the chosen times."
+msgstr "Negeer verzoeken buiten de gekozen tijden."
+
+msgid "From"
+msgstr "Van"
+
+msgid "Until"
+msgstr "Tot"
+
+msgid "May pass midnight, e.g. 07:00 to 23:00."
+msgstr "Mag over middernacht gaan, bijv. 07:00 tot 23:00."
+
+msgid "Not during a recording"
+msgstr "Niet tijdens een opname"
+
+msgid "Ignore requests while the receiver is recording."
+msgstr "Negeer verzoeken zolang de ontvanger opneemt."
+

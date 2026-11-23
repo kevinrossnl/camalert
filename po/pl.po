@@ -1,0 +1,194 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: pl\n"
+
+msgid "Photo window"
+msgstr "Okno ze zdjęciem"
+
+msgid "Switch to live stream"
+msgstr "Przełącz na obraz na żywo"
+
+msgid "Notification only"
+msgstr "Tylko powiadomienie"
+
+msgid "Top right"
+msgstr "Prawy górny róg"
+
+msgid "Top left"
+msgstr "Lewy górny róg"
+
+msgid "Bottom right"
+msgstr "Prawy dolny róg"
+
+msgid "Bottom left"
+msgstr "Lewy dolny róg"
+
+msgid "Small"
+msgstr "Małe"
+
+msgid "Medium"
+msgstr "Średnie"
+
+msgid "Large"
+msgstr "Duże"
+
+msgid "Local network only"
+msgstr "Tylko sieć lokalna"
+
+msgid "Any address"
+msgstr "Dowolny adres"
+
+msgid "Camera: %s"
+msgstr "Kamera: %s"
+
+msgid "Show IP cameras on your TV"
+msgstr "Pokaż kamery IP na telewizorze"
+
+msgid "Cancel"
+msgstr "Anuluj"
+
+msgid "Save"
+msgstr "Zapisz"
+
+msgid "Camera list"
+msgstr "Lista kamer"
+
+msgid "Test"
+msgstr "Test"
+
+msgid "Enable DoorCam"
+msgstr "Włącz DoorCam"
+
+msgid "Turn the HTTP API and pop-ups on or off."
+msgstr "Włącza lub wyłącza API HTTP i okienka."
+
+msgid "go2rtc address"
+msgstr "Adres go2rtc"
+
+msgid "Address of your go2rtc server, e.g. http://192.168.1.10:1984"
+msgstr "Adres serwera go2rtc, np. http://192.168.1.10:1984"
+
+msgid "go2rtc RTSP port"
+msgstr "Port RTSP go2rtc"
+
+msgid "Usually 8554. Used for live view and the camera list."
+msgstr "Zwykle 8554. Używany do podglądu na żywo i listy kamer."
+
+msgid "Default camera"
+msgstr "Domyślna kamera"
+
+msgid "Press OK to choose from the cameras in go2rtc."
+msgstr "Naciśnij OK, aby wybrać kamerę z go2rtc."
+
+msgid "Display mode"
+msgstr "Tryb wyświetlania"
+
+msgid "Photo window keeps watching TV; live switches the channel to the camera."
+msgstr "Okno ze zdjęciem: telewizja dalej gra. Na żywo: kanał przełącza się na kamerę."
+
+msgid "Duration (seconds)"
+msgstr "Czas (sekundy)"
+
+msgid "How long the camera stays on screen."
+msgstr "Jak długo kamera jest widoczna."
+
+msgid "Window position"
+msgstr "Pozycja okna"
+
+msgid "Window size"
+msgstr "Rozmiar okna"
+
+msgid "Return to previous channel"
+msgstr "Wróć do poprzedniego kanału"
+
+msgid "Switch back to what you were watching when the time is up."
+msgstr "Po upływie czasu wróć do oglądanego programu."
+
+msgid "HTTP port"
+msgstr "Port HTTP"
+
+msgid "Port of the DoorCam API on this receiver (default 8099)."
+msgstr "Port API DoorCam na tym odbiorniku (domyślnie 8099)."
+
+msgid "Allowed callers"
+msgstr "Dozwoleni wywołujący"
+
+msgid "'Local network only' is recommended."
+msgstr "Zalecane jest 'Tylko sieć lokalna'."
+
+msgid "Access token (optional)"
+msgstr "Token dostępu (opcjonalnie)"
+
+msgid "If set, callers must add ?token=... to every request."
+msgstr "Jeśli ustawiony, każde żądanie musi zawierać ?token=..."
+
+msgid "Camera list name"
+msgstr "Nazwa listy kamer"
+
+msgid "Name of the channel list created with the yellow button."
+msgstr "Nazwa listy tworzonej żółtym przyciskiem."
+
+msgid "Please enter a valid go2rtc address first."
+msgstr "Najpierw wpisz prawidłowy adres go2rtc."
+
+msgid "Could not reach go2rtc:\n%s"
+msgstr "Brak połączenia z go2rtc:\n%s"
+
+msgid "go2rtc has no cameras configured."
+msgstr "W go2rtc nie skonfigurowano kamer."
+
+msgid "Choose camera"
+msgstr "Wybierz kamerę"
+
+msgid "Channel list '%s' with %d cameras created."
+msgstr "Utworzono listę '%s' z %d kamerami."
+
+msgid "Choose a default camera first."
+msgstr "Najpierw wybierz domyślną kamerę."
+
+msgid "Check go2rtc certificate"
+msgstr "Sprawdzaj certyfikat go2rtc"
+
+msgid "Turn off for a self-signed certificate (only in your own network)."
+msgstr "Wyłącz dla certyfikatu z własnym podpisem (tylko w twojej sieci)."
+
+msgid "Pause TV meanwhile"
+msgstr "Wstrzymaj w tym czasie TV"
+
+msgid "Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift."
+msgstr "Wstrzymuje kanał (timeshift), gdy widać kamerę. Wymaga dysku lub pendrive'a do timeshiftu."
+
+msgid "Use HTTPS for the API"
+msgstr "Używaj HTTPS dla API"
+
+msgid "Uses a self-signed certificate; callers must turn off certificate checking."
+msgstr "Używa certyfikatu z własnym podpisem; wywołujący muszą wyłączyć sprawdzanie certyfikatu."
+
+msgid "Volume during live view (%)"
+msgstr "Głośność podczas podglądu na żywo (%)"
+
+msgid "Percentage of the current volume while the camera is shown. 100 = unchanged."
+msgstr "Procent obecnej głośności, gdy widać kamerę. 100 = bez zmian."
+
+msgid "Only between certain times"
+msgstr "Tylko w określonych godzinach"
+
+msgid "Ignore requests outside the chosen times."
+msgstr "Ignoruj żądania poza wybranymi godzinami."
+
+msgid "From"
+msgstr "Od"
+
+msgid "Until"
+msgstr "Do"
+
+msgid "May pass midnight, e.g. 07:00 to 23:00."
+msgstr "Może obejmować północ, np. 07:00 do 23:00."
+
+msgid "Not during a recording"
+msgstr "Nie podczas nagrywania"
+
+msgid "Ignore requests while the receiver is recording."
+msgstr "Ignoruj żądania podczas nagrywania."
+

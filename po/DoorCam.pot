@@ -1,0 +1,192 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Photo window"
+msgstr ""
+
+msgid "Switch to live stream"
+msgstr ""
+
+msgid "Notification only"
+msgstr ""
+
+msgid "Top right"
+msgstr ""
+
+msgid "Top left"
+msgstr ""
+
+msgid "Bottom right"
+msgstr ""
+
+msgid "Bottom left"
+msgstr ""
+
+msgid "Small"
+msgstr ""
+
+msgid "Medium"
+msgstr ""
+
+msgid "Large"
+msgstr ""
+
+msgid "Local network only"
+msgstr ""
+
+msgid "Any address"
+msgstr ""
+
+msgid "Camera: %s"
+msgstr ""
+
+msgid "Show IP cameras on your TV"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Camera list"
+msgstr ""
+
+msgid "Test"
+msgstr ""
+
+msgid "Enable DoorCam"
+msgstr ""
+
+msgid "Turn the HTTP API and pop-ups on or off."
+msgstr ""
+
+msgid "go2rtc address"
+msgstr ""
+
+msgid "Address of your go2rtc server, e.g. http://192.168.1.10:1984"
+msgstr ""
+
+msgid "go2rtc RTSP port"
+msgstr ""
+
+msgid "Usually 8554. Used for live view and the camera list."
+msgstr ""
+
+msgid "Check go2rtc certificate"
+msgstr ""
+
+msgid "Turn off for a self-signed certificate (only in your own network)."
+msgstr ""
+
+msgid "Default camera"
+msgstr ""
+
+msgid "Press OK to choose from the cameras in go2rtc."
+msgstr ""
+
+msgid "Display mode"
+msgstr ""
+
+msgid "Photo window keeps watching TV; live switches the channel to the camera."
+msgstr ""
+
+msgid "Duration (seconds)"
+msgstr ""
+
+msgid "How long the camera stays on screen."
+msgstr ""
+
+msgid "Window position"
+msgstr ""
+
+msgid "Window size"
+msgstr ""
+
+msgid "Pause TV meanwhile"
+msgstr ""
+
+msgid "Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift."
+msgstr ""
+
+msgid "Return to previous channel"
+msgstr ""
+
+msgid "Switch back to what you were watching when the time is up."
+msgstr ""
+
+msgid "Volume during live view (%)"
+msgstr ""
+
+msgid "Percentage of the current volume while the camera is shown. 100 = unchanged."
+msgstr ""
+
+msgid "Only between certain times"
+msgstr ""
+
+msgid "Ignore requests outside the chosen times."
+msgstr ""
+
+msgid "From"
+msgstr ""
+
+msgid "Until"
+msgstr ""
+
+msgid "May pass midnight, e.g. 07:00 to 23:00."
+msgstr ""
+
+msgid "Not during a recording"
+msgstr ""
+
+msgid "Ignore requests while the receiver is recording."
+msgstr ""
+
+msgid "HTTP port"
+msgstr ""
+
+msgid "Port of the DoorCam API on this receiver (default 8099)."
+msgstr ""
+
+msgid "Use HTTPS for the API"
+msgstr ""
+
+msgid "Uses a self-signed certificate; callers must turn off certificate checking."
+msgstr ""
+
+msgid "Allowed callers"
+msgstr ""
+
+msgid "'Local network only' is recommended."
+msgstr ""
+
+msgid "Access token (optional)"
+msgstr ""
+
+msgid "If set, callers must add ?token=... to every request."
+msgstr ""
+
+msgid "Camera list name"
+msgstr ""
+
+msgid "Name of the channel list created with the yellow button."
+msgstr ""
+
+msgid "Please enter a valid go2rtc address first."
+msgstr ""
+
+msgid "Could not reach go2rtc:\n%s"
+msgstr ""
+
+msgid "go2rtc has no cameras configured."
+msgstr ""
+
+msgid "Choose camera"
+msgstr ""
+
+msgid "Channel list '%s' with %d cameras created."
+msgstr ""
+
+msgid "Choose a default camera first."
+msgstr ""

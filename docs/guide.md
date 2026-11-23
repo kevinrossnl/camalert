@@ -1,0 +1,64 @@
+# Step-by-step guide
+
+This guide takes you from zero to a camera picture on your TV when someone is at the door. It takes about 30 minutes. You need:
+
+- An Enigma2 receiver with Python 3 (openATV 7 or newer, OpenPLi 9 or newer, ...).
+- One or more IP cameras with RTSP (see [cameras.md](cameras.md)).
+- A computer, NAS or Home Assistant system that is always on, for **go2rtc**.
+- Optional: Home Assistant (or another system) that knows when there is motion or someone rings.
+
+## Step 1 – Find the RTSP address of your camera
+
+Every camera has an address like `rtsp://user:password@192.168.1.20:554/stream1`. Look up your brand in [cameras.md](cameras.md).
+
+Tip: use the **sub stream** / low resolution (for example 640×360 or 1280×720). It starts faster and the box needs less power.
+
+Test it on a computer with [VLC](https://www.videolan.org/): *Media › Open Network Stream* and paste the address. If you see the picture, it is correct.
+
+## Step 2 – Install go2rtc
+
+Choose one:
+
+- **A. You run Home Assistant OS** → [install the go2rtc app](go2rtc-home-assistant.md) (easiest).
+- **B. You have a NAS or a server with Docker** → [run the go2rtc container](go2rtc-docker.md).
+
+In both cases you end up with a file `go2rtc.yaml` that lists your cameras, for example:
+
+```yaml
+streams:
+  front_door: rtsp://admin:<password>@192.168.1.20:554/stream2
+  garden: rtsp://admin:<password>@192.168.1.21:554/stream2
+
+preload:
+  front_door: "video&audio"   # keeps the door camera ready, so it starts faster
+```
+
+Use simple names: lowercase letters, digits and `_` only. They become the camera names on the TV ("front_door" shows as "Front door").
+
+Open `http://<go2rtc-address>:1984` in your browser: you should see your cameras there and can click them to watch.
+
+## Step 3 – Install DoorCam on the receiver
+
+See [Install](../README.md#install), then restart the GUI.
+
+## Step 4 – Set up DoorCam
+
+Open **Menu › Plugins › DoorCam**:
+
+1. **go2rtc address**: `http://<go2rtc-address>:1984` (for example `http://192.168.1.10:1984`).
+2. **Default camera**: select the line and press **OK**; choose your door camera from the list.
+3. **Display mode**: *Photo window* (you keep watching TV), *Switch to live stream* or *Notification only*.
+4. **Duration**: how long the camera stays on screen.
+   - Photo window / notification only: **Pause TV meanwhile** pauses the channel (timeshift) and continues where you left off. This needs a hard disk or USB stick that is set up for timeshift.
+5. Press **yellow** to create the channel list with all cameras.
+6. Press **blue** to test: the default camera appears for 15 seconds.
+7. Press **green** to save.
+
+You can now also zap to your cameras via the new channel list (press OK on a channel, then the bouquet list).
+
+## Step 5 – Show the camera automatically
+
+- **Home Assistant**: follow [home-assistant.md](home-assistant.md) (an automation with a ready-made blueprint).
+- **Anything else** (Node-RED, openHAB, a script): call `http://<receiver-ip>:8099/doorcam/show?cam=front_door` – see [api.md](api.md).
+
+Done! Something not working? See [troubleshooting.md](troubleshooting.md).

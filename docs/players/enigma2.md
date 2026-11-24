@@ -81,8 +81,8 @@ never replaced, and a read-only (network) picon folder is left alone.
 ## Doorbell chime
 
 *Doorbell chime* (off / high and alarm / every request) plays a short self-made ding-dong (`chime.wav`, GPL like
-the rest of CamAlert) through ALSA with gstreamer, next to the TV sound. Whether the receiver's mute also silences it
-depends on the model.
+the rest of CamAlert) through ALSA with gstreamer, next to the TV sound. The receiver's mute does not reach ALSA on
+every model, so CamAlert itself skips the chime while the receiver is muted (`chime skipped` in `camalert.log`).
 
 ## Turning and mirroring
 

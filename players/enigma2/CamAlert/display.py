@@ -945,8 +945,17 @@ class Controller(object):
         self.record_event(cam, label, source, pick_priority(priority), result, self.reason, event_id)
         if result == "show" and chime_wanted(config.plugins.camalert.chime.value, pick_priority(priority)) \
                 and not is_test(source):  # a test request never makes sound (#62)
-            self.chime()
+            if self.muted():  # the chime plays through ALSA, which the receiver's mute does not reach (#20)
+                log("chime skipped: the receiver is muted")
+            else:
+                self.chime()
         return result
+
+    def muted(self):
+        try:
+            return bool(eDVBVolumecontrol.getInstance().isMuted())
+        except Exception:  # noqa: BLE001 - an image without isMuted(): assume not muted
+            return False
 
     def chime(self):
         path = os.path.join(os.path.dirname(__file__), "chime.wav")

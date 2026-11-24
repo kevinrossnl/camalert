@@ -407,6 +407,9 @@ def install_enigma(profile):
         def getVolume(self):
             return self.volume
 
+        def isMuted(self):
+            return getattr(self, "muted", False)
+
         def setVolume(self, left, right):
             self.volume = left
             rec.add("setVolume", left, right)

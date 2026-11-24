@@ -459,6 +459,11 @@ class _KodiModules(object):
             ctl.last_shown.clear()
             self.assertEqual(ctl.show("garden", source="api"), "show")
             self.assertEqual(rang, [1])
+            self.addCleanup(setattr, kodiapi, "cond", kodiapi.cond)
+            kodiapi.cond = lambda expr: expr == "Player.Muted"  # #20: Kodi muted = no chime
+            ctl.last_shown.clear()
+            self.assertEqual(ctl.show("garden", source="api"), "show")
+            self.assertEqual(rang, [1])
         finally:
             for k in ("chime", "camera"):
                 Built.store.pop(k, None)

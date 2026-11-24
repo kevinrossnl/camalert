@@ -90,6 +90,20 @@ class TestTestFlag(Base):
         self.assertEqual(self.ctl.show("garden", 10, "photo", "normal", "api"), "show")
         self.assertEqual(rang, [1])
 
+    def test_no_chime_while_the_receiver_is_muted(self):
+        """#20: the chime plays through ALSA, which the receiver's mute does not reach: muted = no chime."""
+        rang = []
+        self.ctl.chime = lambda: rang.append(1)
+        self.c.chime.value = "all"
+        from enigma import eDVBVolumecontrol  # the fake module of the harness
+        vc = eDVBVolumecontrol.getInstance()
+        vc.muted = True
+        try:
+            self.assertEqual(self.ctl.show("garden", 10, "photo", "normal", "api"), "show")
+            self.assertEqual(rang, [])
+        finally:
+            vc.muted = False
+
     def test_test_label_in_the_event_list(self):
         self.ctl.show("garden", 10, "photo", "normal", "test")
         s = self.session.open(self.ca.diagnostics.EventsScreen)

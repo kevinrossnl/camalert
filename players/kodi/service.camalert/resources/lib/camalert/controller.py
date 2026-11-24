@@ -155,7 +155,10 @@ class Controller(object):
         self.record_event(cam, label, source, pick_priority(priority), result, reason, event_id)
         if result in ("show", "extend") and chime_wanted(s["chime"], pick_priority(priority)) \
                 and not is_test(source):  # a test request never makes sound (#62)
-            kodiapi.chime()
+            if kodiapi.cond("Player.Muted"):  # Kodi muted: no chime either (#20)
+                kodiapi.log("chime skipped: Kodi is muted")
+            else:
+                kodiapi.chime()
         return result
 
     def record_event(self, cam, label, source, priority, action, reason, event_id=None):

@@ -73,7 +73,8 @@ switches camera control on. Turn the whole feature off with *Colour keys to Home
 ## Doorbell chime
 
 *Doorbell chime*: off / for high and alarm requests / for every request. Enigma2 plays its own ding-dong next to the
-TV sound ([details](../players/enigma2.md#doorbell-chime)); Kodi follows Kodi's volume and mute.
+TV sound ([details](../players/enigma2.md#doorbell-chime)); Kodi follows Kodi's volume. On both, a muted player
+plays no chime, and a test request (`test=1`, see the [API](../integrations/api.md)) never does.
 
 ## Event list and diagnostics
 

@@ -191,6 +191,7 @@ class TestKodiApi(unittest.TestCase):
 
     def setUp(self):
         self.server = Built.module("server")
+        self.server.LIMIT.seen.clear()
         self.s = Built.module("klogic").parse_settings({"camera": "front_door"})
 
     def handle(self, path, args=None, ip="192.168.1.5", header=None, user_agent="", **settings):
@@ -245,6 +246,14 @@ class TestKodiApi(unittest.TestCase):
         out = self.handle("/camalert/log", {"lines": "5"})[1]
         self.assertTrue(out["result"])
         self.assertIsInstance(out["lines"], list)
+
+    def test_metrics_and_rate_limit(self):
+        code, out, ctl = self.handle("/camalert/metrics", ip="192.168.1.77")
+        self.assertEqual(code, 200)
+        self.assertIn('camalert_uptime_seconds{platform="kodi"', out)
+        codes = [self.handle("/camalert/status", ip="192.168.1.99")[0] for _ in range(35)]
+        self.assertIn(429, codes)
+        self.assertEqual(codes[0], 200)
 
     def test_internal_error(self):
         class Broken(FakeController):
@@ -302,6 +311,26 @@ class TestKodiModules(unittest.TestCase):
         ctl.send_button = lambda cam, b, s=None: sent.append((cam, b))
         self.assertEqual(ctl.colour_key("garden", 398), "red")
         self.assertEqual(sent, [("garden", "red")])
+
+    def test_cooldown_and_substreams(self):
+        ctl_mod = Built.module("controller")
+        sources = Built.module("sources")
+        Built.store.update({"cooldown": "*=60", "camera": "garden", "substreams": "garden=garden_sub",
+                            "server": "http://192.168.1.10:1984"})
+        try:
+            ctl = ctl_mod.Controller()
+            ctl._show = lambda *a: "show"
+            self.assertEqual(ctl.show("garden"), "show")
+            self.assertEqual(ctl.show("garden"), "ignore")
+            self.assertTrue(ctl.events[0]["reason"].startswith("cooldown"))
+            self.assertEqual(ctl.show("garden", priority="alarm"), "show")
+            live, snap, _title = sources.camera_urls("garden")
+            self.assertIn("src=garden_sub", live)
+            self.assertIn("garden", snap)
+            self.assertNotIn("garden_sub", snap)
+        finally:
+            for k in ("cooldown", "camera", "substreams", "server"):
+                Built.store.pop(k, None)
 
     def test_english_fallback(self):
         kodiapi = Built.module("kodiapi")

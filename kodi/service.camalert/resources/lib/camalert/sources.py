@@ -7,7 +7,7 @@ import urllib.request
 
 from . import kodiapi
 from .klogic import live_url
-from .logic import (display_name, normalize_server, parse_camera_file, parse_titles, snapshot_url, split_credentials,
+from .logic import (live_stream_name, display_name, normalize_server, parse_camera_file, parse_titles, snapshot_url, split_credentials,
                     streams_from_json, title_for)
 
 
@@ -62,7 +62,7 @@ def camera_urls(name, s=None):
     srv = normalize_server(s["server"])
     if not srv or not name:
         return None
-    return (live_url(srv, name, s["live_format"], s["rtsp_port"]), snapshot_url(srv, name),
+    return (live_url(srv, live_stream_name(name, s["substreams"]), s["live_format"], s["rtsp_port"]), snapshot_url(srv, name),
             title_for(name, parse_titles(s["titles"])))
 
 

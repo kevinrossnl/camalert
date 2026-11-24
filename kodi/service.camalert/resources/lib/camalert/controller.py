@@ -2,6 +2,7 @@
 # CamAlert for Kodi. Copyright (C) 2026 CamAlert developers. GPL v2.
 """What is on screen, and the show / mosaic / tour / hide requests (same behaviour as the Enigma2 plugin)."""
 import os
+import shutil
 import threading
 import time
 import urllib.request
@@ -12,8 +13,36 @@ import xbmcgui
 from . import kodiapi, sources
 from .display import FullScreen, LiveOverlay, PhotoWindow, open_window
 from .klogic import blocked_by_playing, chime_wanted, kodi_volume, live_mime, playing_kind, resume_plan
-from .logic import (add_event, blocked_by_rules, button_for, button_event, event_title, slug, clamp_seconds, clock_tuple, decide, dnd_blocks, in_time_window, known_camera,
-                    neighbour, parse_cams, pick_mode, pick_priority)
+from .logic import (add_event, blocked_by_rules, button_event, button_for, clamp_seconds, clock_tuple, cooldown_seconds,
+                    decide, dnd_blocks, event_title, in_cooldown, in_time_window, known_camera, neighbour, parse_cams,
+                    pick_mode, pick_priority, slug)
+
+STATS = {"errors": 0, "requests": {}, "started": time.time(), "last_event": 0, "unreachable": 0}
+
+
+def free_bytes(folder):
+    try:
+        return shutil.disk_usage(folder).free
+    except OSError:
+        return 0
+
+
+def metrics():
+    """Prometheus metrics for /camalert/metrics (same names as the Enigma2 plugin)."""
+    from . import __version__
+    from .logic import metrics_text
+    ctl = Controller.instance
+    st = ctl.status() if ctl else {}
+    return metrics_text({
+        "requests_total": ("counter", "Show requests by result", dict(STATS["requests"]) or {"show": 0}),
+        "errors_total": ("counter", "Errors logged", STATS["errors"]),
+        "unreachable_total": ("counter", "Times a camera was not reachable in the photo window", STATS["unreachable"]),
+        "last_event_timestamp_seconds": ("gauge", "Time of the last request", STATS["last_event"]),
+        "uptime_seconds": ("gauge", "Seconds since CamAlert started", time.time() - STATS["started"]),
+        "on_screen": ("gauge", "1 while a camera is on screen", 1 if st.get("window") or st.get("live") else 0),
+        "dnd": ("gauge", "Do not disturb on", 1 if st.get("dnd") else 0),
+        "events": ("gauge", "Events in the event list", len(ctl.events) if ctl else 0),
+    }, {"version": __version__, "platform": "kodi"})
 
 
 def live_item(url, title):
@@ -47,6 +76,7 @@ class Controller(object):
         self.label = None
         self.reason = ""
         self.last_caller = None  # (time, address, source) of the last API call
+        self.last_shown = {}
 
     # --- helpers ---------------------------------------------------------------------------------------------
     def changed(self):
@@ -89,22 +119,35 @@ class Controller(object):
     # --- public ----------------------------------------------------------------------------------------------
     def show(self, stream=None, seconds=None, mode=None, priority=None, source="api", label=None, event_id=None):
         """Handles a show request; logs it (source, decision, reason) and keeps it in the event list."""
+        s = kodiapi.settings()
+        cam = stream or s["camera"]
+        wait = cooldown_seconds(cam, s["cooldown"])
         with self.lock:
             self.reason, self.label = "", (label or "").strip()[:40] or None
+            on_screen = (self.window.stream if self.window else None) == cam
             try:
-                result = self._show(stream, seconds, mode, priority)
+                if not on_screen and pick_priority(priority) != "alarm" and \
+                        in_cooldown(self.last_shown.get(cam), time.time(), wait):
+                    self.reason, result = "cooldown (%d s)" % wait, "ignore"
+                else:
+                    result = self._show(stream, seconds, mode, priority)
             except Exception as e:
                 kodiapi.log("show failed: %s" % e, "error")
                 result = "error"
             finally:
                 self.label = None
             reason = self.reason
-        cam = stream or kodiapi.settings()["camera"]
+        if result == "show":
+            self.last_shown[cam] = time.time()
+        STATS["requests"][result] = STATS["requests"].get(result, 0) + 1
+        STATS["last_event"] = time.time()
+        if result == "error":
+            STATS["errors"] += 1
         kodiapi.log("request from %s: camera=%s priority=%s mode=%s label=%s -> %s%s"
                     % (source, cam, pick_priority(priority), mode or "-", label or "-", result,
                        (" (%s)" % reason) if reason else ""), "error" if result == "error" else "normal")
         self.record_event(cam, label, source, pick_priority(priority), result, reason, event_id)
-        if result in ("show", "extend") and chime_wanted(kodiapi.settings()["chime"], pick_priority(priority)):
+        if result in ("show", "extend") and chime_wanted(s["chime"], pick_priority(priority)):
             kodiapi.chime()
         return result
 
@@ -124,9 +167,9 @@ class Controller(object):
         def save():
             try:
                 urls = sources.camera_urls(first, kodiapi.settings())
-                if urls and urls[1]:
-                    folder = os.path.join(kodiapi.profile_dir(), "events")
-                    os.makedirs(folder, exist_ok=True)
+                folder = os.path.join(kodiapi.profile_dir(), "events")
+                os.makedirs(folder, exist_ok=True)
+                if urls and urls[1] and free_bytes(folder) > 8 * 1024 * 1024:  # low storage: no snapshots
                     path = os.path.join(folder, "%d_%s.jpg" % (int(ev["time"]), slug(first)))
                     ev["snapshot"] = sources.download(urls[1].replace("width=640", "width=320"), path,
                                                       kodiapi.settings()["verify_ssl"])

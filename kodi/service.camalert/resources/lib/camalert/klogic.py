@@ -77,7 +77,7 @@ DEFAULTS = {
     "foscam_enabled": False, "foscam_interval": 2, "foscam_mode": "photo",
     "foscam_priority": "normal", "foscam_seconds": 30,
     "log_level": "normal", "log_syslog": "", "ptz_key": "blue", "ha_buttons": True, "ha_webhook": "",
-    "title_size": "normal", "chime": "off", "frigate_url": "",
+    "title_size": "normal", "chime": "off", "frigate_url": "", "cooldown": "", "substreams": "",
 }
 CHOICES = {
     "source": ("go2rtc", "direct"), "mode": ("photo", "live", "notify"),

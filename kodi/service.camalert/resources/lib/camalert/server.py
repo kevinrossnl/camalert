@@ -13,6 +13,7 @@
     GET /camalert/webhook?url=...  (Home Assistant webhook for the colour keys; empty url removes it)
     GET /camalert/log?lines=200    (camalert.log, redacted)
     GET /camalert/events           (last 20 requests with decision)
+    GET /camalert/metrics          (Prometheus text format)
 """
 import json
 import os
@@ -25,7 +26,11 @@ from urllib.parse import parse_qs, urlparse
 
 from . import __version__, kodiapi, sources
 from .klogic import node_from_mac
-from .logic import PTZ_ACTIONS, caller_source, clamp_seconds, client_allowed, redact, token_ok, valid_port
+from .logic import (PTZ_ACTIONS, RateLimiter, caller_source, clamp_seconds, client_allowed, exposed_without_token, redact,
+                    token_ok, valid_port)
+
+LIMIT = RateLimiter(30, 10.0)
+WARNED = set()
 
 _server = None
 _thread = None
@@ -62,6 +67,12 @@ def ensure_certificate():
 
 def handle(ctl, path, args, client_ip, header_token, s, user_agent=""):
     """(http code, answer dict) for one request. Pure enough to test with a fake controller."""
+    if not LIMIT.allow(client_ip, time.time()):
+        return 429, {"result": False, "error": "too many requests"}
+    if exposed_without_token(s["allow"], s["token"], client_ip) and client_ip not in WARNED:
+        WARNED.add(client_ip)
+        kodiapi.log("WARNING: API called from %s outside the local network without a token; set an access token"
+                    % client_ip, "error")
     given = args.get("token") or header_token or ""
     if not client_allowed(client_ip, s["allow"]) or not token_ok(s["token"], given):
         return 403, {"result": False, "error": "forbidden"}
@@ -124,6 +135,9 @@ def handle(ctl, path, args, client_ip, header_token, s, user_agent=""):
         if action == "log":
             n = int(args["lines"]) if args.get("lines", "").isdigit() else 200
             return 200, {"result": True, "lines": [redact(x) for x in kodiapi.camlog().tail(min(n, 2000))]}
+        if action == "metrics":
+            from .controller import metrics
+            return 200, metrics()
         if action == "events":
             return 200, {"result": True, "events": [{k: v for k, v in e.items() if k != "snapshot"}
                                                     for e in ctl.events]}
@@ -146,10 +160,11 @@ class Handler(BaseHTTPRequestHandler):
         args = {k: v[0] for k, v in parse_qs(u.query).items()}
         code, out = handle(Controller.instance, u.path, args, self.client_address[0],
                            self.headers.get("X-CamAlert-Token"), kodiapi.settings(), self.headers.get("User-Agent", ""))
-        body = json.dumps(out).encode()
+        text = isinstance(out, str)
+        body = out.encode() if text else json.dumps(out).encode()
         try:
             self.send_response(code)
-            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Type", "text/plain; version=0.0.4" if text else "application/json")
             self.send_header("Content-Length", str(len(body)))
             self.end_headers()
             self.wfile.write(body)

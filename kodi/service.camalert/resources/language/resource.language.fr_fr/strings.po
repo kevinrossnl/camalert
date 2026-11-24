@@ -221,6 +221,26 @@ msgctxt "#30253"
 msgid "Home Assistant webhook"
 msgstr "Webhook Home Assistant"
 
+msgctxt "#30254"
+msgid "%s - camera not reachable"
+msgstr "%s - caméra injoignable"
+
+msgctxt "#30255"
+msgid "Wait before showing a camera again"
+msgstr "Délai avant de réafficher une caméra"
+
+msgctxt "#30256"
+msgid "Seconds per camera, e.g. *=30|garden=120 (* = all). An open window is still extended; alarm always passes."
+msgstr "Secondes par caméra, p. ex. *=30|jardin=120 (* = toutes). Une fenêtre ouverte est prolongée ; l'alarme passe toujours."
+
+msgctxt "#30257"
+msgid "Live substreams"
+msgstr "Sous-flux pour le direct"
+
+msgctxt "#30258"
+msgid "For a camera this Kodi cannot play smoothly (H.265 / 4K): front_door=front_door_sub|... (go2rtc stream names)."
+msgstr "Pour une caméra que ce Kodi ne lit pas bien (H.265 / 4K) : porte=porte_sub|... (noms de flux go2rtc)."
+
 msgctxt "#30010"
 msgid "Enable CamAlert"
 msgstr "Activer CamAlert"

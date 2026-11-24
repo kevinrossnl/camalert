@@ -25,9 +25,9 @@ After installing, open **Add-ons › My add-ons › Services › CamAlert › Co
 
 | Tab | What |
 |---|---|
-| General | go2rtc address (or *Directly from the cameras* with `cameras.conf`), default camera (**Choose camera** lists them), camera titles, mosaic cameras, test buttons |
+| General | go2rtc address, live substreams (H.265 / 4K cameras) (or *Directly from the cameras* with `cameras.conf`), default camera (**Choose camera** lists them), camera titles, mosaic cameras, test buttons |
 | Display | photo window / live / notification, duration, corner and size, layout for 2–4 cameras in one window, rotate/mirror and refresh interval per camera, remote control in the window, pause what is playing, return to what was playing, volume during live view, live format, tour speed |
-| Rules | do not disturb, only between certain times, *not while playing* (off / films and recordings / everything), wake the screen on alarm (HDMI-CEC) |
+| Rules | wait before showing the same camera again (cooldown), do not disturb, only between certain times, *not while playing* (off / films and recordings / everything), wake the screen on alarm (HDMI-CEC) |
 | MQTT / Home Assistant | broker, login, discovery, name |
 | Triggers | Frigate detections (via MQTT), Foscam motion/sound alarm |
 | Camera control | default camera login for PTZ / Foscam, create `devices.conf` |
@@ -92,6 +92,19 @@ arrows pan and tilt, **CH+ / CH−** (or PAGE UP / DOWN) zoom, **OK** = home pos
 - **Windows**: allow Kodi through the Windows firewall for the API port (8099) if Home Assistant cannot reach it;
   *wake the screen* only works with a CEC adapter.
 
+## Platforms
+
+| | Notes |
+|---|---|
+| LibreELEC / CoreELEC | Tested on LibreELEC 12 (Kodi 21). HDMI-CEC works out of the box (*wake the screen*, colour keys of the TV remote). |
+| OSMC / Raspberry Pi | As LibreELEC. A Pi 4/5 decodes H.264 fine; for H.265 or 4K cameras set a *live substream*. |
+| Android TV / Nvidia Shield / Fire TV | Install from the repository zip as usual. Android may stop Kodi in the background: CamAlert only works while Kodi is running (in front or as the app that was last open). Keep the TV box from sleeping (Developer options › Stay awake, or Fire TV: Settings › Display & Sounds › Screen saver › Never) or *wake the screen* cannot work. Colour keys: most Fire TV / Android remotes have none – use MENU for PTZ. |
+| Windows | Data in `%APPDATA%\Kodi\userdata\addon_data\service.camalert\`. Windows asks once to allow Kodi through the firewall (needed for the API on port 8099). |
+| macOS / Linux desktop | Works the same; allow incoming connections for Kodi if the system firewall is on. |
+
+The API listens on all network interfaces (IPv4 and the IPv4 side of dual-stack); camera and go2rtc addresses may
+be IPv6 literals (`http://[fd00::10]:1984`).
+
 ## Updates
 
 Installed from the CamAlert repository, Kodi updates CamAlert by itself (Kodi checks repositories at start and
@@ -104,9 +117,19 @@ Add the Kodi like a receiver: **Settings › Devices & services › Add integrat
 address and port 8099 (and the token if you set one). Or switch on MQTT with discovery. Everything in
 [home-assistant.md](home-assistant.md) applies.
 
+## Monitoring
+
+`/camalert/metrics` returns Prometheus metrics (requests by result, errors, unreachable cameras, uptime, on screen,
+do not disturb) with the label `platform="kodi"`; the Grafana dashboard in `grafana/` works for receivers and Kodis.
+The API answers at most 30 requests per 10 seconds per caller (then HTTP 429) and logs a warning when it is called
+from outside the local network without a token.
+
 ## Troubleshooting
 
 - *Nothing happens*: check the add-on is enabled (Add-ons › My add-ons › Services) and that
   `http://<kodi>:8099/camalert/status` answers from another computer in your network.
 - *Labels look empty right after a manual update*: restart Kodi once (Kodi loads new texts at start).
 - *Live picture takes long to start*: keep the camera stream warm in go2rtc, or choose the RTSP live format.
+- *"camera not reachable" in the window title*: go2rtc did not deliver a snapshot twice in a row; check go2rtc
+  (`/api/frame.jpeg?src=<camera>`) – the window keeps trying.
+- *Diagnostics*: Add-ons › My add-ons › Services › CamAlert › Configure › Log and diagnostics.

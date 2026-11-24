@@ -104,6 +104,7 @@ class Feeder(object):
         self.verify = s["verify_ssl"]
         self.refresh = parse_refresh(s.get("refresh_map", ""))
         self.active = True
+        self.on_unreachable = None  # callback(tile, unreachable)
 
     def start(self):
         for i in range(len(self.tiles)):
@@ -112,6 +113,7 @@ class Feeder(object):
     def loop(self, i):
         tmp = kodiapi.temp_dir()
         n = 0
+        fails = {}
         while self.active:
             t = self.tiles[i]
             n += 1
@@ -120,9 +122,16 @@ class Feeder(object):
             try:
                 sources.download(t["url"], path, self.verify)
             except Exception as e:  # camera or go2rtc not reachable: try again a bit later
-                kodiapi.log("snapshot failed for %s: %s" % (t["name"], e))
+                fails[i] = fails.get(i, 0) + 1
+                if fails[i] == 1:
+                    kodiapi.log("snapshot failed for %s: %s" % (t["name"], e))
+                if fails[i] == 2 and self.on_unreachable:  # say so instead of a black or frozen picture
+                    self.on_unreachable(t, True)
                 time.sleep(2)
                 continue
+            if fails.get(i, 0) >= 2 and self.on_unreachable:
+                self.on_unreachable(t, False)
+            fails[i] = 0
             if not self.active:
                 break
             if self.tiles[i] is t:  # not switched to another camera meanwhile
@@ -280,6 +289,7 @@ class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
         self.orientation = orientation
         self.duration = s["duration"]
         self.feeder = Feeder(self.tiles, s)
+        self.feeder.on_unreachable = self.unreachable
         self.timer = None
 
     def start(self, seconds):
@@ -307,6 +317,14 @@ class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
 
     def ptz_label(self, on):
         self.label.setLabel(self.title_text + ("   PTZ: < > ^ v  +/-  OK = home  BACK" if on else self.hint))
+
+    def unreachable(self, tile, bad):
+        from .controller import STATS
+        if bad:
+            STATS["unreachable"] += 1
+            self.label.setLabel(kodiapi.tr(30254) % self.title_text)
+        else:
+            self.ptz_label(self.ptz is not None)
 
     def ptz_used(self):
         self.extend(max(self.duration, 30))

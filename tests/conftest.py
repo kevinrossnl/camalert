@@ -10,7 +10,7 @@ import _paths  # noqa: E402,F401
 
 # file name -> marker; run one area with e.g. `pytest -m kodi`
 AREAS = {
-    "core": ("test_logic", "test_devices", "test_robustness", "test_logging_and_more", "test_imports", "test_lint"),
+    "core": ("test_logic", "test_devices", "test_robustness", "test_logging_and_more", "test_imports"),
     "contract": ("test_http_contract", "test_mqtt_contract"),
     "enigma2": ("test_enigma2_images", "test_init_settings", "test_enigma2_server", "test_enigma2_mqtt"),
     "kodi": ("test_kodi", "test_kodi_versions"),

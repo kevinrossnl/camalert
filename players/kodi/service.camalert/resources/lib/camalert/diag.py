@@ -24,7 +24,7 @@ def collect(state):
     tr = kodiapi.tr
     lines = [diag_line(True, "CamAlert %s, Kodi %s, Python %s, %s" % (
         __version__, xbmc.getInfoLabel("System.BuildVersion").split(" ")[0], platform.python_version(),
-        xbmc.getInfoLabel("System.OSVersionInfo") or platform.system()))]
+        kodiapi.os_version()))]
     names = []
     if s["source"] == "go2rtc":
         t = time.time()

@@ -23,6 +23,12 @@ class TestEvents(unittest.TestCase):
         self.assertEqual(ev.diag_line(True, "pwd=x ok"), "[ OK ]  pwd=*** ok")
         self.assertEqual(ev.diag_line(False, "x")[:6], "[FAIL]")
 
+    def test_test_source(self):
+        """#62: requests with test=1 have the source "test", a listed source with its own label."""
+        self.assertTrue(ev.is_test(ev.TEST_SOURCE))
+        self.assertFalse(ev.is_test("api"))
+        self.assertIn("test", ev.SOURCES)
+
 
 if __name__ == "__main__":
     unittest.main()

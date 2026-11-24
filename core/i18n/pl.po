@@ -8,11 +8,11 @@ msgstr ""
 msgid "Photo window"
 msgstr "Okno ze zdjęciem"
 
-#: e2 ha:entity.sensor.on_screen.state_attributes.mode.state.live ha:selector.mode.options.live
+#: e2 kodi:30043 ha:entity.sensor.on_screen.state_attributes.mode.state.live ha:selector.mode.options.live
 msgid "Live view"
 msgstr "Podgląd na żywo"
 
-#: e2 ha:selector.mode.options.notify
+#: e2 kodi:30044 ha:selector.mode.options.notify
 msgid "Notification"
 msgstr "Powiadomienie"
 
@@ -408,7 +408,7 @@ msgstr "Więcej ustawień przez MENU: %d"
 msgid "Diagnostics"
 msgstr "Diagnostyka"
 
-#: e2
+#: e2 kodi:30204
 msgid "Event list"
 msgstr "Lista zdarzeń"
 
@@ -507,6 +507,10 @@ msgstr "Menu"
 #: e2 kodi:30506
 msgid "Wake up"
 msgstr "Wybudzenie"
+
+#: e2 kodi:30549
+msgid "Test request"
+msgstr "Żądanie testowe"
 
 #: e2 kodi:30141 kodi:30508 ha:selector.priority.options.high
 msgid "High"
@@ -1148,14 +1152,6 @@ msgstr "Oddzielone przecinkami, do 9. Puste = wszystkie."
 msgid "Photo window keeps playing what you watch; live shows the camera stream full screen."
 msgstr "Okno ze zdjęciem nie przerywa programu; na żywo pokazuje kamerę na pełnym ekranie."
 
-#: kodi:30043
-msgid "Switch to live stream"
-msgstr "Przełącz na obraz na żywo"
-
-#: kodi:30044
-msgid "Notification only"
-msgstr "Tylko powiadomienie"
-
 #: kodi:30057
 msgid "Layout when a request names 2 to 4 cameras (photo window)."
 msgstr "Układ, gdy żądanie wymienia 2–4 kamery (okno ze zdjęciem)."
@@ -1291,10 +1287,6 @@ msgstr "Usługa CamAlert nie działa."
 #: kodi:30203
 msgid "No events yet."
 msgstr "Brak zdarzeń."
-
-#: kodi:30204
-msgid "Recent events"
-msgstr "Ostatnie zdarzenia"
 
 #: kodi:30205 ha:services.show.name
 msgid "Show camera"

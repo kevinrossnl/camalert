@@ -59,8 +59,9 @@ Scenarios: `show` (photo window), `strip` (multi-camera window), `mosaic`, `tour
    receiver itself (never copied off it) and replaced by the fake camera, so PTZ can never move a real camera.
 6. **Nothing left on screen.** Before the run the receiver's OSD must be clear (no menu or dialog: someone may be
    using it). After every scenario and in the restore, the runner looks at the OSD (only counted, never stored) and
-   closes CamAlert screens that `hide` left open with EXIT; that counts as a failed check (#63: Enigma2 `hide` does
-   not close the tour or mosaic).
+   closes screens that are still open with EXIT. Every scenario checks `/camalert/status` `screen` while its screen
+   is open and `none` after `hide` (#63); that check fails when `hide` leaves something open. A later EXIT cleanup is
+   then only a note. With a player older than 1.0 (no `screen`), the EXIT cleanup itself counts as a failed check.
 7. **Restore in `finally`**: hide, close leftover screens, devices file, fake processes stopped, settings, do not disturb, channel,
    volume and mute (read back), standby. `--restore last` does the same from the state file after a crash.
 

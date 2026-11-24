@@ -106,6 +106,37 @@ class TestApiDetails(unittest.TestCase):
         self.assertEqual(out["capabilities"], list(api.CAPABILITIES))
         self.assertEqual((out["id"], out["mqtt"]), ("node1", False))
 
+    def test_screen(self):
+        """#63: status says what is on screen; a controller without "screen" gets it from window/live."""
+        self.assertEqual(self.call("/camalert/status").body["screen"], "none")
+        self.b.ctl.status = lambda: {"window": "garden", "live": None, "paused": False, "dnd": False}
+        self.assertEqual(self.call("/camalert/status").body["screen"], "photo")
+        self.b.ctl.status = lambda: {"window": None, "live": "garden", "paused": False, "dnd": False}
+        self.assertEqual(self.call("/camalert/status").body["screen"], "live")
+        self.b.ctl.status = lambda: {"window": None, "live": None, "paused": False, "dnd": False, "screen": "tour"}
+        self.assertEqual(self.call("/camalert/status").body["screen"], "tour")
+        self.assertEqual(api.screen_name(), "none")
+        self.assertEqual(api.screen_name("mosaic", "photo", True, True), "mosaic")
+        self.assertEqual(api.screen_name(None, "strip", True, True), "strip")
+        self.assertEqual(api.screen_name(None, None, True, True), "notification")
+        self.assertEqual(api.screen_name(None, None, False, True), "live")
+        self.assertEqual(api.screen_name("bogus"), "none")
+        self.assertIn("screen", api.CAPABILITIES)
+
+    def test_test_flag(self):
+        """#62: test=1 on any request makes the caller source "test" (also last_caller); 0 keeps it; else 400."""
+        out = self.call("/camalert/mosaic", "POST", {"test": "1"})
+        self.assertEqual(out.code, 200)
+        self.assertEqual(self.b.ctl.last_caller[2], "test")
+        self.assertEqual(self.b.ctl.calls[-1], ("mosaic", None, 60))  # the flag is not passed on as a parameter
+        self.call("/camalert/show", "POST", body=b'{"cam": "garden", "test": true}', ctype="application/json")
+        self.assertEqual(self.b.ctl.calls[-1], ("show", "garden", None, None, None, "test", None))
+        self.call("/camalert/show", "POST", {"cam": "garden", "test": "0"})
+        self.assertEqual(self.b.ctl.calls[-1][5], "api")
+        bad = self.call("/camalert/show", "POST", {"cam": "garden", "test": "x"})
+        self.assertEqual((bad.code, bad.body["error"]), (400, "test must be 1 or 0"))
+        self.assertIn("test", api.CAPABILITIES)
+
     def test_query_token_and_exposure_are_logged_once(self):
         self.b.values.update(token="secret")
         for _ in range(3):

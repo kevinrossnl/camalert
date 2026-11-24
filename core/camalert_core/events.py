@@ -7,7 +7,7 @@ from .obs.log import redact
 
 
 EVENT_LIMIT = 20
-SOURCES = ("api", "ha", "mqtt", "frigate", "foscam", "menu")
+SOURCES = ("api", "ha", "mqtt", "frigate", "foscam", "menu", "test")
 
 
 def add_event(events, event, limit=EVENT_LIMIT):
@@ -16,6 +16,14 @@ def add_event(events, event, limit=EVENT_LIMIT):
     dropped = events[limit:]
     del events[limit:]
     return dropped
+
+
+TEST_SOURCE = "test"  # API requests with test=1 (#62): never make sound, tagged in the event list
+
+
+def is_test(source):
+    """True for a test request (#62): players skip the chime (and Home Assistant automations can skip TTS)."""
+    return source == TEST_SOURCE
 
 
 def caller_source(user_agent, path=""):

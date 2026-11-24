@@ -19,11 +19,11 @@ the same (one implementation in `core/camalert_core/api.py`). Answers are JSON (
 | `POST /camalert/show` `{"cam": "front_door,garden"}` | 2–4 cameras together in one multi-camera window (TV stays visible); more than 4 = mosaic |
 | `POST /camalert/tour` `{"cam": "front_door,garden", "interval": 8}` | Full-screen camera tour (◀ ▶ = previous/next, OK = hold, GREEN/PLAY = live, EXIT/BACK) |
 | `POST /camalert/mosaic` `{"cam": "front_door,garden", "sec": 60}` | Full-screen photo mosaic (up to 9 cameras; without `cam` the *Mosaic cameras* setting) |
-| `POST /camalert/hide` | Close the photo window / return from live view now |
+| `POST /camalert/hide` | Close the photo window, multi-camera window, mosaic and tour / return from live view now |
 | `POST /camalert/dnd` `{"on": 1}` / `{"on": 0}` | Do not disturb on/off; `GET /camalert/dnd` only reports the state |
 | `POST /camalert/ptz` `{"cam": "garden", "move": "left"}` | Move a PTZ camera (`up`, `down`, `left`, `right`, `zoom_in`, `zoom_out`, `home`, `stop`); see [camera control](../user/devices.md) |
 | `POST /camalert/webhook` `{"url": "..."}` | Where to post remote control colour keys (set automatically by the Home Assistant integration; empty `url` removes it). Must point into the local network |
-| `GET /camalert/status` | What is on screen, do-not-disturb state, version, `platform` (`enigma2`/`kodi`), `api_version`, `capabilities`, `min_ha_version`, `mqtt` |
+| `GET /camalert/status` | What is on screen (`screen`: `none`, `photo`, `strip`, `notification`, `live`, `mosaic` or `tour`; `window` / `live`: the camera), do-not-disturb state, version, `platform` (`enigma2`/`kodi`), `api_version`, `capabilities`, `min_ha_version`, `mqtt` |
 | `GET /camalert/cameras` | List of cameras (name, title, has snapshot) |
 | `GET /camalert/events` | The last 20 requests: time, camera, label, source, priority, what CamAlert did and why |
 | `GET /camalert/metrics` | Prometheus metrics (see [monitoring](monitoring.md)) |
@@ -32,9 +32,11 @@ the same (one implementation in `core/camalert_core/api.py`). Answers are JSON (
 Parameters: `cam` (go2rtc stream name, or several separated by commas; only letters, digits, `_`, `.`, `-`),
 `sec` (5–300), `mode` (`photo`, `live`, `notify`, `strip` = multi-camera window), `label` (optional
 who/what shown before the camera name in the title, e.g. `Person`), `priority` (`normal` follows the player's
-active hours and rules, `high` always, `alarm` always and may wake the player / screen).
+active hours and rules, `high` always, `alarm` always and may wake the player / screen), `test` (`1` on any
+request: a test, e.g. of the [end-to-end runner](../dev/e2e.md): never plays the doorbell chime and is shown with
+the source *Test request* in the event list; Home Assistant automations can skip such events).
 
-Errors: `400` `{"result": false, "error": "invalid camera name"}` (also invalid `mode`, `priority`, `on`, PTZ
+Errors: `400` `{"result": false, "error": "invalid camera name"}` (also invalid `mode`, `priority`, `on`, `test`, PTZ
 move or webhook url), `403` forbidden (address or token), `404` unknown action, `405` other HTTP methods,
 `429` too many requests (30 per 10 s per caller), `500` internal error. A disabled CamAlert answers
 `{"result": false, "error": "disabled"}`.

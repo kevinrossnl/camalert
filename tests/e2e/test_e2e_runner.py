@@ -107,8 +107,9 @@ class TestEnigma2Run(Base):
         rx.settings_for_geometry = lambda: dict(orig(), position="top_left")  # drawn elsewhere than configured
         res, _ = self.run_on(rx, scenarios=["show"])
         self.assertEqual(res["status"], "failed")
-        self.assertFalse(res["scenarios"][0]["checks"][2]["ok"])
-        self.assertIn("box", res["scenarios"][0]["checks"][2]["detail"])
+        failed = [c["detail"] for c in res["scenarios"][0]["checks"] if c["ok"] is False]
+        self.assertEqual(len(failed), 1, failed)
+        self.assertIn("box", failed[0])
         self.assert_restored(rx)
 
     def test_photo_loaded_late_is_waited_for(self):
@@ -126,13 +127,38 @@ class TestEnigma2Run(Base):
         self.assertIn(("foscam_enabled", "true"), rx.saveconfig_calls)
 
     def test_hide_that_keeps_the_tour_open_fails_and_is_cleaned_up(self):
+        """A player older than 1.0 (no status "screen"): only the OSD shows the leftover; counted as a failure."""
         rx = self.receiver()
-        rx.ctl.keeps = ("tour", "mosaic")
+        rx.ctl.keeps, rx.ctl.reports_screen = ("tour", "mosaic"), False
         res, _ = self.run_on(rx, scenarios=["tour", "show"])
         by = {s["name"]: s for s in res["scenarios"]}
         self.assertEqual(by["tour"]["status"], "failed")
         self.assertIn("#63", by["tour"]["checks"][-1]["detail"])
         self.assertEqual(by["show"]["status"], "passed")
+        self.assertEqual(rx.keys, [174])
+        self.assert_restored(rx)
+
+    def test_status_screen_is_checked(self):
+        """#63: the scenarios check status "screen" while open and "none" after hide."""
+        rx = self.receiver()
+        res, _ = self.run_on(rx, scenarios=["show", "strip", "mosaic", "tour"])
+        for sc in res["scenarios"]:
+            self.assertEqual(sc["status"], "passed", sc["checks"])
+            details = [c["detail"] for c in sc["checks"]]
+            self.assertTrue(any(d.startswith("status screen = none") for d in details), details)
+        self.assertEqual(rx.keys, [])
+
+    def test_screen_left_open_fails_in_the_scenario_not_in_the_cleanup(self):
+        """A player that reports "screen" but keeps the tour open fails on its own status; the EXIT cleanup that
+        follows is only a note."""
+        rx = self.receiver()
+        rx.ctl.keeps = ("tour",)
+        res, _ = self.run_on(rx, scenarios=["tour"])
+        sc = res["scenarios"][0]
+        self.assertEqual(sc["status"], "failed")
+        failed = [c["detail"] for c in sc["checks"] if c["ok"] is False]
+        self.assertEqual(failed, ["status screen = tour (hide closed the tour)"])
+        self.assertIn("cleanup: 1 EXIT press(es)", sc["checks"][-1]["detail"])
         self.assertEqual(rx.keys, [174])
         self.assert_restored(rx)
 

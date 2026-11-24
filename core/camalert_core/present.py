@@ -19,6 +19,7 @@ from .keymap import KEYMAP
 SOURCE_LABELS = {
     "api": N_("API"), "ha": N_("Home Assistant"), "mqtt": N_("MQTT"), "frigate": N_("Frigate"),
     "foscam": N_("Foscam"), "menu": N_("Menu"), "wake": N_("Wake up"),
+    "test": N_("Test request"),
 }
 SOURCES = tuple(SOURCE_LABELS)
 PRIORITY_LABELS = {"normal": N_("Normal"), "high": N_("High"), "alarm": N_("Alarm")}  # glossary (#2)

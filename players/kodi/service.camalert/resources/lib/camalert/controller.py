@@ -15,7 +15,8 @@ from .display import FullScreen, LiveOverlay, PhotoWindow, open_window
 from .klogic import blocked_by_playing, chime_wanted, kodi_volume, live_mime, playing_kind, resume_plan
 from .camalert_core.access import url_target
 from .camalert_core.cameras import known_camera, neighbour, parse_cams, slug
-from .camalert_core.events import add_event, event_title
+from .camalert_core.api import screen_name
+from .camalert_core.events import TEST_SOURCE, add_event, event_title, is_test
 from .camalert_core.keymap import button_event, colour_action
 from .camalert_core.present import reason as reason_code
 from .camalert_core.rules import (blocked_by_rules, clamp_seconds, clock_tuple, cooldown_seconds, decide, dnd_blocks,
@@ -78,6 +79,7 @@ class Controller(object):
         self.listeners = []
         self.events = []
         self.label = None
+        self.source = None
         self.reason = ""
         self.last_caller = None  # (time, address, source) of the last API call
         self.last_shown = {}
@@ -127,7 +129,7 @@ class Controller(object):
         cam = stream or s["camera"]
         wait = cooldown_seconds(cam, s["cooldown"])
         with self.lock:
-            self.reason, self.label = "", (label or "").strip()[:40] or None
+            self.reason, self.label, self.source = "", (label or "").strip()[:40] or None, source
             on_screen = (self.window.stream if self.window else None) == cam
             try:
                 if not on_screen and pick_priority(priority) != "alarm" and \
@@ -151,7 +153,8 @@ class Controller(object):
                     % (source, cam, pick_priority(priority), mode or "-", label or "-", result,
                        (" (%s)" % reason) if reason else ""), "error" if result == "error" else "normal")
         self.record_event(cam, label, source, pick_priority(priority), result, reason, event_id)
-        if result in ("show", "extend") and chime_wanted(s["chime"], pick_priority(priority)):
+        if result in ("show", "extend") and chime_wanted(s["chime"], pick_priority(priority)) \
+                and not is_test(source):  # a test request never makes sound (#62)
             kodiapi.chime()
         return result
 
@@ -192,7 +195,8 @@ class Controller(object):
                 kodiapi.log("alarm: waking the screen")
                 self.wake()
                 label = self.label
-                threading.Timer(4, self.show, (stream, seconds, mode, priority, "wake", label)).start()
+                again = TEST_SOURCE if is_test(self.source) else "wake"
+                threading.Timer(4, self.show, (stream, seconds, mode, priority, again, label)).start()
                 return "wake"
             self.reason = reason_code("screen_off")
             return "ignore"
@@ -462,7 +466,14 @@ class Controller(object):
     def status(self):
         s = kodiapi.settings()
         return {"window": self.window.stream if self.window else None, "live": self.live_stream,
-                "paused": self.paused, "dnd": s["dnd"]}
+                "paused": self.paused, "dnd": s["dnd"], "screen": self.screen()}
+
+    def screen(self):
+        """What CamAlert shows now, for status "screen" (#63). Kodi notifications are toasts: not tracked."""
+        full, w = self.full, self.window
+        return screen_name("tour" if getattr(full, "tour", False) else "mosaic" if full is not None else None,
+                           None if w is None else "strip" if len(getattr(w, "cams", ())) > 1 else "photo",
+                           False, self.live_stream is not None)
 
     def play_clip(self, url, title):
         """Frigate clip from the event list (a normal film for Kodi: no camera rules, no automatic end)."""

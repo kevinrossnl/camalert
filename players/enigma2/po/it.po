@@ -381,6 +381,9 @@ msgstr "Menu"
 msgid "Wake up"
 msgstr "Risveglio"
 
+msgid "Test request"
+msgstr "Richiesta di test"
+
 msgid "High"
 msgstr "Alta"
 

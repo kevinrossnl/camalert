@@ -309,3 +309,12 @@ def title_font_name(title_size, fonts=None):
 def chime_wanted(setting, priority):
     """Doorbell sound: 'off', 'high' (doorbell and alarm) or 'all' requests."""
     return setting == "all" or (setting == "high" and priority in ("high", "alarm"))
+
+
+def os_label(info, busy, fallback):
+    """The OS for the diagnostics (#59): Kodi fills System.OSVersionInfo asynchronously and answers "Busy"
+    (translated, string 503) or nothing at first; then the fallback (Python's platform) is used."""
+    info = (info or "").strip()
+    if not info or info.lower() in {b.strip().lower() for b in busy if b and b.strip()}:
+        return fallback
+    return info

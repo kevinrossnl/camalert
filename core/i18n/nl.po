@@ -8,11 +8,11 @@ msgstr ""
 msgid "Photo window"
 msgstr "Fotovenster"
 
-#: e2 ha:entity.sensor.on_screen.state_attributes.mode.state.live ha:selector.mode.options.live
+#: e2 kodi:30043 ha:entity.sensor.on_screen.state_attributes.mode.state.live ha:selector.mode.options.live
 msgid "Live view"
 msgstr "Live beeld"
 
-#: e2 ha:selector.mode.options.notify
+#: e2 kodi:30044 ha:selector.mode.options.notify
 msgid "Notification"
 msgstr "Melding"
 
@@ -408,7 +408,7 @@ msgstr "%d andere instellingen via MENU"
 msgid "Diagnostics"
 msgstr "Diagnose"
 
-#: e2
+#: e2 kodi:30204
 msgid "Event list"
 msgstr "Gebeurtenissen"
 
@@ -507,6 +507,10 @@ msgstr "Menu"
 #: e2 kodi:30506
 msgid "Wake up"
 msgstr "Wekken"
+
+#: e2 kodi:30549
+msgid "Test request"
+msgstr "Testverzoek"
 
 #: e2 kodi:30141 kodi:30508 ha:selector.priority.options.high
 msgid "High"
@@ -1148,14 +1152,6 @@ msgstr "Met komma's, maximaal 9. Leeg = alle."
 msgid "Photo window keeps playing what you watch; live shows the camera stream full screen."
 msgstr "Fotovenster laat doorspelen wat je kijkt; live toont de camerastream volledig."
 
-#: kodi:30043
-msgid "Switch to live stream"
-msgstr "Omschakelen naar live beeld"
-
-#: kodi:30044
-msgid "Notification only"
-msgstr "Alleen melding"
-
 #: kodi:30057
 msgid "Layout when a request names 2 to 4 cameras (photo window)."
 msgstr "Indeling als een verzoek 2 tot 4 camera's noemt (fotovenster)."
@@ -1291,10 +1287,6 @@ msgstr "De CamAlert-service draait niet."
 #: kodi:30203
 msgid "No events yet."
 msgstr "Nog geen gebeurtenissen."
-
-#: kodi:30204
-msgid "Recent events"
-msgstr "Recente gebeurtenissen"
 
 #: kodi:30205 ha:services.show.name
 msgid "Show camera"

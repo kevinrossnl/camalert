@@ -54,7 +54,8 @@ class SimController(object):
         self.on_change()
         return "show"
 
-    keeps = ()  # Enigma2 today: ("tour", "mosaic") stay open on hide (#63)
+    keeps = ()  # Enigma2 before 1.0: ("tour", "mosaic") stayed open on hide (#63)
+    reports_screen = True  # status "screen" (#63); False = a player older than 1.0
 
     def hide(self, resume=True):
         self.calls.append(("hide",))
@@ -90,7 +91,10 @@ class SimController(object):
 
     def status(self):
         window = ",".join(self.screen[1]) if self.screen and self.screen[0] in ("photo", "strip") else None
-        return {"window": window, "live": None, "paused": False, "dnd": self.dnd}
+        out = {"window": window, "live": None, "paused": False, "dnd": self.dnd}
+        if self.reports_screen:
+            out["screen"] = self.screen[0] if self.screen else "none"
+        return out
 
 
 class Backend(api.Backend):
@@ -129,6 +133,8 @@ def api_server(backend):
                                                    "192.168.1.5", self.headers.get("X-CamAlert-Token"),
                                                    self.headers.get("User-Agent"), body,
                                                    self.headers.get("Content-Type", "")))
+            if isinstance(resp.body, dict) and not getattr(backend.ctl, "reports_screen", True):
+                resp.body.pop("screen", None)  # a player older than 1.0 (#63)
             data = resp.payload()
             self.send_response(resp.code)
             self.send_header("Content-Type", resp.content_type)

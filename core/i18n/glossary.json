@@ -261,6 +261,18 @@
       {
         "pattern": "\\bFrigate detections\\b",
         "use": "Frigate events"
+      },
+      {
+        "pattern": "\\brecent events\\b",
+        "use": "event list"
+      },
+      {
+        "pattern": "\\bswitch to live stream\\b",
+        "use": "live view"
+      },
+      {
+        "pattern": "\\bnotification only\\b",
+        "use": "notification"
       }
     ],
     "nl": [

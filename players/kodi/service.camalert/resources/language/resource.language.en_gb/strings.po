@@ -134,11 +134,11 @@ msgid "Photo window"
 msgstr ""
 
 msgctxt "#30043"
-msgid "Switch to live stream"
+msgid "Live view"
 msgstr ""
 
 msgctxt "#30044"
-msgid "Notification only"
+msgid "Notification"
 msgstr ""
 
 msgctxt "#30045"
@@ -594,7 +594,7 @@ msgid "No events yet."
 msgstr ""
 
 msgctxt "#30204"
-msgid "Recent events"
+msgid "Event list"
 msgstr ""
 
 msgctxt "#30205"
@@ -987,4 +987,8 @@ msgstr ""
 
 msgctxt "#30548"
 msgid "tour"
+msgstr ""
+
+msgctxt "#30549"
+msgid "Test request"
 msgstr ""

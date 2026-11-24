@@ -26,7 +26,8 @@ from .camalert_core.cameras import (display_name, known_camera, live_stream_name
                                     parse_cams, parse_orientation, parse_refresh, parse_titles, refresh_delay, slug,
                                     title_for)
 from .camalert_core import present
-from .camalert_core.events import add_event, event_title
+from .camalert_core.events import TEST_SOURCE, add_event, event_title, is_test
+from .camalert_core.api import screen_name
 from .camalert_core.keymap import button_event
 from .camalert_core.layout import grid, strip_geometry, title_font, window_geometry
 from .camalert_core.obs.log import redact
@@ -318,6 +319,7 @@ class MosaicScreen(Screen, HelpBase):
             self.tiles.append(Tile(self, "tile%d" % i, name, url, (w, h)))
         key_actions(self, "mosaic", {"close": self.close})
         self.active = False
+        register_fullscreen(self)
         self.timer = eTimer()
         self.timer.callback.append(self.close)
         self.seconds = seconds
@@ -336,6 +338,7 @@ class MosaicScreen(Screen, HelpBase):
     def stopped(self):
         self.active = False
         self.timer.stop()
+        unregister_fullscreen(self)
 
 
 class PhotoWindow(Screen):
@@ -737,6 +740,7 @@ class TourScreen(Screen, HelpBase):
         key_actions(self, "tour", {
             "hold": self.toggle_hold, "close": self.close, "prev": lambda: self.step(-1), "next": lambda: self.step(1),
             "live": self.live})
+        register_fullscreen(self)
         self.onShown.append(self.started)
         self.onClose.append(self.stopped)
 
@@ -751,6 +755,7 @@ class TourScreen(Screen, HelpBase):
     def stopped(self):
         self.active = False
         self.timer.stop()
+        unregister_fullscreen(self)
 
     def load(self):
         name, title, url = self.cams[self.index]
@@ -791,6 +796,20 @@ def _notify():
         pass
 
 
+def register_fullscreen(screen):
+    """Mosaic and tour screens tell the controller they are open (#63), however they were opened (API, menu)."""
+    ctl = Controller.instance
+    if ctl is not None and screen not in ctl.fullscreens:
+        ctl.fullscreens.append(screen)
+
+
+def unregister_fullscreen(screen):
+    ctl = Controller.instance
+    if ctl is not None and screen in ctl.fullscreens:
+        ctl.fullscreens.remove(screen)
+        reactor.callLater(0.1, _notify)
+
+
 class Controller(object):
     """Keeps track of what is on screen and handles show/hide requests."""
     instance = None
@@ -812,6 +831,8 @@ class Controller(object):
         self.notify_timer = eTimer()
         self.notify_timer.callback.append(self.resume_tv)
         self.notice = None
+        self.fullscreens = []  # open MosaicScreen / TourScreen, oldest first (#63)
+        self.source = None
         self.events = []
         self.last_shown = {}
         self.reason = ""
@@ -901,7 +922,7 @@ class Controller(object):
     # --- public ----------------------------------------------------------------------------------------------
     def show(self, stream=None, seconds=None, mode=None, priority=None, source="api", label=None, event_id=None):
         """Handles a show request and logs it (source, decision and reason) in camalert.log and the event list."""
-        self.reason, self.label = "", (label or "").strip()[:40] or None
+        self.reason, self.label, self.source = "", (label or "").strip()[:40] or None, source
         cam = stream or config.plugins.camalert.camera.value
         wait = cooldown_seconds(cam, config.plugins.camalert.cooldown.value)
         on_screen = (self.window.stream if self.window else None) == cam
@@ -920,7 +941,8 @@ class Controller(object):
             % (source, cam, pick_priority(priority), mode or "-", label or "-", result,
                (" (%s)" % self.reason) if self.reason else ""), level="error" if result == "error" else "normal")
         self.record_event(cam, label, source, pick_priority(priority), result, self.reason, event_id)
-        if result == "show" and chime_wanted(config.plugins.camalert.chime.value, pick_priority(priority)):
+        if result == "show" and chime_wanted(config.plugins.camalert.chime.value, pick_priority(priority)) \
+                and not is_test(source):  # a test request never makes sound (#62)
             self.chime()
         return result
 
@@ -968,7 +990,8 @@ class Controller(object):
                 except Exception as e:
                     log("wake failed:", e)
                     return "ignore"
-                reactor.callLater(6, self.show, stream, seconds, mode, priority, "wake")
+                reactor.callLater(6, self.show, stream, seconds, mode, priority,
+                                  TEST_SOURCE if is_test(self.source) else "wake")
                 self.reason = present.reason("woken")
                 return "wake"
             self.reason = present.reason("standby")
@@ -1354,7 +1377,31 @@ class Controller(object):
             self.notice = None
             self.session.deleteDialog(n)
 
+    def close_fullscreens(self, tries=10):
+        """Closes open mosaic / tour screens (#63). Enigma2 only closes the top dialog, so one per call; the next
+        one (stacked screens) after the first has gone."""
+        if not self.fullscreens:
+            return
+        top = getattr(self.session, "current_dialog", self.fullscreens[-1])
+        if top in self.fullscreens:
+            self.fullscreens.remove(top)
+            try:
+                top.close()
+            except Exception as e:  # noqa: BLE001 - never let hide fail
+                log("closing %s failed:" % type(top).__name__, e)
+        if self.fullscreens and tries > 0:
+            reactor.callLater(0.3, self.close_fullscreens, tries - 1)
+
+    def screen(self):
+        """What CamAlert shows now, for status "screen" (#63)."""
+        full = self.fullscreens[-1] if self.fullscreens else None
+        return screen_name(
+            "tour" if isinstance(full, TourScreen) else "mosaic" if full is not None else None,
+            "strip" if isinstance(self.window, StripWindow) else "photo" if self.window is not None else None,
+            self.notice is not None, self.live_stream is not None)
+
     def hide(self, resume=True):
+        self.close_fullscreens()
         self.close_keys()
         self.close_notice()
         if self.ptz_stream:
@@ -1414,4 +1461,5 @@ class Controller(object):
 
     def status(self):
         return {"window": self.window.stream if self.window else None, "live": self.live_stream, "paused": self.paused,
+                "screen": self.screen(),
                 "dnd": bool(config.plugins.camalert.dnd.value)}

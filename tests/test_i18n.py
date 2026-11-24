@@ -39,7 +39,7 @@ class TestCatalogue(unittest.TestCase):
             i18n.load = load
 
     def test_forbidden_synonym_fails(self):
-        cases = [("nl", "Photo window", "Foto-venster"), ("de", "Notification only", "Nur Hinweis"),
+        cases = [("nl", "Photo window", "Foto-venster"), ("de", "Notification", "Nur Hinweis"),
                  ("fr", "Tour: seconds per camera", "Tournée : secondes par caméra"),
                  ("pl", "Photo window", "Okno zdjęć"), ("de", "Address of your go2rtc server, e.g. http://192.168.1.10:1984",
                                                           "Adresse Ihres go2rtc-Servers, z. B. http://192.168.1.10:1984"),
@@ -48,6 +48,16 @@ class TestCatalogue(unittest.TestCase):
         for lang, msgid, text in cases:
             with self.subTest(lang=lang, text=text):
                 self.assertTrue(any("uses" in p for p in self.problems_with(lang, msgid, text)))
+
+    def test_old_kodi_labels_are_refused(self):
+        """#60 / #56: the Kodi labels that differed from the glossary are refused in English sources too."""
+        import json
+        import re
+        with open(os.path.join(_paths.ROOT, "core", "i18n", "glossary.json"), encoding="utf-8") as f:
+            rules = json.load(f)["forbidden"]["en"]
+        for old in ("Recent events", "Switch to live stream", "Notification only"):
+            with self.subTest(old=old):
+                self.assertTrue(any(re.search(r["pattern"], old, re.I) for r in rules))
 
     def test_placeholder_mismatch_fails_in_every_format(self):
         cases = [("nl", "%s: snapshot %d ms", "%s: foto ms"),                       # Enigma2 + Kodi

@@ -3,6 +3,7 @@
 """Thin wrapper around the Kodi modules (one place to mock in tests)."""
 import json
 import os
+import platform
 import re
 
 import xbmc
@@ -11,7 +12,7 @@ import xbmcgui
 import xbmcvfs
 
 from . import ADDON_ID
-from .klogic import DEFAULTS, parse_settings
+from .klogic import DEFAULTS, os_label, parse_settings
 
 _addon = None
 
@@ -230,3 +231,18 @@ class Monitor(xbmc.Monitor):
     def onSettingsChanged(self):
         if self.on_settings:
             self.on_settings()
+
+
+
+def os_version(tries=4):
+    """System.OSVersionInfo once Kodi has it (it answers "Busy" at first), else platform system + release (#59)."""
+    busy = ("Busy", xbmc.getLocalizedString(503))
+    fallback = ("%s %s" % (platform.system(), platform.release())).strip()
+    info = ""
+    for i in range(tries):
+        info = xbmc.getInfoLabel("System.OSVersionInfo")
+        if os_label(info, busy, None) is not None:
+            break
+        if i < tries - 1:
+            xbmc.sleep(250)
+    return os_label(info, busy, fallback)

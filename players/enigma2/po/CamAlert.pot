@@ -380,6 +380,9 @@ msgstr ""
 msgid "Wake up"
 msgstr ""
 
+msgid "Test request"
+msgstr ""
+
 msgid "High"
 msgstr ""
 

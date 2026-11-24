@@ -428,6 +428,58 @@ class _KodiModules(object):
             for k in ("cooldown", "camera", "substreams", "server"):
                 Built.store.pop(k, None)
 
+    def test_status_screen(self):
+        """#63: status "screen" on Kodi: mosaic/tour over the window over live view."""
+        import types
+        ctl = Built.module("controller").Controller()
+        self.assertEqual(ctl.status()["screen"], "none")
+        ctl.live_stream = "garden"
+        self.assertEqual(ctl.status()["screen"], "live")
+        ctl.window = types.SimpleNamespace(stream="garden", cams=self.CAMS[:1])
+        self.assertEqual(ctl.status()["screen"], "photo")
+        ctl.window.cams = self.CAMS
+        self.assertEqual(ctl.status()["screen"], "strip")
+        ctl.full = types.SimpleNamespace(tour=False)
+        self.assertEqual(ctl.status()["screen"], "mosaic")
+        ctl.full.tour = True
+        self.assertEqual(ctl.status()["screen"], "tour")
+
+    def test_no_chime_for_a_test_request(self):
+        """#62: source "test" never plays the chime; the event keeps the source."""
+        ctl_mod, kodiapi = Built.module("controller"), Built.module("kodiapi")
+        rang = []
+        self.addCleanup(setattr, kodiapi, "chime", kodiapi.chime)
+        kodiapi.chime = lambda: rang.append(1)
+        Built.store.update({"chime": "all", "camera": "garden"})
+        try:
+            ctl = ctl_mod.Controller()
+            ctl._show = lambda *a: "show"
+            self.assertEqual(ctl.show("garden", source="test"), "show")
+            self.assertEqual((rang, ctl.events[0]["source"]), ([], "test"))
+            ctl.last_shown.clear()
+            self.assertEqual(ctl.show("garden", source="api"), "show")
+            self.assertEqual(rang, [1])
+        finally:
+            for k in ("chime", "camera"):
+                Built.store.pop(k, None)
+
+    def test_diagnostics_os_while_kodi_is_busy(self):
+        """#59: System.OSVersionInfo answers "Busy" (translated) at first: retried, then Python's platform."""
+        import types
+        kodiapi, klogic = Built.module("kodiapi"), Built.module("klogic")
+        self.assertEqual(klogic.os_label("Bezig", ("Busy", "Bezig"), "Linux 6.6"), "Linux 6.6")
+        self.assertEqual(klogic.os_label(" ", ("Busy", ""), "Linux 6.6"), "Linux 6.6")
+        self.assertEqual(klogic.os_label("LibreELEC 12.2", ("Busy",), "Linux"), "LibreELEC 12.2")
+        answers = ["Bezig", "Bezig", "LibreELEC (official): 12.2.1"]
+        fake = types.SimpleNamespace(getInfoLabel=lambda label: answers.pop(0) if answers else "Bezig",
+                                     getLocalizedString=lambda i: "Bezig" if i == 503 else "", sleep=lambda ms: None)
+        self.addCleanup(setattr, kodiapi, "xbmc", kodiapi.xbmc)
+        kodiapi.xbmc = fake
+        self.assertEqual(kodiapi.os_version(), "LibreELEC (official): 12.2.1")
+        self.assertNotIn("Bezig", kodiapi.os_version())  # still busy after the retries: platform
+        import inspect
+        self.assertIn("kodiapi.os_version()", inspect.getsource(Built.module("diag").collect))
+
     def test_english_fallback(self):
         kodiapi = Built.module("kodiapi")
         kodiapi.addon_path = lambda *p: os.path.join(ADDON, *p)

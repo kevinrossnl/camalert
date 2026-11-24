@@ -39,6 +39,9 @@ Do not use (the docs test and the translation check refuse them):
 - ~~doorbell sound~~ → *doorbell chime*
 - ~~several cameras in one window~~ → *multi-camera window*
 - ~~Frigate detections~~ → *Frigate events*
+- ~~recent events~~ → *event list*
+- ~~switch to live stream~~ → *live view*
+- ~~notification only~~ → *notification*
 - *receiver* when Kodi is meant too → *player* ("Enigma2 receiver" is fine)
 
 Tone of the translations: nl *je*, de *du*, fr *vous*, it *impersonal*, pl *impersonal*.

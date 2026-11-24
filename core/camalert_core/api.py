@@ -10,6 +10,8 @@ camera list, log, metrics); everything else happens here, so Enigma2 and Kodi an
     GET  /camalert/<action>   reads: status, cameras, dnd (state), events, log, metrics
                               (GET of an action still works, but is deprecated and logged once per caller)
     Parameters: query string, form body or JSON object body.
+    test=1 on any request (#62): the caller source becomes "test": no chime, the event is tagged "test".
+    status answers "screen" (#63): none / photo / strip / notification / live / mosaic / tour.
     Token: header X-CamAlert-Token (a token= query parameter still works: deprecated, logged once, redacted)
 
 Access: address allowlist (setting allow: lan / any) + token (if set), compared with hmac.compare_digest.
@@ -25,14 +27,16 @@ from urllib.parse import parse_qs
 from .access import RateLimiter, client_allowed, exposed_without_token, token_ok, url_target
 from .cameras import parse_cams
 from .devices.config import PTZ_ACTIONS
-from .events import caller_source
+from .events import TEST_SOURCE, caller_source
 from .obs.log import redact
 from .rules import MODES, PRIORITIES, clamp_seconds
 
 API_VERSION = 1
 MIN_HA_VERSION = "1.0.0"  # oldest Home Assistant integration that understands this API version
 CAPABILITIES = ("cameras", "dnd", "events", "header_token", "hide", "log", "metrics", "mosaic", "post", "ptz",
-                "show", "status", "strip", "tour", "webhook")
+                "screen", "show", "status", "strip", "test", "tour", "webhook")
+# What /camalert/status reports as "screen" (#63): the top-most CamAlert screen, "none" when nothing is shown.
+SCREENS = ("none", "photo", "strip", "notification", "live", "mosaic", "tour")
 NAME = re.compile(r"^[A-Za-z0-9_.-]+$")
 TRUE, FALSE = ("1", "true", "on", "yes"), ("0", "false", "off", "no")
 
@@ -120,13 +124,22 @@ def choice_param(args, key, allowed):
     return value
 
 
-def bool_param(value):
+def bool_param(value, name="on"):
     text = str(value).strip().lower()
     if text in TRUE:
         return True
     if text in FALSE:
         return False
-    raise Invalid("on must be 1 or 0")
+    raise Invalid("%s must be 1 or 0" % name)
+
+
+def screen_name(fullscreen=None, window=None, notification=False, live=False):
+    """The "screen" value of /camalert/status (#63), top-most first: fullscreen 'mosaic'/'tour', window
+    'photo'/'strip', a notification, live view; 'none' when nothing of CamAlert is on screen."""
+    for value in (fullscreen, window, "notification" if notification else None, "live" if live else None):
+        if value in SCREENS:
+            return value
+    return "none"
 
 
 def local_url(url, caller_ip, resolver=None):
@@ -225,6 +238,8 @@ def _status(b, ctl, a, s, source):
     out = dict(ctl.status(), result=True, version=b.version, id=node, name=name, platform=b.platform,
                api_version=API_VERSION, capabilities=list(CAPABILITIES), min_ha_version=MIN_HA_VERSION)
     out.update(b.status_extra())
+    if out.get("screen") not in SCREENS:  # a player that does not know it yet (#63)
+        out["screen"] = screen_name(window="photo" if out.get("window") else None, live=bool(out.get("live")))
     return out
 
 
@@ -314,6 +329,8 @@ def handle(b, req, now=None):
             headers["Deprecation"] = "true"
             _once(b, ("get", route.name, ip), "deprecated: %s uses GET for /camalert/%s; use POST" % (ip, route.name))
         source = caller_source(req.user_agent)
+        if "test" in args and bool_param(args.pop("test"), "test"):
+            source = TEST_SOURCE  # test run (#62): no chime, event tagged "test"
         ctl = b.controller()
         ctl.last_caller = (now, ip, source)
         b.log("API %s %s %s from %s (%s)" % (req.method, req.path, redact("&".join("%s=%s" % kv for kv in sorted(args.items()))), ip, source),

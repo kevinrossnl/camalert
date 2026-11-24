@@ -42,12 +42,14 @@ def prometheus(body):
 
 
 STATUS_KEYS = ("result", "version", "id", "name", "window", "live", "paused", "dnd", "platform", "api_version",
-               "capabilities", "min_ha_version", "mqtt")
+               "capabilities", "min_ha_version", "mqtt", "screen")
+SCREENS = ("none", "photo", "strip", "notification", "live", "mosaic", "tour")  # status "screen" (#63)
 
 
 def status_keys(body):
     return all(k in body for k in STATUS_KEYS) and body["result"] is True and body["api_version"] == 1 and \
-        {"post", "header_token", "show", "ptz"} <= set(body["capabilities"])
+        {"post", "header_token", "show", "ptz", "screen", "test"} <= set(body["capabilities"]) and \
+        body["screen"] in SCREENS
 
 
 TABLE = [
@@ -92,6 +94,16 @@ TABLE = [
     row("show_json_body", "/camalert/show", body=b'{"cam": "garden", "sec": 20, "priority": "high"}',
         calls=[("show", "garden", 20, None, "high", "api", None)]),
     row("show_broken_json_body", "/camalert/show", body=b'{"cam": ', code=400, calls=[]),
+    # --- test flag (#62): source "test" = no chime, event tagged; the flag itself is not passed on ----------------
+    row("show_test_flag", "/camalert/show", {"cam": "garden", "test": "1"}, json={"result": True, "action": "show"},
+        calls=[("show", "garden", None, None, None, "test", None)]),
+    row("show_test_flag_from_home_assistant", "/camalert/show", {"cam": "garden", "test": "true"}, user_agent=HA_UA,
+        calls=[("show", "garden", None, None, None, "test", None)]),
+    row("show_test_flag_off", "/camalert/show", {"cam": "garden", "test": "0"},
+        calls=[("show", "garden", None, None, None, "api", None)]),
+    row("show_test_flag_invalid", "/camalert/show", {"cam": "garden", "test": "x"}, code=400,
+        json={"result": False, "error": "test must be 1 or 0"}, calls=[]),
+    row("mosaic_test_flag", "/camalert/mosaic", {"test": "1"}, calls=[("mosaic", None, 60)]),
     get("show_get_deprecated", "/camalert/show", {"cam": "garden"}, json={"result": True},
         calls=[("show", "garden", None, None, None, "api", None)], headers={"Deprecation": "true"}),
     # --- mosaic, tour ------------------------------------------------------------------------------------------

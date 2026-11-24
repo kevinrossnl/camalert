@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "Aggiungi un ricevitore CamAlert",
+        "title": "Aggiungere un ricevitore CamAlert",
         "description": "Indirizzo IP del ricevitore Enigma2 con il plugin CamAlert. Porta, HTTPS e token come impostati in CamAlert sul ricevitore.",
         "data": {
           "host": "Indirizzo IP del ricevitore",
@@ -64,9 +64,9 @@
     "mode": {
       "options": {
         "photo": "Finestra foto",
-        "live": "Passa al flusso live",
+        "live": "Passa alla visione live",
         "notify": "Solo notifica",
-        "strip": "Più telecamere in una finestra"
+        "strip": "Finestra con più telecamere"
       }
     },
     "priority": {
@@ -103,7 +103,7 @@
           "description": "Per quanto tempo resta visibile. Vuoto = impostazione del ricevitore."
         },
         "mode": {
-          "name": "Visualizzazione",
+          "name": "Modalità di visualizzazione",
           "description": "Vuoto = impostazione del ricevitore."
         },
         "priority": {

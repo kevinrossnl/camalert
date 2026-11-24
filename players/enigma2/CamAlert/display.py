@@ -554,7 +554,7 @@ class TourScreen(Screen):
 
     def load(self):
         name, title, url = self.cams[self.index]
-        state = _("hold") if self.hold else _("tour")
+        state = _("paused") if self.hold else _("tour")
         self["title"].setText(" %s   (%d/%d, %s)   < >  OK  %s  EXIT " % (title, self.index + 1, len(self.cams), state, _("GREEN = live")))
         size = getDesktop(0).size()
         url = url.replace("width=640", "width=1280") if "/api/frame.jpeg" in url else url

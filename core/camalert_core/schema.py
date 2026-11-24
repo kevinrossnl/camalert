@@ -46,7 +46,7 @@ class Setting(object):
 
 S = Setting
 SETTINGS = [
-    S('enabled', 'general', 'basic', 'bool', True, platforms=('enigma2', 'kodi'), label='Enable CamAlert', help='Turn the HTTP API and pop-ups on or off.', kodi_label=30010),
+    S('enabled', 'general', 'basic', 'bool', True, platforms=('enigma2', 'kodi'), label='Enable CamAlert', help='Turn the HTTP API and the camera display on or off.', kodi_label=30010),
     S('source', 'general', 'basic', 'choice', 'go2rtc', choices=('go2rtc', 'direct'), platforms=('enigma2', 'kodi'), label='Cameras via', help='go2rtc is recommended. Without go2rtc, list your cameras in %s', kodi_label=30012),
     S('server', 'general', 'basic', 'text', 'http://192.168.1.10:1984', platforms=('enigma2', 'kodi'), label='go2rtc address', help='Address of your go2rtc server, e.g. http://192.168.1.10:1984', kodi_label=30016),
     S('rtsp_port', 'general', 'expert', 'int', 8554, min=1, max=65535, step=1, platforms=('enigma2', 'kodi'), label='go2rtc RTSP port', help='Usually 8554. Used for live view and the camera list.', kodi_label=30018),
@@ -67,7 +67,7 @@ SETTINGS = [
     S('tour_interval', 'display', 'advanced', 'int', 8, min=3, max=60, step=1, unit='s', platforms=('enigma2', 'kodi'), label='Tour: seconds per camera', kodi_label=30078),
     S('orientation', 'display', 'advanced', 'text', '', platforms=('enigma2', 'kodi'), label='Turn or mirror image', help='Press OK to turn a camera that hangs upside down (needs python3-pillow).', kodi_label=30062),
     S('refresh', 'display', 'advanced', 'text', '', platforms=('enigma2', 'kodi'), keys={'kodi': 'refresh_map'}, label='Refresh interval', help="Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera.", kodi_label=30064),
-    S('strip_layout', 'display', 'advanced', 'choice', 'auto', choices=('auto', 'vertical', 'horizontal', 'grid'), platforms=('enigma2', 'kodi'), label='Layout with several cameras', help='A request with 2-4 cameras shows them together in one corner window.', kodi_label=30056),
+    S('strip_layout', 'display', 'advanced', 'choice', 'auto', choices=('auto', 'vertical', 'horizontal', 'grid'), platforms=('enigma2', 'kodi'), label='Multi-camera window layout', help='A request with 2-4 cameras shows them together in one multi-camera window.', kodi_label=30056),
     S('title_size', 'display', 'advanced', 'choice', 'normal', choices=('small', 'normal', 'large'), platforms=('enigma2', 'kodi'), label='Title size', kodi_label=30230),
     S('chime', 'display', 'advanced', 'choice', 'off', choices=('off', 'high', 'all'), platforms=('enigma2', 'kodi'), label='Doorbell chime', help='Plays a short ding-dong for requests with priority high or alarm (doorbell).', kodi_label=30232),
     S('picons', 'display', 'advanced', 'bool', False, platforms=('enigma2',), label='Picons for the camera channels', help='Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced.'),

@@ -191,7 +191,7 @@ msgstr ""
 msgid "%s - camera not reachable"
 msgstr ""
 
-msgid "hold"
+msgid "paused"
 msgstr ""
 
 msgid "tour"
@@ -245,7 +245,7 @@ msgstr ""
 msgid "Enable CamAlert"
 msgstr ""
 
-msgid "Turn the HTTP API and pop-ups on or off."
+msgid "Turn the HTTP API and the camera display on or off."
 msgstr ""
 
 msgid "Cameras via"
@@ -317,10 +317,10 @@ msgstr ""
 msgid "Title size"
 msgstr ""
 
-msgid "Layout with several cameras"
+msgid "Multi-camera window layout"
 msgstr ""
 
-msgid "A request with 2-4 cameras shows them together in one corner window."
+msgid "A request with 2-4 cameras shows them together in one multi-camera window."
 msgstr ""
 
 msgid "Pause TV meanwhile"

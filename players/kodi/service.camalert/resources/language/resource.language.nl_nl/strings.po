@@ -39,7 +39,7 @@ msgstr "Log en diagnose"
 
 msgctxt "#30200"
 msgid "Checking..."
-msgstr "Controleren..."
+msgstr "Bezig met controleren..."
 
 msgctxt "#30201"
 msgid "Diagnostics"
@@ -79,15 +79,15 @@ msgstr "Geen geldig go2rtc-adres"
 
 msgctxt "#30213"
 msgid "%s: no snapshot address (live only)"
-msgstr "%s: geen snapshot-adres (alleen live)"
+msgstr "%s: geen foto-adres (alleen live)"
 
 msgctxt "#30214"
 msgid "%s: snapshot %d ms"
-msgstr "%s: snapshot %d ms"
+msgstr "%s: foto %d ms"
 
 msgctxt "#30215"
 msgid "%s: snapshot failed (%s)"
-msgstr "%s: snapshot mislukt (%s)"
+msgstr "%s: foto mislukt (%s)"
 
 msgctxt "#30216"
 msgid "API listening on port %d"
@@ -107,7 +107,7 @@ msgstr "MQTT niet verbonden"
 
 msgctxt "#30220"
 msgid "Last API call %s from %s (%s)"
-msgstr "Laatste API-aanroep %s van %s (%s)"
+msgstr "Laatste API-aanroep %s vanaf %s (%s)"
 
 msgctxt "#30221"
 msgid "No API call since the last start"
@@ -134,7 +134,7 @@ msgid "Normal"
 msgstr "Normaal"
 
 msgctxt "#30232"
-msgid "Doorbell sound"
+msgid "Doorbell chime"
 msgstr "Deurbelgeluid"
 
 msgctxt "#30233"
@@ -246,8 +246,8 @@ msgid "Enable CamAlert"
 msgstr "CamAlert inschakelen"
 
 msgctxt "#30011"
-msgid "Turn the HTTP API and pop-ups on or off."
-msgstr "Zet de HTTP-API en pop-ups aan of uit."
+msgid "Turn the HTTP API and the camera display on or off."
+msgstr "Zet de HTTP-API en de cameraweergave aan of uit."
 
 msgctxt "#30012"
 msgid "Cameras via"
@@ -287,7 +287,7 @@ msgstr "Certificaten controleren"
 
 msgctxt "#30021"
 msgid "Turn off for a self-signed certificate (only in your own network)."
-msgstr "Zet uit bij een zelfondertekend certificaat (alleen in je eigen netwerk)."
+msgstr "Zet uit bij een zelfgemaakt certificaat (alleen in je eigen netwerk)."
 
 msgctxt "#30022"
 msgid "Camera file (direct mode)"
@@ -307,11 +307,11 @@ msgstr "Cameranaam, bijv. deur. Kies hem met 'Camera kiezen'."
 
 msgctxt "#30026"
 msgid "Choose camera"
-msgstr "Camera kiezen"
+msgstr "Kies camera"
 
 msgctxt "#30027"
-msgid "Camera titles"
-msgstr "Cameratitels"
+msgid "Camera names"
+msgstr "Cameranamen"
 
 msgctxt "#30028"
 msgid "Optional: name=Title|name2=Title 2"
@@ -319,7 +319,7 @@ msgstr "Optioneel: naam=Titel|naam2=Titel 2"
 
 msgctxt "#30029"
 msgid "Mosaic cameras"
-msgstr "Mozaïekcamera's"
+msgstr "Camera's in mozaïek"
 
 msgctxt "#30030"
 msgid "Comma separated, up to 9. Empty = all."
@@ -339,7 +339,7 @@ msgstr "Fotovenster"
 
 msgctxt "#30043"
 msgid "Switch to live stream"
-msgstr "Naar livestream schakelen"
+msgstr "Omschakelen naar live beeld"
 
 msgctxt "#30044"
 msgid "Notification only"
@@ -355,7 +355,7 @@ msgstr "Hoe lang de camera in beeld blijft."
 
 msgctxt "#30047"
 msgid "Window position"
-msgstr "Vensterpositie"
+msgstr "Positie venster"
 
 msgctxt "#30048"
 msgid "Top right"
@@ -375,7 +375,7 @@ msgstr "Linksonder"
 
 msgctxt "#30052"
 msgid "Window size"
-msgstr "Venstergrootte"
+msgstr "Grootte venster"
 
 msgctxt "#30053"
 msgid "Small"
@@ -390,8 +390,8 @@ msgid "Large"
 msgstr "Groot"
 
 msgctxt "#30056"
-msgid "Several cameras in one window"
-msgstr "Meerdere camera's in één venster"
+msgid "Multi-camera window layout"
+msgstr "Indeling van het venster met meerdere camera's"
 
 msgctxt "#30057"
 msgid "Layout when a request names 2 to 4 cameras (photo window)."
@@ -459,15 +459,15 @@ msgstr "Volume tijdens live beeld (%)"
 
 msgctxt "#30073"
 msgid "Percentage of the current volume while the camera is shown. 100 = unchanged."
-msgstr "Percentage van het huidige volume tijdens het camerabeeld. 100 = ongewijzigd."
+msgstr "Percentage van het huidige volume zolang de camera in beeld is. 100 = ongewijzigd."
 
 msgctxt "#30074"
 msgid "Live stream format"
-msgstr "Formaat livestream"
+msgstr "Formaat van het live beeld"
 
 msgctxt "#30075"
 msgid "MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds."
-msgstr "MP4 via HTTP werkt met elke go2rtc; RTSP heeft de RTSP-poort van go2rtc nodig."
+msgstr "MP4 via HTTP werkt met elke go2rtc-installatie; RTSP heeft de RTSP-poort van go2rtc nodig; HLS is het stabielst maar loopt een paar seconden achter."
 
 msgctxt "#30076"
 msgid "MP4 (HTTP)"
@@ -571,7 +571,7 @@ msgstr "Verbindt met je MQTT-broker; met discovery verschijnt deze Kodi vanzelf 
 
 msgctxt "#30112"
 msgid "MQTT broker address"
-msgstr "MQTT-brokeradres"
+msgstr "Adres MQTT-broker"
 
 msgctxt "#30113"
 msgid "IP address or name of the MQTT broker, e.g. 192.168.1.10"
@@ -599,7 +599,7 @@ msgstr "Home Assistant-discovery"
 
 msgctxt "#30119"
 msgid "Creates a device with a button per camera in Home Assistant."
-msgstr "Maakt een apparaat met een knop per camera in Home Assistant."
+msgstr "Maakt in Home Assistant een apparaat met een knop per camera."
 
 msgctxt "#30120"
 msgid "Name in Home Assistant"
@@ -610,8 +610,8 @@ msgid "Empty = CamAlert + the name of this Kodi."
 msgstr "Leeg = CamAlert + de naam van deze Kodi."
 
 msgctxt "#30130"
-msgid "Frigate detections"
-msgstr "Frigate-detecties"
+msgid "Frigate events"
+msgstr "Frigate-gebeurtenissen"
 
 msgctxt "#30131"
 msgid "Shows the camera when Frigate detects something (via the MQTT broker)."
@@ -619,7 +619,7 @@ msgstr "Toont de camera als Frigate iets detecteert (via de MQTT-broker)."
 
 msgctxt "#30132"
 msgid "Frigate MQTT prefix"
-msgstr "Frigate MQTT-voorvoegsel"
+msgstr "Frigate MQTT-prefix"
 
 msgctxt "#30133"
 msgid "Usually 'frigate'."
@@ -723,7 +723,7 @@ msgstr "Toegangstoken (optioneel)"
 
 msgctxt "#30167"
 msgid "If set, callers must add ?token=... to every request."
-msgstr "Indien ingevuld moeten aanroepers ?token=... aan elk verzoek toevoegen."
+msgstr "Indien ingevuld moet elk verzoek ?token=... bevatten."
 
 msgctxt "#30168"
 msgid "Use HTTPS for the API"
@@ -731,7 +731,7 @@ msgstr "HTTPS gebruiken voor de API"
 
 msgctxt "#30169"
 msgid "Uses a self-signed certificate; callers must turn off certificate checking."
-msgstr "Gebruikt een zelfondertekend certificaat; aanroepers moeten certificaatcontrole uitzetten."
+msgstr "Gebruikt een zelfgemaakt certificaat; aanroepers moeten certificaatcontrole uitzetten."
 
 msgctxt "#30170"
 msgid "Test: show the default camera"
@@ -766,8 +766,8 @@ msgid "devices.conf is in:\n%s"
 msgstr "devices.conf staat in:\n%s"
 
 msgctxt "#30190"
-msgid "hold"
-msgstr "vast"
+msgid "paused"
+msgstr "gepauzeerd"
 
 msgctxt "#30191"
 msgid "tour"

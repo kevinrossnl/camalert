@@ -13,7 +13,7 @@ FOLDERS = {"core": "core", "contract": "contract", "enigma2": "enigma2", "kodi":
            "build": "build"}
 FILES = {
     "ha": ("test_ha_integration", "test_blueprints"),
-    "build": ("test_build", "test_private", "test_translations", "test_ci"),
+    "build": ("test_build", "test_private", "test_translations", "test_i18n", "test_ci"),
 }
 
 

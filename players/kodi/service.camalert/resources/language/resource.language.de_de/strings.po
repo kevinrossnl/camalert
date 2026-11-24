@@ -79,15 +79,15 @@ msgstr "Keine gültige go2rtc-Adresse"
 
 msgctxt "#30213"
 msgid "%s: no snapshot address (live only)"
-msgstr "%s: keine Snapshot-Adresse (nur live)"
+msgstr "%s: keine Foto-Adresse (nur live)"
 
 msgctxt "#30214"
 msgid "%s: snapshot %d ms"
-msgstr "%s: Snapshot %d ms"
+msgstr "%s: Foto %d ms"
 
 msgctxt "#30215"
 msgid "%s: snapshot failed (%s)"
-msgstr "%s: Snapshot fehlgeschlagen (%s)"
+msgstr "%s: Foto fehlgeschlagen (%s)"
 
 msgctxt "#30216"
 msgid "API listening on port %d"
@@ -123,7 +123,7 @@ msgstr "Nicht stören ist an"
 
 msgctxt "#30224"
 msgid "Log: %s"
-msgstr "Protokoll: %s"
+msgstr "Log: %s"
 
 msgctxt "#30230"
 msgid "Title size"
@@ -134,7 +134,7 @@ msgid "Normal"
 msgstr "Normal"
 
 msgctxt "#30232"
-msgid "Doorbell sound"
+msgid "Doorbell chime"
 msgstr "Türklingelton"
 
 msgctxt "#30233"
@@ -246,8 +246,8 @@ msgid "Enable CamAlert"
 msgstr "CamAlert aktivieren"
 
 msgctxt "#30011"
-msgid "Turn the HTTP API and pop-ups on or off."
-msgstr "Schaltet die HTTP-API und Einblendungen ein oder aus."
+msgid "Turn the HTTP API and the camera display on or off."
+msgstr "Schaltet die HTTP-API und die Kameraanzeige ein oder aus."
 
 msgctxt "#30012"
 msgid "Cameras via"
@@ -271,7 +271,7 @@ msgstr "go2rtc-Adresse"
 
 msgctxt "#30017"
 msgid "Address of your go2rtc server, e.g. http://192.168.1.10:1984"
-msgstr "Adresse Ihres go2rtc-Servers, z. B. http://192.168.1.10:1984"
+msgstr "Adresse deines go2rtc-Servers, z. B. http://192.168.1.10:1984"
 
 msgctxt "#30018"
 msgid "go2rtc RTSP port"
@@ -287,7 +287,7 @@ msgstr "Zertifikate prüfen"
 
 msgctxt "#30021"
 msgid "Turn off for a self-signed certificate (only in your own network)."
-msgstr "Bei selbstsigniertem Zertifikat ausschalten (nur im eigenen Netz)."
+msgstr "Bei selbstsigniertem Zertifikat ausschalten (nur im eigenen Netzwerk)."
 
 msgctxt "#30022"
 msgid "Camera file (direct mode)"
@@ -310,8 +310,8 @@ msgid "Choose camera"
 msgstr "Kamera wählen"
 
 msgctxt "#30027"
-msgid "Camera titles"
-msgstr "Kameratitel"
+msgid "Camera names"
+msgstr "Kameranamen"
 
 msgctxt "#30028"
 msgid "Optional: name=Title|name2=Title 2"
@@ -319,7 +319,7 @@ msgstr "Optional: name=Titel|name2=Titel 2"
 
 msgctxt "#30029"
 msgid "Mosaic cameras"
-msgstr "Mosaik-Kameras"
+msgstr "Kameras im Mosaik"
 
 msgctxt "#30030"
 msgid "Comma separated, up to 9. Empty = all."
@@ -339,7 +339,7 @@ msgstr "Fotofenster"
 
 msgctxt "#30043"
 msgid "Switch to live stream"
-msgstr "Zum Livestream wechseln"
+msgstr "Zur Live-Ansicht wechseln"
 
 msgctxt "#30044"
 msgid "Notification only"
@@ -390,8 +390,8 @@ msgid "Large"
 msgstr "Groß"
 
 msgctxt "#30056"
-msgid "Several cameras in one window"
-msgstr "Mehrere Kameras in einem Fenster"
+msgid "Multi-camera window layout"
+msgstr "Anordnung im Fenster mit mehreren Kameras"
 
 msgctxt "#30057"
 msgid "Layout when a request names 2 to 4 cameras (photo window)."
@@ -451,23 +451,23 @@ msgstr "Zurück zur vorherigen Wiedergabe"
 
 msgctxt "#30071"
 msgid "After live view, continue the video at the same position or the same TV channel."
-msgstr "Nach der Liveansicht das Video an derselben Stelle oder denselben Sender fortsetzen."
+msgstr "Nach der Live-Ansicht das Video an derselben Stelle oder denselben Sender fortsetzen."
 
 msgctxt "#30072"
 msgid "Volume during live view (%)"
-msgstr "Lautstärke in der Liveansicht (%)"
+msgstr "Lautstärke in der Live-Ansicht (%)"
 
 msgctxt "#30073"
 msgid "Percentage of the current volume while the camera is shown. 100 = unchanged."
-msgstr "Prozent der aktuellen Lautstärke während der Anzeige. 100 = unverändert."
+msgstr "Prozent der aktuellen Lautstärke, solange die Kamera angezeigt wird. 100 = unverändert."
 
 msgctxt "#30074"
 msgid "Live stream format"
-msgstr "Format des Livestreams"
+msgstr "Format der Live-Ansicht"
 
 msgctxt "#30075"
 msgid "MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds."
-msgstr "MP4 über HTTP funktioniert mit jedem go2rtc; RTSP braucht den RTSP-Port von go2rtc."
+msgstr "MP4 über HTTP funktioniert mit jeder go2rtc-Installation; RTSP braucht den RTSP-Port von go2rtc; HLS ist am robustesten, hängt aber ein paar Sekunden hinterher."
 
 msgctxt "#30076"
 msgid "MP4 (HTTP)"
@@ -567,11 +567,11 @@ msgstr "MQTT (Home Assistant ohne YAML)"
 
 msgctxt "#30111"
 msgid "Connects to your MQTT broker; with discovery this Kodi appears in Home Assistant automatically."
-msgstr "Verbindet mit Ihrem MQTT-Broker; mit Discovery erscheint dieses Kodi automatisch in Home Assistant."
+msgstr "Verbindet sich mit deinem MQTT-Broker; mit Discovery erscheint dieses Kodi automatisch in Home Assistant."
 
 msgctxt "#30112"
 msgid "MQTT broker address"
-msgstr "MQTT-Broker-Adresse"
+msgstr "Adresse des MQTT-Brokers"
 
 msgctxt "#30113"
 msgid "IP address or name of the MQTT broker, e.g. 192.168.1.10"
@@ -599,7 +599,7 @@ msgstr "Home-Assistant-Discovery"
 
 msgctxt "#30119"
 msgid "Creates a device with a button per camera in Home Assistant."
-msgstr "Erstellt ein Gerät mit einer Taste pro Kamera in Home Assistant."
+msgstr "Legt in Home Assistant ein Gerät mit einer Taste pro Kamera an."
 
 msgctxt "#30120"
 msgid "Name in Home Assistant"
@@ -610,8 +610,8 @@ msgid "Empty = CamAlert + the name of this Kodi."
 msgstr "Leer = CamAlert + Name dieses Kodi."
 
 msgctxt "#30130"
-msgid "Frigate detections"
-msgstr "Frigate-Erkennungen"
+msgid "Frigate events"
+msgstr "Frigate-Ereignisse"
 
 msgctxt "#30131"
 msgid "Shows the camera when Frigate detects something (via the MQTT broker)."
@@ -707,11 +707,11 @@ msgstr "Erlaubte Aufrufer"
 
 msgctxt "#30163"
 msgid "'Local network only' is recommended."
-msgstr "'Nur lokales Netz' wird empfohlen."
+msgstr "'Nur lokales Netzwerk' wird empfohlen."
 
 msgctxt "#30164"
 msgid "Local network only"
-msgstr "Nur lokales Netz"
+msgstr "Nur lokales Netzwerk"
 
 msgctxt "#30165"
 msgid "Any address"
@@ -723,7 +723,7 @@ msgstr "Zugriffstoken (optional)"
 
 msgctxt "#30167"
 msgid "If set, callers must add ?token=... to every request."
-msgstr "Wenn gesetzt, müssen Aufrufer ?token=... anhängen."
+msgstr "Wenn gesetzt, muss jede Anfrage ?token=... enthalten."
 
 msgctxt "#30168"
 msgid "Use HTTPS for the API"
@@ -731,7 +731,7 @@ msgstr "HTTPS für die API verwenden"
 
 msgctxt "#30169"
 msgid "Uses a self-signed certificate; callers must turn off certificate checking."
-msgstr "Verwendet ein selbstsigniertes Zertifikat; Aufrufer müssen die Prüfung abschalten."
+msgstr "Nutzt ein selbstsigniertes Zertifikat; Aufrufer müssen die Zertifikatsprüfung abschalten."
 
 msgctxt "#30170"
 msgid "Test: show the default camera"
@@ -759,14 +759,14 @@ msgstr "Keine Kameras gefunden."
 
 msgctxt "#30184"
 msgid "Choose a default camera first."
-msgstr "Zuerst eine Standardkamera wählen."
+msgstr "Bitte zuerst eine Standardkamera wählen."
 
 msgctxt "#30185"
 msgid "devices.conf is in:\n%s"
 msgstr "devices.conf liegt in:\n%s"
 
 msgctxt "#30190"
-msgid "hold"
+msgid "paused"
 msgstr "angehalten"
 
 msgctxt "#30191"

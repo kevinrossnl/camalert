@@ -67,7 +67,7 @@ msgstr "Odtwórz klip Frigate"
 
 msgctxt "#30210"
 msgid "go2rtc reachable (%d cameras, %d ms)"
-msgstr "go2rtc osiągalny (%d kamer, %d ms)"
+msgstr "go2rtc osiągalny (kamery: %d, %d ms)"
 
 msgctxt "#30211"
 msgid "go2rtc not reachable: %s"
@@ -75,7 +75,7 @@ msgstr "go2rtc nieosiągalny: %s"
 
 msgctxt "#30212"
 msgid "No valid go2rtc address"
-msgstr "Nieprawidłowy adres go2rtc"
+msgstr "Brak poprawnego adresu go2rtc"
 
 msgctxt "#30213"
 msgid "%s: no snapshot address (live only)"
@@ -123,7 +123,7 @@ msgstr "Nie przeszkadzać jest włączone"
 
 msgctxt "#30224"
 msgid "Log: %s"
-msgstr "Dziennik: %s"
+msgstr "Log: %s"
 
 msgctxt "#30230"
 msgid "Title size"
@@ -134,7 +134,7 @@ msgid "Normal"
 msgstr "Normalny"
 
 msgctxt "#30232"
-msgid "Doorbell sound"
+msgid "Doorbell chime"
 msgstr "Dźwięk dzwonka"
 
 msgctxt "#30233"
@@ -187,7 +187,7 @@ msgstr "NIEBIESKI"
 
 msgctxt "#30245"
 msgid "Colour keys to Home Assistant"
-msgstr "Kolorowe klawisze do Home Assistant"
+msgstr "Kolorowe przyciski do Home Assistant"
 
 msgctxt "#30246"
 msgid "While a camera is shown the colour keys trigger a Home Assistant event (e.g. open the door)."
@@ -246,8 +246,8 @@ msgid "Enable CamAlert"
 msgstr "Włącz CamAlert"
 
 msgctxt "#30011"
-msgid "Turn the HTTP API and pop-ups on or off."
-msgstr "Włącza lub wyłącza API HTTP i okienka."
+msgid "Turn the HTTP API and the camera display on or off."
+msgstr "Włącza lub wyłącza API HTTP i wyświetlanie kamer."
 
 msgctxt "#30012"
 msgid "Cameras via"
@@ -287,7 +287,7 @@ msgstr "Sprawdzaj certyfikaty"
 
 msgctxt "#30021"
 msgid "Turn off for a self-signed certificate (only in your own network)."
-msgstr "Wyłącz dla certyfikatu samopodpisanego (tylko we własnej sieci)."
+msgstr "Wyłącz dla certyfikatu z własnym podpisem (tylko we własnej sieci)."
 
 msgctxt "#30022"
 msgid "Camera file (direct mode)"
@@ -299,7 +299,7 @@ msgstr "Puste = cameras.conf w folderze danych. Jedna kamera w wierszu: nazwa | 
 
 msgctxt "#30024"
 msgid "Default camera"
-msgstr "Kamera domyślna"
+msgstr "Domyślna kamera"
 
 msgctxt "#30025"
 msgid "Camera name, e.g. front_door. Use 'Choose camera' to pick it from the list."
@@ -310,8 +310,8 @@ msgid "Choose camera"
 msgstr "Wybierz kamerę"
 
 msgctxt "#30027"
-msgid "Camera titles"
-msgstr "Tytuły kamer"
+msgid "Camera names"
+msgstr "Nazwy kamer"
 
 msgctxt "#30028"
 msgid "Optional: name=Title|name2=Title 2"
@@ -319,7 +319,7 @@ msgstr "Opcjonalnie: nazwa=Tytuł|nazwa2=Tytuł 2"
 
 msgctxt "#30029"
 msgid "Mosaic cameras"
-msgstr "Kamery mozaiki"
+msgstr "Kamery w mozaice"
 
 msgctxt "#30030"
 msgid "Comma separated, up to 9. Empty = all."
@@ -331,11 +331,11 @@ msgstr "Tryb wyświetlania"
 
 msgctxt "#30041"
 msgid "Photo window keeps playing what you watch; live shows the camera stream full screen."
-msgstr "Okno zdjęć nie przerywa programu; na żywo pokazuje kamerę na pełnym ekranie."
+msgstr "Okno ze zdjęciem nie przerywa programu; na żywo pokazuje kamerę na pełnym ekranie."
 
 msgctxt "#30042"
 msgid "Photo window"
-msgstr "Okno zdjęć"
+msgstr "Okno ze zdjęciem"
 
 msgctxt "#30043"
 msgid "Switch to live stream"
@@ -355,23 +355,23 @@ msgstr "Jak długo kamera jest widoczna."
 
 msgctxt "#30047"
 msgid "Window position"
-msgstr "Położenie okna"
+msgstr "Pozycja okna"
 
 msgctxt "#30048"
 msgid "Top right"
-msgstr "Prawy górny"
+msgstr "Prawy górny róg"
 
 msgctxt "#30049"
 msgid "Top left"
-msgstr "Lewy górny"
+msgstr "Lewy górny róg"
 
 msgctxt "#30050"
 msgid "Bottom right"
-msgstr "Prawy dolny"
+msgstr "Prawy dolny róg"
 
 msgctxt "#30051"
 msgid "Bottom left"
-msgstr "Lewy dolny"
+msgstr "Lewy dolny róg"
 
 msgctxt "#30052"
 msgid "Window size"
@@ -390,12 +390,12 @@ msgid "Large"
 msgstr "Duże"
 
 msgctxt "#30056"
-msgid "Several cameras in one window"
-msgstr "Kilka kamer w jednym oknie"
+msgid "Multi-camera window layout"
+msgstr "Układ okna z kilkoma kamerami"
 
 msgctxt "#30057"
 msgid "Layout when a request names 2 to 4 cameras (photo window)."
-msgstr "Układ, gdy żądanie wymienia 2–4 kamery (okno zdjęć)."
+msgstr "Układ, gdy żądanie wymienia 2–4 kamery (okno ze zdjęciem)."
 
 msgctxt "#30058"
 msgid "Automatic"
@@ -431,7 +431,7 @@ msgstr "Sekundy między obrazami, np. drzwi=0.5|ogrod=5. Domyślnie: jak najszyb
 
 msgctxt "#30066"
 msgid "Remote control in photo window"
-msgstr "Pilot w oknie zdjęć"
+msgstr "Pilot w oknie zdjęcia"
 
 msgctxt "#30067"
 msgid "OK = live, LEFT/RIGHT = other camera, MENU = PTZ, BACK = close. Any other key closes it too."
@@ -455,11 +455,11 @@ msgstr "Po podglądzie wznawia wideo w tym samym miejscu lub ten sam kanał."
 
 msgctxt "#30072"
 msgid "Volume during live view (%)"
-msgstr "Głośność podczas podglądu (%)"
+msgstr "Głośność podczas podglądu na żywo (%)"
 
 msgctxt "#30073"
 msgid "Percentage of the current volume while the camera is shown. 100 = unchanged."
-msgstr "Procent bieżącej głośności podczas pokazu. 100 = bez zmian."
+msgstr "Procent obecnej głośności, gdy widać kamerę. 100 = bez zmian."
 
 msgctxt "#30074"
 msgid "Live stream format"
@@ -467,7 +467,7 @@ msgstr "Format obrazu na żywo"
 
 msgctxt "#30075"
 msgid "MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds."
-msgstr "MP4 przez HTTP działa z każdym go2rtc; RTSP wymaga portu RTSP go2rtc."
+msgstr "MP4 przez HTTP działa z każdą instalacją go2rtc; RTSP wymaga portu RTSP go2rtc; HLS jest najbardziej niezawodny, ale ma kilka sekund opóźnienia."
 
 msgctxt "#30076"
 msgid "MP4 (HTTP)"
@@ -507,7 +507,7 @@ msgstr "Do"
 
 msgctxt "#30094"
 msgid "May pass midnight, e.g. 07:00 to 23:00."
-msgstr "Może przechodzić przez północ, np. 07:00 do 23:00."
+msgstr "Może obejmować północ, np. 07:00 do 23:00."
 
 msgctxt "#30095"
 msgid "Not while playing"
@@ -575,7 +575,7 @@ msgstr "Adres brokera MQTT"
 
 msgctxt "#30113"
 msgid "IP address or name of the MQTT broker, e.g. 192.168.1.10"
-msgstr "Adres IP lub nazwa brokera, np. 192.168.1.10"
+msgstr "Adres IP lub nazwa brokera MQTT, np. 192.168.1.10"
 
 msgctxt "#30114"
 msgid "MQTT port"
@@ -595,11 +595,11 @@ msgstr "Hasło MQTT"
 
 msgctxt "#30118"
 msgid "Home Assistant discovery"
-msgstr "Discovery Home Assistant"
+msgstr "Wykrywanie w Home Assistant"
 
 msgctxt "#30119"
 msgid "Creates a device with a button per camera in Home Assistant."
-msgstr "Tworzy urządzenie z przyciskiem dla każdej kamery w Home Assistant."
+msgstr "Tworzy w Home Assistant urządzenie z przyciskiem dla każdej kamery."
 
 msgctxt "#30120"
 msgid "Name in Home Assistant"
@@ -610,8 +610,8 @@ msgid "Empty = CamAlert + the name of this Kodi."
 msgstr "Puste = CamAlert + nazwa tego Kodi."
 
 msgctxt "#30130"
-msgid "Frigate detections"
-msgstr "Wykrycia Frigate"
+msgid "Frigate events"
+msgstr "Zdarzenia Frigate"
 
 msgctxt "#30131"
 msgid "Shows the camera when Frigate detects something (via the MQTT broker)."
@@ -647,7 +647,7 @@ msgstr "Priorytet"
 
 msgctxt "#30140"
 msgid "Normal"
-msgstr "Zwykły"
+msgstr "Normalny"
 
 msgctxt "#30141"
 msgid "High"
@@ -707,7 +707,7 @@ msgstr "Dozwoleni wywołujący"
 
 msgctxt "#30163"
 msgid "'Local network only' is recommended."
-msgstr "Zalecane jest „Tylko sieć lokalna”."
+msgstr "Zalecane jest 'Tylko sieć lokalna'."
 
 msgctxt "#30164"
 msgid "Local network only"
@@ -719,7 +719,7 @@ msgstr "Dowolny adres"
 
 msgctxt "#30166"
 msgid "Access token (optional)"
-msgstr "Token dostępu (opcjonalny)"
+msgstr "Token dostępu (opcjonalnie)"
 
 msgctxt "#30167"
 msgid "If set, callers must add ?token=... to every request."
@@ -727,11 +727,11 @@ msgstr "Jeśli ustawiony, każde żądanie musi zawierać ?token=..."
 
 msgctxt "#30168"
 msgid "Use HTTPS for the API"
-msgstr "Użyj HTTPS dla API"
+msgstr "Używaj HTTPS dla API"
 
 msgctxt "#30169"
 msgid "Uses a self-signed certificate; callers must turn off certificate checking."
-msgstr "Używa certyfikatu samopodpisanego; wyłącz weryfikację u wywołujących."
+msgstr "Używa certyfikatu z własnym podpisem; wywołujący muszą wyłączyć sprawdzanie certyfikatu."
 
 msgctxt "#30170"
 msgid "Test: show the default camera"
@@ -759,15 +759,15 @@ msgstr "Nie znaleziono kamer."
 
 msgctxt "#30184"
 msgid "Choose a default camera first."
-msgstr "Najpierw wybierz kamerę domyślną."
+msgstr "Najpierw wybierz domyślną kamerę."
 
 msgctxt "#30185"
 msgid "devices.conf is in:\n%s"
 msgstr "devices.conf jest w:\n%s"
 
 msgctxt "#30190"
-msgid "hold"
-msgstr "wstrzymany"
+msgid "paused"
+msgstr "wstrzymano"
 
 msgctxt "#30191"
 msgid "tour"

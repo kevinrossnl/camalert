@@ -28,6 +28,9 @@ Python 3.8 (Kodi 19) needs `pip install "pytest<8.4"`. Optional: `pyyaml` (bluep
   unknown names raise AttributeError, wrong arguments TypeError, every call is recorded, JSON-RPC requests are
   checked against `kodi/fixtures/jsonrpc/` (Kodi's own schema, `tools/kodi_jsonrpc_snapshot.py`), and
   `MONITOR["waits"]` lets the service loop run. The Kodi functional tests run once per version.
+- `test_i18n.py`: the master translation catalogue (`core/i18n/`, `tools/i18n/i18n.py check`): every Enigma2, Kodi and
+  Home Assistant text translated, same placeholders, no forbidden synonyms or tone, glossary terms verbatim,
+  generated files up to date (#38/#43).
 
 ## CI
 

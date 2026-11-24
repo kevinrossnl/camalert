@@ -18,12 +18,12 @@ KNOWN = {
     ("live_return", "key"): "#39",     # Kodi key live_resume (also resumes a film)
     ("refresh", "key"): "#39",         # Kodi key refresh_map
     # labels: Kodi words them differently from the Enigma2 msgids (one wording per concept: #39, glossary #38/#43)
-    ("alarm_wake", "label"): "#39", ("chime", "label"): "#39", ("cooldown", "label"): "#39",
-    ("foscam_enabled", "label"): "#39", ("foscam_priority", "label"): "#39", ("frigate_enabled", "label"): "#39",
+    ("alarm_wake", "label"): "#39", ("cooldown", "label"): "#39",
+    ("foscam_enabled", "label"): "#39", ("foscam_priority", "label"): "#39",
     ("frigate_labels", "label"): "#39", ("frigate_priority", "label"): "#39", ("live_return", "label"): "#39",
     ("log_level", "label"): "#39", ("orientation", "label"): "#39", ("pause_tv", "label"): "#39",
-    ("ptz_key", "label"): "#39", ("refresh", "label"): "#39", ("strip_layout", "label"): "#39",
-    ("substreams", "label"): "#39", ("titles", "label"): "#39",
+    ("ptz_key", "label"): "#39", ("refresh", "label"): "#39",
+    ("substreams", "label"): "#39",
 }
 
 

@@ -134,7 +134,7 @@ msgid "Normal"
 msgstr ""
 
 msgctxt "#30232"
-msgid "Doorbell sound"
+msgid "Doorbell chime"
 msgstr ""
 
 msgctxt "#30233"
@@ -246,7 +246,7 @@ msgid "Enable CamAlert"
 msgstr ""
 
 msgctxt "#30011"
-msgid "Turn the HTTP API and pop-ups on or off."
+msgid "Turn the HTTP API and the camera display on or off."
 msgstr ""
 
 msgctxt "#30012"
@@ -310,7 +310,7 @@ msgid "Choose camera"
 msgstr ""
 
 msgctxt "#30027"
-msgid "Camera titles"
+msgid "Camera names"
 msgstr ""
 
 msgctxt "#30028"
@@ -390,7 +390,7 @@ msgid "Large"
 msgstr ""
 
 msgctxt "#30056"
-msgid "Several cameras in one window"
+msgid "Multi-camera window layout"
 msgstr ""
 
 msgctxt "#30057"
@@ -610,7 +610,7 @@ msgid "Empty = CamAlert + the name of this Kodi."
 msgstr ""
 
 msgctxt "#30130"
-msgid "Frigate detections"
+msgid "Frigate events"
 msgstr ""
 
 msgctxt "#30131"
@@ -766,7 +766,7 @@ msgid "devices.conf is in:\n%s"
 msgstr ""
 
 msgctxt "#30190"
-msgid "hold"
+msgid "paused"
 msgstr ""
 
 msgctxt "#30191"

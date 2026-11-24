@@ -3,8 +3,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
 
+msgid "go2rtc server"
+msgstr "go2rtc-server"
+
+msgid "Directly from the cameras"
+msgstr "Rechtstreeks van de camera's"
+
 msgid "Photo window"
-msgstr "Foto-venster"
+msgstr "Fotovenster"
 
 msgid "Switch to live stream"
 msgstr "Omschakelen naar live beeld"
@@ -39,302 +45,14 @@ msgstr "Alleen lokaal netwerk"
 msgid "Any address"
 msgstr "Elk adres"
 
-msgid "Camera: %s"
-msgstr "Camera: %s"
-
-msgid "Show IP cameras on your TV"
-msgstr "Toon IP-camera's op je tv"
-
-msgid "Cancel"
-msgstr "Annuleren"
-
-msgid "Save"
-msgstr "Opslaan"
-
-msgid "Camera list"
-msgstr "Cameralijst"
-
-msgid "Test"
-msgstr "Testen"
-
-msgid "Enable CamAlert"
-msgstr "CamAlert inschakelen"
-
-msgid "Turn the HTTP API and pop-ups on or off."
-msgstr "Zet de HTTP-API en de pop-ups aan of uit."
-
-msgid "go2rtc address"
-msgstr "go2rtc-adres"
-
-msgid "Address of your go2rtc server, e.g. http://192.168.1.10:1984"
-msgstr "Adres van je go2rtc-server, bijv. http://192.168.1.10:1984"
-
-msgid "go2rtc RTSP port"
-msgstr "go2rtc RTSP-poort"
-
-msgid "Usually 8554. Used for live view and the camera list."
-msgstr "Meestal 8554. Gebruikt voor live beeld en de cameralijst."
-
-msgid "Default camera"
-msgstr "Standaardcamera"
-
-msgid "Press OK to choose from the cameras in go2rtc."
-msgstr "Druk op OK om een camera uit go2rtc te kiezen."
-
-msgid "Display mode"
-msgstr "Weergave"
-
-msgid "Photo window keeps watching TV; live switches the channel to the camera."
-msgstr "Foto-venster: tv kijken gaat door. Live: zender schakelt naar de camera."
-
-msgid "Duration (seconds)"
-msgstr "Duur (seconden)"
-
-msgid "How long the camera stays on screen."
-msgstr "Hoe lang de camera in beeld blijft."
-
-msgid "Window position"
-msgstr "Positie venster"
-
-msgid "Window size"
-msgstr "Grootte venster"
-
-msgid "Return to previous channel"
-msgstr "Terug naar vorige zender"
-
-msgid "Switch back to what you were watching when the time is up."
-msgstr "Schakel terug naar wat je keek als de tijd om is."
-
-msgid "HTTP port"
-msgstr "HTTP-poort"
-
-msgid "Port of the CamAlert API on this receiver (default 8099)."
-msgstr "Poort van de CamAlert-API op deze ontvanger (standaard 8099)."
-
-msgid "Allowed callers"
-msgstr "Toegestane aanroepers"
-
-msgid "'Local network only' is recommended."
-msgstr "'Alleen lokaal netwerk' wordt aangeraden."
-
-msgid "Access token (optional)"
-msgstr "Toegangstoken (optioneel)"
-
-msgid "If set, callers must add ?token=... to every request."
-msgstr "Indien ingevuld moet elk verzoek ?token=... bevatten."
-
-msgid "Camera list name"
-msgstr "Naam cameralijst"
-
-msgid "Name of the channel list created with the yellow button."
-msgstr "Naam van de zenderlijst die de gele knop maakt."
-
-msgid "Please enter a valid go2rtc address first."
-msgstr "Vul eerst een geldig go2rtc-adres in."
-
-msgid "Could not reach go2rtc:\n%s"
-msgstr "go2rtc is niet bereikbaar:\n%s"
-
-msgid "go2rtc has no cameras configured."
-msgstr "Er staan geen camera's in go2rtc."
-
-msgid "Choose camera"
-msgstr "Kies camera"
-
-msgid "Channel list '%s' with %d cameras created."
-msgstr "Zenderlijst '%s' met %d camera's aangemaakt."
-
-msgid "Choose a default camera first."
-msgstr "Kies eerst een standaardcamera."
-
-msgid "Check go2rtc certificate"
-msgstr "go2rtc-certificaat controleren"
-
-msgid "Turn off for a self-signed certificate (only in your own network)."
-msgstr "Zet uit bij een zelfgemaakt certificaat (alleen in je eigen netwerk)."
-
-msgid "Pause TV meanwhile"
-msgstr "Tv intussen pauzeren"
-
-msgid "Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift."
-msgstr "Pauzeert de zender (timeshift) zolang de camera in beeld is. Vereist een harde schijf of USB-stick voor timeshift."
-
-msgid "Use HTTPS for the API"
-msgstr "HTTPS gebruiken voor de API"
-
-msgid "Uses a self-signed certificate; callers must turn off certificate checking."
-msgstr "Gebruikt een zelfgemaakt certificaat; aanroepers moeten certificaatcontrole uitzetten."
-
-msgid "Volume during live view (%)"
-msgstr "Volume tijdens live beeld (%)"
-
-msgid "Percentage of the current volume while the camera is shown. 100 = unchanged."
-msgstr "Percentage van het huidige volume zolang de camera in beeld is. 100 = ongewijzigd."
-
-msgid "Only between certain times"
-msgstr "Alleen tussen bepaalde tijden"
-
-msgid "Ignore requests outside the chosen times."
-msgstr "Negeer verzoeken buiten de gekozen tijden."
-
-msgid "From"
-msgstr "Van"
-
-msgid "Until"
-msgstr "Tot"
-
-msgid "May pass midnight, e.g. 07:00 to 23:00."
-msgstr "Mag over middernacht gaan, bijv. 07:00 tot 23:00."
-
-msgid "Not during a recording"
-msgstr "Niet tijdens een opname"
-
-msgid "Ignore requests while the receiver is recording."
-msgstr "Negeer verzoeken zolang de ontvanger opneemt."
-
-msgid "Cameras"
-msgstr "Camera's"
-
-msgid "EXIT = close"
-msgstr "EXIT = sluiten"
-
-msgid "CamAlert mosaic"
-msgstr "CamAlert-mozaïek"
-
-msgid "All cameras at once"
-msgstr "Alle camera's tegelijk"
-
-msgid "Mosaic cameras"
-msgstr "Camera's in mozaïek"
-
-msgid "Press OK to choose up to 9 cameras for the mosaic. Empty = all."
-msgstr "Druk op OK om tot 9 camera's voor het mozaïek te kiezen. Leeg = alle."
-
-msgid "Done"
-msgstr "Klaar"
-
-msgid "Start again"
-msgstr "Opnieuw beginnen"
-
-msgid "go2rtc server"
-msgstr "go2rtc-server"
-
-msgid "Directly from the cameras"
-msgstr "Rechtstreeks van de camera's"
-
-msgid "Cameras via"
-msgstr "Camera's via"
-
-msgid "go2rtc is recommended. Without go2rtc, list your cameras in %s"
-msgstr "go2rtc wordt aangeraden. Zonder go2rtc zet je je camera's in %s"
-
-msgid "Check certificates"
-msgstr "Certificaten controleren"
-
-msgid "No cameras found in %s.\nSee the guide for the format."
-msgstr "Geen camera's gevonden in %s.\nZie de handleiding voor de opbouw."
-
-msgid "MQTT (Home Assistant without YAML)"
-msgstr "MQTT (Home Assistant zonder YAML)"
-
-msgid "Connects to your MQTT broker; with discovery the receiver appears in Home Assistant automatically."
-msgstr "Maakt verbinding met je MQTT-broker; met discovery verschijnt de ontvanger vanzelf in Home Assistant."
-
-msgid "MQTT broker address"
-msgstr "Adres MQTT-broker"
-
-msgid "IP address or name of the MQTT broker, e.g. 192.168.1.10"
-msgstr "IP-adres of naam van de MQTT-broker, bijv. 192.168.1.10"
-
-msgid "MQTT port"
-msgstr "MQTT-poort"
-
-msgid "Usually 1883."
-msgstr "Meestal 1883."
-
-msgid "MQTT user"
-msgstr "MQTT-gebruiker"
-
-msgid "MQTT password"
-msgstr "MQTT-wachtwoord"
-
-msgid "Home Assistant discovery"
-msgstr "Home Assistant-discovery"
-
-msgid "Creates a device with a button per camera in Home Assistant."
-msgstr "Maakt in Home Assistant een apparaat met een knop per camera."
-
-msgid "Name in Home Assistant"
-msgstr "Naam in Home Assistant"
-
-msgid "Empty = CamAlert + the receiver's host name."
-msgstr "Leeg = CamAlert + de hostnaam van de ontvanger."
-
-msgid "hold"
-msgstr "vast"
-
-msgid "tour"
-msgstr "rondgang"
-
-msgid "GREEN = live"
-msgstr "GROEN = live"
-
-msgid "CamAlert tour"
-msgstr "CamAlert-rondgang"
-
-msgid "Cameras one after the other"
-msgstr "Camera's na elkaar"
-
-msgid "Remote control in photo window"
-msgstr "Afstandsbediening in foto-venster"
-
-msgid "OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too."
-msgstr "OK = live, LINKS/RECHTS = andere camera, EXIT = sluiten. Andere toetsen sluiten hem ook."
-
-msgid "Wake receiver on alarm"
-msgstr "Ontvanger wekken bij alarm"
-
-msgid "Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on."
-msgstr "Verzoeken met prioriteit 'alarm' zetten de ontvanger (en via HDMI-CEC de tv) aan."
-
-msgid "Tour: seconds per camera"
-msgstr "Rondgang: seconden per camera"
+msgid "Where I put it"
+msgstr "Waar ik hem neerzet"
 
 msgid "At the bottom"
 msgstr "Onderaan"
 
 msgid "At the top"
 msgstr "Bovenaan"
-
-msgid "Camera names"
-msgstr "Cameranamen"
-
-msgid "Press OK to give a camera its own name (empty = automatic)."
-msgstr "Druk op OK om een camera een eigen naam te geven (leeg = automatisch)."
-
-msgid "Update camera list automatically"
-msgstr "Cameralijst automatisch bijwerken"
-
-msgid "Checks every 30 minutes for new or removed cameras and updates the channel list."
-msgstr "Kijkt elke 30 minuten of er camera's bij of af zijn en werkt de zenderlijst bij."
-
-msgid "Camera list position"
-msgstr "Plaats van de cameralijst"
-
-msgid "Where the camera list appears among your channel lists."
-msgstr "Waar de cameralijst tussen je zenderlijsten staat."
-
-msgid "Name for %s (empty = automatic)"
-msgstr "Naam voor %s (leeg = automatisch)"
-
-msgid "%d own names"
-msgstr "%d eigen namen"
-
-msgid "automatic"
-msgstr "automatisch"
-
-msgid "Where I put it"
-msgstr "Waar ik hem neerzet"
 
 msgid "Block normal requests (doorbell and alarm still come through)"
 msgstr "Normale verzoeken blokkeren (deurbel en alarm komen door)"
@@ -359,90 +77,6 @@ msgstr "Normaal"
 
 msgid "High (doorbell)"
 msgstr "Hoog (deurbel)"
-
-msgid "Layout with several cameras"
-msgstr "Indeling bij meerdere camera's"
-
-msgid "A request with 2-4 cameras shows them together in one corner window."
-msgstr "Een verzoek met 2-4 camera's toont ze samen in één hoekvenster."
-
-msgid "%d cameras"
-msgstr "%d camera's"
-
-msgid "normal"
-msgstr "normaal"
-
-msgid "as fast as possible"
-msgstr "zo snel mogelijk"
-
-msgid "Turn or mirror image"
-msgstr "Beeld draaien of spiegelen"
-
-msgid "Press OK to turn a camera that hangs upside down (needs python3-pillow)."
-msgstr "Druk op OK om een camera die ondersteboven hangt te draaien (vereist python3-pillow)."
-
-msgid "Refresh interval"
-msgstr "Verversinterval"
-
-msgid "Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."
-msgstr "Druk op OK om foto's van een camera minder vaak op te halen (seconden), bijv. voor een trage camera."
-
-msgid "Do not disturb"
-msgstr "Niet storen"
-
-msgid "Blocks requests with normal priority. Also via the API, MQTT and Home Assistant."
-msgstr "Blokkeert verzoeken met normale prioriteit. Ook via de API, MQTT en Home Assistant."
-
-msgid "Do not disturb blocks"
-msgstr "Niet storen blokkeert"
-
-msgid "Not while playing a recording or video"
-msgstr "Niet tijdens afspelen van een opname of video"
-
-msgid "Ignore normal requests while you watch a recording or a video file."
-msgstr "Normale verzoeken negeren terwijl u een opname of videobestand kijkt."
-
-msgid "Frigate events"
-msgstr "Frigate-gebeurtenissen"
-
-msgid "Shows the camera when Frigate detects something (via MQTT, without Home Assistant)."
-msgstr "Toont de camera als Frigate iets detecteert (via MQTT, zonder Home Assistant)."
-
-msgid "Frigate MQTT prefix"
-msgstr "Frigate MQTT-prefix"
-
-msgid "Usually 'frigate'."
-msgstr "Meestal 'frigate'."
-
-msgid "Frigate objects"
-msgstr "Frigate-objecten"
-
-msgid "Comma separated, e.g. person,car. Empty = all objects."
-msgstr "Gescheiden door komma's, bijv. person,car. Leeg = alle objecten."
-
-msgid "Frigate camera names"
-msgstr "Frigate-cameranamen"
-
-msgid "Only if the names differ from go2rtc: frigate=go2rtc|other=other_stream"
-msgstr "Alleen als de namen afwijken van go2rtc: frigate=go2rtc|other=other_stream"
-
-msgid "Frigate priority"
-msgstr "Frigate-prioriteit"
-
-msgid "mirror (left/right)"
-msgstr "spiegelen (links/rechts)"
-
-msgid "upside down (flip)"
-msgstr "ondersteboven (kantelen)"
-
-msgid "turned 180 degrees"
-msgstr "180 graden gedraaid"
-
-msgid "every %s seconds"
-msgstr "elke %s seconden"
-
-msgid "Install python3-pillow to turn or mirror images:\nopkg install python3-pillow"
-msgstr "Installeer python3-pillow om beelden te draaien of spiegelen:\nopkg install python3-pillow"
 
 msgid "Off"
 msgstr "Uit"
@@ -549,8 +183,47 @@ msgstr "Resultaat"
 msgid "Motion"
 msgstr "Beweging"
 
+msgid "Cameras"
+msgstr "Camera's"
+
+msgid "EXIT = close"
+msgstr "EXIT = sluiten"
+
+msgid "%s - camera not reachable"
+msgstr "%s - camera niet bereikbaar"
+
+msgid "paused"
+msgstr "gepauzeerd"
+
+msgid "tour"
+msgstr "rondgang"
+
+msgid "GREEN = live"
+msgstr "GROEN = live"
+
+msgid "Camera: %s"
+msgstr "Camera: %s"
+
 msgid "PTZ %s: arrows = move, CH+/CH- = zoom, OK = home, EXIT = done"
 msgstr "PTZ %s: pijlen = bewegen, CH+/CH- = zoom, OK = beginstand, EXIT = klaar"
+
+msgid "CamAlert %s is available (installed: %s).\nUpdate via the software update or: opkg update && opkg upgrade"
+msgstr "CamAlert %s is beschikbaar (geïnstalleerd: %s).\nBijwerken via de software-update of: opkg update && opkg upgrade"
+
+msgid "Show IP cameras on your TV"
+msgstr "Toon IP-camera's op je tv"
+
+msgid "CamAlert mosaic"
+msgstr "CamAlert-mozaïek"
+
+msgid "All cameras at once"
+msgstr "Alle camera's tegelijk"
+
+msgid "CamAlert tour"
+msgstr "CamAlert-rondgang"
+
+msgid "Cameras one after the other"
+msgstr "Camera's na elkaar"
 
 msgid "The last camera requests"
 msgstr "De laatste cameraverzoeken"
@@ -558,14 +231,311 @@ msgstr "De laatste cameraverzoeken"
 msgid "MENU = diagnostics / events"
 msgstr "MENU = diagnose / gebeurtenissen"
 
+msgid "Cancel"
+msgstr "Annuleren"
+
+msgid "Save"
+msgstr "Opslaan"
+
+msgid "Camera list"
+msgstr "Cameralijst"
+
+msgid "Test"
+msgstr "Testen"
+
+msgid "Enable CamAlert"
+msgstr "CamAlert inschakelen"
+
+msgid "Turn the HTTP API and the camera display on or off."
+msgstr "Zet de HTTP-API en de cameraweergave aan of uit."
+
+msgid "Cameras via"
+msgstr "Camera's via"
+
+msgid "go2rtc is recommended. Without go2rtc, list your cameras in %s"
+msgstr "go2rtc wordt aangeraden. Zonder go2rtc zet je je camera's in %s"
+
+msgid "go2rtc address"
+msgstr "go2rtc-adres"
+
+msgid "Address of your go2rtc server, e.g. http://192.168.1.10:1984"
+msgstr "Adres van je go2rtc-server, bijv. http://192.168.1.10:1984"
+
+msgid "go2rtc RTSP port"
+msgstr "go2rtc RTSP-poort"
+
+msgid "Usually 8554. Used for live view and the camera list."
+msgstr "Meestal 8554. Gebruikt voor live beeld en de cameralijst."
+
+msgid "Check certificates"
+msgstr "Certificaten controleren"
+
+msgid "Turn off for a self-signed certificate (only in your own network)."
+msgstr "Zet uit bij een zelfgemaakt certificaat (alleen in je eigen netwerk)."
+
+msgid "Default camera"
+msgstr "Standaardcamera"
+
+msgid "Press OK to choose from the cameras in go2rtc."
+msgstr "Druk op OK om een camera uit go2rtc te kiezen."
+
+msgid "%d own names"
+msgstr "%d eigen namen"
+
+msgid "automatic"
+msgstr "automatisch"
+
+msgid "Camera names"
+msgstr "Cameranamen"
+
+msgid "Press OK to give a camera its own name (empty = automatic)."
+msgstr "Druk op OK om een camera een eigen naam te geven (leeg = automatisch)."
+
+msgid "Display mode"
+msgstr "Weergavemodus"
+
+msgid "Photo window keeps watching TV; live switches the channel to the camera."
+msgstr "Fotovenster: tv kijken gaat door. Live: zender schakelt naar de camera."
+
+msgid "Duration (seconds)"
+msgstr "Duur (seconden)"
+
+msgid "How long the camera stays on screen."
+msgstr "Hoe lang de camera in beeld blijft."
+
+msgid "Window position"
+msgstr "Positie venster"
+
+msgid "Window size"
+msgstr "Grootte venster"
+
+msgid "Remote control in photo window"
+msgstr "Afstandsbediening in fotovenster"
+
+msgid "OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too."
+msgstr "OK = live, LINKS/RECHTS = andere camera, EXIT = sluiten. Andere toetsen sluiten hem ook."
+
 msgid "Title size"
 msgstr "Titelgrootte"
+
+msgid "Multi-camera window layout"
+msgstr "Indeling van het venster met meerdere camera's"
+
+msgid "A request with 2-4 cameras shows them together in one multi-camera window."
+msgstr "Een verzoek met 2-4 camera's toont ze samen in één venster met meerdere camera's."
+
+msgid "Pause TV meanwhile"
+msgstr "Tv intussen pauzeren"
+
+msgid "Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift."
+msgstr "Pauzeert de zender (timeshift) zolang de camera in beeld is. Vereist een harde schijf of USB-stick voor timeshift."
+
+msgid "Return to previous channel"
+msgstr "Terug naar vorige zender"
+
+msgid "Switch back to what you were watching when the time is up."
+msgstr "Schakel terug naar wat je keek als de tijd om is."
+
+msgid "Volume during live view (%)"
+msgstr "Volume tijdens live beeld (%)"
+
+msgid "Percentage of the current volume while the camera is shown. 100 = unchanged."
+msgstr "Percentage van het huidige volume zolang de camera in beeld is. 100 = ongewijzigd."
+
+msgid "%d cameras"
+msgstr "%d camera's"
+
+msgid "normal"
+msgstr "normaal"
+
+msgid "as fast as possible"
+msgstr "zo snel mogelijk"
+
+msgid "Turn or mirror image"
+msgstr "Beeld draaien of spiegelen"
+
+msgid "Press OK to turn a camera that hangs upside down (needs python3-pillow)."
+msgstr "Druk op OK om een camera die ondersteboven hangt te draaien (vereist python3-pillow)."
+
+msgid "Refresh interval"
+msgstr "Verversinterval"
+
+msgid "Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."
+msgstr "Druk op OK om foto's van een camera minder vaak op te halen (seconden), bijv. voor een trage camera."
+
+msgid "Cooldown per camera"
+msgstr "Wachttijd per camera"
+
+msgid "Seconds before the same camera is shown again, e.g. *=30|garden=120 (* = all cameras). Alarm always."
+msgstr "Seconden voordat dezelfde camera opnieuw getoond wordt, bijv. *=30|garden=120 (* = alle camera's). Alarm altijd."
+
+msgid "Live view substreams"
+msgstr "Substreams voor live beeld"
+
+msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
+msgstr "Voor camera's die de ontvanger niet kan afspelen (H.265/4K): front_door=front_door_sub gebruikt die go2rtc-stream voor live beeld."
+
+msgid "Do not disturb"
+msgstr "Niet storen"
+
+msgid "Blocks requests with normal priority. Also via the API, MQTT and Home Assistant."
+msgstr "Blokkeert verzoeken met normale prioriteit. Ook via de API, MQTT en Home Assistant."
+
+msgid "Do not disturb blocks"
+msgstr "Niet storen blokkeert"
+
+msgid "Only between certain times"
+msgstr "Alleen tussen bepaalde tijden"
+
+msgid "Ignore requests outside the chosen times."
+msgstr "Negeer verzoeken buiten de gekozen tijden."
+
+msgid "From"
+msgstr "Van"
+
+msgid "Until"
+msgstr "Tot"
+
+msgid "May pass midnight, e.g. 07:00 to 23:00."
+msgstr "Mag over middernacht gaan, bijv. 07:00 tot 23:00."
+
+msgid "Not during a recording"
+msgstr "Niet tijdens een opname"
+
+msgid "Ignore requests while the receiver is recording."
+msgstr "Negeer verzoeken zolang de ontvanger opneemt."
+
+msgid "Not while playing a recording or video"
+msgstr "Niet tijdens afspelen van een opname of video"
+
+msgid "Ignore normal requests while you watch a recording or a video file."
+msgstr "Normale verzoeken negeren terwijl je een opname of videobestand kijkt."
+
+msgid "Wake receiver on alarm"
+msgstr "Ontvanger wekken bij alarm"
+
+msgid "Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on."
+msgstr "Verzoeken met prioriteit 'alarm' zetten de ontvanger (en via HDMI-CEC de tv) aan."
+
+msgid "Tour: seconds per camera"
+msgstr "Rondgang: seconden per camera"
+
+msgid "HTTP port"
+msgstr "HTTP-poort"
+
+msgid "Port of the CamAlert API on this receiver (default 8099)."
+msgstr "Poort van de CamAlert-API op deze ontvanger (standaard 8099)."
+
+msgid "Use HTTPS for the API"
+msgstr "HTTPS gebruiken voor de API"
+
+msgid "Uses a self-signed certificate; callers must turn off certificate checking."
+msgstr "Gebruikt een zelfgemaakt certificaat; aanroepers moeten certificaatcontrole uitzetten."
+
+msgid "Allowed callers"
+msgstr "Toegestane aanroepers"
+
+msgid "'Local network only' is recommended."
+msgstr "'Alleen lokaal netwerk' wordt aangeraden."
+
+msgid "Access token (optional)"
+msgstr "Toegangstoken (optioneel)"
+
+msgid "If set, callers must add ?token=... to every request."
+msgstr "Indien ingevuld moet elk verzoek ?token=... bevatten."
+
+msgid "Camera list name"
+msgstr "Naam cameralijst"
+
+msgid "Name of the channel list created with the yellow button."
+msgstr "Naam van de zenderlijst die de gele knop maakt."
+
+msgid "Update camera list automatically"
+msgstr "Cameralijst automatisch bijwerken"
+
+msgid "Checks every 30 minutes for new or removed cameras and updates the channel list."
+msgstr "Kijkt elke 30 minuten of er camera's bij of af zijn en werkt de zenderlijst bij."
+
+msgid "Camera list position"
+msgstr "Plaats van de cameralijst"
+
+msgid "Where the camera list appears among your channel lists."
+msgstr "Waar de cameralijst tussen je zenderlijsten staat."
+
+msgid "Mosaic cameras"
+msgstr "Camera's in mozaïek"
+
+msgid "Press OK to choose up to 9 cameras for the mosaic. Empty = all."
+msgstr "Druk op OK om tot 9 camera's voor het mozaïek te kiezen. Leeg = alle."
+
+msgid "MQTT (Home Assistant without YAML)"
+msgstr "MQTT (Home Assistant zonder YAML)"
+
+msgid "Connects to your MQTT broker; with discovery the receiver appears in Home Assistant automatically."
+msgstr "Maakt verbinding met je MQTT-broker; met discovery verschijnt de ontvanger vanzelf in Home Assistant."
+
+msgid "MQTT broker address"
+msgstr "Adres MQTT-broker"
+
+msgid "IP address or name of the MQTT broker, e.g. 192.168.1.10"
+msgstr "IP-adres of naam van de MQTT-broker, bijv. 192.168.1.10"
+
+msgid "MQTT port"
+msgstr "MQTT-poort"
+
+msgid "Usually 1883."
+msgstr "Meestal 1883."
+
+msgid "MQTT user"
+msgstr "MQTT-gebruiker"
+
+msgid "MQTT password"
+msgstr "MQTT-wachtwoord"
+
+msgid "Home Assistant discovery"
+msgstr "Home Assistant-discovery"
+
+msgid "Creates a device with a button per camera in Home Assistant."
+msgstr "Maakt in Home Assistant een apparaat met een knop per camera."
+
+msgid "Name in Home Assistant"
+msgstr "Naam in Home Assistant"
+
+msgid "Empty = CamAlert + the receiver's host name."
+msgstr "Leeg = CamAlert + de hostnaam van de ontvanger."
+
+msgid "Frigate events"
+msgstr "Frigate-gebeurtenissen"
+
+msgid "Shows the camera when Frigate detects something (via MQTT, without Home Assistant)."
+msgstr "Toont de camera als Frigate iets detecteert (via MQTT, zonder Home Assistant)."
+
+msgid "Frigate MQTT prefix"
+msgstr "Frigate MQTT-prefix"
+
+msgid "Usually 'frigate'."
+msgstr "Meestal 'frigate'."
+
+msgid "Frigate objects"
+msgstr "Frigate-objecten"
+
+msgid "Comma separated, e.g. person,car. Empty = all objects."
+msgstr "Gescheiden door komma's, bijv. person,car. Leeg = alle objecten."
+
+msgid "Frigate camera names"
+msgstr "Frigate-cameranamen"
+
+msgid "Only if the names differ from go2rtc: frigate=go2rtc|other=other_stream"
+msgstr "Alleen als de namen afwijken van go2rtc: frigate=go2rtc|other=other_stream"
+
+msgid "Frigate priority"
+msgstr "Frigate-prioriteit"
 
 msgid "Frigate address (for clips)"
 msgstr "Frigate-adres (voor clips)"
 
 msgid "Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an event from the event list."
-msgstr "Optioneel, bijv. http://192.168.1.10:5000 - hiermee speelt u de clip van een gebeurtenis af vanuit de gebeurtenissenlijst."
+msgstr "Optioneel, bijv. http://192.168.1.10:5000 - hiermee speel je de clip van een gebeurtenis af vanuit de lijst met gebeurtenissen."
 
 msgid "Colour keys to Home Assistant"
 msgstr "Kleurtoetsen naar Home Assistant"
@@ -578,6 +548,18 @@ msgstr "PTZ-toets"
 
 msgid "For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home)."
 msgstr "Voor camera's met PTZ in %s: deze toets zet de PTZ-stand aan (pijlen, CH+/CH-, OK = beginstand)."
+
+msgid "Doorbell chime"
+msgstr "Deurbelgeluid"
+
+msgid "Plays a short ding-dong for requests with priority high or alarm (doorbell)."
+msgstr "Speelt een kort ding-dong bij verzoeken met prioriteit hoog of alarm (deurbel)."
+
+msgid "Picons for the camera channels"
+msgstr "Picons voor de camerazenders"
+
+msgid "Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced."
+msgstr "Maakt een eenvoudig picon (camera + naam) voor elke camerazender; bestaande picons worden nooit vervangen."
 
 msgid "Foscam motion alarms"
 msgstr "Foscam-bewegingsalarmen"
@@ -616,34 +598,49 @@ msgid "Diagnostics"
 msgstr "Diagnose"
 
 msgid "Event list"
-msgstr "Gebeurtenissenlijst"
+msgstr "Gebeurtenissen"
 
-msgid "CamAlert %s is available (installed: %s).\nUpdate via the software update or: opkg update && opkg upgrade"
-msgstr "CamAlert %s is beschikbaar (geïnstalleerd: %s).\nBijwerken via de software-update of: opkg update && opkg upgrade"
+msgid "No cameras found in %s.\nSee the guide for the format."
+msgstr "Geen camera's gevonden in %s.\nZie de handleiding voor de opbouw."
 
-msgid "Doorbell chime"
-msgstr "Deurbelgeluid"
+msgid "Please enter a valid go2rtc address first."
+msgstr "Vul eerst een geldig go2rtc-adres in."
 
-msgid "Plays a short ding-dong for requests with priority high or alarm (doorbell)."
-msgstr "Speelt een kort ding-dong bij verzoeken met prioriteit hoog of alarm (deurbel)."
+msgid "mirror (left/right)"
+msgstr "spiegelen (links/rechts)"
 
-msgid "Picons for the camera channels"
-msgstr "Picons voor de camerazenders"
+msgid "upside down (flip)"
+msgstr "ondersteboven (kantelen)"
 
-msgid "Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced."
-msgstr "Maakt een eenvoudig picon (camera + naam) voor elke camerazender; bestaande picons worden nooit vervangen."
+msgid "turned 180 degrees"
+msgstr "180 graden gedraaid"
 
-msgid "%s - camera not reachable"
-msgstr "%s - camera niet bereikbaar"
+msgid "every %s seconds"
+msgstr "elke %s seconden"
 
-msgid "Cooldown per camera"
-msgstr "Wachttijd per camera"
+msgid "Choose camera"
+msgstr "Kies camera"
 
-msgid "Seconds before the same camera is shown again, e.g. *=30|garden=120 (* = all cameras). Alarm always."
-msgstr "Seconden voordat dezelfde camera opnieuw getoond wordt, bijv. *=30|garden=120 (* = alle camera's). Alarm altijd."
+msgid "Install python3-pillow to turn or mirror images:\nopkg install python3-pillow"
+msgstr "Installeer python3-pillow om beelden te draaien of spiegelen:\nopkg install python3-pillow"
 
-msgid "Live view substreams"
-msgstr "Substreams voor live beeld"
+msgid "Could not reach go2rtc:\n%s"
+msgstr "go2rtc is niet bereikbaar:\n%s"
 
-msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
-msgstr "Voor camera's die de ontvanger niet kan afspelen (H.265/4K): front_door=front_door_sub gebruikt die go2rtc-stream voor live beeld."
+msgid "go2rtc has no cameras configured."
+msgstr "Er staan geen camera's in go2rtc."
+
+msgid "Name for %s (empty = automatic)"
+msgstr "Naam voor %s (leeg = automatisch)"
+
+msgid "Done"
+msgstr "Klaar"
+
+msgid "Start again"
+msgstr "Opnieuw beginnen"
+
+msgid "Channel list '%s' with %d cameras created."
+msgstr "Zenderlijst '%s' met %d camera's aangemaakt."
+
+msgid "Choose a default camera first."
+msgstr "Kies eerst een standaardcamera."

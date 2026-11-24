@@ -1,0 +1,423 @@
+{
+  "_doc": "Glossary of the UI review (#2): use these words verbatim in every format; forbidden = synonyms and tone that the check refuses (regex, case-insensitive unless case is true). Tone: nl je, de du, fr vous, it and pl impersonal (#43). A text that contains a term (English, whole words) must contain its translation in contains_languages (Polish inflects: exact matches only); exact_only terms are checked only when the whole text is the term.",
+  "tone": {
+    "nl": "je",
+    "de": "du",
+    "fr": "vous",
+    "it": "impersonal",
+    "pl": "impersonal"
+  },
+  "terms": [
+    {
+      "id": "photo_window",
+      "en": "Photo window",
+      "nl": "Fotovenster",
+      "de": "Fotofenster",
+      "fr": "Fenêtre photo",
+      "it": "Finestra foto",
+      "pl": "Okno ze zdjęciem"
+    },
+    {
+      "id": "multi_camera_window",
+      "en": "Multi-camera window",
+      "nl": "Venster met meerdere camera's",
+      "de": "Fenster mit mehreren Kameras",
+      "fr": "Fenêtre multi-caméras",
+      "it": "Finestra con più telecamere",
+      "pl": "Okno z kilkoma kamerami"
+    },
+    {
+      "id": "live_view",
+      "en": "Live view",
+      "nl": "Live beeld",
+      "de": "Live-Ansicht",
+      "fr": "Direct",
+      "it": "Visione live",
+      "pl": "Podgląd na żywo"
+    },
+    {
+      "id": "notification",
+      "en": "Notification",
+      "nl": "Melding",
+      "de": "Benachrichtigung",
+      "fr": "Notification",
+      "it": "Notifica",
+      "pl": "Powiadomienie"
+    },
+    {
+      "id": "mosaic",
+      "en": "Mosaic",
+      "nl": "Mozaïek",
+      "de": "Mosaik",
+      "fr": "Mosaïque",
+      "it": "Mosaico",
+      "pl": "Mozaika"
+    },
+    {
+      "id": "tour",
+      "en": "Tour",
+      "nl": "Rondgang",
+      "de": "Rundgang",
+      "fr": "Ronde",
+      "it": "Giro",
+      "pl": "Obchód"
+    },
+    {
+      "id": "paused",
+      "en": "Paused",
+      "nl": "Gepauzeerd",
+      "de": "Angehalten",
+      "fr": "En pause",
+      "it": "In pausa",
+      "pl": "Wstrzymano"
+    },
+    {
+      "id": "display_mode",
+      "en": "Display mode",
+      "nl": "Weergavemodus",
+      "de": "Anzeigemodus",
+      "fr": "Mode d'affichage",
+      "it": "Modalità di visualizzazione",
+      "pl": "Tryb wyświetlania"
+    },
+    {
+      "id": "duration",
+      "en": "Duration",
+      "nl": "Duur",
+      "de": "Dauer",
+      "fr": "Durée",
+      "it": "Durata",
+      "pl": "Czas"
+    },
+    {
+      "id": "do_not_disturb",
+      "en": "Do not disturb",
+      "nl": "Niet storen",
+      "de": "Nicht stören",
+      "fr": "Ne pas déranger",
+      "it": "Non disturbare",
+      "pl": "Nie przeszkadzać"
+    },
+    {
+      "id": "cooldown",
+      "en": "Cooldown",
+      "nl": "Wachttijd",
+      "de": "Wartezeit",
+      "fr": "Délai",
+      "it": "Attesa",
+      "pl": "Odstęp"
+    },
+    {
+      "id": "priority_normal",
+      "en": "Normal",
+      "nl": "Normaal",
+      "de": "Normal",
+      "fr": "Normale",
+      "it": "Normale",
+      "pl": "Normalny",
+      "exact_only": true
+    },
+    {
+      "id": "priority_high",
+      "en": "High",
+      "nl": "Hoog",
+      "de": "Hoch",
+      "fr": "Haute",
+      "it": "Alta",
+      "pl": "Wysoki",
+      "exact_only": true
+    },
+    {
+      "id": "priority_alarm",
+      "en": "Alarm",
+      "nl": "Alarm",
+      "de": "Alarm",
+      "fr": "Alarme",
+      "it": "Allarme",
+      "pl": "Alarm",
+      "exact_only": true
+    },
+    {
+      "id": "doorbell_chime",
+      "en": "Doorbell chime",
+      "nl": "Deurbelgeluid",
+      "de": "Türklingelton",
+      "fr": "Son de sonnette",
+      "it": "Suono del campanello",
+      "pl": "Dźwięk dzwonka"
+    },
+    {
+      "id": "camera_control",
+      "en": "Camera control (PTZ)",
+      "nl": "Camerabediening (PTZ)",
+      "de": "Kamerasteuerung (PTZ)",
+      "fr": "Contrôle de la caméra (PTZ)",
+      "it": "Controllo telecamera (PTZ)",
+      "pl": "Sterowanie kamerą (PTZ)"
+    },
+    {
+      "id": "colour_keys",
+      "en": "Colour keys",
+      "nl": "Kleurtoetsen",
+      "de": "Farbtasten",
+      "fr": "Touches de couleur",
+      "it": "Tasti colorati",
+      "pl": "Kolorowe przyciski"
+    },
+    {
+      "id": "camera_names",
+      "en": "Camera names",
+      "nl": "Cameranamen",
+      "de": "Kameranamen",
+      "fr": "Noms des caméras",
+      "it": "Nomi delle telecamere",
+      "pl": "Nazwy kamer"
+    },
+    {
+      "id": "event_list",
+      "en": "Event list",
+      "nl": "Gebeurtenissen",
+      "de": "Ereignisliste",
+      "fr": "Liste des événements",
+      "it": "Elenco eventi",
+      "pl": "Lista zdarzeń"
+    },
+    {
+      "id": "diagnostics",
+      "en": "Diagnostics",
+      "nl": "Diagnose",
+      "de": "Diagnose",
+      "fr": "Diagnostic",
+      "it": "Diagnostica",
+      "pl": "Diagnostyka"
+    },
+    {
+      "id": "camera_not_reachable",
+      "en": "Camera not reachable",
+      "nl": "Camera niet bereikbaar",
+      "de": "Kamera nicht erreichbar",
+      "fr": "Caméra injoignable",
+      "it": "Telecamera non raggiungibile",
+      "pl": "Kamera nieosiągalna"
+    },
+    {
+      "id": "player",
+      "en": "Player",
+      "nl": "Speler",
+      "de": "Wiedergabegerät",
+      "fr": "Lecteur",
+      "it": "Lettore",
+      "pl": "Odtwarzacz"
+    }
+  ],
+  "forbidden": {
+    "en": [
+      {
+        "pattern": "\\bpop-?ups?\\b",
+        "use": "photo window"
+      },
+      {
+        "pattern": "\\bcorner window",
+        "use": "multi-camera window"
+      },
+      {
+        "pattern": "\\bcamera titles?\\b",
+        "use": "camera names"
+      },
+      {
+        "pattern": "\\bquiet mode\\b",
+        "use": "do not disturb (level)"
+      },
+      {
+        "pattern": "\\bdoorbell sound\\b",
+        "use": "doorbell chime"
+      },
+      {
+        "pattern": "\\bseveral cameras in one window\\b",
+        "use": "multi-camera window"
+      },
+      {
+        "pattern": "\\bFrigate detections\\b",
+        "use": "Frigate events"
+      }
+    ],
+    "nl": [
+      {
+        "pattern": "foto-venster",
+        "use": "fotovenster"
+      },
+      {
+        "pattern": "livestream",
+        "use": "live beeld"
+      },
+      {
+        "pattern": "pop-?up",
+        "use": "fotovenster"
+      },
+      {
+        "pattern": "hoekvenster",
+        "use": "venster met meerdere camera's"
+      },
+      {
+        "pattern": "cameratitel|titels? van (de )?camera",
+        "use": "cameranamen"
+      },
+      {
+        "pattern": "\\b(u|uw)\\b",
+        "use": "je (tone)",
+        "case": true
+      },
+      {
+        "pattern": "\\bU\\b(?! ?=)",
+        "use": "je (tone)",
+        "case": true
+      },
+      {
+        "pattern": "blokkeertijd|afkoel",
+        "use": "wachttijd"
+      },
+      {
+        "pattern": "\\bdeurbelsignaal|deurbeltoon",
+        "use": "deurbelgeluid"
+      },
+      {
+        "pattern": "\\bmozaiek",
+        "use": "mozaïek"
+      }
+    ],
+    "de": [
+      {
+        "pattern": "\\bSie\\b|\\bIhnen\\b|\\bIhr(e|en|em|er|es)?\\b",
+        "use": "du (tone)",
+        "case": true
+      },
+      {
+        "pattern": "Nur Hinweis",
+        "use": "Nur Benachrichtigung"
+      },
+      {
+        "pattern": "Sperrzeit",
+        "use": "Wartezeit"
+      },
+      {
+        "pattern": "Livestream",
+        "use": "Live-Ansicht"
+      },
+      {
+        "pattern": "Liveansicht|Live-Bild",
+        "use": "Live-Ansicht"
+      },
+      {
+        "pattern": "Popup|Pop-up",
+        "use": "Fotofenster"
+      },
+      {
+        "pattern": "Foto-Fenster",
+        "use": "Fotofenster"
+      },
+      {
+        "pattern": "Kameratitel",
+        "use": "Kameranamen"
+      },
+      {
+        "pattern": "(?<!Tür)[Kk]lingelton|Türgong|Türklingel-Ton",
+        "use": "Türklingelton"
+      },
+      {
+        "pattern": "Eck(en)?fenster",
+        "use": "Fenster mit mehreren Kameras"
+      }
+    ],
+    "fr": [
+      {
+        "pattern": "Tournée|\\bVisite\\b|\\bvisite\\b|tournée",
+        "use": "ronde"
+      },
+      {
+        "pattern": "\\btu\\b|\\bton\\b|\\btes\\b|\\bta\\b",
+        "use": "vous (tone)"
+      },
+      {
+        "pattern": "pop-?up",
+        "use": "fenêtre photo"
+      },
+      {
+        "pattern": "titres? des caméras",
+        "use": "noms des caméras"
+      },
+      {
+        "pattern": "fenêtre d'angle",
+        "use": "fenêtre multi-caméras"
+      },
+      {
+        "pattern": "Ne pas perturber",
+        "use": "Ne pas déranger"
+      }
+    ],
+    "it": [
+      {
+        "pattern": "flusso live|streaming live",
+        "use": "visione live"
+      },
+      {
+        "pattern": "pop-?up",
+        "use": "finestra foto"
+      },
+      {
+        "pattern": "titoli delle telecamere",
+        "use": "nomi delle telecamere"
+      },
+      {
+        "pattern": "\\b(tu|tuo|tua|tuoi|tue|ti)\\b",
+        "use": "impersonal (tone)"
+      },
+      {
+        "pattern": "\\b(Lei|Suo|Sua|Suoi|Sue)\\b",
+        "use": "impersonal (tone)",
+        "case": true
+      },
+      {
+        "pattern": "\\bfinestra d'angolo",
+        "use": "finestra con più telecamere"
+      },
+      {
+        "pattern": "\\b(Premi|Scegli|Inserisci|Aggiungi|guardi)\\b",
+        "use": "infinitive (impersonal tone)",
+        "case": true
+      }
+    ],
+    "pl": [
+      {
+        "pattern": "Okno zdjęć|okno zdjęć",
+        "use": "okno ze zdjęciem"
+      },
+      {
+        "pattern": "pop-?up|wyskakując",
+        "use": "okno ze zdjęciem"
+      },
+      {
+        "pattern": "tytuły kamer",
+        "use": "nazwy kamer"
+      },
+      {
+        "pattern": "\\b(Pan|Pani|Państwo)\\b",
+        "use": "impersonal (tone)",
+        "case": true
+      },
+      {
+        "pattern": "\\b(twój|twoja|twoje|twoich|twoim|twojej|ty)\\b",
+        "use": "impersonal (tone)"
+      },
+      {
+        "pattern": "okn(o|ie) w rogu",
+        "use": "okno z kilkoma kamerami"
+      }
+    ]
+  },
+  "contains_languages": [
+    "nl",
+    "de",
+    "fr",
+    "it"
+  ]
+}

@@ -66,7 +66,7 @@
         "photo": "Fenêtre photo",
         "live": "Basculer vers le direct",
         "notify": "Notification seulement",
-        "strip": "Plusieurs caméras dans une fenêtre"
+        "strip": "Fenêtre multi-caméras"
       }
     },
     "priority": {
@@ -103,7 +103,7 @@
           "description": "Durée d'affichage. Vide = réglage du récepteur."
         },
         "mode": {
-          "name": "Affichage",
+          "name": "Mode d'affichage",
           "description": "Vide = réglage du récepteur."
         },
         "priority": {

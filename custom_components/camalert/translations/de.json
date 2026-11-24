@@ -64,9 +64,9 @@
     "mode": {
       "options": {
         "photo": "Fotofenster",
-        "live": "Auf Live-Bild umschalten",
-        "notify": "Nur Hinweis",
-        "strip": "Mehrere Kameras in einem Fenster"
+        "live": "Zur Live-Ansicht wechseln",
+        "notify": "Nur Benachrichtigung",
+        "strip": "Fenster mit mehreren Kameras"
       }
     },
     "priority": {
@@ -103,7 +103,7 @@
           "description": "Wie lange die Kamera angezeigt wird. Leer = Einstellung des Receivers."
         },
         "mode": {
-          "name": "Anzeige",
+          "name": "Anzeigemodus",
           "description": "Leer = Einstellung des Receivers."
         },
         "priority": {

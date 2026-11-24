@@ -59,7 +59,7 @@ msgstr "Événements récents"
 
 msgctxt "#30205"
 msgid "Show camera"
-msgstr "Afficher la caméra"
+msgstr "Afficher une caméra"
 
 msgctxt "#30206"
 msgid "Play Frigate clip"
@@ -75,19 +75,19 @@ msgstr "go2rtc injoignable : %s"
 
 msgctxt "#30212"
 msgid "No valid go2rtc address"
-msgstr "Adresse go2rtc invalide"
+msgstr "Aucune adresse go2rtc valide"
 
 msgctxt "#30213"
 msgid "%s: no snapshot address (live only)"
-msgstr "%s : pas d'adresse d'instantané (direct seulement)"
+msgstr "%s : pas d'adresse photo (direct seulement)"
 
 msgctxt "#30214"
 msgid "%s: snapshot %d ms"
-msgstr "%s : instantané %d ms"
+msgstr "%s : photo %d ms"
 
 msgctxt "#30215"
 msgid "%s: snapshot failed (%s)"
-msgstr "%s : instantané échoué (%s)"
+msgstr "%s : échec de la photo (%s)"
 
 msgctxt "#30216"
 msgid "API listening on port %d"
@@ -107,7 +107,7 @@ msgstr "MQTT non connecté"
 
 msgctxt "#30220"
 msgid "Last API call %s from %s (%s)"
-msgstr "Dernier appel API %s de %s (%s)"
+msgstr "Dernier appel API %s depuis %s (%s)"
 
 msgctxt "#30221"
 msgid "No API call since the last start"
@@ -131,10 +131,10 @@ msgstr "Taille du titre"
 
 msgctxt "#30231"
 msgid "Normal"
-msgstr "Normal"
+msgstr "Normale"
 
 msgctxt "#30232"
-msgid "Doorbell sound"
+msgid "Doorbell chime"
 msgstr "Son de sonnette"
 
 msgctxt "#30233"
@@ -155,11 +155,11 @@ msgstr "Chaque demande"
 
 msgctxt "#30237"
 msgid "Frigate address (for clips)"
-msgstr "Adresse Frigate (pour les clips)"
+msgstr "Adresse de Frigate (pour les clips)"
 
 msgctxt "#30238"
 msgid "e.g. http://192.168.1.10:5000 - lets you replay Frigate clips from the event list."
-msgstr "p. ex. http://192.168.1.10:5000 - permet de revoir les clips Frigate depuis la liste."
+msgstr "p. ex. http://192.168.1.10:5000 - permet de revoir les clips Frigate depuis la liste des événements."
 
 msgctxt "#30239"
 msgid "Colour key for camera control"
@@ -246,8 +246,8 @@ msgid "Enable CamAlert"
 msgstr "Activer CamAlert"
 
 msgctxt "#30011"
-msgid "Turn the HTTP API and pop-ups on or off."
-msgstr "Active ou désactive l'API HTTP et les fenêtres."
+msgid "Turn the HTTP API and the camera display on or off."
+msgstr "Active ou désactive l'API HTTP et l'affichage des caméras."
 
 msgctxt "#30012"
 msgid "Cameras via"
@@ -310,8 +310,8 @@ msgid "Choose camera"
 msgstr "Choisir la caméra"
 
 msgctxt "#30027"
-msgid "Camera titles"
-msgstr "Titres des caméras"
+msgid "Camera names"
+msgstr "Noms des caméras"
 
 msgctxt "#30028"
 msgid "Optional: name=Title|name2=Title 2"
@@ -339,7 +339,7 @@ msgstr "Fenêtre photo"
 
 msgctxt "#30043"
 msgid "Switch to live stream"
-msgstr "Passer au direct"
+msgstr "Basculer vers le direct"
 
 msgctxt "#30044"
 msgid "Notification only"
@@ -390,8 +390,8 @@ msgid "Large"
 msgstr "Grande"
 
 msgctxt "#30056"
-msgid "Several cameras in one window"
-msgstr "Plusieurs caméras dans une fenêtre"
+msgid "Multi-camera window layout"
+msgstr "Disposition de la fenêtre multi-caméras"
 
 msgctxt "#30057"
 msgid "Layout when a request names 2 to 4 cameras (photo window)."
@@ -459,7 +459,7 @@ msgstr "Volume pendant le direct (%)"
 
 msgctxt "#30073"
 msgid "Percentage of the current volume while the camera is shown. 100 = unchanged."
-msgstr "Pourcentage du volume actuel pendant l'affichage. 100 = inchangé."
+msgstr "Pourcentage du volume actuel pendant l'affichage de la caméra. 100 = inchangé."
 
 msgctxt "#30074"
 msgid "Live stream format"
@@ -467,7 +467,7 @@ msgstr "Format du direct"
 
 msgctxt "#30075"
 msgid "MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds."
-msgstr "Le MP4 via HTTP marche avec tout go2rtc ; le RTSP nécessite son port RTSP."
+msgstr "Le MP4 via HTTP fonctionne avec toute installation go2rtc ; le RTSP nécessite le port RTSP de go2rtc ; le HLS est le plus robuste mais a quelques secondes de retard."
 
 msgctxt "#30076"
 msgid "MP4 (HTTP)"
@@ -483,11 +483,11 @@ msgstr "HLS (HTTP, quelques secondes de retard)"
 
 msgctxt "#30078"
 msgid "Tour: seconds per camera"
-msgstr "Visite : secondes par caméra"
+msgstr "Ronde : secondes par caméra"
 
 msgctxt "#30079"
 msgid "How long each camera is shown in the tour."
-msgstr "Durée de chaque caméra pendant la visite."
+msgstr "Durée de chaque caméra pendant la ronde."
 
 msgctxt "#30090"
 msgid "Only between certain times"
@@ -503,7 +503,7 @@ msgstr "De"
 
 msgctxt "#30093"
 msgid "Until"
-msgstr "À"
+msgstr "Jusqu'à"
 
 msgctxt "#30094"
 msgid "May pass midnight, e.g. 07:00 to 23:00."
@@ -575,7 +575,7 @@ msgstr "Adresse du broker MQTT"
 
 msgctxt "#30113"
 msgid "IP address or name of the MQTT broker, e.g. 192.168.1.10"
-msgstr "Adresse IP ou nom du broker, p. ex. 192.168.1.10"
+msgstr "Adresse IP ou nom du broker MQTT, p. ex. 192.168.1.10"
 
 msgctxt "#30114"
 msgid "MQTT port"
@@ -599,7 +599,7 @@ msgstr "Découverte Home Assistant"
 
 msgctxt "#30119"
 msgid "Creates a device with a button per camera in Home Assistant."
-msgstr "Crée un appareil avec un bouton par caméra dans Home Assistant."
+msgstr "Crée dans Home Assistant un appareil avec un bouton par caméra."
 
 msgctxt "#30120"
 msgid "Name in Home Assistant"
@@ -610,8 +610,8 @@ msgid "Empty = CamAlert + the name of this Kodi."
 msgstr "Vide = CamAlert + le nom de ce Kodi."
 
 msgctxt "#30130"
-msgid "Frigate detections"
-msgstr "Détections Frigate"
+msgid "Frigate events"
+msgstr "Événements Frigate"
 
 msgctxt "#30131"
 msgid "Shows the camera when Frigate detects something (via the MQTT broker)."
@@ -623,7 +623,7 @@ msgstr "Préfixe MQTT de Frigate"
 
 msgctxt "#30133"
 msgid "Usually 'frigate'."
-msgstr "Généralement « frigate »."
+msgstr "Généralement 'frigate'."
 
 msgctxt "#30134"
 msgid "Objects"
@@ -731,7 +731,7 @@ msgstr "Utiliser HTTPS pour l'API"
 
 msgctxt "#30169"
 msgid "Uses a self-signed certificate; callers must turn off certificate checking."
-msgstr "Utilise un certificat auto-signé ; désactivez la vérification chez l'appelant."
+msgstr "Utilise un certificat auto-signé ; les appelants doivent désactiver la vérification."
 
 msgctxt "#30170"
 msgid "Test: show the default camera"
@@ -743,7 +743,7 @@ msgstr "Afficher la mosaïque"
 
 msgctxt "#30172"
 msgid "Start tour"
-msgstr "Lancer la visite"
+msgstr "Lancer la ronde"
 
 msgctxt "#30180"
 msgid "Camera: %s"
@@ -766,12 +766,12 @@ msgid "devices.conf is in:\n%s"
 msgstr "devices.conf se trouve dans :\n%s"
 
 msgctxt "#30190"
-msgid "hold"
-msgstr "pause"
+msgid "paused"
+msgstr "en pause"
 
 msgctxt "#30191"
 msgid "tour"
-msgstr "visite"
+msgstr "ronde"
 
 msgctxt "#30192"
 msgid "Cameras"

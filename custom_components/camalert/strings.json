@@ -66,7 +66,7 @@
         "photo": "Photo window",
         "live": "Switch to live stream",
         "notify": "Notification only",
-        "strip": "Several cameras in one window"
+        "strip": "Multi-camera window"
       }
     },
     "priority": {

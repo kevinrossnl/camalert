@@ -77,7 +77,7 @@ class CamAlertSetup(ConfigListScreen, Screen):
     def build(self):
         c = config.plugins.camalert
         items = [
-            (_("Enable CamAlert"), c.enabled, _("Turn the HTTP API and pop-ups on or off.")),
+            (_("Enable CamAlert"), c.enabled, _("Turn the HTTP API and the camera display on or off.")),
             (_("Cameras via"), c.source, _("go2rtc is recommended. Without go2rtc, list your cameras in %s") % CAMERA_FILE),
         ]
         if c.source.value == "go2rtc":
@@ -104,8 +104,8 @@ class CamAlertSetup(ConfigListScreen, Screen):
                       (_("Remote control in photo window"), c.window_keys,
                        _("OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too.")),
                       (_("Title size"), c.title_size, ""),
-                      (_("Layout with several cameras"), c.strip_layout,
-                       _("A request with 2-4 cameras shows them together in one corner window."))]
+                      (_("Multi-camera window layout"), c.strip_layout,
+                       _("A request with 2-4 cameras shows them together in one multi-camera window."))]
         if c.mode.value in ("photo", "notify"):
             items += [(_("Pause TV meanwhile"), c.pause_tv,
                        _("Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift."))]

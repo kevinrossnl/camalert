@@ -19,7 +19,7 @@
 | `homeassistant/camalert_package.yaml` | REST-command alternative (YAML) |
 | `players/kodi/service.camalert/` | Kodi add-on. `resources/lib/camalert/`: `klogic.py` (pure, tested), `controller.py` (show/hide/live/resume), `display.py` (windows), `server.py` (HTTP adapter + backend for `camalert_core.api`), `mqtt.py`, `ptz.py`, `sources.py`, `kodiapi.py` (only place that talks to xbmc). The build copies `core/camalert_core/` in as `camalert_core/` |
 | `players/kodi/repository.camalert/` | Kodi repository add-on (`@REPO_URL@` filled in by the build; CI publishes `dist/kodi-repo/` on GitHub Pages) |
-| `po/` | Plugin translations (gettext). `custom_components/camalert/translations/` = integration translations |
+| `po/` | Plugin translations (gettext), generated from `core/i18n/` (master catalogue + glossary, `tools/i18n/i18n.py`). `custom_components/camalert/translations/` = integration translations (generated too) |
 | `tools/` | `build_ipk.py` (package), `build_feed.py` (opkg Packages index), `build_kodi.py` (Kodi zip + repository), `make_chime.py`, `msgfmt.py`, `strings.py` (POT), `check_private.py` |
 | `docs/` | User documentation (English) |
 
@@ -45,9 +45,13 @@
 - Kodi labels: `resources/language/*/strings.po` (ids 30000+), checked by `tests/kodi/test_kodi.py`.
 
 ## Rules
-- Code, comments and docs in English; user-facing texts translated (en, nl, de, fr, it, pl). Tests check completeness:
-  - plugin: `python3 tools/strings.py > po/CamAlert.pot`, then add new texts to every `po/*.po`;
-  - integration: `strings.json` and every `translations/*.json` need the same keys.
+- Code, comments and docs in English; user-facing texts translated (en, nl, de, fr, it, pl) in **one master
+  catalogue** `core/i18n/` (#38/#43, format in `core/i18n/README.md`). English stays in the sources (`_()` in the
+  plugin, `N_()` in the core, Kodi `en_gb/strings.po`, HA `strings.json`); after changing them run
+  `python3 tools/i18n/i18n.py update`, translate the empty `msgstr` in `core/i18n/<lang>.po`, then `build`.
+  `po/`, the other Kodi `strings.po` and HA `translations/*.json` are generated: never edit them by hand.
+  `tests/test_i18n.py` fails on missing translations, placeholder mismatches, forbidden synonyms/tone and
+  glossary terms not used verbatim (`core/i18n/glossary.json`; tone nl *je*, de *du*, fr *vous*, it/pl impersonal).
 - New shared logic goes into `core/camalert_core/` with a unit test. Enigma2/Home Assistant specific code is tested on a real receiver / Home Assistant before a release.
 - API, MQTT topics, HA actions and blueprints must stay backwards compatible within a major version.
 - Tests: `python3 -m pytest` (see `tests/README.md`; `python3 -m unittest discover -s tests` also works). Packages: `python3 tools/build_ipk.py dist`, `python3 tools/build_kodi.py dist`.

@@ -63,10 +63,10 @@
   "selector": {
     "mode": {
       "options": {
-        "photo": "Foto-venster",
+        "photo": "Fotovenster",
         "live": "Omschakelen naar live beeld",
         "notify": "Alleen melding",
-        "strip": "Meerdere camera's in één venster"
+        "strip": "Venster met meerdere camera's"
       }
     },
     "priority": {
@@ -103,7 +103,7 @@
           "description": "Hoe lang de camera in beeld blijft. Leeg = instelling van de ontvanger."
         },
         "mode": {
-          "name": "Weergave",
+          "name": "Weergavemodus",
           "description": "Leeg = instelling van de ontvanger."
         },
         "priority": {

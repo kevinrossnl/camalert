@@ -8,7 +8,7 @@
 #   ha        Home Assistant runtime tests (#33) for HA_VERSION=latest|min (tests/homeassistant/requirements-*.txt):
 #             a uv venv with the pinned pytest-homeassistant-custom-component; HA_PY=<python> uses an existing one
 #   androidtv Android TV player (#64): JVM contract tests, debug APK, Android lint, golden APK listing. Needs JDK 17+;
-#             the Android SDK comes from dl.google.com (cmdline-tools checked against ANDROID_CMDLINE_SHA256).
+#             the Android Gradle plugin downloads the SDK packages from dl.google.com (license accepted here).
 #             Workstation runner only: with ANDROIDTV_SKIP set (NAS fallback) it prints why and does nothing.
 set -eu
 area="${1:?usage: tools/ci.sh tools|lint|core|unit|build|privacy|ha|androidtv}"
@@ -70,18 +70,13 @@ print("commit history: %d problems" % len(bad)); sys.exit(1 if bad else 0)'
       exit 0
     fi
     sdk="${ANDROID_HOME:-$PWD/.android-sdk}"
-    if [ ! -x "$sdk/cmdline-tools/latest/bin/sdkmanager" ]; then
-      zip="commandlinetools-linux-${ANDROID_CMDLINE_BUILD:-16111833}_latest.zip"
-      curl -fsSL -o "/tmp/$zip" "https://dl.google.com/android/repository/$zip"
-      echo "${ANDROID_CMDLINE_SHA256:-0877a1d048fe4a24efe2eff536ca4223f7adeb58648bb81909d33c446918cfa8}  /tmp/$zip" | sha256sum -c -
-      mkdir -p "$sdk/cmdline-tools"
-      rm -rf "$sdk/cmdline-tools/latest" "$sdk/cmdline-tools/cmdline-tools"
-      unzip -q "/tmp/$zip" -d "$sdk/cmdline-tools" && mv "$sdk/cmdline-tools/cmdline-tools" "$sdk/cmdline-tools/latest"
-    fi
+    # Accept the Android SDK license (https://developer.android.com/studio/terms), as `sdkmanager --licenses` would;
+    # the Android Gradle plugin then installs the platform, build-tools and platform-tools it needs from
+    # dl.google.com itself (checksums from Google's index). No cmdline-tools: since 23.0 its sdkmanager hands over
+    # to a self-downloading "Android CLI" that failed in CI (#64).
+    mkdir -p "$sdk/licenses"
+    printf '\n24333f8a63b6825ea9c5514f83c2829b004d1fee' > "$sdk/licenses/android-sdk-license"
     export ANDROID_HOME="$sdk"
-    # sdkmanager checks every package against the checksums of Google's repository index
-    yes | "$sdk/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true
-    "$sdk/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;37.0.0" > /dev/null
     cd players/androidtv
     ./gradlew --no-daemon --console=plain :api:test :app:assembleDebug :app:lintDebug
     cd ../..

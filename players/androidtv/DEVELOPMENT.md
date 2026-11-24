@@ -32,7 +32,9 @@ Golden APK listing: `tests/build/golden/androidtv_apk.txt` (`python3 tools/apk_l
   JUnit 4 (JVM tests). No Google Play Services. HTTP and MQTT are our own small implementations (like the
   Python players), so no networking library.
 - Gradle wrapper from services.gradle.org with `distributionSha256Sum`; the wrapper jar checksum is the
-  published one. Android SDK only from dl.google.com (`tools/ci.sh androidtv` checks the cmdline-tools sha256).
+  published one. Android SDK only from dl.google.com: `tools/ci.sh androidtv` accepts the SDK license and the
+  Android Gradle plugin installs platform 37.0, build-tools and platform-tools itself (no cmdline-tools: since 23.0
+  `sdkmanager` hands over to a self-downloading "Android CLI" with usage metrics).
 - Debug-signed APK only. No keystore in git (`*.jks`, `*.keystore` are ignored); release signing: see
   [docs/players/androidtv.md](../../docs/players/androidtv.md).
 - Real device tests (Fire TV Stick): fake go2rtc only (`testing/fake_go2rtc_on_device.py start`, go2rtc address

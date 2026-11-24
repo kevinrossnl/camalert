@@ -189,7 +189,8 @@ class Workflow(unittest.TestCase):
         with open(CI_SH) as f:
             sh = f.read()
         self.assertIn('if [ -n "${ANDROIDTV_SKIP:-}" ]', sh)
-        self.assertIn("sha256sum -c", sh)
+        self.assertIn("licenses/android-sdk-license", sh)
+        self.assertNotIn("bin/sdkmanager", sh)
         import subprocess
         out = subprocess.run(["sh", CI_SH, "androidtv"], env=dict(os.environ, ANDROIDTV_SKIP="test"),
                              stdout=subprocess.PIPE, cwd=_paths.ROOT, check=True).stdout.decode()

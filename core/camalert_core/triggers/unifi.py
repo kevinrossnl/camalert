@@ -29,7 +29,8 @@ class UnifiSource(TriggerSource):
     """Settings: unifi_enabled, unifi_kinds ('ring,person,vehicle,animal,package,motion'; default ring,person),
     unifi_cameras (map 'protect_name=go2rtc_name|...'), unifi_priority (a ring is always at least high),
     optional unifi_mode ('log' = event list and log only) / unifi_seconds, unifi_rules (per kind
-    'kind=priority/mode/camera|...', see devices.unifi.kind_rules), unifi_labels ({kind: text} for the title,
+    'kind=priority/mode/camera|...', see devices.unifi.kind_rules), unifi_camera_rules (per camera
+    'camera=priority/mode/seconds|...', wins over unifi_rules, see devices.unifi.camera_rules), unifi_labels ({kind: text} for the title,
     see labels()) or unifi_label (one text for every kind; None = no label)."""
     name = "unifi"
     transport = "poll"
@@ -58,12 +59,16 @@ class UnifiSource(TriggerSource):
         ev, (camera, kind) = best
         s = self.settings
         rule_prio, rule_mode, rule_cam = unifi.kind_rules(s.get("unifi_rules")).get(kind, (None, None, None))
-        priority = rule_prio or s.get("unifi_priority") or "normal"
+        cam_prio, cam_mode, cam_secs = unifi.camera_rules(s.get("unifi_camera_rules")).get(
+            unifi.slug(camera), (None, None, None))
+        # per camera first, then per event type, then the general settings (#9)
+        priority = cam_prio or rule_prio or s.get("unifi_priority") or "normal"
         if kind == "ring" and priority == "normal":
             priority = "high"
         label = (s.get("unifi_labels") or {}).get(kind) or s.get("unifi_label") or None
         return Trigger(rule_cam or camera, priority, "unifi", label, None,
-                       rule_mode or s.get("unifi_mode") or None, s.get("unifi_seconds") or None)
+                       cam_mode or rule_mode or s.get("unifi_mode") or None,
+                       cam_secs or s.get("unifi_seconds") or None)
 
     @staticmethod
     def poll(device):

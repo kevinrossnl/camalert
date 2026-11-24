@@ -208,6 +208,38 @@ class TestSource(unittest.TestCase):
         self.assertEqual((t.priority, t.label), ("high", "DOORBELL"))  # a ring stays at least high
         self.assertEqual(sorted(unifi_trigger.KIND_LABELS), sorted(unifi.KINDS))
 
+    def test_rules_per_camera(self):
+        src = UnifiSource({"unifi_kinds": "ring,person,motion", "unifi_mode": "log", "unifi_priority": "normal",
+                           "unifi_seconds": 20, "unifi_rules": "person=alarm/live/porch",
+                           "unifi_camera_rules": "Garden=high/photo/45|front_door=normal/notify/"})
+        # camera rule wins over the general settings (all three parts)
+        t = src.check("p", self.state(), self.state(ev("1", "motion", CAM_B)))
+        self.assertEqual(t.show_args(), ("garden", 45, "photo", "high", "unifi", None, None))
+        # camera rule wins over the per-type rule; the per-type camera still redirects; seconds fall back
+        t = src.check("p", self.state(), self.state(ev("2", "smartDetectZone", CAM_B, ["person"])))
+        self.assertEqual(t.show_args(), ("porch", 45, "photo", "high", "unifi", None, None))
+        # a ring stays at least high, also with a camera rule 'normal'
+        t = src.check("p", self.state(), self.state(ev("3", "ring")))
+        self.assertEqual(t.show_args(), ("front_door", 20, "notify", "high", "unifi", None, None))
+        # cameras without a rule use the per-type rule and the general settings
+        plain = UnifiSource({"unifi_kinds": "motion", "unifi_mode": "log", "unifi_camera_rules": "other=alarm"})
+        t = plain.check("p", self.state(), self.state(ev("4", "motion", CAM_B)))
+        self.assertEqual((t.camera, t.mode, t.priority), ("garden", "log", "normal"))
+        # the rule matches the camera name after unifi_cameras
+        mapped = UnifiSource({"unifi_kinds": "motion", "unifi_cameras": "garden=back_yard",
+                              "unifi_camera_rules": "back_yard=alarm/live"})
+        t = mapped.check("p", self.state(), self.state(ev("5", "motion", CAM_B)))
+        self.assertEqual((t.camera, t.mode, t.priority), ("back_yard", "live", "alarm"))
+
+    def test_camera_rules_parser(self):
+        self.assertEqual(unifi.camera_rules(None), {})
+        self.assertEqual(unifi.camera_rules("Front Door=HIGH/Photo/30| garage = normal/log |x"),
+                         {"front_door": ("high", "photo", 30), "garage": ("normal", "log", None)})
+        # invalid parts become None, a rule without any valid part and broken parts are skipped
+        self.assertEqual(unifi.camera_rules("a=loud/blink/3|b=//301|c=//abc|d=//5|=high|e"),
+                         {"d": (None, None, 5)})
+        self.assertEqual(unifi.camera_rules("a=/log/300"), {"a": (None, "log", 300)})
+
     def test_poll_uses_the_client(self):
         orig = client.protect_state
         client.protect_state = lambda dev: {"now": 5, "cams": {}, "events": []}

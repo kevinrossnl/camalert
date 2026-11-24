@@ -95,6 +95,7 @@ DEFAULTS = {
     "foscam_priority": "normal", "foscam_seconds": 30,
     "unifi_enabled": False, "unifi_kinds": "ring,person", "unifi_cameras": "", "unifi_priority": "normal",
     "unifi_mode": "photo", "unifi_seconds": 30, "unifi_interval": 5, "unifi_rules": "",
+    "unifi_camera_rules": "",
     "log_level": "normal", "log_syslog": "", "ptz_key": "blue", "ha_buttons": True, "ha_webhook": "",
     "title_size": "normal", "chime": "off", "frigate_url": "", "cooldown": "", "substreams": "",
 }

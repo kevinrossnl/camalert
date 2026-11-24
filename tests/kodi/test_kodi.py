@@ -443,6 +443,17 @@ class _KodiModules(object):
         self.assertEqual(ptz.all_devices()["door"]["user"], "admin")
         self.assertFalse(Built.module("controller").Controller().has_ptz("protect"))
 
+    def test_unifi_poller_per_camera_rule(self):
+        """#9: the setting Per camera reaches the source; other cameras keep the general settings."""
+        ptz, poller, shown = self.unifi_setup()
+        keys = {"unifi_mode": "log", "unifi_camera_rules": "garden=high/photo/45|other=alarm"}
+        Built.store.update(keys)
+        self.addCleanup(lambda: [Built.store.pop(k, None) for k in keys])
+        self.answers += [self.unifi_answer("1"), self.unifi_answer("1", "2")]
+        poller.once()
+        poller.once()
+        self.assertEqual(shown, [("garden", 45, "photo", "high", "unifi", "Motion", None)])
+
     def test_unifi_poller_error_is_logged_once_and_resets_the_baseline(self):
         ptz, poller, shown = self.unifi_setup()
         kodiapi = Built.module("kodiapi")

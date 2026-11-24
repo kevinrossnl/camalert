@@ -173,7 +173,8 @@ def trigger_settings():
             "unifi_enabled": c.unifi_enabled.value, "unifi_kinds": c.unifi_kinds.value,
             "unifi_cameras": c.unifi_cameras.value, "unifi_priority": c.unifi_priority.value,
             "unifi_mode": c.unifi_mode.value, "unifi_seconds": int(c.unifi_seconds.value),
-            "unifi_rules": c.unifi_rules.value, "unifi_labels": unifi_labels(_)}
+            "unifi_rules": c.unifi_rules.value, "unifi_camera_rules": c.unifi_camera_rules.value,
+            "unifi_labels": unifi_labels(_)}
 
 
 def chime_wanted(setting, priority):

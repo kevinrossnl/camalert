@@ -62,6 +62,17 @@ class TestUnifiSource(Base):
         self.assertEqual(self.d.UNIFI_STATUS.last_event["camera"], "garden")
         self.assertEqual(self.d.UNIFI_STATUS.consoles, 1)
 
+    def test_per_camera_rule(self):
+        """#9: the setting Per camera reaches the source and wins over the general display mode."""
+        self.c.unifi_enabled.value = True
+        self.c.unifi_mode.value = "log"
+        self.c.unifi_camera_rules.value = "Garden=high/photo/45"
+        self.ctl.poll_unifi()
+        self.polls()[0].fire(state("1"))
+        self.ctl.poll_unifi()
+        self.polls()[0].fire(state("1", "2"))
+        self.assertEqual(self.shown, [("garden", 45, "photo", "high", "unifi", "Motion", None)])
+
     def test_error_resets_the_baseline_and_is_logged_once(self):
         self.c.unifi_enabled.value = True
         logged = []

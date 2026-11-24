@@ -837,6 +837,14 @@ msgctxt "#30272"
 msgid "Optional: type=priority/mode/camera, e.g. ring=alarm/live|motion=normal/log"
 msgstr "Optioneel: type=priority/mode/camera, bijv. ring=alarm/live|motion=normal/log"
 
+msgctxt "#30273"
+msgid "Per camera"
+msgstr "Per camera"
+
+msgctxt "#30274"
+msgid "Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30|garage=normal/log"
+msgstr "Optioneel, gaat voor het gebeurtenistype: camera=priority/mode/seconds, bijv. front_door=high/photo/30|garage=normal/log"
+
 msgctxt "#30500"
 msgid "API"
 msgstr "API"

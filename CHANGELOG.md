@@ -1,6 +1,10 @@
 # Changelog
 
 ## Unreleased
+- UniFi Protect (#9): new expert setting *Per camera* (`unifi_camera_rules`, Enigma2 and Kodi):
+  `camera=priority/mode/seconds|...`, e.g. `front_door=high/photo/30|garage=normal/log`. Per camera wins over *Per
+  event type*, which wins over the general settings; an empty part falls back. New setting with an empty default:
+  nothing to migrate (schema version 2). Docs: [devices](docs/user/devices.md).
 - Settings (#73): no default go2rtc address any more (it was `http://192.168.1.10:1984`, which a new install
   contacted on any network). Empty = not set: no network calls, the diagnostics say *go2rtc address not set*, the
   Enigma2 settings open on the go2rtc address, Kodi shows a notification when the service starts and *Choose camera*

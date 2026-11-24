@@ -62,6 +62,7 @@ NOT_ON_ANDROIDTV = {
     "unifi_seconds": "no UniFi Protect polling yet (#72)",
     "unifi_interval": "no UniFi Protect polling yet (#72)",
     "unifi_rules": "no UniFi Protect polling yet (#72)",
+    "unifi_camera_rules": "no UniFi Protect polling yet (#72)",
     "ptz_key": "no camera control (PTZ) yet (#64)",
     "ptz_user": "no camera control (PTZ) yet (#64)",
     "ptz_password": "no camera control (PTZ) yet (#64)",

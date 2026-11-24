@@ -164,6 +164,7 @@ _add("unifi_mode", lambda: ConfigSelection(default="photo", choices=MODES() + [(
 _add("unifi_seconds", lambda: ConfigSelectionNumber(5, 300, 5, default=30))
 _add("unifi_interval", lambda: ConfigSelectionNumber(2, 60, 1, default=5))
 _add("unifi_rules", lambda: ConfigText(default="", fixed_size=False))
+_add("unifi_camera_rules", lambda: ConfigText(default="", fixed_size=False))
 _add("event_folder", lambda: ConfigText(default="/tmp/camalert_events", fixed_size=False))
 _add("title_size", lambda: ConfigSelection(default="normal", choices=[
     ("small", _("Small")), ("normal", _("Normal")), ("large", _("Large"))]))

@@ -1056,6 +1056,14 @@ msgstr "Według typu zdarzenia"
 msgid "Optional: type=priority/mode/camera, e.g. ring=alarm/live|motion=normal/log"
 msgstr "Opcjonalnie: type=priority/mode/camera, np. ring=alarm/live|motion=normal/log"
 
+#: e2 kodi:30273
+msgid "Per camera"
+msgstr "Według kamery"
+
+#: e2 kodi:30274
+msgid "Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30|garage=normal/log"
+msgstr "Opcjonalnie, ma pierwszeństwo przed typem zdarzenia: camera=priority/mode/seconds, np. front_door=high/photo/30|garage=normal/log"
+
 #: e2 kodi:30239
 msgid "Camera control (PTZ) key"
 msgstr "Przycisk sterowania kamerą (PTZ)"

@@ -16,6 +16,7 @@ KINDS = ("ring", "person", "vehicle", "animal", "package", "motion")
 DEFAULT_KINDS = "ring,person"
 PRIORITIES = ("normal", "high", "alarm")
 MODES = ("photo", "live", "notify", "log")  # log = only the event list and the log (nothing on screen, no chime)
+SECONDS = (5, 300)  # range of a duration in a per-camera rule (same as the setting unifi_seconds)
 _FOLD = {u"ä": "ae", u"ö": "oe", u"ü": "ue", u"ß": "ss", u"é": "e", u"è": "e", u"à": "a", u"ç": "c"}
 
 
@@ -66,6 +67,29 @@ def kind_rules(text):
         fields = [f.strip() for f in v.split("/")] + ["", "", ""]
         prio, mode, cam = fields[0].lower(), fields[1].lower(), fields[2]
         rule = (prio if prio in PRIORITIES else None, mode if mode in MODES else None, cam or None)
+        if rule != (None, None, None):
+            out[k] = rule
+    return out
+
+
+def camera_rules(text):
+    """Per camera: 'front_door=high/photo/30|garage=normal/log' -> {camera: (priority, mode, seconds)}. The camera
+    is the CamAlert camera name (after unifi_cameras), compared as slug(); seconds 5-300. Each part is None when
+    empty or invalid (= the per-type rule or the general setting). Broken parts are skipped."""
+    out = {}
+    for part in (text or "").split("|"):
+        k, sep, v = part.partition("=")
+        k = slug(k)
+        if not sep or not k:
+            continue
+        fields = [f.strip() for f in v.split("/")] + ["", "", ""]
+        prio, mode, secs = fields[0].lower(), fields[1].lower(), fields[2]
+        try:
+            secs = int(secs)
+        except ValueError:
+            secs = None
+        rule = (prio if prio in PRIORITIES else None, mode if mode in MODES else None,
+                secs if secs is not None and SECONDS[0] <= secs <= SECONDS[1] else None)
         if rule != (None, None, None):
             out[k] = rule
     return out

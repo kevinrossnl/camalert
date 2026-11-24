@@ -84,6 +84,7 @@
         <setting id="unifi_seconds" type="integer" label="30045"><level>1</level><default>30</default><constraints><minimum>5</minimum><step>5</step><maximum>300</maximum></constraints><dependencies><dependency type="visible" setting="unifi_enabled">true</dependency></dependencies><control type="slider" format="integer"><popup>false</popup></control></setting>
         <setting id="unifi_interval" type="integer" label="30145"><level>2</level><default>5</default><constraints><minimum>2</minimum><step>1</step><maximum>60</maximum></constraints><dependencies><dependency type="visible" setting="unifi_enabled">true</dependency></dependencies><control type="slider" format="integer"><popup>false</popup></control></setting>
         <setting id="unifi_rules" type="string" label="30271" help="30272"><level>2</level><default></default><constraints><allowempty>true</allowempty></constraints><dependencies><dependency type="visible" setting="unifi_enabled">true</dependency></dependencies><control type="edit" format="string"><heading>30271</heading></control></setting>
+        <setting id="unifi_camera_rules" type="string" label="30273" help="30274"><level>2</level><default></default><constraints><allowempty>true</allowempty></constraints><dependencies><dependency type="visible" setting="unifi_enabled">true</dependency></dependencies><control type="edit" format="string"><heading>30273</heading></control></setting>
       </group>
     </category>
     <category id="control" label="30005">

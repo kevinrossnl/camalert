@@ -13,7 +13,8 @@ Version 2 (#39) = the target semantics on every player: chime off/high/all, skip
 Enigma2, replaces skip_media), trigger priority normal/high/alarm, Frigate/Foscam with own display mode, duration
 (step 5) and Foscam check interval, Foscam alarms off by default, UniFi Protect events (#70, new settings with
 defaults: nothing to migrate; display mode 'log' = only the event list and the log), no default go2rtc address
-(#73: empty = not set, nothing is contacted; a saved address is kept), duration step 5, live volume step 10, HTTP port
+(#73: empty = not set, nothing is contacted; a saved address is kept), UniFi Protect rules per camera (#9, new
+setting with an empty default: nothing to migrate), duration step 5, live volume step 10, HTTP port
 1024-65535, certificates checked by default. migrate() turns settings saved by a version-1 player into this.
 
 Validation is done by hand (no jsonschema on the boxes): validate(values) keeps every valid value and falls
@@ -109,6 +110,7 @@ SETTINGS = [
     S('unifi_seconds', 'triggers', 'advanced', 'int', 30, min=5, max=300, step=5, unit='s', platforms=('enigma2', 'kodi'), label='Duration (seconds)', kodi_label=30045),
     S('unifi_interval', 'triggers', 'expert', 'int', 5, min=2, max=60, step=1, unit='s', platforms=('enigma2', 'kodi'), label='Check every (seconds)', kodi_label=30145),
     S('unifi_rules', 'triggers', 'expert', 'text', '', platforms=('enigma2', 'kodi'), label='Per event type', help='Optional: type=priority/mode/camera, e.g. ring=alarm/live|motion=normal/log', kodi_label=30271),
+    S('unifi_camera_rules', 'triggers', 'expert', 'text', '', platforms=('enigma2', 'kodi'), label='Per camera', help='Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30|garage=normal/log', kodi_label=30273),
     S('ptz_key', 'camera_control', 'advanced', 'choice', 'blue', choices=('blue', 'yellow', 'red', 'green', 'off'), platforms=('enigma2', 'kodi'), label='Camera control (PTZ) key', help='For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home).', kodi_label=30239),
     S('ha_buttons', 'camera_control', 'advanced', 'bool', True, platforms=('enigma2', 'kodi'), label='Colour keys to Home Assistant', help='While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate).', kodi_label=30245),
     S('ptz_user', 'camera_control', 'advanced', 'text', '', platforms=('kodi',), label='Camera user (default)', help='Used when devices.conf has no user or password for a camera.', kodi_label=30152),

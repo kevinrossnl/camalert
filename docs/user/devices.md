@@ -48,6 +48,13 @@ fresh session.
   nothing (no doorbell chime): handy to try the source first.
 - *Per event type* (expert): `type=priority/mode/camera`, for example `ring=alarm/live|motion=normal/log`; an empty
   part keeps the general setting, `camera` sends the event to another go2rtc stream.
+- *Per camera* (expert): `camera=priority/mode/seconds`, for example
+  `front_door=high/photo/30|garage=normal/log|garden=/log`. `camera` is the CamAlert camera name (after *UniFi
+  Protect camera names*: the camera that saw the event, upper/lower case and spaces do not matter); `seconds` is
+  5–300. A part that is set wins over *Per event type* and the general settings, an empty part falls back to them,
+  cameras that are not listed use them unchanged. A doorbell ring still gets at least the priority *High*. Example:
+  only motion on the front door on screen, the other cameras in the event list only: *Display mode* *Log only* and
+  *Per camera* `front_door=high/photo/30`.
 
 The first answer after a start, a setting change or an error only remembers what is there: old events never pop up.
 When several new events arrive in one check, the most important one is shown (ring, person, vehicle, animal,

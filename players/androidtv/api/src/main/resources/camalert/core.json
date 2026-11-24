@@ -314,6 +314,7 @@
   "ptz_password": "no camera control (PTZ) yet (#64)",
   "ptz_user": "no camera control (PTZ) yet (#64)",
   "source": "go2rtc only for now (direct mode with a camera file: follow-up, #64)",
+  "unifi_camera_rules": "no UniFi Protect polling yet (#72)",
   "unifi_cameras": "no UniFi Protect polling yet (#72)",
   "unifi_enabled": "no UniFi Protect polling yet (#72)",
   "unifi_interval": "no UniFi Protect polling yet (#72)",

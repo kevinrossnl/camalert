@@ -234,7 +234,7 @@ class Monitor(xbmc.Monitor):
 
 
 
-def os_version(tries=4):
+def os_version(tries=8):
     """System.OSVersionInfo once Kodi has it (it answers "Busy" at first), else platform system + release (#59)."""
     busy = ("Busy", xbmc.getLocalizedString(503))
     fallback = ("%s %s" % (platform.system(), platform.release())).strip()

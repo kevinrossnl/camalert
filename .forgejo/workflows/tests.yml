@@ -127,6 +127,29 @@ jobs:
           HA_VERSION: ${{ matrix.ha }}
         run: sh tools/ci.sh ha
 
+  androidtv:
+    # Android TV player (#64): only in mode parallel = on the workstation runner (Android SDK + Gradle are too heavy
+    # for the NAS); the NAS fallback skips it with a message (step in `sequential`).
+    needs: pick-runner
+    if: needs.pick-runner.outputs.mode == 'parallel'
+    runs-on: ${{ needs.pick-runner.outputs.runner }}
+    container: {image: "node:20-bookworm"}
+    timeout-minutes: 40
+    env:
+      PACKAGES: openjdk-17-jdk-headless unzip python3
+    steps:
+      - uses: actions/checkout@v4
+      - {name: tools, run: sh tools/ci.sh tools}
+      - {name: "Android TV: contract tests, debug APK, lint, APK listing", run: sh tools/ci.sh androidtv}
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: androidtv
+          path: |
+            players/androidtv/app/build/outputs/apk/debug/*.apk
+            players/androidtv/app/build/reports/lint-results-debug.html
+            players/androidtv/api/build/reports/tests/test/
+
   privacy:
     needs: pick-runner
     if: needs.pick-runner.outputs.mode == 'parallel'
@@ -171,6 +194,11 @@ jobs:
       - {name: golden listings, package tests and packages, if: "${{ !cancelled() }}", run: sh tools/ci.sh build}
       # only the latest Home Assistant here: the oldest one runs on the workstation (keeps the NAS run short)
       - {name: Home Assistant latest runtime tests, if: "${{ !cancelled() }}", run: sh tools/ci.sh ha}
+      - name: Android TV (workstation only, skipped here)
+        if: ${{ !cancelled() }}
+        env:
+          ANDROIDTV_SKIP: "NAS fallback, the workstation runner is offline or busy elsewhere"
+        run: sh tools/ci.sh androidtv
       - uses: actions/upload-artifact@v3
         if: always()
         with:
@@ -188,7 +216,7 @@ jobs:
 
   gate:
     if: always()
-    needs: [pick-runner, lint, core, unit, build, ha, privacy, sequential]
+    needs: [pick-runner, lint, core, unit, build, ha, androidtv, privacy, sequential]
     runs-on: truenas
     container: {image: "node:20-bookworm"}
     timeout-minutes: 2
@@ -198,11 +226,11 @@ jobs:
           MODE: ${{ needs.pick-runner.outputs.mode }}
           RUNNER: ${{ needs.pick-runner.outputs.runner }}
           PICK: ${{ needs.pick-runner.result }}
-          PARALLEL: "${{ needs.lint.result }} ${{ needs.core.result }} ${{ needs.unit.result }} ${{ needs.build.result }} ${{ needs.ha.result }} ${{ needs.privacy.result }}"
+          PARALLEL: "${{ needs.lint.result }} ${{ needs.core.result }} ${{ needs.unit.result }} ${{ needs.build.result }} ${{ needs.ha.result }} ${{ needs.androidtv.result }} ${{ needs.privacy.result }}"
           SEQUENTIAL: ${{ needs.sequential.result }}
         run: |
           echo "pick-runner: $PICK -> runner=$RUNNER mode=$MODE"
-          echo "lint core unit build ha privacy: $PARALLEL; sequential: $SEQUENTIAL"
+          echo "lint core unit build ha androidtv privacy: $PARALLEL; sequential: $SEQUENTIAL"
           test "$PICK" = success || exit 1
           case "$MODE" in
             parallel)   for r in $PARALLEL; do test "$r" = success || exit 1; done ;;

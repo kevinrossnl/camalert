@@ -7,8 +7,11 @@
 #   lint | core | unit | build | privacy   one area each (privacy needs CAMALERT_DENYLIST)
 #   ha        Home Assistant runtime tests (#33) for HA_VERSION=latest|min (tests/homeassistant/requirements-*.txt):
 #             a uv venv with the pinned pytest-homeassistant-custom-component; HA_PY=<python> uses an existing one
+#   androidtv Android TV player (#64): JVM contract tests, debug APK, Android lint, golden APK listing. Needs JDK 17+;
+#             the Android SDK comes from dl.google.com (cmdline-tools checked against ANDROID_CMDLINE_SHA256).
+#             Workstation runner only: with ANDROIDTV_SKIP set (NAS fallback) it prints why and does nothing.
 set -eu
-area="${1:?usage: tools/ci.sh tools|lint|core|unit|build|privacy|ha}"
+area="${1:?usage: tools/ci.sh tools|lint|core|unit|build|privacy|ha|androidtv}"
 case "$area" in
   tools)
     echo "apt: ${PACKAGES:?PACKAGES not set}"
@@ -60,6 +63,29 @@ print("commit history: %d problems" % len(bad)); sys.exit(1 if bad else 0)'
     fi
     "$py" -m pytest tests/homeassistant -o asyncio_mode=auto --junitxml="junit-ha-$v.xml" \
       --cov=custom_components/camalert --cov-branch --cov-report=term-missing --cov-fail-under=90
+    ;;
+  androidtv)
+    if [ -n "${ANDROIDTV_SKIP:-}" ]; then
+      echo "androidtv SKIPPED: $ANDROIDTV_SKIP (the Android build runs only on the workstation runner, #64)"
+      exit 0
+    fi
+    sdk="${ANDROID_HOME:-$PWD/.android-sdk}"
+    if [ ! -x "$sdk/cmdline-tools/latest/bin/sdkmanager" ]; then
+      zip="commandlinetools-linux-${ANDROID_CMDLINE_BUILD:-16111833}_latest.zip"
+      curl -fsSL -o "/tmp/$zip" "https://dl.google.com/android/repository/$zip"
+      echo "${ANDROID_CMDLINE_SHA256:-0877a1d048fe4a24efe2eff536ca4223f7adeb58648bb81909d33c446918cfa8}  /tmp/$zip" | sha256sum -c -
+      mkdir -p "$sdk/cmdline-tools"
+      rm -rf "$sdk/cmdline-tools/latest" "$sdk/cmdline-tools/cmdline-tools"
+      unzip -q "/tmp/$zip" -d "$sdk/cmdline-tools" && mv "$sdk/cmdline-tools/cmdline-tools" "$sdk/cmdline-tools/latest"
+    fi
+    export ANDROID_HOME="$sdk"
+    # sdkmanager checks every package against the checksums of Google's repository index
+    yes | "$sdk/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true
+    "$sdk/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;37.0.0" > /dev/null
+    cd players/androidtv
+    ./gradlew --no-daemon --console=plain :api:test :app:assembleDebug :app:lintDebug
+    cd ../..
+    python3 tools/apk_listing.py check players/androidtv/app/build/outputs/apk/debug/app-debug.apk
     ;;
   *)
     echo "unknown area: $area" >&2

@@ -19,7 +19,7 @@ except ImportError:  # optional, like the blueprint tests
 
 WORKFLOW = os.path.join(_paths.ROOT, ".forgejo", "workflows", "tests.yml")
 CI_SH = os.path.join(_paths.TOOLS, "ci.sh")
-AREAS = ["lint", "core", "unit", "build", "privacy", "ha"]
+AREAS = ["lint", "core", "unit", "build", "privacy", "ha", "androidtv"]
 PREF = ["werkstation", "skills-werkstation"]
 
 
@@ -179,6 +179,21 @@ class Workflow(unittest.TestCase):
         for area in AREAS:
             self.assertIn("needs.%s.result" % area, env["PARALLEL"])
         self.assertIn("needs.sequential.result", env["SEQUENTIAL"])
+
+    def test_androidtv_only_on_the_workstation(self):
+        """#64: the Android build never runs on the NAS: in the fallback the area only says why it is skipped."""
+        self.assertEqual(self.jobs["androidtv"]["if"], "needs.pick-runner.outputs.mode == 'parallel'")
+        steps = [s for s in self.jobs["sequential"]["steps"] if "tools/ci.sh androidtv" in json.dumps(s)]
+        self.assertEqual(len(steps), 1)
+        self.assertTrue(steps[0]["env"]["ANDROIDTV_SKIP"])
+        with open(CI_SH) as f:
+            sh = f.read()
+        self.assertIn('if [ -n "${ANDROIDTV_SKIP:-}" ]', sh)
+        self.assertIn("sha256sum -c", sh)
+        import subprocess
+        out = subprocess.run(["sh", CI_SH, "androidtv"], env=dict(os.environ, ANDROIDTV_SKIP="test"),
+                             stdout=subprocess.PIPE, cwd=_paths.ROOT, check=True).stdout.decode()
+        self.assertIn("androidtv SKIPPED: test", out)
 
     def test_force_runner_input(self):
         on = self.wf.get("on", self.wf.get(True))

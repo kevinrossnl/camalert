@@ -189,41 +189,20 @@ msgstr "Brak zdarzeń"
 msgid "Play clip"
 msgstr "Odtwórz klip"
 
-msgid "Source"
-msgstr "Źródło"
-
-msgid "Priority"
-msgstr "Priorytet"
-
-msgid "Result"
-msgstr "Wynik"
-
 msgid "Motion"
 msgstr "Ruch"
 
 msgid "Cameras"
 msgstr "Kamery"
 
-msgid "EXIT = close"
-msgstr "EXIT = zamknij"
-
 msgid "%s - camera not reachable"
 msgstr "%s - kamera nieosiągalna"
-
-msgid "paused"
-msgstr "wstrzymano"
-
-msgid "tour"
-msgstr "obchód"
-
-msgid "GREEN = live"
-msgstr "ZIELONY = na żywo"
 
 msgid "Camera: %s"
 msgstr "Kamera: %s"
 
-msgid "PTZ %s: arrows = move, CH+/CH- = zoom, OK = home, EXIT = done"
-msgstr "PTZ %s: strzałki = ruch, CH+/CH- = zoom, OK = pozycja domowa, EXIT = koniec"
+msgid "Camera control (PTZ)"
+msgstr "Sterowanie kamerą (PTZ)"
 
 msgid "CamAlert %s is available (installed: %s).\nUpdate via the software update or: opkg update && opkg upgrade"
 msgstr "CamAlert %s jest dostępny (zainstalowany: %s).\nAktualizuj przez aktualizację oprogramowania lub: opkg update && opkg upgrade"
@@ -747,6 +726,15 @@ msgstr "Czas"
 msgid "Camera"
 msgstr "Kamera"
 
+msgid "Source"
+msgstr "Źródło"
+
+msgid "Priority"
+msgstr "Priorytet"
+
+msgid "Result"
+msgstr "Wynik"
+
 msgid "Reason"
 msgstr "Powód"
 
@@ -776,6 +764,12 @@ msgstr "zakończenie sterowania kamerą"
 
 msgid "pause"
 msgstr "pauza"
+
+msgid "paused"
+msgstr "wstrzymano"
+
+msgid "tour"
+msgstr "obchód"
 
 msgid "Camera file (direct mode)"
 msgstr "Plik kamer (tryb bezpośredni)"

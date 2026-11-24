@@ -189,41 +189,20 @@ msgstr "Nog geen gebeurtenissen"
 msgid "Play clip"
 msgstr "Clip afspelen"
 
-msgid "Source"
-msgstr "Bron"
-
-msgid "Priority"
-msgstr "Prioriteit"
-
-msgid "Result"
-msgstr "Resultaat"
-
 msgid "Motion"
 msgstr "Beweging"
 
 msgid "Cameras"
 msgstr "Camera's"
 
-msgid "EXIT = close"
-msgstr "EXIT = sluiten"
-
 msgid "%s - camera not reachable"
 msgstr "%s - camera niet bereikbaar"
-
-msgid "paused"
-msgstr "gepauzeerd"
-
-msgid "tour"
-msgstr "rondgang"
-
-msgid "GREEN = live"
-msgstr "GROEN = live"
 
 msgid "Camera: %s"
 msgstr "Camera: %s"
 
-msgid "PTZ %s: arrows = move, CH+/CH- = zoom, OK = home, EXIT = done"
-msgstr "PTZ %s: pijlen = bewegen, CH+/CH- = zoom, OK = beginstand, EXIT = klaar"
+msgid "Camera control (PTZ)"
+msgstr "Camerabediening (PTZ)"
 
 msgid "CamAlert %s is available (installed: %s).\nUpdate via the software update or: opkg update && opkg upgrade"
 msgstr "CamAlert %s is beschikbaar (geïnstalleerd: %s).\nBijwerken via de software-update of: opkg update && opkg upgrade"
@@ -747,6 +726,15 @@ msgstr "Tijd"
 msgid "Camera"
 msgstr "Camera"
 
+msgid "Source"
+msgstr "Bron"
+
+msgid "Priority"
+msgstr "Prioriteit"
+
+msgid "Result"
+msgstr "Resultaat"
+
 msgid "Reason"
 msgstr "Reden"
 
@@ -776,6 +764,12 @@ msgstr "camerabediening stoppen"
 
 msgid "pause"
 msgstr "pauze"
+
+msgid "paused"
+msgstr "gepauzeerd"
+
+msgid "tour"
+msgstr "rondgang"
 
 msgid "Camera file (direct mode)"
 msgstr "Camerabestand (rechtstreeks)"

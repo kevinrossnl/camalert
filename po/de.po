@@ -189,41 +189,20 @@ msgstr "Noch keine Ereignisse"
 msgid "Play clip"
 msgstr "Clip abspielen"
 
-msgid "Source"
-msgstr "Quelle"
-
-msgid "Priority"
-msgstr "Priorität"
-
-msgid "Result"
-msgstr "Ergebnis"
-
 msgid "Motion"
 msgstr "Bewegung"
 
 msgid "Cameras"
 msgstr "Kameras"
 
-msgid "EXIT = close"
-msgstr "EXIT = schließen"
-
 msgid "%s - camera not reachable"
 msgstr "%s - Kamera nicht erreichbar"
-
-msgid "paused"
-msgstr "angehalten"
-
-msgid "tour"
-msgstr "Rundgang"
-
-msgid "GREEN = live"
-msgstr "GRÜN = live"
 
 msgid "Camera: %s"
 msgstr "Kamera: %s"
 
-msgid "PTZ %s: arrows = move, CH+/CH- = zoom, OK = home, EXIT = done"
-msgstr "PTZ %s: Pfeile = bewegen, CH+/CH- = Zoom, OK = Grundstellung, EXIT = fertig"
+msgid "Camera control (PTZ)"
+msgstr "Kamerasteuerung (PTZ)"
 
 msgid "CamAlert %s is available (installed: %s).\nUpdate via the software update or: opkg update && opkg upgrade"
 msgstr "CamAlert %s ist verfügbar (installiert: %s).\nUpdate über die Software-Aktualisierung oder: opkg update && opkg upgrade"
@@ -747,6 +726,15 @@ msgstr "Zeit"
 msgid "Camera"
 msgstr "Kamera"
 
+msgid "Source"
+msgstr "Quelle"
+
+msgid "Priority"
+msgstr "Priorität"
+
+msgid "Result"
+msgstr "Ergebnis"
+
 msgid "Reason"
 msgstr "Grund"
 
@@ -776,6 +764,12 @@ msgstr "Kamerasteuerung beenden"
 
 msgid "pause"
 msgstr "Pause"
+
+msgid "paused"
+msgstr "angehalten"
+
+msgid "tour"
+msgstr "Rundgang"
 
 msgid "Camera file (direct mode)"
 msgstr "Kameradatei (direkt)"

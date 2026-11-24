@@ -188,40 +188,19 @@ msgstr ""
 msgid "Play clip"
 msgstr ""
 
-msgid "Source"
-msgstr ""
-
-msgid "Priority"
-msgstr ""
-
-msgid "Result"
-msgstr ""
-
 msgid "Motion"
 msgstr ""
 
 msgid "Cameras"
 msgstr ""
 
-msgid "EXIT = close"
-msgstr ""
-
 msgid "%s - camera not reachable"
-msgstr ""
-
-msgid "paused"
-msgstr ""
-
-msgid "tour"
-msgstr ""
-
-msgid "GREEN = live"
 msgstr ""
 
 msgid "Camera: %s"
 msgstr ""
 
-msgid "PTZ %s: arrows = move, CH+/CH- = zoom, OK = home, EXIT = done"
+msgid "Camera control (PTZ)"
 msgstr ""
 
 msgid "CamAlert %s is available (installed: %s).\nUpdate via the software update or: opkg update && opkg upgrade"
@@ -746,6 +725,15 @@ msgstr ""
 msgid "Camera"
 msgstr ""
 
+msgid "Source"
+msgstr ""
+
+msgid "Priority"
+msgstr ""
+
+msgid "Result"
+msgstr ""
+
 msgid "Reason"
 msgstr ""
 
@@ -774,6 +762,12 @@ msgid "end camera control"
 msgstr ""
 
 msgid "pause"
+msgstr ""
+
+msgid "paused"
+msgstr ""
+
+msgid "tour"
 msgstr ""
 
 msgid "Camera file (direct mode)"

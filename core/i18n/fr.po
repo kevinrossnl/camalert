@@ -252,18 +252,6 @@ msgstr "Aucun événement pour l'instant"
 msgid "Play clip"
 msgstr "Lire le clip"
 
-#: e2 kodi:30530
-msgid "Source"
-msgstr "Source"
-
-#: e2 kodi:30139 kodi:30531 ha:services.show.fields.priority.name
-msgid "Priority"
-msgstr "Priorité"
-
-#: e2 kodi:30532
-msgid "Result"
-msgstr "Résultat"
-
 #: e2
 msgid "Motion"
 msgstr "Mouvement"
@@ -272,33 +260,17 @@ msgstr "Mouvement"
 msgid "Cameras"
 msgstr "Caméras"
 
-#: e2
-msgid "EXIT = close"
-msgstr "EXIT = fermer"
-
 #: e2 kodi:30254
 msgid "%s - camera not reachable"
 msgstr "%s - caméra injoignable"
-
-#: e2 kodi:30190 kodi:30547
-msgid "paused"
-msgstr "en pause"
-
-#: e2 kodi:30191 kodi:30548
-msgid "tour"
-msgstr "ronde"
-
-#: e2
-msgid "GREEN = live"
-msgstr "VERT = direct"
 
 #: e2 kodi:30180
 msgid "Camera: %s"
 msgstr "Caméra : %s"
 
 #: e2
-msgid "PTZ %s: arrows = move, CH+/CH- = zoom, OK = home, EXIT = done"
-msgstr "PTZ %s : flèches = déplacer, CH+/CH- = zoom, OK = position d'origine, EXIT = terminé"
+msgid "Camera control (PTZ)"
+msgstr "Contrôle de la caméra (PTZ)"
 
 #: e2
 msgid "CamAlert %s is available (installed: %s).\nUpdate via the software update or: opkg update && opkg upgrade"
@@ -996,6 +968,18 @@ msgstr "Heure"
 msgid "Camera"
 msgstr "Caméra"
 
+#: e2 kodi:30530
+msgid "Source"
+msgstr "Source"
+
+#: e2 kodi:30139 kodi:30531 ha:services.show.fields.priority.name
+msgid "Priority"
+msgstr "Priorité"
+
+#: e2 kodi:30532
+msgid "Result"
+msgstr "Résultat"
+
 #: e2 kodi:30533
 msgid "Reason"
 msgstr "Raison"
@@ -1035,6 +1019,14 @@ msgstr "quitter le contrôle de la caméra"
 #: e2 kodi:30546
 msgid "pause"
 msgstr "pause"
+
+#: e2 kodi:30190 kodi:30547
+msgid "paused"
+msgstr "en pause"
+
+#: e2 kodi:30191 kodi:30548
+msgid "tour"
+msgstr "ronde"
 
 #: e2 kodi:30022
 msgid "Camera file (direct mode)"

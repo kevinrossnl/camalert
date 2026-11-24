@@ -51,7 +51,7 @@ class TestEventValues(unittest.TestCase):
         self.assertTrue(set(p.LEGACY_REASONS.values()) <= set(p.REASONS))
 
     def test_every_reason_the_players_set_today_has_a_code(self):
-        """The English reason texts in the players (before #41) all map to a code, so the player round can switch."""
+        """Every reason the players set (codes since #41; English texts before) maps to a code."""
         texts = set()
         for path in glob.glob(os.path.join(_paths.ENIGMA2, "*.py")) + glob.glob(os.path.join(_paths.KODI_LIB, "*.py")):
             with open(path, encoding="utf-8") as f:
@@ -67,7 +67,7 @@ class TestEventValues(unittest.TestCase):
                     if isinstance(n, ast.Constant) and isinstance(n.value, str) and id(n) not in keys and \
                             n.value not in ("", "ignore", "error"):
                         texts.add(n.value)
-        self.assertIn("do not disturb", texts)
+        self.assertIn("dnd", texts)
         for t in texts:
             self.assertIn(p.parse_reason(t)[0], p.REASONS, t)
 

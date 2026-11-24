@@ -189,41 +189,20 @@ msgstr "Ancora nessun evento"
 msgid "Play clip"
 msgstr "Riproduci clip"
 
-msgid "Source"
-msgstr "Origine"
-
-msgid "Priority"
-msgstr "Priorità"
-
-msgid "Result"
-msgstr "Risultato"
-
 msgid "Motion"
 msgstr "Movimento"
 
 msgid "Cameras"
 msgstr "Telecamere"
 
-msgid "EXIT = close"
-msgstr "EXIT = chiudi"
-
 msgid "%s - camera not reachable"
 msgstr "%s - telecamera non raggiungibile"
-
-msgid "paused"
-msgstr "in pausa"
-
-msgid "tour"
-msgstr "giro"
-
-msgid "GREEN = live"
-msgstr "VERDE = live"
 
 msgid "Camera: %s"
 msgstr "Telecamera: %s"
 
-msgid "PTZ %s: arrows = move, CH+/CH- = zoom, OK = home, EXIT = done"
-msgstr "PTZ %s: frecce = muovi, CH+/CH- = zoom, OK = posizione iniziale, EXIT = fine"
+msgid "Camera control (PTZ)"
+msgstr "Controllo telecamera (PTZ)"
 
 msgid "CamAlert %s is available (installed: %s).\nUpdate via the software update or: opkg update && opkg upgrade"
 msgstr "CamAlert %s è disponibile (installato: %s).\nAggiorna tramite l'aggiornamento software o: opkg update && opkg upgrade"
@@ -747,6 +726,15 @@ msgstr "Ora"
 msgid "Camera"
 msgstr "Telecamera"
 
+msgid "Source"
+msgstr "Origine"
+
+msgid "Priority"
+msgstr "Priorità"
+
+msgid "Result"
+msgstr "Risultato"
+
 msgid "Reason"
 msgstr "Motivo"
 
@@ -776,6 +764,12 @@ msgstr "terminare il controllo telecamera"
 
 msgid "pause"
 msgstr "pausa"
+
+msgid "paused"
+msgstr "in pausa"
+
+msgid "tour"
+msgstr "giro"
 
 msgid "Camera file (direct mode)"
 msgstr "File telecamere (diretto)"

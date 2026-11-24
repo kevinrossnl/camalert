@@ -19,7 +19,8 @@ from twisted.internet import threads
 from . import _, __version__
 from .camalert_core.obs.camlog import LOG
 from .display import Controller, all_camera_names, camera_urls, devices, log, open_url
-from .camalert_core.events import diag_line, event_line
+from .camalert_core import present
+from .camalert_core.events import diag_line
 from .camalert_core.obs.log import redact
 from .camalert_core.triggers.frigate import frigate_clip_url
 from .camalert_core.urls import normalize_server, valid_port
@@ -78,7 +79,7 @@ def collect():
         lines.append(diag_line(mqtt.connected(), _("MQTT connected") if mqtt.connected() else _("MQTT not connected")))
     if ctl and ctl.last_caller:
         at, host, source = ctl.last_caller
-        lines.append(diag_line(True, _("Last API call %s from %s (%s)") % (time.strftime("%d-%m %H:%M", time.localtime(at)), host,
+        lines.append(diag_line(True, _("Last API call %s from %s (%s)") % (present.event_time(at, ui_language()), host,
                                                                          "Home Assistant" if source == "ha" else source)))
     else:
         lines.append(diag_line(None, _("No API call since the last start")))
@@ -90,6 +91,15 @@ def collect():
     lines.append(diag_line(LOG.path is not None or c.log_level.value == "off",
                            _("Log: %s") % (LOG.path or _("off"))))
     return lines
+
+
+def ui_language():
+    """Language of the receiver menus ('nl_NL'), for the date format of the event list."""
+    try:
+        from Components.Language import language
+        return language.getLanguage()
+    except Exception:
+        return None
 
 
 def _image():
@@ -145,7 +155,8 @@ class EventsScreen(Screen):
         Screen.__init__(self, session)
         self.setTitle(_("CamAlert events"))
         self.events = list(Controller.instance.events) if Controller.instance else []
-        self["list"] = MenuList([(event_line(e), i) for i, e in enumerate(self.events)] or [(_("No events yet"), -1)])
+        self["list"] = MenuList([(present.event_line(e, _), i) for i, e in enumerate(self.events)]
+                                or [(_("No events yet"), -1)])
         self["photo"] = Pixmap()
         self["info"] = Label("")
         self["key_red"] = StaticText(_("Close"))
@@ -164,9 +175,7 @@ class EventsScreen(Screen):
         e = self.current()
         if not e:
             return
-        self["info"].setText("%s\n%s: %s\n%s: %s\n%s: %s%s" % (
-            time.strftime("%d-%m-%Y %H:%M:%S", time.localtime(e["time"])), _("Source"), e["source"],
-            _("Priority"), e["priority"], _("Result"), e["action"], ("\n" + e["reason"]) if e.get("reason") else ""))
+        self["info"].setText("\n".join("%s: %s" % row for row in present.event_details(e, _, ui_language())))
         path = e.get("snapshot")
         if path and os.path.exists(path):
             self.picload.setPara((int(540 * self.f), int(304 * self.f), 1, 1, False, 1, "#ff000000"))

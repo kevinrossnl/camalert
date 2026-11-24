@@ -26,6 +26,7 @@ from .camalert_core.access import url_target
 from .camalert_core.cameras import (display_name, known_camera, live_stream_name, neighbour, parse_camera_file,
                                     parse_cams, parse_orientation, parse_refresh, parse_titles, refresh_delay, slug,
                                     title_for)
+from .camalert_core import present
 from .camalert_core.events import add_event, event_title
 from .camalert_core.keymap import button_event
 from .camalert_core.layout import grid, strip_geometry, title_font, window_geometry
@@ -40,6 +41,27 @@ from .keys import action_map_args, button_for, key_action, ptz_key
 from .services import chime_command, github_repo, is_media_ref, service_ref, stream_from_ref
 
 PHOTO = "/tmp/camalert.jpg"
+# ◀ ▶ ▲ ▼ in key hints: skin fonts rarely have them, Enigma2 draws them with its fallback font (openATV, OpenPLi:
+# /usr/share/fonts/fallback.font). Without that font the hints use < > ^ v.
+GLYPHS = os.path.exists("/usr/share/fonts/fallback.font")
+
+
+def hint(context, stream=None, without=()):
+    """Translated key hint of a CamAlert screen, from the core key map (#41). without: hint labels to leave out."""
+    c = config.plugins.camalert
+    ctl = Controller.instance
+    has_ptz = bool(stream) and ctl is not None and ctl.has_ptz(stream)
+    text = present.key_hint("enigma2", context, _, ptz_key=c.ptz_key.value, has_ptz=has_ptz, glyphs=GLYPHS)
+    skip = [" = " + _(label) for label in without]
+    return present.SEPARATOR.join(p for p in text.split(present.SEPARATOR) if not any(p.endswith(s) for s in skip))
+
+
+def window_hint(stream):
+    return hint("window", stream)
+
+
+def with_hint(title, text):
+    return title + (present.SEPARATOR + text if text else "")
 
 
 def log(*args, **kw):
@@ -212,7 +234,7 @@ class MosaicScreen(Screen):
         parts.append("</screen>")
         self.skin = "".join(parts)
         Screen.__init__(self, session)
-        self["title"] = Label(_("Cameras") + "  ·  " + _("EXIT = close"))
+        self["title"] = Label(_("Cameras") + present.SEPARATOR + hint("mosaic"))
         self.tiles = []
         for i, ((name, title, url), (x, y, w, h)) in enumerate(zip(cams, tiles)):
             self["tile%d" % i] = Pixmap()
@@ -244,7 +266,7 @@ class MosaicScreen(Screen):
 class PhotoWindow(Screen):
     """Small always-on-top window that keeps fetching a fresh snapshot from go2rtc (about one every 1-2 s)."""
 
-    def __init__(self, session, stream, url, title=None, hint=False):
+    def __init__(self, session, stream, url, title=None, keys=False):
         c = config.plugins.camalert
         size = getDesktop(0).size()
         x, y, w, h, t = window_geometry(c.position.value, c.size.value, size.width(), size.height(), c.title_size.value)
@@ -256,7 +278,8 @@ class PhotoWindow(Screen):
         </screen>""" % (x, y, w, h + t, w, h + t, int(10 * f), w - int(20 * f), t, title_font(c.title_size.value, size.width()), t, w, h)
         Screen.__init__(self, session)
         self.stream, self.url, self.size = stream, url, (w, h)
-        self.title_text = (title or display_name(stream)) + ("   OK = live  < >  EXIT" if hint else "")
+        self.base_title = title or display_name(stream)
+        self.title_text = with_hint(self.base_title, window_hint(stream) if keys else "")
         self["title"] = Label(self.title_text)
         self["photo"] = Pixmap()
         self.picload = ePicLoad()
@@ -307,7 +330,7 @@ class PhotoWindow(Screen):
             return
         if self.failures == 2:  # show it instead of a black or frozen window
             STATS["unreachable"] += 1
-            self["title"].setText(_("%s - camera not reachable") % self.title_text.split("   ")[0])
+            self["title"].setText(_("%s - camera not reachable") % self.base_title)
         reactor.callLater(2, self.fetch)
 
     def stop(self):
@@ -320,7 +343,7 @@ class PhotoWindow(Screen):
 class StripWindow(Screen):
     """One corner window with 2-4 cameras (below each other, next to each other or 2 x 2); TV stays visible."""
 
-    def __init__(self, session, cams, hint=False, label=None):
+    def __init__(self, session, cams, keys=False, label=None):
         """cams: list of (name, title, snapshot url)."""
         c = config.plugins.camalert
         size = getDesktop(0).size()
@@ -340,7 +363,8 @@ class StripWindow(Screen):
         Screen.__init__(self, session)
         self.names = [n for n, _t, _u in cams]
         self.stream = ",".join(self.names)
-        self["title"] = Label(event_title("  ·  ".join(t for _n, t, _u in cams), label) + ("   OK = live  EXIT" if hint else ""))
+        self["title"] = Label(with_hint(event_title("  ·  ".join(t for _n, t, _u in cams), label),
+                                        hint("window", self.names[0], without=("other camera",)) if keys else ""))
         self.tiles = []
         for i, ((name, title, url), (tx, ty, tw, th)) in enumerate(zip(cams, tiles)):
             self["tile%d" % i] = Pixmap()
@@ -562,8 +586,8 @@ class TourScreen(Screen):
 
     def load(self):
         name, title, url = self.cams[self.index]
-        state = _("paused") if self.hold else _("tour")
-        self["title"].setText(" %s   (%d/%d, %s)   < >  OK  %s  EXIT " % (title, self.index + 1, len(self.cams), state, _("GREEN = live")))
+        self["title"].setText(" %s " % with_hint(present.tour_status(title, self.index + 1, len(self.cams), self.hold, _),
+                                                  hint("tour", name)))
         size = getDesktop(0).size()
         url = url.replace("width=640", "width=1280") if "/api/frame.jpeg" in url else url
         self.tile = Tile(self, "tile0", name, url, (size.width(), size.height()))
@@ -681,15 +705,15 @@ class Controller(object):
         """Receiver rules: do not disturb, active hours, recording, media playback. Logs and returns True if blocked."""
         c = config.plugins.camalert
         if dnd_blocks(priority, c.dnd.value, c.dnd_level.value):
-            self.reason = "do not disturb"
+            self.reason = present.reason("dnd")
             return True
         t = time.localtime()
         in_hours = in_time_window((t.tm_hour, t.tm_min), clock_tuple(c.from_time.value), clock_tuple(c.until_time.value))
         recording, media = bool(self.session.nav.getRecordings()), self.playing(c.skip_playing.value)
         if blocked_by_rules(priority, c.limit_hours.value, in_hours, c.skip_recording.value, recording,
                             c.skip_playing.value != "off", media):
-            self.reason = ("outside active hours" if c.limit_hours.value and not in_hours else
-                           "recording" if c.skip_recording.value and recording else "playing")
+            self.reason = present.reason("outside_hours" if c.limit_hours.value and not in_hours else
+                                         "recording" if c.skip_recording.value and recording else "playing")
             return True
         return False
 
@@ -714,7 +738,7 @@ class Controller(object):
         on_screen = (self.window.stream if self.window else None) == cam
         try:
             if not on_screen and pick_priority(priority) != "alarm" and in_cooldown(self.last_shown.get(cam), time.time(), wait):
-                self.reason, result = "cooldown (%d s)" % wait, "ignore"
+                self.reason, result = present.reason("cooldown", wait), "ignore"
             else:
                 result = self._show(stream, seconds, mode, priority)
         finally:
@@ -776,9 +800,9 @@ class Controller(object):
                     log("wake failed:", e)
                     return "ignore"
                 reactor.callLater(6, self.show, stream, seconds, mode, priority, "wake")
-                self.reason = "receiver was in standby: woken up"
+                self.reason = present.reason("woken")
                 return "wake"
-            self.reason = "standby"
+            self.reason = present.reason("standby")
             return "ignore"
         inStandby = None
         cams = parse_cams(stream)
@@ -791,10 +815,11 @@ class Controller(object):
         stream = stream or c.camera.value
         if not stream:
             log("no camera given and no default camera set")
+            self.reason = present.reason("no_camera")
             return "error"
         fresh = time.time() - self._names_at < 60
         if not known_camera(stream, self._names if fresh else []):
-            self.reason = "unknown camera"
+            self.reason = present.reason("unknown_camera")
             return "error"
         if not fresh:
             self.refresh_names()  # camera list older than a minute: refresh it in the background
@@ -802,7 +827,7 @@ class Controller(object):
         mode = pick_mode(mode, c.mode.value)
         urls = camera_urls(stream)
         if not urls:
-            self.reason = "unknown camera or no valid go2rtc address"
+            self.reason = present.reason("no_address")
             return "error"
         live_url, snap_url, title = urls
         title = event_title(title, self.label)
@@ -816,7 +841,7 @@ class Controller(object):
         log("request", stream, seconds, mode, "->", action, level="verbose")
         reactor.callLater(0.5, _notify)
         if action == "ignore":
-            self.reason = "already on screen"
+            self.reason = present.reason("on_screen")
             return action
         pause = action == "show" and not self.paused and \
             should_pause(c.pause_tv.value, mode, self.current_stream() is not None)
@@ -966,7 +991,7 @@ class Controller(object):
             self.window.extend(120)
         self.ptz_stream = name
         self.ptz_overlay = self.session.instantiateDialog(
-            PtzOverlay, _("PTZ %s: arrows = move, CH+/CH- = zoom, OK = home, EXIT = done") % name)
+            PtzOverlay, "%s: %s   %s" % (_("Camera control (PTZ)"), display_name(name), hint("ptz", name)))
         self.ptz_overlay.show()
         log("PTZ mode on:", name)
 
@@ -1081,7 +1106,9 @@ class Controller(object):
             return
         w = self.window
         w.stream, w.url = target, urls[1]
-        w["title"].setText(urls[2] + "   OK = live  < >  EXIT")
+        w.base_title = urls[2]
+        w.title_text = with_hint(urls[2], window_hint(target))
+        w["title"].setText(w.title_text)
         w.extend(int(config.plugins.camalert.duration.value))
 
     def refresh_names(self):

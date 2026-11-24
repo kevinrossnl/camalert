@@ -1,6 +1,10 @@
 # Changelog
 
 ## Unreleased
+- Enigma2: key hints of the photo window, multi-camera window, mosaic, tour and camera control are built from the
+  core key map and translated (`camalert_core.present`, ◀ ▶ with the image's fallback font, otherwise < >); the event
+  list stores reason codes and shows source, priority, result and reason translated, dates in the menu
+  language's format (#41).
 - Enigma2: settings follow schema version 2 (#39): *Doorbell chime* off / doorbell and alarm / every request,
   *Not while playing* off / video / all (replaces the yes/no *Not while playing a recording or video*), Frigate and
   Foscam priority with *Alarm*, own display mode and duration for Frigate and Foscam, Foscam check interval

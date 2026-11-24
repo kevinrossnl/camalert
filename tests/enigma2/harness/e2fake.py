@@ -451,9 +451,9 @@ def _fromstring(el, text):
     """The value of a saved setting string (like Enigma2's ConfigElement.load); ValueError if it does not fit."""
     kind = type(el).__name__
     if kind == "ConfigYesNo":
-        if text not in ("true", "false"):
+        if text.lower() not in ("true", "false"):  # openATV writes True/False
             raise ValueError(text)
-        return text == "true"
+        return text.lower() == "true"
     if kind in ("ConfigSelection", "ConfigSelectionNumber"):
         value = int(text) if kind == "ConfigSelectionNumber" else text
         if value not in el.choices:
@@ -674,7 +674,8 @@ def install_screens(snap, profile):
 
     def cls_comp(name):
         if name in snap["classes"]:
-            return strict_class(snap, name, _Widget, {"__init__": lambda self, *a, **kw: _Widget.__init__(self, *a)},
+            return strict_class(snap, name, _Widget, {"__init__": lambda self, *a, **kw: _Widget.__init__(self, *a),
+                                                      "setText": _Widget.setText, "getText": _Widget.getText},
                                 keep=())
         return _Widget
     module("Components.Label", Label=cls_comp("Label"), MultiColorLabel=_Widget)

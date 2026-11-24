@@ -252,18 +252,6 @@ msgstr "Nog geen gebeurtenissen"
 msgid "Play clip"
 msgstr "Clip afspelen"
 
-#: e2 kodi:30530
-msgid "Source"
-msgstr "Bron"
-
-#: e2 kodi:30139 kodi:30531 ha:services.show.fields.priority.name
-msgid "Priority"
-msgstr "Prioriteit"
-
-#: e2 kodi:30532
-msgid "Result"
-msgstr "Resultaat"
-
 #: e2
 msgid "Motion"
 msgstr "Beweging"
@@ -272,33 +260,17 @@ msgstr "Beweging"
 msgid "Cameras"
 msgstr "Camera's"
 
-#: e2
-msgid "EXIT = close"
-msgstr "EXIT = sluiten"
-
 #: e2 kodi:30254
 msgid "%s - camera not reachable"
 msgstr "%s - camera niet bereikbaar"
-
-#: e2 kodi:30190 kodi:30547
-msgid "paused"
-msgstr "gepauzeerd"
-
-#: e2 kodi:30191 kodi:30548
-msgid "tour"
-msgstr "rondgang"
-
-#: e2
-msgid "GREEN = live"
-msgstr "GROEN = live"
 
 #: e2 kodi:30180
 msgid "Camera: %s"
 msgstr "Camera: %s"
 
 #: e2
-msgid "PTZ %s: arrows = move, CH+/CH- = zoom, OK = home, EXIT = done"
-msgstr "PTZ %s: pijlen = bewegen, CH+/CH- = zoom, OK = beginstand, EXIT = klaar"
+msgid "Camera control (PTZ)"
+msgstr "Camerabediening (PTZ)"
 
 #: e2
 msgid "CamAlert %s is available (installed: %s).\nUpdate via the software update or: opkg update && opkg upgrade"
@@ -996,6 +968,18 @@ msgstr "Tijd"
 msgid "Camera"
 msgstr "Camera"
 
+#: e2 kodi:30530
+msgid "Source"
+msgstr "Bron"
+
+#: e2 kodi:30139 kodi:30531 ha:services.show.fields.priority.name
+msgid "Priority"
+msgstr "Prioriteit"
+
+#: e2 kodi:30532
+msgid "Result"
+msgstr "Resultaat"
+
 #: e2 kodi:30533
 msgid "Reason"
 msgstr "Reden"
@@ -1035,6 +1019,14 @@ msgstr "camerabediening stoppen"
 #: e2 kodi:30546
 msgid "pause"
 msgstr "pauze"
+
+#: e2 kodi:30190 kodi:30547
+msgid "paused"
+msgstr "gepauzeerd"
+
+#: e2 kodi:30191 kodi:30548
+msgid "tour"
+msgstr "rondgang"
 
 #: e2 kodi:30022
 msgid "Camera file (direct mode)"

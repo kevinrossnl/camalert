@@ -163,7 +163,7 @@ class TestDocs(unittest.TestCase):
         self.assertIn('<import addon="xbmc.python" version="3.0.0"/>', addon)  # 3.0.0 = Kodi 19 Matrix
         claims = []
         for path in doc_files():
-            for m in re.finditer(r"Kodi (\d+)(?: \(\w+\))? (?:or newer|or later|\+)", open(path, encoding="utf-8").read()):
+            for m in re.finditer(r"Kodi (\d+)(?: \(\w+\))?(?: or newer| or later|\+)", open(path, encoding="utf-8").read()):
                 claims.append((rel(path), m.group(1)))
         self.assertTrue(claims)
         self.assertEqual([c for c in claims if c[1] != "19"], [])

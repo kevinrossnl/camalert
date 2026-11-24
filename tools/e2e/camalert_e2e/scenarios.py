@@ -65,9 +65,14 @@ def show(ctx, r):
     if not _answer(r, *ctx.camalert.action("show", cam=cam, mode="photo", sec=20, priority="normal", label="E2E")):
         return
     r.check(ctx.wait_window(cam) == cam, "status window = first camera")
-    img = ctx.screenshot("show")
-    if img is not None:
-        r.check(*geometry.check_photo(img, cam, ctx.colours[cam], ctx.settings))
+    if ctx.fake:
+        # the window appears before its picture is loaded (seen on a real receiver): try a few screenshots
+        for attempt in range(5):
+            ok, detail = geometry.check_photo(ctx.screenshot("show"), cam, ctx.colours[cam], ctx.settings)
+            if ok:
+                break
+            ctx.sleep(1.5)
+        r.check(ok, detail)
     ctx.camalert.hide()
     r.check(ctx.wait_window(None) is None, "hidden again")
 
@@ -182,7 +187,13 @@ def run(name, ctx):
     finally:
         try:
             ctx.camalert.hide()
-        except Exception:  # noqa: BLE001
-            pass
+            clear = getattr(ctx.device, "clear_screens", None)
+            if clear is not None:
+                ctx.sleep(1)
+                presses = clear()
+                if presses:
+                    r.check(False, "hide left %d screen(s) open, closed with EXIT (#63)" % presses)
+        except Exception as e:  # noqa: BLE001
+            r.check(False, "cleanup: %s: %s" % (e.__class__.__name__, e))
     r.seconds = ctx.clock() - start
     return r

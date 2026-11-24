@@ -57,7 +57,11 @@ Scenarios: `show` (photo window), `strip` (multi-camera window), `mosaic`, `tour
 5. **Fake cameras** (`cameras: fake`): the fake go2rtc (`tests/fakes/go2rtc.py`) and a fake Foscam PTZ camera
    (`tools/e2e/fake_ptz.py`) run on the receiver on `127.0.0.1`; the camera devices file is moved aside on the
    receiver itself (never copied off it) and replaced by the fake camera, so PTZ can never move a real camera.
-6. **Restore in `finally`**: hide, devices file, fake processes stopped, settings, do not disturb, channel,
+6. **Nothing left on screen.** Before the run the receiver's OSD must be clear (no menu or dialog: someone may be
+   using it). After every scenario and in the restore, the runner looks at the OSD (only counted, never stored) and
+   closes CamAlert screens that `hide` left open with EXIT; that counts as a failed check (#63: Enigma2 `hide` does
+   not close the tour or mosaic).
+7. **Restore in `finally`**: hide, close leftover screens, devices file, fake processes stopped, settings, do not disturb, channel,
    volume and mute (read back), standby. `--restore last` does the same from the state file after a crash.
 
 ## Checks and report

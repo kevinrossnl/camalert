@@ -54,9 +54,12 @@ class SimController(object):
         self.on_change()
         return "show"
 
+    keeps = ()  # Enigma2 today: ("tour", "mosaic") stay open on hide (#63)
+
     def hide(self, resume=True):
         self.calls.append(("hide",))
-        self.screen = None
+        if not (self.screen and self.screen[0] in self.keeps):
+            self.screen = None
         self.on_change()
 
     def mosaic(self, streams=None, seconds=0):
@@ -188,6 +191,9 @@ class FakeBox(object):
             self.devices = None
         return self.backup is None
 
+    def cleanup(self):
+        self.files = {}
+
     def read_ptz_calls(self):
         return "\n".join(self.ptz)
 
@@ -206,7 +212,7 @@ class Receiver(object):
         self.timers, self.mute_works, self.set0_works = list(timers), mute_works, set0_works
         self.service = "1:0:19:1:1:1:C00000:0:0:0:"
         self.saved = dict(saved or {})
-        self.saveconfig_calls, self.grabs = [], 0
+        self.saveconfig_calls, self.grabs, self.blank_grabs, self.keys = [], 0, 0, []
         self.ctl = SimController(clock, self.box)
         self.api = api_server(Backend(self.ctl, lambda: fakes.NAMES if "127.0.0.1" in self.saved.get("server", "")
                                       else ["porch", "shed"]))
@@ -301,6 +307,11 @@ class Receiver(object):
         if path == "/api/saveconfig":
             key, value = q["key"][len(PREFIX):], q["value"]
             self.saveconfig_calls.append((key, value))
+            if isinstance(schema.defaults("enigma2")[key], bool):
+                # like OpenWebif saveConfig: a boolean is True only for exactly "true"; /api/settings shows "True"
+                value = "True" if value == "true" else "False"
+                if (value == "True") == schema.defaults("enigma2")[key]:
+                    value = schema_text(key)
             if value == schema_text(key):
                 self.saved.pop(key, None)
             else:
@@ -309,11 +320,19 @@ class Receiver(object):
         if path == "/api/powerstate":
             self.standby = {"4": False, "5": True}.get(q.get("newstate"), self.standby)
             return ({"result": True, "instandby": self.standby},)
+        if path == "/api/remotecontrol":
+            self.keys.append(int(q.get("command", 0)))
+            if q.get("command") == "174":
+                self.ctl.screen = None
+            return ({"result": True},)
         if path == "/api/zap":
             self.service = q.get("sRef", self.service)
             return ({"result": True},)
         if path == "/grab":
             self.grabs += 1
+            if self.blank_grabs:  # the window is there, its picture is not loaded yet
+                self.blank_grabs -= 1
+                return (geometry.encode_png(SCREEN[0], SCREEN[1], lambda x, y: (0, 0, 0, 0)), "image/png")
             return (self.osd(), "image/png")
         return ({"result": False}, "application/json", 404)
 

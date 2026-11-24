@@ -115,6 +115,8 @@ class TestBox(unittest.TestCase):
         box.write_devices("x|foscam|127.0.0.1:2|e2e|e2e\n")
         self.assertTrue(box.restore_devices("existed"))
         self.assertEqual(box.read_ptz_calls(), "a\nb\n")
+        box.cleanup()
+        self.assertEqual(sh.cmds[-1][0], "rm -rf %s" % enigma2.BOX_DIR)
         self.assertTrue(all(enigma2.DEVICES_FILE not in (stdin or "") for _, stdin in sh.cmds))
         self.assertIn("cp -p %s %s" % (enigma2.DEVICES_FILE, enigma2.DEVICES_BACKUP), sh.cmds[4][0])
         with self.assertRaises(Skip):

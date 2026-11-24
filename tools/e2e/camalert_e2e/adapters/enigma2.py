@@ -22,10 +22,27 @@ DEVICES_BACKUP = DEVICES_FILE + ".e2e-backup"
 SAFE_SETTINGS = {"chime": "off", "ha_webhook": "", "cooldown": "", "limit_hours": False, "skip_playing": "off",
                  "skip_recording": False, "alarm_wake": False, "frigate_enabled": False, "foscam_enabled": False}
 TIMER_MARGIN = 30 * 60
+KEY_EXIT = 174
+OSD_BUSY = 50  # opaque OSD samples (every 8th pixel) that mean a menu, dialog or CamAlert screen is open
 
 
 def config_text(value):
     return ("true" if value else "false") if isinstance(value, bool) else str(value)
+
+
+def restore_text(key, original, defaults):
+    """The value to send to saveconfig to get `original` back. /api/settings shows booleans as 'True'/'False',
+    but saveconfig only takes exactly 'true' as true (anything else is false): found on a real receiver."""
+    default = defaults.get(key, "")
+    if original is None:
+        return config_text(default)
+    if isinstance(default, bool):
+        return "true" if str(original).strip().lower() in ("true", "1", "yes", "on") else "false"
+    return original
+
+
+def same_setting(a, b):
+    return a == b or (a is not None and b is not None and str(a).lower() == str(b).lower())
 
 
 class Box(object):
@@ -71,6 +88,9 @@ class Box(object):
             self.shell.run("rm -f %s" % DEVICES_FILE)
         out = self.shell.run("[ -e %s ] && echo left || echo ok" % DEVICES_BACKUP).strip()
         return out == "ok"
+
+    def cleanup(self):
+        self.shell.run("rm -rf %s" % BOX_DIR, check=False)
 
     def read_ptz_calls(self):
         return self.shell.run("cat %s/ptz-calls.txt 2>/dev/null; true" % BOX_DIR)
@@ -124,7 +144,8 @@ class Enigma2(object):
         timers = self.api("/api/timerlist").get("timers") or []
         soon = [t for t in timers if not int(t.get("disabled") or 0)
                 and int(t.get("begin") or 0) - TIMER_MARGIN <= now <= int(t.get("end") or 0)]
-        return {"standby": s["standby"], "recording": s["recording"], "timer_soon": len(soon), "playing": None}
+        return {"standby": s["standby"], "recording": s["recording"], "timer_soon": len(soon), "playing": None,
+                "osd_busy": not s["standby"] and self.osd_opaque() > OSD_BUSY}
 
     def snapshot(self):
         s = self.statusinfo()
@@ -232,6 +253,7 @@ class Enigma2(object):
                 problems.append("%s: %s" % (what, e))
 
         attempt("hide", self.camalert.hide)
+        attempt("close screens", self.clear_screens)
         if ch.get("devices_file") in ("existed", "absent"):
             def devices():
                 if not self.box.restore_devices(ch["devices_file"]):
@@ -241,9 +263,11 @@ class Enigma2(object):
             problems.append("devices file: state unknown, check %s on the receiver" % DEVICES_BACKUP)
         for name, pid in sorted((ch.get("processes") or {}).items()):
             attempt("stop fake %s" % name, lambda pid=pid: self.box.stop(pid))
+        if ch.get("processes"):
+            attempt("remove fake files", self.box.cleanup)
         schema = fakes.schema_defaults()
         for key, original in sorted((ch.get("settings") or {}).items()):
-            value = original if original is not None else config_text(schema.get(key, ""))
+            value = restore_text(key, original, schema)
             attempt("setting %s" % key, lambda key=key, value=value: self.set_config(key, value))
         if "dnd" in before:
             attempt("dnd", lambda: self._restore_dnd(before["dnd"]))
@@ -253,7 +277,7 @@ class Enigma2(object):
             attempt("standby", self._standby)
         try:
             after = self.saved_settings()
-            wrong = [k for k, orig in (ch.get("settings") or {}).items() if after.get(k) != orig]
+            wrong = [k for k, orig in (ch.get("settings") or {}).items() if not same_setting(after.get(k), orig)]
             if wrong:
                 problems.append("settings differ after restore: %s" % ", ".join(sorted(wrong)))
         except Exception as e:  # noqa: BLE001
@@ -279,6 +303,24 @@ class Enigma2(object):
 
     def _standby(self):
         self.api("/api/powerstate?newstate=5")
+
+    def osd_opaque(self):
+        """Number of opaque OSD samples (every 8th pixel); 0 = nothing drawn over the TV picture. Not stored."""
+        from .. import geometry
+        img = geometry.load(self.screenshot())
+        return sum(1 for y in range(0, img.height, 8) for x in range(0, img.width, 8) if img.pixel(x, y)[3] > 128)
+
+    def clear_screens(self):
+        """Closes CamAlert screens that hide left open (Enigma2 hide does not close tour/mosaic, #63) with EXIT.
+        Only used when the OSD was clear before the run (precondition). Returns the number of EXIT presses."""
+        for presses in range(5):
+            if self.osd_opaque() <= OSD_BUSY:
+                return presses
+            if presses == 4:
+                break
+            self.api("/api/remotecontrol?command=%d" % KEY_EXIT)
+            self.sleep(1.5)
+        raise SafetyError("screens still open after 4x EXIT")
 
     def screenshot(self):
         code, data = self.http(self.base + "/grab?format=png&mode=osd", headers=self.headers, raw=True, timeout=20)

@@ -49,6 +49,8 @@ def preconditions(profile, info, minute, options, ha=None, confirm=ask):
         out.append(Check("wake allowed", bool(options.get("wake")),
                          "" if options.get("wake") else "in standby: needs --wake (the TV may switch on via HDMI-CEC)"))
         return out
+    out.append(Check("no menu or dialog on screen", not info.get("osd_busy"),
+                     "the OSD shows something: someone may be using the receiver" if info.get("osd_busy") else ""))
     out.append(watching(profile, options, ha, confirm))
     return out
 

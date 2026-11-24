@@ -17,7 +17,7 @@ from camalert_e2e.runner import Runner, Timeout, restore_last
 from camalert_e2e.state import Store
 
 SAVED = {"server": "http://192.168.1.9:1984", "chime": "high", "ha_webhook": "http://192.168.1.5:8123/api/webhook/x",
-         "position": "bottom_left", "camera": "porch", "foscam_enabled": "true"}
+         "position": "bottom_left", "camera": "porch", "foscam_enabled": "True"}
 ALL = ["show", "strip", "mosaic", "tour", "dnd", "ptz", "ha"]
 
 
@@ -69,6 +69,7 @@ class TestEnigma2Run(Base):
         self.assertEqual(rx.box.devices, REAL_DEVICES)
         self.assertIsNone(rx.box.backup)
         self.assertEqual(rx.box.procs, {})
+        self.assertEqual(rx.box.files, {})
         self.assertIsNone(rx.ctl.screen)
         self.assertFalse(rx.ctl.dnd)
         self.assertNotIn("REAL CAMERA MOVED", [c[0] for c in rx.ctl.calls])
@@ -109,6 +110,39 @@ class TestEnigma2Run(Base):
         self.assertFalse(res["scenarios"][0]["checks"][2]["ok"])
         self.assertIn("box", res["scenarios"][0]["checks"][2]["detail"])
         self.assert_restored(rx)
+
+    def test_photo_loaded_late_is_waited_for(self):
+        rx = self.receiver()
+        rx.blank_grabs = 3  # the first grab is the "no menu on screen" precondition
+        res, _ = self.run_on(rx, scenarios=["show"])
+        self.assertEqual(res["scenarios"][0]["status"], "passed", res["scenarios"][0]["checks"])
+        self.assertEqual(len(res["scenarios"][0]["screenshots"]), 3)  # same file name, three attempts
+
+    def test_boolean_settings_come_back_true(self):
+        """/api/settings shows 'True'; saveconfig needs 'true' (real receiver): foscam_enabled must stay on."""
+        rx = self.receiver()
+        self.run_on(rx, scenarios=["dnd"])
+        self.assertEqual(rx.saved["foscam_enabled"], "True")
+        self.assertIn(("foscam_enabled", "true"), rx.saveconfig_calls)
+
+    def test_hide_that_keeps_the_tour_open_fails_and_is_cleaned_up(self):
+        rx = self.receiver()
+        rx.ctl.keeps = ("tour", "mosaic")
+        res, _ = self.run_on(rx, scenarios=["tour", "show"])
+        by = {s["name"]: s for s in res["scenarios"]}
+        self.assertEqual(by["tour"]["status"], "failed")
+        self.assertIn("#63", by["tour"]["checks"][-1]["detail"])
+        self.assertEqual(by["show"]["status"], "passed")
+        self.assertEqual(rx.keys, [174])
+        self.assert_restored(rx)
+
+    def test_menu_on_screen_skips(self):
+        rx = self.receiver()
+        rx.ctl.screen = ("mosaic", ["porch"], 0)  # something is drawn on the OSD
+        res, _ = self.run_on(rx, scenarios=["show"])
+        self.assertEqual(res["status"], "skipped")
+        self.assertIn("no menu or dialog", res["reason"])
+        self.assertEqual((rx.saveconfig_calls, rx.keys), ([], []))
 
     def test_already_muted_is_not_toggled(self):
         rx = self.receiver(muted=True)
@@ -264,7 +298,9 @@ class TestEnigma2Run(Base):
         by = {s["name"]: s for s in res["scenarios"]}
         self.assertEqual(by["ptz"]["status"], "skipped")
         self.assertEqual((by["show"]["status"], by["mosaic"]["status"]), ("passed", "passed"))
-        self.assertEqual(rx.grabs, 0)
+        # OSD grabs only to see whether something is drawn (never stored); no screenshot files
+        self.assertFalse(os.path.exists(os.path.join(self.tmp, data["run"], "screenshots")))
+        self.assertTrue(all(not s["screenshots"] for s in res["scenarios"]))
         self.assertNotIn("ptz", [c[0] for c in rx.ctl.calls])
         text = open(os.path.join(self.tmp, data["run"], "report.json")).read()
         self.assertNotIn("porch", text)  # real camera names are cam1, cam2 in the report

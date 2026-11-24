@@ -54,6 +54,9 @@ device (Kodi 19 or newer), controlled by Home Assistant, MQTT, Frigate, UniFi Pr
 - Settings with levels (basic / standard / advanced), so Kodi's settings level hides the expert settings; title
   sizes that work on every skin.
 - CamAlert repository add-on: install it once and Kodi updates CamAlert by itself.
+- The default camera password is no longer kept in Kodi's `settings.xml`: a password typed in *Camera password
+  (default)* moves into `devices.conf` and the field is emptied (passwords saved by test builds move on the first
+  start); **Change camera password (default)** shows whether one is stored and changes or removes it.
 
 ### Android TV / Fire TV app (preview, not part of the 1.0.0 release)
 
@@ -94,8 +97,10 @@ device (Kodi 19 or newer), controlled by Home Assistant, MQTT, Frigate, UniFi Pr
 
 - Access token compared in constant time, rate limiting, warning when the API is reachable from outside without a
   token, webhook only into the local network, certificate checks on by default in Home Assistant.
-- Camera passwords only in the devices file (readable for root only on Enigma2), never in settings or logs; logs,
-  diagnostics and the Home Assistant diagnostics download are redacted.
+- Camera passwords only in the devices file (readable for root only on Enigma2, for Kodi's user only on Kodi), never
+  in settings or logs – on Kodi the default camera password too (#55); logs, diagnostics and the Home Assistant
+  diagnostics download are redacted. Where every password and token is stored:
+  [docs](docs/integrations/api.md#where-passwords-and-tokens-are-stored).
 - Report vulnerabilities privately: see [SECURITY.md](SECURITY.md).
 
 ### Translations

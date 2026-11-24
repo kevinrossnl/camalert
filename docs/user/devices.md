@@ -7,11 +7,12 @@ CamAlert can talk to some cameras directly – without Home Assistant – to
 - **move** a camera (pan / tilt / zoom) from the remote control or Home Assistant: ONVIF (most brands) or Foscam.
 
 ## The devices file
-Camera passwords are kept in a separate file on the player (Kodi also has a default camera login in its settings),
-never in logs or diagnostics; see [where passwords are stored](../integrations/api.md#where-passwords-and-tokens-are-stored).
+Camera passwords are kept in a separate file on the player, never in the settings, logs or diagnostics; see [where passwords are stored](../integrations/api.md#where-passwords-and-tokens-are-stored).
 Enigma2: `/etc/enigma2/camalert_devices.conf` (make it readable for root only: `chmod 600`); Kodi: `devices.conf`
 in the add-on data folder (*Camera control › Create devices.conf* makes an example; an empty user/password there
-means the default camera login of the settings). One line per camera:
+means the default camera login: *Camera user (default)* in the settings and the default camera password, which Kodi
+keeps in this file on a line `*|default|*||<password>`; see [Kodi](../players/kodi.md#camera-control-ptz-and-foscam-alarms)).
+One line per camera:
 
 ```text
 # name|type|host:port|user|password

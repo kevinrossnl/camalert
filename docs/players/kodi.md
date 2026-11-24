@@ -30,15 +30,16 @@ After installing, open **Add-ons › My add-ons › Services › CamAlert › Co
 | Rules | cooldown per camera, do not disturb, only between certain times, *not while playing* (off / films and recordings / everything), wake up on alarm (screen on via HDMI-CEC) |
 | MQTT / Home Assistant | broker, login, discovery, name |
 | Triggers | [Frigate events](../integrations/frigate.md) (via MQTT), Foscam motion and sound alarms |
-| Camera control | default camera login for PTZ / Foscam, create `devices.conf` |
+| Camera control | default camera login for PTZ / Foscam (**Change camera password (default)**), create `devices.conf` |
 | API | port (8099), allowed callers, token, HTTPS |
 | Log and diagnostics | log level (off / errors / normal / verbose), remote syslog, **Diagnostics** (checks go2rtc, every camera's snapshot, API, MQTT, last caller) and the **event list** (last 20 requests with snapshot; OK shows the camera again or replays the Frigate clip) |
 
 Display also has the **title size** (small / normal / large) and the **doorbell chime** (off / doorbell and alarm / every
 request; it follows Kodi's volume and mute). Every setting with its default: [settings](../user/settings.md).
 
-Passwords are stored by Kodi in the add-on's own `settings.xml` in its data folder and are never written to the log
-(issue #55: document or move them).
+The API token and the MQTT password are stored by Kodi in the add-on's own `settings.xml` in its data folder; camera
+passwords only in `devices.conf` (next section). None of them is ever written to a log
+([where passwords are stored](../integrations/api.md#where-passwords-and-tokens-are-stored)).
 
 ## What you see
 
@@ -81,7 +82,13 @@ front_door|onvif|192.168.1.20:80|admin|secret
 garden|foscam|192.168.1.21:88|admin|secret
 ```
 
-Empty user/password = the login in the settings. In the photo window or live view press **MENU** (or **INFO**):
+Empty user/password = the default camera login: *Camera user (default)* from the settings and the default camera
+password. That password is **not** kept in Kodi's `settings.xml` (#55): type it in *Camera password (default)* and the
+add-on moves it into `devices.conf` as the line `*|default|*||<password>` (file readable for Kodi's user only, written
+atomically; camera lines are never changed) and empties the field again. Passwords saved there by an older version
+are moved the same way when the add-on starts. **Change camera password (default)** shows whether one is stored
+(`•••• (stored)`, never the password) and changes or removes it. Enigma2 skips that line (it has no default camera
+login). In the photo window or live view press **MENU** (or **INFO**):
 arrows pan and tilt, **CH+ / CH−** (or PAGE UP / DOWN) zoom, **OK** = home position, **BACK** leaves PTZ mode.
 
 ## Where things are

@@ -81,7 +81,7 @@ If your go2rtc address starts with `https://` (for example behind a reverse prox
 |---|---|---|---|---|
 | API access token | `/etc/enigma2/settings` | `settings.xml` in the add-on data folder | app settings (private app storage) | the integration's config entry (`.storage/core.config_entries`) |
 | MQTT password | `/etc/enigma2/settings` | `settings.xml` in the add-on data folder | app settings (private app storage) | – |
-| Camera logins (PTZ, Foscam, UniFi Protect console) | `/etc/enigma2/camalert_devices.conf` | `devices.conf` in the add-on data folder; the default camera login (*Camera user / password (default)*) in `settings.xml` | – (no camera control yet) | – |
+| Camera logins (PTZ, Foscam, UniFi Protect console) | `/etc/enigma2/camalert_devices.conf` | `devices.conf` in the add-on data folder, including the default camera password (#55: a password typed in *Camera password (default)* is moved there and the field is emptied); only the default camera user name stays in `settings.xml` | – (no camera control yet) | – |
 
 - These are plain text files on the player, like every other setting of the image, Kodi or Android. Anyone who can
   read them (root or ssh access to an Enigma2 receiver, the Kodi `userdata` folder, for example over a network share or in
@@ -91,7 +91,8 @@ If your go2rtc address starts with `https://` (for example behind a reverse prox
   logged goes through one redaction function.
 - Use separate logins with as few rights as possible: a camera user that may only view/move, a UniFi Protect user
   with *View Only* and *Restrict to local access only*, an MQTT user only for CamAlert. On Enigma2 make the devices
-  file readable for root only (`chmod 600`). Locations of the Kodi add-on data folder per system:
+  file readable for root only (`chmod 600`); the Kodi add-on writes its `devices.conf` readable for Kodi's user only
+  (0600 on Linux and LibreELEC). Locations of the Kodi add-on data folder per system:
   [Kodi](../players/kodi.md#where-things-are).
 
 ## Examples

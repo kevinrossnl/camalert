@@ -200,20 +200,3 @@ def stop():
     if _port is not None:
         _port.stopListening()
         _port = None
-CERT = "/etc/enigma2/camalert.crt"
-KEY = "/etc/enigma2/camalert.key"
-
-
-def ensure_certificate():
-    """Creates a self-signed certificate (10 years) for the HTTPS API if there is none yet."""
-    if os.path.exists(CERT) and os.path.exists(KEY):
-        return True
-    try:
-        subprocess.check_call(["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-days", "3650",
-                               "-subj", "/CN=CamAlert", "-keyout", KEY, "-out", CERT],
-                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        os.chmod(KEY, 0o600)
-        return True
-    except (OSError, subprocess.CalledProcessError) as e:
-        log("could not create certificate:", e)
-        return False

@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- Blueprint *CamAlert - doorbell on the players and an LG webOS TV* (#16): as the doorbell blueprint, plus a
+  notification with an optional snapshot on an LG TV through the LG webOS TV integration (only while the TV is on).
 - API (#63): `/camalert/status` reports `screen` (`none`, `photo`, `strip`, `notification`, `live`, `mosaic`,
   `tour`); capability `screen`. Enigma2: `hide` (and Home Assistant `camalert.hide`) now also closes the mosaic and
   the tour, also when several are stacked.

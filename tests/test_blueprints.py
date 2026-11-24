@@ -22,6 +22,10 @@ FROZEN = {
     "camalert_alarm.yaml": [("alarm_panel", None), ("players", None), ("camera", None), ("mode", "live"),
                             ("seconds", 300), ("label", "Alarm")],
     "camalert_button.yaml": [("button", "green"), ("players", None), ("camera", ""), ("action", None)],
+    "camalert_doorbell_webos.yaml": [("doorbell", None), ("players", None), ("camera", None), ("mode", "photo"),
+                                     ("seconds", 30), ("label", ""), ("webos_notify", None), ("message", ""),
+                                     ("snapshot_camera", ""), ("snapshot_file", "/media/camalert_webos.jpg"),
+                                     ("tv", "")],
 }
 # option labels = glossary terms (blueprints cannot be translated)
 MODE_OPTIONS = [{"label": "Photo window", "value": "photo"}, {"label": "Live view", "value": "live"},
@@ -39,7 +43,7 @@ class TestBlueprints(unittest.TestCase):
 
     def test_inputs_declared_and_used(self):
         files = glob.glob(os.path.join(_paths.BLUEPRINTS, "*.yaml"))
-        self.assertEqual(len(files), 4)
+        self.assertEqual(len(files), len(FROZEN))
         for f in files:
             d = self.load(f)
             used = set()
@@ -79,3 +83,10 @@ class TestBlueprints(unittest.TestCase):
         for keys in FROZEN.values():
             for key, _default in keys:
                 self.assertIn("`%s`" % key, readme, key)
+
+    def test_webos_snapshot_not_public(self):
+        """#16: the snapshot of the door must not land in www (served without login at /local/)."""
+        d = self.load(os.path.join(_paths.BLUEPRINTS, "camalert_doorbell_webos.yaml"))
+        default = d["blueprint"]["input"]["snapshot_file"]["default"]
+        self.assertNotIn("/www/", default)
+        self.assertTrue(default.startswith("/media/"))

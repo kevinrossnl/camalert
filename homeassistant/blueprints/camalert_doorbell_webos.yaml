@@ -1,0 +1,147 @@
+blueprint:
+  name: CamAlert - doorbell on the players and an LG webOS TV
+  description: >-
+    Like "doorbell or person at the door" (priority "high"), and also shows a notification with a snapshot on an LG
+    TV through the LG webOS TV integration (#16), e.g. a TV in another room without a player. Needs the CamAlert
+    integration and the LG webOS TV integration. Inputs: see homeassistant/blueprints/README.md.
+  domain: automation
+  source_url: https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_doorbell_webos.yaml
+  input:
+    doorbell:
+      name: Doorbell / person sensor
+      description: Doorbell (event or binary sensor) or person detection. You can pick several.
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - domain: [binary_sensor, event]
+    players:
+      name: Players (receivers / Kodi)
+      description: CamAlert players that show the camera (Enigma2 receivers in standby ignore it).
+      selector:
+        device:
+          integration: camalert
+          multiple: true
+    camera:
+      name: Camera
+      description: Camera name as in go2rtc, e.g. front_door.
+      selector:
+        text:
+    mode:
+      name: Display mode
+      default: photo
+      selector:
+        select:
+          options:
+            - {label: Photo window, value: photo}
+            - {label: Live view, value: live}
+            - {label: Notification, value: notify}
+    seconds:
+      name: Duration
+      default: 30
+      selector:
+        number: {min: 5, max: 300, step: 5, unit_of_measurement: s}
+    label:
+      name: Who/what (optional)
+      description: Text before the camera name in the title, e.g. Doorbell. Empty = none.
+      default: ""
+      selector:
+        text:
+    webos_notify:
+      name: LG TV notify action
+      description: >-
+        The notify action of the TV from the LG webOS TV integration, e.g. notify.lg_webos_tv_living_room
+        (Developer tools › Actions, search for "notify.").
+      selector:
+        text:
+    message:
+      name: LG TV message (optional)
+      description: Text of the notification. Empty = who/what and the camera name, e.g. "Doorbell - front_door".
+      default: ""
+      selector:
+        text:
+    snapshot_camera:
+      name: Snapshot camera (optional)
+      description: >-
+        Camera entity for the picture in the notification. Empty = text only. The snapshot is saved in
+        snapshot_file and replaced at every ring.
+      default: ""
+      selector:
+        entity:
+          filter:
+            - domain: camera
+    snapshot_file:
+      name: Snapshot file
+      description: >-
+        Where the snapshot is saved; the folder must be allowed (allowlist_external_dirs; the media folder is by
+        default). Not in www: everything there is public without login.
+      default: /media/camalert_webos.jpg
+      selector:
+        text:
+    tv:
+      name: LG TV (optional)
+      description: The TV's media player. When set, the notification is only sent while the TV is on.
+      default: ""
+      selector:
+        entity:
+          filter:
+            - integration: webostv
+              domain: media_player
+mode: single
+max_exceeded: silent
+variables:
+  label_in: !input label
+  camera_in: !input camera
+  webos_notify_in: !input webos_notify
+  message_in: !input message
+  snapshot_camera_in: !input snapshot_camera
+  snapshot_file_in: !input snapshot_file
+  tv_in: !input tv
+  webos_message: >-
+    {{ message_in | trim if message_in | trim else ((label_in | trim or 'Doorbell') ~ ' - ' ~ camera_in) }}
+  webos_action: >-
+    {% set a = webos_notify_in | trim %}{{ a if a.startswith('notify.') else 'notify.' ~ a }}
+triggers:
+  - trigger: state
+    entity_id: !input doorbell
+conditions:
+  - condition: template
+    value_template: >-
+      {{ trigger.to_state is not none and trigger.to_state.state not in ['unavailable', 'unknown', 'off']
+         and (trigger.to_state.domain == 'event' or trigger.to_state.state == 'on') }}
+actions:
+  - action: camalert.show
+    target:
+      device_id: !input players
+    data:
+      camera: !input camera
+      seconds: !input seconds
+      mode: !input mode
+      priority: high
+      label: "{{ label_in | trim }}"
+    continue_on_error: true
+  - if:
+      - condition: template
+        value_template: "{{ not tv_in or states(tv_in) not in ['off', 'unavailable', 'unknown'] }}"
+    then:
+      - if:
+          - condition: template
+            value_template: "{{ snapshot_camera_in | length > 0 }}"
+        then:
+          - action: camera.snapshot
+            target:
+              entity_id: "{{ snapshot_camera_in }}"
+            data:
+              filename: "{{ snapshot_file_in }}"
+            continue_on_error: true
+          - action: "{{ webos_action }}"
+            data:
+              message: "{{ webos_message }}"
+              data:
+                icon: "{{ snapshot_file_in }}"
+            continue_on_error: true
+        else:
+          - action: "{{ webos_action }}"
+            data:
+              message: "{{ webos_message }}"
+            continue_on_error: true

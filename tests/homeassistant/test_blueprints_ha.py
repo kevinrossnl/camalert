@@ -121,3 +121,51 @@ async def test_button(hass, player, blueprints):
     hass.bus.async_fire("camalert_button", {"device_id": device, "camera": "front_door", "button": "green"})
     await hass.async_block_till_done()
     assert len(done) == 1
+
+
+def _fake_webos(hass):
+    """A notify action as the LG webOS TV integration makes it, and a camera.snapshot that only records."""
+    calls = []
+
+    async def record(call):
+        calls.append((call.domain, call.service, dict(call.data)))
+    hass.services.async_register("notify", "lg_webos_tv_living_room", record)
+    hass.services.async_register("camera", "snapshot", record)
+    return calls
+
+
+async def test_doorbell_webos_with_snapshot(hass, player, blueprints):
+    entry = await setup_player(hass, player)
+    calls = _fake_webos(hass)
+    hass.states.async_set("binary_sensor.door", "off")
+    hass.states.async_set("media_player.lg_tv", "on")
+    await automations(hass, ("door", "camalert_doorbell_webos.yaml", {
+        "doorbell": ["binary_sensor.door"], "players": [player_device(hass, entry).id], "camera": "front_door",
+        "label": "Doorbell", "webos_notify": "notify.lg_webos_tv_living_room",
+        "snapshot_camera": "camera.front_door", "tv": "media_player.lg_tv"}))
+    hass.states.async_set("binary_sensor.door", "on")
+    await hass.async_block_till_done()
+    assert player.ctl.calls[-1] == ("show", "front_door", 30, "photo", "high", "ha", "Doorbell")
+    assert calls[0][:2] == ("camera", "snapshot")
+    assert calls[0][2]["filename"] == "/media/camalert_webos.jpg"
+    assert calls[1] == ("notify", "lg_webos_tv_living_room",
+                        {"message": "Doorbell - front_door", "data": {"icon": "/media/camalert_webos.jpg"}})
+
+
+async def test_doorbell_webos_text_only_and_tv_off(hass, player, blueprints):
+    entry = await setup_player(hass, player)
+    calls = _fake_webos(hass)
+    hass.states.async_set("binary_sensor.door", "off")
+    hass.states.async_set("media_player.lg_tv", "off")
+    await automations(hass, ("door", "camalert_doorbell_webos.yaml", {
+        "doorbell": ["binary_sensor.door"], "players": [player_device(hass, entry).id], "camera": "front_door",
+        "webos_notify": "lg_webos_tv_living_room", "message": "Someone at the door", "tv": "media_player.lg_tv"}))
+    hass.states.async_set("binary_sensor.door", "on")
+    await hass.async_block_till_done()
+    assert player.ctl.calls[-1][:2] == ("show", "front_door")
+    assert calls == []  # TV off: no notification, the players still show the camera
+    hass.states.async_set("binary_sensor.door", "off")
+    hass.states.async_set("media_player.lg_tv", "on")
+    hass.states.async_set("binary_sensor.door", "on")
+    await hass.async_block_till_done()
+    assert calls == [("notify", "lg_webos_tv_living_room", {"message": "Someone at the door"})]

@@ -1,0 +1,28 @@
+# Compatibility
+
+What is tested where. **CI** = automated tests with fake modules built from the real API of that image/version
+(`tests/compat/`), **box** = tested on a real receiver/player, **untested** = neither.
+
+## Enigma2 images
+
+| Image | Profile | Python | Status | Notes |
+|---|---|---|---|---|
+| openATV 7.x / 8.x | `openatv` | 3.12 (7.x), 3.13 (8.x) | CI + box (openATV 8.0.1 on Vu+ Uno 4K SE, Duo 4K, Uno 4K, Solo 4K) | |
+| OpenPLi 9.x / develop | `openpli` | 3.12+ | CI | |
+| OpenBH 5.x | `openbh` | 3.12+ | CI | |
+| VTi (Vu+) | `vti` | unknown | CI (assumed API) | VTi sources are not public; modelled with the OpenPLi API |
+| DreamOS (Dreambox OE 2.5 / 2.6) | `dreamos` | 2.7 | not supported | Python 2.7; `eTimer` has no `callback` list (only `timeout.connect`); no `eActionMap.unbindAction`; `ConfigListScreen` creates no `HelpWindow`/`VKeyIcon`; no `getCurrentlyPlayingServiceOrGroup` |
+
+The API snapshots (`tests/compat/fixtures/e2api/*.json`) are made with `tools/e2_api_snapshot.py` from the
+enigma2 sources of each image; the source and commit are in each file. Not covered by the fakes: the C++ part
+(`enigma` module, only the known differences are modelled), real skin rendering, remote control, video.
+
+## Kodi
+
+| Kodi | Status | Notes |
+|---|---|---|
+| 19 Matrix, 20 Nexus, 21 Omega, 22 Piers | CI: every Kodi call checked against Kodistubs of that version (`tests/compat/test_kodi_versions.py`) | known problem: #25 |
+| LibreELEC (Kodi 21) | box | |
+| Fire TV / Android | untested (#19) | different paths (`special://` only), no ffmpeg |
+
+Work in progress: CI matrix over Python 3.8-3.14, container smoke tests (headless Kodi, Enigma2 under Xvfb) - see issue #21.

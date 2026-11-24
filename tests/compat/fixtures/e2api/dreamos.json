@@ -1,0 +1,5216 @@
+{
+ "classes": {
+  "ActionMap": {
+   "attrs": [],
+   "file": "Components/ActionMap.py",
+   "methods": {
+    "__init__": [
+     "self",
+     "contexts=",
+     "actions=",
+     "prio="
+    ],
+    "action": [
+     "self",
+     "context",
+     "action"
+    ],
+    "checkBind": [
+     "self"
+    ],
+    "destroy": [
+     "self"
+    ],
+    "doBind": [
+     "self"
+    ],
+    "doUnbind": [
+     "self"
+    ],
+    "execBegin": [
+     "self"
+    ],
+    "execEnd": [
+     "self"
+    ],
+    "setEnabled": [
+     "self",
+     "enabled"
+    ],
+    "update": [
+     "self",
+     "contexts",
+     "actions",
+     "prio"
+    ]
+   },
+   "provides": []
+  },
+  "ChannelSelection": {
+   "attrs": [
+    "ALLOW_SUSPEND",
+    "IS_DIALOG",
+    "__module__",
+    "initialized",
+    "title"
+   ],
+   "file": "Screens/ChannelSelection.py",
+   "methods": {
+    "SingleServiceEPGClosed": [
+     "self",
+     "ret="
+    ],
+    "__doClose": [
+     "self",
+     "immediate="
+    ],
+    "__evServiceEnd": [
+     "self"
+    ],
+    "__evServiceStart": [
+     "self"
+    ],
+    "__execBegin": [
+     "self"
+    ],
+    "__init__": [
+     "self",
+     "session"
+    ],
+    "__onCreate": [
+     "self"
+    ],
+    "__onHide": [
+     "self"
+    ],
+    "__onHideFinished": [
+     "self"
+    ],
+    "__onShow": [
+     "self"
+    ],
+    "__repr__": [
+     "self"
+    ],
+    "__selectionChanged": [
+     "self"
+    ],
+    "_free": [
+     "self"
+    ],
+    "_initAnimations": [
+     "self"
+    ],
+    "_setEncoderService": [
+     "self"
+    ],
+    "addAlternativeServices": [
+     "self"
+    ],
+    "addBouquet": [
+     "self",
+     "bName",
+     "services"
+    ],
+    "addMarker": [
+     "self",
+     "name"
+    ],
+    "addServiceToBouquet": [
+     "self",
+     "dest",
+     "service="
+    ],
+    "addSummary": [
+     "self",
+     "summary"
+    ],
+    "addToHistory": [
+     "self",
+     "ref"
+    ],
+    "applySkin": [
+     "self"
+    ],
+    "atBegin": [
+     "self"
+    ],
+    "atEnd": [
+     "self"
+    ],
+    "buildBouquetID": [
+     "self",
+     "str"
+    ],
+    "buildTitleString": [
+     "self"
+    ],
+    "canAnimate": [
+     "self"
+    ],
+    "cancel": [
+     "self"
+    ],
+    "changeBouquet": [
+     "self",
+     "direction"
+    ],
+    "changeServiceCB": [
+     "self",
+     "direction",
+     "epg"
+    ],
+    "channelSelected": [
+     "self"
+    ],
+    "clearMarks": [
+     "self"
+    ],
+    "clearPath": [
+     "self"
+    ],
+    "close": [
+     "self",
+     "*retval"
+    ],
+    "copyCurrentToBouquetList": [
+     "self"
+    ],
+    "createGUIScreen": [
+     "self",
+     "parent",
+     "desktop",
+     "updateonly="
+    ],
+    "createSummary": [
+     "self"
+    ],
+    "deleteGUIScreen": [
+     "self"
+    ],
+    "disable": [
+     "self"
+    ],
+    "doClose": [
+     "self",
+     "immediate="
+    ],
+    "doCloseInternal": [
+     "self"
+    ],
+    "doContext": [
+     "self"
+    ],
+    "doMark": [
+     "self"
+    ],
+    "enable": [
+     "self",
+     "do_show="
+    ],
+    "endMarkedEdit": [
+     "self",
+     "abort"
+    ],
+    "enterPath": [
+     "self",
+     "ref",
+     "justSet="
+    ],
+    "execBegin": [
+     "self"
+    ],
+    "execEnd": [
+     "self"
+    ],
+    "exitContext": [
+     "self",
+     "close="
+    ],
+    "getBouquetList": [
+     "self"
+    ],
+    "getBouquetNumOffset": [
+     "self",
+     "bouquet"
+    ],
+    "getCurrentSelection": [
+     "self"
+    ],
+    "getCurrentServicePath": [
+     "self"
+    ],
+    "getMutableList": [
+     "self",
+     "root="
+    ],
+    "getRelatedScreen": [
+     "self",
+     "name"
+    ],
+    "getRoot": [
+     "self"
+    ],
+    "getServiceName": [
+     "self",
+     "ref"
+    ],
+    "getTitle": [
+     "self"
+    ],
+    "handleEditCancel": [
+     "self"
+    ],
+    "hide": [
+     "self"
+    ],
+    "historyBack": [
+     "self"
+    ],
+    "historyNext": [
+     "self"
+    ],
+    "ignoreSource": [
+     "self",
+     "name"
+    ],
+    "inBouquet": [
+     "self"
+    ],
+    "isBasePathEqual": [
+     "self",
+     "ref"
+    ],
+    "isEnabled": [
+     "self"
+    ],
+    "isPrevPathEqual": [
+     "self",
+     "ref"
+    ],
+    "keyAsciiCode": [
+     "self"
+    ],
+    "keyGoUp": [
+     "self"
+    ],
+    "keyNumber0": [
+     "self",
+     "num"
+    ],
+    "keyNumberGlobal": [
+     "self",
+     "number"
+    ],
+    "moveDown": [
+     "self"
+    ],
+    "moveUp": [
+     "self"
+    ],
+    "multibouquet_config_changed": [
+     "self",
+     "val"
+    ],
+    "neverAnimate": [
+     "self"
+    ],
+    "newServicePlayed": [
+     "self"
+    ],
+    "nextBouquet": [
+     "self"
+    ],
+    "nextMarker": [
+     "self"
+    ],
+    "pathUp": [
+     "self",
+     "justSet="
+    ],
+    "preEnterPath": [
+     "self",
+     "refstr"
+    ],
+    "prevBouquet": [
+     "self"
+    ],
+    "prevMarker": [
+     "self"
+    ],
+    "recallBouquetMode": [
+     "self"
+    ],
+    "recallPrevService": [
+     "self"
+    ],
+    "removeAlternativeServices": [
+     "self"
+    ],
+    "removeBouquet": [
+     "self"
+    ],
+    "removeCurrentService": [
+     "self"
+    ],
+    "removeModeStr": [
+     "self",
+     "str"
+    ],
+    "removeSummary": [
+     "self",
+     "summary"
+    ],
+    "renameEntry": [
+     "self",
+     "name"
+    ],
+    "restoreKeyboardMode": [
+     "self"
+    ],
+    "restoreRoot": [
+     "self"
+    ],
+    "saveChannel": [
+     "self",
+     "ref"
+    ],
+    "saveKeyboardMode": [
+     "self"
+    ],
+    "saveRoot": [
+     "self"
+    ],
+    "setCurrentSelection": [
+     "self",
+     "service"
+    ],
+    "setCurrentServicePath": [
+     "self",
+     "path"
+    ],
+    "setDesktop": [
+     "self",
+     "desktop"
+    ],
+    "setFocus": [
+     "self",
+     "o"
+    ],
+    "setHistoryPath": [
+     "self"
+    ],
+    "setKeyboardModeAscii": [
+     "self"
+    ],
+    "setKeyboardModeNone": [
+     "self"
+    ],
+    "setMode": [
+     "self"
+    ],
+    "setModeRadio": [
+     "self"
+    ],
+    "setModeTv": [
+     "self"
+    ],
+    "setRadioMode": [
+     "self"
+    ],
+    "setRoot": [
+     "self",
+     "root",
+     "justSet="
+    ],
+    "setShowHideAnimation": [
+     "self",
+     "animation_key"
+    ],
+    "setTitle": [
+     "self",
+     "title"
+    ],
+    "setTvMode": [
+     "self"
+    ],
+    "setZPosition": [
+     "self",
+     "z"
+    ],
+    "show": [
+     "self"
+    ],
+    "showAllServices": [
+     "self"
+    ],
+    "showEPGList": [
+     "self"
+    ],
+    "showFavourites": [
+     "self"
+    ],
+    "showProviders": [
+     "self"
+    ],
+    "showSatellites": [
+     "self"
+    ],
+    "startMarkedEdit": [
+     "self",
+     "type"
+    ],
+    "toggleMoveMarked": [
+     "self"
+    ],
+    "toggleMoveMode": [
+     "self"
+    ],
+    "updateEventInfo": [
+     "self"
+    ],
+    "zap": [
+     "self",
+     "nref=",
+     "root="
+    ]
+   },
+   "provides": [
+    "ChannelSelectBaseActions",
+    "ChannelSelectEPGActions",
+    "ChannelSelectEditActions",
+    "EncoderActions",
+    "ServiceEvent",
+    "Title",
+    "actions",
+    "key_blue",
+    "key_green",
+    "key_red",
+    "key_yellow",
+    "list"
+   ]
+  },
+  "ChoiceBox": {
+   "attrs": [
+    "ALLOW_SUSPEND",
+    "IS_DIALOG",
+    "__module__",
+    "title"
+   ],
+   "file": "Screens/ChoiceBox.py",
+   "methods": {
+    "__doClose": [
+     "self",
+     "immediate="
+    ],
+    "__init__": [
+     "self",
+     "session",
+     "title=",
+     "list=",
+     "keys=",
+     "selection=",
+     "skin_name=",
+     "windowTitle=",
+     "allow_cancel=",
+     "titlebartext="
+    ],
+    "__onHide": [
+     "self"
+    ],
+    "__onHideFinished": [
+     "self"
+    ],
+    "__onShow": [
+     "self"
+    ],
+    "__repr__": [
+     "self"
+    ],
+    "_free": [
+     "self"
+    ],
+    "_initAnimations": [
+     "self"
+    ],
+    "addSummary": [
+     "self",
+     "summary"
+    ],
+    "applySkin": [
+     "self"
+    ],
+    "canAnimate": [
+     "self"
+    ],
+    "cancel": [
+     "self"
+    ],
+    "close": [
+     "self",
+     "*retval"
+    ],
+    "createGUIScreen": [
+     "self",
+     "parent",
+     "desktop",
+     "updateonly="
+    ],
+    "createSummary": [
+     "self"
+    ],
+    "deleteGUIScreen": [
+     "self"
+    ],
+    "disable": [
+     "self"
+    ],
+    "doClose": [
+     "self",
+     "immediate="
+    ],
+    "doCloseInternal": [
+     "self"
+    ],
+    "down": [
+     "self"
+    ],
+    "enable": [
+     "self",
+     "do_show="
+    ],
+    "execBegin": [
+     "self"
+    ],
+    "execEnd": [
+     "self"
+    ],
+    "getRelatedScreen": [
+     "self",
+     "name"
+    ],
+    "getTitle": [
+     "self"
+    ],
+    "go": [
+     "self"
+    ],
+    "goEntry": [
+     "self",
+     "entry"
+    ],
+    "goKey": [
+     "self",
+     "key"
+    ],
+    "hide": [
+     "self"
+    ],
+    "ignoreSource": [
+     "self",
+     "name"
+    ],
+    "isEnabled": [
+     "self"
+    ],
+    "keyBlue": [
+     "self"
+    ],
+    "keyGreen": [
+     "self"
+    ],
+    "keyLeft": [
+     "self"
+    ],
+    "keyNumberGlobal": [
+     "self",
+     "number"
+    ],
+    "keyRed": [
+     "self"
+    ],
+    "keyRight": [
+     "self"
+    ],
+    "keyText": [
+     "self"
+    ],
+    "keyYellow": [
+     "self"
+    ],
+    "neverAnimate": [
+     "self"
+    ],
+    "removeSummary": [
+     "self",
+     "summary"
+    ],
+    "restoreKeyboardMode": [
+     "self"
+    ],
+    "saveKeyboardMode": [
+     "self"
+    ],
+    "setDesktop": [
+     "self",
+     "desktop"
+    ],
+    "setFocus": [
+     "self",
+     "o"
+    ],
+    "setKeyboardModeAscii": [
+     "self"
+    ],
+    "setKeyboardModeNone": [
+     "self"
+    ],
+    "setShowHideAnimation": [
+     "self",
+     "animation_key"
+    ],
+    "setTitle": [
+     "self",
+     "title"
+    ],
+    "setZPosition": [
+     "self",
+     "z"
+    ],
+    "show": [
+     "self"
+    ],
+    "up": [
+     "self"
+    ],
+    "updateSummary": [
+     "self",
+     "curpos="
+    ]
+   },
+   "provides": [
+    "Title",
+    "actions",
+    "list",
+    "summary_list",
+    "text"
+   ]
+  },
+  "ConfigClock": {
+   "attrs": [
+    "notifiers",
+    "notifiers_final",
+    "value"
+   ],
+   "file": "Components/config.py",
+   "methods": {
+    "__call__": [
+     "self",
+     "selected"
+    ],
+    "__init__": [
+     "self",
+     "default"
+    ],
+    "addEndNotifier": [
+     "self",
+     "notifier"
+    ],
+    "addNotifier": [
+     "self",
+     "notifier",
+     "initial_call=",
+     "immediate_feedback=",
+     "call_on_save_or_cancel="
+    ],
+    "cancel": [
+     "self"
+    ],
+    "changed": [
+     "self",
+     "save_or_cancel="
+    ],
+    "changedFinal": [
+     "self",
+     "save_or_cancel="
+    ],
+    "clearNotifiers": [
+     "self"
+    ],
+    "decrement": [
+     "self"
+    ],
+    "disableSave": [
+     "self"
+    ],
+    "fromstring": [
+     "self",
+     "value"
+    ],
+    "genText": [
+     "self"
+    ],
+    "getMulti": [
+     "self",
+     "selected"
+    ],
+    "getNotifiers": [
+     "self"
+    ],
+    "getNotifiersFinal": [
+     "self"
+    ],
+    "getText": [
+     "self"
+    ],
+    "getValue": [
+     "self"
+    ],
+    "handleKey": [
+     "self",
+     "key"
+    ],
+    "increment": [
+     "self"
+    ],
+    "isChanged": [
+     "self"
+    ],
+    "load": [
+     "self"
+    ],
+    "onDeselect": [
+     "self",
+     "session"
+    ],
+    "onSelect": [
+     "self",
+     "session"
+    ],
+    "removeNotifier": [
+     "self",
+     "notifier"
+    ],
+    "save": [
+     "self"
+    ],
+    "saveSingle": [
+     "self",
+     "v"
+    ],
+    "setNotifiers": [
+     "self",
+     "val"
+    ],
+    "setNotifiersFinal": [
+     "self",
+     "val"
+    ],
+    "setValue": [
+     "self",
+     "value"
+    ],
+    "tostring": [
+     "self",
+     "val"
+    ],
+    "validate": [
+     "self"
+    ],
+    "validatePos": [
+     "self"
+    ]
+   },
+   "provides": []
+  },
+  "ConfigInteger": {
+   "attrs": [
+    "notifiers",
+    "notifiers_final",
+    "value"
+   ],
+   "file": "Components/config.py",
+   "methods": {
+    "__call__": [
+     "self",
+     "selected"
+    ],
+    "__init__": [
+     "self",
+     "default",
+     "limits="
+    ],
+    "addEndNotifier": [
+     "self",
+     "notifier"
+    ],
+    "addNotifier": [
+     "self",
+     "notifier",
+     "initial_call=",
+     "immediate_feedback=",
+     "call_on_save_or_cancel="
+    ],
+    "cancel": [
+     "self"
+    ],
+    "changed": [
+     "self",
+     "save_or_cancel="
+    ],
+    "changedFinal": [
+     "self",
+     "save_or_cancel="
+    ],
+    "clearNotifiers": [
+     "self"
+    ],
+    "disableSave": [
+     "self"
+    ],
+    "fromstring": [
+     "self",
+     "value"
+    ],
+    "genText": [
+     "self"
+    ],
+    "getMulti": [
+     "self",
+     "selected"
+    ],
+    "getNotifiers": [
+     "self"
+    ],
+    "getNotifiersFinal": [
+     "self"
+    ],
+    "getText": [
+     "self"
+    ],
+    "getValue": [
+     "self"
+    ],
+    "handleKey": [
+     "self",
+     "key"
+    ],
+    "isChanged": [
+     "self"
+    ],
+    "load": [
+     "self"
+    ],
+    "onDeselect": [
+     "self",
+     "session"
+    ],
+    "onSelect": [
+     "self",
+     "session"
+    ],
+    "removeNotifier": [
+     "self",
+     "notifier"
+    ],
+    "save": [
+     "self"
+    ],
+    "saveSingle": [
+     "self",
+     "v"
+    ],
+    "setNotifiers": [
+     "self",
+     "val"
+    ],
+    "setNotifiersFinal": [
+     "self",
+     "val"
+    ],
+    "setValue": [
+     "self",
+     "value"
+    ],
+    "tostring": [
+     "self",
+     "value"
+    ],
+    "validate": [
+     "self"
+    ],
+    "validatePos": [
+     "self"
+    ]
+   },
+   "provides": []
+  },
+  "ConfigListScreen": {
+   "attrs": [],
+   "file": "Components/ConfigList.py",
+   "methods": {
+    "KeyText": [
+     "self"
+    ],
+    "VirtualKeyBoardCallback": [
+     "self",
+     "callback="
+    ],
+    "__init__": [
+     "self",
+     "list",
+     "session=",
+     "on_change="
+    ],
+    "_changedEntry": [
+     "self"
+    ],
+    "_getHelpWindow": [
+     "self"
+    ],
+    "cancelConfirm": [
+     "self",
+     "result"
+    ],
+    "createSummary": [
+     "self"
+    ],
+    "getCurrentEntry": [
+     "self"
+    ],
+    "getCurrentValue": [
+     "self"
+    ],
+    "handleInputHelpers": [
+     "self"
+    ],
+    "keyBackspace": [
+     "self"
+    ],
+    "keyCancel": [
+     "self"
+    ],
+    "keyDelete": [
+     "self"
+    ],
+    "keyEnd": [
+     "self"
+    ],
+    "keyGotAscii": [
+     "self"
+    ],
+    "keyHome": [
+     "self"
+    ],
+    "keyLeft": [
+     "self"
+    ],
+    "keyNextSection": [
+     "self"
+    ],
+    "keyNumberGlobal": [
+     "self",
+     "number"
+    ],
+    "keyOK": [
+     "self"
+    ],
+    "keyPreviousSection": [
+     "self"
+    ],
+    "keyRight": [
+     "self"
+    ],
+    "keySave": [
+     "self"
+    ],
+    "keyToggleOW": [
+     "self"
+    ],
+    "saveAll": [
+     "self"
+    ]
+   },
+   "provides": [
+    "VirtualKB",
+    "config",
+    "config_actions"
+   ]
+  },
+  "ConfigNumber": {
+   "attrs": [
+    "_value",
+    "notifiers",
+    "notifiers_final",
+    "value"
+   ],
+   "file": "Components/config.py",
+   "methods": {
+    "__call__": [
+     "self",
+     "selected"
+    ],
+    "__init__": [
+     "self",
+     "default="
+    ],
+    "addNotifier": [
+     "self",
+     "notifier",
+     "initial_call=",
+     "immediate_feedback=",
+     "call_on_save_or_cancel="
+    ],
+    "cancel": [
+     "self"
+    ],
+    "changed": [
+     "self",
+     "save_or_cancel="
+    ],
+    "changedFinal": [
+     "self",
+     "save_or_cancel="
+    ],
+    "clearNotifiers": [
+     "self"
+    ],
+    "conform": [
+     "self"
+    ],
+    "deleteAllChars": [
+     "self"
+    ],
+    "deleteChar": [
+     "self",
+     "pos"
+    ],
+    "disableSave": [
+     "self"
+    ],
+    "fromstring": [
+     "self",
+     "value"
+    ],
+    "genText": [
+     "self"
+    ],
+    "getHTML": [
+     "self",
+     "id"
+    ],
+    "getKey": [
+     "self",
+     "num"
+    ],
+    "getMulti": [
+     "self",
+     "selected"
+    ],
+    "getNotifiers": [
+     "self"
+    ],
+    "getNotifiersFinal": [
+     "self"
+    ],
+    "getText": [
+     "self"
+    ],
+    "getValue": [
+     "self"
+    ],
+    "handleKey": [
+     "self",
+     "key"
+    ],
+    "insertChar": [
+     "self",
+     "ch",
+     "pos",
+     "owr"
+    ],
+    "isChanged": [
+     "self"
+    ],
+    "load": [
+     "self"
+    ],
+    "nextChar": [
+     "self"
+    ],
+    "nextFunc": [
+     "self"
+    ],
+    "nextKey": [
+     "self"
+    ],
+    "onDeselect": [
+     "self",
+     "session"
+    ],
+    "onSelect": [
+     "self",
+     "session"
+    ],
+    "removeNotifier": [
+     "self",
+     "notifier"
+    ],
+    "save": [
+     "self"
+    ],
+    "setNotifiers": [
+     "self",
+     "val"
+    ],
+    "setNotifiersFinal": [
+     "self",
+     "val"
+    ],
+    "setUseableChars": [
+     "self",
+     "useable"
+    ],
+    "setValue": [
+     "self",
+     "val"
+    ],
+    "timeout": [
+     "self"
+    ],
+    "tostring": [
+     "self",
+     "value"
+    ],
+    "unsafeAssign": [
+     "self",
+     "value"
+    ],
+    "validateMarker": [
+     "self"
+    ]
+   },
+   "provides": []
+  },
+  "ConfigPassword": {
+   "attrs": [
+    "_value",
+    "notifiers",
+    "notifiers_final",
+    "value"
+   ],
+   "file": "Components/config.py",
+   "methods": {
+    "__call__": [
+     "self",
+     "selected"
+    ],
+    "__init__": [
+     "self",
+     "default=",
+     "fixed_size=",
+     "visible_width=",
+     "censor="
+    ],
+    "addNotifier": [
+     "self",
+     "notifier",
+     "initial_call=",
+     "immediate_feedback=",
+     "call_on_save_or_cancel="
+    ],
+    "cancel": [
+     "self"
+    ],
+    "changed": [
+     "self",
+     "save_or_cancel="
+    ],
+    "changedFinal": [
+     "self",
+     "save_or_cancel="
+    ],
+    "clearNotifiers": [
+     "self"
+    ],
+    "deleteAllChars": [
+     "self"
+    ],
+    "deleteChar": [
+     "self",
+     "pos"
+    ],
+    "disableSave": [
+     "self"
+    ],
+    "fromstring": [
+     "self",
+     "value"
+    ],
+    "genText": [
+     "self"
+    ],
+    "getHTML": [
+     "self",
+     "id"
+    ],
+    "getKey": [
+     "self",
+     "num"
+    ],
+    "getMulti": [
+     "self",
+     "selected"
+    ],
+    "getNotifiers": [
+     "self"
+    ],
+    "getNotifiersFinal": [
+     "self"
+    ],
+    "getText": [
+     "self"
+    ],
+    "getValue": [
+     "self"
+    ],
+    "handleKey": [
+     "self",
+     "key"
+    ],
+    "insertChar": [
+     "self",
+     "ch",
+     "pos",
+     "owr"
+    ],
+    "isChanged": [
+     "self"
+    ],
+    "load": [
+     "self"
+    ],
+    "nextChar": [
+     "self"
+    ],
+    "nextFunc": [
+     "self"
+    ],
+    "nextKey": [
+     "self"
+    ],
+    "onDeselect": [
+     "self",
+     "session"
+    ],
+    "onSelect": [
+     "self",
+     "session"
+    ],
+    "removeNotifier": [
+     "self",
+     "notifier"
+    ],
+    "save": [
+     "self"
+    ],
+    "setNotifiers": [
+     "self",
+     "val"
+    ],
+    "setNotifiersFinal": [
+     "self",
+     "val"
+    ],
+    "setUseableChars": [
+     "self",
+     "useable"
+    ],
+    "setValue": [
+     "self",
+     "val"
+    ],
+    "timeout": [
+     "self"
+    ],
+    "tostring": [
+     "self",
+     "value"
+    ],
+    "unsafeAssign": [
+     "self",
+     "value"
+    ],
+    "validateMarker": [
+     "self"
+    ]
+   },
+   "provides": []
+  },
+  "ConfigSelection": {
+   "attrs": [
+    "description",
+    "index",
+    "notifiers",
+    "notifiers_final",
+    "value"
+   ],
+   "file": "Components/config.py",
+   "methods": {
+    "__call__": [
+     "self",
+     "selected"
+    ],
+    "__init__": [
+     "self",
+     "choices",
+     "default="
+    ],
+    "_invalidateCachedDescription": [
+     "self"
+    ],
+    "addNotifier": [
+     "self",
+     "notifier",
+     "initial_call=",
+     "immediate_feedback=",
+     "call_on_save_or_cancel="
+    ],
+    "cancel": [
+     "self"
+    ],
+    "changed": [
+     "self",
+     "save_or_cancel="
+    ],
+    "changedFinal": [
+     "self",
+     "save_or_cancel="
+    ],
+    "clearNotifiers": [
+     "self"
+    ],
+    "disableSave": [
+     "self"
+    ],
+    "fromstring": [
+     "self",
+     "value"
+    ],
+    "getChoices": [
+     "self"
+    ],
+    "getHTML": [
+     "self",
+     "id"
+    ],
+    "getIndex": [
+     "self"
+    ],
+    "getMulti": [
+     "self",
+     "selected"
+    ],
+    "getNotifiers": [
+     "self"
+    ],
+    "getNotifiersFinal": [
+     "self"
+    ],
+    "getText": [
+     "self"
+    ],
+    "getValue": [
+     "self"
+    ],
+    "handleKey": [
+     "self",
+     "key"
+    ],
+    "isChanged": [
+     "self"
+    ],
+    "load": [
+     "self"
+    ],
+    "onDeselect": [
+     "self",
+     "session"
+    ],
+    "onSelect": [
+     "self",
+     "session"
+    ],
+    "removeNotifier": [
+     "self",
+     "notifier"
+    ],
+    "save": [
+     "self"
+    ],
+    "selectNext": [
+     "self"
+    ],
+    "setChoices": [
+     "self",
+     "choices",
+     "default="
+    ],
+    "setCurrentText": [
+     "self",
+     "text"
+    ],
+    "setNotifiers": [
+     "self",
+     "val"
+    ],
+    "setNotifiersFinal": [
+     "self",
+     "val"
+    ],
+    "setValue": [
+     "self",
+     "value"
+    ],
+    "tostring": [
+     "self",
+     "val"
+    ],
+    "unsafeAssign": [
+     "self",
+     "value"
+    ]
+   },
+   "provides": []
+  },
+  "ConfigSelectionNumber": {
+   "attrs": [
+    "description",
+    "index",
+    "notifiers",
+    "notifiers_final",
+    "value"
+   ],
+   "file": "Components/config.py",
+   "methods": {
+    "__call__": [
+     "self",
+     "selected"
+    ],
+    "__init__": [
+     "self",
+     "min",
+     "max",
+     "stepwidth",
+     "default=",
+     "wraparound="
+    ],
+    "_invalidateCachedDescription": [
+     "self"
+    ],
+    "addNotifier": [
+     "self",
+     "notifier",
+     "initial_call=",
+     "immediate_feedback=",
+     "call_on_save_or_cancel="
+    ],
+    "cancel": [
+     "self"
+    ],
+    "changed": [
+     "self",
+     "save_or_cancel="
+    ],
+    "changedFinal": [
+     "self",
+     "save_or_cancel="
+    ],
+    "clearNotifiers": [
+     "self"
+    ],
+    "disableSave": [
+     "self"
+    ],
+    "fromstring": [
+     "self",
+     "value"
+    ],
+    "getChoices": [
+     "self"
+    ],
+    "getHTML": [
+     "self",
+     "id"
+    ],
+    "getIndex": [
+     "self"
+    ],
+    "getMulti": [
+     "self",
+     "selected"
+    ],
+    "getNotifiers": [
+     "self"
+    ],
+    "getNotifiersFinal": [
+     "self"
+    ],
+    "getText": [
+     "self"
+    ],
+    "getValue": [
+     "self"
+    ],
+    "handleKey": [
+     "self",
+     "key"
+    ],
+    "isChanged": [
+     "self"
+    ],
+    "load": [
+     "self"
+    ],
+    "onDeselect": [
+     "self",
+     "session"
+    ],
+    "onSelect": [
+     "self",
+     "session"
+    ],
+    "removeNotifier": [
+     "self",
+     "notifier"
+    ],
+    "save": [
+     "self"
+    ],
+    "selectNext": [
+     "self"
+    ],
+    "setChoices": [
+     "self",
+     "choices",
+     "default="
+    ],
+    "setCurrentText": [
+     "self",
+     "text"
+    ],
+    "setNotifiers": [
+     "self",
+     "val"
+    ],
+    "setNotifiersFinal": [
+     "self",
+     "val"
+    ],
+    "setValue": [
+     "self",
+     "val"
+    ],
+    "tostring": [
+     "self",
+     "val"
+    ],
+    "unsafeAssign": [
+     "self",
+     "value"
+    ]
+   },
+   "provides": []
+  },
+  "ConfigSubsection": {
+   "attrs": [
+    "saved_value"
+   ],
+   "file": "Components/config.py",
+   "methods": {
+    "__getattr__": [
+     "self",
+     "name"
+    ],
+    "__init__": [
+     "self"
+    ],
+    "__setattr__": [
+     "self",
+     "name",
+     "value"
+    ],
+    "dict": [
+     "self"
+    ],
+    "getSavedValue": [
+     "self"
+    ],
+    "load": [
+     "self"
+    ],
+    "save": [
+     "self"
+    ],
+    "setSavedValue": [
+     "self",
+     "values",
+     "append="
+    ]
+   },
+   "provides": []
+  },
+  "ConfigText": {
+   "attrs": [
+    "_value",
+    "notifiers",
+    "notifiers_final",
+    "value"
+   ],
+   "file": "Components/config.py",
+   "methods": {
+    "__call__": [
+     "self",
+     "selected"
+    ],
+    "__init__": [
+     "self",
+     "default=",
+     "fixed_size=",
+     "visible_width=",
+     "censor_char="
+    ],
+    "addNotifier": [
+     "self",
+     "notifier",
+     "initial_call=",
+     "immediate_feedback=",
+     "call_on_save_or_cancel="
+    ],
+    "cancel": [
+     "self"
+    ],
+    "changed": [
+     "self",
+     "save_or_cancel="
+    ],
+    "changedFinal": [
+     "self",
+     "save_or_cancel="
+    ],
+    "clearNotifiers": [
+     "self"
+    ],
+    "deleteAllChars": [
+     "self"
+    ],
+    "deleteChar": [
+     "self",
+     "pos"
+    ],
+    "disableSave": [
+     "self"
+    ],
+    "fromstring": [
+     "self",
+     "value"
+    ],
+    "genText": [
+     "self"
+    ],
+    "getHTML": [
+     "self",
+     "id"
+    ],
+    "getKey": [
+     "self",
+     "num"
+    ],
+    "getMulti": [
+     "self",
+     "selected"
+    ],
+    "getNotifiers": [
+     "self"
+    ],
+    "getNotifiersFinal": [
+     "self"
+    ],
+    "getText": [
+     "self"
+    ],
+    "getValue": [
+     "self"
+    ],
+    "handleKey": [
+     "self",
+     "key"
+    ],
+    "insertChar": [
+     "self",
+     "ch",
+     "pos",
+     "owr"
+    ],
+    "isChanged": [
+     "self"
+    ],
+    "load": [
+     "self"
+    ],
+    "nextChar": [
+     "self"
+    ],
+    "nextFunc": [
+     "self"
+    ],
+    "nextKey": [
+     "self"
+    ],
+    "onDeselect": [
+     "self",
+     "session"
+    ],
+    "onSelect": [
+     "self",
+     "session"
+    ],
+    "removeNotifier": [
+     "self",
+     "notifier"
+    ],
+    "save": [
+     "self"
+    ],
+    "setNotifiers": [
+     "self",
+     "val"
+    ],
+    "setNotifiersFinal": [
+     "self",
+     "val"
+    ],
+    "setUseableChars": [
+     "self",
+     "useable"
+    ],
+    "setValue": [
+     "self",
+     "val"
+    ],
+    "timeout": [
+     "self"
+    ],
+    "tostring": [
+     "self",
+     "value"
+    ],
+    "unsafeAssign": [
+     "self",
+     "value"
+    ],
+    "validateMarker": [
+     "self"
+    ]
+   },
+   "provides": []
+  },
+  "ConfigYesNo": {
+   "attrs": [
+    "notifiers",
+    "notifiers_final",
+    "value"
+   ],
+   "file": "Components/config.py",
+   "methods": {
+    "__call__": [
+     "self",
+     "selected"
+    ],
+    "__init__": [
+     "self",
+     "default="
+    ],
+    "addNotifier": [
+     "self",
+     "notifier",
+     "initial_call=",
+     "immediate_feedback=",
+     "call_on_save_or_cancel="
+    ],
+    "cancel": [
+     "self"
+    ],
+    "changed": [
+     "self",
+     "save_or_cancel="
+    ],
+    "changedFinal": [
+     "self",
+     "save_or_cancel="
+    ],
+    "clearNotifiers": [
+     "self"
+    ],
+    "disableSave": [
+     "self"
+    ],
+    "fromstring": [
+     "self",
+     "val"
+    ],
+    "getHTML": [
+     "self",
+     "id"
+    ],
+    "getMulti": [
+     "self",
+     "selected"
+    ],
+    "getNotifiers": [
+     "self"
+    ],
+    "getNotifiersFinal": [
+     "self"
+    ],
+    "getText": [
+     "self"
+    ],
+    "getValue": [
+     "self"
+    ],
+    "handleKey": [
+     "self",
+     "key"
+    ],
+    "isChanged": [
+     "self"
+    ],
+    "load": [
+     "self"
+    ],
+    "onDeselect": [
+     "self",
+     "session"
+    ],
+    "onSelect": [
+     "self",
+     "session"
+    ],
+    "removeNotifier": [
+     "self",
+     "notifier"
+    ],
+    "save": [
+     "self"
+    ],
+    "setNotifiers": [
+     "self",
+     "val"
+    ],
+    "setNotifiersFinal": [
+     "self",
+     "val"
+    ],
+    "setValue": [
+     "self",
+     "value"
+    ],
+    "tostring": [
+     "self",
+     "value"
+    ],
+    "unsafeAssign": [
+     "self",
+     "value"
+    ]
+   },
+   "provides": []
+  },
+  "InfoBar": {
+   "attrs": [
+    "ALLOW_SUSPEND",
+    "EXTENSION_LIST",
+    "EXTENSION_SINGLE",
+    "IS_DIALOG",
+    "MESSAGE_WAIT",
+    "SEEK_STATE_EOF",
+    "SEEK_STATE_PAUSE",
+    "SEEK_STATE_PLAY",
+    "SEEK_STATE_STOP",
+    "STATE_CONNECTING",
+    "STATE_HIDDEN",
+    "STATE_HIDING",
+    "STATE_RECONNECTING",
+    "STATE_SHOWING",
+    "STATE_SHOWN",
+    "STATE_TUNING",
+    "__module__",
+    "_stateInfo",
+    "instance",
+    "selected_subtitle",
+    "subtitles_enabled",
+    "title"
+   ],
+   "file": "Screens/InfoBar.py",
+   "methods": {
+    "ChannelSelectionRadioClosed": [
+     "self",
+     "*arg"
+    ],
+    "EventInfoPluginChosen": [
+     "self",
+     "answer"
+    ],
+    "HDDDetectedAnswer": [
+     "self",
+     "answer"
+    ],
+    "HDDDetectedCB": [
+     "self",
+     "dev",
+     "media_state"
+    ],
+    "JobViewCB": [
+     "self",
+     "in_background"
+    ],
+    "RassInteractiveClosed": [
+     "self",
+     "*val"
+    ],
+    "RassInteractivePossibilityChanged": [
+     "self",
+     "state"
+    ],
+    "RassSlidePicChanged": [
+     "self"
+    ],
+    "SingleServiceEPGClosed": [
+     "self",
+     "ret="
+    ],
+    "TimeDateInputClosed": [
+     "self",
+     "ret"
+    ],
+    "__HDDDetectedCB": [
+     "self",
+     "dev",
+     "media_state"
+    ],
+    "__checkServiceStarted": [
+     "self"
+    ],
+    "__delChannelSelectionScreen": [
+     "self"
+    ],
+    "__delPvrState": [
+     "self"
+    ],
+    "__delRdsInfoDisplayScreen": [
+     "self"
+    ],
+    "__doClose": [
+     "self",
+     "immediate="
+    ],
+    "__evAudioDecodeError": [
+     "self"
+    ],
+    "__evEOF": [
+     "self"
+    ],
+    "__evEventInfoChanged": [
+     "self"
+    ],
+    "__evFileReadError": [
+     "self"
+    ],
+    "__evGeneralGstError": [
+     "self"
+    ],
+    "__evPluginError": [
+     "self"
+    ],
+    "__evSOF": [
+     "self"
+    ],
+    "__evStreamingSrcError": [
+     "self"
+    ],
+    "__evTypeNotFoundError": [
+     "self"
+    ],
+    "__evVideoDecodeError": [
+     "self"
+    ],
+    "__eventInfoChanged": [
+     "self"
+    ],
+    "__hideState": [
+     "self"
+    ],
+    "__hideTimeshiftState": [
+     "self"
+    ],
+    "__init__": [
+     "self",
+     "session"
+    ],
+    "__notFound": [
+     "self"
+    ],
+    "__notify": [
+     "self",
+     "key",
+     "hasMessage="
+    ],
+    "__onClose": [
+     "self"
+    ],
+    "__onHide": [
+     "self"
+    ],
+    "__onHideFinished": [
+     "self"
+    ],
+    "__onServiceListRootChanged": [
+     "self",
+     "ref"
+    ],
+    "__onShow": [
+     "self"
+    ],
+    "__playStateChanged": [
+     "self",
+     "state"
+    ],
+    "__rcUsedChanged": [
+     "self",
+     "configElement"
+    ],
+    "__registerPlayer": [
+     "self"
+    ],
+    "__removeNotification": [
+     "self"
+    ],
+    "__repr__": [
+     "self"
+    ],
+    "__restoreState": [
+     "self"
+    ],
+    "__seekableStatusChanged": [
+     "self"
+    ],
+    "__serviceChanged": [
+     "self"
+    ],
+    "__servicePlaying": [
+     "self"
+    ],
+    "__serviceStarted": [
+     "self"
+    ],
+    "__serviceStopped": [
+     "self"
+    ],
+    "__subtitlesChanged": [
+     "self"
+    ],
+    "__tuneFailed": [
+     "self"
+    ],
+    "__unRegisterPlayer": [
+     "self"
+    ],
+    "_checkReconnect": [
+     "self"
+    ],
+    "_close": [
+     "self"
+    ],
+    "_doReconnect": [
+     "self"
+    ],
+    "_free": [
+     "self"
+    ],
+    "_initAnimations": [
+     "self"
+    ],
+    "_initialAutoSleepValueSet": [
+     "self",
+     "answer"
+    ],
+    "_mayShow": [
+     "self"
+    ],
+    "actionA": [
+     "self",
+     "key",
+     "flag"
+    ],
+    "actionB": [
+     "self",
+     "key",
+     "flag"
+    ],
+    "activateTimeshiftEnd": [
+     "self",
+     "back="
+    ],
+    "activateTimeshiftEndAndPause": [
+     "self"
+    ],
+    "addExtension": [
+     "self",
+     "extension",
+     "key=",
+     "type="
+    ],
+    "addSubserviceToBouquet": [
+     "self",
+     "dest"
+    ],
+    "addSubserviceToBouquetCallback": [
+     "self",
+     "service"
+    ],
+    "addSummary": [
+     "self",
+     "summary"
+    ],
+    "applySkin": [
+     "self"
+    ],
+    "audioSelected": [
+     "self",
+     "ret="
+    ],
+    "audioSelection": [
+     "self"
+    ],
+    "bouquetSelClosed": [
+     "self",
+     "confirmed"
+    ],
+    "calcRemainingTime": [
+     "self"
+    ],
+    "callHelpAction": [
+     "self",
+     "*args"
+    ],
+    "canAnimate": [
+     "self"
+    ],
+    "changeBouquetCB": [
+     "self",
+     "direction",
+     "epg"
+    ],
+    "changeDuration": [
+     "self",
+     "entry"
+    ],
+    "changeServiceCB": [
+     "self",
+     "direction",
+     "epg"
+    ],
+    "changeSubservice": [
+     "self",
+     "direction"
+    ],
+    "checkNotifications": [
+     "self",
+     "immediate="
+    ],
+    "checkNotificationsIfExecing": [
+     "self"
+    ],
+    "checkSkipShowHideLock": [
+     "self"
+    ],
+    "checkSubservicesAvail": [
+     "self"
+    ],
+    "checkUnused": [
+     "self"
+    ],
+    "close": [
+     "self",
+     "*retval"
+    ],
+    "closed": [
+     "self",
+     "ret="
+    ],
+    "createGUIScreen": [
+     "self",
+     "parent",
+     "desktop",
+     "updateonly="
+    ],
+    "createSummary": [
+     "self"
+    ],
+    "deleteGUIScreen": [
+     "self"
+    ],
+    "disable": [
+     "self"
+    ],
+    "doClose": [
+     "self",
+     "immediate="
+    ],
+    "doCloseInternal": [
+     "self"
+    ],
+    "doEofInternal": [
+     "self",
+     "playing"
+    ],
+    "doSeek": [
+     "self",
+     "pts"
+    ],
+    "doSeekRelative": [
+     "self",
+     "pts"
+    ],
+    "doShow": [
+     "self"
+    ],
+    "doTimerHide": [
+     "self"
+    ],
+    "down": [
+     "self"
+    ],
+    "enable": [
+     "self",
+     "do_show="
+    ],
+    "eventViewCallback": [
+     "self",
+     "setEvent",
+     "setService",
+     "val"
+    ],
+    "execBegin": [
+     "self"
+    ],
+    "execEnd": [
+     "self"
+    ],
+    "extensionCallback": [
+     "self",
+     "answer"
+    ],
+    "firstRun": [
+     "self"
+    ],
+    "fwdSeekTo": [
+     "self",
+     "minutes"
+    ],
+    "getBouquetServices": [
+     "self",
+     "bouquet"
+    ],
+    "getCurrentServiceSubtitle": [
+     "self"
+    ],
+    "getEntryText": [
+     "self"
+    ],
+    "getHigher": [
+     "self",
+     "n",
+     "lst"
+    ],
+    "getJobList": [
+     "self"
+    ],
+    "getJobName": [
+     "self",
+     "job"
+    ],
+    "getLower": [
+     "self",
+     "n",
+     "lst"
+    ],
+    "getMoveName": [
+     "self"
+    ],
+    "getNextService": [
+     "self",
+     "currentService"
+    ],
+    "getNowNext": [
+     "self"
+    ],
+    "getPluginList": [
+     "self"
+    ],
+    "getPluginName": [
+     "self",
+     "name"
+    ],
+    "getPrevService": [
+     "self",
+     "currentService"
+    ],
+    "getRelatedScreen": [
+     "self",
+     "name"
+    ],
+    "getSeek": [
+     "self"
+    ],
+    "getShowHideName": [
+     "self"
+    ],
+    "getSwapName": [
+     "self"
+    ],
+    "getTimeshift": [
+     "self"
+    ],
+    "getTitle": [
+     "self"
+    ],
+    "hide": [
+     "self"
+    ],
+    "historyBack": [
+     "self"
+    ],
+    "historyNext": [
+     "self"
+    ],
+    "ignoreSource": [
+     "self",
+     "name"
+    ],
+    "inactive": [
+     "self"
+    ],
+    "inputCallback": [
+     "self",
+     "value"
+    ],
+    "instantRecord": [
+     "self"
+    ],
+    "isEnabled": [
+     "self"
+    ],
+    "isInstantRecordRunning": [
+     "self"
+    ],
+    "isSeekable": [
+     "self"
+    ],
+    "isStateBackward": [
+     "self",
+     "state"
+    ],
+    "isStateForward": [
+     "self",
+     "state"
+    ],
+    "isStateSlowMotion": [
+     "self",
+     "state"
+    ],
+    "keyNumberGlobal": [
+     "self",
+     "number"
+    ],
+    "keypress": [
+     "self",
+     "key",
+     "flag"
+    ],
+    "lockShow": [
+     "self"
+    ],
+    "mainMenu": [
+     "self"
+    ],
+    "mainMenuClosed": [
+     "self",
+     "*val"
+    ],
+    "makeStateBackward": [
+     "self",
+     "n"
+    ],
+    "makeStateForward": [
+     "self",
+     "n"
+    ],
+    "makeStateSlowMotion": [
+     "self",
+     "n"
+    ],
+    "missingDefaultHDDAnswer": [
+     "self",
+     "answer"
+    ],
+    "movePiP": [
+     "self"
+    ],
+    "movieSelected": [
+     "self",
+     "service"
+    ],
+    "neverAnimate": [
+     "self"
+    ],
+    "nextSubservice": [
+     "self"
+    ],
+    "numberEntered": [
+     "self",
+     "retval"
+    ],
+    "onTextSelected": [
+     "self",
+     "p"
+    ],
+    "openBouquetEPG": [
+     "self",
+     "bouquet",
+     "withCallback="
+    ],
+    "openEventView": [
+     "self"
+    ],
+    "openMultiServiceEPG": [
+     "self",
+     "withCallback="
+    ],
+    "openMultiServiceEPGAskBouquet": [
+     "self",
+     "bouquets",
+     "cnt",
+     "withCallback"
+    ],
+    "openMultiServiceEPGSilent": [
+     "self",
+     "bouquets",
+     "cnt",
+     "withCallback"
+    ],
+    "openOutdatedSingleServiceEPG": [
+     "self"
+    ],
+    "openServiceList": [
+     "self"
+    ],
+    "openSimilarList": [
+     "self",
+     "eventid",
+     "refstr"
+    ],
+    "openSingleServiceEPG": [
+     "self"
+    ],
+    "pauseService": [
+     "self"
+    ],
+    "pipDoHandle0Action": [
+     "self"
+    ],
+    "pipHandles0Action": [
+     "self"
+    ],
+    "pipShown": [
+     "self"
+    ],
+    "playSubservice": [
+     "self",
+     "ref"
+    ],
+    "playpauseService": [
+     "self"
+    ],
+    "prevSubservice": [
+     "self"
+    ],
+    "recordQuestionCallback": [
+     "self",
+     "answer"
+    ],
+    "removeSummary": [
+     "self",
+     "summary"
+    ],
+    "restoreKeyboardMode": [
+     "self"
+    ],
+    "rewindService": [
+     "self"
+    ],
+    "runPlugin": [
+     "self",
+     "plugin"
+    ],
+    "runningRepeatedTimerCallback": [
+     "self",
+     "t",
+     "result"
+    ],
+    "rwdSeekTo": [
+     "self",
+     "minutes"
+    ],
+    "saveKeyboardMode": [
+     "self"
+    ],
+    "searchNumberHelper": [
+     "self",
+     "serviceHandler",
+     "num",
+     "bouquet"
+    ],
+    "seekBack": [
+     "self"
+    ],
+    "seekBackManual": [
+     "self"
+    ],
+    "seekFwd": [
+     "self"
+    ],
+    "seekFwdManual": [
+     "self"
+    ],
+    "serviceStarted": [
+     "self"
+    ],
+    "setDesktop": [
+     "self",
+     "desktop"
+    ],
+    "setEndtime": [
+     "self",
+     "entry"
+    ],
+    "setFocus": [
+     "self",
+     "o"
+    ],
+    "setKeyboardModeAscii": [
+     "self"
+    ],
+    "setKeyboardModeNone": [
+     "self"
+    ],
+    "setPlaybackState": [
+     "self",
+     "state=",
+     "message="
+    ],
+    "setSeekState": [
+     "self",
+     "state",
+     "onlyGUI="
+    ],
+    "setSelectedSubtitle": [
+     "self",
+     "idx"
+    ],
+    "setShowHideAnimation": [
+     "self",
+     "animation_key"
+    ],
+    "setSubtitlesEnable": [
+     "self",
+     "enable="
+    ],
+    "setTitle": [
+     "self",
+     "title"
+    ],
+    "setZPosition": [
+     "self",
+     "z"
+    ],
+    "show": [
+     "self"
+    ],
+    "showAfterSeek": [
+     "self"
+    ],
+    "showEventInfoPlugins": [
+     "self"
+    ],
+    "showEventInfoWhenNotVisible": [
+     "self"
+    ],
+    "showExtensionSelection": [
+     "self"
+    ],
+    "showHarddiskPopup": [
+     "self",
+     "dev=",
+     "media_state="
+    ],
+    "showHelp": [
+     "self"
+    ],
+    "showJobView": [
+     "self",
+     "job"
+    ],
+    "showMovies": [
+     "self"
+    ],
+    "showNotificationQueueViewer": [
+     "self"
+    ],
+    "showPiP": [
+     "self"
+    ],
+    "showRadio": [
+     "self"
+    ],
+    "showRadioChannelList": [
+     "self",
+     "zap="
+    ],
+    "showTv": [
+     "self"
+    ],
+    "showTvChannelList": [
+     "self",
+     "zap="
+    ],
+    "shutdown": [
+     "self",
+     "aborted"
+    ],
+    "startHbbtv": [
+     "self"
+    ],
+    "startHideTimer": [
+     "self"
+    ],
+    "startInstantRecording": [
+     "self",
+     "limitEvent="
+    ],
+    "startRassInteractive": [
+     "self"
+    ],
+    "startTeletext": [
+     "self"
+    ],
+    "startTimeshift": [
+     "self"
+    ],
+    "stopCurrentRecording": [
+     "self",
+     "entry="
+    ],
+    "stopTimeshift": [
+     "self"
+    ],
+    "stopTimeshiftConfirmed": [
+     "self",
+     "confirmed"
+    ],
+    "subserviceSelected": [
+     "self",
+     "service"
+    ],
+    "subserviceSelection": [
+     "self"
+    ],
+    "swapPiP": [
+     "self"
+    ],
+    "switchChannelDown": [
+     "self"
+    ],
+    "switchChannelUp": [
+     "self"
+    ],
+    "timerentryOnStateChange": [
+     "self",
+     "timer"
+    ],
+    "toggleShow": [
+     "self"
+    ],
+    "unPauseService": [
+     "self"
+    ],
+    "unlockShow": [
+     "self"
+    ],
+    "up": [
+     "self"
+    ],
+    "updateExtension": [
+     "self",
+     "extension",
+     "key="
+    ],
+    "updateExtensions": [
+     "self"
+    ],
+    "zapDown": [
+     "self"
+    ],
+    "zapToNumber": [
+     "self",
+     "number"
+    ],
+    "zapToService": [
+     "self",
+     "service"
+    ],
+    "zapUp": [
+     "self"
+    ]
+   },
+   "provides": [
+    "AudioSelectionAction",
+    "ChannelSelectActions",
+    "EPGActions",
+    "ExtensionsAvailable",
+    "HbbtvActions",
+    "HbbtvApplication",
+    "InstantExtensionsActions",
+    "InstantRecordActions",
+    "MenuActions",
+    "NumberActions",
+    "PendingNotification",
+    "RdsActions",
+    "RecordingPossible",
+    "SeekActions",
+    "ShowAudioOnYellow",
+    "ShowEventListOnYellow",
+    "ShowHideActions",
+    "ShowRecordOnRed",
+    "ShowTimeshiftOnYellow",
+    "SubserviceQuickzapAction",
+    "SubserviceSelectionAction",
+    "TeletextActions",
+    "TimeshiftActions",
+    "TimeshiftActivateActions",
+    "TimeshiftPossible",
+    "Title",
+    "actions",
+    "helpActions"
+   ]
+  },
+  "Label": {
+   "attrs": [
+    "CHANGED_ALL",
+    "CHANGED_ANIMATED",
+    "CHANGED_CLEAR",
+    "CHANGED_DEFAULT",
+    "CHANGED_POLL",
+    "CHANGED_PULSATE",
+    "CHANGED_SPECIFIC",
+    "GUI_WIDGET",
+    "SINGLE_SOURCE",
+    "position",
+    "suspended",
+    "text",
+    "visible"
+   ],
+   "file": "Components/Renderer/Label.py",
+   "methods": {
+    "GUIcreate": [
+     "self",
+     "parent"
+    ],
+    "GUIdelete": [
+     "self"
+    ],
+    "__init__": [
+     "self"
+    ],
+    "applySkin": [
+     "self",
+     "desktop",
+     "parent"
+    ],
+    "canPulsate": [
+     "self"
+    ],
+    "changed": [
+     "self",
+     "what"
+    ],
+    "checkSuspend": [
+     "self"
+    ],
+    "connect": [
+     "self",
+     "source"
+    ],
+    "connectDownstream": [
+     "self",
+     "downstream"
+    ],
+    "connectUpstream": [
+     "self",
+     "upstream"
+    ],
+    "createWidget": [
+     "self",
+     "parent"
+    ],
+    "destroy": [
+     "self"
+    ],
+    "disconnectAll": [
+     "self"
+    ],
+    "disconnectDownstream": [
+     "self",
+     "downstream"
+    ],
+    "doSuspend": [
+     "self",
+     "suspend"
+    ],
+    "execBegin": [
+     "self"
+    ],
+    "execEnd": [
+     "self"
+    ],
+    "getPosition": [
+     "self"
+    ],
+    "getSize": [
+     "self"
+    ],
+    "getText": [
+     "self"
+    ],
+    "getVisible": [
+     "self"
+    ],
+    "hide": [
+     "self"
+    ],
+    "move": [
+     "self",
+     "x",
+     "y="
+    ],
+    "onHide": [
+     "self"
+    ],
+    "onShow": [
+     "self"
+    ],
+    "postWidgetCreate": [
+     "self",
+     "instance"
+    ],
+    "preWidgetRemove": [
+     "self",
+     "instance"
+    ],
+    "resize": [
+     "self",
+     "x",
+     "y="
+    ],
+    "setMarkedPos": [
+     "self",
+     "pos"
+    ],
+    "setPosition": [
+     "self",
+     "x",
+     "y"
+    ],
+    "setSuspend": [
+     "self",
+     "suspended"
+    ],
+    "setText": [
+     "self",
+     "text"
+    ],
+    "setVisible": [
+     "self",
+     "visible"
+    ],
+    "setZPosition": [
+     "self",
+     "z"
+    ],
+    "show": [
+     "self"
+    ]
+   },
+   "provides": []
+  },
+  "MenuList": {
+   "attrs": [
+    "GUI_WIDGET",
+    "position",
+    "visible"
+   ],
+   "file": "Components/MenuList.py",
+   "methods": {
+    "GUIcreate": [
+     "self",
+     "parent"
+    ],
+    "GUIdelete": [
+     "self"
+    ],
+    "__init__": [
+     "self",
+     "list",
+     "enableWrapAround=",
+     "content="
+    ],
+    "applySkin": [
+     "self",
+     "desktop",
+     "parent"
+    ],
+    "createWidget": [
+     "self",
+     "parent"
+    ],
+    "destroy": [
+     "self"
+    ],
+    "down": [
+     "self"
+    ],
+    "execBegin": [
+     "self"
+    ],
+    "execEnd": [
+     "self"
+    ],
+    "getCurrent": [
+     "self"
+    ],
+    "getPosition": [
+     "self"
+    ],
+    "getSelectedIndex": [
+     "self"
+    ],
+    "getSelectionIndex": [
+     "self"
+    ],
+    "getSize": [
+     "self"
+    ],
+    "getVisible": [
+     "self"
+    ],
+    "hide": [
+     "self"
+    ],
+    "move": [
+     "self",
+     "x",
+     "y="
+    ],
+    "moveToIndex": [
+     "self",
+     "idx"
+    ],
+    "onHide": [
+     "self"
+    ],
+    "onShow": [
+     "self"
+    ],
+    "pageDown": [
+     "self"
+    ],
+    "pageUp": [
+     "self"
+    ],
+    "postWidgetCreate": [
+     "self",
+     "instance"
+    ],
+    "preWidgetRemove": [
+     "self",
+     "instance"
+    ],
+    "produceHTML": [
+     "self"
+    ],
+    "resize": [
+     "self",
+     "x",
+     "y="
+    ],
+    "selectionChanged": [
+     "self"
+    ],
+    "selectionEnabled": [
+     "self",
+     "enabled"
+    ],
+    "setList": [
+     "self",
+     "list"
+    ],
+    "setPosition": [
+     "self",
+     "x",
+     "y"
+    ],
+    "setVisible": [
+     "self",
+     "visible"
+    ],
+    "setZPosition": [
+     "self",
+     "z"
+    ],
+    "show": [
+     "self"
+    ],
+    "up": [
+     "self"
+    ]
+   },
+   "provides": []
+  },
+  "MessageBox": {
+   "attrs": [
+    "ALLOW_SUSPEND",
+    "IS_DIALOG",
+    "TYPE_ERROR",
+    "TYPE_INFO",
+    "TYPE_WARNING",
+    "TYPE_YESNO",
+    "__module__",
+    "title"
+   ],
+   "file": "Screens/MessageBox.py",
+   "methods": {
+    "__doClose": [
+     "self",
+     "immediate="
+    ],
+    "__init__": [
+     "self",
+     "session",
+     "text",
+     "type=",
+     "timeout=",
+     "close_on_any_key=",
+     "default=",
+     "enable_input=",
+     "msgBoxID=",
+     "windowTitle=",
+     "additionalActionMap=",
+     "title="
+    ],
+    "__onHide": [
+     "self"
+    ],
+    "__onHideFinished": [
+     "self"
+    ],
+    "__onShow": [
+     "self"
+    ],
+    "__onShown": [
+     "self"
+    ],
+    "__repr__": [
+     "self"
+    ],
+    "_free": [
+     "self"
+    ],
+    "_initAnimations": [
+     "self"
+    ],
+    "addSummary": [
+     "self",
+     "summary"
+    ],
+    "alwaysOK": [
+     "self"
+    ],
+    "applySkin": [
+     "self"
+    ],
+    "canAnimate": [
+     "self"
+    ],
+    "cancel": [
+     "self"
+    ],
+    "close": [
+     "self",
+     "*retval"
+    ],
+    "closeAnyKey": [
+     "self",
+     "key",
+     "flag"
+    ],
+    "connectHighPrioAction": [
+     "self"
+    ],
+    "createGUIScreen": [
+     "self",
+     "parent",
+     "desktop",
+     "updateonly="
+    ],
+    "createSummary": [
+     "self"
+    ],
+    "delayedAdditionalActionMapEnd": [
+     "self"
+    ],
+    "deleteGUIScreen": [
+     "self"
+    ],
+    "disable": [
+     "self"
+    ],
+    "disconnectHighPrioAction": [
+     "self"
+    ],
+    "doClose": [
+     "self",
+     "immediate="
+    ],
+    "doCloseInternal": [
+     "self"
+    ],
+    "down": [
+     "self"
+    ],
+    "enable": [
+     "self",
+     "do_show="
+    ],
+    "execBegin": [
+     "self"
+    ],
+    "execEnd": [
+     "self"
+    ],
+    "getRelatedScreen": [
+     "self",
+     "name"
+    ],
+    "getTitle": [
+     "self"
+    ],
+    "hide": [
+     "self"
+    ],
+    "ignoreSource": [
+     "self",
+     "name"
+    ],
+    "initTimeout": [
+     "self",
+     "timeout"
+    ],
+    "isEnabled": [
+     "self"
+    ],
+    "left": [
+     "self"
+    ],
+    "move": [
+     "self",
+     "direction"
+    ],
+    "neverAnimate": [
+     "self"
+    ],
+    "ok": [
+     "self"
+    ],
+    "removeSummary": [
+     "self",
+     "summary"
+    ],
+    "restoreKeyboardMode": [
+     "self"
+    ],
+    "right": [
+     "self"
+    ],
+    "saveKeyboardMode": [
+     "self"
+    ],
+    "setDesktop": [
+     "self",
+     "desktop"
+    ],
+    "setFocus": [
+     "self",
+     "o"
+    ],
+    "setKeyboardModeAscii": [
+     "self"
+    ],
+    "setKeyboardModeNone": [
+     "self"
+    ],
+    "setShowHideAnimation": [
+     "self",
+     "animation_key"
+    ],
+    "setTitle": [
+     "self",
+     "title"
+    ],
+    "setZPosition": [
+     "self",
+     "z"
+    ],
+    "show": [
+     "self"
+    ],
+    "startTimer": [
+     "self"
+    ],
+    "stopTimer": [
+     "self"
+    ],
+    "timeoutCallback": [
+     "self"
+    ],
+    "timerTick": [
+     "self"
+    ],
+    "up": [
+     "self"
+    ]
+   },
+   "provides": [
+    "ErrorPixmap",
+    "InfoPixmap",
+    "QuestionPixmap",
+    "Text",
+    "Title",
+    "actions",
+    "list",
+    "selectedChoice",
+    "text"
+   ]
+  },
+  "MoviePlayer": {
+   "attrs": [
+    "ALLOW_SUSPEND",
+    "CUT_TYPE_IN",
+    "CUT_TYPE_LAST",
+    "CUT_TYPE_MARK",
+    "CUT_TYPE_OUT",
+    "ENABLE_RESUME_SUPPORT",
+    "EXTENSION_LIST",
+    "EXTENSION_SINGLE",
+    "IS_DIALOG",
+    "MESSAGE_WAIT",
+    "SEEK_STATE_EOF",
+    "SEEK_STATE_PAUSE",
+    "SEEK_STATE_PLAY",
+    "SEEK_STATE_STOP",
+    "STATE_CONNECTING",
+    "STATE_HIDDEN",
+    "STATE_HIDING",
+    "STATE_RECONNECTING",
+    "STATE_SHOWING",
+    "STATE_SHOWN",
+    "STATE_TUNING",
+    "__module__",
+    "_stateInfo",
+    "selected_subtitle",
+    "subtitles_enabled",
+    "title"
+   ],
+   "file": "Screens/MoviePlayer.py",
+   "methods": {
+    "__doClose": [
+     "self",
+     "immediate="
+    ],
+    "__downloadChangedCuesheet": [
+     "self"
+    ],
+    "__evAudioDecodeError": [
+     "self"
+    ],
+    "__evEOF": [
+     "self"
+    ],
+    "__evFileReadError": [
+     "self"
+    ],
+    "__evGeneralGstError": [
+     "self"
+    ],
+    "__evPluginError": [
+     "self"
+    ],
+    "__evSOF": [
+     "self"
+    ],
+    "__evStreamingSrcError": [
+     "self"
+    ],
+    "__evTypeNotFoundError": [
+     "self"
+    ],
+    "__evVideoDecodeError": [
+     "self"
+    ],
+    "__getCuesheet": [
+     "self"
+    ],
+    "__getSeekable": [
+     "self"
+    ],
+    "__hideState": [
+     "self"
+    ],
+    "__init__": [
+     "self",
+     "session",
+     "service",
+     "restoreService=",
+     "infoCallback=",
+     "getNextService=",
+     "getPrevService=",
+     "stopCallback=",
+     "pauseCallback=",
+     "streamMode=",
+     "askBeforeLeaving="
+    ],
+    "__notFound": [
+     "self"
+    ],
+    "__notify": [
+     "self",
+     "key",
+     "hasMessage="
+    ],
+    "__onClose": [
+     "self"
+    ],
+    "__onHide": [
+     "self"
+    ],
+    "__onHideFinished": [
+     "self"
+    ],
+    "__onSeekableStatusChanged": [
+     "self"
+    ],
+    "__onShow": [
+     "self"
+    ],
+    "__registerPlayer": [
+     "self"
+    ],
+    "__removeNotification": [
+     "self"
+    ],
+    "__repr__": [
+     "self"
+    ],
+    "__restoreState": [
+     "self"
+    ],
+    "__seekableStatusChanged": [
+     "self"
+    ],
+    "__serviceChanged": [
+     "self"
+    ],
+    "__servicePlaying": [
+     "self"
+    ],
+    "__serviceStarted": [
+     "self"
+    ],
+    "__serviceStopped": [
+     "self"
+    ],
+    "__subtitlesChanged": [
+     "self"
+    ],
+    "__tuneFailed": [
+     "self"
+    ],
+    "__unRegisterPlayer": [
+     "self"
+    ],
+    "_checkReconnect": [
+     "self"
+    ],
+    "_close": [
+     "self"
+    ],
+    "_doReconnect": [
+     "self"
+    ],
+    "_free": [
+     "self"
+    ],
+    "_initAnimations": [
+     "self"
+    ],
+    "_onPause": [
+     "self"
+    ],
+    "_onPlay": [
+     "self"
+    ],
+    "_onStop": [
+     "self"
+    ],
+    "addExtension": [
+     "self",
+     "extension",
+     "key=",
+     "type="
+    ],
+    "addMark": [
+     "self",
+     "point"
+    ],
+    "addSummary": [
+     "self",
+     "summary"
+    ],
+    "applySkin": [
+     "self"
+    ],
+    "audioSelected": [
+     "self",
+     "ret="
+    ],
+    "audioSelection": [
+     "self"
+    ],
+    "calcRemainingTime": [
+     "self"
+    ],
+    "canAnimate": [
+     "self"
+    ],
+    "checkNotifications": [
+     "self",
+     "immediate="
+    ],
+    "checkNotificationsIfExecing": [
+     "self"
+    ],
+    "checkSkipShowHideLock": [
+     "self"
+    ],
+    "close": [
+     "self",
+     "*retval"
+    ],
+    "createGUIScreen": [
+     "self",
+     "parent",
+     "desktop",
+     "updateonly="
+    ],
+    "createSummary": [
+     "self"
+    ],
+    "cueGetCurrentPosition": [
+     "self"
+    ],
+    "cueGetEndCutPosition": [
+     "self"
+    ],
+    "deleteGUIScreen": [
+     "self"
+    ],
+    "disable": [
+     "self"
+    ],
+    "doClose": [
+     "self",
+     "immediate="
+    ],
+    "doCloseInternal": [
+     "self"
+    ],
+    "doEofInternal": [
+     "self",
+     "playing"
+    ],
+    "doSeek": [
+     "self",
+     "pts"
+    ],
+    "doSeekRelative": [
+     "self",
+     "pts"
+    ],
+    "doShow": [
+     "self"
+    ],
+    "doTimerHide": [
+     "self"
+    ],
+    "down": [
+     "self"
+    ],
+    "downloadCuesheet": [
+     "self"
+    ],
+    "enable": [
+     "self",
+     "do_show="
+    ],
+    "execBegin": [
+     "self"
+    ],
+    "execEnd": [
+     "self"
+    ],
+    "extensionCallback": [
+     "self",
+     "answer"
+    ],
+    "fwdSeekTo": [
+     "self",
+     "minutes"
+    ],
+    "getCurrentServiceSubtitle": [
+     "self"
+    ],
+    "getEntryText": [
+     "self"
+    ],
+    "getHigher": [
+     "self",
+     "n",
+     "lst"
+    ],
+    "getLower": [
+     "self",
+     "n",
+     "lst"
+    ],
+    "getNearestCutPoint": [
+     "self",
+     "pts",
+     "cmp=",
+     "start="
+    ],
+    "getPluginList": [
+     "self"
+    ],
+    "getPluginName": [
+     "self",
+     "name"
+    ],
+    "getRelatedScreen": [
+     "self",
+     "name"
+    ],
+    "getSeek": [
+     "self"
+    ],
+    "getTitle": [
+     "self"
+    ],
+    "handleLeave": [
+     "self",
+     "ask=",
+     "error="
+    ],
+    "hide": [
+     "self"
+    ],
+    "hideAfterResume": [
+     "self"
+    ],
+    "ignoreSource": [
+     "self",
+     "name"
+    ],
+    "isEnabled": [
+     "self"
+    ],
+    "isSeekable": [
+     "self"
+    ],
+    "isStateBackward": [
+     "self",
+     "state"
+    ],
+    "isStateForward": [
+     "self",
+     "state"
+    ],
+    "isStateSlowMotion": [
+     "self",
+     "state"
+    ],
+    "jumpNextMark": [
+     "self"
+    ],
+    "jumpPreviousMark": [
+     "self"
+    ],
+    "jumpPreviousNextMark": [
+     "self",
+     "cmp",
+     "start="
+    ],
+    "leavePlayer": [
+     "self"
+    ],
+    "leavePlayerConfirmed": [
+     "self",
+     "answer"
+    ],
+    "lockShow": [
+     "self"
+    ],
+    "makeStateBackward": [
+     "self",
+     "n"
+    ],
+    "makeStateForward": [
+     "self",
+     "n"
+    ],
+    "makeStateSlowMotion": [
+     "self",
+     "n"
+    ],
+    "neverAnimate": [
+     "self"
+    ],
+    "pauseService": [
+     "self"
+    ],
+    "play": [
+     "self"
+    ],
+    "playAgain": [
+     "self"
+    ],
+    "playLastCB": [
+     "self",
+     "answer"
+    ],
+    "playNext": [
+     "self"
+    ],
+    "playPrev": [
+     "self"
+    ],
+    "playService": [
+     "self",
+     "newservice"
+    ],
+    "playpause": [
+     "self"
+    ],
+    "playpauseService": [
+     "self"
+    ],
+    "removeMark": [
+     "self",
+     "point"
+    ],
+    "removeSummary": [
+     "self",
+     "summary"
+    ],
+    "restoreKeyboardMode": [
+     "self"
+    ],
+    "runPlugin": [
+     "self",
+     "plugin"
+    ],
+    "rwdSeekTo": [
+     "self",
+     "minutes"
+    ],
+    "saveKeyboardMode": [
+     "self"
+    ],
+    "seekBack": [
+     "self"
+    ],
+    "seekBackManual": [
+     "self"
+    ],
+    "seekFwd": [
+     "self"
+    ],
+    "seekFwdManual": [
+     "self"
+    ],
+    "serviceStarted": [
+     "self"
+    ],
+    "setDesktop": [
+     "self",
+     "desktop"
+    ],
+    "setFocus": [
+     "self",
+     "o"
+    ],
+    "setKeyboardModeAscii": [
+     "self"
+    ],
+    "setKeyboardModeNone": [
+     "self"
+    ],
+    "setPlaybackState": [
+     "self",
+     "state=",
+     "message="
+    ],
+    "setSeekState": [
+     "self",
+     "state",
+     "onlyGUI="
+    ],
+    "setSelectedSubtitle": [
+     "self",
+     "idx"
+    ],
+    "setShowHideAnimation": [
+     "self",
+     "animation_key"
+    ],
+    "setSubtitlesEnable": [
+     "self",
+     "enable="
+    ],
+    "setTitle": [
+     "self",
+     "title"
+    ],
+    "setZPosition": [
+     "self",
+     "z"
+    ],
+    "show": [
+     "self"
+    ],
+    "showAfterCuesheetOperation": [
+     "self"
+    ],
+    "showAfterSeek": [
+     "self"
+    ],
+    "showExtensionSelection": [
+     "self"
+    ],
+    "showNotificationQueueViewer": [
+     "self"
+    ],
+    "showVideoInfo": [
+     "self"
+    ],
+    "startHideTimer": [
+     "self"
+    ],
+    "stopCurrent": [
+     "self"
+    ],
+    "toggleMark": [
+     "self",
+     "onlyremove=",
+     "onlyadd=",
+     "tolerance=",
+     "onlyreturn="
+    ],
+    "toggleShow": [
+     "self"
+    ],
+    "unPauseService": [
+     "self"
+    ],
+    "unlockShow": [
+     "self"
+    ],
+    "up": [
+     "self"
+    ],
+    "updateExtension": [
+     "self",
+     "extension",
+     "key="
+    ],
+    "updateExtensions": [
+     "self"
+    ],
+    "uploadCuesheet": [
+     "self"
+    ]
+   },
+   "provides": [
+    "AudioSelectionAction",
+    "CueSheetActions",
+    "InstantExtensionsActions",
+    "SeekActions",
+    "ShowHideActions",
+    "Title",
+    "actions"
+   ]
+  },
+  "Navigation": {
+   "attrs": [],
+   "file": "Navigation.py",
+   "methods": {
+    "__init__": [
+     "self",
+     "nextRecordTimerAfterEventActionAuto="
+    ],
+    "dispatchEvent": [
+     "self",
+     "i"
+    ],
+    "dispatchRecordEvent": [
+     "self",
+     "rec_service",
+     "event"
+    ],
+    "getCurrentService": [
+     "self"
+    ],
+    "getCurrentServiceReference": [
+     "self"
+    ],
+    "getCurrentlyPlayingServiceReference": [
+     "self"
+    ],
+    "getRecordings": [
+     "self",
+     "simulate="
+    ],
+    "pause": [
+     "self",
+     "p"
+    ],
+    "playService": [
+     "self",
+     "ref",
+     "checkParentalControl=",
+     "forceRestart="
+    ],
+    "recordService": [
+     "self",
+     "ref",
+     "simulate="
+    ],
+    "serviceListInitialized": [
+     "self",
+     "configElement"
+    ],
+    "shutdown": [
+     "self"
+    ],
+    "stopRecordService": [
+     "self",
+     "service"
+    ],
+    "stopService": [
+     "self"
+    ],
+    "stopUserServices": [
+     "self"
+    ],
+    "wasTimerWakeup": [
+     "self"
+    ]
+   },
+   "provides": []
+  },
+  "Pixmap": {
+   "attrs": [
+    "GUI_WIDGET",
+    "position",
+    "visible"
+   ],
+   "file": "Components/Pixmap.py",
+   "methods": {
+    "GUIcreate": [
+     "self",
+     "parent"
+    ],
+    "GUIdelete": [
+     "self"
+    ],
+    "__init__": [
+     "self"
+    ],
+    "applySkin": [
+     "self",
+     "desktop",
+     "parent"
+    ],
+    "createWidget": [
+     "self",
+     "parent"
+    ],
+    "destroy": [
+     "self"
+    ],
+    "execBegin": [
+     "self"
+    ],
+    "execEnd": [
+     "self"
+    ],
+    "getPosition": [
+     "self"
+    ],
+    "getSize": [
+     "self"
+    ],
+    "getVisible": [
+     "self"
+    ],
+    "hide": [
+     "self"
+    ],
+    "move": [
+     "self",
+     "x",
+     "y="
+    ],
+    "onHide": [
+     "self"
+    ],
+    "onShow": [
+     "self"
+    ],
+    "postWidgetCreate": [
+     "self",
+     "instance"
+    ],
+    "preWidgetRemove": [
+     "self",
+     "instance"
+    ],
+    "resetShowHideAnimation": [
+     "self"
+    ],
+    "resize": [
+     "self",
+     "x",
+     "y="
+    ],
+    "setDefaultAnimationEnabled": [
+     "self",
+     "enabled"
+    ],
+    "setPixmap": [
+     "self",
+     "pixmap"
+    ],
+    "setPosition": [
+     "self",
+     "x",
+     "y"
+    ],
+    "setShowHideAnimation": [
+     "self",
+     "key"
+    ],
+    "setVisible": [
+     "self",
+     "visible"
+    ],
+    "setZPosition": [
+     "self",
+     "z"
+    ],
+    "show": [
+     "self"
+    ]
+   },
+   "provides": []
+  },
+  "PluginDescriptor": {
+   "attrs": [
+    "WHERE_AUDIOMENU",
+    "WHERE_AUTOSTART",
+    "WHERE_CHANNEL_CONTEXT_MENU",
+    "WHERE_EVENTINFO",
+    "WHERE_EXTENSIONSMENU",
+    "WHERE_FILESCAN",
+    "WHERE_HBBTV",
+    "WHERE_INFOBAR",
+    "WHERE_MAINMENU",
+    "WHERE_MENU",
+    "WHERE_MOVIELIST",
+    "WHERE_NETWORKCONFIG_READ",
+    "WHERE_NETWORKSETUP",
+    "WHERE_PLUGINMENU",
+    "WHERE_SESSIONSTART",
+    "WHERE_SOFTWAREMANAGER",
+    "WHERE_STORAGEMANAGER",
+    "WHERE_TELETEXT",
+    "WHERE_TIMEREDIT",
+    "WHERE_UPNP",
+    "WHERE_WIZARD"
+   ],
+   "file": "Plugins/Plugin.py",
+   "methods": {
+    "__eq__": [
+     "self",
+     "other"
+    ],
+    "__init__": [
+     "self",
+     "name=",
+     "where=",
+     "description=",
+     "icon=",
+     "fnc=",
+     "wakeupfnc=",
+     "needsRestart=",
+     "internal=",
+     "weight=",
+     "helperfnc="
+    ],
+    "getWakeupTime": [
+     "self"
+    ],
+    "updateIcon": [
+     "self",
+     "path"
+    ]
+   },
+   "provides": []
+  },
+  "Screen": {
+   "attrs": [
+    "ALLOW_SUSPEND",
+    "IS_DIALOG",
+    "__module__",
+    "title"
+   ],
+   "file": "Screens/Screen.py",
+   "methods": {
+    "__doClose": [
+     "self",
+     "immediate="
+    ],
+    "__init__": [
+     "self",
+     "session",
+     "parent=",
+     "windowTitle="
+    ],
+    "__onHide": [
+     "self"
+    ],
+    "__onHideFinished": [
+     "self"
+    ],
+    "__onShow": [
+     "self"
+    ],
+    "__repr__": [
+     "self"
+    ],
+    "_free": [
+     "self"
+    ],
+    "_initAnimations": [
+     "self"
+    ],
+    "addSummary": [
+     "self",
+     "summary"
+    ],
+    "applySkin": [
+     "self"
+    ],
+    "canAnimate": [
+     "self"
+    ],
+    "close": [
+     "self",
+     "*retval"
+    ],
+    "createGUIScreen": [
+     "self",
+     "parent",
+     "desktop",
+     "updateonly="
+    ],
+    "createSummary": [
+     "self"
+    ],
+    "deleteGUIScreen": [
+     "self"
+    ],
+    "disable": [
+     "self"
+    ],
+    "doClose": [
+     "self",
+     "immediate="
+    ],
+    "doCloseInternal": [
+     "self"
+    ],
+    "enable": [
+     "self",
+     "do_show="
+    ],
+    "execBegin": [
+     "self"
+    ],
+    "execEnd": [
+     "self"
+    ],
+    "getRelatedScreen": [
+     "self",
+     "name"
+    ],
+    "getTitle": [
+     "self"
+    ],
+    "hide": [
+     "self"
+    ],
+    "ignoreSource": [
+     "self",
+     "name"
+    ],
+    "isEnabled": [
+     "self"
+    ],
+    "neverAnimate": [
+     "self"
+    ],
+    "removeSummary": [
+     "self",
+     "summary"
+    ],
+    "restoreKeyboardMode": [
+     "self"
+    ],
+    "saveKeyboardMode": [
+     "self"
+    ],
+    "setDesktop": [
+     "self",
+     "desktop"
+    ],
+    "setFocus": [
+     "self",
+     "o"
+    ],
+    "setKeyboardModeAscii": [
+     "self"
+    ],
+    "setKeyboardModeNone": [
+     "self"
+    ],
+    "setShowHideAnimation": [
+     "self",
+     "animation_key"
+    ],
+    "setTitle": [
+     "self",
+     "title"
+    ],
+    "setZPosition": [
+     "self",
+     "z"
+    ],
+    "show": [
+     "self"
+    ]
+   },
+   "provides": [
+    "Title"
+   ]
+  },
+  "ScrollLabel": {
+   "attrs": [
+    "position",
+    "visible"
+   ],
+   "file": "Components/ScrollLabel.py",
+   "methods": {
+    "GUIcreate": [
+     "self",
+     "parent"
+    ],
+    "GUIdelete": [
+     "self"
+    ],
+    "__init__": [
+     "self",
+     "text="
+    ],
+    "appendText": [
+     "self",
+     "text"
+    ],
+    "applySkin": [
+     "self",
+     "desktop",
+     "parent"
+    ],
+    "createWidget": [
+     "self",
+     "parent"
+    ],
+    "destroy": [
+     "self"
+    ],
+    "execBegin": [
+     "self"
+    ],
+    "execEnd": [
+     "self"
+    ],
+    "getPosition": [
+     "self"
+    ],
+    "getSize": [
+     "self"
+    ],
+    "getText": [
+     "self"
+    ],
+    "getVisible": [
+     "self"
+    ],
+    "hide": [
+     "self"
+    ],
+    "lastPage": [
+     "self"
+    ],
+    "move": [
+     "self",
+     "x",
+     "y="
+    ],
+    "onHide": [
+     "self"
+    ],
+    "onShow": [
+     "self"
+    ],
+    "pageDown": [
+     "self"
+    ],
+    "pageUp": [
+     "self"
+    ],
+    "postWidgetCreate": [
+     "self",
+     "instance"
+    ],
+    "preWidgetRemove": [
+     "self",
+     "instance"
+    ],
+    "produceHTML": [
+     "self"
+    ],
+    "resize": [
+     "self",
+     "x",
+     "y="
+    ],
+    "setPosition": [
+     "self",
+     "x",
+     "y"
+    ],
+    "setText": [
+     "self",
+     "text"
+    ],
+    "setVisible": [
+     "self",
+     "visible"
+    ],
+    "setZPosition": [
+     "self",
+     "z"
+    ],
+    "show": [
+     "self"
+    ],
+    "updateScrollbar": [
+     "self"
+    ]
+   },
+   "provides": []
+  },
+  "Session": {
+   "attrs": [],
+   "file": "mytest.py",
+   "methods": {
+    "__init__": [
+     "self",
+     "desktop=",
+     "summary_desktop=",
+     "navigation="
+    ],
+    "close": [
+     "self",
+     "screen",
+     "*retval"
+    ],
+    "create": [
+     "self",
+     "screen",
+     "arguments",
+     "**kwargs"
+    ],
+    "deleteDialog": [
+     "self",
+     "screen"
+    ],
+    "doInstantiateDialog": [
+     "self",
+     "screen",
+     "arguments",
+     "kwargs",
+     "desktop"
+    ],
+    "execBegin": [
+     "self",
+     "first=",
+     "do_show="
+    ],
+    "execDialog": [
+     "self",
+     "dialog"
+    ],
+    "execEnd": [
+     "self",
+     "last=",
+     "is_dialog="
+    ],
+    "instantiateDialog": [
+     "self",
+     "screen",
+     "*arguments",
+     "**kwargs"
+    ],
+    "instantiateSummaryDialog": [
+     "self",
+     "screen",
+     "*arguments",
+     "**kwargs"
+    ],
+    "open": [
+     "self",
+     "screen",
+     "*arguments",
+     "**kwargs"
+    ],
+    "openWithCallback": [
+     "self",
+     "callback",
+     "screen",
+     "*arguments",
+     "**kwargs"
+    ],
+    "popCurrent": [
+     "self"
+    ],
+    "popSummary": [
+     "self"
+    ],
+    "processDelay": [
+     "self"
+    ],
+    "pushCurrent": [
+     "self",
+     "is_dialog="
+    ],
+    "pushSummary": [
+     "self"
+    ]
+   },
+   "provides": []
+  },
+  "Standby": {
+   "attrs": [
+    "ALLOW_SUSPEND",
+    "IS_DIALOG",
+    "__module__",
+    "title"
+   ],
+   "file": "Screens/Standby.py",
+   "methods": {
+    "Power": [
+     "self"
+    ],
+    "__doClose": [
+     "self",
+     "immediate="
+    ],
+    "__init__": [
+     "self",
+     "session"
+    ],
+    "__onClose": [
+     "self"
+    ],
+    "__onFirstExecBegin": [
+     "self"
+    ],
+    "__onHide": [
+     "self"
+    ],
+    "__onHideFinished": [
+     "self"
+    ],
+    "__onShow": [
+     "self"
+    ],
+    "__repr__": [
+     "self"
+    ],
+    "_free": [
+     "self"
+    ],
+    "_initAnimations": [
+     "self"
+    ],
+    "addSummary": [
+     "self",
+     "summary"
+    ],
+    "applySkin": [
+     "self"
+    ],
+    "canAnimate": [
+     "self"
+    ],
+    "close": [
+     "self",
+     "*retval"
+    ],
+    "createGUIScreen": [
+     "self",
+     "parent",
+     "desktop",
+     "updateonly="
+    ],
+    "createSummary": [
+     "self"
+    ],
+    "deleteGUIScreen": [
+     "self"
+    ],
+    "disable": [
+     "self"
+    ],
+    "doClose": [
+     "self",
+     "immediate="
+    ],
+    "doCloseInternal": [
+     "self"
+    ],
+    "enable": [
+     "self",
+     "do_show="
+    ],
+    "execBegin": [
+     "self"
+    ],
+    "execEnd": [
+     "self"
+    ],
+    "getRelatedScreen": [
+     "self",
+     "name"
+    ],
+    "getTitle": [
+     "self"
+    ],
+    "hide": [
+     "self"
+    ],
+    "ignoreSource": [
+     "self",
+     "name"
+    ],
+    "isEnabled": [
+     "self"
+    ],
+    "leaveMute": [
+     "self"
+    ],
+    "neverAnimate": [
+     "self"
+    ],
+    "removeSummary": [
+     "self",
+     "summary"
+    ],
+    "restoreKeyboardMode": [
+     "self"
+    ],
+    "saveKeyboardMode": [
+     "self"
+    ],
+    "setDesktop": [
+     "self",
+     "desktop"
+    ],
+    "setFocus": [
+     "self",
+     "o"
+    ],
+    "setKeyboardModeAscii": [
+     "self"
+    ],
+    "setKeyboardModeNone": [
+     "self"
+    ],
+    "setMute": [
+     "self"
+    ],
+    "setShowHideAnimation": [
+     "self",
+     "animation_key"
+    ],
+    "setTitle": [
+     "self",
+     "title"
+    ],
+    "setZPosition": [
+     "self",
+     "z"
+    ],
+    "show": [
+     "self"
+    ],
+    "timeReady": [
+     "self"
+    ]
+   },
+   "provides": [
+    "Title",
+    "actions"
+   ]
+  },
+  "StaticText": {
+   "attrs": [
+    "CHANGED_ALL",
+    "CHANGED_ANIMATED",
+    "CHANGED_CLEAR",
+    "CHANGED_DEFAULT",
+    "CHANGED_POLL",
+    "CHANGED_PULSATE",
+    "CHANGED_SPECIFIC",
+    "SINGLE_SOURCE",
+    "isAnimated",
+    "suspended",
+    "text"
+   ],
+   "file": "Components/Sources/StaticText.py",
+   "methods": {
+    "__init__": [
+     "self",
+     "text=",
+     "filter="
+    ],
+    "changed": [
+     "self",
+     "*args",
+     "**kwargs"
+    ],
+    "checkSuspend": [
+     "self"
+    ],
+    "connect": [
+     "self",
+     "upstream"
+    ],
+    "connectDownstream": [
+     "self",
+     "downstream"
+    ],
+    "connectUpstream": [
+     "self",
+     "upstream"
+    ],
+    "destroy": [
+     "self"
+    ],
+    "disconnectAll": [
+     "self"
+    ],
+    "disconnectDownstream": [
+     "self",
+     "downstream"
+    ],
+    "doSuspend": [
+     "self",
+     "suspend"
+    ],
+    "execBegin": [
+     "self"
+    ],
+    "execEnd": [
+     "self"
+    ],
+    "getText": [
+     "self"
+    ],
+    "handleCommand": [
+     "self",
+     "cmd"
+    ],
+    "isAnimated": [
+     "self"
+    ],
+    "onHide": [
+     "self"
+    ],
+    "onShow": [
+     "self"
+    ],
+    "setAnimated": [
+     "self",
+     "isAnimated"
+    ],
+    "setSuspend": [
+     "self",
+     "suspended"
+    ],
+    "setText": [
+     "self",
+     "text"
+    ]
+   },
+   "provides": []
+  },
+  "VirtualKeyBoard": {
+   "attrs": [
+    "ALLOW_SUSPEND",
+    "IS_DIALOG",
+    "LINESIZE",
+    "__module__",
+    "title"
+   ],
+   "file": "Screens/VirtualKeyBoard.py",
+   "methods": {
+    "__doClose": [
+     "self",
+     "immediate="
+    ],
+    "__init__": [
+     "self",
+     "session",
+     "title=",
+     "text="
+    ],
+    "__onHide": [
+     "self"
+    ],
+    "__onHideFinished": [
+     "self"
+    ],
+    "__onShow": [
+     "self"
+    ],
+    "__repr__": [
+     "self"
+    ],
+    "_free": [
+     "self"
+    ],
+    "_initAnimations": [
+     "self"
+    ],
+    "addSummary": [
+     "self",
+     "summary"
+    ],
+    "applySkin": [
+     "self"
+    ],
+    "backClicked": [
+     "self"
+    ],
+    "buildVirtualKeyBoard": [
+     "self",
+     "selectedKey="
+    ],
+    "canAnimate": [
+     "self"
+    ],
+    "close": [
+     "self",
+     "*retval"
+    ],
+    "createGUIScreen": [
+     "self",
+     "parent",
+     "desktop",
+     "updateonly="
+    ],
+    "createSummary": [
+     "self"
+    ],
+    "deleteGUIScreen": [
+     "self"
+    ],
+    "disable": [
+     "self"
+    ],
+    "doClose": [
+     "self",
+     "immediate="
+    ],
+    "doCloseInternal": [
+     "self"
+    ],
+    "down": [
+     "self"
+    ],
+    "enable": [
+     "self",
+     "do_show="
+    ],
+    "execBegin": [
+     "self"
+    ],
+    "execEnd": [
+     "self"
+    ],
+    "exit": [
+     "self"
+    ],
+    "getKey": [
+     "self",
+     "num"
+    ],
+    "getRelatedScreen": [
+     "self",
+     "name"
+    ],
+    "getTitle": [
+     "self"
+    ],
+    "hide": [
+     "self"
+    ],
+    "ignoreSource": [
+     "self",
+     "name"
+    ],
+    "inShiftKeyList": [
+     "self",
+     "key"
+    ],
+    "isEnabled": [
+     "self"
+    ],
+    "keyGotAscii": [
+     "self"
+    ],
+    "keyNumberGlobal": [
+     "self",
+     "number"
+    ],
+    "left": [
+     "self"
+    ],
+    "neverAnimate": [
+     "self"
+    ],
+    "nextChar": [
+     "self"
+    ],
+    "nextFunc": [
+     "self"
+    ],
+    "nextKey": [
+     "self"
+    ],
+    "ok": [
+     "self"
+    ],
+    "okClicked": [
+     "self"
+    ],
+    "removeSummary": [
+     "self",
+     "summary"
+    ],
+    "restoreKeyboardMode": [
+     "self"
+    ],
+    "right": [
+     "self"
+    ],
+    "saveKeyboardMode": [
+     "self"
+    ],
+    "setDesktop": [
+     "self",
+     "desktop"
+    ],
+    "setFocus": [
+     "self",
+     "o"
+    ],
+    "setKeyboardModeAscii": [
+     "self"
+    ],
+    "setKeyboardModeNone": [
+     "self"
+    ],
+    "setLang": [
+     "self"
+    ],
+    "setShowHideAnimation": [
+     "self",
+     "animation_key"
+    ],
+    "setTitle": [
+     "self",
+     "title"
+    ],
+    "setUseableChars": [
+     "self",
+     "useable"
+    ],
+    "setZPosition": [
+     "self",
+     "z"
+    ],
+    "show": [
+     "self"
+    ],
+    "showActiveKey": [
+     "self"
+    ],
+    "switchLang": [
+     "self"
+    ],
+    "timeout": [
+     "self"
+    ],
+    "up": [
+     "self"
+    ]
+   },
+   "provides": [
+    "Title",
+    "actions",
+    "country",
+    "header",
+    "list",
+    "numberActions",
+    "text"
+   ]
+  }
+ },
+ "modules": {
+  "Components.Language": {
+   "Language": "class",
+   "language": null
+  },
+  "Components.config": {
+   "Config": "class",
+   "ConfigBoolean": "class",
+   "ConfigClock": "class",
+   "ConfigDateTime": "class",
+   "ConfigDirectory": "class",
+   "ConfigElement": "class",
+   "ConfigEnableDisable": "class",
+   "ConfigFile": "class",
+   "ConfigFloat": "class",
+   "ConfigIP": "class",
+   "ConfigIP6": "class",
+   "ConfigInteger": "class",
+   "ConfigLocations": "class",
+   "ConfigMAC": "class",
+   "ConfigNothing": "class",
+   "ConfigNumber": "class",
+   "ConfigOnOff": "class",
+   "ConfigPIN": "class",
+   "ConfigPassword": "class",
+   "ConfigPosition": "class",
+   "ConfigSatlist": "class",
+   "ConfigSearchText": "class",
+   "ConfigSelection": "class",
+   "ConfigSelectionNumber": "class",
+   "ConfigSequence": "class",
+   "ConfigSet": "class",
+   "ConfigSlider": "class",
+   "ConfigSubDict": "class",
+   "ConfigSubList": "class",
+   "ConfigSubsection": "class",
+   "ConfigSubsectionContent": "class",
+   "ConfigText": "class",
+   "ConfigTextBase": "class",
+   "ConfigYesNo": "class",
+   "KEY_0": null,
+   "KEY_9": null,
+   "KEY_ASCII": null,
+   "KEY_BACKSPACE": null,
+   "KEY_DELETE": null,
+   "KEY_END": null,
+   "KEY_HOME": null,
+   "KEY_LEFT": null,
+   "KEY_NUMBERS": null,
+   "KEY_OK": null,
+   "KEY_RIGHT": null,
+   "KEY_TIMEOUT": null,
+   "KEY_TOGGLEOW": null,
+   "NoSave": [
+    "element"
+   ],
+   "boolean_descriptions": null,
+   "choicesList": "class",
+   "clock_limits": null,
+   "config": null,
+   "configfile": null,
+   "descriptionList": "class",
+   "getConfigListEntry": [
+    "*args"
+   ],
+   "getKeyNumber": [
+    "key"
+   ],
+   "integer_limits": null,
+   "ip_limits": null,
+   "mac_limits": null,
+   "on_off_descriptions": null,
+   "updateConfigElement": [
+    "element",
+    "newelement"
+   ],
+   "yes_no_descriptions": null
+  },
+  "Screens.Standby": {
+   "Standby": "class",
+   "StandbySummary": "class",
+   "TryQuitMainloop": "class",
+   "inStandby": null,
+   "inTryQuitMainloop": null
+  },
+  "Tools.Directories": {
+   "FILE_COPY": null,
+   "FILE_MOVE": null,
+   "InitFallbackFiles": [],
+   "PATH_COPY": null,
+   "PATH_CREATE": null,
+   "PATH_DONTCREATE": null,
+   "PATH_FALLBACK": null,
+   "PATH_MOVE": null,
+   "SCOPE_CONFIG": null,
+   "SCOPE_CURRENT_PLUGIN": null,
+   "SCOPE_CURRENT_SKIN": null,
+   "SCOPE_DEFAULTDIR": null,
+   "SCOPE_DEFAULTPARTITION": null,
+   "SCOPE_DEFAULTPARTITIONMOUNTDIR": null,
+   "SCOPE_FONTS": null,
+   "SCOPE_HDD": null,
+   "SCOPE_LANGUAGE": null,
+   "SCOPE_MEDIA": null,
+   "SCOPE_METADIR": null,
+   "SCOPE_PLAYLIST": null,
+   "SCOPE_PLUGINS": null,
+   "SCOPE_SKIN": null,
+   "SCOPE_SKIN_IMAGE": null,
+   "SCOPE_SYSETC": null,
+   "SCOPE_TRANSPONDERDATA": null,
+   "SCOPE_USERETC": null,
+   "copyfile": [
+    "src",
+    "dst"
+   ],
+   "copytree": [
+    "src",
+    "dst",
+    "symlinks="
+   ],
+   "crawlDirectory": [
+    "directory",
+    "pattern"
+   ],
+   "createDir": [
+    "path",
+    "makeParents="
+   ],
+   "defaultPaths": null,
+   "fallbackPaths": null,
+   "fileExists": [
+    "f",
+    "mode="
+   ],
+   "getRecordingFilename": [
+    "basename",
+    "dirname="
+   ],
+   "getSize": [
+    "path",
+    "pattern="
+   ],
+   "isMount": [
+    "path"
+   ],
+   "pathExists": [
+    "path"
+   ],
+   "prettySize": [
+    "size"
+   ],
+   "removeDir": [
+    "path"
+   ],
+   "resolveFilename": [
+    "scope",
+    "base=",
+    "path_prefix="
+   ]
+  },
+  "Tools.Notifications": {
+   "AddNotification": [
+    "screen",
+    "*args",
+    "**kwargs"
+   ],
+   "AddNotificationWithCallback": [
+    "fnc",
+    "screen",
+    "*args",
+    "**kwargs"
+   ],
+   "AddNotificationWithID": [
+    "id",
+    "screen",
+    "*args",
+    "**kwargs"
+   ],
+   "AddPopup": [
+    "text",
+    "type",
+    "timeout",
+    "id=",
+    "domain=",
+    "screen=",
+    "additionalActionMap="
+   ],
+   "ICON_DEFAULT": null,
+   "ICON_MAIL": null,
+   "ICON_TIMER": null,
+   "NotificationQueue": "class",
+   "NotificationQueueEntry": "class",
+   "RemovePopup": [
+    "id"
+   ],
+   "__AddNotification": [
+    "fnc",
+    "screen",
+    "id",
+    "*args",
+    "**kwargs"
+   ],
+   "isPendingOrVisibleNotificationID": [
+    "id"
+   ],
+   "notificationQueue": null
+  }
+ },
+ "name": "dreamos",
+ "skin_attributes": [
+  "alphatest",
+  "backgroundColor",
+  "backgroundColorSelected",
+  "backgroundPixmap",
+  "backlogMode",
+  "blend",
+  "borderColor",
+  "borderWidth",
+  "cornerRadius",
+  "enableWrapAround",
+  "flags",
+  "font",
+  "foregroundColor",
+  "foregroundColorSelected",
+  "gradient",
+  "halign",
+  "id",
+  "itemHeight",
+  "name",
+  "noWrap",
+  "orientation",
+  "padding",
+  "pixmap",
+  "pointer",
+  "position",
+  "progress_pointer",
+  "radius",
+  "render",
+  "scale",
+  "scrollbarBackgroundPixmapBottomHeight",
+  "scrollbarBackgroundPixmapTopHeight",
+  "scrollbarMode",
+  "scrollbarSliderBackgroundPicture",
+  "scrollbarSliderBorderWidth",
+  "scrollbarSliderPicture",
+  "scrollbarValuePicture",
+  "scrollbarValuePixmapBottomHeight",
+  "scrollbarValuePixmapTopHeight",
+  "scrollbarWidth",
+  "seek_pointer",
+  "selectionDisabled",
+  "selectionPixmap",
+  "shadowColor",
+  "shadowOffset",
+  "size",
+  "source",
+  "text",
+  "title",
+  "transparent",
+  "valign",
+  "zPosition"
+ ],
+ "source": "OpenDMM/enigma2 (DreamOS enigma2 4.3.1r28, installed tree) @ b5f18e2 2018-05-14"
+}

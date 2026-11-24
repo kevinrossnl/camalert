@@ -1,0 +1,3182 @@
+{
+ "kodi": 22,
+ "modules": {
+  "xbmc": {
+   "classes": {
+    "Actor": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self",
+       "name=",
+       "role=",
+       "order=",
+       "thumbnail="
+      ],
+      "getName": [
+       "self"
+      ],
+      "getOrder": [
+       "self"
+      ],
+      "getRole": [
+       "self"
+      ],
+      "getThumbnail": [
+       "self"
+      ],
+      "setName": [
+       "self",
+       "name"
+      ],
+      "setOrder": [
+       "self",
+       "order"
+      ],
+      "setRole": [
+       "self",
+       "role"
+      ],
+      "setThumbnail": [
+       "self",
+       "thumbnail"
+      ]
+     }
+    },
+    "AudioStreamDetail": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self",
+       "channels=",
+       "codec=",
+       "language="
+      ],
+      "getChannels": [
+       "self"
+      ],
+      "getCodec": [
+       "self"
+      ],
+      "getLanguage": [
+       "self"
+      ],
+      "setChannels": [
+       "self",
+       "channels"
+      ],
+      "setCodec": [
+       "self",
+       "codec"
+      ],
+      "setLanguage": [
+       "self",
+       "language"
+      ]
+     }
+    },
+    "InfoTagGame": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self",
+       "offscreen="
+      ],
+      "getAgeRating": [
+       "self"
+      ],
+      "getDeveloper": [
+       "self"
+      ],
+      "getGameClient": [
+       "self"
+      ],
+      "getGenres": [
+       "self"
+      ],
+      "getOriginalTitle": [
+       "self"
+      ],
+      "getOverview": [
+       "self"
+      ],
+      "getPlatform": [
+       "self"
+      ],
+      "getPlayers": [
+       "self"
+      ],
+      "getPublisher": [
+       "self"
+      ],
+      "getRating": [
+       "self"
+      ],
+      "getTags": [
+       "self"
+      ],
+      "getTitle": [
+       "self"
+      ],
+      "getTrailer": [
+       "self"
+      ],
+      "getYear": [
+       "self"
+      ],
+      "setAgeRating": [
+       "self",
+       "ageRating"
+      ],
+      "setDeveloper": [
+       "self",
+       "developer"
+      ],
+      "setGameClient": [
+       "self",
+       "gameClient"
+      ],
+      "setGenres": [
+       "self",
+       "genres"
+      ],
+      "setOriginalTitle": [
+       "self",
+       "originalTitle"
+      ],
+      "setOverview": [
+       "self",
+       "overview"
+      ],
+      "setPlatform": [
+       "self",
+       "platform"
+      ],
+      "setPlayers": [
+       "self",
+       "players"
+      ],
+      "setPublisher": [
+       "self",
+       "publisher"
+      ],
+      "setRating": [
+       "self",
+       "rating"
+      ],
+      "setTags": [
+       "self",
+       "tags"
+      ],
+      "setTitle": [
+       "self",
+       "title"
+      ],
+      "setTrailer": [
+       "self",
+       "trailer"
+      ],
+      "setYear": [
+       "self",
+       "year"
+      ]
+     }
+    },
+    "InfoTagMusic": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self",
+       "offscreen="
+      ],
+      "getAlbum": [
+       "self"
+      ],
+      "getAlbumArtist": [
+       "self"
+      ],
+      "getArtist": [
+       "self"
+      ],
+      "getComment": [
+       "self"
+      ],
+      "getDbId": [
+       "self"
+      ],
+      "getDisc": [
+       "self"
+      ],
+      "getDuration": [
+       "self"
+      ],
+      "getGenre": [
+       "self"
+      ],
+      "getGenres": [
+       "self"
+      ],
+      "getLastPlayed": [
+       "self"
+      ],
+      "getLastPlayedAsW3C": [
+       "self"
+      ],
+      "getListeners": [
+       "self"
+      ],
+      "getLyrics": [
+       "self"
+      ],
+      "getMediaType": [
+       "self"
+      ],
+      "getMusicBrainzAlbumArtistID": [
+       "self"
+      ],
+      "getMusicBrainzAlbumID": [
+       "self"
+      ],
+      "getMusicBrainzArtistID": [
+       "self"
+      ],
+      "getMusicBrainzReleaseGroupID": [
+       "self"
+      ],
+      "getMusicBrainzTrackID": [
+       "self"
+      ],
+      "getPlayCount": [
+       "self"
+      ],
+      "getRating": [
+       "self"
+      ],
+      "getReleaseDate": [
+       "self"
+      ],
+      "getSongVideoURL": [
+       "self"
+      ],
+      "getTitle": [
+       "self"
+      ],
+      "getTrack": [
+       "self"
+      ],
+      "getURL": [
+       "self"
+      ],
+      "getUserRating": [
+       "self"
+      ],
+      "getYear": [
+       "self"
+      ],
+      "setAlbum": [
+       "self",
+       "album"
+      ],
+      "setAlbumArtist": [
+       "self",
+       "albumArtist"
+      ],
+      "setArtist": [
+       "self",
+       "artist"
+      ],
+      "setComment": [
+       "self",
+       "comment"
+      ],
+      "setDbId": [
+       "self",
+       "dbId",
+       "type"
+      ],
+      "setDisc": [
+       "self",
+       "disc"
+      ],
+      "setDuration": [
+       "self",
+       "duration"
+      ],
+      "setGenres": [
+       "self",
+       "genres"
+      ],
+      "setLastPlayed": [
+       "self",
+       "lastPlayed"
+      ],
+      "setListeners": [
+       "self",
+       "listeners"
+      ],
+      "setLyrics": [
+       "self",
+       "lyrics"
+      ],
+      "setMediaType": [
+       "self",
+       "mediaType"
+      ],
+      "setMusicBrainzAlbumArtistID": [
+       "self",
+       "musicBrainzAlbumArtistID"
+      ],
+      "setMusicBrainzAlbumID": [
+       "self",
+       "musicBrainzAlbumID"
+      ],
+      "setMusicBrainzArtistID": [
+       "self",
+       "musicBrainzArtistID"
+      ],
+      "setMusicBrainzReleaseGroupID": [
+       "self",
+       "musicBrainzReleaseGroupID"
+      ],
+      "setMusicBrainzTrackID": [
+       "self",
+       "musicBrainzTrackID"
+      ],
+      "setPlayCount": [
+       "self",
+       "playcount"
+      ],
+      "setRating": [
+       "self",
+       "rating"
+      ],
+      "setReleaseDate": [
+       "self",
+       "releaseDate"
+      ],
+      "setSongVideoURL": [
+       "self",
+       "songVideoURL"
+      ],
+      "setTitle": [
+       "self",
+       "title"
+      ],
+      "setTrack": [
+       "self",
+       "track"
+      ],
+      "setURL": [
+       "self",
+       "url"
+      ],
+      "setUserRating": [
+       "self",
+       "userrating"
+      ],
+      "setYear": [
+       "self",
+       "year"
+      ]
+     }
+    },
+    "InfoTagPicture": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self",
+       "offscreen="
+      ],
+      "getDateTimeTaken": [
+       "self"
+      ],
+      "getResolution": [
+       "self"
+      ],
+      "setDateTimeTaken": [
+       "self",
+       "datetimetaken"
+      ],
+      "setResolution": [
+       "self",
+       "width",
+       "height"
+      ]
+     }
+    },
+    "InfoTagRadioRDS": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self"
+      ],
+      "getAlbum": [
+       "self"
+      ],
+      "getAlbumTrackNumber": [
+       "self"
+      ],
+      "getArtist": [
+       "self"
+      ],
+      "getBand": [
+       "self"
+      ],
+      "getComment": [
+       "self"
+      ],
+      "getComposer": [
+       "self"
+      ],
+      "getConductor": [
+       "self"
+      ],
+      "getEMailHotline": [
+       "self"
+      ],
+      "getEMailStudio": [
+       "self"
+      ],
+      "getEditorialStaff": [
+       "self"
+      ],
+      "getInfoCinema": [
+       "self"
+      ],
+      "getInfoHoroscope": [
+       "self"
+      ],
+      "getInfoLottery": [
+       "self"
+      ],
+      "getInfoNews": [
+       "self"
+      ],
+      "getInfoNewsLocal": [
+       "self"
+      ],
+      "getInfoOther": [
+       "self"
+      ],
+      "getInfoSport": [
+       "self"
+      ],
+      "getInfoStock": [
+       "self"
+      ],
+      "getInfoWeather": [
+       "self"
+      ],
+      "getPhoneHotline": [
+       "self"
+      ],
+      "getPhoneStudio": [
+       "self"
+      ],
+      "getProgHost": [
+       "self"
+      ],
+      "getProgNext": [
+       "self"
+      ],
+      "getProgNow": [
+       "self"
+      ],
+      "getProgStation": [
+       "self"
+      ],
+      "getProgStyle": [
+       "self"
+      ],
+      "getProgWebsite": [
+       "self"
+      ],
+      "getSMSStudio": [
+       "self"
+      ],
+      "getTitle": [
+       "self"
+      ]
+     }
+    },
+    "InfoTagVideo": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self",
+       "offscreen="
+      ],
+      "addAudioStream": [
+       "self",
+       "stream"
+      ],
+      "addAvailableArtwork": [
+       "self",
+       "url",
+       "arttype=",
+       "preview=",
+       "referrer=",
+       "cache=",
+       "post=",
+       "isgz=",
+       "season="
+      ],
+      "addSeason": [
+       "self",
+       "number",
+       "name=",
+       "plot="
+      ],
+      "addSeasons": [
+       "self",
+       "seasons"
+      ],
+      "addSubtitleStream": [
+       "self",
+       "stream"
+      ],
+      "addVideoStream": [
+       "self",
+       "stream"
+      ],
+      "getActors": [
+       "self"
+      ],
+      "getAlbum": [
+       "self"
+      ],
+      "getArtist": [
+       "self"
+      ],
+      "getCast": [
+       "self"
+      ],
+      "getDbId": [
+       "self"
+      ],
+      "getDirector": [
+       "self"
+      ],
+      "getDirectors": [
+       "self"
+      ],
+      "getDuration": [
+       "self"
+      ],
+      "getEpisode": [
+       "self"
+      ],
+      "getFile": [
+       "self"
+      ],
+      "getFilenameAndPath": [
+       "self"
+      ],
+      "getFirstAired": [
+       "self"
+      ],
+      "getFirstAiredAsW3C": [
+       "self"
+      ],
+      "getGenre": [
+       "self"
+      ],
+      "getGenres": [
+       "self"
+      ],
+      "getIMDBNumber": [
+       "self"
+      ],
+      "getLastPlayed": [
+       "self"
+      ],
+      "getLastPlayedAsW3C": [
+       "self"
+      ],
+      "getMediaType": [
+       "self"
+      ],
+      "getOriginalLanguage": [
+       "self"
+      ],
+      "getOriginalTitle": [
+       "self"
+      ],
+      "getPath": [
+       "self"
+      ],
+      "getPictureURL": [
+       "self"
+      ],
+      "getPlayCount": [
+       "self"
+      ],
+      "getPlot": [
+       "self"
+      ],
+      "getPlotOutline": [
+       "self"
+      ],
+      "getPremiered": [
+       "self"
+      ],
+      "getPremieredAsW3C": [
+       "self"
+      ],
+      "getRating": [
+       "self",
+       "type="
+      ],
+      "getResumeTime": [
+       "self"
+      ],
+      "getResumeTimeTotal": [
+       "self"
+      ],
+      "getSeason": [
+       "self"
+      ],
+      "getTVShowTitle": [
+       "self"
+      ],
+      "getTagLine": [
+       "self"
+      ],
+      "getTitle": [
+       "self"
+      ],
+      "getTrack": [
+       "self"
+      ],
+      "getTrailer": [
+       "self"
+      ],
+      "getUniqueID": [
+       "self",
+       "key"
+      ],
+      "getUserRating": [
+       "self"
+      ],
+      "getVotes": [
+       "self"
+      ],
+      "getVotesAsInt": [
+       "self",
+       "type="
+      ],
+      "getWriters": [
+       "self"
+      ],
+      "getWritingCredits": [
+       "self"
+      ],
+      "getYear": [
+       "self"
+      ],
+      "setAlbum": [
+       "self",
+       "album"
+      ],
+      "setArtists": [
+       "self",
+       "artists"
+      ],
+      "setAvailableFanart": [
+       "self",
+       "images"
+      ],
+      "setCast": [
+       "self",
+       "actors"
+      ],
+      "setCountries": [
+       "self",
+       "countries"
+      ],
+      "setDateAdded": [
+       "self",
+       "dateadded"
+      ],
+      "setDbId": [
+       "self",
+       "dbid"
+      ],
+      "setDirectors": [
+       "self",
+       "directors"
+      ],
+      "setDuration": [
+       "self",
+       "duration"
+      ],
+      "setEpisode": [
+       "self",
+       "episode"
+      ],
+      "setEpisodeGuide": [
+       "self",
+       "episodeguide"
+      ],
+      "setFilenameAndPath": [
+       "self",
+       "filenameandpath"
+      ],
+      "setFirstAired": [
+       "self",
+       "firstaired"
+      ],
+      "setGenres": [
+       "self",
+       "genre"
+      ],
+      "setIMDBNumber": [
+       "self",
+       "imdbnumber"
+      ],
+      "setLastPlayed": [
+       "self",
+       "lastplayed"
+      ],
+      "setMediaType": [
+       "self",
+       "mediatype"
+      ],
+      "setMpaa": [
+       "self",
+       "mpaa"
+      ],
+      "setOriginalLanguage": [
+       "self",
+       "language"
+      ],
+      "setOriginalTitle": [
+       "self",
+       "originaltitle"
+      ],
+      "setPath": [
+       "self",
+       "path"
+      ],
+      "setPlaycount": [
+       "self",
+       "playcount"
+      ],
+      "setPlot": [
+       "self",
+       "plot"
+      ],
+      "setPlotOutline": [
+       "self",
+       "plotoutline"
+      ],
+      "setPremiered": [
+       "self",
+       "premiered"
+      ],
+      "setProductionCode": [
+       "self",
+       "productioncode"
+      ],
+      "setRating": [
+       "self",
+       "rating",
+       "votes=",
+       "type=",
+       "isdefault="
+      ],
+      "setRatings": [
+       "self",
+       "ratings",
+       "defaultrating="
+      ],
+      "setResumePoint": [
+       "self",
+       "time",
+       "totaltime="
+      ],
+      "setSeason": [
+       "self",
+       "season"
+      ],
+      "setSet": [
+       "self",
+       "set"
+      ],
+      "setSetId": [
+       "self",
+       "setid"
+      ],
+      "setSetOverview": [
+       "self",
+       "setoverview"
+      ],
+      "setShowLinks": [
+       "self",
+       "showlinks"
+      ],
+      "setSortEpisode": [
+       "self",
+       "sortepisode"
+      ],
+      "setSortSeason": [
+       "self",
+       "sortseason"
+      ],
+      "setSortTitle": [
+       "self",
+       "sorttitle"
+      ],
+      "setStudios": [
+       "self",
+       "studios"
+      ],
+      "setTagLine": [
+       "self",
+       "tagline"
+      ],
+      "setTags": [
+       "self",
+       "tags"
+      ],
+      "setTitle": [
+       "self",
+       "title"
+      ],
+      "setTop250": [
+       "self",
+       "top250"
+      ],
+      "setTrackNumber": [
+       "self",
+       "tracknumber"
+      ],
+      "setTrailer": [
+       "self",
+       "trailer"
+      ],
+      "setTvShowStatus": [
+       "self",
+       "status"
+      ],
+      "setTvShowTitle": [
+       "self",
+       "tvshowtitle"
+      ],
+      "setUniqueID": [
+       "self",
+       "uniqueid",
+       "type=",
+       "isdefault="
+      ],
+      "setUniqueIDs": [
+       "self",
+       "uniqueIDs",
+       "defaultuniqueid="
+      ],
+      "setUserRating": [
+       "self",
+       "userrating"
+      ],
+      "setVideoAssetTitle": [
+       "self",
+       "videoAssetTitle"
+      ],
+      "setVotes": [
+       "self",
+       "votes"
+      ],
+      "setWriters": [
+       "self",
+       "writers"
+      ],
+      "setYear": [
+       "self",
+       "year"
+      ]
+     }
+    },
+    "Keyboard": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self",
+       "line=",
+       "heading=",
+       "hidden="
+      ],
+      "doModal": [
+       "self",
+       "autoclose="
+      ],
+      "getText": [
+       "self"
+      ],
+      "isConfirmed": [
+       "self"
+      ],
+      "setDefault": [
+       "self",
+       "line="
+      ],
+      "setHeading": [
+       "self",
+       "heading"
+      ],
+      "setHiddenInput": [
+       "self",
+       "hidden="
+      ]
+     }
+    },
+    "Monitor": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self"
+      ],
+      "abortRequested": [
+       "self"
+      ],
+      "onCleanFinished": [
+       "self",
+       "library"
+      ],
+      "onCleanStarted": [
+       "self",
+       "library"
+      ],
+      "onDPMSActivated": [
+       "self"
+      ],
+      "onDPMSDeactivated": [
+       "self"
+      ],
+      "onNotification": [
+       "self",
+       "sender",
+       "method",
+       "data"
+      ],
+      "onScanFinished": [
+       "self",
+       "library"
+      ],
+      "onScanStarted": [
+       "self",
+       "library"
+      ],
+      "onScreensaverActivated": [
+       "self"
+      ],
+      "onScreensaverDeactivated": [
+       "self"
+      ],
+      "onSettingsChanged": [
+       "self"
+      ],
+      "waitForAbort": [
+       "self",
+       "timeout="
+      ]
+     }
+    },
+    "PlayList": {
+     "bases": [],
+     "methods": {
+      "__getitem__": [
+       "self",
+       "i"
+      ],
+      "__init__": [
+       "self",
+       "playList"
+      ],
+      "__len__": [
+       "self"
+      ],
+      "add": [
+       "self",
+       "url",
+       "listitem=",
+       "index="
+      ],
+      "clear": [
+       "self"
+      ],
+      "getPlayListId": [
+       "self"
+      ],
+      "getposition": [
+       "self"
+      ],
+      "load": [
+       "self",
+       "filename"
+      ],
+      "remove": [
+       "self",
+       "filename"
+      ],
+      "shuffle": [
+       "self"
+      ],
+      "size": [
+       "self"
+      ],
+      "unshuffle": [
+       "self"
+      ]
+     }
+    },
+    "Player": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self"
+      ],
+      "getAvailableAudioStreams": [
+       "self"
+      ],
+      "getAvailableSubtitleStreams": [
+       "self"
+      ],
+      "getAvailableVideoStreams": [
+       "self"
+      ],
+      "getGameInfoTag": [
+       "self"
+      ],
+      "getMusicInfoTag": [
+       "self"
+      ],
+      "getPlayingFile": [
+       "self"
+      ],
+      "getPlayingItem": [
+       "self"
+      ],
+      "getRadioRDSInfoTag": [
+       "self"
+      ],
+      "getSubtitles": [
+       "self"
+      ],
+      "getTime": [
+       "self"
+      ],
+      "getTotalTime": [
+       "self"
+      ],
+      "getVideoInfoTag": [
+       "self"
+      ],
+      "isExternalPlayer": [
+       "self"
+      ],
+      "isPlaying": [
+       "self"
+      ],
+      "isPlayingAudio": [
+       "self"
+      ],
+      "isPlayingGame": [
+       "self"
+      ],
+      "isPlayingRDS": [
+       "self"
+      ],
+      "isPlayingVideo": [
+       "self"
+      ],
+      "onAVChange": [
+       "self"
+      ],
+      "onAVStarted": [
+       "self"
+      ],
+      "onPlayBackEnded": [
+       "self"
+      ],
+      "onPlayBackError": [
+       "self"
+      ],
+      "onPlayBackPaused": [
+       "self"
+      ],
+      "onPlayBackResumed": [
+       "self"
+      ],
+      "onPlayBackSeek": [
+       "self",
+       "time",
+       "seekOffset"
+      ],
+      "onPlayBackSeekChapter": [
+       "self",
+       "chapter"
+      ],
+      "onPlayBackSpeedChanged": [
+       "self",
+       "speed"
+      ],
+      "onPlayBackStarted": [
+       "self"
+      ],
+      "onPlayBackStopped": [
+       "self"
+      ],
+      "onQueueNextItem": [
+       "self"
+      ],
+      "pause": [
+       "self"
+      ],
+      "play": [
+       "self",
+       "item=",
+       "listitem=",
+       "windowed=",
+       "startpos="
+      ],
+      "playnext": [
+       "self"
+      ],
+      "playprevious": [
+       "self"
+      ],
+      "playselected": [
+       "self",
+       "selected"
+      ],
+      "seekTime": [
+       "self",
+       "seekTime"
+      ],
+      "setAudioStream": [
+       "self",
+       "iStream"
+      ],
+      "setSubtitleStream": [
+       "self",
+       "iStream"
+      ],
+      "setSubtitles": [
+       "self",
+       "subtitleFile"
+      ],
+      "setVideoStream": [
+       "self",
+       "iStream"
+      ],
+      "showSubtitles": [
+       "self",
+       "bVisible"
+      ],
+      "stop": [
+       "self"
+      ],
+      "updateInfoTag": [
+       "self",
+       "item"
+      ]
+     }
+    },
+    "RenderCapture": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self"
+      ],
+      "capture": [
+       "self",
+       "width",
+       "height"
+      ],
+      "getAspectRatio": [
+       "self"
+      ],
+      "getHeight": [
+       "self"
+      ],
+      "getImage": [
+       "self",
+       "msecs="
+      ],
+      "getImageFormat": [
+       "self"
+      ],
+      "getWidth": [
+       "self"
+      ]
+     }
+    },
+    "SubtitleStreamDetail": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self",
+       "language="
+      ],
+      "getLanguage": [
+       "self"
+      ],
+      "setLanguage": [
+       "self",
+       "language"
+      ]
+     }
+    },
+    "VideoStreamDetail": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self",
+       "width=",
+       "height=",
+       "aspect=",
+       "duration=",
+       "codec=",
+       "stereomode=",
+       "language=",
+       "hdrtype=",
+       "hdrdetail="
+      ],
+      "getAspect": [
+       "self"
+      ],
+      "getCodec": [
+       "self"
+      ],
+      "getDuration": [
+       "self"
+      ],
+      "getHDRDetail": [
+       "self"
+      ],
+      "getHDRType": [
+       "self"
+      ],
+      "getHeight": [
+       "self"
+      ],
+      "getLanguage": [
+       "self"
+      ],
+      "getStereoMode": [
+       "self"
+      ],
+      "getWidth": [
+       "self"
+      ],
+      "setAspect": [
+       "self",
+       "aspect"
+      ],
+      "setCodec": [
+       "self",
+       "codec"
+      ],
+      "setDuration": [
+       "self",
+       "duration"
+      ],
+      "setHDRDetail": [
+       "self",
+       "hdrdetail"
+      ],
+      "setHDRType": [
+       "self",
+       "hdrtype"
+      ],
+      "setHeight": [
+       "self",
+       "height"
+      ],
+      "setLanguage": [
+       "self",
+       "language"
+      ],
+      "setStereoMode": [
+       "self",
+       "stereomode"
+      ],
+      "setWidth": [
+       "self",
+       "width"
+      ]
+     }
+    }
+   },
+   "constants": [
+    "DEVICE_POWER_NO_ADAPTER",
+    "DEVICE_POWER_ON",
+    "DEVICE_POWER_STANDBY",
+    "DEVICE_POWER_TRANSITION_TO_ON",
+    "DEVICE_POWER_TRANSITION_TO_STANDBY",
+    "DEVICE_POWER_UNKNOWN",
+    "DRIVE_NOT_READY",
+    "ENGLISH_NAME",
+    "ISO_639_1",
+    "ISO_639_2",
+    "ISO_NAME",
+    "LOGDEBUG",
+    "LOGERROR",
+    "LOGFATAL",
+    "LOGINFO",
+    "LOGNONE",
+    "LOGWARNING",
+    "PLAYLIST_MUSIC",
+    "PLAYLIST_VIDEO",
+    "SERVER_AIRPLAYSERVER",
+    "SERVER_EVENTSERVER",
+    "SERVER_JSONRPCSERVER",
+    "SERVER_UPNPRENDERER",
+    "SERVER_UPNPSERVER",
+    "SERVER_WEBSERVER",
+    "SERVER_ZEROCONF",
+    "TRAY_CLOSED_MEDIA_PRESENT",
+    "TRAY_CLOSED_NO_MEDIA",
+    "TRAY_OPEN"
+   ],
+   "functions": {
+    "audioResume": [],
+    "audioSuspend": [],
+    "convertLanguage": [
+     "language",
+     "format"
+    ],
+    "enableNavSounds": [
+     "yesNo"
+    ],
+    "executeJSONRPC": [
+     "jsonrpccommand"
+    ],
+    "executebuiltin": [
+     "function",
+     "wait="
+    ],
+    "executescript": [
+     "script"
+    ],
+    "getCacheThumbName": [
+     "path"
+    ],
+    "getCecAdapterNames": [],
+    "getCleanMovieTitle": [
+     "path",
+     "usefoldername="
+    ],
+    "getCondVisibility": [
+     "condition"
+    ],
+    "getDVDState": [],
+    "getDatabaseName": [
+     "dbType"
+    ],
+    "getDevicePowerStatus": [
+     "adapterName="
+    ],
+    "getFreeMem": [],
+    "getGlobalIdleTime": [],
+    "getIPAddress": [],
+    "getInfoImage": [
+     "infotag"
+    ],
+    "getInfoLabel": [
+     "cLine"
+    ],
+    "getLanguage": [
+     "format=",
+     "region="
+    ],
+    "getLocalizedString": [
+     "id"
+    ],
+    "getRegion": [
+     "id"
+    ],
+    "getSkinDir": [],
+    "getSupportedMedia": [
+     "mediaType"
+    ],
+    "getUserAgent": [],
+    "log": [
+     "msg",
+     "level="
+    ],
+    "playSFX": [
+     "filename",
+     "useCached="
+    ],
+    "restart": [],
+    "shutdown": [],
+    "skinHasImage": [
+     "image"
+    ],
+    "sleep": [
+     "timemillis"
+    ],
+    "startServer": [
+     "iTyp",
+     "bStart"
+    ],
+    "stopSFX": []
+   }
+  },
+  "xbmcaddon": {
+   "classes": {
+    "Addon": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self",
+       "id="
+      ],
+      "getAddonInfo": [
+       "self",
+       "id"
+      ],
+      "getLocalizedString": [
+       "self",
+       "id"
+      ],
+      "getSetting": [
+       "self",
+       "id"
+      ],
+      "getSettingBool": [
+       "self",
+       "id"
+      ],
+      "getSettingInt": [
+       "self",
+       "id"
+      ],
+      "getSettingNumber": [
+       "self",
+       "id"
+      ],
+      "getSettingString": [
+       "self",
+       "id"
+      ],
+      "getSettings": [
+       "self"
+      ],
+      "openSettings": [
+       "self"
+      ],
+      "setSetting": [
+       "self",
+       "id",
+       "value"
+      ],
+      "setSettingBool": [
+       "self",
+       "id",
+       "value"
+      ],
+      "setSettingInt": [
+       "self",
+       "id",
+       "value"
+      ],
+      "setSettingNumber": [
+       "self",
+       "id",
+       "value"
+      ],
+      "setSettingString": [
+       "self",
+       "id",
+       "value"
+      ]
+     }
+    },
+    "Settings": {
+     "bases": [],
+     "methods": {
+      "getBool": [
+       "self",
+       "id"
+      ],
+      "getBoolList": [
+       "self",
+       "id"
+      ],
+      "getInt": [
+       "self",
+       "id"
+      ],
+      "getIntList": [
+       "self",
+       "id"
+      ],
+      "getNumber": [
+       "self",
+       "id"
+      ],
+      "getNumberList": [
+       "self",
+       "id"
+      ],
+      "getString": [
+       "self",
+       "id"
+      ],
+      "getStringList": [
+       "self",
+       "id"
+      ],
+      "setBool": [
+       "self",
+       "id",
+       "value"
+      ],
+      "setBoolList": [
+       "self",
+       "id",
+       "values"
+      ],
+      "setInt": [
+       "self",
+       "id",
+       "value"
+      ],
+      "setIntList": [
+       "self",
+       "id",
+       "values"
+      ],
+      "setNumber": [
+       "self",
+       "id",
+       "value"
+      ],
+      "setNumberList": [
+       "self",
+       "id",
+       "values"
+      ],
+      "setString": [
+       "self",
+       "id",
+       "value"
+      ],
+      "setStringList": [
+       "self",
+       "id",
+       "values"
+      ]
+     }
+    }
+   },
+   "constants": [],
+   "functions": {}
+  },
+  "xbmcgui": {
+   "classes": {
+    "Action": {
+     "bases": [],
+     "methods": {
+      "__eq__": [
+       "self",
+       "obj2"
+      ],
+      "__init__": [
+       "self"
+      ],
+      "getAmount1": [
+       "self"
+      ],
+      "getAmount2": [
+       "self"
+      ],
+      "getButtonCode": [
+       "self"
+      ],
+      "getId": [
+       "self"
+      ]
+     }
+    },
+    "Control": {
+     "bases": [],
+     "methods": {
+      "__eq__": [
+       "self",
+       "other"
+      ],
+      "__gt__": [
+       "self",
+       "other"
+      ],
+      "__lt__": [
+       "self",
+       "other"
+      ],
+      "canAcceptMessages": [
+       "self",
+       "actionId"
+      ],
+      "controlDown": [
+       "self",
+       "control"
+      ],
+      "controlLeft": [
+       "self",
+       "control"
+      ],
+      "controlRight": [
+       "self",
+       "control"
+      ],
+      "controlUp": [
+       "self",
+       "up"
+      ],
+      "getHeight": [
+       "self"
+      ],
+      "getId": [
+       "self"
+      ],
+      "getPosition": [
+       "self"
+      ],
+      "getWidth": [
+       "self"
+      ],
+      "getX": [
+       "self"
+      ],
+      "getY": [
+       "self"
+      ],
+      "isVisible": [
+       "self"
+      ],
+      "setAnimations": [
+       "self",
+       "eventAttr"
+      ],
+      "setEnableCondition": [
+       "self",
+       "enable"
+      ],
+      "setEnabled": [
+       "self",
+       "enabled"
+      ],
+      "setHeight": [
+       "self",
+       "height"
+      ],
+      "setNavigation": [
+       "self",
+       "up",
+       "down",
+       "left",
+       "right"
+      ],
+      "setPosition": [
+       "self",
+       "x",
+       "y"
+      ],
+      "setVisible": [
+       "self",
+       "visible"
+      ],
+      "setVisibleCondition": [
+       "self",
+       "visible",
+       "allowHiddenFocus="
+      ],
+      "setWidth": [
+       "self",
+       "width"
+      ]
+     }
+    },
+    "ControlButton": {
+     "bases": [
+      "Control"
+     ],
+     "methods": {
+      "__init__": [
+       "self",
+       "x",
+       "y",
+       "width",
+       "height",
+       "label",
+       "focusTexture=",
+       "noFocusTexture=",
+       "textOffsetX=",
+       "textOffsetY=",
+       "alignment=",
+       "font=",
+       "textColor=",
+       "disabledColor=",
+       "angle=",
+       "shadowColor=",
+       "focusedColor="
+      ],
+      "getLabel": [
+       "self"
+      ],
+      "getLabel2": [
+       "self"
+      ],
+      "setDisabledColor": [
+       "self",
+       "color"
+      ],
+      "setLabel": [
+       "self",
+       "label=",
+       "font=",
+       "textColor=",
+       "disabledColor=",
+       "shadowColor=",
+       "focusedColor=",
+       "label2="
+      ]
+     }
+    },
+    "ControlEdit": {
+     "bases": [
+      "Control"
+     ],
+     "methods": {
+      "__init__": [
+       "self",
+       "x",
+       "y",
+       "width",
+       "height",
+       "label",
+       "font=",
+       "textColor=",
+       "disabledColor=",
+       "_alignment=",
+       "focusTexture=",
+       "noFocusTexture="
+      ],
+      "getLabel": [
+       "self"
+      ],
+      "getText": [
+       "self"
+      ],
+      "setLabel": [
+       "self",
+       "label=",
+       "font=",
+       "textColor=",
+       "disabledColor=",
+       "shadowColor=",
+       "focusedColor=",
+       "label2="
+      ],
+      "setText": [
+       "self",
+       "text"
+      ],
+      "setType": [
+       "self",
+       "type",
+       "heading"
+      ]
+     }
+    },
+    "ControlFadeLabel": {
+     "bases": [
+      "Control"
+     ],
+     "methods": {
+      "__init__": [
+       "self",
+       "x",
+       "y",
+       "width",
+       "height",
+       "font=",
+       "textColor=",
+       "_alignment="
+      ],
+      "addLabel": [
+       "self",
+       "label"
+      ],
+      "reset": [
+       "self"
+      ],
+      "setScrolling": [
+       "self",
+       "scroll"
+      ]
+     }
+    },
+    "ControlGroup": {
+     "bases": [
+      "Control"
+     ],
+     "methods": {
+      "__init__": [
+       "self",
+       "x",
+       "y",
+       "width",
+       "height"
+      ]
+     }
+    },
+    "ControlImage": {
+     "bases": [
+      "Control"
+     ],
+     "methods": {
+      "__init__": [
+       "self",
+       "x",
+       "y",
+       "width",
+       "height",
+       "filename",
+       "aspectRatio=",
+       "colorDiffuse="
+      ],
+      "setColorDiffuse": [
+       "self",
+       "hexString"
+      ],
+      "setImage": [
+       "self",
+       "imageFilename",
+       "useCache="
+      ]
+     }
+    },
+    "ControlLabel": {
+     "bases": [
+      "Control"
+     ],
+     "methods": {
+      "__init__": [
+       "self",
+       "x",
+       "y",
+       "width",
+       "height",
+       "label",
+       "font=",
+       "textColor=",
+       "disabledColor=",
+       "alignment=",
+       "hasPath=",
+       "angle="
+      ],
+      "getLabel": [
+       "self"
+      ],
+      "setLabel": [
+       "self",
+       "label=",
+       "font=",
+       "textColor=",
+       "disabledColor=",
+       "shadowColor=",
+       "focusedColor=",
+       "label2="
+      ]
+     }
+    },
+    "ControlList": {
+     "bases": [
+      "Control"
+     ],
+     "methods": {
+      "__init__": [
+       "self",
+       "x",
+       "y",
+       "width",
+       "height",
+       "font=",
+       "textColor=",
+       "buttonTexture=",
+       "buttonFocusTexture=",
+       "selectedColor=",
+       "_imageWidth=",
+       "_imageHeight=",
+       "_itemTextXOffset=",
+       "_itemTextYOffset=",
+       "_itemHeight=",
+       "_space=",
+       "_alignmentY="
+      ],
+      "addItem": [
+       "self",
+       "item",
+       "sendMessage="
+      ],
+      "addItems": [
+       "self",
+       "items"
+      ],
+      "getItemHeight": [
+       "self"
+      ],
+      "getListItem": [
+       "self",
+       "index"
+      ],
+      "getSelectedItem": [
+       "self"
+      ],
+      "getSelectedPosition": [
+       "self"
+      ],
+      "getSpace": [
+       "self"
+      ],
+      "getSpinControl": [
+       "self"
+      ],
+      "removeItem": [
+       "self",
+       "index"
+      ],
+      "reset": [
+       "self"
+      ],
+      "selectItem": [
+       "self",
+       "item"
+      ],
+      "setImageDimensions": [
+       "self",
+       "imageWidth",
+       "imageHeight"
+      ],
+      "setItemHeight": [
+       "self",
+       "height"
+      ],
+      "setPageControlVisible": [
+       "self",
+       "visible"
+      ],
+      "setSpace": [
+       "self",
+       "space"
+      ],
+      "setStaticContent": [
+       "self",
+       "items"
+      ],
+      "size": [
+       "self"
+      ]
+     }
+    },
+    "ControlProgress": {
+     "bases": [
+      "Control"
+     ],
+     "methods": {
+      "__init__": [
+       "self",
+       "x",
+       "y",
+       "width",
+       "height",
+       "texturebg=",
+       "textureleft=",
+       "texturemid=",
+       "textureright=",
+       "textureoverlay="
+      ],
+      "getPercent": [
+       "self"
+      ],
+      "setPercent": [
+       "self",
+       "pct"
+      ]
+     }
+    },
+    "ControlRadioButton": {
+     "bases": [
+      "Control"
+     ],
+     "methods": {
+      "__init__": [
+       "self",
+       "x",
+       "y",
+       "width",
+       "height",
+       "label",
+       "focusOnTexture=",
+       "noFocusOnTexture=",
+       "focusOffTexture=",
+       "noFocusOffTexture=",
+       "focusTexture=",
+       "noFocusTexture=",
+       "textOffsetX=",
+       "textOffsetY=",
+       "_alignment=",
+       "font=",
+       "textColor=",
+       "disabledColor=",
+       "angle=",
+       "shadowColor=",
+       "focusedColor=",
+       "disabledOnTexture=",
+       "disabledOffTexture="
+      ],
+      "isSelected": [
+       "self"
+      ],
+      "setLabel": [
+       "self",
+       "label=",
+       "font=",
+       "textColor=",
+       "disabledColor=",
+       "shadowColor=",
+       "focusedColor=",
+       "label2="
+      ],
+      "setRadioDimension": [
+       "self",
+       "x",
+       "y",
+       "width",
+       "height"
+      ],
+      "setSelected": [
+       "self",
+       "selected"
+      ]
+     }
+    },
+    "ControlSlider": {
+     "bases": [
+      "Control"
+     ],
+     "methods": {
+      "__init__": [
+       "self",
+       "x",
+       "y",
+       "width",
+       "height",
+       "textureback=",
+       "texture=",
+       "texturefocus=",
+       "orientation=",
+       "texturebackdisabled=",
+       "texturedisabled="
+      ],
+      "getFloat": [
+       "self"
+      ],
+      "getInt": [
+       "self"
+      ],
+      "getPercent": [
+       "self"
+      ],
+      "setFloat": [
+       "self",
+       "value",
+       "min",
+       "delta",
+       "max"
+      ],
+      "setInt": [
+       "self",
+       "value",
+       "min",
+       "delta",
+       "max"
+      ],
+      "setPercent": [
+       "self",
+       "pct"
+      ]
+     }
+    },
+    "ControlSpin": {
+     "bases": [
+      "Control"
+     ],
+     "methods": {
+      "setTextures": [
+       "self",
+       "up",
+       "down",
+       "upFocus",
+       "downFocus",
+       "upDisabled",
+       "downDisabled"
+      ]
+     }
+    },
+    "ControlTextBox": {
+     "bases": [
+      "Control"
+     ],
+     "methods": {
+      "__init__": [
+       "self",
+       "x",
+       "y",
+       "width",
+       "height",
+       "font=",
+       "textColor="
+      ],
+      "autoScroll": [
+       "self",
+       "delay",
+       "time",
+       "repeat"
+      ],
+      "getText": [
+       "self"
+      ],
+      "reset": [
+       "self"
+      ],
+      "scroll": [
+       "self",
+       "id"
+      ],
+      "setText": [
+       "self",
+       "text"
+      ]
+     }
+    },
+    "ControlVideoWindow": {
+     "bases": [
+      "Control"
+     ],
+     "methods": {
+      "__init__": [
+       "self",
+       "x",
+       "y",
+       "width",
+       "height"
+      ]
+     }
+    },
+    "Dialog": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self"
+      ],
+      "browse": [
+       "self",
+       "type",
+       "heading",
+       "shares",
+       "mask=",
+       "useThumbs=",
+       "treatAsFolder=",
+       "defaultt=",
+       "enableMultiple="
+      ],
+      "browseMultiple": [
+       "self",
+       "type",
+       "heading",
+       "shares",
+       "mask=",
+       "useThumbs=",
+       "treatAsFolder=",
+       "defaultt="
+      ],
+      "browseSingle": [
+       "self",
+       "type",
+       "heading",
+       "shares",
+       "mask=",
+       "useThumbs=",
+       "treatAsFolder=",
+       "defaultt="
+      ],
+      "colorpicker": [
+       "self",
+       "heading",
+       "selectedcolor=",
+       "colorfile=",
+       "colorlist="
+      ],
+      "contextmenu": [
+       "self",
+       "list"
+      ],
+      "info": [
+       "self",
+       "item"
+      ],
+      "input": [
+       "self",
+       "heading",
+       "defaultt=",
+       "type=",
+       "option=",
+       "autoclose="
+      ],
+      "multiselect": [
+       "self",
+       "heading",
+       "options",
+       "autoclose=",
+       "preselect=",
+       "useDetails="
+      ],
+      "notification": [
+       "self",
+       "heading",
+       "message",
+       "icon=",
+       "time=",
+       "sound="
+      ],
+      "numeric": [
+       "self",
+       "type",
+       "heading",
+       "defaultt=",
+       "bHiddenInput="
+      ],
+      "ok": [
+       "self",
+       "heading",
+       "message"
+      ],
+      "select": [
+       "self",
+       "heading",
+       "list",
+       "autoclose=",
+       "preselect=",
+       "useDetails="
+      ],
+      "textviewer": [
+       "self",
+       "heading",
+       "text",
+       "usemono="
+      ],
+      "yesno": [
+       "self",
+       "heading",
+       "message",
+       "nolabel=",
+       "yeslabel=",
+       "autoclose=",
+       "defaultbutton="
+      ],
+      "yesnocustom": [
+       "self",
+       "heading",
+       "message",
+       "customlabel",
+       "nolabel=",
+       "yeslabel=",
+       "autoclose=",
+       "defaultbutton="
+      ]
+     }
+    },
+    "DialogProgress": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self"
+      ],
+      "close": [
+       "self"
+      ],
+      "create": [
+       "self",
+       "heading",
+       "message="
+      ],
+      "iscanceled": [
+       "self"
+      ],
+      "update": [
+       "self",
+       "percent",
+       "message="
+      ]
+     }
+    },
+    "DialogProgressBG": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self"
+      ],
+      "close": [
+       "self"
+      ],
+      "create": [
+       "self",
+       "heading",
+       "message="
+      ],
+      "isFinished": [
+       "self"
+      ],
+      "update": [
+       "self",
+       "percent=",
+       "heading=",
+       "message="
+      ]
+     }
+    },
+    "ListItem": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self",
+       "label=",
+       "label2=",
+       "path=",
+       "offscreen="
+      ],
+      "addAvailableArtwork": [
+       "self",
+       "url",
+       "art_type=",
+       "preview=",
+       "referrer=",
+       "cache=",
+       "post=",
+       "isgz=",
+       "season="
+      ],
+      "addContextMenuItems": [
+       "self",
+       "items",
+       "replaceItems="
+      ],
+      "addSeason": [
+       "self",
+       "number",
+       "name="
+      ],
+      "addStreamInfo": [
+       "self",
+       "cType",
+       "dictionary"
+      ],
+      "getArt": [
+       "self",
+       "key"
+      ],
+      "getDateTime": [
+       "self"
+      ],
+      "getGameInfoTag": [
+       "self"
+      ],
+      "getLabel": [
+       "self"
+      ],
+      "getLabel2": [
+       "self"
+      ],
+      "getMusicInfoTag": [
+       "self"
+      ],
+      "getPath": [
+       "self"
+      ],
+      "getPictureInfoTag": [
+       "self"
+      ],
+      "getProperty": [
+       "self",
+       "key"
+      ],
+      "getRating": [
+       "self",
+       "key"
+      ],
+      "getUniqueID": [
+       "self",
+       "key"
+      ],
+      "getVideoInfoTag": [
+       "self"
+      ],
+      "getVotes": [
+       "self",
+       "key"
+      ],
+      "isFolder": [
+       "self"
+      ],
+      "isSelected": [
+       "self"
+      ],
+      "select": [
+       "self",
+       "selected"
+      ],
+      "setArt": [
+       "self",
+       "dictionary"
+      ],
+      "setAvailableFanart": [
+       "self",
+       "images"
+      ],
+      "setCast": [
+       "self",
+       "actors"
+      ],
+      "setContentLookup": [
+       "self",
+       "enable"
+      ],
+      "setCount": [
+       "self",
+       "count"
+      ],
+      "setDateTime": [
+       "self",
+       "dateTime"
+      ],
+      "setFileTitle": [
+       "self",
+       "title"
+      ],
+      "setInfo": [
+       "self",
+       "type",
+       "infoLabels"
+      ],
+      "setIsFolder": [
+       "self",
+       "isFolder"
+      ],
+      "setLabel": [
+       "self",
+       "label"
+      ],
+      "setLabel2": [
+       "self",
+       "label"
+      ],
+      "setMimeType": [
+       "self",
+       "mimetype"
+      ],
+      "setOverlay": [
+       "self",
+       "overlay"
+      ],
+      "setPath": [
+       "self",
+       "path"
+      ],
+      "setProperties": [
+       "self",
+       "dictionary"
+      ],
+      "setProperty": [
+       "self",
+       "key",
+       "value"
+      ],
+      "setRating": [
+       "self",
+       "type",
+       "rating",
+       "votes=",
+       "defaultt="
+      ],
+      "setSize": [
+       "self",
+       "size"
+      ],
+      "setSubtitles": [
+       "self",
+       "subtitleFiles"
+      ],
+      "setUniqueIDs": [
+       "self",
+       "dictionary",
+       "defaultrating="
+      ]
+     }
+    },
+    "Window": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self",
+       "existingWindowId="
+      ],
+      "addControl": [
+       "self",
+       "pControl"
+      ],
+      "addControls": [
+       "self",
+       "pControls"
+      ],
+      "clearProperties": [
+       "self"
+      ],
+      "clearProperty": [
+       "self",
+       "key"
+      ],
+      "close": [
+       "self"
+      ],
+      "doModal": [
+       "self"
+      ],
+      "getControl": [
+       "self",
+       "iControlId"
+      ],
+      "getFocus": [
+       "self"
+      ],
+      "getFocusId": [
+       "self"
+      ],
+      "getHeight": [
+       "self"
+      ],
+      "getProperty": [
+       "self",
+       "key"
+      ],
+      "getWidth": [
+       "self"
+      ],
+      "onAction": [
+       "self",
+       "action"
+      ],
+      "onClick": [
+       "self",
+       "controlId"
+      ],
+      "onControl": [
+       "self",
+       "control"
+      ],
+      "onDoubleClick": [
+       "self",
+       "controlId"
+      ],
+      "onFocus": [
+       "self",
+       "controlId"
+      ],
+      "onInit": [
+       "self"
+      ],
+      "removeControl": [
+       "self",
+       "pControl"
+      ],
+      "removeControls": [
+       "self",
+       "pControls"
+      ],
+      "setFocus": [
+       "self",
+       "pControl"
+      ],
+      "setFocusId": [
+       "self",
+       "iControlId"
+      ],
+      "setProperty": [
+       "self",
+       "key",
+       "value"
+      ],
+      "show": [
+       "self"
+      ]
+     }
+    },
+    "WindowDialog": {
+     "bases": [
+      "Window"
+     ],
+     "methods": {
+      "__init__": [
+       "self"
+      ]
+     }
+    },
+    "WindowXML": {
+     "bases": [
+      "Window"
+     ],
+     "methods": {
+      "__init__": [
+       "self",
+       "xmlFilename",
+       "scriptPath",
+       "defaultSkin=",
+       "defaultRes=",
+       "isMedia="
+      ],
+      "addItem": [
+       "self",
+       "item",
+       "position="
+      ],
+      "addItems": [
+       "self",
+       "items"
+      ],
+      "clearList": [
+       "self"
+      ],
+      "getCurrentContainerId": [
+       "self"
+      ],
+      "getCurrentListPosition": [
+       "self"
+      ],
+      "getListItem": [
+       "self",
+       "position"
+      ],
+      "getListSize": [
+       "self"
+      ],
+      "removeItem": [
+       "self",
+       "position"
+      ],
+      "setContainerProperty": [
+       "self",
+       "strProperty",
+       "strValue"
+      ],
+      "setContent": [
+       "self",
+       "strValue"
+      ],
+      "setCurrentListPosition": [
+       "self",
+       "position"
+      ]
+     }
+    },
+    "WindowXMLDialog": {
+     "bases": [
+      "WindowXML"
+     ],
+     "methods": {
+      "__init__": [
+       "self",
+       "xmlFilename",
+       "scriptPath",
+       "defaultSkin=",
+       "defaultRes="
+      ]
+     }
+    }
+   },
+   "constants": [
+    "ACTION_ANALOG_FORWARD",
+    "ACTION_ANALOG_MOVE",
+    "ACTION_ANALOG_MOVE_X_LEFT",
+    "ACTION_ANALOG_MOVE_X_RIGHT",
+    "ACTION_ANALOG_MOVE_Y_DOWN",
+    "ACTION_ANALOG_MOVE_Y_UP",
+    "ACTION_ANALOG_REWIND",
+    "ACTION_ANALOG_SEEK_BACK",
+    "ACTION_ANALOG_SEEK_FORWARD",
+    "ACTION_ASPECT_RATIO",
+    "ACTION_AUDIO_DELAY",
+    "ACTION_AUDIO_DELAY_MIN",
+    "ACTION_AUDIO_DELAY_PLUS",
+    "ACTION_AUDIO_NEXT_LANGUAGE",
+    "ACTION_BACKSPACE",
+    "ACTION_BIG_STEP_BACK",
+    "ACTION_BIG_STEP_FORWARD",
+    "ACTION_BROWSE_SUBTITLE",
+    "ACTION_BUILT_IN_FUNCTION",
+    "ACTION_CALIBRATE_RESET",
+    "ACTION_CALIBRATE_SWAP_ARROWS",
+    "ACTION_CHANGE_RESOLUTION",
+    "ACTION_CHANNEL_DOWN",
+    "ACTION_CHANNEL_NUMBER_SEP",
+    "ACTION_CHANNEL_SWITCH",
+    "ACTION_CHANNEL_UP",
+    "ACTION_CHAPTER_OR_BIG_STEP_BACK",
+    "ACTION_CHAPTER_OR_BIG_STEP_FORWARD",
+    "ACTION_CONTEXT_MENU",
+    "ACTION_COPY_ITEM",
+    "ACTION_CREATE_BOOKMARK",
+    "ACTION_CREATE_EPISODE_BOOKMARK",
+    "ACTION_CURSOR_LEFT",
+    "ACTION_CURSOR_RIGHT",
+    "ACTION_CYCLE_SUBTITLE",
+    "ACTION_CYCLE_TONEMAP_METHOD",
+    "ACTION_DECREASE_PAR",
+    "ACTION_DECREASE_RATING",
+    "ACTION_DELETE_ITEM",
+    "ACTION_DIALOG_SELECT_AUDIO",
+    "ACTION_DIALOG_SELECT_SUBTITLE",
+    "ACTION_DIALOG_SELECT_VIDEO",
+    "ACTION_ENTER",
+    "ACTION_ERROR",
+    "ACTION_FILTER",
+    "ACTION_FILTER_CLEAR",
+    "ACTION_FILTER_SMS2",
+    "ACTION_FILTER_SMS3",
+    "ACTION_FILTER_SMS4",
+    "ACTION_FILTER_SMS5",
+    "ACTION_FILTER_SMS6",
+    "ACTION_FILTER_SMS7",
+    "ACTION_FILTER_SMS8",
+    "ACTION_FILTER_SMS9",
+    "ACTION_FIRST_PAGE",
+    "ACTION_FORWARD",
+    "ACTION_GESTURE_ABORT",
+    "ACTION_GESTURE_BEGIN",
+    "ACTION_GESTURE_END",
+    "ACTION_GESTURE_NOTIFY",
+    "ACTION_GESTURE_PAN",
+    "ACTION_GESTURE_ROTATE",
+    "ACTION_GESTURE_SWIPE_DOWN",
+    "ACTION_GESTURE_SWIPE_DOWN_TEN",
+    "ACTION_GESTURE_SWIPE_LEFT",
+    "ACTION_GESTURE_SWIPE_LEFT_TEN",
+    "ACTION_GESTURE_SWIPE_RIGHT",
+    "ACTION_GESTURE_SWIPE_RIGHT_TEN",
+    "ACTION_GESTURE_SWIPE_UP",
+    "ACTION_GESTURE_SWIPE_UP_TEN",
+    "ACTION_GESTURE_ZOOM",
+    "ACTION_GUIPROFILE_BEGIN",
+    "ACTION_HDR_TOGGLE",
+    "ACTION_HIGHLIGHT_ITEM",
+    "ACTION_INCREASE_PAR",
+    "ACTION_INCREASE_RATING",
+    "ACTION_INPUT_TEXT",
+    "ACTION_JUMP_SMS2",
+    "ACTION_JUMP_SMS3",
+    "ACTION_JUMP_SMS4",
+    "ACTION_JUMP_SMS5",
+    "ACTION_JUMP_SMS6",
+    "ACTION_JUMP_SMS7",
+    "ACTION_JUMP_SMS8",
+    "ACTION_JUMP_SMS9",
+    "ACTION_KEYBOARD_COMPOSING_KEY",
+    "ACTION_KEYBOARD_COMPOSING_KEY_CANCELLED",
+    "ACTION_KEYBOARD_COMPOSING_KEY_FINISHED",
+    "ACTION_LAST_PAGE",
+    "ACTION_MENU",
+    "ACTION_MOUSE_DOUBLE_CLICK",
+    "ACTION_MOUSE_DRAG",
+    "ACTION_MOUSE_DRAG_END",
+    "ACTION_MOUSE_END",
+    "ACTION_MOUSE_LEFT_CLICK",
+    "ACTION_MOUSE_LONG_CLICK",
+    "ACTION_MOUSE_MIDDLE_CLICK",
+    "ACTION_MOUSE_MOVE",
+    "ACTION_MOUSE_RIGHT_CLICK",
+    "ACTION_MOUSE_START",
+    "ACTION_MOUSE_WHEEL_DOWN",
+    "ACTION_MOUSE_WHEEL_UP",
+    "ACTION_MOVE_DOWN",
+    "ACTION_MOVE_ITEM",
+    "ACTION_MOVE_ITEM_DOWN",
+    "ACTION_MOVE_ITEM_UP",
+    "ACTION_MOVE_LEFT",
+    "ACTION_MOVE_RIGHT",
+    "ACTION_MOVE_UP",
+    "ACTION_MUTE",
+    "ACTION_NAV_BACK",
+    "ACTION_NEXT_CHANNELGROUP",
+    "ACTION_NEXT_CONTROL",
+    "ACTION_NEXT_ITEM",
+    "ACTION_NEXT_LETTER",
+    "ACTION_NEXT_PICTURE",
+    "ACTION_NEXT_SCENE",
+    "ACTION_NEXT_SUBTITLE",
+    "ACTION_NONE",
+    "ACTION_NOOP",
+    "ACTION_PAGE_DOWN",
+    "ACTION_PAGE_UP",
+    "ACTION_PARENT_DIR",
+    "ACTION_PASTE",
+    "ACTION_PAUSE",
+    "ACTION_PLAYER_DEBUG",
+    "ACTION_PLAYER_DEBUG_VIDEO",
+    "ACTION_PLAYER_DECREASE_TEMPO",
+    "ACTION_PLAYER_FORWARD",
+    "ACTION_PLAYER_INCREASE_TEMPO",
+    "ACTION_PLAYER_PLAY",
+    "ACTION_PLAYER_PLAYPAUSE",
+    "ACTION_PLAYER_PROCESS_INFO",
+    "ACTION_PLAYER_PROGRAM_SELECT",
+    "ACTION_PLAYER_RESET",
+    "ACTION_PLAYER_RESOLUTION_SELECT",
+    "ACTION_PLAYER_REWIND",
+    "ACTION_PREVIOUS_CHANNELGROUP",
+    "ACTION_PREVIOUS_MENU",
+    "ACTION_PREV_CONTROL",
+    "ACTION_PREV_ITEM",
+    "ACTION_PREV_LETTER",
+    "ACTION_PREV_PICTURE",
+    "ACTION_PREV_SCENE",
+    "ACTION_PREV_SUBTITLE",
+    "ACTION_PVR_ANNOUNCE_REMINDERS",
+    "ACTION_PVR_PLAY",
+    "ACTION_PVR_PLAY_RADIO",
+    "ACTION_PVR_PLAY_TV",
+    "ACTION_PVR_SHOW_TIMER_RULE",
+    "ACTION_QUEUE_ITEM",
+    "ACTION_QUEUE_ITEM_NEXT",
+    "ACTION_RECORD",
+    "ACTION_RELOAD_KEYMAPS",
+    "ACTION_REMOVE_ITEM",
+    "ACTION_RENAME_ITEM",
+    "ACTION_REWIND",
+    "ACTION_ROTATE_PICTURE_CCW",
+    "ACTION_ROTATE_PICTURE_CW",
+    "ACTION_SCAN_ITEM",
+    "ACTION_SCROLL_DOWN",
+    "ACTION_SCROLL_UP",
+    "ACTION_SELECT_ITEM",
+    "ACTION_SETTINGS_LEVEL_CHANGE",
+    "ACTION_SETTINGS_RESET",
+    "ACTION_SET_RATING",
+    "ACTION_SHIFT",
+    "ACTION_SHOW_FULLSCREEN",
+    "ACTION_SHOW_GUI",
+    "ACTION_SHOW_INFO",
+    "ACTION_SHOW_OSD",
+    "ACTION_SHOW_OSD_TIME",
+    "ACTION_SHOW_PLAYLIST",
+    "ACTION_SHOW_SUBTITLES",
+    "ACTION_SHOW_VIDEOMENU",
+    "ACTION_SMALL_STEP_BACK",
+    "ACTION_STEP_BACK",
+    "ACTION_STEP_FORWARD",
+    "ACTION_STEREOMODE_NEXT",
+    "ACTION_STEREOMODE_PREVIOUS",
+    "ACTION_STEREOMODE_SELECT",
+    "ACTION_STEREOMODE_SET",
+    "ACTION_STEREOMODE_TOGGLE",
+    "ACTION_STEREOMODE_TOMONO",
+    "ACTION_STOP",
+    "ACTION_SUBTITLE_ALIGN",
+    "ACTION_SUBTITLE_DELAY",
+    "ACTION_SUBTITLE_DELAY_MIN",
+    "ACTION_SUBTITLE_DELAY_PLUS",
+    "ACTION_SUBTITLE_VSHIFT_DOWN",
+    "ACTION_SUBTITLE_VSHIFT_UP",
+    "ACTION_SWITCH_PLAYER",
+    "ACTION_SYMBOLS",
+    "ACTION_TAKE_SCREENSHOT",
+    "ACTION_TELETEXT_BLUE",
+    "ACTION_TELETEXT_GREEN",
+    "ACTION_TELETEXT_RED",
+    "ACTION_TELETEXT_YELLOW",
+    "ACTION_TOGGLE_COMMSKIP",
+    "ACTION_TOGGLE_DIGITAL_ANALOG",
+    "ACTION_TOGGLE_FONT",
+    "ACTION_TOGGLE_FULLSCREEN",
+    "ACTION_TOGGLE_SOURCE_DEST",
+    "ACTION_TOGGLE_WATCHED",
+    "ACTION_TOUCH_LONGPRESS",
+    "ACTION_TOUCH_LONGPRESS_TEN",
+    "ACTION_TOUCH_TAP",
+    "ACTION_TOUCH_TAP_TEN",
+    "ACTION_TRIGGER_OSD",
+    "ACTION_VIDEO_NEXT_STREAM",
+    "ACTION_VIS_PRESET_LOCK",
+    "ACTION_VIS_PRESET_NEXT",
+    "ACTION_VIS_PRESET_PREV",
+    "ACTION_VIS_PRESET_RANDOM",
+    "ACTION_VIS_PRESET_SHOW",
+    "ACTION_VIS_RATE_PRESET_MINUS",
+    "ACTION_VIS_RATE_PRESET_PLUS",
+    "ACTION_VOICE_RECOGNIZE",
+    "ACTION_VOLAMP",
+    "ACTION_VOLAMP_DOWN",
+    "ACTION_VOLAMP_UP",
+    "ACTION_VOLUME_DOWN",
+    "ACTION_VOLUME_SET",
+    "ACTION_VOLUME_UP",
+    "ACTION_VSHIFT_DOWN",
+    "ACTION_VSHIFT_UP",
+    "ACTION_ZOOM_IN",
+    "ACTION_ZOOM_LEVEL_1",
+    "ACTION_ZOOM_LEVEL_2",
+    "ACTION_ZOOM_LEVEL_3",
+    "ACTION_ZOOM_LEVEL_4",
+    "ACTION_ZOOM_LEVEL_5",
+    "ACTION_ZOOM_LEVEL_6",
+    "ACTION_ZOOM_LEVEL_7",
+    "ACTION_ZOOM_LEVEL_8",
+    "ACTION_ZOOM_LEVEL_9",
+    "ACTION_ZOOM_LEVEL_NORMAL",
+    "ACTION_ZOOM_OUT",
+    "ALPHANUM_HIDE_INPUT",
+    "CONTROL_TEXT_OFFSET_X",
+    "CONTROL_TEXT_OFFSET_Y",
+    "DLG_YESNO_CUSTOM_BTN",
+    "DLG_YESNO_NO_BTN",
+    "DLG_YESNO_YES_BTN",
+    "HORIZONTAL",
+    "ICON_OVERLAY_HD",
+    "ICON_OVERLAY_LOCKED",
+    "ICON_OVERLAY_NONE",
+    "ICON_OVERLAY_RAR",
+    "ICON_OVERLAY_UNWATCHED",
+    "ICON_OVERLAY_WATCHED",
+    "ICON_OVERLAY_ZIP",
+    "INPUT_ALPHANUM",
+    "INPUT_DATE",
+    "INPUT_IPADDRESS",
+    "INPUT_NUMERIC",
+    "INPUT_PASSWORD",
+    "INPUT_TIME",
+    "INPUT_TYPE_DATE",
+    "INPUT_TYPE_IPADDRESS",
+    "INPUT_TYPE_NUMBER",
+    "INPUT_TYPE_PASSWORD",
+    "INPUT_TYPE_PASSWORD_MD5",
+    "INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW",
+    "INPUT_TYPE_SECONDS",
+    "INPUT_TYPE_TEXT",
+    "INPUT_TYPE_TIME",
+    "KEY_APPCOMMAND",
+    "KEY_BUTTON_A",
+    "KEY_BUTTON_B",
+    "KEY_BUTTON_BACK",
+    "KEY_BUTTON_BLACK",
+    "KEY_BUTTON_DPAD_DOWN",
+    "KEY_BUTTON_DPAD_LEFT",
+    "KEY_BUTTON_DPAD_RIGHT",
+    "KEY_BUTTON_DPAD_UP",
+    "KEY_BUTTON_LEFT_ANALOG_TRIGGER",
+    "KEY_BUTTON_LEFT_THUMB_BUTTON",
+    "KEY_BUTTON_LEFT_THUMB_STICK",
+    "KEY_BUTTON_LEFT_THUMB_STICK_DOWN",
+    "KEY_BUTTON_LEFT_THUMB_STICK_LEFT",
+    "KEY_BUTTON_LEFT_THUMB_STICK_RIGHT",
+    "KEY_BUTTON_LEFT_THUMB_STICK_UP",
+    "KEY_BUTTON_LEFT_TRIGGER",
+    "KEY_BUTTON_RIGHT_ANALOG_TRIGGER",
+    "KEY_BUTTON_RIGHT_THUMB_BUTTON",
+    "KEY_BUTTON_RIGHT_THUMB_STICK",
+    "KEY_BUTTON_RIGHT_THUMB_STICK_DOWN",
+    "KEY_BUTTON_RIGHT_THUMB_STICK_LEFT",
+    "KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT",
+    "KEY_BUTTON_RIGHT_THUMB_STICK_UP",
+    "KEY_BUTTON_RIGHT_TRIGGER",
+    "KEY_BUTTON_START",
+    "KEY_BUTTON_WHITE",
+    "KEY_BUTTON_X",
+    "KEY_BUTTON_Y",
+    "KEY_INVALID",
+    "KEY_MOUSE_CLICK",
+    "KEY_MOUSE_DOUBLE_CLICK",
+    "KEY_MOUSE_DRAG",
+    "KEY_MOUSE_DRAG_END",
+    "KEY_MOUSE_DRAG_START",
+    "KEY_MOUSE_END",
+    "KEY_MOUSE_LONG_CLICK",
+    "KEY_MOUSE_MIDDLECLICK",
+    "KEY_MOUSE_MOVE",
+    "KEY_MOUSE_NOOP",
+    "KEY_MOUSE_RDRAG",
+    "KEY_MOUSE_RDRAG_END",
+    "KEY_MOUSE_RDRAG_START",
+    "KEY_MOUSE_RIGHTCLICK",
+    "KEY_MOUSE_START",
+    "KEY_MOUSE_WHEEL_DOWN",
+    "KEY_MOUSE_WHEEL_UP",
+    "KEY_UNICODE",
+    "KEY_VKEY",
+    "KEY_VKEY_MASK",
+    "KEY_VKEY_MAX",
+    "KEY_VMOUSE",
+    "NOTIFICATION_ERROR",
+    "NOTIFICATION_INFO",
+    "NOTIFICATION_WARNING",
+    "PASSWORD_VERIFY",
+    "REMOTE_0",
+    "REMOTE_1",
+    "REMOTE_2",
+    "REMOTE_3",
+    "REMOTE_4",
+    "REMOTE_5",
+    "REMOTE_6",
+    "REMOTE_7",
+    "REMOTE_8",
+    "REMOTE_9",
+    "VERTICAL"
+   ],
+   "functions": {
+    "getCurrentWindowDialogId": [],
+    "getCurrentWindowId": [],
+    "getScreenHeight": [],
+    "getScreenWidth": []
+   }
+  },
+  "xbmcvfs": {
+   "classes": {
+    "File": {
+     "bases": [],
+     "methods": {
+      "__enter__": [
+       "self"
+      ],
+      "__exit__": [
+       "self",
+       "exc_type=",
+       "exc_value=",
+       "traceback="
+      ],
+      "__init__": [
+       "self",
+       "filepath",
+       "mode="
+      ],
+      "close": [
+       "self"
+      ],
+      "read": [
+       "self",
+       "numBytes="
+      ],
+      "readBytes": [
+       "self",
+       "numBytes="
+      ],
+      "seek": [
+       "self",
+       "seekBytes",
+       "iWhence="
+      ],
+      "size": [
+       "self"
+      ],
+      "tell": [
+       "self"
+      ],
+      "write": [
+       "self",
+       "buffer"
+      ]
+     }
+    },
+    "Stat": {
+     "bases": [],
+     "methods": {
+      "__init__": [
+       "self",
+       "path"
+      ],
+      "st_atime": [
+       "self"
+      ],
+      "st_ctime": [
+       "self"
+      ],
+      "st_dev": [
+       "self"
+      ],
+      "st_gid": [
+       "self"
+      ],
+      "st_ino": [
+       "self"
+      ],
+      "st_mode": [
+       "self"
+      ],
+      "st_mtime": [
+       "self"
+      ],
+      "st_nlink": [
+       "self"
+      ],
+      "st_size": [
+       "self"
+      ],
+      "st_uid": [
+       "self"
+      ]
+     }
+    }
+   },
+   "constants": [],
+   "functions": {
+    "copy": [
+     "strSource",
+     "strDestination"
+    ],
+    "delete": [
+     "file"
+    ],
+    "exists": [
+     "path"
+    ],
+    "listdir": [
+     "path"
+    ],
+    "makeLegalFilename": [
+     "filename"
+    ],
+    "mkdir": [
+     "path"
+    ],
+    "mkdirs": [
+     "path"
+    ],
+    "rename": [
+     "file",
+     "newFile"
+    ],
+    "rmdir": [
+     "path",
+     "force="
+    ],
+    "translatePath": [
+     "path"
+    ],
+    "validatePath": [
+     "path"
+    ]
+   }
+  }
+ },
+ "source": "Kodistubs 22.0.1rc1 (PyPI)"
+}

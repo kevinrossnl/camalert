@@ -38,4 +38,5 @@ Use the terms of the [glossary](../user/glossary.md) verbatim. **Player** = Enig
   to an existing file, and every `#anchor` to an existing heading (#36; external links are not checked);
 - every page under `docs/` is reachable from `docs/index.md`;
 - no forbidden synonym (glossary) and no "receiver" where Kodi is meant, outside the Enigma2 page and the dev pages;
+- there is one `DEVELOPMENT.md` per main folder and the files they name exist (#36);
 - the Kodi version claim matches the add-on's `xbmc.python` requirement (Kodi 19).

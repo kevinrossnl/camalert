@@ -31,7 +31,7 @@ Python 3.8 (Kodi 19) needs `pip install "pytest<8.4"`. Optional: `pyyaml` (bluep
 - `test_docs.py` (#24/#47, links part of #36): generated doc blocks up to date (`tools/docs.py check`: key table from
   the key map, glossary, settings table), relative links/images/anchors in README, docs and DEVELOPMENT.md files resolve,
   every docs page reachable from `docs/index.md`, no forbidden synonyms, "player" (not "receiver") where Kodi is
-  meant, "Kodi 19 or newer" everywhere. After changing the key map, glossary or schema: `python3 tools/docs.py update`.
+  meant, "Kodi 19 or newer" everywhere, one `DEVELOPMENT.md` per main folder naming files that exist. After changing the key map, glossary or schema: `python3 tools/docs.py update`.
 - `test_images.py` (#8): no metadata in images (`tools/check_images.py`, also run in the CI area `privacy`).
 - `fakes/go2rtc.py`: fake go2rtc with demo cameras (solid-colour frames, `--unreachable`), for tests and screenshots.
 - `test_i18n.py`: the master translation catalogue (`core/i18n/`, `tools/i18n/i18n.py check`): every Enigma2, Kodi and

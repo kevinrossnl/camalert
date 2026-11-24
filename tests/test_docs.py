@@ -110,7 +110,8 @@ class TestDocs(unittest.TestCase):
                         and os.path.exists(full):
                     seen.add(full)
                     todo.append(full)
-        pages = set(glob.glob(os.path.join(ROOT, "docs", "**", "*.md"), recursive=True))
+        pages = {p for p in glob.glob(os.path.join(ROOT, "docs", "**", "*.md"), recursive=True)
+                 if os.path.basename(p) != "DEVELOPMENT.md"}
         self.assertEqual(sorted(rel(p) for p in pages - seen), [])
 
     def test_no_forbidden_synonyms(self):
@@ -131,13 +132,30 @@ class TestDocs(unittest.TestCase):
         bad = []
         for path in doc_files():
             r = rel(path)
-            if r.startswith(RECEIVER_OK_PAGES) or not (r.startswith("docs/") or r == "README.md"):
+            if r.startswith(RECEIVER_OK_PAGES) or r.endswith("DEVELOPMENT.md") or not (r.startswith("docs/") or r == "README.md"):
                 continue
             text = GENERATED.sub("", prose(open(path, encoding="utf-8").read()))
             for i, line in enumerate(text.splitlines(), 1):
                 rest = RECEIVER_OK.sub("", line)
                 if re.search(r"\breceivers?\b", rest, re.I):
                     bad.append("%s: %s" % (r, line.strip()[:100]))
+        self.assertEqual(bad, [])
+
+    def test_development_md_files_name_existing_files(self):
+        """#36: the file tables and commands in the DEVELOPMENT.md files name files that exist (one DEVELOPMENT.md per folder)."""
+        names = sorted(rel(p) for p in glob.glob(os.path.join(ROOT, "**", "DEVELOPMENT.md"), recursive=True)
+                       if "/dist/" not in p and "/.venv" not in p)
+        self.assertEqual(names, ["DEVELOPMENT.md", "core/DEVELOPMENT.md", "custom_components/DEVELOPMENT.md", "docs/DEVELOPMENT.md",
+                                 "players/enigma2/DEVELOPMENT.md", "players/kodi/DEVELOPMENT.md"])
+        token = re.compile(r"`([\w./-]+\.(?:py|md|json|yaml|yml|xml|po|sh|wav|txt))`")
+        import subprocess
+        tracked = subprocess.check_output(["git", "ls-files", "-co", "--exclude-standard"], cwd=ROOT).decode().split()
+        bad = []
+        for name in names:
+            for path in token.findall(open(os.path.join(ROOT, name), encoding="utf-8").read()):
+                path = re.sub(r"^(\.\./)+", "", path)
+                if not any(f == path or f.endswith("/" + path) for f in tracked):
+                    bad.append("%s: %s" % (name, path))
         self.assertEqual(bad, [])
 
     def test_kodi_minimum_version_is_19_everywhere(self):

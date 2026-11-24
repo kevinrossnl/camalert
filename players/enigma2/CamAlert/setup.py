@@ -36,8 +36,8 @@ def fetch_streams(srv):
 
 LEVELS = {"basic": 0, "advanced": 1, "expert": 2}  # config.usage.setup_level: simple / intermediate / expert
 PICKERS = ("titles", "orientation", "refresh")  # per-camera maps, edited with OK in choice lists
-# triggers: Frigate settings, then Foscam settings, each under its own sub-heading
-TRIGGER_GROUPS = (("frigate", "Frigate"), ("foscam", "Foscam"))
+# triggers: Frigate, Foscam and UniFi Protect settings, each under its own sub-heading
+TRIGGER_GROUPS = (("frigate", "Frigate"), ("foscam", "Foscam"), ("unifi", "UniFi Protect"))
 
 
 def _section(section):
@@ -74,13 +74,15 @@ def visible(sid, c):
         return bool(c.mqtt_enabled.value and c.frigate_enabled.value)
     if sid.startswith("foscam_") and sid != "foscam_enabled":
         return bool(c.foscam_enabled.value)
+    if sid.startswith("unifi_") and sid != "unifi_enabled":
+        return bool(c.unifi_enabled.value)
     if sid.startswith("mqtt_"):
         return sid == "mqtt_enabled" or bool(c.mqtt_enabled.value)
     return True
 
 
 def ordered():
-    """The Enigma2 settings in schema order; inside 'triggers' Frigate first, then Foscam."""
+    """The Enigma2 settings in schema order; inside 'triggers' Frigate first, then Foscam, then UniFi Protect."""
     settings = [s for s in schema.for_platform("enigma2") if s.level != "internal"]
 
     def key(item):

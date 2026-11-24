@@ -148,6 +148,10 @@ msgstr "ROSSO"
 msgid "GREEN"
 msgstr "VERDE"
 
+#: e2 kodi:30270 kodi:30551
+msgid "Log only"
+msgstr "Solo registro"
+
 #: e2 kodi:30235 atv:choice.chime.high
 msgid "Doorbell and alarm"
 msgstr "Campanello e allarme"
@@ -260,7 +264,7 @@ msgstr "Riproduci clip"
 msgid "Show this camera"
 msgstr "Mostra questa telecamera"
 
-#: e2
+#: e2 kodi:30557
 msgid "Motion"
 msgstr "Movimento"
 
@@ -500,6 +504,10 @@ msgstr "Frigate"
 msgid "Foscam"
 msgstr "Foscam"
 
+#: e2 kodi:30550
+msgid "UniFi Protect"
+msgstr "UniFi Protect"
+
 #: e2 kodi:30505
 msgid "Menu"
 msgstr "Menu"
@@ -651,6 +659,50 @@ msgstr "in pausa"
 #: e2 kodi:30191 kodi:30548
 msgid "tour"
 msgstr "giro"
+
+#: e2 kodi:30552
+msgid "Doorbell"
+msgstr "Campanello"
+
+#: e2 kodi:30553
+msgid "Person"
+msgstr "Persona"
+
+#: e2 kodi:30554
+msgid "Vehicle"
+msgstr "Veicolo"
+
+#: e2 kodi:30555
+msgid "Animal"
+msgstr "Animale"
+
+#: e2 kodi:30556
+msgid "Package"
+msgstr "Pacco"
+
+#: e2 kodi:30558
+msgid "UniFi Protect: no console of type unifi in the devices file"
+msgstr "UniFi Protect: nessuna console di tipo unifi nel file dei dispositivi"
+
+#: e2 kodi:30559
+msgid "UniFi Protect: not checked yet"
+msgstr "UniFi Protect: non ancora controllato"
+
+#: e2 kodi:30560
+msgid "UniFi Protect: %s"
+msgstr "UniFi Protect: %s"
+
+#: e2 kodi:30561
+msgid "UniFi Protect: last check %s"
+msgstr "UniFi Protect: ultimo controllo %s"
+
+#: e2 kodi:30562
+msgid "UniFi Protect: last event %s, %s"
+msgstr "UniFi Protect: ultimo evento %s, %s"
+
+#: e2 kodi:30563
+msgid "UniFi Protect: no event since the start"
+msgstr "UniFi Protect: nessun evento dall'avvio"
 
 #: e2 kodi:30010
 msgid "Enable CamAlert"
@@ -959,6 +1011,46 @@ msgstr "Facoltativo, ad es. http://192.168.1.10:5000 - permette di riprodurre la
 #: e2 kodi:30145
 msgid "Check every (seconds)"
 msgstr "Controlla ogni (secondi)"
+
+#: e2 kodi:30262
+msgid "UniFi Protect events"
+msgstr "Eventi UniFi Protect"
+
+#: e2
+msgid "Asks the UniFi Protect consoles in %s for events (doorbell, person, vehicle, ...)."
+msgstr "Interroga le console UniFi Protect in %s sugli eventi (campanello, persona, veicolo, ...)."
+
+#: e2 kodi:30264
+msgid "UniFi Protect event types"
+msgstr "Tipi di eventi UniFi Protect"
+
+#: e2 kodi:30265
+msgid "Comma separated: ring, person, vehicle, animal, package, motion."
+msgstr "Separati da virgole: ring, person, vehicle, animal, package, motion."
+
+#: e2 kodi:30266
+msgid "UniFi Protect camera names"
+msgstr "Nomi delle telecamere UniFi Protect"
+
+#: e2 kodi:30267
+msgid "Only if the names differ from go2rtc: protect=go2rtc|other=other_stream"
+msgstr "Solo se i nomi differiscono da go2rtc: protect=go2rtc|other=other_stream"
+
+#: e2 kodi:30268
+msgid "UniFi Protect priority"
+msgstr "Priorità UniFi Protect"
+
+#: e2 kodi:30269
+msgid "A doorbell ring always gets at least the priority High."
+msgstr "Una suonata del campanello riceve sempre almeno la priorità Alta."
+
+#: e2 kodi:30271
+msgid "Per event type"
+msgstr "Per tipo di evento"
+
+#: e2 kodi:30272
+msgid "Optional: type=priority/mode/camera, e.g. ring=alarm/live|motion=normal/log"
+msgstr "Facoltativo: type=priority/mode/camera, ad es. ring=alarm/live|motion=normal/log"
 
 #: e2 kodi:30239
 msgid "Camera control (PTZ) key"
@@ -1331,6 +1423,10 @@ msgstr "Secondi per telecamera, ad es. *=30|giardino=120 (* = tutte). Una finest
 #: kodi:30258
 msgid "For a camera this Kodi cannot play smoothly (H.265 / 4K): front_door=front_door_sub|... (go2rtc stream names)."
 msgstr "Per una telecamera che questo Kodi non riproduce bene (H.265 / 4K): porta=porta_sub|... (nomi stream go2rtc)."
+
+#: kodi:30263
+msgid "Asks the UniFi Protect consoles in devices.conf for events (doorbell, person, vehicle, ...)."
+msgstr "Interroga le console UniFi Protect in devices.conf sugli eventi (campanello, persona, veicolo, ...)."
 
 #: ha:config.step.user.title
 msgid "Add a CamAlert player"

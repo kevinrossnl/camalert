@@ -14,6 +14,8 @@ BOOTSTRAP_PATH = "/proxy/protect/api/bootstrap"
 EVENT_TYPES = ("ring", "motion", "smartDetectZone", "smartDetectLine")
 KINDS = ("ring", "person", "vehicle", "animal", "package", "motion")
 DEFAULT_KINDS = "ring,person"
+PRIORITIES = ("normal", "high", "alarm")
+MODES = ("photo", "live", "notify", "log")  # log = only the event list and the log (nothing on screen, no chime)
 _FOLD = {u"ä": "ae", u"ö": "oe", u"ü": "ue", u"ß": "ss", u"é": "e", u"è": "e", u"à": "a", u"ç": "c"}
 
 
@@ -50,6 +52,23 @@ def wanted_kinds(text):
     """'ring, person' -> ['ring', 'person'] in KINDS order; unknown words are ignored, empty = DEFAULT_KINDS."""
     words = set(w.strip().lower() for w in (text or DEFAULT_KINDS).split(",") if w.strip())
     return [k for k in KINDS if k in words] or wanted_kinds(DEFAULT_KINDS)
+
+
+def kind_rules(text):
+    """Per event type (#70): 'ring=alarm/live|motion=normal/log/garden' -> {kind: (priority, mode, camera)},
+    each part None when empty or invalid (= the general setting). Unknown kinds and broken parts are skipped."""
+    out = {}
+    for part in (text or "").split("|"):
+        k, sep, v = part.partition("=")
+        k = k.strip().lower()
+        if not sep or k not in KINDS:
+            continue
+        fields = [f.strip() for f in v.split("/")] + ["", "", ""]
+        prio, mode, cam = fields[0].lower(), fields[1].lower(), fields[2]
+        rule = (prio if prio in PRIORITIES else None, mode if mode in MODES else None, cam or None)
+        if rule != (None, None, None):
+            out[k] = rule
+    return out
 
 
 def event_kinds(ev):

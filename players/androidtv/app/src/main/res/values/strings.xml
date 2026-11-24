@@ -145,6 +145,7 @@
     <string name="t_979516c6" formatted="false">MQTT</string>
     <string name="t_f1106143" formatted="false">Frigate</string>
     <string name="t_0f5f9546" formatted="false">Foscam</string>
+    <string name="t_a69de1a5" formatted="false">UniFi Protect</string>
     <string name="t_dd3795ad" formatted="false">Menu</string>
     <string name="t_60ac2fba" formatted="false">Wake up</string>
     <string name="t_8a970393" formatted="false">Test request</string>
@@ -168,6 +169,7 @@
     <string name="t_e9484ab3" formatted="false">Unknown camera</string>
     <string name="t_b2ba445f" formatted="false">Unknown camera or no valid go2rtc address</string>
     <string name="t_0b37da62" formatted="false">Camera not reachable</string>
+    <string name="t_7343c86d" formatted="false">Log only</string>
     <string name="t_cfa6377b" formatted="false">Time</string>
     <string name="t_3cb0eb33" formatted="false">Camera</string>
     <string name="t_58267a45" formatted="false">Source</string>
@@ -189,4 +191,16 @@
     <string name="t_d79a92ed" formatted="false">pause</string>
     <string name="t_46b14e9b" formatted="false">paused</string>
     <string name="t_6ad1f969" formatted="false">tour</string>
+    <string name="t_9dc41ec9" formatted="false">Doorbell</string>
+    <string name="t_3370d440" formatted="false">Person</string>
+    <string name="t_d43ddd1a" formatted="false">Vehicle</string>
+    <string name="t_6d072629" formatted="false">Animal</string>
+    <string name="t_11d55e09" formatted="false">Package</string>
+    <string name="t_f252a4de" formatted="false">Motion</string>
+    <string name="t_f5daaaf9" formatted="false">UniFi Protect: no console of type unifi in the devices file</string>
+    <string name="t_634126e6" formatted="false">UniFi Protect: not checked yet</string>
+    <string name="t_8eafd072" formatted="false">UniFi Protect: %s</string>
+    <string name="t_badf84fc" formatted="false">UniFi Protect: last check %s</string>
+    <string name="t_92e36ee7" formatted="false">UniFi Protect: last event %s, %s</string>
+    <string name="t_11cd7c0c" formatted="false">UniFi Protect: no event since the start</string>
 </resources>

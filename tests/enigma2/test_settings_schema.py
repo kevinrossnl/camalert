@@ -46,6 +46,7 @@ def enigma2_settings():
             for mode in ("photo", "live", "notify"):
                 c.source.value, c.mode.value, c.server.value = source, mode, "https://192.168.1.10:1984"
                 c.mqtt_enabled.value = c.frigate_enabled.value = c.limit_hours.value = c.foscam_enabled.value = True
+                c.unifi_enabled.value = True
                 env.camalert.plugin.main(session)
                 for label, el in session.opened[-1]["config"].list:
                     name = ids.get(id(el))

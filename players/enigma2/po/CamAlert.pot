@@ -110,6 +110,9 @@ msgstr ""
 msgid "GREEN"
 msgstr ""
 
+msgid "Log only"
+msgstr ""
+
 msgid "Doorbell and alarm"
 msgstr ""
 
@@ -374,6 +377,9 @@ msgstr ""
 msgid "Foscam"
 msgstr ""
 
+msgid "UniFi Protect"
+msgstr ""
+
 msgid "Menu"
 msgstr ""
 
@@ -486,6 +492,39 @@ msgid "paused"
 msgstr ""
 
 msgid "tour"
+msgstr ""
+
+msgid "Doorbell"
+msgstr ""
+
+msgid "Person"
+msgstr ""
+
+msgid "Vehicle"
+msgstr ""
+
+msgid "Animal"
+msgstr ""
+
+msgid "Package"
+msgstr ""
+
+msgid "UniFi Protect: no console of type unifi in the devices file"
+msgstr ""
+
+msgid "UniFi Protect: not checked yet"
+msgstr ""
+
+msgid "UniFi Protect: %s"
+msgstr ""
+
+msgid "UniFi Protect: last check %s"
+msgstr ""
+
+msgid "UniFi Protect: last event %s, %s"
+msgstr ""
+
+msgid "UniFi Protect: no event since the start"
 msgstr ""
 
 msgid "Enable CamAlert"
@@ -717,6 +756,36 @@ msgid "Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an ev
 msgstr ""
 
 msgid "Check every (seconds)"
+msgstr ""
+
+msgid "UniFi Protect events"
+msgstr ""
+
+msgid "Asks the UniFi Protect consoles in %s for events (doorbell, person, vehicle, ...)."
+msgstr ""
+
+msgid "UniFi Protect event types"
+msgstr ""
+
+msgid "Comma separated: ring, person, vehicle, animal, package, motion."
+msgstr ""
+
+msgid "UniFi Protect camera names"
+msgstr ""
+
+msgid "Only if the names differ from go2rtc: protect=go2rtc|other=other_stream"
+msgstr ""
+
+msgid "UniFi Protect priority"
+msgstr ""
+
+msgid "A doorbell ring always gets at least the priority High."
+msgstr ""
+
+msgid "Per event type"
+msgstr ""
+
+msgid "Optional: type=priority/mode/camera, e.g. ring=alarm/live|motion=normal/log"
 msgstr ""
 
 msgid "Camera control (PTZ) key"

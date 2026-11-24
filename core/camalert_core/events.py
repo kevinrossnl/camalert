@@ -7,7 +7,7 @@ from .obs.log import redact
 
 
 EVENT_LIMIT = 20
-SOURCES = ("api", "ha", "mqtt", "frigate", "foscam", "menu", "test")
+SOURCES = ("api", "ha", "mqtt", "frigate", "foscam", "unifi", "menu", "test")
 
 
 def add_event(events, event, limit=EVENT_LIMIT):

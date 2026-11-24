@@ -93,6 +93,8 @@ DEFAULTS = {
     "ptz_user": "", "ptz_password": "",
     "foscam_enabled": False, "foscam_interval": 2, "foscam_mode": "photo",
     "foscam_priority": "normal", "foscam_seconds": 30,
+    "unifi_enabled": False, "unifi_kinds": "ring,person", "unifi_cameras": "", "unifi_priority": "normal",
+    "unifi_mode": "photo", "unifi_seconds": 30, "unifi_interval": 5, "unifi_rules": "",
     "log_level": "normal", "log_syslog": "", "ptz_key": "blue", "ha_buttons": True, "ha_webhook": "",
     "title_size": "normal", "chime": "off", "frigate_url": "", "cooldown": "", "substreams": "",
 }
@@ -103,11 +105,12 @@ CHOICES = {
     "strip_layout": ("auto", "vertical", "horizontal", "grid"), "dnd_level": ("normal", "high"),
     "frigate_mode": ("photo", "live", "notify"), "frigate_priority": ("normal", "high", "alarm"),
     "foscam_mode": ("photo", "live", "notify"), "foscam_priority": ("normal", "high", "alarm"),
+    "unifi_mode": ("photo", "live", "notify", "log"), "unifi_priority": ("normal", "high", "alarm"),
     "log_level": ("off", "errors", "normal", "verbose"), "ptz_key": ("blue", "yellow", "red", "green", "off"),
     "title_size": ("small", "normal", "large"), "chime": ("off", "high", "all"),
 }
 RANGES = {"rtsp_port": (1, 65535), "duration": (5, 300), "frigate_seconds": (5, 300), "foscam_seconds": (5, 300),
-          "foscam_interval": (1, 60), "live_volume": (0, 100), "tour_interval": (3, 60), "http_port": (1024, 65535), "mqtt_port": (1, 65535)}
+          "foscam_interval": (1, 60), "unifi_seconds": (5, 300), "unifi_interval": (2, 60), "live_volume": (0, 100), "tour_interval": (3, 60), "http_port": (1024, 65535), "mqtt_port": (1, 65535)}
 
 
 def parse_settings(raw):

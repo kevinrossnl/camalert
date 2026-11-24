@@ -144,6 +144,7 @@
     <string name="t_979516c6" formatted="false">MQTT</string>
     <string name="t_f1106143" formatted="false">Frigate</string>
     <string name="t_0f5f9546" formatted="false">Foscam</string>
+    <string name="t_a69de1a5" formatted="false">UniFi Protect</string>
     <string name="t_dd3795ad" formatted="false">Menu</string>
     <string name="t_60ac2fba" formatted="false">Réveil</string>
     <string name="t_8a970393" formatted="false">Demande de test</string>
@@ -167,6 +168,7 @@
     <string name="t_e9484ab3" formatted="false">Caméra inconnue</string>
     <string name="t_b2ba445f" formatted="false">Caméra inconnue ou aucune adresse go2rtc valide</string>
     <string name="t_0b37da62" formatted="false">Caméra injoignable</string>
+    <string name="t_7343c86d" formatted="false">Journal uniquement</string>
     <string name="t_cfa6377b" formatted="false">Heure</string>
     <string name="t_3cb0eb33" formatted="false">Caméra</string>
     <string name="t_58267a45" formatted="false">Source</string>
@@ -188,4 +190,16 @@
     <string name="t_d79a92ed" formatted="false">pause</string>
     <string name="t_46b14e9b" formatted="false">en pause</string>
     <string name="t_6ad1f969" formatted="false">ronde</string>
+    <string name="t_9dc41ec9" formatted="false">Sonnette</string>
+    <string name="t_3370d440" formatted="false">Personne</string>
+    <string name="t_d43ddd1a" formatted="false">Véhicule</string>
+    <string name="t_6d072629" formatted="false">Animal</string>
+    <string name="t_11d55e09" formatted="false">Colis</string>
+    <string name="t_f252a4de" formatted="false">Mouvement</string>
+    <string name="t_f5daaaf9" formatted="false">UniFi Protect : aucune console de type unifi dans le fichier des appareils</string>
+    <string name="t_634126e6" formatted="false">UniFi Protect : pas encore vérifié</string>
+    <string name="t_8eafd072" formatted="false">UniFi Protect : %s</string>
+    <string name="t_badf84fc" formatted="false">UniFi Protect : dernière vérification %s</string>
+    <string name="t_92e36ee7" formatted="false">UniFi Protect : dernier événement %s, %s</string>
+    <string name="t_11cd7c0c" formatted="false">UniFi Protect : aucun événement depuis le démarrage</string>
 </resources>

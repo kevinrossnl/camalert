@@ -144,6 +144,7 @@
     <string name="t_979516c6" formatted="false">MQTT</string>
     <string name="t_f1106143" formatted="false">Frigate</string>
     <string name="t_0f5f9546" formatted="false">Foscam</string>
+    <string name="t_a69de1a5" formatted="false">UniFi Protect</string>
     <string name="t_dd3795ad" formatted="false">Menü</string>
     <string name="t_60ac2fba" formatted="false">Aufwecken</string>
     <string name="t_8a970393" formatted="false">Testanfrage</string>
@@ -167,6 +168,7 @@
     <string name="t_e9484ab3" formatted="false">Unbekannte Kamera</string>
     <string name="t_b2ba445f" formatted="false">Unbekannte Kamera oder keine gültige go2rtc-Adresse</string>
     <string name="t_0b37da62" formatted="false">Kamera nicht erreichbar</string>
+    <string name="t_7343c86d" formatted="false">Nur protokollieren</string>
     <string name="t_cfa6377b" formatted="false">Zeit</string>
     <string name="t_3cb0eb33" formatted="false">Kamera</string>
     <string name="t_58267a45" formatted="false">Quelle</string>
@@ -188,4 +190,16 @@
     <string name="t_d79a92ed" formatted="false">Pause</string>
     <string name="t_46b14e9b" formatted="false">angehalten</string>
     <string name="t_6ad1f969" formatted="false">Rundgang</string>
+    <string name="t_9dc41ec9" formatted="false">Türklingel</string>
+    <string name="t_3370d440" formatted="false">Person</string>
+    <string name="t_d43ddd1a" formatted="false">Fahrzeug</string>
+    <string name="t_6d072629" formatted="false">Tier</string>
+    <string name="t_11d55e09" formatted="false">Paket</string>
+    <string name="t_f252a4de" formatted="false">Bewegung</string>
+    <string name="t_f5daaaf9" formatted="false">UniFi Protect: keine Konsole vom Typ unifi in der Gerätedatei</string>
+    <string name="t_634126e6" formatted="false">UniFi Protect: noch nicht geprüft</string>
+    <string name="t_8eafd072" formatted="false">UniFi Protect: %s</string>
+    <string name="t_badf84fc" formatted="false">UniFi Protect: letzte Prüfung %s</string>
+    <string name="t_92e36ee7" formatted="false">UniFi Protect: letztes Ereignis %s, %s</string>
+    <string name="t_11cd7c0c" formatted="false">UniFi Protect: kein Ereignis seit dem Start</string>
 </resources>

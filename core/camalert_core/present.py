@@ -18,7 +18,7 @@ from .keymap import KEYMAP
 # --- event list values ------------------------------------------------------------------------------------------
 SOURCE_LABELS = {
     "api": N_("API"), "ha": N_("Home Assistant"), "mqtt": N_("MQTT"), "frigate": N_("Frigate"),
-    "foscam": N_("Foscam"), "menu": N_("Menu"), "wake": N_("Wake up"),
+    "foscam": N_("Foscam"), "unifi": N_("UniFi Protect"), "menu": N_("Menu"), "wake": N_("Wake up"),
     "test": N_("Test request"),
 }
 SOURCES = tuple(SOURCE_LABELS)
@@ -41,6 +41,7 @@ REASON_LABELS = {
     "unknown_camera": N_("Unknown camera"),
     "no_address": N_("Unknown camera or no valid go2rtc address"),
     "unreachable": N_("Camera not reachable"),
+    "log_only": N_("Log only"),
 }
 REASONS = tuple(REASON_LABELS)
 WITH_NUMBER = ("cooldown",)

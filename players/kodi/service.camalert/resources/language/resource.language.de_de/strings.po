@@ -793,6 +793,50 @@ msgctxt "#30261"
 msgid "Foscam priority"
 msgstr "Foscam-Priorität"
 
+msgctxt "#30262"
+msgid "UniFi Protect events"
+msgstr "UniFi-Protect-Ereignisse"
+
+msgctxt "#30263"
+msgid "Asks the UniFi Protect consoles in devices.conf for events (doorbell, person, vehicle, ...)."
+msgstr "Fragt die UniFi-Protect-Konsolen in devices.conf nach Ereignissen (Türklingel, Person, Fahrzeug, ...)."
+
+msgctxt "#30264"
+msgid "UniFi Protect event types"
+msgstr "UniFi-Protect-Ereignistypen"
+
+msgctxt "#30265"
+msgid "Comma separated: ring, person, vehicle, animal, package, motion."
+msgstr "Durch Komma getrennt: ring, person, vehicle, animal, package, motion."
+
+msgctxt "#30266"
+msgid "UniFi Protect camera names"
+msgstr "UniFi-Protect-Kameranamen"
+
+msgctxt "#30267"
+msgid "Only if the names differ from go2rtc: protect=go2rtc|other=other_stream"
+msgstr "Nur wenn die Namen von go2rtc abweichen: protect=go2rtc|other=other_stream"
+
+msgctxt "#30268"
+msgid "UniFi Protect priority"
+msgstr "UniFi-Protect-Priorität"
+
+msgctxt "#30269"
+msgid "A doorbell ring always gets at least the priority High."
+msgstr "Ein Klingeln bekommt immer mindestens die Priorität Hoch."
+
+msgctxt "#30270"
+msgid "Log only"
+msgstr "Nur protokollieren"
+
+msgctxt "#30271"
+msgid "Per event type"
+msgstr "Pro Ereignistyp"
+
+msgctxt "#30272"
+msgid "Optional: type=priority/mode/camera, e.g. ring=alarm/live|motion=normal/log"
+msgstr "Optional: type=priority/mode/camera, z. B. ring=alarm/live|motion=normal/log"
+
 msgctxt "#30500"
 msgid "API"
 msgstr "API"
@@ -992,3 +1036,59 @@ msgstr "Rundgang"
 msgctxt "#30549"
 msgid "Test request"
 msgstr "Testanfrage"
+
+msgctxt "#30550"
+msgid "UniFi Protect"
+msgstr "UniFi Protect"
+
+msgctxt "#30551"
+msgid "Log only"
+msgstr "Nur protokollieren"
+
+msgctxt "#30552"
+msgid "Doorbell"
+msgstr "Türklingel"
+
+msgctxt "#30553"
+msgid "Person"
+msgstr "Person"
+
+msgctxt "#30554"
+msgid "Vehicle"
+msgstr "Fahrzeug"
+
+msgctxt "#30555"
+msgid "Animal"
+msgstr "Tier"
+
+msgctxt "#30556"
+msgid "Package"
+msgstr "Paket"
+
+msgctxt "#30557"
+msgid "Motion"
+msgstr "Bewegung"
+
+msgctxt "#30558"
+msgid "UniFi Protect: no console of type unifi in the devices file"
+msgstr "UniFi Protect: keine Konsole vom Typ unifi in der Gerätedatei"
+
+msgctxt "#30559"
+msgid "UniFi Protect: not checked yet"
+msgstr "UniFi Protect: noch nicht geprüft"
+
+msgctxt "#30560"
+msgid "UniFi Protect: %s"
+msgstr "UniFi Protect: %s"
+
+msgctxt "#30561"
+msgid "UniFi Protect: last check %s"
+msgstr "UniFi Protect: letzte Prüfung %s"
+
+msgctxt "#30562"
+msgid "UniFi Protect: last event %s, %s"
+msgstr "UniFi Protect: letztes Ereignis %s, %s"
+
+msgctxt "#30563"
+msgid "UniFi Protect: no event since the start"
+msgstr "UniFi Protect: kein Ereignis seit dem Start"

@@ -75,6 +75,14 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Check every (seconds) | `2` s | 1–60 | expert | both |  |
 | Display mode | `photo` | `photo` / `live` / `notify` | advanced | both |  |
 | Duration (seconds) | `30` s | 5–300, step 5 | advanced | both |  |
+| UniFi Protect events | No |  | advanced | both | Asks the UniFi Protect consoles in the camera file for events (doorbell, person, vehicle, ...). |
+| UniFi Protect event types | `ring,person` |  | advanced | both | Comma separated: ring, person, vehicle, animal, package, motion. |
+| UniFi Protect camera names | – |  | advanced | both | Only if the names differ from go2rtc: protect=go2rtc\|other=other_stream |
+| UniFi Protect priority | `normal` | `normal` / `high` / `alarm` | advanced | both | A doorbell ring always gets at least the priority High. |
+| Display mode | `photo` | `photo` / `live` / `notify` / `log` | advanced | both |  |
+| Duration (seconds) | `30` s | 5–300, step 5 | advanced | both |  |
+| Check every (seconds) | `5` s | 2–60 | expert | both |  |
+| Per event type | – |  | expert | both | Optional: type=priority/mode/camera, e.g. ring=alarm/live\|motion=normal/log |
 
 ### Camera control
 

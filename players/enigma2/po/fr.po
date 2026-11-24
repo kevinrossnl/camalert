@@ -111,6 +111,9 @@ msgstr "ROUGE"
 msgid "GREEN"
 msgstr "VERT"
 
+msgid "Log only"
+msgstr "Journal uniquement"
+
 msgid "Doorbell and alarm"
 msgstr "Sonnette et alarme"
 
@@ -375,6 +378,9 @@ msgstr "Frigate"
 msgid "Foscam"
 msgstr "Foscam"
 
+msgid "UniFi Protect"
+msgstr "UniFi Protect"
+
 msgid "Menu"
 msgstr "Menu"
 
@@ -488,6 +494,39 @@ msgstr "en pause"
 
 msgid "tour"
 msgstr "ronde"
+
+msgid "Doorbell"
+msgstr "Sonnette"
+
+msgid "Person"
+msgstr "Personne"
+
+msgid "Vehicle"
+msgstr "Véhicule"
+
+msgid "Animal"
+msgstr "Animal"
+
+msgid "Package"
+msgstr "Colis"
+
+msgid "UniFi Protect: no console of type unifi in the devices file"
+msgstr "UniFi Protect : aucune console de type unifi dans le fichier des appareils"
+
+msgid "UniFi Protect: not checked yet"
+msgstr "UniFi Protect : pas encore vérifié"
+
+msgid "UniFi Protect: %s"
+msgstr "UniFi Protect : %s"
+
+msgid "UniFi Protect: last check %s"
+msgstr "UniFi Protect : dernière vérification %s"
+
+msgid "UniFi Protect: last event %s, %s"
+msgstr "UniFi Protect : dernier événement %s, %s"
+
+msgid "UniFi Protect: no event since the start"
+msgstr "UniFi Protect : aucun événement depuis le démarrage"
 
 msgid "Enable CamAlert"
 msgstr "Activer CamAlert"
@@ -719,6 +758,36 @@ msgstr "Facultatif, p. ex. http://192.168.1.10:5000 - permet de lire le clip d'u
 
 msgid "Check every (seconds)"
 msgstr "Vérifier toutes les (secondes)"
+
+msgid "UniFi Protect events"
+msgstr "Événements UniFi Protect"
+
+msgid "Asks the UniFi Protect consoles in %s for events (doorbell, person, vehicle, ...)."
+msgstr "Interroge les consoles UniFi Protect de %s sur les événements (sonnette, personne, véhicule, ...)."
+
+msgid "UniFi Protect event types"
+msgstr "Types d'événements UniFi Protect"
+
+msgid "Comma separated: ring, person, vehicle, animal, package, motion."
+msgstr "Séparés par des virgules : ring, person, vehicle, animal, package, motion."
+
+msgid "UniFi Protect camera names"
+msgstr "Noms des caméras UniFi Protect"
+
+msgid "Only if the names differ from go2rtc: protect=go2rtc|other=other_stream"
+msgstr "Seulement si les noms diffèrent de go2rtc : protect=go2rtc|other=other_stream"
+
+msgid "UniFi Protect priority"
+msgstr "Priorité UniFi Protect"
+
+msgid "A doorbell ring always gets at least the priority High."
+msgstr "Un coup de sonnette reçoit toujours au moins la priorité Haute."
+
+msgid "Per event type"
+msgstr "Par type d'événement"
+
+msgid "Optional: type=priority/mode/camera, e.g. ring=alarm/live|motion=normal/log"
+msgstr "Facultatif : type=priority/mode/camera, p. ex. ring=alarm/live|motion=normal/log"
 
 msgid "Camera control (PTZ) key"
 msgstr "Touche de contrôle de la caméra (PTZ)"

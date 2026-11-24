@@ -313,7 +313,15 @@
   "ptz_key": "no camera control (PTZ) yet (#64)",
   "ptz_password": "no camera control (PTZ) yet (#64)",
   "ptz_user": "no camera control (PTZ) yet (#64)",
-  "source": "go2rtc only for now (direct mode with a camera file: follow-up, #64)"
+  "source": "go2rtc only for now (direct mode with a camera file: follow-up, #64)",
+  "unifi_cameras": "no UniFi Protect polling yet (#72)",
+  "unifi_enabled": "no UniFi Protect polling yet (#72)",
+  "unifi_interval": "no UniFi Protect polling yet (#72)",
+  "unifi_kinds": "no UniFi Protect polling yet (#72)",
+  "unifi_mode": "no UniFi Protect polling yet (#72)",
+  "unifi_priority": "no UniFi Protect polling yet (#72)",
+  "unifi_rules": "no UniFi Protect polling yet (#72)",
+  "unifi_seconds": "no UniFi Protect polling yet (#72)"
  },
  "priorities": [
   "normal",
@@ -338,6 +346,7 @@
  "reason_labels": {
   "cooldown": "Cooldown (%d s)",
   "dnd": "Do not disturb",
+  "log_only": "Log only",
   "no_address": "Unknown camera or no valid go2rtc address",
   "no_camera": "No camera given and no default camera set",
   "on_screen": "Already on screen",
@@ -1127,6 +1136,7 @@
   "menu": "Menu",
   "mqtt": "MQTT",
   "test": "Test request",
+  "unifi": "UniFi Protect",
   "wake": "Wake up"
  },
  "test_source": "test"

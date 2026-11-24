@@ -793,6 +793,50 @@ msgctxt "#30261"
 msgid "Foscam priority"
 msgstr ""
 
+msgctxt "#30262"
+msgid "UniFi Protect events"
+msgstr ""
+
+msgctxt "#30263"
+msgid "Asks the UniFi Protect consoles in devices.conf for events (doorbell, person, vehicle, ...)."
+msgstr ""
+
+msgctxt "#30264"
+msgid "UniFi Protect event types"
+msgstr ""
+
+msgctxt "#30265"
+msgid "Comma separated: ring, person, vehicle, animal, package, motion."
+msgstr ""
+
+msgctxt "#30266"
+msgid "UniFi Protect camera names"
+msgstr ""
+
+msgctxt "#30267"
+msgid "Only if the names differ from go2rtc: protect=go2rtc|other=other_stream"
+msgstr ""
+
+msgctxt "#30268"
+msgid "UniFi Protect priority"
+msgstr ""
+
+msgctxt "#30269"
+msgid "A doorbell ring always gets at least the priority High."
+msgstr ""
+
+msgctxt "#30270"
+msgid "Log only"
+msgstr ""
+
+msgctxt "#30271"
+msgid "Per event type"
+msgstr ""
+
+msgctxt "#30272"
+msgid "Optional: type=priority/mode/camera, e.g. ring=alarm/live|motion=normal/log"
+msgstr ""
+
 msgctxt "#30500"
 msgid "API"
 msgstr ""
@@ -991,4 +1035,60 @@ msgstr ""
 
 msgctxt "#30549"
 msgid "Test request"
+msgstr ""
+
+msgctxt "#30550"
+msgid "UniFi Protect"
+msgstr ""
+
+msgctxt "#30551"
+msgid "Log only"
+msgstr ""
+
+msgctxt "#30552"
+msgid "Doorbell"
+msgstr ""
+
+msgctxt "#30553"
+msgid "Person"
+msgstr ""
+
+msgctxt "#30554"
+msgid "Vehicle"
+msgstr ""
+
+msgctxt "#30555"
+msgid "Animal"
+msgstr ""
+
+msgctxt "#30556"
+msgid "Package"
+msgstr ""
+
+msgctxt "#30557"
+msgid "Motion"
+msgstr ""
+
+msgctxt "#30558"
+msgid "UniFi Protect: no console of type unifi in the devices file"
+msgstr ""
+
+msgctxt "#30559"
+msgid "UniFi Protect: not checked yet"
+msgstr ""
+
+msgctxt "#30560"
+msgid "UniFi Protect: %s"
+msgstr ""
+
+msgctxt "#30561"
+msgid "UniFi Protect: last check %s"
+msgstr ""
+
+msgctxt "#30562"
+msgid "UniFi Protect: last event %s, %s"
+msgstr ""
+
+msgctxt "#30563"
+msgid "UniFi Protect: no event since the start"
 msgstr ""

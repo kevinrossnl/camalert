@@ -11,7 +11,8 @@ schema by tests/enigma2/test_settings_schema.py and tests/kodi/test_settings_sch
 
 Version 2 (#39) = the target semantics on every player: chime off/high/all, skip_playing off/video/all (also on
 Enigma2, replaces skip_media), trigger priority normal/high/alarm, Frigate/Foscam with own display mode, duration
-(step 5) and Foscam check interval, Foscam alarms off by default, duration step 5, live volume step 10, HTTP port
+(step 5) and Foscam check interval, Foscam alarms off by default, UniFi Protect events (#70, new settings with
+defaults: nothing to migrate; display mode 'log' = only the event list and the log), duration step 5, live volume step 10, HTTP port
 1024-65535, certificates checked by default. migrate() turns settings saved by a version-1 player into this.
 
 Validation is done by hand (no jsonschema on the boxes): validate(values) keeps every valid value and falls
@@ -99,6 +100,14 @@ SETTINGS = [
     S('foscam_interval', 'triggers', 'expert', 'int', 2, min=1, max=60, step=1, unit='s', platforms=('enigma2', 'kodi'), label='Check every (seconds)', kodi_label=30145),
     S('foscam_mode', 'triggers', 'advanced', 'choice', 'photo', choices=('photo', 'live', 'notify'), platforms=('enigma2', 'kodi'), label='Display mode', kodi_label=30040),
     S('foscam_seconds', 'triggers', 'advanced', 'int', 30, min=5, max=300, step=5, unit='s', platforms=('enigma2', 'kodi'), label='Duration (seconds)', kodi_label=30045),
+    S('unifi_enabled', 'triggers', 'advanced', 'bool', False, platforms=('enigma2', 'kodi'), label='UniFi Protect events', help='Asks the UniFi Protect consoles in %s for events (doorbell, person, vehicle, ...).', kodi_label=30262),
+    S('unifi_kinds', 'triggers', 'advanced', 'text', 'ring,person', platforms=('enigma2', 'kodi'), label='UniFi Protect event types', help='Comma separated: ring, person, vehicle, animal, package, motion.', kodi_label=30264),
+    S('unifi_cameras', 'triggers', 'advanced', 'text', '', platforms=('enigma2', 'kodi'), label='UniFi Protect camera names', help='Only if the names differ from go2rtc: protect=go2rtc|other=other_stream', kodi_label=30266),
+    S('unifi_priority', 'triggers', 'advanced', 'choice', 'normal', choices=('normal', 'high', 'alarm'), platforms=('enigma2', 'kodi'), label='UniFi Protect priority', help='A doorbell ring always gets at least the priority High.', kodi_label=30268),
+    S('unifi_mode', 'triggers', 'advanced', 'choice', 'photo', choices=('photo', 'live', 'notify', 'log'), platforms=('enigma2', 'kodi'), label='Display mode', kodi_label=30040),
+    S('unifi_seconds', 'triggers', 'advanced', 'int', 30, min=5, max=300, step=5, unit='s', platforms=('enigma2', 'kodi'), label='Duration (seconds)', kodi_label=30045),
+    S('unifi_interval', 'triggers', 'expert', 'int', 5, min=2, max=60, step=1, unit='s', platforms=('enigma2', 'kodi'), label='Check every (seconds)', kodi_label=30145),
+    S('unifi_rules', 'triggers', 'expert', 'text', '', platforms=('enigma2', 'kodi'), label='Per event type', help='Optional: type=priority/mode/camera, e.g. ring=alarm/live|motion=normal/log', kodi_label=30271),
     S('ptz_key', 'camera_control', 'advanced', 'choice', 'blue', choices=('blue', 'yellow', 'red', 'green', 'off'), platforms=('enigma2', 'kodi'), label='Camera control (PTZ) key', help='For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home).', kodi_label=30239),
     S('ha_buttons', 'camera_control', 'advanced', 'bool', True, platforms=('enigma2', 'kodi'), label='Colour keys to Home Assistant', help='While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate).', kodi_label=30245),
     S('ptz_user', 'camera_control', 'advanced', 'text', '', platforms=('kodi',), label='Camera user (default)', help='Used when devices.conf has no user or password for a camera.', kodi_label=30152),

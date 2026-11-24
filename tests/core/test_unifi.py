@@ -9,7 +9,9 @@ import _paths
 _paths.core()
 from camalert_core.devices import client, config as dev_config, unifi  # noqa: E402
 from camalert_core.triggers import enabled_sources  # noqa: E402
-from camalert_core.triggers.unifi import UnifiSource  # noqa: E402
+from camalert_core.triggers import Trigger  # noqa: E402
+from camalert_core.triggers import unifi as unifi_trigger  # noqa: E402
+from camalert_core.triggers.unifi import PollStatus, UnifiSource, labels  # noqa: E402
 
 CAM_A, CAM_B = "65a1b2c3d4e5f60718293a4b", "65a1b2c3d4e5f60718293a4c"
 BOOT = {"cameras": [{"id": CAM_A, "displayName": "Front Door", "isAdopted": True},
@@ -54,6 +56,14 @@ class TestHelpers(unittest.TestCase):
         self.assertEqual(unifi.match(ev("1", "ring"), cams, ["ring"], {"front_door": "door"}), ("door", "ring"))
         self.assertIsNone(unifi.match(ev("1", "motion"), cams, ["ring"]))
         self.assertIsNone(unifi.match(ev("1", "ring", cam="other"), cams, ["ring"]))
+
+    def test_kind_rules(self):
+        self.assertEqual(unifi.kind_rules("ring=alarm/live| Motion = normal / log / garden |person=/notify"),
+                         {"ring": ("alarm", "live", None), "motion": ("normal", "log", "garden"),
+                          "person": (None, "notify", None)})
+        # unknown kinds, broken parts, invalid values and empty rules are skipped
+        self.assertEqual(unifi.kind_rules("ghost=alarm|ring|vehicle=loud/huge|animal=//|=x"), {})
+        self.assertEqual(unifi.kind_rules(None), {})
 
     def test_devices_file(self):
         d = dev_config.parse_devices("protect|unifi|192.168.1.1|viewer|p|w\nnvr|unifi|192.168.1.2:7443|v|x")
@@ -186,6 +196,18 @@ class TestSource(unittest.TestCase):
         src = UnifiSource({"unifi_enabled": True})  # default ring,person
         self.assertIsNone(src.check("p", self.state(), self.state(ev("1", "motion"), ev("2", "smartAudioDetect"))))
 
+    def test_rules_per_kind_and_labels(self):
+        src = UnifiSource({"unifi_kinds": "ring,person,motion", "unifi_mode": "photo", "unifi_priority": "high",
+                           "unifi_rules": "motion=normal/log|person=alarm//porch|ring=normal",
+                           "unifi_labels": labels(lambda t: t.upper()), "unifi_label": "unused"})
+        t = src.check("p", self.state(), self.state(ev("1", "motion", CAM_B)))
+        self.assertEqual(t.show_args(), ("garden", None, "log", "normal", "unifi", "MOTION", None))
+        t = src.check("p", self.state(), self.state(ev("2", "smartDetectLine", CAM_B, ["person"])))
+        self.assertEqual(t.show_args(), ("porch", None, "photo", "alarm", "unifi", "PERSON", None))
+        t = src.check("p", self.state(), self.state(ev("3", "ring")))
+        self.assertEqual((t.priority, t.label), ("high", "DOORBELL"))  # a ring stays at least high
+        self.assertEqual(sorted(unifi_trigger.KIND_LABELS), sorted(unifi.KINDS))
+
     def test_poll_uses_the_client(self):
         orig = client.protect_state
         client.protect_state = lambda dev: {"now": 5, "cams": {}, "events": []}
@@ -193,6 +215,32 @@ class TestSource(unittest.TestCase):
             self.assertEqual(UnifiSource.poll(DEV)["now"], 5)
         finally:
             client.protect_state = orig
+
+
+class TestPollStatus(unittest.TestCase):
+    def lines(self, st):
+        return st.lines(lambda t: t, lambda ts: "t%d" % ts)
+
+    def test_lines(self):
+        st = PollStatus()
+        self.assertEqual(self.lines(st), [(False, "UniFi Protect: no console of type unifi in the devices file")])
+        st.consoles = 1
+        self.assertEqual(self.lines(st), [(None, "UniFi Protect: not checked yet")])
+        self.assertTrue(st.failed(client.DeviceError("UniFi Protect login: HTTP 401 password=hunter2"), 5))
+        self.assertFalse(st.failed(client.DeviceError("UniFi Protect login: HTTP 401 password=hunter2"), 6))
+        out = self.lines(st)
+        self.assertEqual(out[0][0], False)
+        self.assertNotIn("hunter2", out[0][1])
+        self.assertEqual(out[1], (None, "UniFi Protect: no event since the start"))
+        st.ok(10)
+        st.event(Trigger("garden", "normal", "unifi", "Motion", mode="log"), 11)
+        self.assertEqual(self.lines(st), [(True, "UniFi Protect: last check t10"),
+                                          (True, "UniFi Protect: last event t11, garden (Motion) [Log only]")])
+        st.event(Trigger("door", "high", "unifi"))
+        self.assertEqual(self.lines(st)[1][1][-4:], "door")
+        st.reset()
+        self.assertIsNone(st.last_poll)
+        self.assertIsInstance(unifi_trigger.STATUS, PollStatus)
 
 
 if __name__ == "__main__":

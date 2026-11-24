@@ -4,7 +4,9 @@ import sys
 import tempfile
 import unittest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src", "CamAlert"))
+import _paths  # noqa: E402
+
+_paths.shared()
 import logic as L  # noqa: E402
 import camlog  # noqa: E402
 

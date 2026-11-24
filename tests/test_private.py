@@ -1,9 +1,10 @@
 import os
-import sys
 import tempfile
 import unittest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "tools"))
+import _paths  # noqa: E402
+
+_paths.tools()
 import check_private as C  # noqa: E402
 
 

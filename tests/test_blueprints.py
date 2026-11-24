@@ -7,7 +7,7 @@ try:
 except ImportError:  # pragma: no cover
     yaml = None
 
-HERE = os.path.dirname(__file__)
+import _paths  # noqa: E402
 
 
 @unittest.skipIf(yaml is None, "PyYAML not installed")
@@ -19,7 +19,7 @@ class TestBlueprints(unittest.TestCase):
         return yaml.load(open(path, encoding="utf-8"), Loader=Loader)
 
     def test_inputs_declared_and_used(self):
-        files = glob.glob(os.path.join(HERE, "..", "homeassistant", "blueprints", "*.yaml"))
+        files = glob.glob(os.path.join(_paths.BLUEPRINTS, "*.yaml"))
         self.assertEqual(len(files), 4)
         for f in files:
             d = self.load(f)

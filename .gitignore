@@ -8,3 +8,10 @@ kodi/service.camalert/resources/lib/camalert/logic.py
 kodi/service.camalert/resources/lib/camalert/devices.py
 kodi/service.camalert/resources/lib/camalert/camlog.py
 kodi/service.camalert/resources/media/chime.wav
+
+# test and coverage output
+.coverage
+.coverage.*
+coverage.xml
+junit*.xml
+htmlcov/

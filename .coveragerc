@@ -1,0 +1,19 @@
+# Coverage of every layer, including the Kodi add-on sources (#27):
+#   python3 -m coverage run -m pytest && python3 -m coverage report
+[run]
+branch = True
+source =
+    src/CamAlert
+    kodi/service.camalert/resources/lib/camalert
+    custom_components/camalert
+    tools
+omit =
+    */__pycache__/*
+
+[report]
+skip_empty = True
+precision = 0
+sort = Cover
+
+[xml]
+output = coverage.xml

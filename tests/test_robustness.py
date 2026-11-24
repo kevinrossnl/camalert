@@ -2,7 +2,9 @@ import os
 import sys
 import unittest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src", "CamAlert"))
+import _paths  # noqa: E402
+
+_paths.shared()
 import logic as L  # noqa: E402
 
 

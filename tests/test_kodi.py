@@ -6,20 +6,22 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
 import xml.etree.ElementTree as ET
 import zipfile
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.dirname(HERE)
-ADDON = os.path.join(ROOT, "kodi", "service.camalert")
-sys.path.insert(0, HERE)
-sys.path.insert(0, os.path.join(ROOT, "tools"))
+import _paths  # noqa: E402
+
+ROOT = _paths.ROOT
+ADDON = _paths.KODI_ADDON
+_paths.tools()
 import build_kodi  # noqa: E402
 import kodi_stubs  # noqa: E402
 
+MODULES = ("kodiapi", "sources", "display", "controller", "server", "mqtt", "ptz", "service", "script", "diag", "camlog")
 LANGS = ("en_gb", "nl_nl", "de_de", "fr_fr", "it_it", "pl_pl")
 
 
@@ -32,8 +34,12 @@ def po_strings(lang):
 
 
 class Built(object):
-    """Builds the zip once and imports the add-on package from it (as Kodi would)."""
+    """The add-on package imported from the source tree (with the Kodi stubs), plus the built zips once.
+
+    Importing the sources (not the extracted zip) lets coverage measure the real files (#27); the zip itself is
+    checked by TestKodiPackage, including a smoke import of every module from the extracted zip."""
     tmp = None
+    store = None
 
     @classmethod
     def get(cls):
@@ -45,7 +51,7 @@ class Built(object):
             cls.profile = os.path.join(cls.tmp, "profile")
             os.makedirs(cls.profile)
             cls.store = kodi_stubs.install(profile=cls.profile)
-            sys.path.insert(0, os.path.join(cls.tmp, "service.camalert", "resources", "lib"))
+            _paths.kodi_package()
         return cls
 
     @classmethod
@@ -265,8 +271,7 @@ class TestKodiApi(unittest.TestCase):
 
 class TestKodiModules(unittest.TestCase):
     def test_all_modules_import(self):
-        for name in ("kodiapi", "sources", "display", "controller", "server", "mqtt", "ptz", "service", "script", "diag",
-                     "camlog"):
+        for name in MODULES:
             Built.module(name)
 
     def test_discovery_and_frigate(self):
@@ -334,7 +339,7 @@ class TestKodiModules(unittest.TestCase):
 
     def test_english_fallback(self):
         kodiapi = Built.module("kodiapi")
-        kodiapi.addon_path = lambda *p: os.path.join(Built.tmp, "service.camalert", *p)
+        kodiapi.addon_path = lambda *p: os.path.join(ADDON, *p)
         kodiapi._english = None
         self.assertEqual(kodiapi.tr(30192), "Cameras")
         self.assertEqual(kodiapi.tr(30181), "Could not reach the camera source:\n%s")
@@ -344,9 +349,9 @@ class TestKodiImports(unittest.TestCase):
     def test_used_shared_names_are_imported(self):
         """Every name from the shared logic.py / klogic.py that a Kodi module uses must be imported."""
         import ast
-        lib = os.path.join(ADDON, "resources", "lib", "camalert")
+        lib = _paths.KODI_LIB
         exported = set()
-        for path in (os.path.join(ROOT, "src", "CamAlert", "logic.py"), os.path.join(lib, "klogic.py")):
+        for path in (os.path.join(_paths.SHARED, "logic.py"), os.path.join(lib, "klogic.py")):
             with open(path, encoding="utf-8") as f:
                 tree = ast.parse(f.read())
             exported |= {n.name for n in tree.body if isinstance(n, (ast.FunctionDef, ast.ClassDef))}
@@ -377,7 +382,15 @@ class TestKodiPackage(unittest.TestCase):
         self.assertFalse([n for n in names if n.endswith(".pyc") or "__pycache__" in n])
         # shared logic is the current one
         shared = zipfile.ZipFile(b.addon_zip).read("service.camalert/resources/lib/camalert/logic.py")
-        self.assertEqual(shared, open(os.path.join(ROOT, "src", "CamAlert", "logic.py"), "rb").read())
+        self.assertEqual(shared, open(os.path.join(_paths.SHARED, "logic.py"), "rb").read())
+
+    def test_every_module_imports_from_the_zip(self):
+        """Smoke test of the package as Kodi gets it (separate interpreter, so it does not mix with the sources)."""
+        b = Built.get()
+        code = ("import sys; sys.path[:0] = [%r, %r]; import kodi_stubs; kodi_stubs.install(profile=%r); "
+                "import importlib; [importlib.import_module('camalert.' + m) for m in %r]"
+                % (_paths.TESTS, os.path.join(b.tmp, "service.camalert", "resources", "lib"), b.profile, MODULES))
+        subprocess.check_call([sys.executable, "-c", code])
 
     def test_addon_xml(self):
         b = Built.get()

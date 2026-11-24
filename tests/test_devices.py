@@ -9,7 +9,9 @@ import unittest
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs, urlsplit
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src", "CamAlert"))
+import _paths  # noqa: E402
+
+_paths.shared()
 import logic as L  # noqa: E402
 import devices as D  # noqa: E402
 

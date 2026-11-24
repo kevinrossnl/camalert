@@ -1,14 +1,14 @@
 import os
 import re
-import sys
 import unittest
 
-HERE = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(HERE, "..", "tools"))
+import _paths  # noqa: E402
+
+_paths.tools()
 from msgfmt import parse_po, make_mo  # noqa: E402
 from strings import strings, pot  # noqa: E402
 
-PO = os.path.join(HERE, "..", "po")
+PO = _paths.PO
 
 
 class TestTranslations(unittest.TestCase):

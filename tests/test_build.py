@@ -1,12 +1,12 @@
 import os
 import subprocess
-import sys
 import tarfile
 import tempfile
 import unittest
 
-HERE = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(HERE, "..", "tools"))
+import _paths  # noqa: E402
+
+_paths.tools()
 import build_ipk  # noqa: E402
 
 
@@ -37,7 +37,7 @@ class TestBuild(unittest.TestCase):
             self.assertEqual(gzip.open(os.path.join(d, "Packages.gz")).read().decode(), text)
 
     def test_sources_compile(self):
-        src = os.path.join(HERE, "..", "src", "CamAlert")
+        src = _paths.ENIGMA2
         for f in os.listdir(src):
             if f.endswith(".py"):
                 compile(open(os.path.join(src, f), encoding="utf-8").read(), f, "exec")

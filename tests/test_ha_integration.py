@@ -4,9 +4,11 @@ import re
 import sys
 import unittest
 
-ROOT = os.path.join(os.path.dirname(__file__), "..")
-CC = os.path.join(ROOT, "custom_components", "camalert")
-sys.path.insert(0, CC)
+import _paths  # noqa: E402
+
+ROOT = _paths.ROOT
+CC = _paths.HA
+_paths.add(CC)
 import api  # noqa: E402  (no Home Assistant imports at module level)
 
 
@@ -24,7 +26,7 @@ class TestIntegration(unittest.TestCase):
         m = json.load(open(os.path.join(CC, "manifest.json")))
         self.assertEqual(m["domain"], "camalert")
         self.assertTrue(m["config_flow"])
-        plugin = re.search(r'__version__ = "([^"]+)"', open(os.path.join(ROOT, "src", "CamAlert", "__init__.py")).read()).group(1)
+        plugin = re.search(r'__version__ = "([^"]+)"', open(os.path.join(_paths.ENIGMA2, "__init__.py")).read()).group(1)
         self.assertEqual(m["version"], plugin, "plugin and integration share one version")
         json.load(open(os.path.join(ROOT, "hacs.json")))
 

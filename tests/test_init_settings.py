@@ -2,7 +2,9 @@ import os
 import re
 import unittest
 
-SRC = os.path.join(os.path.dirname(__file__), "..", "src", "CamAlert", "__init__.py")
+import _paths  # noqa: E402
+
+SRC = os.path.join(_paths.ENIGMA2, "__init__.py")
 
 
 class TestSettingsAreGuarded(unittest.TestCase):

@@ -2,7 +2,9 @@ import ast
 import os
 import unittest
 
-SRC = os.path.join(os.path.dirname(__file__), "..", "src", "CamAlert")
+import _paths  # noqa: E402
+
+SRC = _paths.ENIGMA2
 
 
 class TestLogicImports(unittest.TestCase):

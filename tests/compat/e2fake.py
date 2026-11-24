@@ -19,10 +19,11 @@ import os
 import sys
 import types
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.dirname(os.path.dirname(HERE))
-FIXTURES = os.path.join(HERE, "fixtures", "e2api")
-SRC = os.path.join(ROOT, "src")
+import _paths  # noqa: E402
+
+ROOT = _paths.ROOT
+FIXTURES = _paths.E2_API_FIXTURES
+SRC = _paths.ENIGMA2_PARENT
 
 # Known differences per image. "api" = which snapshot in tests/compat/fixtures/e2api is used.
 # "python" = Python of current releases; "verified" = where the facts come from.

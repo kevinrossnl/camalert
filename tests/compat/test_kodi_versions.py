@@ -14,10 +14,11 @@ import re
 import unittest
 import xml.etree.ElementTree as ET
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.dirname(os.path.dirname(HERE))
-ADDON = os.path.join(ROOT, "kodi", "service.camalert")
-FIXTURES = os.path.join(HERE, "fixtures", "kodi_api")
+import _paths  # noqa: E402
+
+ROOT = _paths.ROOT
+ADDON = _paths.KODI_ADDON
+FIXTURES = _paths.KODI_API_FIXTURES
 VERSIONS = (19, 20, 21, 22)
 # Known problems with an open issue: "file:line-free message" -> issue. A stale entry fails the test.
 KNOWN = {

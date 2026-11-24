@@ -44,7 +44,7 @@
   - integration: `strings.json` and every `translations/*.json` need the same keys.
 - New logic goes into `logic.py` with a unit test. Enigma2/Home Assistant specific code is tested on a real receiver / Home Assistant before a release.
 - API, MQTT topics, HA actions and blueprints must stay backwards compatible within a major version.
-- Tests: `python3 -m unittest discover -s tests`. Packages: `python3 tools/build_ipk.py dist`, `python3 tools/build_kodi.py dist`.
+- Tests: `python3 -m pytest` (see `tests/README.md`; `python3 -m unittest discover -s tests` also works). Packages: `python3 tools/build_ipk.py dist`, `python3 tools/build_kodi.py dist`.
 
 ## Release
 1. Raise the version in `src/CamAlert/__init__.py` and `custom_components/camalert/manifest.json`, update `CHANGELOG.md`.

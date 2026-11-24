@@ -89,9 +89,18 @@ class Resp(object):
 class FakeConsole(object):
     """Answers like a UniFi OS console; records every request (method, path, csrf)."""
 
-    def __init__(self, expire_once=False, fail=None):
+    def __init__(self, expire_once=False, fail=None, login_status=None, retry_after=None, data_status=None):
         self.calls, self.expire_once, self.fail = [], expire_once, fail
         self.events = []
+        # login_status: HTTP code the login answers (e.g. 403, 429); data_status: code of every data call
+        self.login_status, self.retry_after, self.data_status = login_status, retry_after, data_status
+
+    def logins(self):
+        return [c[1] for c in self.calls].count(unifi.LOGIN_PATH)
+
+    def refuse(self, req, code):
+        headers = {"Retry-After": self.retry_after} if self.retry_after is not None else {}
+        raise urllib.error.HTTPError(req.full_url, code, "no", headers, io.BytesIO(b""))
 
     def open(self, req, timeout=None):
         path = req.full_url.split(":443", 1)[1]
@@ -99,10 +108,14 @@ class FakeConsole(object):
         if self.fail:
             raise self.fail
         if path == unifi.LOGIN_PATH:
+            if self.login_status:
+                self.refuse(req, self.login_status)
             body = json.loads(req.data.decode())
             if body["password"] != "secret":
                 raise urllib.error.HTTPError(req.full_url, 401, "no", {}, io.BytesIO(b""))
             return Resp(b"{}", {"X-CSRF-Token": "tok"})
+        if self.data_status:
+            self.refuse(req, self.data_status)
         if self.expire_once:
             self.expire_once = False
             raise urllib.error.HTTPError(req.full_url, 401, "expired", {}, io.BytesIO(b""))
@@ -138,11 +151,12 @@ class TestClient(unittest.TestCase):
         fake = FakeConsole(expire_once=True)
         p = client.Protect(DEV, opener=fake)
         p.login()
+        p.backoff.last_login -= 60  # the session is a minute old (a refusal right after a login waits, #78)
         self.assertEqual(p.cameras(now=1), {CAM_A: "front_door", CAM_B: "ueber_garten"})
         self.assertEqual([c[0] for c in fake.calls].count("POST"), 2)
         with self.assertRaises(client.DeviceError) as e:
             client.Protect(dict(DEV, password="wrong"), opener=FakeConsole()).cameras()
-        self.assertEqual(str(e.exception), "UniFi Protect login: HTTP 401")
+        self.assertEqual(str(e.exception), "UniFi Protect login refused (check user/password): HTTP 401")
         with self.assertRaises(client.DeviceError) as e:
             client.Protect(DEV, opener=FakeConsole(fail=OSError("secret in url"))).cameras()
         self.assertNotIn("secret", str(e.exception))
@@ -156,12 +170,178 @@ class TestClient(unittest.TestCase):
         key = (dev["host"], dev["port"], dev["user"], dev["password"])
         client._protect[key] = client.Protect(dev, opener=fake)
         self.assertRaises(client.DeviceError, client.protect_state, dev)
-        self.assertNotIn(key, client._protect)  # new session next time
+        self.assertIn(key, client._protect)  # the session (cookie) is kept across errors (#78)
+        client.reset_logins()
+        self.assertNotIn(key, client._protect)
         ok = FakeConsole()
         client._protect[key] = client.Protect(dev, opener=ok)
         self.assertEqual(client.protect_state(dev)["events"], [])
         self.assertRaises(client.DeviceError, client.ptz, DEV, "up")
-        client._protect.pop(key, None)
+        new = dict(dev, password="other")  # other credentials of the same console replace the old session
+        orig = client.Protect
+        client.Protect = lambda d, backoff=None: orig(d, opener=FakeConsole(), backoff=backoff)
+        try:
+            self.assertRaises(client.LoginError, client.protect_state, new)  # FakeConsole wants "secret"
+        finally:
+            client.Protect = orig
+        self.assertNotIn(key, client._protect)
+        self.assertIn(key[:3] + ("other",), client._protect)
+        client.reset_logins()
+
+
+class Clock(object):
+    def __init__(self, t=1000.0):
+        self.t = t
+
+    def __call__(self):
+        return self.t
+
+
+class TestLoginBackoff(unittest.TestCase):
+    """#78: a refused or rate-limited login is not retried at every poll."""
+
+    def protect(self, fake, clock=None, backoff=None):
+        return client.Protect(DEV, opener=fake, backoff=backoff, clock=clock or Clock())
+
+    def polls(self, p, clock, seconds, step=5):
+        """Polls every `step` s for `seconds`; returns the errors."""
+        errors = []
+        end = clock.t + seconds
+        while clock.t < end:
+            try:
+                p.state(now=clock.t)
+            except client.DeviceError as e:
+                errors.append(e)
+            clock.t += step
+        return errors
+
+    def test_429_without_retry_after_backs_off_exponentially(self):
+        fake, clock = FakeConsole(login_status=429), Clock()
+        p = self.protect(fake, clock)
+        logins = []
+        for _ in range(7):
+            with self.assertRaises(client.LoginError) as e:
+                p.state(now=clock.t)
+            self.assertEqual(e.exception.kind, "rate")
+            logins.append((clock.t, fake.logins()))
+            wait = e.exception.next_at - clock.t
+            # every poll inside the window fails at once, without a request
+            self.assertEqual(len(self.polls(p, clock, wait - 1)), len(range(0, int(wait - 1), 5)))
+            clock.t = e.exception.next_at
+        self.assertEqual([n for _, n in logins], [1, 2, 3, 4, 5, 6, 7])
+        waits = [b[0] - a[0] for a, b in zip(logins, logins[1:])]
+        self.assertEqual(waits, [30, 60, 120, 300, 900, 900])
+        self.assertEqual(str(e.exception), "UniFi Protect login: too many attempts (HTTP 429)")
+
+    def test_429_honours_retry_after(self):
+        fake, clock = FakeConsole(login_status=429, retry_after="600"), Clock()
+        p = self.protect(fake, clock)
+        with self.assertRaises(client.LoginError) as e:
+            p.state(now=clock.t)
+        self.assertEqual(e.exception.next_at, clock.t + 600)
+        self.polls(p, clock, 595)
+        self.assertEqual(fake.logins(), 1)
+        clock.t = 1600
+        fake.retry_after = "5"  # shorter than the backoff: the backoff (60 s for the 2nd failure) wins
+        with self.assertRaises(client.LoginError) as e:
+            p.state(now=clock.t)
+        self.assertEqual(e.exception.next_at, clock.t + 60)
+        self.assertEqual(fake.logins(), 2)
+        self.assertEqual(client.retry_after("Wed, 21 Oct 2015 07:30:00 GMT", 1445412600), 0)
+        self.assertEqual(client.retry_after("Wed, 21 Oct 2015 07:30:00 GMT", 1445412000), 600)
+        self.assertEqual(client.retry_after("99999"), client.RETRY_AFTER_MAX)
+        self.assertIsNone(client.retry_after("soon"))
+        self.assertIsNone(client.retry_after(None))
+
+    def test_429_on_a_data_call_waits_too(self):
+        fake, clock = FakeConsole(data_status=429, retry_after="120"), Clock()
+        p = self.protect(fake, clock)
+        with self.assertRaises(client.LoginError) as e:
+            p.state(now=clock.t)
+        self.assertEqual((e.exception.kind, e.exception.next_at), ("rate", clock.t + 120))
+        n = len(fake.calls)
+        self.polls(p, clock, 115)
+        self.assertEqual(len(fake.calls), n)  # nothing at all goes to the console while it waits
+
+    def test_403_repeated_is_one_state_and_keeps_backing_off(self):
+        fake, clock = FakeConsole(login_status=403), Clock()
+        p = self.protect(fake, clock)
+        st = PollStatus()
+        st.consoles = 1
+        new = []
+        for _ in range(100):  # 500 s of polls every 5 s
+            try:
+                p.state(now=clock.t)
+            except client.DeviceError as e:
+                new.append(st.failed(e, clock.t))
+                self.assertEqual(e.kind, "auth")
+                self.assertEqual(str(e), "UniFi Protect login refused (check user/password): HTTP 403")
+            clock.t += 5
+        self.assertEqual(new.count(True), 1)  # logged once, not at every poll or attempt
+        self.assertEqual(fake.logins(), 4)  # t=0, 30, 90, 210 (next 510)
+        lines = st.lines(lambda t: t, lambda ts: "t%d" % ts)
+        self.assertEqual(lines[0], (False, "UniFi Protect: UniFi Protect login refused (check user/password): HTTP 403"))
+        self.assertEqual(lines[1], (None, "UniFi Protect: next login attempt t%d" % (1000 + 210 + 300)))
+        self.assertNotIn("secret", repr(lines))
+        st.ok(2000)
+        self.assertIsNone(st.next_retry)
+
+    def test_network_error_is_its_own_kind(self):
+        fake, clock = FakeConsole(fail=OSError("unreachable")), Clock()
+        with self.assertRaises(client.LoginError) as e:
+            self.protect(fake, clock).state(now=clock.t)
+        self.assertEqual((e.exception.kind, str(e.exception)), ("network", "UniFi Protect login: not reachable (OSError)"))
+        fake = FakeConsole(login_status=500)
+        with self.assertRaises(client.LoginError) as e:
+            self.protect(fake, clock).state(now=clock.t)
+        self.assertEqual((e.exception.kind, str(e.exception)), ("http", "UniFi Protect login: HTTP 500"))
+
+    def test_success_resets_the_backoff_and_keeps_the_session(self):
+        fake, clock = FakeConsole(login_status=429), Clock()
+        p = self.protect(fake, clock)
+        for _ in range(3):  # three failures: the next wait would be 5 min
+            self.assertRaises(client.LoginError, p.state, clock.t)
+            clock.t = p.backoff.next_at
+        fake.login_status = None
+        p.state(now=clock.t)
+        self.assertEqual((p.backoff.failures, p.backoff.error), (0, None))
+        logins = fake.logins()
+        self.polls(p, clock, 300)
+        self.assertEqual(fake.logins(), logins)  # the session cookie is reused at every poll
+        fake.login_status = 429  # a new failure starts at 30 s again
+        fake.expire_once = True
+        with self.assertRaises(client.LoginError) as e:
+            p.state(now=clock.t)
+        self.assertEqual(e.exception.next_at, clock.t + 30)
+
+    def test_relogin_after_401_at_most_once_per_window(self):
+        fake, clock = FakeConsole(), Clock()
+        p = self.protect(fake, clock)
+        p.state(now=clock.t)
+        self.assertEqual(fake.logins(), 1)
+        fake.data_status = 401  # the console keeps refusing the session (e.g. the user lost its role)
+        errors = self.polls(p, clock, 600)
+        self.assertLessEqual(fake.logins(), 1 + 6)  # not one login per poll (120 polls)
+        self.assertTrue(any(isinstance(e, client.LoginError) and e.kind == "auth" for e in errors))
+        fake.data_status = None  # fixed: the next attempt after the wait works
+        clock.t = p.backoff.next_at
+        p.state(now=clock.t)
+        logins = fake.logins()
+        clock.t += 3600
+        fake.expire_once = True  # a session that ran out: one new login and the poll works
+        p.state(now=clock.t)
+        self.assertEqual(fake.logins(), logins + 1)
+
+    def test_devices_file_change_resets(self):
+        dev = dict(DEV, host="192.168.1.98")
+        b = client.backoff_for(dev)
+        b.failed(client.LoginError("x", "auth"), 1000)
+        self.assertIs(client.backoff_for(dev), b)
+        self.assertRaises(client.LoginError, b.check, 1001)
+        UnifiSource.devices_changed()
+        b.check(1001)  # no wait any more
+        self.assertEqual(b.failures, 0)
+        client._backoff.pop((dev["host"], dev["port"]), None)
 
 
 class TestSource(unittest.TestCase):

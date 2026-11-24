@@ -19,7 +19,7 @@ RESTART_KEYS = {
 def unifi_state():
     """The UniFi Protect poll status for the diagnostics dialog (#71); errors are already redacted."""
     from .camalert_core.triggers.unifi import STATUS
-    return {k: getattr(STATUS, k) for k in ("last_poll", "last_ok", "error", "last_event", "consoles")}
+    return {k: getattr(STATUS, k) for k in ("last_poll", "last_ok", "error", "last_event", "consoles", "next_retry")}
 
 
 def changed_parts(old, new):

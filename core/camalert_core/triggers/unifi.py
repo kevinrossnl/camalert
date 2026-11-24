@@ -77,25 +77,35 @@ class UnifiSource(TriggerSource):
         from ..devices.client import protect_state
         return protect_state(device)
 
+    @staticmethod
+    def devices_changed():
+        """The players call this when the devices file changed (mtime): new credentials get a fresh session and no
+        login backoff (#78)."""
+        from ..devices.client import reset_logins
+        reset_logins()
+
 
 class PollStatus(object):
-    """What the diagnostics screen shows about the UniFi Protect source: last check, last event, last error.
-    Errors are stored redacted (never a password, token or cookie)."""
+    """What the diagnostics screen shows about the UniFi Protect source: last check, last event, last error and,
+    while the login backs off (#78), when the next login attempt is. Errors are stored redacted (never a password,
+    token or cookie)."""
 
     def __init__(self):
         self.reset()
 
     def reset(self):
-        self.last_poll = self.last_ok = self.error = self.last_event = None
+        self.last_poll = self.last_ok = self.error = self.last_event = self.next_retry = None
         self.consoles = 0
 
     def ok(self, now=None):
         self.last_poll = self.last_ok = _time.time() if now is None else now
-        self.error = None
+        self.error = self.next_retry = None
 
     def failed(self, error, now=None):
-        """Remembers an error; True when it is new (log it once, not at every poll)."""
+        """Remembers an error; True when it is new (log it once, not at every poll). A login error that waits
+        (devices.client.LoginError) keeps its text while it waits, so it is logged once per state change."""
         self.last_poll = _time.time() if now is None else now
+        self.next_retry = getattr(error, "next_at", None)
         text = redact(str(error))[:200]
         new = text != self.error
         self.error = text
@@ -114,6 +124,8 @@ class PollStatus(object):
         out = []
         if self.error:
             out.append((False, tr(N_("UniFi Protect: %s")) % self.error))
+            if self.next_retry:
+                out.append((None, tr(N_("UniFi Protect: next login attempt %s")) % when(self.next_retry)))
         if self.last_ok:
             out.append((True, tr(N_("UniFi Protect: last check %s")) % when(self.last_ok)))
         e = self.last_event

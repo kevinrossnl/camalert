@@ -1177,6 +1177,7 @@ class Controller(object):
         if mtime != self.devices_mtime:
             self.devices_mtime = mtime
             self.devices = devices.load_devices()
+            UnifiSource.devices_changed()  # new credentials: fresh session, no login backoff (#78)
             secure_file(devices.DEVICES_FILE)
             if self.devices:
                 log("devices file: %d cameras (%s)" % (len(self.devices), ", ".join(
@@ -1248,8 +1249,8 @@ class Controller(object):
                 if self.unifi_state.get(name) != "busy":
                     return
                 self.unifi_state[name] = None
-                if UNIFI_STATUS.failed(err.getErrorMessage()):  # log once, not at every poll
-                    log("UniFi Protect %s: %s" % (name, err.getErrorMessage()), level="error")
+                if UNIFI_STATUS.failed(err.value):  # log once per state change, not at every poll (#78)
+                    log("UniFi Protect %s: %s" % (name, UNIFI_STATUS.error), level="error")
             threads.deferToThread(source.poll, dev).addCallbacks(done, failed)
 
     def ptz_devices(self):

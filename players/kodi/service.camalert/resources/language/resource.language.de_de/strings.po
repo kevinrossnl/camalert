@@ -1108,3 +1108,7 @@ msgstr "go2rtc-Adresse nicht eingestellt"
 msgctxt "#30565"
 msgid "No valid go2rtc address"
 msgstr "Keine gültige go2rtc-Adresse"
+
+msgctxt "#30566"
+msgid "UniFi Protect: next login attempt %s"
+msgstr "UniFi Protect: nächster Anmeldeversuch %s"

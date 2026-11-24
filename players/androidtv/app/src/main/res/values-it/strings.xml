@@ -201,6 +201,7 @@
     <string name="t_f5daaaf9" formatted="false">UniFi Protect: nessuna console di tipo unifi nel file dei dispositivi</string>
     <string name="t_634126e6" formatted="false">UniFi Protect: non ancora controllato</string>
     <string name="t_8eafd072" formatted="false">UniFi Protect: %s</string>
+    <string name="t_ecf4294b" formatted="false">UniFi Protect: prossimo tentativo di accesso %s</string>
     <string name="t_badf84fc" formatted="false">UniFi Protect: ultimo controllo %s</string>
     <string name="t_92e36ee7" formatted="false">UniFi Protect: ultimo evento %s, %s</string>
     <string name="t_11cd7c0c" formatted="false">UniFi Protect: nessun evento dall\'avvio</string>

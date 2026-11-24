@@ -201,6 +201,7 @@
     <string name="t_f5daaaf9" formatted="false">UniFi Protect: geen console van het type unifi in het apparatenbestand</string>
     <string name="t_634126e6" formatted="false">UniFi Protect: nog niet gecontroleerd</string>
     <string name="t_8eafd072" formatted="false">UniFi Protect: %s</string>
+    <string name="t_ecf4294b" formatted="false">UniFi Protect: volgende inlogpoging %s</string>
     <string name="t_badf84fc" formatted="false">UniFi Protect: laatste controle %s</string>
     <string name="t_92e36ee7" formatted="false">UniFi Protect: laatste gebeurtenis %s, %s</string>
     <string name="t_11cd7c0c" formatted="false">UniFi Protect: geen gebeurtenis sinds de start</string>

@@ -201,6 +201,7 @@
     <string name="t_f5daaaf9" formatted="false">UniFi Protect: brak konsoli typu unifi w pliku urządzeń</string>
     <string name="t_634126e6" formatted="false">UniFi Protect: jeszcze nie sprawdzono</string>
     <string name="t_8eafd072" formatted="false">UniFi Protect: %s</string>
+    <string name="t_ecf4294b" formatted="false">UniFi Protect: następna próba logowania %s</string>
     <string name="t_badf84fc" formatted="false">UniFi Protect: ostatnie sprawdzenie %s</string>
     <string name="t_92e36ee7" formatted="false">UniFi Protect: ostatnie zdarzenie %s, %s</string>
     <string name="t_11cd7c0c" formatted="false">UniFi Protect: brak zdarzeń od uruchomienia</string>

@@ -522,6 +522,9 @@ msgstr "UniFi Protect: noch nicht geprüft"
 msgid "UniFi Protect: %s"
 msgstr "UniFi Protect: %s"
 
+msgid "UniFi Protect: next login attempt %s"
+msgstr "UniFi Protect: nächster Anmeldeversuch %s"
+
 msgid "UniFi Protect: last check %s"
 msgstr "UniFi Protect: letzte Prüfung %s"
 

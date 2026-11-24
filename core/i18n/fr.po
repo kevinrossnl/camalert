@@ -696,6 +696,10 @@ msgstr "UniFi Protect : pas encore vérifié"
 msgid "UniFi Protect: %s"
 msgstr "UniFi Protect : %s"
 
+#: e2 kodi:30566
+msgid "UniFi Protect: next login attempt %s"
+msgstr "UniFi Protect : prochaine tentative de connexion %s"
+
 #: e2 kodi:30561
 msgid "UniFi Protect: last check %s"
 msgstr "UniFi Protect : dernière vérification %s"

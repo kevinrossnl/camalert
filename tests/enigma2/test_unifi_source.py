@@ -11,11 +11,13 @@ CAM_ID = "65a1b2c3d4e5f60718293a4b"
 
 
 class Failure(object):
-    def __init__(self, text):
-        self.text = text
+    """Like twisted.python.failure.Failure: value = the exception, getErrorMessage() = its text."""
+
+    def __init__(self, value):
+        self.value = value if isinstance(value, Exception) else Exception(value)
 
     def getErrorMessage(self):
-        return self.text
+        return str(self.value)
 
 
 def state(*ids, kind="motion"):
@@ -112,6 +114,47 @@ class TestUnifiSource(Base):
     def test_consoles_are_no_ptz_cameras(self):
         self.assertFalse(self.ctl.has_ptz("protect"))
         self.assertTrue(self.ctl.has_ptz("door"))
+
+
+    def test_login_backoff_is_logged_once_and_shows_the_next_attempt(self):
+        """#78: a refused login waits; every poll in the wait fails with the same error, logged once."""
+        client = self.d.devices
+        self.c.unifi_enabled.value = True
+        logged = []
+        orig = self.d.log
+        self.d.log = lambda *a, **kw: logged.append(" ".join(str(x) for x in a))
+        try:
+            for i in range(3):
+                self.ctl.poll_unifi()
+                (d,) = self.polls()
+                d.callbacks[0][1](Failure(client.LoginError(
+                    "UniFi Protect login refused (check user/password): HTTP 403", "auth", 2000000000)))
+        finally:
+            self.d.log = orig
+        self.assertEqual(len([l for l in logged if "login refused" in l]), 1)
+        self.assertEqual(self.d.UNIFI_STATUS.next_retry, 2000000000)
+
+    def test_devices_file_change_resets_the_login_backoff(self):
+        import os
+        import tempfile
+        del self.ctl.load_devices  # the real one (setUp replaces it)
+        calls = []
+        orig_path, orig_reset = self.d.devices.DEVICES_FILE, self.d.UnifiSource.devices_changed
+        with tempfile.NamedTemporaryFile("w", suffix=".conf", delete=False) as f:
+            f.write("protect|unifi|192.168.1.1|viewer|secret\n")
+        self.addCleanup(os.remove, f.name)
+        self.d.devices.DEVICES_FILE = f.name
+        self.d.UnifiSource.devices_changed = staticmethod(lambda: calls.append(1))
+        try:
+            self.ctl.load_devices()
+            self.ctl.load_devices()
+            self.assertEqual(len(calls), 1)  # same mtime: no reset
+            os.utime(f.name, (1, 1))
+            self.ctl.load_devices()
+            self.assertEqual(len(calls), 2)
+        finally:
+            self.d.devices.DEVICES_FILE = orig_path
+            self.d.UnifiSource.devices_changed = orig_reset
 
 
 class TestLogOnly(Base):

@@ -37,8 +37,11 @@ switched on in the camera.
 *UniFi Protect events* (section *Triggers*, off by default) asks every console of type `unifi` in the devices file
 every *Check every (seconds)* (default 5) for the events of the last minute. Use a **local Protect user with the
 role *View Only*** (UniFi OS › Admins & Users › add a local user, *Restrict to local access only*): CamAlert only
-reads the camera list, the events and snapshots and never changes anything. After a 401 it logs in again with a
-fresh session.
+reads the camera list, the events and snapshots and never changes anything. The session is kept between checks;
+after a 401 it logs in again with a fresh session. A refused login (wrong user or password, HTTP 401/403), a rate
+limit (HTTP 429) or an unreachable console is not retried at every check: the next login waits 30 s, 1 min, 2 min,
+5 min and then 15 min (or longer when the console asks for it with *Retry-After*). A working check or a changed
+devices file starts again without a wait. See [Troubleshooting](troubleshooting.md) › *HTTP 429 from UniFi OS*.
 
 - *UniFi Protect event types*: which events count, comma separated: `ring`, `person`, `vehicle`, `animal`,
   `package`, `motion` (default `ring,person`).
@@ -60,7 +63,8 @@ fresh session.
 The first answer after a start, a setting change or an error only remembers what is there: old events never pop up.
 When several new events arrive in one check, the most important one is shown (ring, person, vehicle, animal,
 package, motion). Events get the source *UniFi Protect* in the event list. The diagnostics screen shows the last
-check, the last event and the last error (never a password or cookie). Both players make the devices file readable
+check, the last event, the last error (never a password or cookie) and, while a login waits, the time of the next
+login attempt. Both players make the devices file readable
 for its owner only (`chmod 600`) when they read it; on Kodi a `unifi` line never gets the default camera login.
 
 Where to turn it on: Enigma2 *Settings › Triggers › UniFi Protect* (setup level *Advanced*, or MENU › *Show all

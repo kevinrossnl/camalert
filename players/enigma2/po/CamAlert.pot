@@ -521,6 +521,9 @@ msgstr ""
 msgid "UniFi Protect: %s"
 msgstr ""
 
+msgid "UniFi Protect: next login attempt %s"
+msgstr ""
+
 msgid "UniFi Protect: last check %s"
 msgstr ""
 

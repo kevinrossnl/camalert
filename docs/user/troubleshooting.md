@@ -21,6 +21,15 @@
 **The motion sensor never turns on**
 - Motion detection must be enabled in the camera / NVR (for UniFi Protect: `switch.<camera>_detections_motion`).
 
+**HTTP 429 from UniFi OS (UniFi Protect events)**
+- UniFi OS answers *HTTP 429* (too many requests) after many logins in a short time, for example after a wrong
+  password on several players. CamAlert then waits before it logs in again (30 s, 1 min, 2 min, 5 min, then every
+  15 min, or as long as the console asks); the diagnostics show the error and the *next login attempt*.
+- *login refused (check user/password)*: fix the user or password of the `unifi` line in the devices file. Saving the
+  file starts a new login at the next check, without a wait.
+- Still 429 after a fix? Leave the players alone for a few minutes: every login attempt during the block can make it
+  last longer. Use one local *View Only* user for all players.
+
 **Why not real picture-in-picture?**
 - The PiP decoder of Enigma2 receivers only plays TV channels, not network streams. The photo window works on every player.
 

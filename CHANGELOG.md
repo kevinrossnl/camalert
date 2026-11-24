@@ -81,7 +81,9 @@ device (Kodi 19 or newer), controlled by Home Assistant, MQTT, Frigate, UniFi Pr
 - Frigate events straight from MQTT, without Home Assistant (labels, name mapping, priority, clip replay).
 - UniFi Protect events without Home Assistant on the Enigma2 plugin and the Kodi add-on (ring, person, vehicle,
   animal, package, motion) through a local view-only Protect user, with rules per event type and per camera
-  (priority, display mode, duration) and a *Log only* display mode.
+  (priority, display mode, duration) and a *Log only* display mode. A refused or rate-limited login (HTTP 401/403/429)
+  is not retried at every check: the login backs off from 30 s to 15 min (honouring *Retry-After*), the session is
+  kept between checks and the diagnostics show the next login attempt.
 - Foscam motion and sound alarms; camera control (PTZ) for ONVIF and Foscam cameras from the remote, the API and
   Home Assistant.
 - HTTP API for Node-RED, openHAB and scripts: `/camalert/status` reports the platform, API version, capabilities

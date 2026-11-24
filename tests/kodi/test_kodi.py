@@ -477,6 +477,34 @@ class _KodiModules(object):
         self.assertTrue(any("garden" not in l and "UniFi" in l for l in lines))
         self.assertTrue(diag.unifi_lines(None)[0].startswith("[FAIL]"))  # no console known yet
 
+    def test_unifi_poller_login_backoff_and_devices_file_change(self):
+        """#78: a waiting login is logged once, the diagnostics show the next attempt; a changed devices.conf
+        resets the backoff."""
+        ptz, poller, shown = self.unifi_setup()
+        client = Built.module("ptz").devices
+        kodiapi = Built.module("kodiapi")
+        logged, resets = [], []
+        self.addCleanup(setattr, kodiapi, "log", kodiapi.log)
+        kodiapi.log = lambda text, level="normal": logged.append(text)
+        self.addCleanup(setattr, ptz.UnifiSource, "devices_changed", ptz.UnifiSource.devices_changed)
+        ptz.UnifiSource.devices_changed = staticmethod(lambda: resets.append(1))
+
+        def wait(dev):
+            raise client.LoginError("UniFi Protect login: too many attempts (HTTP 429)", "rate", 2000000000)
+        self.answers += [wait, wait, wait]
+        for _i in range(3):
+            poller.once()
+        self.assertEqual(len([t for t in logged if "HTTP 429" in t]), 1)
+        self.assertEqual(resets, [1])  # first read of the file only
+        state = Built.module("service").unifi_state()
+        self.assertEqual(state["next_retry"], 2000000000)
+        lines = Built.module("diag").unifi_lines(state)
+        self.assertTrue(any("next login attempt" in l for l in lines), lines)
+        os.utime(ptz.device_file(), (1, 1))
+        self.answers.append(self.unifi_answer("1"))
+        poller.once()
+        self.assertEqual(resets, [1, 1])
+
     def test_unifi_poller_off_polls_nothing(self):
         ptz, poller, shown = self.unifi_setup(enabled="false")
         ptz.UNIFI_STATUS.consoles = 3

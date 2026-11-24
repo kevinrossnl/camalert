@@ -142,6 +142,7 @@ class UnifiPoller(threading.Thread):
         self.ctl = ctl
         self.stopping = threading.Event()
         self.state = {}  # console name -> last answer, None = first poll / after an error
+        self.devices_mtime = None
 
     def settings(self):
         s = dict(kodiapi.settings())
@@ -156,6 +157,13 @@ class UnifiPoller(threading.Thread):
             UNIFI_STATUS.reset()
             return s
         devices.secure_file(device_file())  # it holds the console password: owner only (0600)
+        try:
+            mtime = os.path.getmtime(device_file())
+        except OSError:
+            mtime = None
+        if mtime != self.devices_mtime:  # new credentials: fresh session, no login backoff (#78)
+            self.devices_mtime = mtime
+            UnifiSource.devices_changed()
         consoles = source.devices(all_devices(s))
         UNIFI_STATUS.consoles = len(consoles)
         for name, dev in sorted(consoles.items()):
@@ -168,7 +176,7 @@ class UnifiPoller(threading.Thread):
                 now = source.poll(dev)
             except Exception as e:  # DeviceError messages never contain passwords; redacted anyway
                 self.state[name] = None
-                if UNIFI_STATUS.failed(e):
+                if UNIFI_STATUS.failed(e):  # log once per state change, not at every poll (#78)
                     kodiapi.log("UniFi Protect %s: %s" % (name, UNIFI_STATUS.error), "error")
                 continue
             if self.stopping.is_set():  # switched off meanwhile: drop the late answer

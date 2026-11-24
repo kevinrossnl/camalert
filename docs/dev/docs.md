@@ -40,3 +40,14 @@ Use the terms of the [glossary](../user/glossary.md) verbatim. **Player** = Enig
 - no forbidden synonym (glossary) and no "receiver" where Kodi is meant, outside the Enigma2 page and the dev pages;
 - there is one `DEVELOPMENT.md` per main folder and the files they name exist (#36);
 - the Kodi version claim matches the add-on's `xbmc.python` requirement (Kodi 19).
+
+`tests/test_docs_examples.py` (#36) checks the examples:
+
+- every `/camalert/<route>` example (README, `docs/`, `homeassistant/`) names a route of `core/camalert_core/api.py`
+  and only parameters its handler reads (query strings, `curl -d`, the JSON bodies in the API table, the REST package
+  payload); `POST` is documented only for actions, `GET` only for reads;
+- the topic table in [MQTT](../integrations/mqtt.md) is exactly the MQTT contract table (`(published)` included),
+  and no page names another `camalert/<id>/...` topic;
+- every Kodi version with an API fixture is on the [compatibility](compatibility.md) page;
+- the `tools/ci.sh` areas and the `tools/docs.py` / `tools/i18n/i18n.py` subcommands named in the `DEVELOPMENT.md` files,
+  `tests/README.md` and `docs/dev/` exist.

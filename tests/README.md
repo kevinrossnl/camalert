@@ -32,6 +32,10 @@ Python 3.8 (Kodi 19) needs `pip install "pytest<8.4"`. Optional: `pyyaml` (bluep
   the key map, glossary, settings table), relative links/images/anchors in README, docs and DEVELOPMENT.md files resolve,
   every docs page reachable from `docs/index.md`, no forbidden synonyms, "player" (not "receiver") where Kodi is
   meant, "Kodi 19 or newer" everywhere, one `DEVELOPMENT.md` per main folder naming files that exist. After changing the key map, glossary or schema: `python3 tools/docs.py update`.
+- `test_docs_examples.py` (#36): API examples in the docs and the REST package use existing routes, known
+  parameters and the right method (scanned from the handlers in `core/camalert_core/api.py`); the MQTT topic table
+  equals `contract/mqtt_table.py`; Kodi fixture versions on the compatibility page; CI areas and tool subcommands
+  named in DEVELOPMENT.md files and dev docs exist.
 - `test_community.py` (#23): the GitHub community files (CONTRIBUTING, SECURITY with private vulnerability
   reporting, Code of Conduct, issue forms asking for player, versions and redacted logs, pull request template)
   exist, parse and link to the public repository.

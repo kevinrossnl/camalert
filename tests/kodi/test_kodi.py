@@ -536,6 +536,14 @@ class _KodiModules(object):
                 win.feeder.stop()
         self.assertEqual(titles, [])  # a multi-camera window keeps its title; the tile says it
 
+    def test_diagnostics_caller_uses_region_date_and_translated_source(self):
+        diag = Built.module("diag")
+        self.core_strings()
+        when, who = diag.caller_text(1764000000, "ha")
+        self.assertEqual(who, "Home Assistant")
+        self.assertRegex(when, r"^\d\d.\d\d.\d{4} \d\d:\d\d:\d\d$")  # stubs: no region format -> English (UK)
+        self.assertEqual(diag.caller_text(1764000000, "api")[1], "API")
+
     def test_key_hints_come_from_the_key_map(self):
         """#41: no hard-coded English hints; the photo window, PTZ, live, tour and mosaic hints are
         present.key_hint() texts, translated through Kodi string ids."""

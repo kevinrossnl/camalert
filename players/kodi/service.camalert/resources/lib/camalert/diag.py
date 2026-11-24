@@ -13,6 +13,12 @@ from .camalert_core.obs.log import redact
 from .camalert_core.urls import normalize_server, valid_port
 
 
+def caller_text(at, source):
+    """(time with the date in Kodi's region format, translated source) of the last API caller (#41)."""
+    from .camalert_core.present import event_time, source_label
+    return event_time(at, kodiapi.language(), fmt=kodiapi.date_format()), source_label(source, kodiapi.core_tr())
+
+
 def collect(state):
     s = kodiapi.settings()
     tr = kodiapi.tr
@@ -60,8 +66,8 @@ def collect(state):
     caller = state.get("last_caller")
     if caller:
         at, host, source = caller
-        lines.append(diag_line(True, tr(30220) % (time.strftime("%d-%m %H:%M", time.localtime(at)), host,
-                                                    "Home Assistant" if source == "ha" else source)))
+        when, who = caller_text(at, source)
+        lines.append(diag_line(True, tr(30220) % (when, host, who)))
     else:
         lines.append(diag_line(None, tr(30221)))
     devs = ptz.all_devices(s)

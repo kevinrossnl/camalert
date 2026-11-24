@@ -1,6 +1,6 @@
 """The Enigma2 settings (`_add()` in __init__.py and the setup screen) against the settings schema (#38).
 
-Differences that the Enigma2 round of #39 removes are listed in KNOWN (a fixed one makes its entry stale)."""
+Differences go in KNOWN with their issue (a fixed one makes its entry stale). Empty since the Enigma2 round of #39."""
 import os
 import unittest
 
@@ -13,23 +13,8 @@ from strings import strings  # noqa: E402
 
 TYPES = {"ConfigYesNo": "bool", "ConfigSelection": "choice", "ConfigSelectionNumber": "int", "ConfigNumber": "int",
          "ConfigText": "text", "ConfigPassword": "password", "ConfigClock": "time"}
-# (schema id, field) -> issue. What the Enigma2 player still has to change for schema version 2 (#39):
-KNOWN = {
-    ("chime", "type"): "#39",            # Enigma2: on/off (high + alarm); schema: off / high / all (schema.migrate)
-    ("chime", "default"): "#39",
-    ("foscam_enabled", "key"): "#39",    # Enigma2 key foscam_poll
-    ("foscam_enabled", "default"): "#39",  # Enigma2 polls by default; schema: off until devices are configured
-    ("foscam_priority", "key"): "#39",   # Enigma2 key device_priority
-    ("foscam_priority", "choices"): "#39",  # Enigma2 has no 'alarm' for Foscam
-    ("frigate_priority", "choices"): "#39",  # Enigma2 has no 'alarm' for Frigate
-    ("skip_playing", "missing"): "#39",  # off / video / all replaces the yes/no skip_media
-    ("skip_media", "extra"): "#39",
-    ("frigate_mode", "missing"): "#39",  # triggers get their own display mode, duration and Foscam interval
-    ("frigate_seconds", "missing"): "#39",
-    ("foscam_interval", "missing"): "#39",
-    ("foscam_mode", "missing"): "#39",
-    ("foscam_seconds", "missing"): "#39",
-}
+# (schema id, field) -> issue: differences that are still allowed.
+KNOWN = {}
 # shown through a picker entry (own name / per camera), not as the setting itself
 PICKERS = {"titles", "orientation", "refresh"}
 
@@ -60,7 +45,7 @@ def enigma2_settings():
         for source in ("go2rtc", "direct"):
             for mode in ("photo", "live", "notify"):
                 c.source.value, c.mode.value, c.server.value = source, mode, "https://192.168.1.10:1984"
-                c.mqtt_enabled.value = c.frigate_enabled.value = c.limit_hours.value = True
+                c.mqtt_enabled.value = c.frigate_enabled.value = c.limit_hours.value = c.foscam_enabled.value = True
                 env.camalert.plugin.main(session)
                 for label, el in session.opened[-1]["config"].list:
                     name = ids.get(id(el))

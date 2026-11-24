@@ -14,6 +14,7 @@ The C++ part of enigma (module `enigma`) is not in the Python sources; its diffe
 Copyright (C) 2026 CamAlert developers, GPL v2.
 """
 import importlib
+import importlib.util
 import json
 import os
 import sys
@@ -446,8 +447,28 @@ def install_enigma(profile):
 
 # ---------------------------------------------------------------- Components.config
 
-def install_config(snap):
-    stored = {}
+def _fromstring(el, text):
+    """The value of a saved setting string (like Enigma2's ConfigElement.load); ValueError if it does not fit."""
+    kind = type(el).__name__
+    if kind == "ConfigYesNo":
+        if text not in ("true", "false"):
+            raise ValueError(text)
+        return text == "true"
+    if kind in ("ConfigSelection", "ConfigSelectionNumber"):
+        value = int(text) if kind == "ConfigSelectionNumber" else text
+        if value not in el.choices:
+            raise ValueError(text)
+        return value
+    if kind in ("ConfigNumber", "ConfigInteger"):
+        return int(text)
+    if kind == "ConfigClock":
+        return [int(x) for x in text.strip("[]").split(",")]
+    return text
+
+
+def install_config(snap, stored=None):
+    """stored: the saved settings of config.plugins.camalert ({name: string}, like /etc/enigma2/settings)."""
+    stored = stored if stored is not None else {}
 
     class ConfigElement(object):
         def __init__(self):
@@ -524,6 +545,13 @@ def install_config(snap):
         def __setattr__(self, name, value):
             self.content.items[name] = value
             object.__setattr__(self, name, value)
+            text = self.content.stored_values.get(name)
+            if text is not None and isinstance(value, ConfigElement):
+                try:
+                    value._value = _fromstring(value, text)  # a value that does not fit keeps the default
+                except ValueError:
+                    pass
+                value.saved_value = value._value
 
         def save(self):
             for v in self.content.items.values():
@@ -781,8 +809,9 @@ def uninstall():
     rec.calls[:] = []
 
 
-def install(profile_name):
-    """Installs the fake modules of an image and imports CamAlert (players/enigma2/CamAlert) fresh."""
+def install(profile_name, stored=None):
+    """Installs the fake modules of an image and imports CamAlert (players/enigma2/CamAlert) fresh.
+    stored: saved settings of config.plugins.camalert ({name: string}); env.stored is that dict afterwards."""
     uninstall()
     profile = dict(PROFILES[profile_name], name=profile_name)
     snap = api(profile["api"])
@@ -790,13 +819,20 @@ def install(profile_name):
     env.profile, env.snapshot, env.rec = profile, snap, rec
     env.reactor = install_twisted()
     install_enigma(profile)
-    env.config = install_config(snap)
+    env.stored = dict(stored or {})
+    env.config = install_config(snap, env.stored)
     env.InfoBar = install_screens(snap, profile)
     env.Session = lambda: Session(snap)
     module("skin", parseColor=lambda c: c, applySkin=lambda *a: None)
     sys.path.insert(0, SRC)
-    env.camalert = importlib.import_module("CamAlert")
-    _paths.attach_core("CamAlert")  # the ipk has the core as CamAlert/camalert_core/
+    # the ipk has the core as CamAlert/camalert_core/; __init__ already uses it (settings migration, #39)
+    spec = importlib.util.spec_from_file_location("CamAlert", os.path.join(SRC, "CamAlert", "__init__.py"),
+                                                  submodule_search_locations=[os.path.join(SRC, "CamAlert")])
+    package = importlib.util.module_from_spec(spec)
+    sys.modules["CamAlert"] = package
+    _paths.attach_core("CamAlert")
+    spec.loader.exec_module(package)
+    env.camalert = package
     for sub in ("services", "keys", "display", "setup", "plugin", "bouquet", "server", "mqtt", "diagnostics"):
         setattr(env.camalert, sub, importlib.import_module("CamAlert." + sub))
     return env

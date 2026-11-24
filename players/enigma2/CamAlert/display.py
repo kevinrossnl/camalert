@@ -102,8 +102,16 @@ def trigger_settings():
     c = config.plugins.camalert
     return {"frigate_enabled": c.frigate_enabled.value, "frigate_prefix": c.frigate_prefix.value,
             "frigate_labels": c.frigate_labels.value, "frigate_map": c.frigate_map.value,
-            "frigate_priority": c.frigate_priority.value,
-            "foscam_enabled": c.foscam_poll.value, "foscam_priority": c.device_priority.value, "foscam_label": _("Motion")}
+            "frigate_priority": c.frigate_priority.value, "frigate_mode": c.frigate_mode.value,
+            "frigate_seconds": int(c.frigate_seconds.value),
+            "foscam_enabled": c.foscam_enabled.value, "foscam_priority": c.foscam_priority.value,
+            "foscam_mode": c.foscam_mode.value, "foscam_seconds": int(c.foscam_seconds.value),
+            "foscam_label": _("Motion")}
+
+
+def chime_wanted(setting, priority):
+    """Doorbell chime: 'off', 'high' (doorbell and alarm) or 'all' requests (schema version 2, #39)."""
+    return setting == "all" or (setting == "high" and priority in ("high", "alarm"))
 
 
 def all_camera_names():
@@ -624,7 +632,8 @@ class Controller(object):
         self.ptz_overlay = None
         self.poll_timer = eTimer()
         self.poll_timer.callback.append(self.poll_devices)
-        self.poll_timer.start(2000, False)
+        self.poll_seconds = self.poll_interval()
+        self.poll_timer.start(self.poll_seconds * 1000, False)
         self.button_hook = GlobalKeys()
         c = config.plugins.camalert
         LOG.configure(c.log_level.value, c.log_syslog.value)
@@ -650,6 +659,24 @@ class Controller(object):
         ref = self.session.nav.getCurrentlyPlayingServiceReference()
         return bool(ref) and is_media_ref(ref.toString())
 
+    def playing(self, setting):
+        """Whether 'Not while playing' applies now: 'video' = a recording or video file plays, 'all' = anything
+        plays (also a TV channel; a camera channel does not count)."""
+        if setting == "video":
+            return self.playing_media()
+        if setting == "all":
+            ref = self.session.nav.getCurrentlyPlayingServiceReference()
+            return bool(ref) and self.current_stream() is None
+        return False
+
+    @staticmethod
+    def poll_interval():
+        """Foscam check interval in seconds (1-60, default 2)."""
+        try:
+            return max(1, min(60, int(config.plugins.camalert.foscam_interval.value)))
+        except (TypeError, ValueError):
+            return 2
+
     def blocked(self, priority, what):
         """Receiver rules: do not disturb, active hours, recording, media playback. Logs and returns True if blocked."""
         c = config.plugins.camalert
@@ -658,11 +685,11 @@ class Controller(object):
             return True
         t = time.localtime()
         in_hours = in_time_window((t.tm_hour, t.tm_min), clock_tuple(c.from_time.value), clock_tuple(c.until_time.value))
-        recording, media = bool(self.session.nav.getRecordings()), self.playing_media()
+        recording, media = bool(self.session.nav.getRecordings()), self.playing(c.skip_playing.value)
         if blocked_by_rules(priority, c.limit_hours.value, in_hours, c.skip_recording.value, recording,
-                            c.skip_media.value, media):
+                            c.skip_playing.value != "off", media):
             self.reason = ("outside active hours" if c.limit_hours.value and not in_hours else
-                           "recording" if c.skip_recording.value and recording else "media playback")
+                           "recording" if c.skip_recording.value and recording else "playing")
             return True
         return False
 
@@ -700,7 +727,7 @@ class Controller(object):
             % (source, cam, pick_priority(priority), mode or "-", label or "-", result,
                (" (%s)" % self.reason) if self.reason else ""), level="error" if result == "error" else "normal")
         self.record_event(cam, label, source, pick_priority(priority), result, self.reason, event_id)
-        if result == "show" and pick_priority(priority) in ("high", "alarm") and config.plugins.camalert.chime.value:
+        if result == "show" and chime_wanted(config.plugins.camalert.chime.value, pick_priority(priority)):
             self.chime()
         return result
 
@@ -894,6 +921,9 @@ class Controller(object):
 
     def poll_devices(self):
         c = config.plugins.camalert
+        if self.poll_interval() != self.poll_seconds:  # 'Check every (seconds)' changed
+            self.poll_seconds = self.poll_interval()
+            self.poll_timer.start(self.poll_seconds * 1000, False)
         source = FoscamSource(trigger_settings())
         if not c.enabled.value or not source.enabled():
             return

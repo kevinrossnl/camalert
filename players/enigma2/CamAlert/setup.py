@@ -134,8 +134,8 @@ class CamAlertSetup(ConfigListScreen, Screen):
         if c.limit_hours.value:
             items += [(_("From"), c.from_time, ""), (_("Until"), c.until_time, _("May pass midnight, e.g. 07:00 to 23:00."))]
         items += [(_("Not during a recording"), c.skip_recording, _("Ignore normal requests while the receiver is recording.")),
-                  (_("Not while playing a recording or video"), c.skip_media,
-                   _("Ignore normal requests while you watch a recording or a video file.")),
+                  (_("Not while playing"), c.skip_playing,
+                   _("Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through.")),
                   (_("Wake up on alarm"), c.alarm_wake,
                    _("Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on.")),
                   (_("Tour: seconds per camera"), c.tour_interval, "")]
@@ -171,6 +171,8 @@ class CamAlertSetup(ConfigListScreen, Screen):
                     (_("Frigate camera names"), c.frigate_map,
                      _("Only if the names differ from go2rtc: frigate=go2rtc|other=other_stream")),
                     (_("Frigate priority"), c.frigate_priority, ""),
+                    (_("Display mode"), c.frigate_mode, ""),
+                    (_("Duration (seconds)"), c.frigate_seconds, ""),
                     (_("Frigate address (for clips)"), c.frigate_url,
                      _("Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an event from the event list.")),
                 ]
@@ -182,9 +184,14 @@ class CamAlertSetup(ConfigListScreen, Screen):
             (_("Doorbell chime"), c.chime, _("Plays a short ding-dong for requests with priority high or alarm (doorbell).")),
             (_("Picons for the camera channels"), c.picons,
              _("Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced.")),
-            (_("Foscam motion and sound alarms"), c.foscam_poll,
+            (_("Foscam motion and sound alarms"), c.foscam_enabled,
              _("Asks the Foscam cameras in %s for motion and sound alarms.") % DEVICES_FILE),
-            (_("Foscam priority"), c.device_priority, ""),
+        ]
+        if c.foscam_enabled.value:
+            items += [(_("Foscam priority"), c.foscam_priority, ""), (_("Display mode"), c.foscam_mode, ""),
+                      (_("Duration (seconds)"), c.foscam_seconds, ""),
+                      (_("Check every (seconds)"), c.foscam_interval, "")]
+        items += [
             (_("Event snapshots folder"), c.event_folder, _("Small photos of the last 20 events (default /tmp/camalert_events).")),
             (_("Log level"), c.log_level, _("camalert.log in /home/root/logs (or /tmp). Passwords and tokens are never logged.")),
             (_("Remote syslog (host:port)"), c.log_syslog, _("Optional: also send the log via UDP (RFC 5424), e.g. to Loki/Alloy.")),

@@ -43,8 +43,8 @@ class TestCatalogue(unittest.TestCase):
                  ("fr", "Tour: seconds per camera", "Tournée : secondes par caméra"),
                  ("pl", "Photo window", "Okno zdjęć"), ("de", "Address of your go2rtc server, e.g. http://192.168.1.10:1984",
                                                           "Adresse Ihres go2rtc-Servers, z. B. http://192.168.1.10:1984"),
-                 ("nl", "Ignore normal requests while you watch a recording or a video file.",
-                  "Normale verzoeken negeren terwijl u een opname of videobestand kijkt.")]
+                 ("nl", "Ignore normal requests while the receiver is recording.",
+                  "Normale verzoeken negeren terwijl u een opname maakt.")]
         for lang, msgid, text in cases:
             with self.subTest(lang=lang, text=text):
                 self.assertTrue(any("uses" in p for p in self.problems_with(lang, msgid, text)))

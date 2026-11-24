@@ -4,14 +4,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: it\n"
 
-#: e2 kodi:30014
-msgid "go2rtc server"
-msgstr "Server go2rtc"
-
-#: e2 kodi:30015
-msgid "Directly from the cameras"
-msgstr "Direttamente dalle telecamere"
-
 #: e2 kodi:30042 ha:selector.mode.options.photo
 msgid "Photo window"
 msgstr "Finestra foto"
@@ -23,6 +15,26 @@ msgstr "Passa alla visione live"
 #: e2 kodi:30044 ha:selector.mode.options.notify
 msgid "Notification only"
 msgstr "Solo notifica"
+
+#: e2 kodi:30140 kodi:30231 kodi:30507 ha:selector.priority.options.normal
+msgid "Normal"
+msgstr "Normale"
+
+#: e2 ha:selector.priority.options.high
+msgid "High (doorbell)"
+msgstr "Alta (campanello)"
+
+#: e2 kodi:30142 kodi:30509
+msgid "Alarm"
+msgstr "Allarme"
+
+#: e2 kodi:30014
+msgid "go2rtc server"
+msgstr "Server go2rtc"
+
+#: e2 kodi:30015
+msgid "Directly from the cameras"
+msgstr "Direttamente dalle telecamere"
 
 #: e2 kodi:30048
 msgid "Top right"
@@ -80,6 +92,18 @@ msgstr "Blocca le richieste normali (campanello e allarme passano)"
 msgid "Block normal and doorbell requests (alarm still comes through)"
 msgstr "Blocca richieste normali e del campanello (l'allarme passa)"
 
+#: e2 kodi:30097
+msgid "Always show"
+msgstr "Mostra sempre"
+
+#: e2 kodi:30098
+msgid "Not during movies and recordings"
+msgstr "Non durante film e registrazioni"
+
+#: e2 kodi:30099
+msgid "Not during anything (also live TV)"
+msgstr "Mai durante la riproduzione (anche TV)"
+
 #: e2 kodi:30058
 msgid "Automatic"
 msgstr "Automatico"
@@ -95,14 +119,6 @@ msgstr "Una accanto all'altra"
 #: e2
 msgid "2 x 2"
 msgstr "2 x 2"
-
-#: e2 kodi:30140 kodi:30231 kodi:30507 ha:selector.priority.options.normal
-msgid "Normal"
-msgstr "Normale"
-
-#: e2 ha:selector.priority.options.high
-msgid "High (doorbell)"
-msgstr "Alta (campanello)"
 
 #: e2 kodi:30234
 msgid "Off"
@@ -131,6 +147,14 @@ msgstr "ROSSO"
 #: e2 kodi:30242 kodi:30534
 msgid "GREEN"
 msgstr "VERDE"
+
+#: e2 kodi:30235
+msgid "Doorbell and alarm"
+msgstr "Campanello e allarme"
+
+#: e2 kodi:30236
+msgid "Every request"
+msgstr "Ogni richiesta"
 
 #: e2 kodi:30210
 msgid "go2rtc reachable (%d cameras, %d ms)"
@@ -540,13 +564,13 @@ msgstr "Non durante una registrazione"
 msgid "Ignore normal requests while the receiver is recording."
 msgstr "Ignorare le richieste normali mentre il ricevitore registra."
 
-#: e2
-msgid "Not while playing a recording or video"
-msgstr "Non durante la riproduzione di una registrazione o di un video"
+#: e2 kodi:30095
+msgid "Not while playing"
+msgstr "Non durante la riproduzione"
 
 #: e2
-msgid "Ignore normal requests while you watch a recording or a video file."
-msgstr "Ignora le richieste normali durante la visione di una registrazione o un file video."
+msgid "Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through."
+msgstr "Ignorare le richieste normali durante la riproduzione di un video o di una registrazione (video) o di qualsiasi cosa (tutto). Alta e allarme passano sempre."
 
 #: e2 kodi:30100
 msgid "Wake up on alarm"
@@ -760,6 +784,10 @@ msgstr "Interroga le telecamere Foscam in %s sugli allarmi di movimento e audio.
 msgid "Foscam priority"
 msgstr "Priorità Foscam"
 
+#: e2 kodi:30145
+msgid "Check every (seconds)"
+msgstr "Controlla ogni (secondi)"
+
 #: e2
 msgid "Event snapshots folder"
 msgstr "Cartella foto degli eventi"
@@ -891,10 +919,6 @@ msgstr "Risveglio"
 #: e2 kodi:30141 kodi:30508
 msgid "High"
 msgstr "Alta"
-
-#: e2 kodi:30142 kodi:30509
-msgid "Alarm"
-msgstr "Allarme"
 
 #: e2 kodi:30510
 msgid "Shown"
@@ -1028,18 +1052,6 @@ msgstr "Formato della visione live"
 msgid "MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds."
 msgstr "MP4 via HTTP funziona con ogni installazione di go2rtc; RTSP richiede la porta RTSP di go2rtc; HLS è il più robusto ma ha qualche secondo di ritardo."
 
-#: e2 kodi:30095
-msgid "Not while playing"
-msgstr "Non durante la riproduzione"
-
-#: e2
-msgid "Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through."
-msgstr "Ignorare le richieste normali durante la riproduzione di un video o di una registrazione (video) o di qualsiasi cosa (tutto). Alta e allarme passano sempre."
-
-#: e2 kodi:30145
-msgid "Check every (seconds)"
-msgstr "Controlla ogni (secondi)"
-
 #: e2 kodi:30152
 msgid "Camera user (default)"
 msgstr "Utente telecamera (predefinito)"
@@ -1152,18 +1164,6 @@ msgstr "HLS (HTTP, qualche secondo di ritardo)"
 msgid "Normal-priority requests are ignored while you watch this. High and alarm always pass."
 msgstr "Le richieste normali vengono ignorate durante la visione. Alta e allarme passano sempre."
 
-#: kodi:30097
-msgid "Always show"
-msgstr "Mostra sempre"
-
-#: kodi:30098
-msgid "Not during movies and recordings"
-msgstr "Non durante film e registrazioni"
-
-#: kodi:30099
-msgid "Not during anything (also live TV)"
-msgstr "Mai durante la riproduzione (anche TV)"
-
 #: kodi:30101
 msgid "Requests with priority 'alarm' switch the TV on via HDMI-CEC."
 msgstr "Le richieste 'alarm' accendono la TV tramite HDMI-CEC."
@@ -1275,14 +1275,6 @@ msgstr "Riproduci clip Frigate"
 #: kodi:30233
 msgid "Plays a chime when a camera appears (follows Kodi's volume)."
 msgstr "Suona un campanello quando appare una telecamera (segue il volume di Kodi)."
-
-#: kodi:30235
-msgid "Doorbell and alarm"
-msgstr "Campanello e allarme"
-
-#: kodi:30236
-msgid "Every request"
-msgstr "Ogni richiesta"
 
 #: kodi:30238
 msgid "e.g. http://192.168.1.10:5000 - lets you replay Frigate clips from the event list."

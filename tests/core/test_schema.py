@@ -44,7 +44,7 @@ class TestSchema(unittest.TestCase):
     def test_defaults_and_keys(self):
         e2, kodi = schema.defaults("enigma2"), schema.defaults("kodi")
         self.assertEqual(e2["duration"], 30)
-        self.assertIn("foscam_poll", e2)       # Enigma2 key until #39
+        self.assertIn("foscam_enabled", e2)    # Enigma2 key since #39
         self.assertIn("refresh", kodi)         # Kodi key since #39 (was refresh_map)
         self.assertNotIn("bouquet_name", kodi)
         self.assertEqual(schema.BY_ID["foscam_enabled"].key("kodi"), "foscam_enabled")

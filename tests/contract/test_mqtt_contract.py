@@ -13,9 +13,7 @@ from fakes.controller import RecordingController
 
 CAMS = ["front_door", "garden"]
 # (command name, player) -> issue
-KNOWN = {
-    ("frigate_person", "kodi"): "#39",  # Kodi passes its own frigate_seconds/frigate_mode; Enigma2 uses the defaults
-}
+KNOWN = {}
 
 
 def wait(pred, timeout=5.0):

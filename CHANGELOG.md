@@ -1,6 +1,11 @@
 # Changelog
 
 ## Unreleased
+- Enigma2: settings follow schema version 2 (#39): *Doorbell chime* off / doorbell and alarm / every request,
+  *Not while playing* off / video / all (replaces the yes/no *Not while playing a recording or video*), Frigate and
+  Foscam priority with *Alarm*, own display mode and duration for Frigate and Foscam, Foscam check interval
+  1-60 s, keys `foscam_enabled` / `foscam_priority`. Settings saved by an older version are migrated on start
+  (`schema.migrate()`); an existing install keeps polling its Foscam cameras, new installs start with it off.
 - Kodi: settings have levels from the schema (basic / standard / advanced), so Kodi's settings level button hides
   the expert settings; title size *large* works on every skin (it used `font30`, which Estuary does not have):
   small/large pick a font of the current skin, normal stays `font13` (#46).

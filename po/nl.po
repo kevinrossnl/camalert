@@ -3,12 +3,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
 
-msgid "go2rtc server"
-msgstr "go2rtc-server"
-
-msgid "Directly from the cameras"
-msgstr "Rechtstreeks van de camera's"
-
 msgid "Photo window"
 msgstr "Fotovenster"
 
@@ -17,6 +11,21 @@ msgstr "Omschakelen naar live beeld"
 
 msgid "Notification only"
 msgstr "Alleen melding"
+
+msgid "Normal"
+msgstr "Normaal"
+
+msgid "High (doorbell)"
+msgstr "Hoog (deurbel)"
+
+msgid "Alarm"
+msgstr "Alarm"
+
+msgid "go2rtc server"
+msgstr "go2rtc-server"
+
+msgid "Directly from the cameras"
+msgstr "Rechtstreeks van de camera's"
 
 msgid "Top right"
 msgstr "Rechtsboven"
@@ -60,6 +69,15 @@ msgstr "Normale verzoeken blokkeren (deurbel en alarm komen door)"
 msgid "Block normal and doorbell requests (alarm still comes through)"
 msgstr "Normale en deurbelverzoeken blokkeren (alarm komt door)"
 
+msgid "Always show"
+msgstr "Altijd tonen"
+
+msgid "Not during movies and recordings"
+msgstr "Niet tijdens films en opnames"
+
+msgid "Not during anything (also live TV)"
+msgstr "Nooit tijdens afspelen (ook live-tv)"
+
 msgid "Automatic"
 msgstr "Automatisch"
 
@@ -71,12 +89,6 @@ msgstr "Naast elkaar"
 
 msgid "2 x 2"
 msgstr "2 x 2"
-
-msgid "Normal"
-msgstr "Normaal"
-
-msgid "High (doorbell)"
-msgstr "Hoog (deurbel)"
 
 msgid "Off"
 msgstr "Uit"
@@ -98,6 +110,12 @@ msgstr "ROOD"
 
 msgid "GREEN"
 msgstr "GROEN"
+
+msgid "Doorbell and alarm"
+msgstr "Deurbel en alarm"
+
+msgid "Every request"
+msgstr "Elk verzoek"
 
 msgid "go2rtc reachable (%d cameras, %d ms)"
 msgstr "go2rtc bereikbaar (%d camera's, %d ms)"
@@ -405,11 +423,11 @@ msgstr "Niet tijdens een opname"
 msgid "Ignore normal requests while the receiver is recording."
 msgstr "Normale verzoeken negeren terwijl de ontvanger opneemt."
 
-msgid "Not while playing a recording or video"
-msgstr "Niet tijdens afspelen van een opname of video"
+msgid "Not while playing"
+msgstr "Niet tijdens afspelen"
 
-msgid "Ignore normal requests while you watch a recording or a video file."
-msgstr "Normale verzoeken negeren terwijl je een opname of videobestand kijkt."
+msgid "Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through."
+msgstr "Normale verzoeken negeren terwijl een video of opname speelt (video) of terwijl er iets speelt (alles). Hoog en alarm komen altijd door."
 
 msgid "Wake up on alarm"
 msgstr "Wakker worden bij alarm"
@@ -570,6 +588,9 @@ msgstr "Vraagt de Foscam-camera's in %s om bewegings- en geluidsalarmen."
 msgid "Foscam priority"
 msgstr "Foscam-prioriteit"
 
+msgid "Check every (seconds)"
+msgstr "Elke (seconden) controleren"
+
 msgid "Event snapshots folder"
 msgstr "Map voor gebeurtenisfoto's"
 
@@ -669,9 +690,6 @@ msgstr "Wekken"
 msgid "High"
 msgstr "Hoog"
 
-msgid "Alarm"
-msgstr "Alarm"
-
 msgid "Shown"
 msgstr "Getoond"
 
@@ -770,15 +788,6 @@ msgstr "Formaat van het live beeld"
 
 msgid "MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds."
 msgstr "MP4 via HTTP werkt met elke go2rtc-installatie; RTSP heeft de RTSP-poort van go2rtc nodig; HLS is het stabielst maar loopt een paar seconden achter."
-
-msgid "Not while playing"
-msgstr "Niet tijdens afspelen"
-
-msgid "Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through."
-msgstr "Normale verzoeken negeren terwijl een video of opname speelt (video) of terwijl er iets speelt (alles). Hoog en alarm komen altijd door."
-
-msgid "Check every (seconds)"
-msgstr "Elke (seconden) controleren"
 
 msgid "Camera user (default)"
 msgstr "Cameragebruiker (standaard)"

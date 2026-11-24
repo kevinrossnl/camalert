@@ -3,12 +3,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: it\n"
 
-msgid "go2rtc server"
-msgstr "Server go2rtc"
-
-msgid "Directly from the cameras"
-msgstr "Direttamente dalle telecamere"
-
 msgid "Photo window"
 msgstr "Finestra foto"
 
@@ -17,6 +11,21 @@ msgstr "Passa alla visione live"
 
 msgid "Notification only"
 msgstr "Solo notifica"
+
+msgid "Normal"
+msgstr "Normale"
+
+msgid "High (doorbell)"
+msgstr "Alta (campanello)"
+
+msgid "Alarm"
+msgstr "Allarme"
+
+msgid "go2rtc server"
+msgstr "Server go2rtc"
+
+msgid "Directly from the cameras"
+msgstr "Direttamente dalle telecamere"
 
 msgid "Top right"
 msgstr "In alto a destra"
@@ -60,6 +69,15 @@ msgstr "Blocca le richieste normali (campanello e allarme passano)"
 msgid "Block normal and doorbell requests (alarm still comes through)"
 msgstr "Blocca richieste normali e del campanello (l'allarme passa)"
 
+msgid "Always show"
+msgstr "Mostra sempre"
+
+msgid "Not during movies and recordings"
+msgstr "Non durante film e registrazioni"
+
+msgid "Not during anything (also live TV)"
+msgstr "Mai durante la riproduzione (anche TV)"
+
 msgid "Automatic"
 msgstr "Automatico"
 
@@ -71,12 +89,6 @@ msgstr "Una accanto all'altra"
 
 msgid "2 x 2"
 msgstr "2 x 2"
-
-msgid "Normal"
-msgstr "Normale"
-
-msgid "High (doorbell)"
-msgstr "Alta (campanello)"
 
 msgid "Off"
 msgstr "Disattivato"
@@ -98,6 +110,12 @@ msgstr "ROSSO"
 
 msgid "GREEN"
 msgstr "VERDE"
+
+msgid "Doorbell and alarm"
+msgstr "Campanello e allarme"
+
+msgid "Every request"
+msgstr "Ogni richiesta"
 
 msgid "go2rtc reachable (%d cameras, %d ms)"
 msgstr "go2rtc raggiungibile (%d telecamere, %d ms)"
@@ -405,11 +423,11 @@ msgstr "Non durante una registrazione"
 msgid "Ignore normal requests while the receiver is recording."
 msgstr "Ignorare le richieste normali mentre il ricevitore registra."
 
-msgid "Not while playing a recording or video"
-msgstr "Non durante la riproduzione di una registrazione o di un video"
+msgid "Not while playing"
+msgstr "Non durante la riproduzione"
 
-msgid "Ignore normal requests while you watch a recording or a video file."
-msgstr "Ignora le richieste normali durante la visione di una registrazione o un file video."
+msgid "Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through."
+msgstr "Ignorare le richieste normali durante la riproduzione di un video o di una registrazione (video) o di qualsiasi cosa (tutto). Alta e allarme passano sempre."
 
 msgid "Wake up on alarm"
 msgstr "Risveglio in caso di allarme"
@@ -570,6 +588,9 @@ msgstr "Interroga le telecamere Foscam in %s sugli allarmi di movimento e audio.
 msgid "Foscam priority"
 msgstr "Priorità Foscam"
 
+msgid "Check every (seconds)"
+msgstr "Controlla ogni (secondi)"
+
 msgid "Event snapshots folder"
 msgstr "Cartella foto degli eventi"
 
@@ -669,9 +690,6 @@ msgstr "Risveglio"
 msgid "High"
 msgstr "Alta"
 
-msgid "Alarm"
-msgstr "Allarme"
-
 msgid "Shown"
 msgstr "Mostrato"
 
@@ -770,15 +788,6 @@ msgstr "Formato della visione live"
 
 msgid "MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds."
 msgstr "MP4 via HTTP funziona con ogni installazione di go2rtc; RTSP richiede la porta RTSP di go2rtc; HLS è il più robusto ma ha qualche secondo di ritardo."
-
-msgid "Not while playing"
-msgstr "Non durante la riproduzione"
-
-msgid "Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through."
-msgstr "Ignorare le richieste normali durante la riproduzione di un video o di una registrazione (video) o di qualsiasi cosa (tutto). Alta e allarme passano sempre."
-
-msgid "Check every (seconds)"
-msgstr "Controlla ogni (secondi)"
 
 msgid "Camera user (default)"
 msgstr "Utente telecamera (predefinito)"

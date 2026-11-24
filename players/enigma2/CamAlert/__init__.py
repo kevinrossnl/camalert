@@ -30,6 +30,43 @@ language.addCallback(localeInit)
 config.plugins.camalert = ConfigSubsection()
 c = config.plugins.camalert
 
+# Defaults of version 1 that changed in version 2: a version-1 install did not store them, so they are filled in
+# before migrating (an existing install keeps polling its Foscam cameras).
+V1_DEFAULTS = {"foscam_poll": "true"}
+# Always stored (save_forced): marks settings that were saved by version 2 or later.
+V2_MARKER = "foscam_enabled"
+
+
+def _migrate():
+    """Settings saved by a version-1 plugin -> settings schema version 2 (#39), before the settings are created:
+    renamed keys move, the yes/no chime becomes off/high, skip_media becomes skip_playing. Never fails."""
+    try:
+        from .camalert_core import schema
+        stored = c.content.stored_values
+        if not stored or V2_MARKER in stored:
+            return
+        values = dict(V1_DEFAULTS, **stored)
+        new = schema.migrate(values, "enigma2")
+        for key, value in list(new.items()):
+            if isinstance(value, bool):
+                new[key] = "true" if value else "false"
+        stored.clear()  # old keys must go: Enigma2 writes every stored value back
+        stored.update(new)
+        print("[CamAlert] settings migrated to schema version %d" % schema.SCHEMA_VERSION)
+    except Exception as e:
+        print("[CamAlert] settings migration failed (%s), using the saved values as they are" % e)
+
+
+_migrate()
+
+
+def MODES():
+    return [("photo", _("Photo window")), ("live", _("Switch to live stream")), ("notify", _("Notification only"))]
+
+
+def PRIORITIES():
+    return [("normal", _("Normal")), ("high", _("High (doorbell)")), ("alarm", _("Alarm"))]
+
 
 def _add(name, factory):
     """Adds a setting. A broken saved value (e.g. edited by hand) must never stop the plugin from loading:
@@ -51,10 +88,7 @@ _add("source", lambda: ConfigSelection(default="go2rtc", choices=[
 _add("server", lambda: ConfigText(default="http://192.168.1.10:1984", fixed_size=False))
 _add("rtsp_port", lambda: ConfigNumber(default=8554))
 _add("camera", lambda: ConfigText(default="", fixed_size=False))
-_add("mode", lambda: ConfigSelection(default="photo", choices=[
-    ("photo", _("Photo window")),
-    ("live", _("Switch to live stream")),
-    ("notify", _("Notification only"))]))
+_add("mode", lambda: ConfigSelection(default="photo", choices=MODES()))
 _add("duration", lambda: ConfigSelectionNumber(5, 300, 5, default=30))
 _add("position", lambda: ConfigSelection(default="top_right", choices=[
     ("top_right", _("Top right")), ("top_left", _("Top left")),
@@ -94,7 +128,9 @@ _add("dnd", lambda: ConfigYesNo(default=False))
 _add("dnd_level", lambda: ConfigSelection(default="normal", choices=[
     ("normal", _("Block normal requests (doorbell and alarm still come through)")),
     ("high", _("Block normal and doorbell requests (alarm still comes through)"))]))
-_add("skip_media", lambda: ConfigYesNo(default=False))
+_add("skip_playing", lambda: ConfigSelection(default="off", choices=[
+    ("off", _("Always show")), ("video", _("Not during movies and recordings")),
+    ("all", _("Not during anything (also live TV)"))]))
 _add("orientation", lambda: ConfigText(default="", fixed_size=False))
 _add("refresh", lambda: ConfigText(default="", fixed_size=False))
 _add("strip_layout", lambda: ConfigSelection(default="auto", choices=[
@@ -104,8 +140,9 @@ _add("frigate_enabled", lambda: ConfigYesNo(default=False))
 _add("frigate_prefix", lambda: ConfigText(default="frigate", fixed_size=False))
 _add("frigate_labels", lambda: ConfigText(default="person", fixed_size=False))
 _add("frigate_map", lambda: ConfigText(default="", fixed_size=False))
-_add("frigate_priority", lambda: ConfigSelection(default="normal", choices=[
-    ("normal", _("Normal")), ("high", _("High (doorbell)"))]))
+_add("frigate_priority", lambda: ConfigSelection(default="normal", choices=PRIORITIES()))
+_add("frigate_mode", lambda: ConfigSelection(default="photo", choices=MODES()))
+_add("frigate_seconds", lambda: ConfigSelectionNumber(5, 300, 5, default=30))
 _add("log_level", lambda: ConfigSelection(default="normal", choices=[
     ("off", _("Off")), ("errors", _("Errors only")), ("normal", _("Normal")), ("verbose", _("Verbose"))]))
 _add("log_syslog", lambda: ConfigText(default="", fixed_size=False))
@@ -113,9 +150,12 @@ _add("ptz_key", lambda: ConfigSelection(default="blue", choices=[
     ("blue", _("BLUE")), ("yellow", _("YELLOW")), ("red", _("RED")), ("green", _("GREEN")), ("off", _("Off"))]))
 _add("ha_buttons", lambda: ConfigYesNo(default=True))
 _add("ha_webhook", lambda: ConfigText(default="", fixed_size=False))
-_add("foscam_poll", lambda: ConfigYesNo(default=True))
-_add("device_priority", lambda: ConfigSelection(default="normal", choices=[
-    ("normal", _("Normal")), ("high", _("High (doorbell)"))]))
+_add("foscam_enabled", lambda: ConfigYesNo(default=False))
+c.foscam_enabled.save_forced = True  # V2_MARKER
+_add("foscam_priority", lambda: ConfigSelection(default="normal", choices=PRIORITIES()))
+_add("foscam_mode", lambda: ConfigSelection(default="photo", choices=MODES()))
+_add("foscam_seconds", lambda: ConfigSelectionNumber(5, 300, 5, default=30))
+_add("foscam_interval", lambda: ConfigSelectionNumber(1, 60, 1, default=2))
 _add("event_folder", lambda: ConfigText(default="/tmp/camalert_events", fixed_size=False))
 _add("title_size", lambda: ConfigSelection(default="normal", choices=[
     ("small", _("Small")), ("normal", _("Normal")), ("large", _("Large"))]))
@@ -123,7 +163,12 @@ _add("update_check", lambda: ConfigYesNo(default=True))
 _add("frigate_url", lambda: ConfigText(default="", fixed_size=False))
 _add("update_checked", lambda: ConfigText(default="0", fixed_size=False))  # internal: time of the last check
 _add("update_seen", lambda: ConfigText(default="", fixed_size=False))  # internal: newest version already announced
-_add("chime", lambda: ConfigYesNo(default=False))
+_add("chime", lambda: ConfigSelection(default="off", choices=[
+    ("off", _("Off")), ("high", _("Doorbell and alarm")), ("all", _("Every request"))]))
 _add("picons", lambda: ConfigYesNo(default=False))
 _add("cooldown", lambda: ConfigText(default="", fixed_size=False))
 _add("substreams", lambda: ConfigText(default="", fixed_size=False))
+try:
+    c.foscam_enabled.save()  # with save_forced the marker is written with the next configfile.save()
+except Exception:
+    pass

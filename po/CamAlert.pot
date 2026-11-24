@@ -2,12 +2,6 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgid "go2rtc server"
-msgstr ""
-
-msgid "Directly from the cameras"
-msgstr ""
-
 msgid "Photo window"
 msgstr ""
 
@@ -15,6 +9,21 @@ msgid "Switch to live stream"
 msgstr ""
 
 msgid "Notification only"
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "High (doorbell)"
+msgstr ""
+
+msgid "Alarm"
+msgstr ""
+
+msgid "go2rtc server"
+msgstr ""
+
+msgid "Directly from the cameras"
 msgstr ""
 
 msgid "Top right"
@@ -59,6 +68,15 @@ msgstr ""
 msgid "Block normal and doorbell requests (alarm still comes through)"
 msgstr ""
 
+msgid "Always show"
+msgstr ""
+
+msgid "Not during movies and recordings"
+msgstr ""
+
+msgid "Not during anything (also live TV)"
+msgstr ""
+
 msgid "Automatic"
 msgstr ""
 
@@ -69,12 +87,6 @@ msgid "Next to each other"
 msgstr ""
 
 msgid "2 x 2"
-msgstr ""
-
-msgid "Normal"
-msgstr ""
-
-msgid "High (doorbell)"
 msgstr ""
 
 msgid "Off"
@@ -96,6 +108,12 @@ msgid "RED"
 msgstr ""
 
 msgid "GREEN"
+msgstr ""
+
+msgid "Doorbell and alarm"
+msgstr ""
+
+msgid "Every request"
 msgstr ""
 
 msgid "go2rtc reachable (%d cameras, %d ms)"
@@ -404,10 +422,10 @@ msgstr ""
 msgid "Ignore normal requests while the receiver is recording."
 msgstr ""
 
-msgid "Not while playing a recording or video"
+msgid "Not while playing"
 msgstr ""
 
-msgid "Ignore normal requests while you watch a recording or a video file."
+msgid "Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through."
 msgstr ""
 
 msgid "Wake up on alarm"
@@ -569,6 +587,9 @@ msgstr ""
 msgid "Foscam priority"
 msgstr ""
 
+msgid "Check every (seconds)"
+msgstr ""
+
 msgid "Event snapshots folder"
 msgstr ""
 
@@ -668,9 +689,6 @@ msgstr ""
 msgid "High"
 msgstr ""
 
-msgid "Alarm"
-msgstr ""
-
 msgid "Shown"
 msgstr ""
 
@@ -768,15 +786,6 @@ msgid "Live stream format"
 msgstr ""
 
 msgid "MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds."
-msgstr ""
-
-msgid "Not while playing"
-msgstr ""
-
-msgid "Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through."
-msgstr ""
-
-msgid "Check every (seconds)"
 msgstr ""
 
 msgid "Camera user (default)"

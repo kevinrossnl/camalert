@@ -51,7 +51,7 @@ COMMANDS = [
     ("hide", "camalert/{node}/hide", "", ("hide",)),
     ("dnd_on", "camalert/{node}/dnd/set", "ON", ("dnd", True)),
     ("dnd_off", "camalert/{node}/dnd/set", "OFF", ("dnd", False)),
-    ("frigate_person", "frigate/events", FRIGATE_EVENT, ("show", "garden", None, None, "normal", "frigate", "Person")),
+    ("frigate_person", "frigate/events", FRIGATE_EVENT, ("show", "garden", 30, "photo", "normal", "frigate", "Person")),  # frigate_seconds/_mode (#39)
 ]
 
 

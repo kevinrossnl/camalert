@@ -52,6 +52,25 @@
 - API, MQTT topics, HA actions and blueprints must stay backwards compatible within a major version.
 - Tests: `python3 -m pytest` (see `tests/README.md`; `python3 -m unittest discover -s tests` also works). Packages: `python3 tools/build_ipk.py dist`, `python3 tools/build_kodi.py dist`.
 
+## CI (Forgejo Actions, `.forgejo/workflows/tests.yml`)
+- Every area runs `sh tools/ci.sh <area>` (`lint`, `core`, `unit`, `build`, `privacy`); run the same locally before a push.
+- Runner choice (#54): heavy jobs run on the **workstation runner** and fall back to the NAS runner (`truenas`) only
+  when no workstation runner is online. The NAS disks cannot take a burst of parallel jobs.
+  - `pick-runner` (tiny, on `truenas`, no installs) runs `tools/ci_pick_runner.py`: it asks
+    `GET /api/v1/user/actions/runners` with the secret `RUNNER_STATUS_TOKEN` (personal token, scope `read:user`;
+    the automatic workflow token cannot see runners) and outputs `runner` + `mode`. Preferred labels, best first:
+    `werkstation skills-werkstation` (an idle runner wins over a busy one; a busy one still wins over the NAS).
+    No secret or an API error = fallback.
+  - `parallel`: one job per area, `runs-on: ${{ needs.pick-runner.outputs.runner }}`.
+  - `sequential` (fallback): one job runs every area in turn on the NAS (one container, one package install).
+  - `gate` (light, on `truenas`) is the one required check and accepts either mode.
+- Test the fallback without stopping the workstation: Actions › tests › Run workflow › `force_runner` = `truenas`
+  (or `werkstation` to force the workstation). `tests/test_ci.py` checks the picker and the workflow structure:
+  a new area needs a job, a step in `sequential`, a case in `tools/ci.sh` and an entry in the gate.
+- If the workstation goes offline after `pick-runner` chose it, its jobs wait in the queue until it is back
+  (Forgejo has no queue timeout); cancel the run and start it again with `force_runner` = `truenas`.
+- No `actions/cache`: the runner cache server is not reachable from the NAS job containers (timeouts).
+
 ## Release
 1. Raise the version in `players/enigma2/CamAlert/__init__.py` and `custom_components/camalert/manifest.json`, update `CHANGELOG.md`.
 2. Tag `vX.Y.Z` and push; GitHub Actions builds the `.ipk` and the Kodi zips, runs hassfest and the HACS check, creates the release and publishes GitHub Pages (Settings › Pages › Source: GitHub Actions): the Kodi repository and the opkg feed (`Packages.gz`, `camalert-feed.conf`) in one site. The Kodi add-on version is always `__version__`.

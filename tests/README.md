@@ -28,3 +28,11 @@ Python 3.8 (Kodi 19) needs `pip install "pytest<8.4"`. Optional: `pyyaml` (bluep
   unknown names raise AttributeError, wrong arguments TypeError, every call is recorded, JSON-RPC requests are
   checked against `kodi/fixtures/jsonrpc/` (Kodi's own schema, `tools/kodi_jsonrpc_snapshot.py`), and
   `MONITOR["waits"]` lets the service loop run. The Kodi functional tests run once per version.
+
+## CI
+
+`.forgejo/workflows/tests.yml` runs on every push and pull request; each area is `sh tools/ci.sh <area>`
+(`lint`, `core`, `unit`, `build`, `privacy`), so `sh tools/ci.sh unit` locally runs exactly what CI runs.
+Jobs run on the workstation runner when it is online, otherwise all areas run one after another in a single job on
+the NAS runner (#54; details in `DEVELOPMENT.md` › CI). `test_ci.py` checks the runner choice
+(`tools/ci_pick_runner.py`) and that every area runs in both modes and is checked by `gate`.

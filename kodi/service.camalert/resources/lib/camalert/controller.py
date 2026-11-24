@@ -4,14 +4,15 @@
 import os
 import threading
 import time
+import urllib.request
 
 import xbmc
 import xbmcgui
 
 from . import kodiapi, sources
 from .display import FullScreen, LiveOverlay, PhotoWindow, open_window
-from .klogic import blocked_by_playing, kodi_volume, live_mime, playing_kind, resume_plan
-from .logic import (blocked_by_rules, clamp_seconds, clock_tuple, decide, dnd_blocks, in_time_window, known_camera,
+from .klogic import blocked_by_playing, chime_wanted, kodi_volume, live_mime, playing_kind, resume_plan
+from .logic import (add_event, blocked_by_rules, button_for, button_event, event_title, slug, clamp_seconds, clock_tuple, decide, dnd_blocks, in_time_window, known_camera,
                     neighbour, parse_cams, pick_mode, pick_priority)
 
 
@@ -42,6 +43,10 @@ class Controller(object):
         self.paused = False
         self.names, self.names_at = [], 0.0
         self.listeners = []
+        self.events = []
+        self.label = None
+        self.reason = ""
+        self.last_caller = None  # (time, address, source) of the last API call
 
     # --- helpers ---------------------------------------------------------------------------------------------
     def changed(self):
@@ -82,22 +87,67 @@ class Controller(object):
         kodiapi.builtin("Action(noop)")
 
     # --- public ----------------------------------------------------------------------------------------------
-    def show(self, stream=None, seconds=None, mode=None, priority=None):
+    def show(self, stream=None, seconds=None, mode=None, priority=None, source="api", label=None, event_id=None):
+        """Handles a show request; logs it (source, decision, reason) and keeps it in the event list."""
         with self.lock:
-            return self._show(stream, seconds, mode, priority)
+            self.reason, self.label = "", (label or "").strip()[:40] or None
+            try:
+                result = self._show(stream, seconds, mode, priority)
+            except Exception as e:
+                kodiapi.log("show failed: %s" % e, "error")
+                result = "error"
+            finally:
+                self.label = None
+            reason = self.reason
+        cam = stream or kodiapi.settings()["camera"]
+        kodiapi.log("request from %s: camera=%s priority=%s mode=%s label=%s -> %s%s"
+                    % (source, cam, pick_priority(priority), mode or "-", label or "-", result,
+                       (" (%s)" % reason) if reason else ""), "error" if result == "error" else "normal")
+        self.record_event(cam, label, source, pick_priority(priority), result, reason, event_id)
+        if result in ("show", "extend") and chime_wanted(kodiapi.settings()["chime"], pick_priority(priority)):
+            kodiapi.chime()
+        return result
+
+    def record_event(self, cam, label, source, priority, action, reason, event_id=None):
+        ev = {"time": time.time(), "camera": cam, "label": label or "", "source": source, "priority": priority,
+              "action": action, "reason": reason, "snapshot": None, "frigate_id": event_id}
+        for old in add_event(self.events, ev):
+            if old.get("snapshot"):
+                try:
+                    os.remove(old["snapshot"])
+                except OSError:
+                    pass
+        first = (cam or "").split(",")[0]
+        if not first or action not in ("show", "extend", "wake"):
+            return
+
+        def save():
+            try:
+                urls = sources.camera_urls(first, kodiapi.settings())
+                if urls and urls[1]:
+                    folder = os.path.join(kodiapi.profile_dir(), "events")
+                    os.makedirs(folder, exist_ok=True)
+                    path = os.path.join(folder, "%d_%s.jpg" % (int(ev["time"]), slug(first)))
+                    ev["snapshot"] = sources.download(urls[1].replace("width=640", "width=320"), path,
+                                                      kodiapi.settings()["verify_ssl"])
+            except Exception as e:
+                kodiapi.log("event snapshot failed: %s" % e, "verbose")
+        threading.Thread(target=save, daemon=True).start()
 
     def _show(self, stream, seconds, mode, priority):
         s = kodiapi.settings()
         priority = pick_priority(priority)
         if dnd_blocks(priority, s["dnd"], s["dnd_level"]):
-            kodiapi.log("request %s ignored: do not disturb" % stream)
+            self.reason = "do not disturb"
             return "ignore"
         if self.screen_off():
             if priority == "alarm" and s["alarm_wake"]:
                 kodiapi.log("alarm: waking the screen")
                 self.wake()
-                threading.Timer(4, self.show, (stream, seconds, mode, priority)).start()
+                label = self.label
+                threading.Timer(4, self.show, (stream, seconds, mode, priority, "wake", label)).start()
                 return "wake"
+            self.reason = "screen off"
             return "ignore"
         cams = parse_cams(stream)
         seconds = seconds or s["duration"]
@@ -107,17 +157,19 @@ class Controller(object):
             return self.mosaic(",".join(cams), seconds)
         stream = stream or s["camera"]
         if not stream:
+            self.reason = "no camera"
             return "error"
         if time.time() - self.names_at > 60:
             self.refresh_names(s)
         if not known_camera(stream, self.names):
-            kodiapi.log("unknown camera: %s" % stream)
+            self.reason = "unknown camera"
             return "error"
         mode = pick_mode(mode, s["mode"])
         urls = sources.camera_urls(stream, s)
         if not urls:
             return "error"
         live, snap, title = urls
+        title = event_title(title, self.label)
         if mode == "photo" and not snap:
             mode = "live"
         kind, f, pos, was_paused = self.playing()
@@ -125,12 +177,12 @@ class Controller(object):
         in_hours = in_time_window((t.tm_hour, t.tm_min), clock_tuple(s["from_time"]), clock_tuple(s["until_time"]))
         if blocked_by_rules(priority, s["limit_hours"], in_hours, False, False, s["skip_playing"] != "off",
                             blocked_by_playing(s["skip_playing"], kind)):
-            kodiapi.log("request %s ignored by the rules (active hours / playing)" % stream)
+            self.reason = "outside active hours" if s["limit_hours"] and not in_hours else "playing"
             return "ignore"
         window_stream = self.window.stream if self.window else (self.live_stream if mode == "live" else None)
         action = decide(False, self.current_camera(), window_stream, stream)
-        kodiapi.log("request %s %ss %s %s -> %s" % (stream, seconds, mode, priority, action))
         if action == "ignore":
+            self.reason = "already on screen"
             return action
         if mode == "photo":
             if action == "extend":
@@ -170,7 +222,8 @@ class Controller(object):
         self._close_window()
         kind, _f, _p, was_paused = self.playing()
         self._maybe_pause(s, kind, was_paused)
-        self.window = open_window(lambda: PhotoWindow(self, tiles, s, s["window_keys"]))
+        label = self.label
+        self.window = open_window(lambda: PhotoWindow(self, tiles, s, s["window_keys"], label))
         self.window.start(seconds)
         self.changed()
         return "show"
@@ -362,6 +415,55 @@ class Controller(object):
         s = kodiapi.settings()
         return {"window": self.window.stream if self.window else None, "live": self.live_stream,
                 "paused": self.paused, "dnd": s["dnd"]}
+
+    def play_clip(self, url, title):
+        """Frigate clip from the event list (a normal film for Kodi: no camera rules, no automatic end)."""
+        if url:
+            self.hide()
+            li = xbmcgui.ListItem(title or "CamAlert", path=url)
+            li.setMimeType("video/mp4")
+            li.setContentLookup(False)
+            self.player.play(url, li)
+
+    # --- camera control and colour keys ----------------------------------------------------------------------
+    def has_ptz(self, name):
+        from . import ptz
+        return bool(name) and name in ptz.all_devices()
+
+    def ptz_move(self, action, name=None):
+        from . import ptz
+        name = name or (self.window.stream if self.window else self.live_stream)
+        p = ptz.Ptz(name)
+        if not p.available():
+            return False
+        p.do(action) if action != "stop" else p.stop()
+        return True
+
+    def colour_key(self, camera, code):
+        """A colour key while a camera is on screen: 'ptz' (toggle PTZ mode) or sent to Home Assistant."""
+        s = kodiapi.settings()
+        what = button_for(code, s["ptz_key"], self.has_ptz(camera), s["ha_buttons"])
+        if what and what != "ptz":
+            self.send_button(camera, what, s)
+        return what
+
+    def send_button(self, camera, button, s=None):
+        from . import mqtt
+        from .server import node_id
+        s = s or kodiapi.settings()
+        kodiapi.log("button %s on camera %s -> Home Assistant" % (button, camera))
+        mqtt.publish_button(camera, button)
+        hook = s["ha_webhook"].strip()
+        if hook:
+            body = button_event(node_id(), camera, button).encode("utf-8")
+
+            def post():
+                try:
+                    req = urllib.request.Request(hook, data=body, headers={"Content-Type": "application/json"})
+                    urllib.request.urlopen(req, timeout=5).close()
+                except Exception as e:
+                    kodiapi.log("button webhook failed: %s" % e, "error")
+            threading.Thread(target=post, daemon=True).start()
 
     def shutdown(self):
         try:

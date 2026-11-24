@@ -12,7 +12,8 @@ import threading
 import time
 
 from . import kodiapi, sources
-from .logic import (MQTT_DISCONNECT, MQTT_PING, clamp_seconds, discovery, frigate_event, frigate_stream, mqtt_command,
+from .logic import (MQTT_DISCONNECT, MQTT_PING, button_event, clamp_seconds, discovery, frigate_event, frigate_stream,
+                    frigate_title, mqtt_command,
                     mqtt_connect, mqtt_parse_publish, mqtt_publish, mqtt_split, mqtt_subscribe, valid_port)
 from .server import node_id, node_name
 
@@ -43,6 +44,7 @@ class Client(threading.Thread):
         self.wlock = threading.Lock()
         self.stopping = threading.Event()
         self.frigate_seen = {}
+        self.up = False
 
     # --- io --------------------------------------------------------------------------------------------------
     def send(self, data):
@@ -65,6 +67,7 @@ class Client(threading.Thread):
                 delay = 2
             except (OSError, ValueError) as e:
                 kodiapi.log("MQTT connection failed: %s" % e)
+            self.up = False
             with self.wlock:
                 if self.sock is not None:
                     try:
@@ -104,6 +107,7 @@ class Client(threading.Thread):
                 last_ping = time.time()
 
     def connected(self, s):
+        self.up = True
         kodiapi.log("MQTT connected as %s" % self.node)
         topics = [self.prefix + t for t in ("show", "mosaic", "hide", "dnd/set")]
         if s["frigate_enabled"]:
@@ -149,7 +153,7 @@ class Client(threading.Thread):
             elif action == "show":
                 cmd = mqtt_command(payload)
                 sec = clamp_seconds(cmd.get("sec")) if cmd.get("sec") else None
-                self.ctl.show(cmd.get("cam"), sec, cmd.get("mode"), cmd.get("priority"))
+                self.ctl.show(cmd.get("cam"), sec, cmd.get("mode"), cmd.get("priority"), "mqtt", cmd.get("label"))
             elif action == "dnd/set":
                 self.ctl.set_dnd(payload.decode("utf-8", "replace").strip().upper() in ("ON", "1", "TRUE"))
         except Exception as e:
@@ -158,7 +162,8 @@ class Client(threading.Thread):
         self.publish_state()
 
     def frigate(self, payload, s):
-        stream = frigate_stream(frigate_event(payload), s["frigate_labels"], s["frigate_map"])
+        event = frigate_event(payload)
+        stream = frigate_stream(event, s["frigate_labels"], s["frigate_map"])
         if not stream:
             return
         now = time.time()
@@ -166,12 +171,23 @@ class Client(threading.Thread):
             return
         self.frigate_seen[stream] = now
         kodiapi.log("Frigate detection on %s" % stream)
-        self.ctl.show(stream, s["frigate_seconds"], s["frigate_mode"], s["frigate_priority"])
+        self.ctl.show(stream, s["frigate_seconds"], s["frigate_mode"], s["frigate_priority"], "frigate",
+                      frigate_title(event), event["id"])
 
     def stop(self):
         self.stopping.set()
         self.publish("availability", "offline", retain=True)
         self.send(MQTT_DISCONNECT)
+
+
+def connected():
+    return bool(_client is not None and _client.up)
+
+
+def publish_button(camera, button):
+    """camalert/<id>/button: Home Assistant event entity (from discovery)."""
+    if _client is not None and _client.up:
+        _client.publish("button", button_event(_client.node, camera, button))
 
 
 def state_changed():

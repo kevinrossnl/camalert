@@ -33,6 +33,194 @@ msgctxt "#30006"
 msgid "API"
 msgstr "API"
 
+msgctxt "#30007"
+msgid "Log and diagnostics"
+msgstr "Log en diagnose"
+
+msgctxt "#30200"
+msgid "Checking..."
+msgstr "Controleren..."
+
+msgctxt "#30201"
+msgid "Diagnostics"
+msgstr "Diagnose"
+
+msgctxt "#30202"
+msgid "The CamAlert service is not running."
+msgstr "De CamAlert-service draait niet."
+
+msgctxt "#30203"
+msgid "No events yet."
+msgstr "Nog geen gebeurtenissen."
+
+msgctxt "#30204"
+msgid "Recent events"
+msgstr "Recente gebeurtenissen"
+
+msgctxt "#30205"
+msgid "Show camera"
+msgstr "Camera tonen"
+
+msgctxt "#30206"
+msgid "Play Frigate clip"
+msgstr "Frigate-clip afspelen"
+
+msgctxt "#30210"
+msgid "go2rtc reachable (%d cameras, %d ms)"
+msgstr "go2rtc bereikbaar (%d camera's, %d ms)"
+
+msgctxt "#30211"
+msgid "go2rtc not reachable: %s"
+msgstr "go2rtc niet bereikbaar: %s"
+
+msgctxt "#30212"
+msgid "No valid go2rtc address"
+msgstr "Geen geldig go2rtc-adres"
+
+msgctxt "#30213"
+msgid "%s: no snapshot address (live only)"
+msgstr "%s: geen snapshot-adres (alleen live)"
+
+msgctxt "#30214"
+msgid "%s: snapshot %d ms"
+msgstr "%s: snapshot %d ms"
+
+msgctxt "#30215"
+msgid "%s: snapshot failed (%s)"
+msgstr "%s: snapshot mislukt (%s)"
+
+msgctxt "#30216"
+msgid "API listening on port %d"
+msgstr "API luistert op poort %d"
+
+msgctxt "#30217"
+msgid "API not listening on port %d"
+msgstr "API luistert niet op poort %d"
+
+msgctxt "#30218"
+msgid "MQTT connected"
+msgstr "MQTT verbonden"
+
+msgctxt "#30219"
+msgid "MQTT not connected"
+msgstr "MQTT niet verbonden"
+
+msgctxt "#30220"
+msgid "Last API call %s from %s (%s)"
+msgstr "Laatste API-aanroep %s van %s (%s)"
+
+msgctxt "#30221"
+msgid "No API call since the last start"
+msgstr "Geen API-aanroep sinds de laatste start"
+
+msgctxt "#30222"
+msgid "Devices file: %s"
+msgstr "Apparatenbestand: %s"
+
+msgctxt "#30223"
+msgid "Do not disturb is on"
+msgstr "Niet storen staat aan"
+
+msgctxt "#30224"
+msgid "Log: %s"
+msgstr "Log: %s"
+
+msgctxt "#30230"
+msgid "Title size"
+msgstr "Titelgrootte"
+
+msgctxt "#30231"
+msgid "Normal"
+msgstr "Normaal"
+
+msgctxt "#30232"
+msgid "Doorbell sound"
+msgstr "Deurbelgeluid"
+
+msgctxt "#30233"
+msgid "Plays a chime when a camera appears (follows Kodi's volume)."
+msgstr "Speelt een gong als er een camera verschijnt (volgt het Kodi-volume)."
+
+msgctxt "#30234"
+msgid "Off"
+msgstr "Uit"
+
+msgctxt "#30235"
+msgid "Doorbell and alarm"
+msgstr "Deurbel en alarm"
+
+msgctxt "#30236"
+msgid "Every request"
+msgstr "Elk verzoek"
+
+msgctxt "#30237"
+msgid "Frigate address (for clips)"
+msgstr "Frigate-adres (voor clips)"
+
+msgctxt "#30238"
+msgid "e.g. http://192.168.1.10:5000 - lets you replay Frigate clips from the event list."
+msgstr "bijv. http://192.168.1.10:5000 - hiermee speel je Frigate-clips af vanuit de gebeurtenissenlijst."
+
+msgctxt "#30239"
+msgid "Colour key for camera control"
+msgstr "Kleurtoets voor camerabediening"
+
+msgctxt "#30240"
+msgid "On cameras with PTZ this key toggles camera control (MENU works too)."
+msgstr "Bij camera's met PTZ schakelt deze toets de camerabediening (MENU werkt ook)."
+
+msgctxt "#30241"
+msgid "RED"
+msgstr "ROOD"
+
+msgctxt "#30242"
+msgid "GREEN"
+msgstr "GROEN"
+
+msgctxt "#30243"
+msgid "YELLOW"
+msgstr "GEEL"
+
+msgctxt "#30244"
+msgid "BLUE"
+msgstr "BLAUW"
+
+msgctxt "#30245"
+msgid "Colour keys to Home Assistant"
+msgstr "Kleurtoetsen naar Home Assistant"
+
+msgctxt "#30246"
+msgid "While a camera is shown the colour keys trigger a Home Assistant event (e.g. open the door)."
+msgstr "Terwijl een camera in beeld is sturen de kleurtoetsen een Home Assistant-event (bijv. deur openen)."
+
+msgctxt "#30247"
+msgid "Log"
+msgstr "Log"
+
+msgctxt "#30248"
+msgid "camalert.log in the add-on data folder (2 x 1 MB), besides kodi.log. Passwords are never logged."
+msgstr "camalert.log in de add-on-datamap (2 x 1 MB), naast kodi.log. Wachtwoorden worden nooit gelogd."
+
+msgctxt "#30249"
+msgid "Errors only"
+msgstr "Alleen fouten"
+
+msgctxt "#30250"
+msgid "Verbose"
+msgstr "Uitgebreid"
+
+msgctxt "#30251"
+msgid "Remote syslog (host:port)"
+msgstr "Syslog op afstand (host:poort)"
+
+msgctxt "#30252"
+msgid "Optional, e.g. 192.168.1.10:514 (UDP). Empty = off."
+msgstr "Optioneel, bijv. 192.168.1.10:514 (UDP). Leeg = uit."
+
+msgctxt "#30253"
+msgid "Home Assistant webhook"
+msgstr "Home Assistant-webhook"
+
 msgctxt "#30010"
 msgid "Enable CamAlert"
 msgstr "CamAlert inschakelen"

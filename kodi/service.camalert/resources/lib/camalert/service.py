@@ -28,7 +28,11 @@ class Service(object):
         self.monitor = kodiapi.Monitor(self.settings_changed)
         self.window_cmd = None
 
+    def configure_log(self, s):
+        kodiapi.camlog().configure(s["log_level"], s["log_syslog"])
+
     def start_all(self):
+        self.configure_log(self.settings)
         server.start()
         mqtt.start(self.ctl)
         ptz.start(self.ctl)
@@ -38,6 +42,7 @@ class Service(object):
         parts = changed_parts(self.settings, new)
         dnd_changed = new["dnd"] != self.settings["dnd"]
         self.settings = new
+        self.configure_log(new)
         if "server" in parts:
             server.start()
         if "mqtt" in parts:
@@ -63,13 +68,21 @@ class Service(object):
             return
         what = c.get("do")
         if what == "show":
-            self.ctl.show(c.get("cam"), None, None, "high")
+            self.ctl.show(c.get("cam"), None, None, "high", "menu")
         elif what == "mosaic":
             self.ctl.mosaic(None, 60)
         elif what == "tour":
             self.ctl.tour()
         elif what == "hide":
             self.ctl.hide()
+        elif what == "state":  # for the diagnostics and event list dialogs (they run in another interpreter)
+            from xbmcgui import Window
+            from . import mqtt
+            Window(10000).setProperty("camalert.state", json.dumps({
+                "events": self.ctl.events, "last_caller": self.ctl.last_caller, "mqtt": mqtt.connected(),
+                "log": kodiapi.camlog().path, "time": c.get("time")}))
+        elif what == "play":
+            self.ctl.play_clip(c.get("url"), c.get("title"))
 
     def run(self):
         kodiapi.log("version %s starting" % __version__)

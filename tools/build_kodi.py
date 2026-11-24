@@ -8,7 +8,8 @@ Writes to outdir (default dist/):
     repository.camalert-<rversion>.zip     repository add-on: install once, Kodi then updates CamAlert itself
     kodi-repo/                             tree to host (GitHub Pages): addons.xml, addons.xml.md5, zips
 
-The shared logic (src/CamAlert/logic.py and devices.py) is copied into resources/lib/camalert/ at build time.
+The shared code (src/CamAlert/logic.py, devices.py, camlog.py) is copied into resources/lib/camalert/ and the
+doorbell chime (src/CamAlert/chime.wav) into resources/media/ at build time.
 Copyright (C) 2026 CamAlert developers, GPL v2.
 """
 import hashlib
@@ -22,7 +23,7 @@ import xml.etree.ElementTree as ET
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 ADDON = os.path.join(ROOT, "kodi", "service.camalert")
 REPO_ADDON = os.path.join(ROOT, "kodi", "repository.camalert")
-SHARED = ("logic.py", "devices.py")
+SHARED = ("logic.py", "devices.py", "camlog.py")
 DEFAULT_REPO_URL = "https://kevinrossnl.github.io/camalert/kodi"
 STAMP = (2026, 1, 1, 0, 0, 0)  # fixed zip timestamps: same input, same zip
 
@@ -73,6 +74,7 @@ def addon_entries(ver):
     for name in SHARED:
         entries.append(("resources/lib/camalert/" + name,
                         open(os.path.join(ROOT, "src", "CamAlert", name), "rb").read()))
+    entries.append(("resources/media/chime.wav", open(os.path.join(ROOT, "src", "CamAlert", "chime.wav"), "rb").read()))
     entries.append(("LICENSE.txt", open(os.path.join(ROOT, "LICENSE"), "rb").read()))
     return sorted(entries)
 

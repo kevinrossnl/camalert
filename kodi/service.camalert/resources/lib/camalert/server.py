@@ -9,6 +9,10 @@
     GET /camalert/hide
     GET /camalert/status
     GET /camalert/dnd?on=1|0      (without 'on': current state)
+    GET /camalert/ptz?cam=garden&move=up|down|left|right|zoom_in|zoom_out|home|stop
+    GET /camalert/webhook?url=...  (Home Assistant webhook for the colour keys; empty url removes it)
+    GET /camalert/log?lines=200    (camalert.log, redacted)
+    GET /camalert/events           (last 20 requests with decision)
 """
 import json
 import os
@@ -21,7 +25,7 @@ from urllib.parse import parse_qs, urlparse
 
 from . import __version__, kodiapi, sources
 from .klogic import node_from_mac
-from .logic import clamp_seconds, client_allowed, token_ok, valid_port
+from .logic import PTZ_ACTIONS, caller_source, clamp_seconds, client_allowed, redact, token_ok, valid_port
 
 _server = None
 _thread = None
@@ -56,7 +60,7 @@ def ensure_certificate():
         return False
 
 
-def handle(ctl, path, args, client_ip, header_token, s):
+def handle(ctl, path, args, client_ip, header_token, s, user_agent=""):
     """(http code, answer dict) for one request. Pure enough to test with a fake controller."""
     given = args.get("token") or header_token or ""
     if not client_allowed(client_ip, s["allow"]) or not token_ok(s["token"], given):
@@ -66,6 +70,10 @@ def handle(ctl, path, args, client_ip, header_token, s):
     action = path.rstrip("/").rsplit("/", 1)[-1]
     if not path.startswith("/camalert"):
         return 404, {"result": False, "error": "unknown action"}
+    source = caller_source(user_agent)
+    ctl.last_caller = (time.time(), client_ip, source)
+    kodiapi.log("API %s %s from %s (%s)" % (path, redact(json.dumps(args, sort_keys=True)), client_ip, source),
+                "verbose")
     try:
         if action == "hide":
             ctl.hide()
@@ -90,7 +98,9 @@ def handle(ctl, path, args, client_ip, header_token, s):
             ctl.names, ctl.names_at = [c["name"] for c in cams], time.time()
             return 200, {"result": True, "cameras": cams}
         if action == "status":
-            return 200, dict(ctl.status(), result=True, version=__version__, id=node_id(), name=node_name(s))
+            from . import mqtt
+            return 200, dict(ctl.status(), result=True, version=__version__, id=node_id(), name=node_name(s),
+                             platform="kodi", mqtt=mqtt.connected())
         if action == "dnd":
             on = args.get("on", "").lower()
             if on in ("1", "true", "on", "yes"):
@@ -98,9 +108,28 @@ def handle(ctl, path, args, client_ip, header_token, s):
             elif on in ("0", "false", "off", "no"):
                 ctl.set_dnd(False)
             return 200, {"result": True, "action": "dnd", "dnd": kodiapi.settings()["dnd"]}
+        if action == "ptz":
+            cam, move = args.get("cam"), args.get("move")
+            if move not in PTZ_ACTIONS or not ctl.has_ptz(cam):
+                return 400, {"result": False, "error": "camera without PTZ or unknown move"}
+            return 200, {"result": ctl.ptz_move(move, cam), "cam": cam, "move": move}
+        if action == "webhook":
+            url = args.get("url", "")
+            if url and not url.startswith(("http://", "https://")):
+                return 400, {"result": False, "error": "url must start with http:// or https://"}
+            if url != s["ha_webhook"]:
+                kodiapi.set_setting("ha_webhook", url)
+                kodiapi.log("Home Assistant webhook %s" % ("set" if url else "removed"))
+            return 200, {"result": True, "webhook": bool(url)}
+        if action == "log":
+            n = int(args["lines"]) if args.get("lines", "").isdigit() else 200
+            return 200, {"result": True, "lines": [redact(x) for x in kodiapi.camlog().tail(min(n, 2000))]}
+        if action == "events":
+            return 200, {"result": True, "events": [{k: v for k, v in e.items() if k != "snapshot"}
+                                                    for e in ctl.events]}
         if action in ("show", "camalert"):
             sec = clamp_seconds(args.get("sec"), s["duration"]) if args.get("sec") else None
-            res = ctl.show(args.get("cam"), sec, args.get("mode"), args.get("priority"))
+            res = ctl.show(args.get("cam"), sec, args.get("mode"), args.get("priority"), source, args.get("label"))
             return 200, {"result": res in ("show", "extend", "wake"), "action": res, "cam": args.get("cam") or s["camera"]}
         return 404, {"result": False, "error": "unknown action"}
     except Exception as e:
@@ -116,7 +145,7 @@ class Handler(BaseHTTPRequestHandler):
         u = urlparse(self.path)
         args = {k: v[0] for k, v in parse_qs(u.query).items()}
         code, out = handle(Controller.instance, u.path, args, self.client_address[0],
-                           self.headers.get("X-CamAlert-Token"), kodiapi.settings())
+                           self.headers.get("X-CamAlert-Token"), kodiapi.settings(), self.headers.get("User-Agent", ""))
         body = json.dumps(out).encode()
         try:
             self.send_response(code)

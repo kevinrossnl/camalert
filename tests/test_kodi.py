@@ -122,6 +122,20 @@ class TestKodiLogic(unittest.TestCase):
         self.assertEqual(k.live_mime("http://h/api/stream.m3u8?src=a"), "application/vnd.apple.mpegurl")
         self.assertEqual(k.live_mime("rtsp://h/a"), "")
 
+    def test_keys_chime_title(self):
+        k = self.k
+        self.assertEqual(k.colour_code(251), 398)
+        self.assertEqual(k.colour_code(254), 401)
+        self.assertEqual(k.colour_code(0xF071), 399)
+        self.assertIsNone(k.colour_code(0))
+        self.assertIsNone(k.colour_code(61453))
+        self.assertTrue(k.chime_wanted("all", "normal"))
+        self.assertTrue(k.chime_wanted("high", "alarm"))
+        self.assertFalse(k.chime_wanted("high", "normal"))
+        self.assertFalse(k.chime_wanted("off", "alarm"))
+        self.assertEqual(k.title_font_name("large"), "font30")
+        self.assertEqual(k.title_font_name("?"), "font13")
+
     def test_misc(self):
         k = self.k
         self.assertEqual(k.kodi_volume(80, 50), 40)
@@ -139,6 +153,16 @@ class FakeController(object):
     def __init__(self):
         self.calls = []
         self.names, self.names_at = [], 0
+        self.events = [{"time": 1, "camera": "garden", "label": "", "source": "api", "priority": "normal",
+                        "action": "show", "reason": "", "snapshot": "/x.jpg", "frigate_id": None}]
+        self.last_caller = None
+
+    def has_ptz(self, cam):
+        return cam == "garden"
+
+    def ptz_move(self, move, cam):
+        self.calls.append(("ptz", move, cam))
+        return True
 
     def show(self, *a):
         self.calls.append(("show",) + a)
@@ -169,10 +193,10 @@ class TestKodiApi(unittest.TestCase):
         self.server = Built.module("server")
         self.s = Built.module("klogic").parse_settings({"camera": "front_door"})
 
-    def handle(self, path, args=None, ip="192.168.1.5", header=None, **settings):
+    def handle(self, path, args=None, ip="192.168.1.5", header=None, user_agent="", **settings):
         s = dict(self.s, **settings)
         ctl = FakeController()
-        code, out = self.server.handle(ctl, path, args or {}, ip, header, s)
+        code, out = self.server.handle(ctl, path, args or {}, ip, header, s, user_agent)
         return code, out, ctl
 
     def test_access(self):
@@ -186,7 +210,10 @@ class TestKodiApi(unittest.TestCase):
     def test_actions(self):
         code, out, ctl = self.handle("/camalert/show", {"cam": "garden", "sec": "20", "mode": "live", "priority": "alarm"})
         self.assertEqual(out, {"result": True, "action": "show", "cam": "garden"})
-        self.assertEqual(ctl.calls, [("show", "garden", 20, "live", "alarm")])
+        self.assertEqual(ctl.calls, [("show", "garden", 20, "live", "alarm", "api", None)])
+        code, out, ctl = self.handle("/camalert/show", {"cam": "garden", "label": "Person"}, user_agent="HomeAssistant/2026.11 aiohttp/3.10")
+        self.assertEqual(ctl.calls, [("show", "garden", None, None, None, "ha", "Person")])
+        self.assertEqual(ctl.last_caller[1:], ("192.168.1.5", "ha"))
         self.assertEqual(self.handle("/camalert/show")[1]["cam"], "front_door")
         self.assertEqual(self.handle("/camalert/camalert")[1]["action"], "show")
         self.assertEqual(self.handle("/camalert/hide")[1], {"result": True, "action": "hide"})
@@ -202,6 +229,23 @@ class TestKodiApi(unittest.TestCase):
         for key in ("version", "id", "name", "window", "live", "dnd"):
             self.assertIn(key, out)
 
+    def test_new_actions(self):
+        code, out, ctl = self.handle("/camalert/ptz", {"cam": "garden", "move": "left"})
+        self.assertEqual((code, out, ctl.calls), (200, {"result": True, "cam": "garden", "move": "left"},
+                                                  [("ptz", "left", "garden")]))
+        self.assertEqual(self.handle("/camalert/ptz", {"cam": "front_door", "move": "left"})[0], 400)
+        self.assertEqual(self.handle("/camalert/ptz", {"cam": "garden", "move": "jump"})[0], 400)
+        self.assertEqual(self.handle("/camalert/webhook", {"url": "ftp://x"})[0], 400)
+        self.assertEqual(self.handle("/camalert/webhook", {"url": "http://ha:8123/api/webhook/abc"})[1],
+                         {"result": True, "webhook": True})
+        self.assertEqual(Built.store.get("ha_webhook"), "http://ha:8123/api/webhook/abc")
+        ev = self.handle("/camalert/events")[1]["events"]
+        self.assertEqual(ev[0]["camera"], "garden")
+        self.assertNotIn("snapshot", ev[0])
+        out = self.handle("/camalert/log", {"lines": "5"})[1]
+        self.assertTrue(out["result"])
+        self.assertIsInstance(out["lines"], list)
+
     def test_internal_error(self):
         class Broken(FakeController):
             def hide(self):
@@ -212,7 +256,8 @@ class TestKodiApi(unittest.TestCase):
 
 class TestKodiModules(unittest.TestCase):
     def test_all_modules_import(self):
-        for name in ("kodiapi", "sources", "display", "controller", "server", "mqtt", "ptz", "service", "script"):
+        for name in ("kodiapi", "sources", "display", "controller", "server", "mqtt", "ptz", "service", "script", "diag",
+                     "camlog"):
             Built.module(name)
 
     def test_discovery_and_frigate(self):
@@ -235,6 +280,28 @@ class TestKodiModules(unittest.TestCase):
         ctl = Built.module("controller")
         li = ctl.live_item("http://h:1984/api/stream.mp4?src=a&camalert=1", "A")
         self.assertEqual(li.props, {"mime": "video/mp4", "lookup": False})
+
+    def test_log_is_redacted_and_rotates(self):
+        kodiapi = Built.module("kodiapi")
+        log = kodiapi.camlog()
+        log.configure("verbose")
+        kodiapi.log("connect http://user:" + "secret@cam/x?pwd=hunter2&usr=admin", "verbose")
+        text = "\n".join(log.tail(5))
+        self.assertIn("connect", text)
+        self.assertNotIn("secret", text)
+        self.assertNotIn("hunter2", text)
+        self.assertTrue(log.path.startswith(Built.profile))
+
+    def test_controller_events_and_buttons(self):
+        ctl_mod = Built.module("controller")
+        ctl = ctl_mod.Controller()
+        ctl.record_event("garden", "Person", "frigate", "high", "ignore", "do not disturb", "123.4-abc")
+        self.assertEqual(ctl.events[0]["label"], "Person")
+        self.assertEqual(ctl.events[0]["frigate_id"], "123.4-abc")
+        sent = []
+        ctl.send_button = lambda cam, b, s=None: sent.append((cam, b))
+        self.assertEqual(ctl.colour_key("garden", 398), "red")
+        self.assertEqual(sent, [("garden", "red")])
 
     def test_english_fallback(self):
         kodiapi = Built.module("kodiapi")
@@ -274,7 +341,7 @@ class TestKodiPackage(unittest.TestCase):
         self.assertTrue(all(n.startswith("service.camalert/") for n in names))
         for f in ("addon.xml", "service.py", "default.py", "LICENSE.txt", "resources/settings.xml", "resources/icon.png",
                   "resources/fanart.jpg", "resources/lib/camalert/logic.py", "resources/lib/camalert/devices.py",
-                  "resources/lib/camalert/controller.py"):
+                  "resources/lib/camalert/controller.py", "resources/lib/camalert/camlog.py", "resources/media/chime.wav"):
             self.assertIn("service.camalert/" + f, names)
         for lang in LANGS:
             self.assertIn("service.camalert/resources/language/resource.language.%s/strings.po" % lang, names)

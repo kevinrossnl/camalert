@@ -30,6 +30,62 @@ def choose_camera():
         kodiapi.set_setting("camera", names[i])
 
 
+def service_state():
+    """Asks the running service for its state (events, last caller, MQTT) via a window property."""
+    w = xbmcgui.Window(10000)
+    stamp = str(time.time())
+    send(do="state", time=stamp)
+    for _ in range(30):
+        time.sleep(0.1)
+        try:
+            st = json.loads(w.getProperty("camalert.state") or "{}")
+        except ValueError:
+            st = {}
+        if st.get("time") == stamp:
+            return st
+    return None
+
+
+def diagnostics():
+    from . import diag
+    dialog = xbmcgui.DialogProgress()
+    dialog.create("CamAlert", kodiapi.tr(30200))
+    lines = diag.collect(service_state())
+    dialog.close()
+    xbmcgui.Dialog().textviewer("CamAlert - %s" % kodiapi.tr(30201), "\n".join(lines))
+
+
+def events():
+    from .logic import event_line, frigate_clip_url
+    st = service_state()
+    if st is None:
+        xbmcgui.Dialog().ok("CamAlert", kodiapi.tr(30202))
+        return
+    evs = st.get("events") or []
+    if not evs:
+        xbmcgui.Dialog().ok("CamAlert", kodiapi.tr(30203))
+        return
+    items = []
+    for e in evs:
+        li = xbmcgui.ListItem(event_line(e))
+        if e.get("snapshot"):
+            li.setArt({"thumb": e["snapshot"], "icon": e["snapshot"]})
+        items.append(li)
+    i = xbmcgui.Dialog().select(kodiapi.tr(30204), items, useDetails=True)
+    if i < 0:
+        return
+    e = evs[i]
+    s = kodiapi.settings()
+    clip = frigate_clip_url(s["frigate_url"], e.get("frigate_id"))
+    choices = [kodiapi.tr(30205)] + ([kodiapi.tr(30206)] if clip else [])
+    j = xbmcgui.Dialog().select(e["camera"], choices) if clip else 0
+    if j == 0:
+        time.sleep(0.3)
+        send(do="show", cam=e["camera"].split(",")[0])
+    elif j == 1:
+        send(do="play", url=clip, title="%s %s" % (e["camera"], e.get("label") or ""))
+
+
 def run(args):
     what = args[0] if args else "settings"
     if what == "choose_camera":
@@ -44,6 +100,10 @@ def run(args):
     elif what in ("mosaic", "tour", "hide"):
         time.sleep(0.5)
         send(do=what)
+    elif what == "diagnostics":
+        diagnostics()
+    elif what == "events":
+        events()
     elif what == "devices":
         xbmcgui.Dialog().ok("CamAlert", kodiapi.tr(30185) % ptz.ensure_example())
     else:

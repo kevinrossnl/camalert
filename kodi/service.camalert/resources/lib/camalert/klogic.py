@@ -12,7 +12,8 @@ ACTION_PREVIOUS_MENU, ACTION_NAV_BACK, ACTION_STOP = 10, 92, 13
 ACTION_VOLUME_UP, ACTION_VOLUME_DOWN, ACTION_MUTE = 88, 89, 91
 ACTION_PLAYER_PLAY, ACTION_PAUSE, ACTION_SHOW_INFO, ACTION_CONTEXT_MENU = 79, 12, 11, 117
 ACTION_ENTER, ACTION_MOUSE_MOVE = 135, 107
-PASS_ACTIONS = {ACTION_VOLUME_UP, ACTION_VOLUME_DOWN, ACTION_MUTE, ACTION_MOUSE_MOVE, 0}
+ACTION_COLOUR = 122  # red/green/yellow/blue arrive as this action; which one is in the button code
+PASS_ACTIONS = {ACTION_VOLUME_UP, ACTION_VOLUME_DOWN, ACTION_MUTE, ACTION_MOUSE_MOVE, ACTION_COLOUR, 0}
 # keys that close the window and are then passed on to Kodi (so the user can keep zapping / navigating)
 FORWARD = {ACTION_UP: "Up", ACTION_DOWN: "Down", ACTION_PAGE_UP: "PageUp", ACTION_PAGE_DOWN: "PageDown",
            ACTION_PAUSE: "Pause", ACTION_PLAYER_PLAY: "PlayPause", ACTION_STOP: "Stop", ACTION_SHOW_INFO: "Info",
@@ -75,6 +76,8 @@ DEFAULTS = {
     "ptz_user": "", "ptz_password": "",
     "foscam_enabled": False, "foscam_interval": 2, "foscam_mode": "photo",
     "foscam_priority": "normal", "foscam_seconds": 30,
+    "log_level": "normal", "log_syslog": "", "ptz_key": "blue", "ha_buttons": True, "ha_webhook": "",
+    "title_size": "normal", "chime": "off", "frigate_url": "",
 }
 CHOICES = {
     "source": ("go2rtc", "direct"), "mode": ("photo", "live", "notify"),
@@ -83,6 +86,8 @@ CHOICES = {
     "strip_layout": ("auto", "vertical", "horizontal", "grid"), "dnd_level": ("normal", "high"),
     "frigate_mode": ("photo", "live", "notify"), "frigate_priority": ("normal", "high", "alarm"),
     "foscam_mode": ("photo", "live", "notify"), "foscam_priority": ("normal", "high", "alarm"),
+    "log_level": ("off", "errors", "normal", "verbose"), "ptz_key": ("blue", "yellow", "red", "green", "off"),
+    "title_size": ("small", "normal", "large"), "chime": ("off", "high", "all"),
 }
 RANGES = {"rtsp_port": (1, 65535), "duration": (5, 300), "frigate_seconds": (5, 300), "foscam_seconds": (5, 300),
           "foscam_interval": (1, 60), "live_volume": (0, 100), "tour_interval": (3, 60), "http_port": (1024, 65535), "mqtt_port": (1, 65535)}
@@ -209,3 +214,27 @@ def with_default_login(devs, user, password):
             d["password"] = password
         out[name] = d
     return out
+
+
+# --- colour keys, title size, chime ---------------------------------------------------------------------------
+# Kodi button codes of the colour keys (measured on Kodi 21): remote and CEC (251-254) and keyboard F1-F4 (KEY_VKEY | VK_F1..)
+COLOUR_BUTTONS = {251: "red", 252: "green", 253: "yellow", 254: "blue",
+                  0xF070: "red", 0xF071: "green", 0xF072: "yellow", 0xF073: "blue"}
+
+
+def colour_code(button_code):
+    """Enigma2-style key code (398-401, as logic.button_for expects) of a Kodi colour key, or None."""
+    colour = COLOUR_BUTTONS.get(button_code & 0xFFFF if button_code else 0)
+    return {"red": 398, "green": 399, "yellow": 400, "blue": 401}.get(colour)
+
+
+TITLE_FONTS = {"small": "font12", "normal": "font13", "large": "font30"}
+
+
+def title_font_name(title_size):
+    return TITLE_FONTS.get(title_size, "font13")
+
+
+def chime_wanted(setting, priority):
+    """Doorbell sound: 'off', 'high' (doorbell and alarm) or 'all' requests."""
+    return setting == "all" or (setting == "high" and priority in ("high", "alarm"))

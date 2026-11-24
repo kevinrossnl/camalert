@@ -51,8 +51,28 @@ def tr(string_id):
     return addon().getLocalizedString(string_id) or english(string_id)
 
 
-def log(msg, level=xbmc.LOGINFO):
-    xbmc.log("[CamAlert] %s" % msg, level)
+_camlog = None
+
+
+def camlog():
+    """Own rotating log (camalert.log, 2 x 1 MB) in the add-on data folder, plus optional remote syslog."""
+    global _camlog
+    if _camlog is None:
+        from .camlog import CamLog
+        _camlog = CamLog(dirs=(profile_dir(),))
+    return _camlog
+
+
+def log(msg, level="normal"):
+    """level: error / normal / verbose. Everything is redacted; verbose only goes to camalert.log."""
+    from .logic import redact
+    msg = redact(msg)
+    if level != "verbose":
+        xbmc.log("[CamAlert] %s" % msg, xbmc.LOGERROR if level == "error" else xbmc.LOGINFO)
+    try:
+        camlog().write(level, msg)
+    except Exception:  # never let logging break anything
+        pass
 
 
 def settings():
@@ -105,6 +125,14 @@ def jsonrpc(method, params=None):
 
 def notify(heading, message, icon="", ms=5000, sound=True):
     xbmcgui.Dialog().notification(heading, message, icon or xbmcgui.NOTIFICATION_INFO, ms, sound)
+
+
+def chime():
+    """Doorbell sound (Kodi's GUI sound output, follows Kodi's volume and mute)."""
+    try:
+        xbmc.playSFX(addon_path("resources", "media", "chime.wav"), False)
+    except Exception as e:
+        log("chime failed: %s" % e, "error")
 
 
 def friendly_name():

@@ -8,8 +8,9 @@ import time
 import xbmcgui
 
 from . import kodiapi, sources
-from .klogic import PTZ_TOGGLE as TOGGLE_IDS, SCREEN_H, SCREEN_W, forward_builtin, frame_name, key_action, ptz_action, tour_key
-from .logic import grid, parse_orientation, parse_refresh, refresh_delay, strip_geometry, window_geometry
+from .klogic import (PTZ_TOGGLE as TOGGLE_IDS, SCREEN_H, SCREEN_W, colour_code, forward_builtin, frame_name, key_action,
+                     ptz_action, title_font_name, tour_key)
+from .logic import event_title, grid, parse_orientation, parse_refresh, refresh_delay, strip_geometry, window_geometry
 
 WHITE = None
 ANIM = {"rot180": "effect=rotate end=180 center=auto", "mirror": "effect=rotatey end=180 center=auto",
@@ -245,12 +246,13 @@ class Feeder(threading.Thread):
 class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
     """Corner window with one camera, or a strip of 2-4 cameras."""
 
-    def __init__(self, ctl, cams, s, keys=True):
+    def __init__(self, ctl, cams, s, keys=True, label=None):
         xbmcgui.WindowDialog.__init__(self)
         self.ctl, self.cams, self.keys = ctl, list(cams), keys
         n = len(self.cams)
+        font = title_font_name(s["title_size"])
         if n == 1:
-            x, y, w, h, t = window_geometry(s["position"], s["size"], SCREEN_W, SCREEN_H)
+            x, y, w, h, t = window_geometry(s["position"], s["size"], SCREEN_W, SCREEN_H, s["title_size"])
             tiles = [(0, t, w, h)]
             total_h = h + t
         else:
@@ -259,8 +261,10 @@ class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
             total_h = h + t
         self.addControl(xbmcgui.ControlImage(x, y, w, total_h, white(), colorDiffuse="FF202020"))
         names = ", ".join(c[1] for c in self.cams)
+        if n > 1:
+            names = event_title(names, label)
         hint = "   OK = live  < >  BACK" if keys and n == 1 else ""
-        self.label = xbmcgui.ControlLabel(x + 8, y, w - 16, t, names + hint, font="font13", textColor="FFFFFFFF",
+        self.label = xbmcgui.ControlLabel(x + 8, y, w - 16, t, names + hint, font=font, textColor="FFFFFFFF",
                                           alignment=0x00000004)
         self.addControl(self.label)
         orientation = parse_orientation(s.get("orientation", ""))
@@ -320,8 +324,15 @@ class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
 
     def onAction(self, action):
         aid = action.getId()
-        kodiapi.log("photo window key %d" % aid)
+        kodiapi.log("photo window key %d / button %d" % (aid, action.getButtonCode()), "verbose")
         if self.ptz_action(aid):
+            return
+        code = colour_code(action.getButtonCode())
+        if code and len(self.tiles) == 1:
+            if self.ctl.colour_key(self.stream, code) == "ptz" and self.ptz_toggle(self.stream):
+                self.ptz_used()
+            else:
+                self.extend(self.duration)
             return
         if self.keys and aid in TOGGLE_IDS and len(self.tiles) == 1:
             if self.ptz_toggle(self.stream):
@@ -484,6 +495,11 @@ class LiveOverlay(PtzMode, xbmcgui.WindowDialog):
     def onAction(self, action):
         aid = action.getId()
         if self.ptz_action(aid):
+            return
+        code = colour_code(action.getButtonCode())
+        if code:
+            if self.ctl.colour_key(self.name, code) == "ptz" and self.ptz_toggle(self.name):
+                self.ptz_used()
             return
         if aid in TOGGLE_IDS:
             if self.ptz_toggle(self.name):

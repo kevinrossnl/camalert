@@ -32,6 +32,10 @@ After installing, open **Add-ons › My add-ons › Services › CamAlert › Co
 | Triggers | Frigate detections (via MQTT), Foscam motion/sound alarm |
 | Camera control | default camera login for PTZ / Foscam, create `devices.conf` |
 | API | port (8099), allowed callers, token, HTTPS |
+| Log and diagnostics | log level (off / errors / normal / verbose), remote syslog, **Diagnostics** (checks go2rtc, every camera's snapshot, API, MQTT, last caller) and **Recent events** (last 20 requests with snapshot; OK shows the camera again or replays the Frigate clip) |
+
+Display also has the **title size** (small / normal / large) and the **doorbell sound** (off / doorbell and alarm / every
+request; it follows Kodi's volume and mute).
 
 Passwords are stored by Kodi in the add-on's own `settings.xml` in its data folder and are never written to the log.
 
@@ -46,6 +50,11 @@ Passwords are stored by Kodi in the add-on's own `settings.xml` in its data fold
   time is up (or after BACK) Kodi **continues the film at the same position** or **returns to the same TV channel**.
   The volume can be lowered meanwhile.
 - **Notification** – a Kodi notification with a snapshot as icon.
+- **Who/what in the title** – `label=Person` (API, MQTT JSON, blueprints) or Frigate's label / recognised name
+  shows as "Person · Front door".
+- **Colour keys → Home Assistant** – while a camera is shown, RED / GREEN / YELLOW / BLUE fire a Home Assistant
+  event (MQTT event entity `camalert/<id>/button` and the integration's webhook), for example to open the door.
+  The colour key chosen under *Camera control* toggles PTZ on cameras that have it. On a keyboard: F1–F4.
 - **Mosaic** (up to 9 cameras) and **tour** (◀ ▶, OK = hold, PLAY = live, BACK).
 
 ## Camera control (PTZ) and Foscam alarms
@@ -67,6 +76,7 @@ arrows pan and tilt, **CH+ / CH−** (or PAGE UP / DOWN) zoom, **OK** = home pos
 | | LibreELEC / CoreELEC | Windows | Linux / OSMC | Android |
 |---|---|---|---|---|
 | Add-on data (`settings.xml`, `devices.conf`, `cameras.conf`, HTTPS certificate) | `/storage/.kodi/userdata/addon_data/service.camalert/` | `%APPDATA%\Kodi\userdata\addon_data\service.camalert\` | `~/.kodi/userdata/addon_data/service.camalert/` | `Android/data/org.xbmc.kodi/files/.kodi/userdata/addon_data/service.camalert/` |
+| CamAlert log (`camalert.log` + `camalert.log.1`, 2 × 1 MB) | same folder as the add-on data | same | same | same |
 | Kodi log (`kodi.log`, lines start with `[CamAlert]`) | `/storage/.kodi/temp/` | `%APPDATA%\Kodi\` | `~/.kodi/temp/` | `.../files/.kodi/temp/` |
 
 ## Differences with the Enigma2 plugin
@@ -81,6 +91,12 @@ arrows pan and tilt, **CH+ / CH−** (or PAGE UP / DOWN) zoom, **OK** = home pos
 - Rotate/mirror applies to the photo window, mosaic and tour (not to the live video).
 - **Windows**: allow Kodi through the Windows firewall for the API port (8099) if Home Assistant cannot reach it;
   *wake the screen* only works with a CEC adapter.
+
+## Updates
+
+Installed from the CamAlert repository, Kodi updates CamAlert by itself (Kodi checks repositories at start and
+every few hours; *Settings › System › Add-ons › Updates* decides whether it installs them automatically or only
+notifies).
 
 ## Home Assistant
 

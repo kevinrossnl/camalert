@@ -1,21 +1,76 @@
+# Tests on every push and every pull request (#26). Each area is its own job; `gate` is the one required
+# check (together with `privacy`): it fails when any job failed, so branch protection needs only these two.
 name: tests
 on:
   push:
-    branches: [main]
+  pull_request:
   workflow_dispatch:
+
+env:
+  # node:20-bookworm has Python 3.11 + git (actions/checkout needs node). Debian packages: no pip at run time.
+  PACKAGES: python3-yaml python3-pytest python3-coverage
+  PYTEST_ADDOPTS: "-rN"
+
 jobs:
-  test:
+  lint:
     runs-on: truenas
-    container:
-      image: node:20-bookworm
+    container: {image: "node:20-bookworm"}
     steps:
       - uses: actions/checkout@v4
       - name: tools
-        run: pip3 install --break-system-packages -q pyyaml || apt-get update -qq && apt-get install -y -qq python3-yaml
-      - name: unit tests
+        run: "{ apt-get update -qq && apt-get install -y -qq --no-install-recommends $PACKAGES; } > /dev/null"
+      - name: Python 3.8 grammar + import lint
+        run: python3 -m pytest -m "lint" --junitxml=junit-lint.xml
+
+  unit:
+    runs-on: truenas
+    container: {image: "node:20-bookworm"}
+    steps:
+      - uses: actions/checkout@v4
+      - name: tools
+        run: "{ apt-get update -qq && apt-get install -y -qq --no-install-recommends $PACKAGES; } > /dev/null"
+      - name: all tests with coverage
         env:
           CAMALERT_DENYLIST: ${{ secrets.CAMALERT_DENYLIST }}
-        run: python3 -m unittest discover -s tests -v
+        run: |
+          python3 -m coverage run -m pytest --junitxml=junit-unit.xml
+          python3 -m coverage report
+          python3 -m coverage xml
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: |
+            junit-unit.xml
+            coverage.xml
+
+  build:
+    runs-on: truenas
+    container: {image: "node:20-bookworm"}
+    steps:
+      - uses: actions/checkout@v4
+      - name: tools
+        run: "{ apt-get update -qq && apt-get install -y -qq --no-install-recommends $PACKAGES; } > /dev/null"
+      - name: golden listings and package tests
+        run: python3 -m pytest -m build --junitxml=junit-build.xml
+      - name: build packages
+        run: |
+          python3 tools/build_ipk.py dist
+          python3 tools/build_kodi.py dist
+      - uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: |
+            dist/*.ipk
+            dist/*.zip
+
+  privacy:
+    runs-on: truenas
+    container: {image: "node:20-bookworm"}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: privacy check (blocks the GitHub mirror if anything personal slipped in)
         env:
           CAMALERT_DENYLIST: ${{ secrets.CAMALERT_DENYLIST }}
@@ -27,7 +82,16 @@ jobs:
           deny=[w.strip().lower() for w in re.split(r"[\n,]",os.environ["CAMALERT_DENYLIST"]) if len(w.strip())>=3]
           t=sys.stdin.read().lower(); bad=[i+1 for i,w in enumerate(deny) if w in t]
           print("commit history: %d problems" % len(bad)); sys.exit(1 if bad else 0)'
-      - name: build packages
+
+  gate:
+    if: always()
+    needs: [lint, unit, build, privacy]
+    runs-on: truenas
+    container: {image: "node:20-bookworm"}
+    steps:
+      - name: all jobs passed
+        env:
+          RESULTS: "${{ needs.lint.result }} ${{ needs.unit.result }} ${{ needs.build.result }} ${{ needs.privacy.result }}"
         run: |
-          python3 tools/build_ipk.py dist
-          python3 tools/build_kodi.py dist
+          echo "lint unit build privacy: $RESULTS"
+          for r in $RESULTS; do test "$r" = success || exit 1; done

@@ -1,0 +1,574 @@
+# CamAlert for Kodi - Dutch
+# Copyright (C) 2026 CamAlert developers. GPL v2.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: nl_nl\n"
+
+msgctxt "#30000"
+msgid "General"
+msgstr "Algemeen"
+
+msgctxt "#30001"
+msgid "Display"
+msgstr "Weergave"
+
+msgctxt "#30002"
+msgid "Rules"
+msgstr "Regels"
+
+msgctxt "#30003"
+msgid "MQTT / Home Assistant"
+msgstr "MQTT / Home Assistant"
+
+msgctxt "#30004"
+msgid "Triggers"
+msgstr "Triggers"
+
+msgctxt "#30005"
+msgid "Camera control"
+msgstr "Camerabediening"
+
+msgctxt "#30006"
+msgid "API"
+msgstr "API"
+
+msgctxt "#30010"
+msgid "Enable CamAlert"
+msgstr "CamAlert inschakelen"
+
+msgctxt "#30011"
+msgid "Turn the HTTP API and pop-ups on or off."
+msgstr "Zet de HTTP-API en pop-ups aan of uit."
+
+msgctxt "#30012"
+msgid "Cameras via"
+msgstr "Camera's via"
+
+msgctxt "#30013"
+msgid "go2rtc is recommended. Without go2rtc, list your cameras in cameras.conf."
+msgstr "go2rtc wordt aangeraden. Zonder go2rtc zet je de camera's in cameras.conf."
+
+msgctxt "#30014"
+msgid "go2rtc server"
+msgstr "go2rtc-server"
+
+msgctxt "#30015"
+msgid "Directly from the cameras"
+msgstr "Rechtstreeks van de camera's"
+
+msgctxt "#30016"
+msgid "go2rtc address"
+msgstr "go2rtc-adres"
+
+msgctxt "#30017"
+msgid "Address of your go2rtc server, e.g. http://192.168.1.10:1984"
+msgstr "Adres van je go2rtc-server, bijv. http://192.168.1.10:1984"
+
+msgctxt "#30018"
+msgid "go2rtc RTSP port"
+msgstr "go2rtc RTSP-poort"
+
+msgctxt "#30019"
+msgid "Usually 8554. Only used with the RTSP live format."
+msgstr "Meestal 8554. Alleen gebruikt met het RTSP-liveformaat."
+
+msgctxt "#30020"
+msgid "Check certificates"
+msgstr "Certificaten controleren"
+
+msgctxt "#30021"
+msgid "Turn off for a self-signed certificate (only in your own network)."
+msgstr "Zet uit bij een zelfondertekend certificaat (alleen in je eigen netwerk)."
+
+msgctxt "#30022"
+msgid "Camera file (direct mode)"
+msgstr "Camerabestand (rechtstreeks)"
+
+msgctxt "#30023"
+msgid "Empty = cameras.conf in the add-on data folder. One camera per line: name | rtsp-url | snapshot-url"
+msgstr "Leeg = cameras.conf in de add-on-datamap. Eén camera per regel: naam | rtsp-url | snapshot-url"
+
+msgctxt "#30024"
+msgid "Default camera"
+msgstr "Standaardcamera"
+
+msgctxt "#30025"
+msgid "Camera name, e.g. front_door. Use 'Choose camera' to pick it from the list."
+msgstr "Cameranaam, bijv. deur. Kies hem met 'Camera kiezen'."
+
+msgctxt "#30026"
+msgid "Choose camera"
+msgstr "Camera kiezen"
+
+msgctxt "#30027"
+msgid "Camera titles"
+msgstr "Cameratitels"
+
+msgctxt "#30028"
+msgid "Optional: name=Title|name2=Title 2"
+msgstr "Optioneel: naam=Titel|naam2=Titel 2"
+
+msgctxt "#30029"
+msgid "Mosaic cameras"
+msgstr "Mozaïekcamera's"
+
+msgctxt "#30030"
+msgid "Comma separated, up to 9. Empty = all."
+msgstr "Met komma's, maximaal 9. Leeg = alle."
+
+msgctxt "#30040"
+msgid "Display mode"
+msgstr "Weergavemodus"
+
+msgctxt "#30041"
+msgid "Photo window keeps playing what you watch; live shows the camera stream full screen."
+msgstr "Fotovenster laat doorspelen wat je kijkt; live toont de camerastream volledig."
+
+msgctxt "#30042"
+msgid "Photo window"
+msgstr "Fotovenster"
+
+msgctxt "#30043"
+msgid "Switch to live stream"
+msgstr "Naar livestream schakelen"
+
+msgctxt "#30044"
+msgid "Notification only"
+msgstr "Alleen melding"
+
+msgctxt "#30045"
+msgid "Duration (seconds)"
+msgstr "Duur (seconden)"
+
+msgctxt "#30046"
+msgid "How long the camera stays on screen."
+msgstr "Hoe lang de camera in beeld blijft."
+
+msgctxt "#30047"
+msgid "Window position"
+msgstr "Vensterpositie"
+
+msgctxt "#30048"
+msgid "Top right"
+msgstr "Rechtsboven"
+
+msgctxt "#30049"
+msgid "Top left"
+msgstr "Linksboven"
+
+msgctxt "#30050"
+msgid "Bottom right"
+msgstr "Rechtsonder"
+
+msgctxt "#30051"
+msgid "Bottom left"
+msgstr "Linksonder"
+
+msgctxt "#30052"
+msgid "Window size"
+msgstr "Venstergrootte"
+
+msgctxt "#30053"
+msgid "Small"
+msgstr "Klein"
+
+msgctxt "#30054"
+msgid "Medium"
+msgstr "Middel"
+
+msgctxt "#30055"
+msgid "Large"
+msgstr "Groot"
+
+msgctxt "#30056"
+msgid "Several cameras in one window"
+msgstr "Meerdere camera's in één venster"
+
+msgctxt "#30057"
+msgid "Layout when a request names 2 to 4 cameras (photo window)."
+msgstr "Indeling als een verzoek 2 tot 4 camera's noemt (fotovenster)."
+
+msgctxt "#30058"
+msgid "Automatic"
+msgstr "Automatisch"
+
+msgctxt "#30059"
+msgid "Below each other"
+msgstr "Onder elkaar"
+
+msgctxt "#30060"
+msgid "Next to each other"
+msgstr "Naast elkaar"
+
+msgctxt "#30061"
+msgid "Grid (2x2)"
+msgstr "Raster (2x2)"
+
+msgctxt "#30062"
+msgid "Rotate / mirror per camera"
+msgstr "Draaien / spiegelen per camera"
+
+msgctxt "#30063"
+msgid "e.g. front_door=rot180|garden=mirror (rot180, mirror, flip)"
+msgstr "bijv. deur=rot180|tuin=mirror (rot180, mirror, flip)"
+
+msgctxt "#30064"
+msgid "Refresh interval per camera"
+msgstr "Verversinterval per camera"
+
+msgctxt "#30065"
+msgid "Seconds between pictures, e.g. front_door=0.5|garden=5. Default: as fast as possible."
+msgstr "Seconden tussen beelden, bijv. deur=0.5|tuin=5. Standaard: zo snel mogelijk."
+
+msgctxt "#30066"
+msgid "Remote control in photo window"
+msgstr "Afstandsbediening in fotovenster"
+
+msgctxt "#30067"
+msgid "OK = live, LEFT/RIGHT = other camera, MENU = PTZ, BACK = close. Any other key closes it too."
+msgstr "OK = live, LINKS/RECHTS = andere camera, MENU = PTZ, TERUG = sluiten. Elke andere toets sluit ook."
+
+msgctxt "#30068"
+msgid "Pause what is playing meanwhile"
+msgstr "Afspelen intussen pauzeren"
+
+msgctxt "#30069"
+msgid "Pauses a video or live TV while the camera is shown and continues afterwards."
+msgstr "Pauzeert een video of live-tv zolang de camera in beeld is en speelt daarna verder."
+
+msgctxt "#30070"
+msgid "Return to what was playing"
+msgstr "Terug naar wat er speelde"
+
+msgctxt "#30071"
+msgid "After live view, continue the video at the same position or the same TV channel."
+msgstr "Na live beeld verder met de video op dezelfde plek of dezelfde tv-zender."
+
+msgctxt "#30072"
+msgid "Volume during live view (%)"
+msgstr "Volume tijdens live beeld (%)"
+
+msgctxt "#30073"
+msgid "Percentage of the current volume while the camera is shown. 100 = unchanged."
+msgstr "Percentage van het huidige volume tijdens het camerabeeld. 100 = ongewijzigd."
+
+msgctxt "#30074"
+msgid "Live stream format"
+msgstr "Formaat livestream"
+
+msgctxt "#30075"
+msgid "MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds."
+msgstr "MP4 via HTTP werkt met elke go2rtc; RTSP heeft de RTSP-poort van go2rtc nodig."
+
+msgctxt "#30076"
+msgid "MP4 (HTTP)"
+msgstr "MP4 (HTTP)"
+
+msgctxt "#30077"
+msgid "RTSP"
+msgstr "RTSP"
+
+msgctxt "#30080"
+msgid "HLS (HTTP, a few seconds delay)"
+msgstr "HLS (HTTP, paar seconden vertraging)"
+
+msgctxt "#30078"
+msgid "Tour: seconds per camera"
+msgstr "Rondgang: seconden per camera"
+
+msgctxt "#30079"
+msgid "How long each camera is shown in the tour."
+msgstr "Hoe lang elke camera in de rondgang te zien is."
+
+msgctxt "#30090"
+msgid "Only between certain times"
+msgstr "Alleen tussen bepaalde tijden"
+
+msgctxt "#30091"
+msgid "Ignore normal requests outside the chosen times."
+msgstr "Negeer normale verzoeken buiten de gekozen tijden."
+
+msgctxt "#30092"
+msgid "From"
+msgstr "Van"
+
+msgctxt "#30093"
+msgid "Until"
+msgstr "Tot"
+
+msgctxt "#30094"
+msgid "May pass midnight, e.g. 07:00 to 23:00."
+msgstr "Mag over middernacht gaan, bijv. 07:00 tot 23:00."
+
+msgctxt "#30095"
+msgid "Not while playing"
+msgstr "Niet tijdens afspelen"
+
+msgctxt "#30096"
+msgid "Normal-priority requests are ignored while you watch this. High and alarm always pass."
+msgstr "Verzoeken met normale prioriteit worden genegeerd terwijl je dit kijkt. Hoog en alarm komen altijd door."
+
+msgctxt "#30097"
+msgid "Always show"
+msgstr "Altijd tonen"
+
+msgctxt "#30098"
+msgid "Not during movies and recordings"
+msgstr "Niet tijdens films en opnames"
+
+msgctxt "#30099"
+msgid "Not during anything (also live TV)"
+msgstr "Nooit tijdens afspelen (ook live-tv)"
+
+msgctxt "#30100"
+msgid "Wake screen on alarm"
+msgstr "Scherm wekken bij alarm"
+
+msgctxt "#30101"
+msgid "Requests with priority 'alarm' switch the TV on via HDMI-CEC."
+msgstr "Verzoeken met prioriteit 'alarm' zetten de tv aan via HDMI-CEC."
+
+msgctxt "#30102"
+msgid "Do not disturb"
+msgstr "Niet storen"
+
+msgctxt "#30103"
+msgid "Ignores requests. Alarm always gets through."
+msgstr "Negeert verzoeken. Alarm komt altijd door."
+
+msgctxt "#30104"
+msgid "Do not disturb blocks"
+msgstr "Niet storen blokkeert"
+
+msgctxt "#30105"
+msgid "Which priorities are held back while do not disturb is on."
+msgstr "Welke prioriteiten worden tegengehouden bij niet storen."
+
+msgctxt "#30106"
+msgid "Normal priority"
+msgstr "Normale prioriteit"
+
+msgctxt "#30107"
+msgid "Normal and high priority"
+msgstr "Normale en hoge prioriteit"
+
+msgctxt "#30110"
+msgid "MQTT (Home Assistant without YAML)"
+msgstr "MQTT (Home Assistant zonder YAML)"
+
+msgctxt "#30111"
+msgid "Connects to your MQTT broker; with discovery this Kodi appears in Home Assistant automatically."
+msgstr "Verbindt met je MQTT-broker; met discovery verschijnt deze Kodi vanzelf in Home Assistant."
+
+msgctxt "#30112"
+msgid "MQTT broker address"
+msgstr "MQTT-brokeradres"
+
+msgctxt "#30113"
+msgid "IP address or name of the MQTT broker, e.g. 192.168.1.10"
+msgstr "IP-adres of naam van de MQTT-broker, bijv. 192.168.1.10"
+
+msgctxt "#30114"
+msgid "MQTT port"
+msgstr "MQTT-poort"
+
+msgctxt "#30115"
+msgid "Usually 1883."
+msgstr "Meestal 1883."
+
+msgctxt "#30116"
+msgid "MQTT user"
+msgstr "MQTT-gebruiker"
+
+msgctxt "#30117"
+msgid "MQTT password"
+msgstr "MQTT-wachtwoord"
+
+msgctxt "#30118"
+msgid "Home Assistant discovery"
+msgstr "Home Assistant-discovery"
+
+msgctxt "#30119"
+msgid "Creates a device with a button per camera in Home Assistant."
+msgstr "Maakt een apparaat met een knop per camera in Home Assistant."
+
+msgctxt "#30120"
+msgid "Name in Home Assistant"
+msgstr "Naam in Home Assistant"
+
+msgctxt "#30121"
+msgid "Empty = CamAlert + the name of this Kodi."
+msgstr "Leeg = CamAlert + de naam van deze Kodi."
+
+msgctxt "#30130"
+msgid "Frigate detections"
+msgstr "Frigate-detecties"
+
+msgctxt "#30131"
+msgid "Shows the camera when Frigate detects something (via the MQTT broker)."
+msgstr "Toont de camera als Frigate iets detecteert (via de MQTT-broker)."
+
+msgctxt "#30132"
+msgid "Frigate MQTT prefix"
+msgstr "Frigate MQTT-voorvoegsel"
+
+msgctxt "#30133"
+msgid "Usually 'frigate'."
+msgstr "Meestal 'frigate'."
+
+msgctxt "#30134"
+msgid "Objects"
+msgstr "Objecten"
+
+msgctxt "#30135"
+msgid "e.g. person,car. Empty = all."
+msgstr "bijv. person,car. Leeg = alle."
+
+msgctxt "#30136"
+msgid "Frigate camera names"
+msgstr "Frigate-cameranamen"
+
+msgctxt "#30137"
+msgid "Only if they differ: frigate_name=camera|..."
+msgstr "Alleen als ze verschillen: frigate_naam=camera|..."
+
+msgctxt "#30139"
+msgid "Priority"
+msgstr "Prioriteit"
+
+msgctxt "#30140"
+msgid "Normal"
+msgstr "Normaal"
+
+msgctxt "#30141"
+msgid "High"
+msgstr "Hoog"
+
+msgctxt "#30142"
+msgid "Alarm"
+msgstr "Alarm"
+
+msgctxt "#30143"
+msgid "Foscam motion and sound alarm"
+msgstr "Foscam bewegings- en geluidsalarm"
+
+msgctxt "#30144"
+msgid "Asks the Foscam cameras in devices.conf for motion and sound alarms."
+msgstr "Vraagt de Foscam-camera's in devices.conf om bewegings- en geluidsalarmen."
+
+msgctxt "#30145"
+msgid "Check every (seconds)"
+msgstr "Elke (seconden) controleren"
+
+msgctxt "#30150"
+msgid "Cameras with PTZ or Foscam alarms"
+msgstr "Camera's met PTZ of Foscam-alarm"
+
+msgctxt "#30151"
+msgid "Listed in devices.conf in the add-on data folder, one per line: name|onvif|address:80|user|password (or foscam, port 88)"
+msgstr "Staan in devices.conf in de add-on-datamap, één per regel: naam|onvif|adres:80|gebruiker|wachtwoord (of foscam, poort 88)"
+
+msgctxt "#30152"
+msgid "Camera user (default)"
+msgstr "Cameragebruiker (standaard)"
+
+msgctxt "#30153"
+msgid "Used when devices.conf has no user or password for a camera."
+msgstr "Gebruikt als devices.conf geen gebruiker of wachtwoord voor een camera heeft."
+
+msgctxt "#30154"
+msgid "Camera password (default)"
+msgstr "Camerawachtwoord (standaard)"
+
+msgctxt "#30155"
+msgid "Create devices.conf (example)"
+msgstr "devices.conf aanmaken (voorbeeld)"
+
+msgctxt "#30160"
+msgid "HTTP port"
+msgstr "HTTP-poort"
+
+msgctxt "#30161"
+msgid "Port of the CamAlert API on this Kodi (default 8099)."
+msgstr "Poort van de CamAlert-API op deze Kodi (standaard 8099)."
+
+msgctxt "#30162"
+msgid "Allowed callers"
+msgstr "Toegestane aanroepers"
+
+msgctxt "#30163"
+msgid "'Local network only' is recommended."
+msgstr "'Alleen lokaal netwerk' wordt aangeraden."
+
+msgctxt "#30164"
+msgid "Local network only"
+msgstr "Alleen lokaal netwerk"
+
+msgctxt "#30165"
+msgid "Any address"
+msgstr "Elk adres"
+
+msgctxt "#30166"
+msgid "Access token (optional)"
+msgstr "Toegangstoken (optioneel)"
+
+msgctxt "#30167"
+msgid "If set, callers must add ?token=... to every request."
+msgstr "Indien ingevuld moeten aanroepers ?token=... aan elk verzoek toevoegen."
+
+msgctxt "#30168"
+msgid "Use HTTPS for the API"
+msgstr "HTTPS gebruiken voor de API"
+
+msgctxt "#30169"
+msgid "Uses a self-signed certificate; callers must turn off certificate checking."
+msgstr "Gebruikt een zelfondertekend certificaat; aanroepers moeten certificaatcontrole uitzetten."
+
+msgctxt "#30170"
+msgid "Test: show the default camera"
+msgstr "Test: standaardcamera tonen"
+
+msgctxt "#30171"
+msgid "Show mosaic"
+msgstr "Mozaïek tonen"
+
+msgctxt "#30172"
+msgid "Start tour"
+msgstr "Rondgang starten"
+
+msgctxt "#30180"
+msgid "Camera: %s"
+msgstr "Camera: %s"
+
+msgctxt "#30181"
+msgid "Could not reach the camera source:\n%s"
+msgstr "Camerabron niet bereikbaar:\n%s"
+
+msgctxt "#30182"
+msgid "No cameras found."
+msgstr "Geen camera's gevonden."
+
+msgctxt "#30184"
+msgid "Choose a default camera first."
+msgstr "Kies eerst een standaardcamera."
+
+msgctxt "#30185"
+msgid "devices.conf is in:\n%s"
+msgstr "devices.conf staat in:\n%s"
+
+msgctxt "#30190"
+msgid "hold"
+msgstr "vast"
+
+msgctxt "#30191"
+msgid "tour"
+msgstr "rondgang"
+
+msgctxt "#30192"
+msgid "Cameras"
+msgstr "Camera's"
+
+msgctxt "#30196"
+msgid "No camera control set up for this camera (devices.conf)."
+msgstr "Geen camerabediening ingesteld voor deze camera (devices.conf)."

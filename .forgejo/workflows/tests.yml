@@ -27,5 +27,7 @@ jobs:
           deny=[w.strip().lower() for w in re.split(r"[\n,]",os.environ["CAMALERT_DENYLIST"]) if len(w.strip())>=3]
           t=sys.stdin.read().lower(); bad=[i+1 for i,w in enumerate(deny) if w in t]
           print("commit history: %d problems" % len(bad)); sys.exit(1 if bad else 0)'
-      - name: build package
-        run: python3 tools/build_ipk.py dist
+      - name: build packages
+        run: |
+          python3 tools/build_ipk.py dist
+          python3 tools/build_kodi.py dist

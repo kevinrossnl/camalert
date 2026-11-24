@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="service.camalert" name="CamAlert" version="1.0.0" provider-name="CamAlert developers">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0"/>
+  </requires>
+  <extension point="xbmc.service" library="service.py" start="login"/>
+  <extension point="xbmc.python.script" library="default.py">
+    <provides>executable</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_GB">Show IP cameras on your TV when the doorbell rings or motion is detected</summary>
+    <summary lang="nl_NL">Toon IP-camera's op je tv als de deurbel gaat of er beweging is</summary>
+    <summary lang="de_DE">IP-Kameras auf dem Fernseher zeigen, wenn es klingelt oder sich etwas bewegt</summary>
+    <summary lang="fr_FR">Affiche les caméras IP sur la TV quand on sonne ou qu'un mouvement est détecté</summary>
+    <summary lang="it_IT">Mostra le telecamere IP sulla TV quando suona il campanello o c'è movimento</summary>
+    <summary lang="pl_PL">Pokazuje kamery IP na TV, gdy dzwoni dzwonek lub wykryto ruch</summary>
+    <description lang="en_GB">CamAlert shows a camera picture in a corner of the screen, switches to the live stream, a mosaic or a tour. It is controlled by Home Assistant (integration, blueprints or MQTT), Frigate detections or Foscam alarms, with the same HTTP API as the Enigma2 plugin. Works with go2rtc or directly with the cameras.</description>
+    <description lang="nl_NL">CamAlert toont een camerabeeld in een hoek van het scherm, schakelt naar de livestream, een mozaïek of een rondgang. Bediening via Home Assistant (integratie, blueprints of MQTT), Frigate-detecties of Foscam-alarmen, met dezelfde HTTP-API als de Enigma2-plugin. Werkt met go2rtc of rechtstreeks met de camera's.</description>
+    <description lang="de_DE">CamAlert zeigt ein Kamerabild in einer Ecke, schaltet auf den Livestream, ein Mosaik oder einen Rundgang. Gesteuert über Home Assistant (Integration, Blueprints oder MQTT), Frigate-Erkennungen oder Foscam-Alarme, mit derselben HTTP-API wie das Enigma2-Plugin.</description>
+    <description lang="fr_FR">CamAlert affiche une caméra dans un coin de l'écran, passe au direct, à une mosaïque ou à une visite. Piloté par Home Assistant (intégration, blueprints ou MQTT), Frigate ou les alarmes Foscam, avec la même API HTTP que le plugin Enigma2.</description>
+    <description lang="it_IT">CamAlert mostra una telecamera in un angolo dello schermo, passa al live, a un mosaico o a un giro. Comandato da Home Assistant (integrazione, blueprint o MQTT), Frigate o allarmi Foscam, con la stessa API HTTP del plugin Enigma2.</description>
+    <description lang="pl_PL">CamAlert pokazuje obraz kamery w rogu ekranu, przełącza na obraz na żywo, mozaikę lub obchód. Sterowany przez Home Assistant (integracja, blueprinty lub MQTT), Frigate lub alarmy Foscam, z tym samym API HTTP co wtyczka Enigma2.</description>
+    <platform>all</platform>
+    <license>GPL-2.0-only</license>
+    <source>https://github.com/kevinrossnl/camalert</source>
+    <assets>
+      <icon>resources/icon.png</icon>
+      <fanart>resources/fanart.jpg</fanart>
+    </assets>
+    <news>1.0.0: first Kodi version, same API and features as the Enigma2 plugin.</news>
+  </extension>
+</addon>

@@ -2,3 +2,7 @@ dist/
 __pycache__/
 *.pyc
 *.ipk
+
+# shared logic copied in by tools/build_kodi.py
+kodi/service.camalert/resources/lib/camalert/logic.py
+kodi/service.camalert/resources/lib/camalert/devices.py

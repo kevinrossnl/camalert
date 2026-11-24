@@ -1,0 +1,574 @@
+# CamAlert for Kodi - Polish
+# Copyright (C) 2026 CamAlert developers. GPL v2.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: pl_pl\n"
+
+msgctxt "#30000"
+msgid "General"
+msgstr "Ogólne"
+
+msgctxt "#30001"
+msgid "Display"
+msgstr "Wyświetlanie"
+
+msgctxt "#30002"
+msgid "Rules"
+msgstr "Reguły"
+
+msgctxt "#30003"
+msgid "MQTT / Home Assistant"
+msgstr "MQTT / Home Assistant"
+
+msgctxt "#30004"
+msgid "Triggers"
+msgstr "Wyzwalacze"
+
+msgctxt "#30005"
+msgid "Camera control"
+msgstr "Sterowanie kamerą"
+
+msgctxt "#30006"
+msgid "API"
+msgstr "API"
+
+msgctxt "#30010"
+msgid "Enable CamAlert"
+msgstr "Włącz CamAlert"
+
+msgctxt "#30011"
+msgid "Turn the HTTP API and pop-ups on or off."
+msgstr "Włącza lub wyłącza API HTTP i okienka."
+
+msgctxt "#30012"
+msgid "Cameras via"
+msgstr "Kamery przez"
+
+msgctxt "#30013"
+msgid "go2rtc is recommended. Without go2rtc, list your cameras in cameras.conf."
+msgstr "Zalecane jest go2rtc. Bez go2rtc wpisz kamery do cameras.conf."
+
+msgctxt "#30014"
+msgid "go2rtc server"
+msgstr "Serwer go2rtc"
+
+msgctxt "#30015"
+msgid "Directly from the cameras"
+msgstr "Bezpośrednio z kamer"
+
+msgctxt "#30016"
+msgid "go2rtc address"
+msgstr "Adres go2rtc"
+
+msgctxt "#30017"
+msgid "Address of your go2rtc server, e.g. http://192.168.1.10:1984"
+msgstr "Adres serwera go2rtc, np. http://192.168.1.10:1984"
+
+msgctxt "#30018"
+msgid "go2rtc RTSP port"
+msgstr "Port RTSP go2rtc"
+
+msgctxt "#30019"
+msgid "Usually 8554. Only used with the RTSP live format."
+msgstr "Zwykle 8554. Używany tylko z formatem RTSP."
+
+msgctxt "#30020"
+msgid "Check certificates"
+msgstr "Sprawdzaj certyfikaty"
+
+msgctxt "#30021"
+msgid "Turn off for a self-signed certificate (only in your own network)."
+msgstr "Wyłącz dla certyfikatu samopodpisanego (tylko we własnej sieci)."
+
+msgctxt "#30022"
+msgid "Camera file (direct mode)"
+msgstr "Plik kamer (tryb bezpośredni)"
+
+msgctxt "#30023"
+msgid "Empty = cameras.conf in the add-on data folder. One camera per line: name | rtsp-url | snapshot-url"
+msgstr "Puste = cameras.conf w folderze danych. Jedna kamera w wierszu: nazwa | url-rtsp | url-zdjęcia"
+
+msgctxt "#30024"
+msgid "Default camera"
+msgstr "Kamera domyślna"
+
+msgctxt "#30025"
+msgid "Camera name, e.g. front_door. Use 'Choose camera' to pick it from the list."
+msgstr "Nazwa kamery, np. drzwi. Użyj „Wybierz kamerę”."
+
+msgctxt "#30026"
+msgid "Choose camera"
+msgstr "Wybierz kamerę"
+
+msgctxt "#30027"
+msgid "Camera titles"
+msgstr "Tytuły kamer"
+
+msgctxt "#30028"
+msgid "Optional: name=Title|name2=Title 2"
+msgstr "Opcjonalnie: nazwa=Tytuł|nazwa2=Tytuł 2"
+
+msgctxt "#30029"
+msgid "Mosaic cameras"
+msgstr "Kamery mozaiki"
+
+msgctxt "#30030"
+msgid "Comma separated, up to 9. Empty = all."
+msgstr "Oddzielone przecinkami, do 9. Puste = wszystkie."
+
+msgctxt "#30040"
+msgid "Display mode"
+msgstr "Tryb wyświetlania"
+
+msgctxt "#30041"
+msgid "Photo window keeps playing what you watch; live shows the camera stream full screen."
+msgstr "Okno zdjęć nie przerywa programu; na żywo pokazuje kamerę na pełnym ekranie."
+
+msgctxt "#30042"
+msgid "Photo window"
+msgstr "Okno zdjęć"
+
+msgctxt "#30043"
+msgid "Switch to live stream"
+msgstr "Przełącz na obraz na żywo"
+
+msgctxt "#30044"
+msgid "Notification only"
+msgstr "Tylko powiadomienie"
+
+msgctxt "#30045"
+msgid "Duration (seconds)"
+msgstr "Czas (sekundy)"
+
+msgctxt "#30046"
+msgid "How long the camera stays on screen."
+msgstr "Jak długo kamera jest widoczna."
+
+msgctxt "#30047"
+msgid "Window position"
+msgstr "Położenie okna"
+
+msgctxt "#30048"
+msgid "Top right"
+msgstr "Prawy górny"
+
+msgctxt "#30049"
+msgid "Top left"
+msgstr "Lewy górny"
+
+msgctxt "#30050"
+msgid "Bottom right"
+msgstr "Prawy dolny"
+
+msgctxt "#30051"
+msgid "Bottom left"
+msgstr "Lewy dolny"
+
+msgctxt "#30052"
+msgid "Window size"
+msgstr "Rozmiar okna"
+
+msgctxt "#30053"
+msgid "Small"
+msgstr "Małe"
+
+msgctxt "#30054"
+msgid "Medium"
+msgstr "Średnie"
+
+msgctxt "#30055"
+msgid "Large"
+msgstr "Duże"
+
+msgctxt "#30056"
+msgid "Several cameras in one window"
+msgstr "Kilka kamer w jednym oknie"
+
+msgctxt "#30057"
+msgid "Layout when a request names 2 to 4 cameras (photo window)."
+msgstr "Układ, gdy żądanie wymienia 2–4 kamery (okno zdjęć)."
+
+msgctxt "#30058"
+msgid "Automatic"
+msgstr "Automatycznie"
+
+msgctxt "#30059"
+msgid "Below each other"
+msgstr "Jedna pod drugą"
+
+msgctxt "#30060"
+msgid "Next to each other"
+msgstr "Obok siebie"
+
+msgctxt "#30061"
+msgid "Grid (2x2)"
+msgstr "Siatka (2x2)"
+
+msgctxt "#30062"
+msgid "Rotate / mirror per camera"
+msgstr "Obrót / odbicie dla kamery"
+
+msgctxt "#30063"
+msgid "e.g. front_door=rot180|garden=mirror (rot180, mirror, flip)"
+msgstr "np. drzwi=rot180|ogrod=mirror (rot180, mirror, flip)"
+
+msgctxt "#30064"
+msgid "Refresh interval per camera"
+msgstr "Odświeżanie dla kamery"
+
+msgctxt "#30065"
+msgid "Seconds between pictures, e.g. front_door=0.5|garden=5. Default: as fast as possible."
+msgstr "Sekundy między obrazami, np. drzwi=0.5|ogrod=5. Domyślnie: jak najszybciej."
+
+msgctxt "#30066"
+msgid "Remote control in photo window"
+msgstr "Pilot w oknie zdjęć"
+
+msgctxt "#30067"
+msgid "OK = live, LEFT/RIGHT = other camera, MENU = PTZ, BACK = close. Any other key closes it too."
+msgstr "OK = na żywo, LEWO/PRAWO = inna kamera, MENU = PTZ, WSTECZ = zamknij. Każdy inny klawisz też zamyka."
+
+msgctxt "#30068"
+msgid "Pause what is playing meanwhile"
+msgstr "Wstrzymaj odtwarzanie w tym czasie"
+
+msgctxt "#30069"
+msgid "Pauses a video or live TV while the camera is shown and continues afterwards."
+msgstr "Wstrzymuje wideo lub TV na czas pokazu i potem wznawia."
+
+msgctxt "#30070"
+msgid "Return to what was playing"
+msgstr "Wróć do poprzedniego odtwarzania"
+
+msgctxt "#30071"
+msgid "After live view, continue the video at the same position or the same TV channel."
+msgstr "Po podglądzie wznawia wideo w tym samym miejscu lub ten sam kanał."
+
+msgctxt "#30072"
+msgid "Volume during live view (%)"
+msgstr "Głośność podczas podglądu (%)"
+
+msgctxt "#30073"
+msgid "Percentage of the current volume while the camera is shown. 100 = unchanged."
+msgstr "Procent bieżącej głośności podczas pokazu. 100 = bez zmian."
+
+msgctxt "#30074"
+msgid "Live stream format"
+msgstr "Format obrazu na żywo"
+
+msgctxt "#30075"
+msgid "MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds."
+msgstr "MP4 przez HTTP działa z każdym go2rtc; RTSP wymaga portu RTSP go2rtc."
+
+msgctxt "#30076"
+msgid "MP4 (HTTP)"
+msgstr "MP4 (HTTP)"
+
+msgctxt "#30077"
+msgid "RTSP"
+msgstr "RTSP"
+
+msgctxt "#30080"
+msgid "HLS (HTTP, a few seconds delay)"
+msgstr "HLS (HTTP, kilka sekund opóźnienia)"
+
+msgctxt "#30078"
+msgid "Tour: seconds per camera"
+msgstr "Obchód: sekundy na kamerę"
+
+msgctxt "#30079"
+msgid "How long each camera is shown in the tour."
+msgstr "Jak długo każda kamera jest pokazywana."
+
+msgctxt "#30090"
+msgid "Only between certain times"
+msgstr "Tylko w określonych godzinach"
+
+msgctxt "#30091"
+msgid "Ignore normal requests outside the chosen times."
+msgstr "Ignoruj zwykłe żądania poza wybranymi godzinami."
+
+msgctxt "#30092"
+msgid "From"
+msgstr "Od"
+
+msgctxt "#30093"
+msgid "Until"
+msgstr "Do"
+
+msgctxt "#30094"
+msgid "May pass midnight, e.g. 07:00 to 23:00."
+msgstr "Może przechodzić przez północ, np. 07:00 do 23:00."
+
+msgctxt "#30095"
+msgid "Not while playing"
+msgstr "Nie podczas odtwarzania"
+
+msgctxt "#30096"
+msgid "Normal-priority requests are ignored while you watch this. High and alarm always pass."
+msgstr "Zwykłe żądania są wtedy ignorowane. Wysoki i alarm zawsze przechodzą."
+
+msgctxt "#30097"
+msgid "Always show"
+msgstr "Zawsze pokazuj"
+
+msgctxt "#30098"
+msgid "Not during movies and recordings"
+msgstr "Nie podczas filmów i nagrań"
+
+msgctxt "#30099"
+msgid "Not during anything (also live TV)"
+msgstr "Nigdy podczas odtwarzania (także TV)"
+
+msgctxt "#30100"
+msgid "Wake screen on alarm"
+msgstr "Wybudź ekran przy alarmie"
+
+msgctxt "#30101"
+msgid "Requests with priority 'alarm' switch the TV on via HDMI-CEC."
+msgstr "Żądania 'alarm' włączają TV przez HDMI-CEC."
+
+msgctxt "#30102"
+msgid "Do not disturb"
+msgstr "Nie przeszkadzać"
+
+msgctxt "#30103"
+msgid "Ignores requests. Alarm always gets through."
+msgstr "Ignoruje żądania. Alarm zawsze przechodzi."
+
+msgctxt "#30104"
+msgid "Do not disturb blocks"
+msgstr "Nie przeszkadzać blokuje"
+
+msgctxt "#30105"
+msgid "Which priorities are held back while do not disturb is on."
+msgstr "Które priorytety są blokowane."
+
+msgctxt "#30106"
+msgid "Normal priority"
+msgstr "Zwykły priorytet"
+
+msgctxt "#30107"
+msgid "Normal and high priority"
+msgstr "Zwykły i wysoki priorytet"
+
+msgctxt "#30110"
+msgid "MQTT (Home Assistant without YAML)"
+msgstr "MQTT (Home Assistant bez YAML)"
+
+msgctxt "#30111"
+msgid "Connects to your MQTT broker; with discovery this Kodi appears in Home Assistant automatically."
+msgstr "Łączy z brokerem MQTT; z discovery ten Kodi pojawi się w Home Assistant."
+
+msgctxt "#30112"
+msgid "MQTT broker address"
+msgstr "Adres brokera MQTT"
+
+msgctxt "#30113"
+msgid "IP address or name of the MQTT broker, e.g. 192.168.1.10"
+msgstr "Adres IP lub nazwa brokera, np. 192.168.1.10"
+
+msgctxt "#30114"
+msgid "MQTT port"
+msgstr "Port MQTT"
+
+msgctxt "#30115"
+msgid "Usually 1883."
+msgstr "Zwykle 1883."
+
+msgctxt "#30116"
+msgid "MQTT user"
+msgstr "Użytkownik MQTT"
+
+msgctxt "#30117"
+msgid "MQTT password"
+msgstr "Hasło MQTT"
+
+msgctxt "#30118"
+msgid "Home Assistant discovery"
+msgstr "Discovery Home Assistant"
+
+msgctxt "#30119"
+msgid "Creates a device with a button per camera in Home Assistant."
+msgstr "Tworzy urządzenie z przyciskiem dla każdej kamery w Home Assistant."
+
+msgctxt "#30120"
+msgid "Name in Home Assistant"
+msgstr "Nazwa w Home Assistant"
+
+msgctxt "#30121"
+msgid "Empty = CamAlert + the name of this Kodi."
+msgstr "Puste = CamAlert + nazwa tego Kodi."
+
+msgctxt "#30130"
+msgid "Frigate detections"
+msgstr "Wykrycia Frigate"
+
+msgctxt "#30131"
+msgid "Shows the camera when Frigate detects something (via the MQTT broker)."
+msgstr "Pokazuje kamerę, gdy Frigate coś wykryje (przez MQTT)."
+
+msgctxt "#30132"
+msgid "Frigate MQTT prefix"
+msgstr "Prefiks MQTT Frigate"
+
+msgctxt "#30133"
+msgid "Usually 'frigate'."
+msgstr "Zwykle 'frigate'."
+
+msgctxt "#30134"
+msgid "Objects"
+msgstr "Obiekty"
+
+msgctxt "#30135"
+msgid "e.g. person,car. Empty = all."
+msgstr "np. person,car. Puste = wszystkie."
+
+msgctxt "#30136"
+msgid "Frigate camera names"
+msgstr "Nazwy kamer Frigate"
+
+msgctxt "#30137"
+msgid "Only if they differ: frigate_name=camera|..."
+msgstr "Tylko gdy się różnią: nazwa_frigate=kamera|..."
+
+msgctxt "#30139"
+msgid "Priority"
+msgstr "Priorytet"
+
+msgctxt "#30140"
+msgid "Normal"
+msgstr "Zwykły"
+
+msgctxt "#30141"
+msgid "High"
+msgstr "Wysoki"
+
+msgctxt "#30142"
+msgid "Alarm"
+msgstr "Alarm"
+
+msgctxt "#30143"
+msgid "Foscam motion and sound alarm"
+msgstr "Alarm ruchu i dźwięku Foscam"
+
+msgctxt "#30144"
+msgid "Asks the Foscam cameras in devices.conf for motion and sound alarms."
+msgstr "Odpytuje kamery Foscam z devices.conf o alarmy."
+
+msgctxt "#30145"
+msgid "Check every (seconds)"
+msgstr "Sprawdzaj co (sekundy)"
+
+msgctxt "#30150"
+msgid "Cameras with PTZ or Foscam alarms"
+msgstr "Kamery z PTZ lub alarmem Foscam"
+
+msgctxt "#30151"
+msgid "Listed in devices.conf in the add-on data folder, one per line: name|onvif|address:80|user|password (or foscam, port 88)"
+msgstr "Wpisane w devices.conf w folderze danych, jedna w wierszu: nazwa|onvif|adres:80|użytkownik|hasło (lub foscam, port 88)"
+
+msgctxt "#30152"
+msgid "Camera user (default)"
+msgstr "Użytkownik kamery (domyślny)"
+
+msgctxt "#30153"
+msgid "Used when devices.conf has no user or password for a camera."
+msgstr "Używane, gdy devices.conf nie ma użytkownika lub hasła."
+
+msgctxt "#30154"
+msgid "Camera password (default)"
+msgstr "Hasło kamery (domyślne)"
+
+msgctxt "#30155"
+msgid "Create devices.conf (example)"
+msgstr "Utwórz devices.conf (przykład)"
+
+msgctxt "#30160"
+msgid "HTTP port"
+msgstr "Port HTTP"
+
+msgctxt "#30161"
+msgid "Port of the CamAlert API on this Kodi (default 8099)."
+msgstr "Port API CamAlert na tym Kodi (domyślnie 8099)."
+
+msgctxt "#30162"
+msgid "Allowed callers"
+msgstr "Dozwoleni wywołujący"
+
+msgctxt "#30163"
+msgid "'Local network only' is recommended."
+msgstr "Zalecane jest „Tylko sieć lokalna”."
+
+msgctxt "#30164"
+msgid "Local network only"
+msgstr "Tylko sieć lokalna"
+
+msgctxt "#30165"
+msgid "Any address"
+msgstr "Dowolny adres"
+
+msgctxt "#30166"
+msgid "Access token (optional)"
+msgstr "Token dostępu (opcjonalny)"
+
+msgctxt "#30167"
+msgid "If set, callers must add ?token=... to every request."
+msgstr "Jeśli ustawiony, każde żądanie musi zawierać ?token=..."
+
+msgctxt "#30168"
+msgid "Use HTTPS for the API"
+msgstr "Użyj HTTPS dla API"
+
+msgctxt "#30169"
+msgid "Uses a self-signed certificate; callers must turn off certificate checking."
+msgstr "Używa certyfikatu samopodpisanego; wyłącz weryfikację u wywołujących."
+
+msgctxt "#30170"
+msgid "Test: show the default camera"
+msgstr "Test: pokaż kamerę domyślną"
+
+msgctxt "#30171"
+msgid "Show mosaic"
+msgstr "Pokaż mozaikę"
+
+msgctxt "#30172"
+msgid "Start tour"
+msgstr "Rozpocznij obchód"
+
+msgctxt "#30180"
+msgid "Camera: %s"
+msgstr "Kamera: %s"
+
+msgctxt "#30181"
+msgid "Could not reach the camera source:\n%s"
+msgstr "Źródło kamer nieosiągalne:\n%s"
+
+msgctxt "#30182"
+msgid "No cameras found."
+msgstr "Nie znaleziono kamer."
+
+msgctxt "#30184"
+msgid "Choose a default camera first."
+msgstr "Najpierw wybierz kamerę domyślną."
+
+msgctxt "#30185"
+msgid "devices.conf is in:\n%s"
+msgstr "devices.conf jest w:\n%s"
+
+msgctxt "#30190"
+msgid "hold"
+msgstr "wstrzymany"
+
+msgctxt "#30191"
+msgid "tour"
+msgstr "obchód"
+
+msgctxt "#30192"
+msgid "Cameras"
+msgstr "Kamery"
+
+msgctxt "#30196"
+msgid "No camera control set up for this camera (devices.conf)."
+msgstr "Brak sterowania dla tej kamery (devices.conf)."

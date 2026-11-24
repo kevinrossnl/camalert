@@ -30,15 +30,21 @@ jobs:
         env:
           CAMALERT_OWNER: ${{ github.repository_owner }}
         run: python3 tools/build_ipk.py dist
+      - name: build Kodi add-on and repository
+        run: python3 tools/build_kodi.py dist --repo-url "https://${{ github.repository_owner }}.github.io/camalert/kodi"
       - uses: actions/upload-artifact@v4
         with:
-          name: ipk
-          path: dist/*.ipk
+          name: packages
+          path: |
+            dist/*.ipk
+            dist/*.zip
       - name: release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*.ipk
+          files: |
+            dist/*.ipk
+            dist/*.zip
           generate_release_notes: true
       - name: opkg feed (Packages / Packages.gz)
         if: startsWith(github.ref, 'refs/tags/v')
@@ -47,6 +53,8 @@ jobs:
           cp dist/*.ipk feed/
           python3 tools/build_feed.py feed
           printf 'src/gz camalert https://%s.github.io/camalert\n' "${{ github.repository_owner }}" > feed/camalert-feed.conf
+          mkdir -p feed/kodi
+          cp -r dist/kodi-repo/. feed/kodi/
       - uses: actions/upload-pages-artifact@v3
         if: startsWith(github.ref, 'refs/tags/v')
         with:

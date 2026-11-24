@@ -1,6 +1,6 @@
-# CamAlert
+# CamAlert for Enigma2 and Kodi
 
-**CamAlert** shows your IP cameras on the TV of an Enigma2 receiver (openATV, OpenPLi, VTi, ... on VU+, Dreambox, Zgemma, Octagon and others).
+**CamAlert** shows your IP cameras on the TV of an Enigma2 receiver (openATV, OpenPLi, VTi, ... on VU+, Dreambox, Zgemma, Octagon and others) or a **Kodi** media player (LibreELEC, CoreELEC, OSMC, Windows, Linux, Android; Kodi 20 or newer) – with the same Home Assistant integration, blueprints, MQTT topics and HTTP API for both.
 
 ![CamAlert photo window on top of a TV programme](docs/images/hero.jpg)
 
@@ -60,6 +60,10 @@ opkg install /tmp/camalert.ipk
 
 Then restart the GUI and open **Menu › Plugins › CamAlert**.
 
+### Kodi add-on
+
+Download `repository.camalert-*.zip` from the [latest release](../../releases/latest) and in Kodi choose **Add-ons › Install from zip file**, then **Install from repository › CamAlert repository › Services › CamAlert**. Kodi then keeps CamAlert up to date by itself. See [docs/kodi.md](docs/kodi.md).
+
 ## Documentation
 
 | | |
@@ -71,6 +75,7 @@ Then restart the GUI and open **Menu › Plugins › CamAlert**.
 | [Without go2rtc](docs/without-go2rtc.md) | Connect the receiver directly to the cameras |
 | [Home Assistant](docs/home-assistant.md) | Integration, blueprints, MQTT, priorities |
 | [Several cameras at once](docs/mosaic.md) | Photo mosaic or live mosaic channel |
+| [Kodi](docs/kodi.md) | The Kodi add-on: install, settings, remote control, differences |
 | [HTTP API](docs/api.md) | For other systems and scripts |
 | [Troubleshooting](docs/troubleshooting.md) | Black picture, slow start, no pop-up, ... |
 | [Translating](docs/translating.md) | Add or improve a language |

@@ -26,7 +26,7 @@ from .camalert_core.cameras import (display_name, known_camera, live_stream_name
                                     parse_cams, parse_orientation, parse_refresh, parse_titles, refresh_delay, slug,
                                     title_for)
 from .camalert_core.events import add_event, event_title
-from .camalert_core.keymap import button_event, button_for
+from .camalert_core.keymap import button_event
 from .camalert_core.layout import grid, strip_geometry, title_font, window_geometry
 from .camalert_core.obs.log import redact
 from .camalert_core.obs.metrics import metrics_text
@@ -35,7 +35,7 @@ from .camalert_core.rules import (blocked_by_rules, clock_tuple, cooldown_second
                                   in_time_window, lowered_volume, pick_mode, pick_priority, should_pause)
 from .camalert_core.update import latest_tag, newer_version, UPDATE_INTERVAL
 from .camalert_core.urls import normalize_server, rtsp_url, snapshot_url, split_credentials, tcp_url, valid_port
-from .keys import key_action, ptz_key
+from .keys import action_map_args, button_for, key_action, ptz_key
 from .services import chime_command, github_repo, is_media_ref, service_ref, stream_from_ref
 
 PHOTO = "/tmp/camalert.jpg"
@@ -210,7 +210,7 @@ class MosaicScreen(Screen):
             self["label%d" % i] = Label(" " + title + " ")
             url = url.replace("width=640", "width=%d" % min(960, w)) if "/api/frame.jpeg" in url else url
             self.tiles.append(Tile(self, "tile%d" % i, name, url, (w, h)))
-        self["actions"] = ActionMap(["OkCancelActions"], {"ok": self.close, "cancel": self.close}, -1)
+        self["actions"] = ActionMap(*action_map_args("mosaic", {"close": self.close}), prio=-1)
         self.active = False
         self.timer = eTimer()
         self.timer.callback.append(self.close)
@@ -443,10 +443,12 @@ class GlobalKeys(object):
         c = config.plugins.camalert
         if ctl.ptz_stream:
             action = ptz_key(code)
+            if action == "pass":
+                return 0  # volume keys
             if action is None and button_for(code, c.ptz_key.value, True) == "ptz":
-                action = "leave"
+                action = "leave"  # the configured PTZ key; other colour keys no longer leave (YELLOW did, #42)
             if action is None:
-                return 0 if code in (113, 114, 115) else 1  # volume passes, everything else is ignored in PTZ mode
+                return 1  # everything else is ignored in PTZ mode
             self.swallow.add(code)
             if action == "leave":
                 reactor.callLater(0, ctl.leave_ptz)
@@ -531,9 +533,9 @@ class TourScreen(Screen):
         self.tile = None
         self.timer = eTimer()
         self.timer.callback.append(lambda: self.step(1, auto=True))
-        self["actions"] = ActionMap(["OkCancelActions", "DirectionActions", "ColorActions"], {
-            "ok": self.toggle_hold, "cancel": self.close, "left": lambda: self.step(-1), "right": lambda: self.step(1),
-            "green": self.live}, -1)
+        self["actions"] = ActionMap(*action_map_args("tour", {
+            "hold": self.toggle_hold, "close": self.close, "prev": lambda: self.step(-1), "next": lambda: self.step(1),
+            "live": self.live}), prio=-1)
         self.onShown.append(self.started)
         self.onClose.append(self.stopped)
 

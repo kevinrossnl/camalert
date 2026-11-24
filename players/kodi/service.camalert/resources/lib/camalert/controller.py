@@ -15,7 +15,7 @@ from .display import FullScreen, LiveOverlay, PhotoWindow, open_window
 from .klogic import blocked_by_playing, chime_wanted, kodi_volume, live_mime, playing_kind, resume_plan
 from .camalert_core.cameras import known_camera, neighbour, parse_cams, slug
 from .camalert_core.events import add_event, event_title
-from .camalert_core.keymap import button_event, button_for
+from .camalert_core.keymap import button_event, colour_action
 from .camalert_core.rules import (blocked_by_rules, clamp_seconds, clock_tuple, cooldown_seconds, decide, dnd_blocks,
                                   in_cooldown, in_time_window, pick_mode, pick_priority)
 
@@ -484,10 +484,10 @@ class Controller(object):
         p.do(action) if action != "stop" else p.stop()
         return True
 
-    def colour_key(self, camera, code):
+    def colour_key(self, camera, colour):
         """A colour key while a camera is on screen: 'ptz' (toggle PTZ mode) or sent to Home Assistant."""
         s = kodiapi.settings()
-        what = button_for(code, s["ptz_key"], self.has_ptz(camera), s["ha_buttons"])
+        what = colour_action(colour, s["ptz_key"], self.has_ptz(camera), s["ha_buttons"])
         if what and what != "ptz":
             self.send_button(camera, what, s)
         return what

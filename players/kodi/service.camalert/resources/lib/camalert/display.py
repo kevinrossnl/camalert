@@ -8,8 +8,8 @@ import time
 import xbmcgui
 
 from . import kodiapi, sources
-from .klogic import (PTZ_TOGGLE as TOGGLE_IDS, SCREEN_H, SCREEN_W, colour_code, forward_builtin, frame_name, key_action,
-                     ptz_action, title_font_name, tour_key)
+from .klogic import (PTZ_TOGGLE as TOGGLE_IDS, SCREEN_H, SCREEN_W, colour_name, forward_builtin, frame_name, key_action,
+                     live_key, mosaic_key, ptz_action, title_font_name, tour_key)
 from .camalert_core.cameras import parse_orientation, parse_refresh, refresh_delay
 from .camalert_core.events import event_title
 from .camalert_core.layout import grid, strip_geometry, window_geometry
@@ -347,9 +347,9 @@ class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
         kodiapi.log("photo window key %d / button %d" % (aid, action.getButtonCode()), "verbose")
         if self.ptz_action(aid):
             return
-        code = colour_code(action.getButtonCode())
-        if code and len(self.tiles) == 1:
-            if self.ctl.colour_key(self.stream, code) == "ptz" and self.ptz_toggle(self.stream):
+        colour = colour_name(action.getButtonCode())
+        if colour and len(self.tiles) == 1:
+            if self.ctl.colour_key(self.stream, colour) == "ptz" and self.ptz_toggle(self.stream):
                 self.ptz_used()
             else:
                 self.extend(self.duration)
@@ -464,7 +464,7 @@ class FullScreen(xbmcgui.WindowDialog):
         if aid in VOLUME_KEYS:
             kodiapi.builtin(VOLUME_KEYS[aid])
             return
-        what = tour_key(aid) if self.tour else ("close" if aid in (10, 92, 13) else "none")
+        what = tour_key(aid) if self.tour else mosaic_key(aid)
         if what == "close":
             self.ctl.fullscreen_closed(self)
         elif what in ("prev", "next"):
@@ -518,20 +518,21 @@ class LiveOverlay(PtzMode, xbmcgui.WindowDialog):
         aid = action.getId()
         if self.ptz_action(aid):
             return
-        code = colour_code(action.getButtonCode())
-        if code:
-            if self.ctl.colour_key(self.name, code) == "ptz" and self.ptz_toggle(self.name):
+        colour = colour_name(action.getButtonCode())
+        if colour:
+            if self.ctl.colour_key(self.name, colour) == "ptz" and self.ptz_toggle(self.name):
                 self.ptz_used()
             return
-        if aid in TOGGLE_IDS:
+        what = live_key(aid)
+        if what == "ptz":
             if self.ptz_toggle(self.name):
                 self.ptz_used()
             return
         if aid in VOLUME_KEYS:
             kodiapi.builtin(VOLUME_KEYS[aid])
-        elif aid in (1, 2):
-            self.ctl.live_other(-1 if aid == 1 else 1)
-        elif aid in (10, 92, 13):
+        elif what in ("prev", "next"):
+            self.ctl.live_other(-1 if what == "prev" else 1)
+        elif what == "close":
             self.ctl.hide()
-        elif aid in (12, 79):
+        elif what == "pause":
             kodiapi.builtin("Action(Pause)")

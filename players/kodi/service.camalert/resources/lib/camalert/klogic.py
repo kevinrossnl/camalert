@@ -5,6 +5,8 @@
 import re
 from urllib.parse import quote, urlsplit
 
+from .camalert_core.keymap import action_for, keys_for
+
 # Kodi action ids (xbmcgui.ACTION_*)
 ACTION_LEFT, ACTION_RIGHT, ACTION_UP, ACTION_DOWN = 1, 2, 3, 4
 ACTION_PAGE_UP, ACTION_PAGE_DOWN, ACTION_SELECT = 5, 6, 7
@@ -13,7 +15,24 @@ ACTION_VOLUME_UP, ACTION_VOLUME_DOWN, ACTION_MUTE = 88, 89, 91
 ACTION_PLAYER_PLAY, ACTION_PAUSE, ACTION_SHOW_INFO, ACTION_CONTEXT_MENU = 79, 12, 11, 117
 ACTION_ENTER, ACTION_MOUSE_MOVE = 135, 107
 ACTION_COLOUR = 122  # red/green/yellow/blue arrive as this action; which one is in the button code
-PASS_ACTIONS = {ACTION_VOLUME_UP, ACTION_VOLUME_DOWN, ACTION_MUTE, ACTION_MOUSE_MOVE, ACTION_COLOUR, 0}
+ACTION_CHANNEL_UP, ACTION_CHANNEL_DOWN = 184, 185
+# Kodi action ids -> key names of the key map (camalert_core.keymap, #42)
+NAMES = {0: "NONE", ACTION_LEFT: "LEFT", ACTION_RIGHT: "RIGHT", ACTION_UP: "UP", ACTION_DOWN: "DOWN",
+         ACTION_PAGE_UP: "PAGE_UP", ACTION_PAGE_DOWN: "PAGE_DOWN", ACTION_SELECT: "SELECT", ACTION_ENTER: "ENTER",
+         ACTION_PREVIOUS_MENU: "PREVIOUS_MENU", ACTION_NAV_BACK: "BACK", ACTION_STOP: "STOP", ACTION_PAUSE: "PAUSE",
+         ACTION_PLAYER_PLAY: "PLAY", ACTION_SHOW_INFO: "SHOW_INFO", ACTION_CONTEXT_MENU: "CONTEXT_MENU",
+         ACTION_VOLUME_UP: "VOLUME_UP", ACTION_VOLUME_DOWN: "VOLUME_DOWN", ACTION_MUTE: "MUTE",
+         ACTION_MOUSE_MOVE: "MOUSE_MOVE", ACTION_COLOUR: "COLOUR", ACTION_CHANNEL_UP: "CHANNEL_UP",
+         ACTION_CHANNEL_DOWN: "CHANNEL_DOWN"}
+CODES = {name: aid for aid, name in NAMES.items()}
+
+
+def action_ids(context, action):
+    """Kodi action ids of the keys that do `action` in `context`."""
+    return tuple(CODES[k] for k in keys_for("kodi", context, action))
+
+
+PASS_ACTIONS = set(action_ids("window", "pass"))
 # keys that close the window and are then passed on to Kodi (so the user can keep zapping / navigating)
 FORWARD = {ACTION_UP: "Up", ACTION_DOWN: "Down", ACTION_PAGE_UP: "PageUp", ACTION_PAGE_DOWN: "PageDown",
            ACTION_PAUSE: "Pause", ACTION_PLAYER_PLAY: "PlayPause", ACTION_STOP: "Stop", ACTION_SHOW_INFO: "Info",
@@ -23,18 +42,10 @@ SCREEN_W, SCREEN_H = 1280, 720  # coordinate system of xbmcgui windows
 
 
 def key_action(action_id):
-    """What a remote key does while the photo window is open: live / prev / next / close / pass / close_pass."""
-    if action_id in (ACTION_SELECT, ACTION_ENTER):
-        return "live"
-    if action_id == ACTION_LEFT:
-        return "prev"
-    if action_id == ACTION_RIGHT:
-        return "next"
-    if action_id in (ACTION_PREVIOUS_MENU, ACTION_NAV_BACK):
-        return "close"
-    if action_id in PASS_ACTIONS:
-        return "pass"
-    return "close_pass"
+    """What a remote key does while the photo window is open: live / prev / next / close / pass / close_pass
+    (PTZ toggle keys are handled before this; anywhere else they close the window and do their normal job)."""
+    a = action_for("kodi", "window", NAMES.get(action_id))
+    return a if a in ("live", "prev", "next", "close", "pass") else "close_pass"
 
 
 def forward_builtin(action_id):
@@ -45,17 +56,17 @@ def forward_builtin(action_id):
 
 def tour_key(action_id):
     """Keys in the full-screen tour: prev / next / hold / live / close / none."""
-    if action_id == ACTION_LEFT:
-        return "prev"
-    if action_id == ACTION_RIGHT:
-        return "next"
-    if action_id in (ACTION_SELECT, ACTION_ENTER):
-        return "hold"
-    if action_id in (ACTION_PLAYER_PLAY, ACTION_UP):
-        return "live"
-    if action_id in (ACTION_PREVIOUS_MENU, ACTION_NAV_BACK, ACTION_STOP):
-        return "close"
-    return "none"
+    return action_for("kodi", "tour", NAMES.get(action_id)) or "none"
+
+
+def mosaic_key(action_id):
+    """Keys in the full-screen mosaic: close / none."""
+    return action_for("kodi", "mosaic", NAMES.get(action_id)) or "none"
+
+
+def live_key(action_id):
+    """Keys on the live view bar: prev / next / close / pause / ptz / None."""
+    return action_for("kodi", "live", NAMES.get(action_id))
 
 
 # --- settings --------------------------------------------------------------------------------------------------
@@ -192,15 +203,14 @@ def frame_name(prefix, counter, keep=3):
 
 
 # --- camera control (PTZ) ------------------------------------------------------------------------------------
-PTZ_TOGGLE = (ACTION_CONTEXT_MENU, ACTION_SHOW_INFO)
+PTZ_TOGGLE = action_ids("window", "ptz")
 
 
 def ptz_action(action_id):
-    """Kodi key in PTZ mode -> up/down/left/right/zoom_in/zoom_out/home/leave (names of devices.ptz), or None."""
-    return {ACTION_UP: "up", ACTION_DOWN: "down", ACTION_LEFT: "left", ACTION_RIGHT: "right",
-            ACTION_PAGE_UP: "zoom_in", 184: "zoom_in", ACTION_PAGE_DOWN: "zoom_out", 185: "zoom_out",
-            ACTION_SELECT: "home", ACTION_ENTER: "home", ACTION_PREVIOUS_MENU: "leave", ACTION_NAV_BACK: "leave",
-            ACTION_CONTEXT_MENU: "leave", ACTION_SHOW_INFO: "leave"}.get(action_id)
+    """Kodi key in PTZ mode -> up/down/left/right/zoom_in/zoom_out/home/leave (names of devices.ptz), or None
+    (volume keys and everything else)."""
+    a = action_for("kodi", "ptz", NAMES.get(action_id))
+    return None if a == "pass" else a
 
 
 def with_default_login(devs, user, password):
@@ -222,10 +232,9 @@ COLOUR_BUTTONS = {251: "red", 252: "green", 253: "yellow", 254: "blue",
                   0xF070: "red", 0xF071: "green", 0xF072: "yellow", 0xF073: "blue"}
 
 
-def colour_code(button_code):
-    """Enigma2-style key code (398-401, as logic.button_for expects) of a Kodi colour key, or None."""
-    colour = COLOUR_BUTTONS.get(button_code & 0xFFFF if button_code else 0)
-    return {"red": 398, "green": 399, "yellow": 400, "blue": 401}.get(colour)
+def colour_name(button_code):
+    """'red' / 'green' / 'yellow' / 'blue' for a Kodi colour key (remote, CEC or F1-F4), or None."""
+    return COLOUR_BUTTONS.get(button_code & 0xFFFF if button_code else 0)
 
 
 TITLE_FONTS = {"small": "font12", "normal": "font13", "large": "font30"}

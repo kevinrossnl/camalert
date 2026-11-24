@@ -12,7 +12,7 @@
 
 | Path | What |
 |---|---|
-| `core/camalert_core/` | Shared core, plain Python 3.8+ (no Enigma2/Twisted/Kodi/HA imports; `tests/test_lint.py` checks it): one module per domain, unit tests in `tests/core/` (branch coverage >= 90 %): `cameras` (names, titles, per-camera maps), `urls`, `rules` (modes, priorities, DND, hours, cooldown), `layout` (geometry), `access` (allowlist, token, rate limit), `events`, `keymap` (colour keys), `update`, `mqtt/` (`codec`, `topics` incl. discovery), `devices/` (`config`, `foscam`, `onvif`, `client` = network calls), `obs/` (`log` = levels + `redact()`, `camlog`, `metrics`), `triggers/` (registry of trigger sources: `frigate`, `foscam`; a new source is one class with `@register`, #6). The builds copy the whole package into every player package as `camalert_core/`; inside it all imports are relative |
+| `core/camalert_core/` | Shared core, plain Python 3.8+ (no Enigma2/Twisted/Kodi/HA imports; `tests/test_lint.py` checks it): one module per domain, unit tests in `tests/core/` (branch coverage >= 90 %): `cameras` (names, titles, per-camera maps), `urls`, `rules` (modes, priorities, DND, hours, cooldown), `layout` (geometry), `access` (allowlist, token, rate limit), `events`, `keymap` (remote-key map per player and screen + colour keys, #42; key codes live in `players/enigma2/CamAlert/keys.py` and Kodi `klogic.py`), `update`, `mqtt/` (`codec`, `topics` incl. discovery), `devices/` (`config`, `foscam`, `onvif`, `client` = network calls), `obs/` (`log` = levels + `redact()`, `camlog`, `metrics`), `triggers/` (registry of trigger sources: `frigate`, `foscam`; a new source is one class with `@register`, #6). The builds copy the whole package into every player package as `camalert_core/`; inside it all imports are relative |
 | `players/enigma2/CamAlert/` | Enigma2 plugin (Python 3). `services.py` (service references, channel lists, chime command, update source) and `keys.py` (remote key codes) are the Enigma2-only pure helpers; `display.py` (photo window, mosaic, tour, live, controller), `server.py` (HTTP API), `mqtt.py` (MQTT + discovery), `bouquet.py` (camera channel list, auto update), `setup.py` (settings screen), `plugin.py` (entry points), `diagnostics.py` (diagnostics + event list screens), `picons.py` (picons, plain Python), `chime.wav` (made by `tools/make_chime.py`) |
 | `custom_components/camalert/` | Home Assistant integration (config flow, buttons, sensor, DND switch, remote-button event entity + webhook, diagnostics, actions `show`/`mosaic`/`hide`/`ptz`). Same version number as the plugin (`manifest.json` = `__version__`) |
 | `homeassistant/blueprints/` | Blueprints: doorbell, motion (armed / times), alarm, remote button |
@@ -32,6 +32,7 @@
 - `core/camalert_core/` has no Enigma2, Twisted, Kodi or Home Assistant imports and stays Python 3.8 compatible (Kodi 19): both players use it. `picons.py` is plain Python too.
 - Everything that is logged or shown in diagnostics goes through `redact()`; camera passwords live only in
   `/etc/enigma2/camalert_devices.conf`, never in settings.
+- Which key does what is defined once in `core/camalert_core/keymap.py`; change it there, not in the handlers.
 - Key hooks: `GlobalKeys` (colour keys / PTZ, priority -0x7FFFFFFF) runs before `KeyHook` (photo window, -0x7FFFFFFE).
 
 ## Rules (learned on real Kodi boxes)

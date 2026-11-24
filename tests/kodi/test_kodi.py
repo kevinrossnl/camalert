@@ -140,11 +140,15 @@ class _KodiLogic(object):
 
     def test_keys_chime_title(self):
         k = self.k
-        self.assertEqual(k.colour_code(251), 398)
-        self.assertEqual(k.colour_code(254), 401)
-        self.assertEqual(k.colour_code(0xF071), 399)
-        self.assertIsNone(k.colour_code(0))
-        self.assertIsNone(k.colour_code(61453))
+        self.assertEqual(k.colour_name(251), "red")
+        self.assertEqual(k.colour_name(254), "blue")
+        self.assertEqual(k.colour_name(0xF071), "green")
+        self.assertIsNone(k.colour_name(0))
+        self.assertIsNone(k.colour_name(61453))
+        self.assertEqual(k.mosaic_key(92), "close")
+        self.assertEqual(k.mosaic_key(7), "none")
+        self.assertEqual(k.live_key(117), "ptz")
+        self.assertEqual(k.live_key(79), "pause")
         self.assertTrue(k.chime_wanted("all", "normal"))
         self.assertTrue(k.chime_wanted("high", "alarm"))
         self.assertFalse(k.chime_wanted("high", "normal"))
@@ -330,7 +334,7 @@ class _KodiModules(object):
         self.assertEqual(ctl.events[0]["frigate_id"], "123.4-abc")
         sent = []
         ctl.send_button = lambda cam, b, s=None: sent.append((cam, b))
-        self.assertEqual(ctl.colour_key("garden", 398), "red")
+        self.assertEqual(ctl.colour_key("garden", "red"), "red")
         self.assertEqual(sent, [("garden", "red")])
 
     def test_cooldown_and_substreams(self):

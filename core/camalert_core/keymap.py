@@ -1,20 +1,74 @@
 # -*- coding: utf-8 -*-
 # CamAlert - show IP cameras on your TV.
 # Copyright (C) 2026 CamAlert developers. Licensed under the GNU GPL v2 (see LICENSE).
-"""Colour keys (to Home Assistant or PTZ toggle) and the button event payload."""
+"""The remote-key map of every player (#42): which key does what, per screen ("context").
 
+One table per player, with logical key names; each player translates its own key codes to these names
+(players/enigma2/CamAlert/keys.py, players/kodi/.../klogic.py), so handlers, on-screen hints and the docs
+(docs/remote-buttons.md) can all come from here.
+
+Contexts:
+    window   photo window (one camera or 2-4 cameras); keys not listed close it and keep their normal job
+    ptz      camera control (PTZ) mode; "leave" also happens with the configured PTZ colour key
+    tour     full-screen tour
+    mosaic   full-screen mosaic
+    live     live view (Kodi shows a bar; on Enigma2 the camera is a normal channel)
+Colour keys (red/green/yellow/blue) go to Home Assistant while a camera is on screen, except the configured
+PTZ key on a camera with PTZ (colour_action()).
+"""
 import json
 
+KEYMAP = {
+    "enigma2": {
+        "window": {"live": ("OK",), "prev": ("LEFT",), "next": ("RIGHT",), "close": ("EXIT",),
+                   "pass": ("MUTE", "VOLUME_DOWN", "VOLUME_UP")},
+        "ptz": {"up": ("UP",), "down": ("DOWN",), "left": ("LEFT",), "right": ("RIGHT",),
+                "zoom_in": ("CHANNEL_UP",), "zoom_out": ("CHANNEL_DOWN",), "home": ("OK",), "leave": ("EXIT",),
+                "pass": ("MUTE", "VOLUME_DOWN", "VOLUME_UP")},
+        "tour": {"prev": ("LEFT",), "next": ("RIGHT",), "hold": ("OK",), "live": ("GREEN",), "close": ("EXIT",)},
+        "mosaic": {"close": ("OK", "EXIT")},
+        "live": {},
+    },
+    "kodi": {
+        "window": {"live": ("SELECT", "ENTER"), "prev": ("LEFT",), "next": ("RIGHT",),
+                   "close": ("PREVIOUS_MENU", "BACK"), "ptz": ("CONTEXT_MENU", "SHOW_INFO"),
+                   "pass": ("VOLUME_UP", "VOLUME_DOWN", "MUTE", "MOUSE_MOVE", "COLOUR", "NONE")},
+        "ptz": {"up": ("UP",), "down": ("DOWN",), "left": ("LEFT",), "right": ("RIGHT",),
+                "zoom_in": ("PAGE_UP", "CHANNEL_UP"), "zoom_out": ("PAGE_DOWN", "CHANNEL_DOWN"),
+                "home": ("SELECT", "ENTER"), "leave": ("PREVIOUS_MENU", "BACK", "CONTEXT_MENU", "SHOW_INFO"),
+                "pass": ("VOLUME_UP", "VOLUME_DOWN", "MUTE")},
+        "tour": {"prev": ("LEFT",), "next": ("RIGHT",), "hold": ("SELECT", "ENTER"), "live": ("PLAY", "UP"),
+                 "close": ("PREVIOUS_MENU", "BACK", "STOP")},
+        "mosaic": {"close": ("PREVIOUS_MENU", "BACK", "STOP")},
+        "live": {"prev": ("LEFT",), "next": ("RIGHT",), "close": ("PREVIOUS_MENU", "BACK", "STOP"),
+                 "pause": ("PAUSE", "PLAY"), "ptz": ("CONTEXT_MENU", "SHOW_INFO")},
+    },
+}
+PLAYERS = tuple(sorted(KEYMAP))
+CONTEXTS = ("window", "ptz", "tour", "mosaic", "live")
 
-COLOR_KEYS = {398: "red", 399: "green", 400: "yellow", 401: "blue"}
+
+def action_for(player, context, key):
+    """Logical action of a key name in a context, or None (= not handled there)."""
+    for action, keys in KEYMAP[player][context].items():
+        if key in keys:
+            return action
+    return None
+
+
+def keys_for(player, context, action):
+    return KEYMAP[player][context].get(action, ())
+
+
+# --- colour keys -> Home Assistant or PTZ ----------------------------------------------------------------------
+COLOURS = ("red", "green", "yellow", "blue")
 PTZ_TOGGLE_KEYS = ("blue", "yellow", "red", "green", "off")
 
 
-def button_for(code, ptz_toggle="blue", has_ptz=False, enabled=True):
-    """('ptz' | colour name | None) for a key while a camera is on screen. The PTZ toggle key only counts as PTZ
+def colour_action(colour, ptz_toggle="blue", has_ptz=False, enabled=True):
+    """'ptz' | colour | None for a colour key while a camera is on screen. The PTZ toggle key only counts as PTZ
     for cameras that have PTZ; for all other cameras every colour key goes to Home Assistant."""
-    colour = COLOR_KEYS.get(code)
-    if colour is None:
+    if colour not in COLOURS:
         return None
     if has_ptz and colour == ptz_toggle:
         return "ptz"

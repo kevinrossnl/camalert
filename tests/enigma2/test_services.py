@@ -130,7 +130,17 @@ Garden | rtsp://192.168.1.22/dup
         self.assertEqual(keys.ptz_key(keys.KEY_CHANNELUP), "zoom_in")
         self.assertEqual(keys.ptz_key(keys.KEY_OK), "home")
         self.assertEqual(keys.ptz_key(keys.KEY_EXIT), "leave")
-        self.assertIsNone(keys.ptz_key(115))
+        self.assertEqual(keys.ptz_key(115), "pass")
+        self.assertIsNone(keys.ptz_key(keys.KEY_YELLOW))  # #42: YELLOW is not always a leave key
+        self.assertEqual(keys.button_for(keys.KEY_YELLOW, "yellow", has_ptz=True), "ptz")
+        self.assertEqual(keys.button_for(398, "blue", has_ptz=True), "red")
+        self.assertIsNone(keys.button_for(352))
+
+    def test_actionmaps_come_from_the_key_map(self):
+        ctx, acts = keys.action_map_args("tour", {"hold": 1, "close": 2, "prev": 3, "next": 4, "live": 5})
+        self.assertEqual(ctx, ["ColorActions", "DirectionActions", "OkCancelActions"])
+        self.assertEqual(acts, {"ok": 1, "cancel": 2, "left": 3, "right": 4, "green": 5})
+        self.assertEqual(keys.action_map_args("mosaic", {"close": 9}), (["OkCancelActions"], {"ok": 9, "cancel": 9}))
 
 
 if __name__ == "__main__":

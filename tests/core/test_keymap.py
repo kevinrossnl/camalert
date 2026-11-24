@@ -1,4 +1,4 @@
-"""camalert_core.keymap: colour keys and the button event."""
+"""camalert_core.keymap: the remote-key map of every player (#42), colour keys and the button event."""
 import json
 import unittest
 
@@ -7,17 +7,50 @@ import _paths
 _paths.core()
 from camalert_core import keymap  # noqa: E402
 
-RED, GREEN, YELLOW, BLUE = 398, 399, 400, 401
-
 
 class TestKeymap(unittest.TestCase):
+    def test_every_player_has_every_context(self):
+        for player in keymap.PLAYERS:
+            self.assertEqual(sorted(keymap.KEYMAP[player]), sorted(keymap.CONTEXTS), player)
+
+    def test_one_action_per_key_and_context(self):
+        for player, contexts in keymap.KEYMAP.items():
+            for context, actions in contexts.items():
+                seen = {}
+                for action, keys in actions.items():
+                    for k in keys:
+                        self.assertNotIn(k, seen, "%s/%s: %s does %s and %s" % (player, context, k, seen.get(k), action))
+                        seen[k] = action
+
+    def test_same_logical_actions_on_every_player(self):
+        """The UI guideline (#2): same actions everywhere; documented differences only."""
+        allowed = {("live", "kodi"), ("window", "kodi")}  # Kodi: live bar; MENU/INFO = PTZ in the window
+        for context in keymap.CONTEXTS:
+            sets = {p: set(keymap.KEYMAP[p][context]) - {"pass"} for p in keymap.PLAYERS}
+            for p in keymap.PLAYERS:
+                if (context, p) not in allowed:
+                    self.assertEqual(sets[p], sets["enigma2"], (context, p))
+
+    def test_lookup(self):
+        self.assertEqual(keymap.action_for("enigma2", "window", "OK"), "live")
+        self.assertIsNone(keymap.action_for("enigma2", "window", "RED"))
+        self.assertIsNone(keymap.action_for("kodi", "ptz", None))
+        self.assertEqual(keymap.keys_for("kodi", "tour", "live"), ("PLAY", "UP"))
+
+    def test_ptz_is_left_only_with_exit_back_or_the_ptz_key(self):
+        """#42: YELLOW was always a leave key on Enigma2."""
+        for player in keymap.PLAYERS:
+            for colour in ("RED", "GREEN", "YELLOW", "BLUE"):
+                self.assertIsNone(keymap.action_for(player, "ptz", colour), (player, colour))
+
     def test_colour_keys(self):
-        self.assertEqual(keymap.button_for(YELLOW, "yellow", has_ptz=True), "ptz")
-        self.assertEqual(keymap.button_for(YELLOW, "yellow", has_ptz=False), "yellow")
-        self.assertEqual(keymap.button_for(BLUE, "blue", has_ptz=True), "ptz")
-        self.assertEqual(keymap.button_for(RED, "blue", has_ptz=True), "red")
-        self.assertIsNone(keymap.button_for(RED, "blue", enabled=False))
-        self.assertIsNone(keymap.button_for(352))
+        self.assertEqual(keymap.colour_action("yellow", "yellow", has_ptz=True), "ptz")
+        self.assertEqual(keymap.colour_action("yellow", "yellow", has_ptz=False), "yellow")
+        self.assertEqual(keymap.colour_action("blue", "blue", has_ptz=True), "ptz")
+        self.assertEqual(keymap.colour_action("red", "blue", has_ptz=True), "red")
+        self.assertIsNone(keymap.colour_action("red", "blue", enabled=False))
+        self.assertIsNone(keymap.colour_action(None))
+        self.assertEqual(keymap.colour_action("blue", "off", has_ptz=True), "blue")
 
     def test_button_event(self):
         d = json.loads(keymap.button_event("node1", "garden", "red"))

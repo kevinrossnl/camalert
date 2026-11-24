@@ -7,6 +7,7 @@ from urllib.parse import quote, urlsplit
 
 from .camalert_core import schema
 from .camalert_core.keymap import action_for, keys_for
+from .camalert_core.layout import TITLE_SIZES
 
 # Kodi action ids (xbmcgui.ACTION_*)
 ACTION_LEFT, ACTION_RIGHT, ACTION_UP, ACTION_DOWN = 1, 2, 3, 4
@@ -263,11 +264,42 @@ def colour_name(button_code):
     return COLOUR_BUTTONS.get(button_code & 0xFFFF if button_code else 0)
 
 
-TITLE_FONTS = {"small": "font12", "normal": "font13", "large": "font30"}
+SAFE_FONT = "font13"  # the only font every Kodi skin has (Kodi itself falls back to it)
 
 
-def title_font_name(title_size):
-    return TITLE_FONTS.get(title_size, "font13")
+def skin_font_sizes(font_xml):
+    """{font name: size} of the first fontset in a skin's Font.xml ({} if unreadable)."""
+    import xml.etree.ElementTree as ET
+    try:
+        root = ET.fromstring(font_xml)
+    except (ET.ParseError, TypeError, ValueError):
+        return {}
+    for fontset in root.iter("fontset"):
+        out = {}
+        for f in fontset.iter("font"):
+            name, size = (f.findtext("name") or "").strip(), (f.findtext("size") or "").strip()
+            if name and size.isdigit():
+                out[name] = int(size)
+        return out
+    return {}
+
+
+def title_font_name(title_size, fonts=None):
+    """Skin font for the photo-window title (#46). Skins only guarantee font13 (Estuary has no font30), so
+    'normal' is always font13 and small/large pick a plain 'fontNN' of the current skin (fonts = {name: size},
+    see skin_font_sizes) whose size is closest below the core's target ratio to normal (layout.TITLE_SIZES):
+    smaller resp. larger than font13. Unknown skin fonts or nothing suitable: font13."""
+    fonts = fonts or {}
+    base = fonts.get(SAFE_FONT)
+    if title_size not in ("small", "large") or not base:
+        return SAFE_FONT
+    target = base * TITLE_SIZES[title_size][1] / float(TITLE_SIZES["normal"][1])
+    plain = [(size, name) for name, size in fonts.items() if re.match(r"^font\d+$", name) and size <= target + 0.5]
+    if title_size == "large":
+        plain = [p for p in plain if p[0] > base]
+    else:
+        plain = [p for p in plain if p[0] < base]
+    return max(plain)[1] if plain else SAFE_FONT
 
 
 def chime_wanted(setting, priority):

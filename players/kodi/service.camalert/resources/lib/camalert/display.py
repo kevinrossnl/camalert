@@ -167,7 +167,7 @@ class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
         xbmcgui.WindowDialog.__init__(self)
         self.ctl, self.cams, self.keys = ctl, list(cams), keys
         n = len(self.cams)
-        font = title_font_name(s["title_size"])
+        font = title_font_name(s["title_size"], kodiapi.skin_fonts())
         if n == 1:
             x, y, w, h, t = window_geometry(s["position"], s["size"], SCREEN_W, SCREEN_H, s["title_size"])
             tiles = [(0, t, w, h)]

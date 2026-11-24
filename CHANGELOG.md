@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+- Kodi: settings have levels from the schema (basic / standard / advanced), so Kodi's settings level button hides
+  the expert settings; title size *large* works on every skin (it used `font30`, which Estuary does not have):
+  small/large pick a font of the current skin, normal stays `font13` (#46).
 - Kodi: the photo window shows *camera not reachable* again when a camera stops answering (the active snapshot
   feeder never reported it); one thread per tile, so a slow camera no longer holds up the others; dead duplicate
   `PtzMode`/`Feeder` classes removed (#51, #46).

@@ -118,6 +118,29 @@ def addon_path(*parts):
     return os.path.join(xbmcvfs.translatePath(addon().getAddonInfo("path")), *parts)
 
 
+_fonts = {}
+
+
+def skin_fonts():
+    """{font name: size} of the current skin (its Font.xml), cached per skin; {} when it cannot be read."""
+    from .klogic import skin_font_sizes
+    skin = xbmcvfs.translatePath("special://skin/")
+    if skin not in _fonts:
+        found = {}
+        try:
+            for sub in sorted(os.listdir(skin)):
+                path = os.path.join(skin, sub, "Font.xml")
+                if os.path.isfile(path):
+                    with open(path, encoding="utf-8") as f:
+                        found = skin_font_sizes(f.read())
+                    if found:
+                        break
+        except OSError:
+            pass
+        _fonts[skin] = found
+    return _fonts[skin]
+
+
 def builtin(cmd):
     xbmc.executebuiltin(cmd)
 

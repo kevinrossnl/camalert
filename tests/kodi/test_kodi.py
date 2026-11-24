@@ -24,6 +24,14 @@ from kodi import stubs as kodi_stubs  # noqa: E402
 # Problems the strict Kodi stubs find, each with its issue (a fixed one fails its test)
 KNOWN_STUB_PROBLEMS = {}
 MODULES = ("kodiapi", "sources", "display", "controller", "server", "mqtt", "ptz", "service", "script", "diag")
+# first fontset of Estuary's Font.xml (Kodi 21), shortened
+ESTUARY_FONTS = """<fonts><fontset id="Default"><font><name>font10</name><size>23</size></font>
+<font><name>font12</name><size>25</size></font><font><name>font13</name><size>30</size></font>
+<font><name>font14</name><size>33</size></font><font><name>font27</name><size>27</size></font>
+<font><name>font32</name><size>32</size></font><font><name>font37</name><size>37</size></font>
+<font><name>font45</name><size>45</size></font><font><name>font30_title</name><size>30</size></font>
+<font><name>font36_title</name><size>36</size></font></fontset>
+<fontset id="Arial"><font><name>font13</name><size>27</size></font></fontset></fonts>"""
 LANGS = ("en_gb", "nl_nl", "de_de", "fr_fr", "it_it", "pl_pl")
 
 
@@ -168,8 +176,19 @@ class _KodiLogic(object):
         self.assertTrue(k.chime_wanted("high", "alarm"))
         self.assertFalse(k.chime_wanted("high", "normal"))
         self.assertFalse(k.chime_wanted("off", "alarm"))
-        self.assertEqual(k.title_font_name("large"), "font30")
-        self.assertEqual(k.title_font_name("?"), "font13")
+        # #46: only font13 is guaranteed; small/large come from the skin's own fonts
+        for size in ("small", "normal", "large", "?"):
+            self.assertEqual(k.title_font_name(size), "font13")
+        estuary = k.skin_font_sizes(ESTUARY_FONTS)
+        self.assertEqual(estuary["font13"], 30)
+        self.assertNotIn("font30", estuary)  # what the add-on used for 'large' before
+        self.assertEqual([k.title_font_name(x, estuary) for x in ("small", "normal", "large")],
+                         ["font12", "font13", "font37"])
+        confluence = {"font10": 18, "font12": 20, "font13": 24, "font30": 30, "font35": 36, "font_MainMenu": 40}
+        self.assertEqual([k.title_font_name(x, confluence) for x in ("small", "large")], ["font12", "font30"])
+        self.assertEqual(k.title_font_name("large", {"font13": 30, "font99_title": 44}), "font13")
+        self.assertEqual(k.skin_font_sizes("<broken"), {})
+        self.assertEqual(k.skin_font_sizes("<fonts/>"), {})
 
     def test_misc(self):
         k = self.k
@@ -319,6 +338,20 @@ class _KodiModules(object):
             Built.store.pop("live_return", None)
             if os.path.exists(path):
                 os.remove(path)
+
+    def test_skin_fonts_are_read_from_the_skin(self):
+        import types
+        kodiapi = Built.module("kodiapi")
+        skin = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, skin, True)
+        os.makedirs(os.path.join(skin, "xml"))
+        with open(os.path.join(skin, "xml", "Font.xml"), "w", encoding="utf-8") as f:
+            f.write(ESTUARY_FONTS)
+        self.addCleanup(setattr, kodiapi, "xbmcvfs", kodiapi.xbmcvfs)
+        kodiapi.xbmcvfs = types.SimpleNamespace(translatePath=lambda p: skin if p == "special://skin/" else p)
+        self.assertEqual(kodiapi.skin_fonts()["font37"], 37)
+        kodiapi.xbmcvfs = types.SimpleNamespace(translatePath=lambda p: os.path.join(skin, "missing"))
+        self.assertEqual(kodiapi.skin_fonts(), {})
 
     def test_settings_restart(self):
         service = Built.module("service")

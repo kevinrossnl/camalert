@@ -11,6 +11,10 @@ import schemacheck
 
 ACTIONS = {"choose_camera", "devices", "diagnostics", "events", "show_mosaic", "show_tour", "test"}  # buttons
 HIDDEN = {"mqtt_password", "ptz_password", "token"}
+# schema level -> Kodi <level> (0 basic, 1 standard = Kodi's default view, 2 advanced, 4 internal/hidden), #46
+KODI_LEVELS = {"basic": 0, "advanced": 1, "expert": 2, "internal": 4}
+ACTION_LEVELS = {"choose_camera": 0, "test": 0, "diagnostics": 0, "events": 0, "show_mosaic": 1, "show_tour": 1,
+                 "devices": 1}
 # (schema id, field) -> issue. Empty since the Kodi round of #39 (settings.xml = schema version 2); a new
 # difference must be fixed or listed here with its issue.
 KNOWN = {}
@@ -68,6 +72,15 @@ class TestKodiSettingsSchema(unittest.TestCase):
 
     def test_settings_xml_matches_the_schema(self):
         schemacheck.check(self, "kodi", self.actual(), KNOWN)
+
+    def test_levels_follow_the_schema(self):
+        """#46: Kodi's settings level button (basic / standard / advanced / expert) works; 4 = never shown."""
+        tree = ET.parse(os.path.join(_paths.KODI_ADDON, "resources", "settings.xml"))
+        got = {s.get("id"): int(s.find("level").text) for s in tree.iter("setting")}
+        for s in schemacheck.schema.for_platform("kodi"):
+            self.assertEqual(got[s.key("kodi")], KODI_LEVELS[s.level], s.id)
+        self.assertEqual({k: got[k] for k in ACTION_LEVELS}, ACTION_LEVELS)
+        self.assertEqual(set(got), set(self.xml) | set(ACTION_LEVELS))
 
     def test_label_ids(self):
         for s in schemacheck.schema.for_platform("kodi"):

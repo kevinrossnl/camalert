@@ -83,7 +83,7 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Duration (seconds) | `30` s | 5–300, step 5 | advanced | both |  |
 | Check every (seconds) | `5` s | 2–60 | expert | both |  |
 | Per event type | – |  | expert | both | Optional: type=priority/mode/camera, e.g. ring=alarm/live\|motion=normal/log |
-| Per camera | – |  | expert | both | Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30\|garage=normal/log |
+| Per camera | – |  | expert | both | Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30\|driveway=normal/log |
 
 ### Camera control
 

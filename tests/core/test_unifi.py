@@ -233,8 +233,8 @@ class TestSource(unittest.TestCase):
 
     def test_camera_rules_parser(self):
         self.assertEqual(unifi.camera_rules(None), {})
-        self.assertEqual(unifi.camera_rules("Front Door=HIGH/Photo/30| garage = normal/log |x"),
-                         {"front_door": ("high", "photo", 30), "garage": ("normal", "log", None)})
+        self.assertEqual(unifi.camera_rules("Front Door=HIGH/Photo/30| driveway = normal/log |x"),
+                         {"front_door": ("high", "photo", 30), "driveway": ("normal", "log", None)})
         # invalid parts become None, a rule without any valid part and broken parts are skipped
         self.assertEqual(unifi.camera_rules("a=loud/blink/3|b=//301|c=//abc|d=//5|=high|e"),
                          {"d": (None, None, 5)})

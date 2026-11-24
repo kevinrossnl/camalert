@@ -49,7 +49,7 @@ fresh session.
 - *Per event type* (expert): `type=priority/mode/camera`, for example `ring=alarm/live|motion=normal/log`; an empty
   part keeps the general setting, `camera` sends the event to another go2rtc stream.
 - *Per camera* (expert): `camera=priority/mode/seconds`, for example
-  `front_door=high/photo/30|garage=normal/log|garden=/log`. `camera` is the CamAlert camera name (after *UniFi
+  `front_door=high/photo/30|driveway=normal/log|garden=/log`. `camera` is the CamAlert camera name (after *UniFi
   Protect camera names*: the camera that saw the event, upper/lower case and spaces do not matter); `seconds` is
   5–300. A part that is set wins over *Per event type* and the general settings, an empty part falls back to them,
   cameras that are not listed use them unchanged. A doorbell ring still gets at least the priority *High*. Example:

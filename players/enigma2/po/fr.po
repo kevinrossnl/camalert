@@ -795,8 +795,8 @@ msgstr "Facultatif : type=priority/mode/camera, p. ex. ring=alarm/live|motion=no
 msgid "Per camera"
 msgstr "Par caméra"
 
-msgid "Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30|garage=normal/log"
-msgstr "Facultatif, prioritaire sur le type d'événement : camera=priority/mode/seconds, p. ex. front_door=high/photo/30|garage=normal/log"
+msgid "Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30|driveway=normal/log"
+msgstr "Facultatif, prioritaire sur le type d'événement : camera=priority/mode/seconds, p. ex. front_door=high/photo/30|driveway=normal/log"
 
 msgid "Camera control (PTZ) key"
 msgstr "Touche de contrôle de la caméra (PTZ)"

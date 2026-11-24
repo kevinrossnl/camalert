@@ -1061,8 +1061,8 @@ msgid "Per camera"
 msgstr "Pro Kamera"
 
 #: e2 kodi:30274
-msgid "Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30|garage=normal/log"
-msgstr "Optional, hat Vorrang vor dem Ereignistyp: camera=priority/mode/seconds, z. B. front_door=high/photo/30|garage=normal/log"
+msgid "Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30|driveway=normal/log"
+msgstr "Optional, hat Vorrang vor dem Ereignistyp: camera=priority/mode/seconds, z. B. front_door=high/photo/30|driveway=normal/log"
 
 #: e2 kodi:30239
 msgid "Camera control (PTZ) key"

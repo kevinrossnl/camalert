@@ -794,7 +794,7 @@ msgstr ""
 msgid "Per camera"
 msgstr ""
 
-msgid "Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30|garage=normal/log"
+msgid "Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30|driveway=normal/log"
 msgstr ""
 
 msgid "Camera control (PTZ) key"

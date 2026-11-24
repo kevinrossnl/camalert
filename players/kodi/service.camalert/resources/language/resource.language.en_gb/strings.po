@@ -842,7 +842,7 @@ msgid "Per camera"
 msgstr ""
 
 msgctxt "#30274"
-msgid "Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30|garage=normal/log"
+msgid "Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30|driveway=normal/log"
 msgstr ""
 
 msgctxt "#30500"

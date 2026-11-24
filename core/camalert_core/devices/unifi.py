@@ -73,7 +73,7 @@ def kind_rules(text):
 
 
 def camera_rules(text):
-    """Per camera: 'front_door=high/photo/30|garage=normal/log' -> {camera: (priority, mode, seconds)}. The camera
+    """Per camera: 'front_door=high/photo/30|driveway=normal/log' -> {camera: (priority, mode, seconds)}. The camera
     is the CamAlert camera name (after unifi_cameras), compared as slug(); seconds 5-300. Each part is None when
     empty or invalid (= the per-type rule or the general setting). Broken parts are skipped."""
     out = {}

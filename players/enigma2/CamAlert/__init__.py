@@ -18,10 +18,10 @@ def localeInit():
 
 
 def _(txt):
-    t = gettext.dgettext(PluginLanguageDomain, txt)
-    if t == txt:
-        t = gettext.gettext(txt)
-    return t
+    """Translation from CamAlert's own catalogue only (#56): never the image's enigma2 domain, which has some of our
+    msgids with another meaning or case (English images translate "Normal" to "normal"). English has no catalogue,
+    so the msgid itself is the English text."""
+    return gettext.dgettext(PluginLanguageDomain, txt)
 
 
 localeInit()
@@ -61,7 +61,7 @@ _migrate()
 
 
 def MODES():
-    return [("photo", _("Photo window")), ("live", _("Switch to live stream")), ("notify", _("Notification only"))]
+    return [("photo", _("Photo window")), ("live", _("Live view")), ("notify", _("Notification"))]
 
 
 def PRIORITIES():
@@ -126,8 +126,8 @@ _add("bouquet_position", lambda: ConfigSelection(default="keep", choices=[
     ("keep", _("Where I put it")), ("bottom", _("At the bottom")), ("top", _("At the top"))]))
 _add("dnd", lambda: ConfigYesNo(default=False))
 _add("dnd_level", lambda: ConfigSelection(default="normal", choices=[
-    ("normal", _("Block normal requests (doorbell and alarm still come through)")),
-    ("high", _("Block normal and doorbell requests (alarm still comes through)"))]))
+    # short values like Kodi (#56): long ones overlapped the label; HELP explains the rest
+    ("normal", _("Normal priority")), ("high", _("Normal and high priority"))]))
 _add("skip_playing", lambda: ConfigSelection(default="off", choices=[
     ("off", _("Always show")), ("video", _("Not during movies and recordings")),
     ("all", _("Not during anything (also live TV)"))]))

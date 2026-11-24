@@ -5,10 +5,10 @@ msgstr ""
 msgid "Photo window"
 msgstr ""
 
-msgid "Switch to live stream"
+msgid "Live view"
 msgstr ""
 
-msgid "Notification only"
+msgid "Notification"
 msgstr ""
 
 msgid "Normal"
@@ -62,10 +62,10 @@ msgstr ""
 msgid "At the top"
 msgstr ""
 
-msgid "Block normal requests (doorbell and alarm still come through)"
+msgid "Normal priority"
 msgstr ""
 
-msgid "Block normal and doorbell requests (alarm still comes through)"
+msgid "Normal and high priority"
 msgstr ""
 
 msgid "Always show"

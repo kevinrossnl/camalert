@@ -48,10 +48,12 @@ class TestTexts(unittest.TestCase):
     def test_photo_window_hint(self):
         w = self.session.instantiateDialog(self.ca.display.PhotoWindow, "front_door", SNAP % "front_door", "Front door",
                                            True)
-        self.assertEqual(w["title"].text, "Front door" + self.present.SEPARATOR + self.hint("window"))
-        self.assertIn("◀ ▶ = other camera", w["title"].text)
+        self.assertEqual(w["title"].text, "Front door")  # the hint has its own strip (#56)
+        self.assertEqual(w["hint"].text, self.hint("window"))
+        self.assertIn("◀ ▶ = other camera", w["hint"].text)
         plain = self.session.instantiateDialog(self.ca.display.PhotoWindow, "garden", SNAP % "garden", "Garden")
         self.assertEqual(plain["title"].text, "Garden")
+        self.assertFalse(plain["hint"].visible)
 
     def test_ptz_camera_hint_has_the_ptz_key(self):
         self.ctl.devices = {"front_door": {"type": "onvif"}}
@@ -64,7 +66,7 @@ class TestTexts(unittest.TestCase):
 
     def test_strip_window_hint_has_no_other_camera(self):
         w = self.session.instantiateDialog(self.ca.display.StripWindow, CAMS, True, None)
-        self.assertTrue(w["title"].text.endswith("OK = live   EXIT = close"), w["title"].text)
+        self.assertEqual(w["hint"].text, "OK = live   EXIT = close")
 
     def test_mosaic_and_tour(self):
         m = self.session.open(self.ca.display.MosaicScreen, CAMS, 10)

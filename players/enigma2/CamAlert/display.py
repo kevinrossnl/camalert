@@ -72,6 +72,36 @@ def with_hint(title, text):
     return title + (present.SEPARATOR + text if text else "")
 
 
+# Estimated average width of a character of the skin's Regular font, as a fraction of the font size (mixed-case
+# text in common sans-serif skin fonts is about 0.5; a little margin on top).
+CHAR_W = 0.55
+
+
+def fit_font(text, width, font, minimum=None):
+    """Largest font size <= font at which `text` fits on one line of `width` pixels (#56); never below `minimum`
+    (default 60 % of font). Labels that use it also get noWrap, so a text that still does not fit is cut, not
+    wrapped onto a half-visible second line."""
+    low = max(1, int(font * 0.6)) if minimum is None else minimum
+    if not text:
+        return font
+    return max(low, min(font, int(width / (CHAR_W * len(text)))))
+
+
+def hint_widget(x, y, w, h, f, text, font):
+    """Skin of the key-hint strip at the bottom of a photo or multi-camera window (#56: the hint no longer shares
+    the title bar, where it did not fit at size medium). Hidden when the window takes no keys."""
+    return ('<widget name="hint" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" '
+            'backgroundColor="#202020" halign="center" valign="center" noWrap="1" zPosition="5" />'
+            % (x, y, w, h, fit_font(text, w - int(20 * f), font)))
+
+
+def hint_label(text):
+    label = Label(text)
+    if not text:
+        label.hide()
+    return label
+
+
 def log(*args, **kw):
     """Debug log of Enigma2 + camalert.log. level: error / normal / verbose (default: error if it failed)."""
     text = " ".join(str(a) for a in args)
@@ -272,7 +302,7 @@ class MosaicScreen(Screen, HelpBase):
         for i, (x, y, w, h) in enumerate(tiles):
             parts.append('<widget name="tile%d" position="%d,%d" size="%d,%d" alphatest="off" />' % (i, x, y + top, w, h))
             parts.append(error_widget("error%d" % i, x, y + top, w, h, f))
-            parts.append('<widget name="label%d" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" zPosition="2" />'
+            parts.append('<widget name="label%d" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" noWrap="1" zPosition="5" />'
                          % (i, x + int(8 * f), y + top + int(8 * f), w // 2, int(34 * f), int(24 * f)))
         parts.append("</screen>")
         self.skin = "".join(parts)
@@ -316,18 +346,25 @@ class PhotoWindow(Screen):
         size = getDesktop(0).size()
         x, y, w, h, t = window_geometry(c.position.value, c.size.value, size.width(), size.height(), c.title_size.value)
         f = size.width() / 1920.0
+        base_title = title or display_name(stream)
+        hint_text = window_hint(stream) if keys else ""
+        font = title_font(c.title_size.value, size.width())
+        hh = max(int(t * 0.8), int(26 * f))
         self.skin = """<screen name="CamAlertPhoto" position="%d,%d" size="%d,%d" flags="wfNoBorder" backgroundColor="#ff000000" zPosition="10">
             <eLabel position="0,0" size="%d,%d" backgroundColor="#202020" zPosition="0" />
-            <widget name="title" position="%d,0" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" valign="center" zPosition="2" />
+            <widget name="title" position="%d,0" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" valign="center" noWrap="1" zPosition="2" />
             <widget name="photo" position="0,%d" size="%d,%d" alphatest="off" zPosition="1" />
             %s
-        </screen>""" % (x, y, w, h + t, w, h + t, int(10 * f), w - int(20 * f), t, title_font(c.title_size.value, size.width()), t, w, h,
-                        error_widget("error", 0, t, w, h, f))
+            %s
+        </screen>""" % (x, y, w, h + t, w, h + t, int(10 * f), w - int(20 * f), t,
+                        fit_font(base_title, w - int(20 * f), font), t, w, h,
+                        error_widget("error", 0, t, w, h, f),
+                        hint_widget(0, t + h - hh, w, hh, f, hint_text, int(font * 0.85)))
         Screen.__init__(self, session)
         self.stream, self.url, self.size = stream, url, (w, h)
-        self.base_title = title or display_name(stream)
-        self.title_text = with_hint(self.base_title, window_hint(stream) if keys else "")
+        self.base_title = self.title_text = base_title
         self["title"] = Label(self.title_text)
+        self["hint"] = hint_label(hint_text)
         self["photo"] = Pixmap()
         self["error"] = Label("")
         set_error(self, "error", "photo", False)
@@ -401,22 +438,27 @@ class StripWindow(Screen):
         x, y, w, h, t, tiles = strip_geometry(len(cams), c.strip_layout.value, c.position.value, c.size.value,
                                               size.width(), size.height())
         f = size.width() / 1920.0
+        self.names = [n for n, _t, _u in cams]
+        title_text = event_title("  ·  ".join(t for _n, t, _u in cams), label)
+        hint_text = hint("window", self.names[0], without=("other camera",)) if keys else ""
+        font = min(title_font(c.title_size.value, size.width()), int(t * 0.8))
+        hh = max(int(t * 0.8), int(26 * f))
         parts = ['<screen name="CamAlertStrip" position="%d,%d" size="%d,%d" flags="wfNoBorder" backgroundColor="#ff000000" zPosition="10">' % (x, y, w, h + t),
                  '<eLabel position="0,0" size="%d,%d" backgroundColor="#202020" zPosition="0" />' % (w, h + t),
-                 '<widget name="title" position="%d,0" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" valign="center" zPosition="2" />'
-                 % (int(10 * f), w - int(20 * f), t, min(title_font(c.title_size.value, size.width()), int(t * 0.8)))]
+                 '<widget name="title" position="%d,0" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" valign="center" noWrap="1" zPosition="2" />'
+                 % (int(10 * f), w - int(20 * f), t, fit_font(title_text, w - int(20 * f), font))]
         for i, (tx, ty, tw, th) in enumerate(tiles):
             parts.append('<widget name="tile%d" position="%d,%d" size="%d,%d" alphatest="off" zPosition="1" />' % (i, tx, ty, tw, th))
             parts.append(error_widget("error%d" % i, tx, ty, tw, th, f))
-            parts.append('<widget name="label%d" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" zPosition="3" />'
+            parts.append('<widget name="label%d" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" noWrap="1" zPosition="5" />'
                          % (i, tx + int(6 * f), ty + int(6 * f), tw // 2, int(30 * f), int(22 * f)))
+        parts.append(hint_widget(0, t + h - hh, w, hh, f, hint_text, int(font * 0.85)))
         parts.append("</screen>")
         self.skin = "".join(parts)
         Screen.__init__(self, session)
-        self.names = [n for n, _t, _u in cams]
         self.stream = ",".join(self.names)
-        self["title"] = Label(with_hint(event_title("  ·  ".join(t for _n, t, _u in cams), label),
-                                        hint("window", self.names[0], without=("other camera",)) if keys else ""))
+        self["title"] = Label(title_text)
+        self["hint"] = hint_label(hint_text)
         self.tiles = []
         for i, ((name, title, url), (tx, ty, tw, th)) in enumerate(zip(cams, tiles)):
             self["tile%d" % i] = Pixmap()
@@ -1238,9 +1280,9 @@ class Controller(object):
             return
         w = self.window
         w.stream, w.url = target, urls[1]
-        w.base_title = urls[2]
-        w.title_text = with_hint(urls[2], window_hint(target))
+        w.base_title = w.title_text = urls[2]
         w["title"].setText(w.title_text)
+        w["hint"].setText(window_hint(target))
         w.extend(int(config.plugins.camalert.duration.value))
 
     def refresh_names(self):

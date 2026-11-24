@@ -8,13 +8,13 @@ msgstr ""
 msgid "Photo window"
 msgstr "Fenêtre photo"
 
-#: e2 kodi:30043
-msgid "Switch to live stream"
-msgstr "Basculer vers le direct"
+#: e2 ha:entity.sensor.on_screen.state_attributes.mode.state.live ha:selector.mode.options.live
+msgid "Live view"
+msgstr "Direct"
 
-#: e2 kodi:30044
-msgid "Notification only"
-msgstr "Notification seulement"
+#: e2 ha:selector.mode.options.notify
+msgid "Notification"
+msgstr "Notification"
 
 #: e2 kodi:30140 kodi:30231 kodi:30507 ha:selector.priority.options.normal
 msgid "Normal"
@@ -84,13 +84,13 @@ msgstr "En bas"
 msgid "At the top"
 msgstr "En haut"
 
-#: e2
-msgid "Block normal requests (doorbell and alarm still come through)"
-msgstr "Bloquer les demandes normales (sonnette et alarme passent)"
+#: e2 kodi:30106
+msgid "Normal priority"
+msgstr "Priorité normale"
 
-#: e2
-msgid "Block normal and doorbell requests (alarm still comes through)"
-msgstr "Bloquer les demandes normales et de sonnette (l'alarme passe)"
+#: e2 kodi:30107
+msgid "Normal and high priority"
+msgstr "Priorités normale et haute"
 
 #: e2 kodi:30097
 msgid "Always show"
@@ -1148,6 +1148,14 @@ msgstr "Séparées par des virgules, 9 max. Vide = toutes."
 msgid "Photo window keeps playing what you watch; live shows the camera stream full screen."
 msgstr "La fenêtre photo laisse tourner le programme ; le direct affiche la caméra en plein écran."
 
+#: kodi:30043
+msgid "Switch to live stream"
+msgstr "Basculer vers le direct"
+
+#: kodi:30044
+msgid "Notification only"
+msgstr "Notification seulement"
+
 #: kodi:30057
 msgid "Layout when a request names 2 to 4 cameras (photo window)."
 msgstr "Disposition quand une demande cite 2 à 4 caméras (fenêtre photo)."
@@ -1203,14 +1211,6 @@ msgstr "Les demandes « alarm » allument la TV via HDMI-CEC."
 #: kodi:30105
 msgid "Which priorities are held back while do not disturb is on."
 msgstr "Priorités bloquées en mode ne pas déranger."
-
-#: kodi:30106
-msgid "Normal priority"
-msgstr "Priorité normale"
-
-#: kodi:30107
-msgid "Normal and high priority"
-msgstr "Priorités normale et haute"
 
 #: kodi:30111
 msgid "Connects to your MQTT broker; with discovery this Kodi appears in Home Assistant automatically."
@@ -1440,10 +1440,6 @@ msgstr "Caméra à l'écran"
 msgid "Nothing"
 msgstr "Rien"
 
-#: ha:entity.sensor.on_screen.state_attributes.mode.state.live ha:selector.mode.options.live
-msgid "Live view"
-msgstr "Direct"
-
 #: ha:entity.sensor.on_screen.state_attributes.paused.name
 msgid "Paused"
 msgstr "En pause"
@@ -1467,10 +1463,6 @@ msgstr "Jaune"
 #: ha:entity.event.remote_button.state_attributes.event_type.state.blue
 msgid "Blue"
 msgstr "Bleu"
-
-#: ha:selector.mode.options.notify
-msgid "Notification"
-msgstr "Notification"
 
 #: ha:selector.mode.options.strip
 msgid "Multi-camera window"

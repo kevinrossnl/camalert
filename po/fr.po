@@ -6,11 +6,11 @@ msgstr ""
 msgid "Photo window"
 msgstr "Fenêtre photo"
 
-msgid "Switch to live stream"
-msgstr "Basculer vers le direct"
+msgid "Live view"
+msgstr "Direct"
 
-msgid "Notification only"
-msgstr "Notification seulement"
+msgid "Notification"
+msgstr "Notification"
 
 msgid "Normal"
 msgstr "Normale"
@@ -63,11 +63,11 @@ msgstr "En bas"
 msgid "At the top"
 msgstr "En haut"
 
-msgid "Block normal requests (doorbell and alarm still come through)"
-msgstr "Bloquer les demandes normales (sonnette et alarme passent)"
+msgid "Normal priority"
+msgstr "Priorité normale"
 
-msgid "Block normal and doorbell requests (alarm still comes through)"
-msgstr "Bloquer les demandes normales et de sonnette (l'alarme passe)"
+msgid "Normal and high priority"
+msgstr "Priorités normale et haute"
 
 msgid "Always show"
 msgstr "Toujours afficher"

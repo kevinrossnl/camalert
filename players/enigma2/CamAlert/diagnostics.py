@@ -30,7 +30,7 @@ def _skin(name, f, extra):
     w, h = int(1500 * f), int(900 * f)
     return ('<screen name="%s" position="center,center" size="%d,%d" title="CamAlert">%s'
             '<widget source="key_red" render="Label" position="%d,%d" size="%d,%d" font="Regular;%d" backgroundColor="#9f1313" halign="center" valign="center" />'
-            '<widget source="key_green" render="Label" position="%d,%d" size="%d,%d" font="Regular;%d" backgroundColor="#1f771f" halign="center" valign="center" />'
+            '<widget name="key_green" position="%d,%d" size="%d,%d" font="Regular;%d" backgroundColor="#1f771f" halign="center" valign="center" />'
             '</screen>' % (name, w, h, extra, int(20 * f), h - int(60 * f), int(300 * f), int(46 * f), int(26 * f),
                            int(340 * f), h - int(60 * f), int(300 * f), int(46 * f), int(26 * f)))
 
@@ -121,7 +121,7 @@ class DiagnosticsScreen(Screen, HelpBase):
         self.setTitle(_("CamAlert diagnostics"))
         self["text"] = ScrollLabel(_("Checking..."))
         self["key_red"] = StaticText(_("Close"))
-        self["key_green"] = StaticText(_("Check again"))
+        self["key_green"] = Label(_("Check again"))
         close, up, down = (self.close, _("Close")), (self["text"].pageUp, _("Scroll")), (self["text"].pageDown, _("Scroll"))
         help_actions(self, "actions", "OkCancelActions", {"cancel": close, "ok": close}, -1)
         help_actions(self, "colour_actions", "ColorActions", {"red": close, "green": (self.run, _("Check again"))}, -1)
@@ -162,7 +162,9 @@ class EventsScreen(Screen, HelpBase):
         self["photo"] = Pixmap()
         self["info"] = Label("")
         self["key_red"] = StaticText(_("Close"))
-        self["key_green"] = StaticText(_("Play clip") if config.plugins.camalert.frigate_url.value.strip() else " ")
+        # a Label (not StaticText) so the empty green button can be hidden (#56); selected() shows it for clips
+        self["key_green"] = Label(_("Play clip"))
+        self["key_green"].hide()
         help_actions(self, "actions", "OkCancelActions", {
             "cancel": (self.close, _("Close")), "ok": (self.show_camera, _("Show this camera"))}, -1)
         help_actions(self, "colour_actions", "ColorActions", {
@@ -175,8 +177,15 @@ class EventsScreen(Screen, HelpBase):
         sel = self["list"].getCurrent()
         return self.events[sel[1]] if sel and sel[1] >= 0 else None
 
+    def clip_url(self, e):
+        return frigate_clip_url(config.plugins.camalert.frigate_url.value, e.get("frigate_id") if e else None)
+
     def selected(self):
         e = self.current()
+        if self.clip_url(e):  # GREEN only where there is a clip to play (#56)
+            self["key_green"].show()
+        else:
+            self["key_green"].hide()
         if not e:
             return
         self["info"].setText("\n".join("%s: %s" % row for row in present.event_details(e, _, ui_language())))
@@ -198,7 +207,7 @@ class EventsScreen(Screen, HelpBase):
 
     def play_clip(self):
         e = self.current()
-        url = frigate_clip_url(config.plugins.camalert.frigate_url.value, e.get("frigate_id") if e else None)
+        url = self.clip_url(e)
         if not url:
             return
         log("playing Frigate clip of event", e["frigate_id"])

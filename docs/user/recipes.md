@@ -58,8 +58,9 @@ they are normal go2rtc cameras for CamAlert. Expect a few seconds of delay.
 | Dahua VTO | Event to an HTTP server/alarm centre, or via Home Assistant |
 | Hikvision doorbell | "Notify surveillance center"/HTTP listening host, or via Home Assistant |
 
-Two-way audio is not possible on the player. The doorbell blueprint can send a notification with the camera to your
-phone so you can talk via the doorbell's own app.
+Two-way audio is not possible on the player. To talk, also send a notification with the camera to your phone (a
+`notify` action in the same automation, next to `camalert.show`) and answer in the doorbell's own app; the
+blueprints do not have an input for that yet.
 
 ## Without Home Assistant or MQTT
 | System | Example |
@@ -72,8 +73,9 @@ phone so you can talk via the doorbell's own app.
 | Jeedom | Scenario "HTTP request" with the URL |
 
 ## Presence, quiet hours, several players
-- *Only when someone is home / only when away*: add a condition on a person/zone entity in the blueprint automation, or
-  use two automations. *Do not disturb* with *Do not disturb blocks* = normal and doorbell: everything is logged in the event
+- *Only when someone is home / only when away*: the blueprints have no presence input yet. Use a plain automation
+  with a `state` condition on a person/zone entity before `camalert.show`, or *Take control* of the blueprint
+  automation in Home Assistant and add the condition there. *Do not disturb* with *Do not disturb blocks* = normal and doorbell: everything is logged in the event
   list, only alarms are shown.
 - *Cooldown per camera*: `*=30` avoids showing the same camera again and again; a camera that is still on screen is
   extended instead.

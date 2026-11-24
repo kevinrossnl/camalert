@@ -796,6 +796,7 @@ def install(profile_name):
     module("skin", parseColor=lambda c: c, applySkin=lambda *a: None)
     sys.path.insert(0, SRC)
     env.camalert = importlib.import_module("CamAlert")
+    _paths.attach_core("CamAlert")  # the ipk has the core as CamAlert/camalert_core/
     for sub in ("logic", "display", "setup", "plugin", "bouquet", "server", "mqtt", "diagnostics"):
         setattr(env.camalert, sub, importlib.import_module("CamAlert." + sub))
     return env

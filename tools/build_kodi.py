@@ -8,7 +8,7 @@ Writes to outdir (default dist/):
     repository.camalert-<rversion>.zip     repository add-on: install once, Kodi then updates CamAlert itself
     kodi-repo/                             tree to host (GitHub Pages): addons.xml, addons.xml.md5, zips
 
-The shared code (players/enigma2/CamAlert/logic.py, devices.py, camlog.py) is copied into resources/lib/camalert/ and the
+The shared core (core/camalert_core/, the whole package) is copied into resources/lib/camalert/camalert_core/ and the
 doorbell chime (players/enigma2/CamAlert/chime.wav) into resources/media/ at build time.
 Copyright (C) 2026 CamAlert developers, GPL v2.
 """
@@ -24,7 +24,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 ENIGMA2 = os.path.join(ROOT, "players", "enigma2", "CamAlert")
 ADDON = os.path.join(ROOT, "players", "kodi", "service.camalert")
 REPO_ADDON = os.path.join(ROOT, "players", "kodi", "repository.camalert")
-SHARED = ("logic.py", "devices.py", "camlog.py")
+CORE = os.path.join(ROOT, "core", "camalert_core")
 DEFAULT_REPO_URL = "https://kevinrossnl.github.io/camalert/kodi"
 STAMP = (2026, 1, 1, 0, 0, 0)  # fixed zip timestamps: same input, same zip
 
@@ -68,13 +68,14 @@ def addon_entries(ver):
     entries = []
     for f in files_of(ADDON):
         rel = os.path.relpath(f, ADDON).replace(os.sep, "/")
-        if rel.startswith("resources/lib/camalert/") and rel.rsplit("/", 1)[-1] in SHARED:
-            continue  # stale local copy: the build always takes the shared one
+        if rel.startswith("resources/lib/camalert/camalert_core/"):
+            continue  # stale local copy: the build always takes the core itself
         data = addon_xml_text(f, ver).encode("utf-8") if rel == "addon.xml" else open(f, "rb").read()
         entries.append((rel, data))
-    for name in SHARED:
-        entries.append(("resources/lib/camalert/" + name,
-                        open(os.path.join(ENIGMA2, name), "rb").read()))
+    for f in files_of(CORE):
+        if f.endswith(".py"):
+            rel = os.path.relpath(f, CORE).replace(os.sep, "/")
+            entries.append(("resources/lib/camalert/camalert_core/" + rel, open(f, "rb").read()))
     entries.append(("resources/media/chime.wav", open(os.path.join(ENIGMA2, "chime.wav"), "rb").read()))
     entries.append(("LICENSE.txt", open(os.path.join(ROOT, "LICENSE"), "rb").read()))
     return sorted(entries)

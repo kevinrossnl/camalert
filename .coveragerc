@@ -3,6 +3,7 @@
 [run]
 branch = True
 source =
+    core/camalert_core
     players/enigma2/CamAlert
     players/kodi/service.camalert/resources/lib/camalert
     custom_components/camalert

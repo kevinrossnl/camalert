@@ -12,7 +12,7 @@ import _paths  # noqa: E402,F401
 FOLDERS = {"core": "core", "contract": "contract", "enigma2": "enigma2", "kodi": "kodi", "homeassistant": "ha",
            "build": "build"}
 FILES = {
-    "core": ("test_logic", "test_devices", "test_robustness", "test_logging_and_more"),
+    "core": ("test_logic", "test_devices", "test_robustness", "test_logging_and_more", "test_core_shims"),
     "ha": ("test_ha_integration", "test_blueprints"),
     "build": ("test_build", "test_private", "test_translations"),
 }

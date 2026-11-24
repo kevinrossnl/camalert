@@ -12,11 +12,12 @@
 
 | Path | What |
 |---|---|
-| `players/enigma2/CamAlert/` | Enigma2 plugin (Python 3). `logic.py` = pure functions with unit tests; `display.py` (photo window, mosaic, tour, live, controller), `server.py` (HTTP API), `mqtt.py` (MQTT + discovery), `bouquet.py` (camera channel list, auto update), `setup.py` (settings screen), `plugin.py` (entry points), `devices.py` (Foscam/ONVIF client, plain Python), `camlog.py` (camalert.log + syslog, plain Python), `diagnostics.py` (diagnostics + event list screens), `picons.py` (picons, plain Python), `chime.wav` (made by `tools/make_chime.py`) |
+| `core/camalert_core/` | Shared core, plain Python 3.8+ (no Enigma2/Twisted/Kodi/HA imports; `tests/test_lint.py` checks it): `logic.py` (pure functions with unit tests), `devices.py` (Foscam/ONVIF client), `camlog.py` (camalert.log + syslog). The builds copy the whole package into every player package as `camalert_core/`; inside it all imports are relative |
+| `players/enigma2/CamAlert/` | Enigma2 plugin (Python 3). `logic.py`, `devices.py`, `camlog.py` = temporary shims for `camalert_core` (#1); `display.py` (photo window, mosaic, tour, live, controller), `server.py` (HTTP API), `mqtt.py` (MQTT + discovery), `bouquet.py` (camera channel list, auto update), `setup.py` (settings screen), `plugin.py` (entry points), `diagnostics.py` (diagnostics + event list screens), `picons.py` (picons, plain Python), `chime.wav` (made by `tools/make_chime.py`) |
 | `custom_components/camalert/` | Home Assistant integration (config flow, buttons, sensor, DND switch, remote-button event entity + webhook, diagnostics, actions `show`/`mosaic`/`hide`/`ptz`). Same version number as the plugin (`manifest.json` = `__version__`) |
 | `homeassistant/blueprints/` | Blueprints: doorbell, motion (armed / times), alarm, remote button |
 | `homeassistant/camalert_package.yaml` | REST-command alternative (YAML) |
-| `players/kodi/service.camalert/` | Kodi add-on. `resources/lib/camalert/`: `klogic.py` (pure, tested), `controller.py` (show/hide/live/resume), `display.py` (windows), `server.py` (same API as Enigma2), `mqtt.py`, `ptz.py`, `sources.py`, `kodiapi.py` (only place that talks to xbmc). `logic.py` and `devices.py` are **copied in from `players/enigma2/CamAlert/` by `tools/build_kodi.py`** (git-ignored there) |
+| `players/kodi/service.camalert/` | Kodi add-on. `resources/lib/camalert/`: `klogic.py` (pure, tested), `controller.py` (show/hide/live/resume), `display.py` (windows), `server.py` (same API as Enigma2), `mqtt.py`, `ptz.py`, `sources.py`, `kodiapi.py` (only place that talks to xbmc). `logic.py`, `devices.py`, `camlog.py` = temporary shims; the build copies `core/camalert_core/` in as `camalert_core/` |
 | `players/kodi/repository.camalert/` | Kodi repository add-on (`@REPO_URL@` filled in by the build; CI publishes `dist/kodi-repo/` on GitHub Pages) |
 | `po/` | Plugin translations (gettext). `custom_components/camalert/translations/` = integration translations |
 | `tools/` | `build_ipk.py` (package), `build_feed.py` (opkg Packages index), `build_kodi.py` (Kodi zip + repository), `make_chime.py`, `msgfmt.py`, `strings.py` (POT), `check_private.py` |
@@ -28,7 +29,7 @@
 - Screens can be cleared by Enigma2 after closing: late callbacks must use `getattr(self, "active", False)`.
 - Skins are designed for 1920x1080 and scaled to the desktop width (many skins are 1280x720).
 - Settings are written with `configfile.save()` on save.
-- `logic.py`, `devices.py`, `camlog.py` and `picons.py` have no Enigma2 imports: the Kodi add-on (`players/kodi/`) reuses them.
+- `core/camalert_core/` has no Enigma2, Twisted, Kodi or Home Assistant imports and stays Python 3.8 compatible (Kodi 19): both players use it. `picons.py` is plain Python too.
 - Everything that is logged or shown in diagnostics goes through `redact()`; camera passwords live only in
   `/etc/enigma2/camalert_devices.conf`, never in settings.
 - Key hooks: `GlobalKeys` (colour keys / PTZ, priority -0x7FFFFFFF) runs before `KeyHook` (photo window, -0x7FFFFFFE).
@@ -45,7 +46,7 @@
 - Code, comments and docs in English; user-facing texts translated (en, nl, de, fr, it, pl). Tests check completeness:
   - plugin: `python3 tools/strings.py > po/CamAlert.pot`, then add new texts to every `po/*.po`;
   - integration: `strings.json` and every `translations/*.json` need the same keys.
-- New logic goes into `logic.py` with a unit test. Enigma2/Home Assistant specific code is tested on a real receiver / Home Assistant before a release.
+- New shared logic goes into `core/camalert_core/` with a unit test. Enigma2/Home Assistant specific code is tested on a real receiver / Home Assistant before a release.
 - API, MQTT topics, HA actions and blueprints must stay backwards compatible within a major version.
 - Tests: `python3 -m pytest` (see `tests/README.md`; `python3 -m unittest discover -s tests` also works). Packages: `python3 tools/build_ipk.py dist`, `python3 tools/build_kodi.py dist`.
 

@@ -7,8 +7,8 @@ import unittest
 import _paths  # noqa: E402
 
 _paths.shared()
-import logic as L  # noqa: E402
-import camlog  # noqa: E402
+from camalert_core import camlog  # noqa: E402
+from camalert_core import logic as L  # noqa: E402
 
 
 class TestRedact(unittest.TestCase):

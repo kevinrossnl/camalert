@@ -10,6 +10,10 @@ file rw-r--r-- service.camalert/resources/language/resource.language.it_it/strin
 file rw-r--r-- service.camalert/resources/language/resource.language.nl_nl/strings.po
 file rw-r--r-- service.camalert/resources/language/resource.language.pl_pl/strings.po
 file rw-r--r-- service.camalert/resources/lib/camalert/__init__.py
+file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/__init__.py
+file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/camlog.py
+file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/devices.py
+file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/logic.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camlog.py
 file rw-r--r-- service.camalert/resources/lib/camalert/controller.py
 file rw-r--r-- service.camalert/resources/lib/camalert/devices.py

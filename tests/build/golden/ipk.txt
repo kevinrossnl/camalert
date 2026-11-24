@@ -12,6 +12,10 @@ field Recommends: python3-pillow
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/__init__.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/bouquet.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert.png
+data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/__init__.py
+data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/camlog.py
+data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/devices.py
+data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/logic.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camlog.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/chime.wav
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/devices.py
@@ -35,6 +39,7 @@ data drwxr-xr-x ./usr/lib/enigma2/python
 data drwxr-xr-x ./usr/lib/enigma2/python/Plugins
 data drwxr-xr-x ./usr/lib/enigma2/python/Plugins/Extensions
 data drwxr-xr-x ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert
+data drwxr-xr-x ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core
 data drwxr-xr-x ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/locale
 data drwxr-xr-x ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/locale/de
 data drwxr-xr-x ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/locale/de/LC_MESSAGES

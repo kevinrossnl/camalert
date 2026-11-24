@@ -19,9 +19,13 @@ PO = os.path.join(ROOT, "po")
 PLAYERS = os.path.join(ROOT, "players")
 ENIGMA2_PARENT = os.path.join(PLAYERS, "enigma2")
 ENIGMA2 = os.path.join(ENIGMA2_PARENT, "CamAlert")
-# Shared plain-Python modules (no Enigma2, Kodi or Home Assistant imports), reused by the Kodi add-on.
-SHARED = ENIGMA2
-SHARED_MODULES = ("logic.py", "devices.py", "camlog.py")
+# Shared core (plain Python 3.8+, no Enigma2, Kodi or Home Assistant imports); the builds copy the whole package
+# into every player package as `camalert_core`.
+CORE_PARENT = os.path.join(ROOT, "core")
+CORE = os.path.join(CORE_PARENT, "camalert_core")
+SHARED = CORE
+# temporary shims in the players (#1): <player package>/<name>.py is camalert_core.<name>
+SHIMS = ("logic", "devices", "camlog")
 
 # Kodi add-on and repository add-on.
 KODI = os.path.join(PLAYERS, "kodi")
@@ -46,9 +50,27 @@ def add(*paths):
             sys.path.insert(0, p)
 
 
-def shared():
-    """Makes the shared modules importable as top-level modules (`import logic`)."""
-    add(SHARED)
+def core():
+    """Makes the core importable: `from camalert_core import logic`."""
+    add(CORE_PARENT)
+
+
+shared = core
+
+
+def attach_core(package):
+    """Registers <package>.camalert_core as the core from the source tree, the way the builds put a copy of it
+    into the player package (call after importing the package, before its submodules)."""
+    name = package + ".camalert_core"
+    for mod in [m for m in sys.modules if m == name or m.startswith(name + ".")]:
+        del sys.modules[mod]
+    spec = importlib.util.spec_from_file_location(name, os.path.join(CORE, "__init__.py"),
+                                                  submodule_search_locations=[CORE])
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[name] = mod
+    spec.loader.exec_module(mod)
+    setattr(sys.modules[package], "camalert_core", mod)
+    return mod
 
 
 def tools():
@@ -58,19 +80,18 @@ def tools():
 def kodi_package(name="camalert"):
     """Imports the Kodi add-on package from the source tree (not from a built zip, so coverage sees the real files).
 
-    The add-on gets the shared modules at build time (tools/build_kodi.py); here the package path also lists the
-    shared folder, after the add-on's own folder, so `camalert.logic` is the shared logic.py. Install the Kodi stubs
-    first. Returns the package module."""
-    for f in SHARED_MODULES:
-        if os.path.exists(os.path.join(KODI_LIB, f)):
-            raise RuntimeError("stale copy of %s in %s: delete it (the build copies the shared one)" % (f, KODI_LIB))
+    The add-on gets the core at build time (tools/build_kodi.py); here `camalert.camalert_core` is the core from
+    the source tree (attach_core). Install the Kodi stubs first. Returns the package module."""
+    if os.path.exists(os.path.join(KODI_LIB, "camalert_core")):
+        raise RuntimeError("stale copy of camalert_core in %s: delete it (the build copies the core)" % KODI_LIB)
     for mod in [m for m in sys.modules if m == name or m.startswith(name + ".")]:
         del sys.modules[mod]
     spec = importlib.util.spec_from_file_location(name, os.path.join(KODI_LIB, "__init__.py"),
-                                                  submodule_search_locations=[KODI_LIB, SHARED])
+                                                  submodule_search_locations=[KODI_LIB])
     pkg = importlib.util.module_from_spec(spec)
     sys.modules[name] = pkg
     spec.loader.exec_module(pkg)
+    attach_core(name)
     return pkg
 
 

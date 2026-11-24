@@ -2,7 +2,7 @@
 
 - Python 3.8 grammar for everything that runs on a receiver or a Kodi box (Kodi 19 = Python 3.8): the files are
   parsed with ast.parse(feature_version=(3, 8)).
-- Import lint: the shared modules (used by Enigma2 and Kodi) never import Enigma2, Twisted, Kodi or Home Assistant
+- Import lint: the core (core/camalert_core, used by Enigma2 and Kodi) never imports Enigma2, Twisted, Kodi or Home Assistant
   modules, not even inside a function.
 """
 import ast
@@ -33,11 +33,11 @@ def python_files(*folders):
 
 def device_code():
     """Everything that runs on a receiver or a Kodi box."""
-    return list(python_files(_paths.ENIGMA2, _paths.KODI_ADDON))
+    return list(python_files(_paths.CORE, _paths.ENIGMA2, _paths.KODI_ADDON))
 
 
 def shared_code():
-    return [os.path.join(_paths.SHARED, f) for f in _paths.SHARED_MODULES]
+    return list(python_files(_paths.CORE))
 
 
 def imported_modules(tree):

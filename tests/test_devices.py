@@ -12,8 +12,8 @@ from urllib.parse import parse_qs, urlsplit
 import _paths  # noqa: E402
 
 _paths.shared()
-import logic as L  # noqa: E402
-import devices as D  # noqa: E402
+from camalert_core import devices as D  # noqa: E402
+from camalert_core import logic as L  # noqa: E402
 
 FOSCAM_STATE = ("<CGI_Result><result>0</result><IOAlarm>0</IOAlarm><motionDetectAlarm>%s</motionDetectAlarm>"
                 "<soundAlarm>%s</soundAlarm><record>0</record><sdState>1</sdState></CGI_Result>")

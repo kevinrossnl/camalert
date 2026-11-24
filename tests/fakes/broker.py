@@ -17,7 +17,7 @@ import time
 import _paths
 
 _paths.shared()
-import logic  # noqa: E402
+from camalert_core import logic  # noqa: E402
 
 CONNACK_OK = b"\x20\x02\x00\x00"
 PINGRESP = b"\xd0\x00"

@@ -13,6 +13,7 @@ from msgfmt import make_mo, parse_po  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 SRC = os.path.join(ROOT, "players", "enigma2", "CamAlert")
+CORE = os.path.join(ROOT, "core", "camalert_core")  # copied whole into the plugin as CamAlert/camalert_core/
 DEST = "usr/lib/enigma2/python/Plugins/Extensions/CamAlert"
 PKG = "enigma2-plugin-extensions-camalert"
 # Fixed timestamps: the same sources always give the same ipk (sha256), like the Kodi zip (#28).
@@ -35,6 +36,19 @@ def add_dir(tar, name):
     tar.addfile(info)
 
 
+def core_files():
+    """Relative paths of the core package (folders end with '/'), sorted, without caches."""
+    out = []
+    for d, dirs, files in os.walk(CORE):
+        dirs[:] = sorted(x for x in dirs if x != "__pycache__")
+        rel = os.path.relpath(d, CORE).replace(os.sep, "/")
+        prefix = "" if rel == "." else rel + "/"
+        if prefix:
+            out.append(prefix)
+        out += [prefix + f for f in sorted(files) if f.endswith(".py")]
+    return out
+
+
 def targz(builder):
     buf = io.BytesIO()
     with tarfile.open(fileobj=buf, mode="w", format=tarfile.GNU_FORMAT) as tar:
@@ -49,6 +63,12 @@ def data(tar):
     for f in sorted(os.listdir(SRC)):
         if f.endswith((".py", ".png", ".wav")):
             add(tar, "./%s/%s" % (DEST, f), open(os.path.join(SRC, f), "rb").read())
+    add_dir(tar, "./%s/camalert_core" % DEST)
+    for rel in core_files():
+        if rel.endswith("/"):
+            add_dir(tar, "./%s/camalert_core/%s" % (DEST, rel.rstrip("/")))
+        else:
+            add(tar, "./%s/camalert_core/%s" % (DEST, rel), open(os.path.join(CORE, rel), "rb").read())
     add_dir(tar, "./%s/locale" % DEST)
     for po in sorted(os.listdir(os.path.join(ROOT, "po"))):
         if po.endswith(".po"):

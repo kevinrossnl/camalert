@@ -489,7 +489,7 @@ class TestKodiImports(unittest.TestCase):
                 tree = ast.parse(f.read())
             exported |= {n.name for n in tree.body if isinstance(n, (ast.FunctionDef, ast.ClassDef))}
         for f in os.listdir(lib):
-            if not f.endswith(".py") or f in ("logic.py", "klogic.py", "devices.py"):
+            if not f.endswith(".py") or f == "klogic.py" or f[:-3] in _paths.SHIMS:
                 continue
             with open(os.path.join(lib, f), encoding="utf-8") as fh:
                 tree = ast.parse(fh.read())
@@ -513,9 +513,12 @@ class TestKodiPackage(unittest.TestCase):
         for lang in LANGS:
             self.assertIn("service.camalert/resources/language/resource.language.%s/strings.po" % lang, names)
         self.assertFalse([n for n in names if n.endswith(".pyc") or "__pycache__" in n])
-        # shared logic is the current one
-        shared = zipfile.ZipFile(b.addon_zip).read("service.camalert/resources/lib/camalert/logic.py")
-        self.assertEqual(shared, open(os.path.join(_paths.SHARED, "logic.py"), "rb").read())
+        # the whole core is in the zip, as it is in the source tree
+        z = zipfile.ZipFile(b.addon_zip)
+        for f in os.listdir(_paths.CORE):
+            if f.endswith(".py"):
+                self.assertEqual(z.read("service.camalert/resources/lib/camalert/camalert_core/" + f),
+                                 open(os.path.join(_paths.CORE, f), "rb").read(), f)
 
     def test_every_module_imports_from_the_zip(self):
         """Smoke test of the package as Kodi gets it (separate interpreter, so it does not mix with the sources)."""

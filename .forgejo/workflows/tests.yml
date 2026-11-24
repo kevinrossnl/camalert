@@ -7,7 +7,7 @@
 #   `runner` (a label) and `mode`.
 # - mode `parallel` (workstation): one job per area, `runs-on: ${{ needs.pick-runner.outputs.runner }}`.
 # - mode `sequential` (fallback): the job `sequential` runs every area in turn in one container on the NAS
-#   (one package install instead of five, apt .deb cache).
+#   (one package install instead of five).
 # - Every area runs `tools/ci.sh <area>`, so both modes run exactly the same commands.
 # - Test the fallback without stopping the workstation: Actions › tests › Run workflow › force_runner = truenas.
 name: tests
@@ -36,16 +36,17 @@ jobs:
       runner: ${{ steps.pick.outputs.runner }}
       mode: ${{ steps.pick.outputs.mode }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: tools/ci_pick_runner.py
-          sparse-checkout-cone-mode: false
+      # only the one script, through the API with the automatic token (faster than a checkout)
       - id: pick
         name: pick the runner
         env:
+          REPO_TOKEN: ${{ forgejo.token }}
           RUNNER_STATUS_TOKEN: ${{ secrets.RUNNER_STATUS_TOKEN }}
           FORCE_RUNNER: ${{ inputs.force_runner || 'auto' }}
-        run: python3 tools/ci_pick_runner.py >> "$GITHUB_OUTPUT"
+        run: |
+          curl -sSf --max-time 10 -H "Authorization: token $REPO_TOKEN" -o /tmp/ci_pick_runner.py \
+            "$GITHUB_SERVER_URL/api/v1/repos/$GITHUB_REPOSITORY/raw/tools/ci_pick_runner.py?ref=$GITHUB_SHA"
+          python3 /tmp/ci_pick_runner.py >> "$GITHUB_OUTPUT"
 
   # ---- mode parallel: one job per area on the picked (workstation) runner ----
   lint:
@@ -130,17 +131,12 @@ jobs:
     runs-on: ${{ needs.pick-runner.outputs.runner }}
     container: {image: "node:20-bookworm"}
     timeout-minutes: 30
-    env:
-      APT_CACHE: /root/.cache/camalert-apt
+    # no actions/cache: the runner's cache server is not reachable from the NAS job containers (each call waits
+    # ~20 s for a timeout); see #54
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/cache@v4
-        with:
-          path: /root/.cache/camalert-apt
-          key: apt-bookworm-${{ hashFiles('tools/ci.sh') }}
-          restore-keys: apt-bookworm-
       - {name: tools, run: sh tools/ci.sh tools}
       - name: privacy check (blocks the GitHub mirror if anything personal slipped in)
         if: ${{ !cancelled() }}

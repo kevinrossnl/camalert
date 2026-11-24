@@ -3,21 +3,15 @@
 # workstation runner (parallel) and one job running every area in turn on the NAS fallback (sequential).
 # Also works locally:  sh tools/ci.sh lint   (tools needs root + apt; the other areas only python3 + pytest).
 #
-#   tools     install the Debian packages in $PACKAGES (APT_CACHE=<dir> keeps the .deb files there for a cache)
+#   tools     install the Debian packages in $PACKAGES
 #   lint | core | unit | build | privacy   one area each (privacy needs CAMALERT_DENYLIST)
 set -eu
 area="${1:?usage: tools/ci.sh tools|lint|core|unit|build|privacy}"
 case "$area" in
   tools)
-    opt=""
-    if [ -n "${APT_CACHE:-}" ]; then
-      mkdir -p "$APT_CACHE/partial"
-      opt="-o Dir::Cache::Archives=$APT_CACHE"
-    fi
-    n=$(ls "${APT_CACHE:-/nonexistent}"/*.deb 2>/dev/null | wc -l)
-    echo "apt: ${PACKAGES:?PACKAGES not set} (cached .deb files: $n)"
+    echo "apt: ${PACKAGES:?PACKAGES not set}"
     # shellcheck disable=SC2086
-    { apt-get update -qq && apt-get install -y -qq --no-install-recommends $opt $PACKAGES; } > /dev/null
+    { apt-get update -qq && apt-get install -y -qq --no-install-recommends $PACKAGES; } > /dev/null
     ;;
   lint)
     python3 -m pytest -m "lint" --junitxml=junit-lint.xml

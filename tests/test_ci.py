@@ -150,6 +150,7 @@ class Workflow(unittest.TestCase):
         text = json.dumps(job["steps"])
         self.assertNotIn("apt-get", text)
         self.assertIn("tools/ci_pick_runner.py", text)
+        self.assertNotIn("actions/checkout", text)  # one file through the API is faster
 
     def test_heavy_jobs_use_the_picked_runner(self):
         for name in AREAS + ["sequential"]:

@@ -71,6 +71,6 @@ When the photo window is on screen you can use the remote: **OK** switches to th
 ## Step 5 – Show the camera automatically
 
 - **Home Assistant**: install the CamAlert integration and use a ready-made blueprint, see [home-assistant.md](home-assistant.md). No YAML needed.
-- **Anything else** (Node-RED, openHAB, a script): call `http://<receiver-ip>:8099/camalert/show?cam=front_door` – see [api.md](api.md).
+- **Anything else** (Node-RED, openHAB, a script): `POST http://<receiver-ip>:8099/camalert/show` with `cam=front_door` – see [api.md](api.md).
 
 Done! Something not working? See [troubleshooting.md](troubleshooting.md).

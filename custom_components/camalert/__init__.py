@@ -1,5 +1,7 @@
-"""CamAlert: show IP cameras on Enigma2 receivers that run the CamAlert plugin."""
+"""CamAlert: show IP cameras on Enigma2 receivers and Kodi players that run CamAlert."""
 from __future__ import annotations
+
+import logging
 
 import voluptuous as vol
 from homeassistant.config_entries import ConfigEntryState
@@ -15,6 +17,7 @@ from .const import (CONF_HTTPS, CONF_TOKEN, CONF_VERIFY_SSL, DEFAULT_PORT, DOMAI
                     PTZ_MOVES, SIGNAL_BUTTON)
 from .coordinator import CamAlertCoordinator
 
+_LOGGER = logging.getLogger(__name__)
 PLATFORMS = [Platform.BUTTON, Platform.SENSOR, Platform.SWITCH, Platform.EVENT]
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
@@ -61,9 +64,12 @@ async def async_setup(hass: HomeAssistant, config) -> bool:
                                      % ", ".join(e.title for e in selected))
         return loaded
 
-    async def run(call: ServiceCall, func):
+    async def run(call: ServiceCall, func, capability=None):
         errors = []
         for entry in await targets(call):
+            if capability and not entry.runtime_data.api.supports(capability):
+                errors.append("%s: %s is not supported by this player" % (entry.title, capability))
+                continue
             try:
                 answer = await func(entry.runtime_data.api)
                 await entry.runtime_data.async_refresh()
@@ -80,10 +86,10 @@ async def async_setup(hass: HomeAssistant, config) -> bool:
                                              call.data.get("priority"), call.data.get("label")))
 
     async def ptz(call: ServiceCall):
-        await run(call, lambda api: api.ptz(call.data["camera"], call.data["move"]))
+        await run(call, lambda api: api.ptz(call.data["camera"], call.data["move"]), "ptz")
 
     async def mosaic(call: ServiceCall):
-        await run(call, lambda api: api.mosaic(call.data.get("cameras"), call.data.get("seconds")))
+        await run(call, lambda api: api.mosaic(call.data.get("cameras"), call.data.get("seconds")), "mosaic")
 
     async def hide(call: ServiceCall):
         await run(call, lambda api: api.hide())
@@ -105,6 +111,8 @@ async def async_setup_entry(hass: HomeAssistant, entry) -> bool:
     except Exception as err:  # receiver off or unreachable: retry later
         raise ConfigEntryNotReady(str(err)) from err
     entry.runtime_data = coordinator
+    if api.integration_too_old():
+        _LOGGER.warning("%s needs CamAlert integration %s or newer; please update it", entry.title, api.min_ha_version)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     await _register_webhook(hass, entry, api)
     return True
@@ -146,10 +154,12 @@ async def _register_webhook(hass: HomeAssistant, entry, api) -> None:
         url = get_url(hass, allow_external=False, prefer_external=False) + webhook.async_generate_path(wid)
     except NoURLAvailableError:
         return
+    if not api.supports("webhook"):
+        return
     try:
         await api.webhook(url)
-    except CamAlertError:  # older plugin without /webhook: buttons only via MQTT
-        pass
+    except CamAlertError as err:  # older plugin without /webhook, or HA's url is not in the local network
+        _LOGGER.info("%s: colour keys only via MQTT (webhook: %s)", entry.title, err)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry) -> bool:

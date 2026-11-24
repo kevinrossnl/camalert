@@ -1,6 +1,14 @@
 # Changelog
 
 ## Unreleased
+- HTTP API version 1, one implementation for every player (`camalert_core.api`, #5): actions with `POST`
+  (`GET` still works, deprecated: `Deprecation` header, logged once), token in the `X-CamAlert-Token` header
+  (`?token=` deprecated, always redacted), `/camalert/status` has `platform`, `api_version`, `capabilities`,
+  `min_ha_version` and `mqtt` on both players, parameters are validated (`400` for invalid camera names, mode,
+  priority, `on`, PTZ move), `405` for other methods, `log`/`events`/`metrics` never answer the internet
+  without a token, the webhook must point into the local network.
+- Home Assistant: actions are sent with `POST` + token header to players with API version 1 (older ones: `GET`),
+  services check the player's capabilities; the YAML package uses `POST` + header too.
 - Kodi: the mosaic opened with a TypeError on every Kodi version (`ControlLabel(shadowColor=...)` does not exist);
   the camera names now sit on a dark strip instead (#25).
 - Enigma2: in PTZ mode YELLOW always left PTZ mode; now only EXIT and the configured PTZ key do, as documented (#42).

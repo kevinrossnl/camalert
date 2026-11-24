@@ -1,6 +1,8 @@
 # Recipes: other cameras, systems and situations
 
 CamAlert itself only needs **one URL**: `http://<receiver>:8099/camalert/show?cam=<go2rtc name>` (see [API](api.md)).
+Use `POST` where the tool can (token in the `X-CamAlert-Token` header); the `GET` URLs below still work, but
+are deprecated in API version 1 and may go away in a later major version.
 Anything that can call a URL can trigger it. go2rtc does the camera side: whatever go2rtc can read, CamAlert can show.
 
 ## Cameras in a separate VLAN or subnet
@@ -62,7 +64,7 @@ phone so you can talk via the doorbell's own app.
 ## Without Home Assistant or MQTT
 | System | Example |
 |---|---|
-| Node-RED | `http request` node, method GET, URL `http://<receiver>:8099/camalert/show?cam=front_door&priority=high` |
+| Node-RED | `http request` node, method POST, URL `http://<receiver>:8099/camalert/show`, payload `{"cam": "front_door", "priority": "high"}` |
 | ioBroker | Script: `httpGet('http://<receiver>:8099/camalert/show?cam=front_door')` |
 | openHAB | Rule action: `sendHttpGetRequest("http://<receiver>:8099/camalert/show?cam=front_door")` |
 | Domoticz | Device "On action": `http://<receiver>:8099/camalert/show?cam=front_door` |

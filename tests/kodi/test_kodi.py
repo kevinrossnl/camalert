@@ -396,7 +396,7 @@ class _KodiModules(object):
             ctl._show = lambda *a: "show"
             self.assertEqual(ctl.show("garden"), "show")
             self.assertEqual(ctl.show("garden"), "ignore")
-            self.assertTrue(ctl.events[0]["reason"].startswith("cooldown"))
+            self.assertEqual(ctl.events[0]["reason"], "cooldown:60")  # a code, translated on screen (#41)
             self.assertEqual(ctl.show("garden", priority="alarm"), "show")
             live, snap, _title = sources.camera_urls("garden")
             self.assertIn("src=garden_sub", live)
@@ -481,6 +481,72 @@ class _KodiModules(object):
             self.assertTrue(self.wait_for(lambda: labels and "not reachable" not in labels[-1]), labels)
         finally:
             w.feeder.stop()
+
+    def core_strings(self):
+        """kodiapi with our strings.po; Kodi 'translates' every id as <id> so the test sees which ids are used."""
+        kodiapi = Built.module("kodiapi")
+        for name in ("addon_path", "tr"):
+            self.addCleanup(setattr, kodiapi, name, getattr(kodiapi, name))
+        self.addCleanup(setattr, kodiapi, "_core_ids", None)
+        kodiapi.addon_path = lambda *p: os.path.join(ADDON, *p)
+        kodiapi._core_ids = None
+        return kodiapi
+
+    def test_key_hints_come_from_the_key_map(self):
+        """#41: no hard-coded English hints; the photo window, PTZ, live, tour and mosaic hints are
+        present.key_hint() texts, translated through Kodi string ids."""
+        display = Built.module("display")
+        with open(display.__file__, encoding="utf-8") as f:
+            text = f.read()
+        for old in ('"   OK = live', "< >  BACK", "MENU = PTZ", "PLAY = live", "  -  BACK", "OK = home  BACK"):
+            self.assertFalse(old in text, old)
+        kodiapi = self.core_strings()
+        from camalert.camalert_core import present
+        from camalert.camalert_core.i18n import no_translation
+        english = present.key_hint("kodi", "window", no_translation, ptz_key="blue", glyphs=False)
+        self.assertEqual(english, "OK = live   < > = other camera   BACK = close")  # Estuary has no \u25c0 \u25b6
+        w = display.PhotoWindow(FakeController(), self.CAMS[:1], self.settings(), keys=True)
+        hints = []
+        w.hint_label.setLabel = hints.append
+        w.ptz_label(False)
+        self.assertEqual(hints[-1], english)  # Kodi has no strings yet: English from our strings.po
+        kodiapi.tr = lambda i: "<%d>%s" % (i, " ".join(re.findall(r"%[ds]", kodiapi.english(i))))
+        w.ptz_label(False)
+        self.assertRegex(hints[-1], r"^OK = <305\d\d>   < > = <305\d\d>   BACK = <305\d\d>$")
+        w.ptz_label(True)
+        self.assertIn("CH+ CH- = <305", hints[-1])
+        self.assertIsNone(display.PhotoWindow(FakeController(), self.CAMS, self.settings(), keys=True).hint_label)
+        o = display.LiveOverlay(FakeController(), "garden", "Garden", self.settings())
+        labels = []
+        o.label.setLabel = labels.append
+        o.ptz_label(False)
+        self.assertTrue(labels[-1].startswith("Garden      "), labels)
+        tour = display.FullScreen(FakeController(), self.CAMS, self.settings(), tour=True, interval=8)
+        tour.title.setLabel = labels.append
+        tour.update_title()
+        self.assertTrue(labels[-1].startswith("Front door   (1/2, <305"), labels[-1])
+
+    def test_event_list_shows_translated_values(self):
+        """#41: the controller stores reason codes; the event list shows translated labels with the date."""
+        script = Built.module("script")
+        kodiapi = self.core_strings()
+        ev = {"time": 1764000000, "camera": "garden", "label": "Person", "source": "frigate", "priority": "high",
+              "action": "ignore", "reason": "cooldown:30", "snapshot": None}
+        self.addCleanup(setattr, script, "service_state", script.service_state)
+        script.service_state = lambda: {"events": [ev]}
+        shown = []
+        import xbmcgui
+        self.addCleanup(setattr, xbmcgui.Dialog, "select", xbmcgui.Dialog.select)
+        xbmcgui.Dialog.select = lambda self, heading, items, **kw: shown.extend(items) or -1
+        script.events()
+        self.assertEqual(len(shown), 1)
+        self.assertIn("garden \u00b7 Person  (Frigate, High) -> Ignored", shown[0].label)
+        self.assertIn("Reason: Cooldown (30 s)", shown[0].label2)
+        kodiapi.tr = lambda i: "<%d>%s" % (i, " ".join(re.findall(r"%[ds]", kodiapi.english(i))))
+        shown[:] = []
+        script.events()
+        self.assertNotIn("Frigate", shown[0].label)
+        self.assertNotIn("Cooldown", shown[0].label2)
 
     def test_photo_window_keys(self):
         display = Built.module("display")

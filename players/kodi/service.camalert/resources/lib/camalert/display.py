@@ -12,12 +12,31 @@ from .klogic import (PTZ_TOGGLE as TOGGLE_IDS, SCREEN_H, SCREEN_W, colour_name, 
                      live_key, mosaic_key, ptz_action, title_font_name, tour_key)
 from .camalert_core.cameras import parse_orientation, parse_refresh, refresh_delay
 from .camalert_core.events import event_title
+from .camalert_core.present import key_hint, tour_status
 from .camalert_core.layout import grid, strip_geometry, window_geometry
 
 WHITE = None
 ANIM = {"rot180": "effect=rotate end=180 center=auto", "mirror": "effect=rotatey end=180 center=auto",
         "flip": "effect=rotatex end=180 center=auto"}
 VOLUME_KEYS = {88: "Action(VolumeUp)", 89: "Action(VolumeDown)", 91: "Action(Mute)"}
+# Arrow glyphs in key hints (#41): Estuary's NotoSans-Regular has no U+25C0/U+25B6 (checked on Kodi 21.3, only
+# arial.ttf of the Arial fontset has them) and Kodi does not fall back to another font, so Kodi uses < > ^ v.
+GLYPHS = False
+
+
+def hint(context, s=None, has_ptz=False):
+    """Translated key hint of a screen, built from the key map (camalert_core.present, #41)."""
+    return key_hint("kodi", context, kodiapi.core_tr(), ptz_key=(s or {}).get("ptz_key"), has_ptz=has_ptz,
+                    glyphs=GLYPHS)
+
+
+def has_ptz(name, s):
+    """True when devices.conf has camera control for this camera (only then the hint offers it)."""
+    try:
+        from .ptz import all_devices
+        return name in all_devices(s)
+    except Exception:  # a broken devices.conf must not stop the window
+        return False
 
 
 def white():
@@ -180,10 +199,10 @@ class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
         names = ", ".join(c[1] for c in self.cams)
         if n > 1:
             names = event_title(names, label)
-        hint = "   OK = live  < >  BACK" if keys and n == 1 else ""
-        self.label = xbmcgui.ControlLabel(x + 8, y, w - 16, t, names + hint, font=font, textColor="FFFFFFFF",
+        self.label = xbmcgui.ControlLabel(x + 8, y, w - 16, t, names, font=font, textColor="FFFFFFFF",
                                           alignment=0x00000004)
         self.addControl(self.label)
+        self.settings = s
         orientation = parse_orientation(s.get("orientation", ""))
         self.tiles = []
         for (name, title, url), (tx, ty, tw, th) in zip(self.cams, tiles):
@@ -193,12 +212,20 @@ class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
             self.tiles.append({"name": name, "url": url, "control": img})
         self.stream = self.cams[0][0] if n == 1 else ",".join(c[0] for c in self.cams)
         self.title_text = names
-        self.hint = hint
+        self.hint_label = None
+        if keys and n == 1:  # dark strip with the key hint at the bottom of the picture
+            hh = max(22, t - 8)
+            self.addControl(xbmcgui.ControlImage(x, y + total_h - hh, w, hh, white(), colorDiffuse="99000000"))
+            self.hint_label = xbmcgui.ControlLabel(x + 8, y + total_h - hh, w - 16, hh, "",
+                                                   font=title_font_name("small", kodiapi.skin_fonts()),
+                                                   textColor="FFDDDDDD", alignment=0x00000004 | 0x00000002)
+            self.addControl(self.hint_label)
         self.orientation = orientation
         self.duration = s["duration"]
         self.feeder = Feeder(self.tiles, s)
         self.feeder.on_unreachable = self.unreachable
         self.timer = None
+        self.ptz_label(False)
 
     def start(self, seconds):
         self.feeder.start()
@@ -224,7 +251,10 @@ class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
         self.ptz_label(False)
 
     def ptz_label(self, on):
-        self.label.setLabel(self.title_text + ("   PTZ: < > ^ v  +/-  OK = home  BACK" if on else self.hint))
+        self.label.setLabel(self.title_text)
+        if self.hint_label is not None:
+            self.hint_label.setLabel(hint("ptz", self.settings) if on else
+                                     hint("window", self.settings, has_ptz(self.stream, self.settings)))
 
     def unreachable(self, tile, bad):
         from .controller import STATS
@@ -319,11 +349,10 @@ class FullScreen(xbmcgui.WindowDialog):
     def update_title(self):
         if self.tour:
             name, title, _url = self.cams[self.index]
-            state = kodiapi.tr(30190) if self.hold else kodiapi.tr(30191)
-            self.title.setLabel(" %s   (%d/%d, %s)   < >  OK  PLAY = live  BACK" % (title, self.index + 1, len(self.cams),
-                                                                                  state))
+            self.title.setLabel("%s      %s" % (tour_status(title, self.index + 1, len(self.cams), self.hold,
+                                                            kodiapi.core_tr()), hint("tour")))
         else:
-            self.title.setLabel("%s  -  BACK" % kodiapi.tr(30192))
+            self.title.setLabel("%s      %s" % (kodiapi.tr(30192), hint("mosaic")))
 
     def start(self):
         self.feeder.start()
@@ -389,9 +418,10 @@ class LiveOverlay(PtzMode, xbmcgui.WindowDialog):
 
     """Thin bar over the live camera picture: BACK/STOP ends live, < > other camera, MENU/INFO = PTZ mode."""
 
-    def __init__(self, ctl, name, title):
+    def __init__(self, ctl, name, title, s=None):
         xbmcgui.WindowDialog.__init__(self)
         self.ctl, self.name, self.title_text = ctl, name, title
+        self.settings = s if s is not None else kodiapi.settings()
         self.bg = xbmcgui.ControlImage(0, SCREEN_H - 40, SCREEN_W, 40, white(), colorDiffuse="99000000")
         self.addControl(self.bg)
         self.label = xbmcgui.ControlLabel(16, SCREEN_H - 38, SCREEN_W - 32, 36, "", font="font13",
@@ -406,8 +436,8 @@ class LiveOverlay(PtzMode, xbmcgui.WindowDialog):
         self.ptz_label(False)
 
     def ptz_label(self, on):
-        self.label.setLabel(self.title_text + ("   PTZ: < > ^ v  +/-  OK = home  BACK" if on
-                                                else "   < >  MENU = PTZ  BACK"))
+        self.label.setLabel("%s      %s" % (self.title_text, hint("ptz", self.settings) if on else
+                                           hint("live", self.settings, has_ptz(self.name, self.settings))))
 
     def ptz_used(self):
         self.ctl.extend_live()

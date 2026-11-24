@@ -56,7 +56,7 @@ def diagnostics():
 
 
 def events():
-    from .camalert_core.events import event_line
+    from .camalert_core.present import event_details, event_line
     from .camalert_core.triggers.frigate import frigate_clip_url
     st = service_state()
     if st is None:
@@ -67,8 +67,10 @@ def events():
         xbmcgui.Dialog().ok("CamAlert", kodiapi.tr(30203))
         return
     items = []
+    tr, lang, fmt = kodiapi.core_tr(), kodiapi.language(), kodiapi.date_format()
     for e in evs:
-        li = xbmcgui.ListItem(event_line(e))
+        rows = event_details(e, tr, lang, fmt)  # time (with date), camera, source, priority, result, reason
+        li = xbmcgui.ListItem(event_line(e, tr), "   ".join([rows[0][1]] + ["%s: %s" % r for r in rows[5:]]))
         if e.get("snapshot"):
             li.setArt({"thumb": e["snapshot"], "icon": e["snapshot"]})
         items.append(li)

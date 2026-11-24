@@ -199,7 +199,7 @@ def install(settings=None, profile="/tmp/camalert-test-profile", version=DEFAULT
                 "WindowDialog": {"__init__": lambda self, *a, **kw: setattr(self, "controls", []),
                                  "addControl": lambda self, c: self.controls.append(c)},
                 "ListItem": {"__init__": lambda self, label="", label2="", path="", offscreen=False:
-                             self.__dict__.update(label=label, path=path, props={}),
+                             self.__dict__.update(label=label, label2=label2, path=path, props={}),
                              "setMimeType": lambda self, m: self.props.__setitem__("mime", m),
                              "setContentLookup": lambda self, v: self.props.__setitem__("lookup", v),
                              "setProperty": lambda self, k, v: self.props.__setitem__(k, v)},

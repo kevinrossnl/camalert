@@ -6,6 +6,9 @@
   Foscam priority with *Alarm*, own display mode and duration for Frigate and Foscam, Foscam check interval
   1-60 s, keys `foscam_enabled` / `foscam_priority`. Settings saved by an older version are migrated on start
   (`schema.migrate()`); an existing install keeps polling its Foscam cameras, new installs start with it off.
+- Kodi: key hints (photo window, camera control, live bar, tour, mosaic) and the event list come from the core
+  (`camalert_core.present`) and are translated; the photo window shows its hint on a strip under the picture, the
+  event list shows date (Kodi's region format) and reason; events store reason codes (#41).
 - Kodi: settings have levels from the schema (basic / standard / advanced), so Kodi's settings level button hides
   the expert settings; title size *large* works on every skin (it used `font30`, which Estuary does not have):
   small/large pick a font of the current skin, normal stays `font13` (#46).

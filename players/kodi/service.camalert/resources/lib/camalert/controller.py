@@ -17,6 +17,7 @@ from .camalert_core.access import url_target
 from .camalert_core.cameras import known_camera, neighbour, parse_cams, slug
 from .camalert_core.events import add_event, event_title
 from .camalert_core.keymap import button_event, colour_action
+from .camalert_core.present import reason as reason_code
 from .camalert_core.rules import (blocked_by_rules, clamp_seconds, clock_tuple, cooldown_seconds, decide, dnd_blocks,
                                   in_cooldown, in_time_window, pick_mode, pick_priority)
 
@@ -131,7 +132,7 @@ class Controller(object):
             try:
                 if not on_screen and pick_priority(priority) != "alarm" and \
                         in_cooldown(self.last_shown.get(cam), time.time(), wait):
-                    self.reason, result = "cooldown (%d s)" % wait, "ignore"
+                    self.reason, result = reason_code("cooldown", wait), "ignore"
                 else:
                     result = self._show(stream, seconds, mode, priority)
             except Exception as e:
@@ -184,7 +185,7 @@ class Controller(object):
         s = kodiapi.settings()
         priority = pick_priority(priority)
         if dnd_blocks(priority, s["dnd"], s["dnd_level"]):
-            self.reason = "do not disturb"
+            self.reason = reason_code("dnd")
             return "ignore"
         if self.screen_off():
             if priority == "alarm" and s["alarm_wake"]:
@@ -193,7 +194,7 @@ class Controller(object):
                 label = self.label
                 threading.Timer(4, self.show, (stream, seconds, mode, priority, "wake", label)).start()
                 return "wake"
-            self.reason = "screen off"
+            self.reason = reason_code("screen_off")
             return "ignore"
         cams = parse_cams(stream)
         seconds = seconds or s["duration"]
@@ -203,16 +204,17 @@ class Controller(object):
             return self.mosaic(",".join(cams), seconds)
         stream = stream or s["camera"]
         if not stream:
-            self.reason = "no camera"
+            self.reason = reason_code("no_camera")
             return "error"
         if time.time() - self.names_at > 60:
             self.refresh_names(s)
         if not known_camera(stream, self.names):
-            self.reason = "unknown camera"
+            self.reason = reason_code("unknown_camera")
             return "error"
         mode = pick_mode(mode, s["mode"])
         urls = sources.camera_urls(stream, s)
         if not urls:
+            self.reason = reason_code("no_address")
             return "error"
         live, snap, title = urls
         title = event_title(title, self.label)
@@ -223,12 +225,12 @@ class Controller(object):
         in_hours = in_time_window((t.tm_hour, t.tm_min), clock_tuple(s["from_time"]), clock_tuple(s["until_time"]))
         if blocked_by_rules(priority, s["limit_hours"], in_hours, False, False, s["skip_playing"] != "off",
                             blocked_by_playing(s["skip_playing"], kind)):
-            self.reason = "outside active hours" if s["limit_hours"] and not in_hours else "playing"
+            self.reason = reason_code("outside_hours" if s["limit_hours"] and not in_hours else "playing")
             return "ignore"
         window_stream = self.window.stream if self.window else (self.live_stream if mode == "live" else None)
         action = decide(False, self.current_camera(), window_stream, stream)
         if action == "ignore":
-            self.reason = "already on screen"
+            self.reason = reason_code("on_screen")
             return action
         if mode == "photo":
             if action == "extend":

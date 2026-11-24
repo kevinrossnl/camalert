@@ -51,6 +51,39 @@ def tr(string_id):
     return addon().getLocalizedString(string_id) or english(string_id)
 
 
+_core_ids = None
+
+
+def core_tr():
+    """tr(msgid) for the texts of camalert_core (key hints, event-list values, #41): Kodi string ids from our
+    English strings.po (i18n.kodi_ids), translated by Kodi, the English text when Kodi has no string yet."""
+    global _core_ids
+    from .camalert_core.i18n import kodi_ids, kodi_translator
+    if _core_ids is None:
+        try:
+            with open(addon_path("resources", "language", "resource.language.en_gb", "strings.po"), encoding="utf-8") as f:
+                _core_ids = kodi_ids(f.read())
+        except OSError:
+            _core_ids = {}
+    return kodi_translator(tr, _core_ids)
+
+
+def language():
+    """Kodi's GUI language as ISO 639-1 ('nl'), '' if unknown."""
+    try:
+        return xbmc.getLanguage(xbmc.ISO_639_1) or ""
+    except Exception:
+        return ""
+
+
+def date_format():
+    """Kodi's short date format of the region (strftime), or None."""
+    try:
+        return xbmc.getRegion("dateshort") or None
+    except Exception:
+        return None
+
+
 _camlog = None
 
 

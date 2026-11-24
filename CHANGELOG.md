@@ -1,6 +1,15 @@
 # Changelog
 
 ## Unreleased
+- Enigma2: settings screen in sections in the order of the schema (General, Display, Rules, Triggers with Frigate
+  and Foscam, Camera control, Home Assistant, API, Channel list, Log and diagnostics); settings follow the image's
+  setup level (simple = basic settings, MENU = *Show all settings*); the skin's own Setup layout is used when it has
+  one (`description` / `footnote`); title *CamAlert* without key hints; HELP lists the keys on the settings, tour,
+  mosaic, diagnostics and event list screens; BLUE *Test* asks before it saves; YELLOW is *Create channel list*;
+  Cancel also undoes camera names, orientation, refresh and mosaic chosen in the lists (#40).
+- Enigma2: mosaic, multi-camera window, tour and photo window show a dimmed *Camera not reachable* tile instead of
+  a frozen or black picture; notification mode shows a small window with a snapshot, the title (who/what) and the
+  priority, like Kodi (a text pop-up only without snapshot address) (#49).
 - Blueprints (#45): inputs frozen for 1.x – same keys, order and defaults in every blueprint (trigger, `players`,
   `camera`/`cameras`, `mode`, `seconds`, `label`, conditions, `action`; `homeassistant/blueprints/README.md`);
   `receivers` became `players`, doorbell `triggers_in` became `doorbell`, new `label` (doorbell, motion, alarm) and

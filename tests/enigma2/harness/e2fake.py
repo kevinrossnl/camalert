@@ -533,10 +533,17 @@ def install_config(snap, stored=None):
         base_init(self, [int(default) // 3600 % 24, int(default) // 60 % 60])
     impl["ConfigClock"] = clock_init
 
+    def save(self):  # like Enigma2: a default value is not stored (unless save_forced)
+        forced = getattr(self, "save_forced", False)
+        self.saved_value = None if self._value == self.default and not forced else self._value
+
+    def cancel(self):  # back to the saved value (or the default)
+        self.value = self.default if self.saved_value is None else self.saved_value
+
     classes = {}
     for name in ("ConfigSelection", "ConfigYesNo", "ConfigText", "ConfigPassword", "ConfigNumber", "ConfigInteger",
                  "ConfigSelectionNumber", "ConfigClock"):
-        classes[name] = strict_class(snap, name, ConfigElement, {"__init__": impl[name]})
+        classes[name] = strict_class(snap, name, ConfigElement, {"__init__": impl[name], "save": save, "cancel": cancel})
 
     class ConfigSubsection(object):
         def __init__(self):
@@ -567,7 +574,12 @@ def install_config(snap, stored=None):
     def getConfigListEntry(*args):
         gcle(*args)
         return args
-    m = module("Components.config", config=config, configfile=configfile, ConfigSubsection=ConfigSubsection,
+    class ConfigNothing(ConfigElement):  # section headings in setup lists (not in the snapshots)
+        def __init__(self):
+            ConfigElement.__init__(self)
+            self.default = self._value = ""
+
+    m = module("Components.config", config=config, ConfigNothing=ConfigNothing, configfile=configfile, ConfigSubsection=ConfigSubsection,
                ConfigElement=ConfigElement, getConfigListEntry=getConfigListEntry, **classes)
     for missing in [n for n in classes if n not in names]:
         delattr(m, missing)
@@ -675,7 +687,8 @@ def install_screens(snap, profile):
     def cls_comp(name):
         if name in snap["classes"]:
             return strict_class(snap, name, _Widget, {"__init__": lambda self, *a, **kw: _Widget.__init__(self, *a),
-                                                      "setText": _Widget.setText, "getText": _Widget.getText},
+                                                      "setText": _Widget.setText, "getText": _Widget.getText,
+                                                      "show": _Widget.show, "hide": _Widget.hide},
                                 keep=())
         return _Widget
     module("Components.Label", Label=cls_comp("Label"), MultiColorLabel=_Widget)
@@ -700,7 +713,27 @@ def install_screens(snap, profile):
 
         def execEnd(self):
             pass
-    module("Components.ActionMap", ActionMap=ActionMap, HelpableActionMap=ActionMap, NumberActionMap=ActionMap)
+    class HelpableActionMap(ActionMap):
+        """openATV/OpenPLi: (parent, contexts, actions, prio); actions may be (function, help text)."""
+        def __init__(self, parent, contexts, actions=None, prio=0, description=None):
+            contexts = [contexts] if isinstance(contexts, str) else contexts
+            plain = {}
+            for k, v in (actions or {}).items():
+                fn, text = v if isinstance(v, tuple) else (v, None)
+                plain[k] = fn
+                parent.helpList.append((self, contexts[0], k, text))
+            ActionMap.__init__(self, contexts, plain, prio)
+    module("Components.ActionMap", ActionMap=ActionMap, HelpableActionMap=HelpableActionMap, NumberActionMap=ActionMap)
+
+    class HelpableScreen(object):  # Screens.HelpMenu (not in the snapshots; same on every supported image)
+        def __init__(self):
+            self.helpList = []
+            self["helpActions"] = ActionMap(["HelpActions"], {"displayHelp": self.showHelp})
+
+        def showHelp(self):
+            rec.add("showHelp", tuple(self.helpList))
+    if profile["api"] != "dreamos":
+        module("Screens.HelpMenu", HelpableScreen=HelpableScreen)
 
     provided = [k for k in snap["classes"]["ConfigListScreen"].get("provides", []) if k in ("HelpWindow", "VKeyIcon")]
 

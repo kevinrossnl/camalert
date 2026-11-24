@@ -7,7 +7,6 @@ import time
 
 from enigma import ePicLoad, eServiceReference, getDesktop
 from Screens.Screen import Screen
-from Components.ActionMap import ActionMap
 from Components.Label import Label
 from Components.MenuList import MenuList
 from Components.Pixmap import Pixmap
@@ -17,6 +16,7 @@ from Components.config import config
 from twisted.internet import threads
 
 from . import _, __version__
+from .helpable import HelpBase, help_actions, init_help
 from .camalert_core.obs.camlog import LOG
 from .display import Controller, all_camera_names, camera_urls, devices, log, open_url
 from .camalert_core import present
@@ -110,21 +110,22 @@ def _image():
         return platform.platform()
 
 
-class DiagnosticsScreen(Screen):
+class DiagnosticsScreen(Screen, HelpBase):
     def __init__(self, session):
         f = getDesktop(0).size().width() / 1920.0
         self.skin = _skin("CamAlertDiagnostics", f,
                           '<widget name="text" position="%d,%d" size="%d,%d" font="Regular;%d" />'
                           % (int(20 * f), int(20 * f), int(1460 * f), int(800 * f), int(26 * f)))
         Screen.__init__(self, session)
+        init_help(self)
         self.setTitle(_("CamAlert diagnostics"))
         self["text"] = ScrollLabel(_("Checking..."))
         self["key_red"] = StaticText(_("Close"))
         self["key_green"] = StaticText(_("Check again"))
-        self["actions"] = ActionMap(["OkCancelActions", "ColorActions", "DirectionActions"], {
-            "cancel": self.close, "red": self.close, "green": self.run, "ok": self.close,
-            "up": self["text"].pageUp, "down": self["text"].pageDown,
-            "left": self["text"].pageUp, "right": self["text"].pageDown}, -1)
+        close, up, down = (self.close, _("Close")), (self["text"].pageUp, _("Scroll")), (self["text"].pageDown, _("Scroll"))
+        help_actions(self, "actions", "OkCancelActions", {"cancel": close, "ok": close}, -1)
+        help_actions(self, "colour_actions", "ColorActions", {"red": close, "green": (self.run, _("Check again"))}, -1)
+        help_actions(self, "direction_actions", "DirectionActions", {"up": up, "down": down, "left": up, "right": down}, -1)
         self.onLayoutFinish.append(self.run)
 
     def run(self):
@@ -139,7 +140,7 @@ class DiagnosticsScreen(Screen):
         self["text"].setText(text)
 
 
-class EventsScreen(Screen):
+class EventsScreen(Screen, HelpBase):
     """The last 20 requests: time, camera, who/what, source, priority and what CamAlert did; with snapshot."""
 
     def __init__(self, session):
@@ -153,6 +154,7 @@ class EventsScreen(Screen):
                              int(940 * f), int(20 * f), int(540 * f), int(304 * f),
                              int(940 * f), int(340 * f), int(540 * f), int(460 * f), int(24 * f)))
         Screen.__init__(self, session)
+        init_help(self)
         self.setTitle(_("CamAlert events"))
         self.events = list(Controller.instance.events) if Controller.instance else []
         self["list"] = MenuList([(present.event_line(e, _), i) for i, e in enumerate(self.events)]
@@ -161,8 +163,10 @@ class EventsScreen(Screen):
         self["info"] = Label("")
         self["key_red"] = StaticText(_("Close"))
         self["key_green"] = StaticText(_("Play clip") if config.plugins.camalert.frigate_url.value.strip() else " ")
-        self["actions"] = ActionMap(["OkCancelActions", "ColorActions"], {
-            "cancel": self.close, "red": self.close, "ok": self.show_camera, "green": self.play_clip}, -1)
+        help_actions(self, "actions", "OkCancelActions", {
+            "cancel": (self.close, _("Close")), "ok": (self.show_camera, _("Show this camera"))}, -1)
+        help_actions(self, "colour_actions", "ColorActions", {
+            "red": (self.close, _("Close")), "green": (self.play_clip, _("Play clip"))}, -1)
         self.picload = ePicLoad()
         self["list"].onSelectionChanged.append(self.selected)
         self.onLayoutFinish.append(self.selected)

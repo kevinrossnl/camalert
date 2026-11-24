@@ -20,7 +20,6 @@ from twisted.internet import reactor, threads
 from . import _, __version__
 from .camalert_core.obs.camlog import LOG
 from .camalert_core.devices import client as devices
-from Components.ActionMap import ActionMap
 
 from .camalert_core.access import url_target
 from .camalert_core.cameras import (display_name, known_camera, live_stream_name, neighbour, parse_camera_file,
@@ -37,7 +36,8 @@ from .camalert_core.rules import (blocked_by_rules, clock_tuple, cooldown_second
                                   in_time_window, lowered_volume, pick_mode, pick_priority, should_pause)
 from .camalert_core.update import latest_tag, newer_version, UPDATE_INTERVAL
 from .camalert_core.urls import normalize_server, rtsp_url, snapshot_url, split_credentials, tcp_url, valid_port
-from .keys import action_map_args, button_for, key_action, ptz_key
+from .helpable import HelpBase, help_actions, init_help
+from .keys import actionmap_actions, button_for, key_action, ptz_key
 from .services import chime_command, github_repo, is_media_ref, service_ref, stream_from_ref
 
 PHOTO = "/tmp/camalert.jpg"
@@ -54,6 +54,14 @@ def hint(context, stream=None, without=()):
     text = present.key_hint("enigma2", context, _, ptz_key=c.ptz_key.value, has_ptz=has_ptz, glyphs=GLYPHS)
     skip = [" = " + _(label) for label in without]
     return present.SEPARATOR.join(p for p in text.split(present.SEPARATOR) if not any(p.endswith(s) for s in skip))
+
+
+def key_actions(screen, context, handlers, prio=-1):
+    """Action maps of a full-screen CamAlert screen from the key map, with help texts for the HELP key."""
+    by_action = {a: label for acts, label in present.HINTS[context] for a in acts}
+    for ctx, acts in sorted(actionmap_actions(context, handlers).items()):
+        help_actions(screen, "actions_" + ctx, ctx,
+                     {name: (fn, _(by_action.get(action, action))) for name, (fn, action) in acts.items()}, prio)
 
 
 def window_hint(stream):
@@ -186,6 +194,9 @@ class Tile(object):
         self.path = "/tmp/camalert_%s.jpg" % key
         self.picload = ePicLoad()
         self.busy = False
+        self.failures = 0
+        self.error_key = key.replace("tile", "error")
+        set_error(screen, self.error_key, key, False)
 
     def fetch(self):
         if not getattr(self.screen, "active", False) or self.busy or not self.url:
@@ -198,6 +209,9 @@ class Tile(object):
         self.busy = False
         if not getattr(self.screen, "active", False) or not self.url:
             return
+        if self.failures >= 2:
+            set_error(self.screen, self.error_key, self.key, False)
+        self.failures = 0
         try:
             self.picload.setPara((self.size[0], self.size[1], 1, 1, False, 1, "#ff000000"))
             if self.picload.startDecode(self.path, 0, 0, False) == 0:
@@ -210,11 +224,39 @@ class Tile(object):
 
     def failed(self, err):
         self.busy = False
-        if getattr(self.screen, "active", False):
-            reactor.callLater(3, self.fetch)
+        self.failures += 1
+        if not getattr(self.screen, "active", False) or not self.url:
+            return
+        if self.failures == 2:  # a dimmed tile with text instead of a frozen or black picture (#49)
+            STATS["unreachable"] += 1
+            log("tile %s: camera not reachable: %s" % (self.stream, err.getErrorMessage()), level="verbose")
+            set_error(self.screen, self.error_key, self.key, True)
+        reactor.callLater(3, self.fetch)
 
 
-class MosaicScreen(Screen):
+def error_widget(name, x, y, w, h, f):
+    """Skin of the 'camera not reachable' overlay of a tile (hidden until the camera fails twice)."""
+    return ('<widget name="%s" position="%d,%d" size="%d,%d" font="Regular;%d" halign="center" valign="center" '
+            'foregroundColor="#c0c0c0" backgroundColor="#303030" zPosition="4" />'
+            % (name, x, y, w, h, max(int(22 * f), min(int(34 * f), h // 6))))
+
+
+def set_error(screen, error_key, picture_key, on):
+    """Shows or hides the 'camera not reachable' overlay of a tile (and the frozen picture under it)."""
+    if error_key not in screen:
+        return
+    if on:
+        screen[error_key].setText(_("Camera not reachable"))
+        screen[error_key].show()
+        if picture_key in screen:
+            screen[picture_key].hide()
+    else:
+        screen[error_key].hide()
+        if picture_key in screen:
+            screen[picture_key].show()
+
+
+class MosaicScreen(Screen, HelpBase):
     """Full-screen grid with up to 9 cameras (photo mode). Closes with EXIT/OK or after `seconds` (0 = stay open)."""
 
     def __init__(self, session, cams, seconds=0):
@@ -229,19 +271,22 @@ class MosaicScreen(Screen):
                  % (int(20 * f), int(8 * f), sw - int(40 * f), int(36 * f), int(28 * f))]
         for i, (x, y, w, h) in enumerate(tiles):
             parts.append('<widget name="tile%d" position="%d,%d" size="%d,%d" alphatest="off" />' % (i, x, y + top, w, h))
+            parts.append(error_widget("error%d" % i, x, y + top, w, h, f))
             parts.append('<widget name="label%d" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" zPosition="2" />'
                          % (i, x + int(8 * f), y + top + int(8 * f), w // 2, int(34 * f), int(24 * f)))
         parts.append("</screen>")
         self.skin = "".join(parts)
         Screen.__init__(self, session)
+        init_help(self)
         self["title"] = Label(_("Cameras") + present.SEPARATOR + hint("mosaic"))
         self.tiles = []
         for i, ((name, title, url), (x, y, w, h)) in enumerate(zip(cams, tiles)):
             self["tile%d" % i] = Pixmap()
+            self["error%d" % i] = Label("")
             self["label%d" % i] = Label(" " + title + " ")
             url = url.replace("width=640", "width=%d" % min(960, w)) if "/api/frame.jpeg" in url else url
             self.tiles.append(Tile(self, "tile%d" % i, name, url, (w, h)))
-        self["actions"] = ActionMap(*action_map_args("mosaic", {"close": self.close}), prio=-1)
+        key_actions(self, "mosaic", {"close": self.close})
         self.active = False
         self.timer = eTimer()
         self.timer.callback.append(self.close)
@@ -275,13 +320,17 @@ class PhotoWindow(Screen):
             <eLabel position="0,0" size="%d,%d" backgroundColor="#202020" zPosition="0" />
             <widget name="title" position="%d,0" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" valign="center" zPosition="2" />
             <widget name="photo" position="0,%d" size="%d,%d" alphatest="off" zPosition="1" />
-        </screen>""" % (x, y, w, h + t, w, h + t, int(10 * f), w - int(20 * f), t, title_font(c.title_size.value, size.width()), t, w, h)
+            %s
+        </screen>""" % (x, y, w, h + t, w, h + t, int(10 * f), w - int(20 * f), t, title_font(c.title_size.value, size.width()), t, w, h,
+                        error_widget("error", 0, t, w, h, f))
         Screen.__init__(self, session)
         self.stream, self.url, self.size = stream, url, (w, h)
         self.base_title = title or display_name(stream)
         self.title_text = with_hint(self.base_title, window_hint(stream) if keys else "")
         self["title"] = Label(self.title_text)
         self["photo"] = Pixmap()
+        self["error"] = Label("")
+        set_error(self, "error", "photo", False)
         self.picload = ePicLoad()
         self.busy = self.active = False
         self.failures = 0
@@ -310,6 +359,7 @@ class PhotoWindow(Screen):
             return
         if self.failures >= 2:
             self["title"].setText(self.title_text)
+            set_error(self, "error", "photo", False)
         self.failures = 0
         try:
             self.picload.setPara((self.size[0], self.size[1], 1, 1, False, 1, "#ff000000"))
@@ -331,6 +381,7 @@ class PhotoWindow(Screen):
         if self.failures == 2:  # show it instead of a black or frozen window
             STATS["unreachable"] += 1
             self["title"].setText(_("%s - camera not reachable") % self.base_title)
+            set_error(self, "error", "photo", True)
         reactor.callLater(2, self.fetch)
 
     def stop(self):
@@ -356,6 +407,7 @@ class StripWindow(Screen):
                  % (int(10 * f), w - int(20 * f), t, min(title_font(c.title_size.value, size.width()), int(t * 0.8)))]
         for i, (tx, ty, tw, th) in enumerate(tiles):
             parts.append('<widget name="tile%d" position="%d,%d" size="%d,%d" alphatest="off" zPosition="1" />' % (i, tx, ty, tw, th))
+            parts.append(error_widget("error%d" % i, tx, ty, tw, th, f))
             parts.append('<widget name="label%d" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" zPosition="3" />'
                          % (i, tx + int(6 * f), ty + int(6 * f), tw // 2, int(30 * f), int(22 * f)))
         parts.append("</screen>")
@@ -368,6 +420,7 @@ class StripWindow(Screen):
         self.tiles = []
         for i, ((name, title, url), (tx, ty, tw, th)) in enumerate(zip(cams, tiles)):
             self["tile%d" % i] = Pixmap()
+            self["error%d" % i] = Label("")
             self["label%d" % i] = Label(" " + title + " ")
             url = url.replace("width=640", "width=%d" % min(960, tw)) if "/api/frame.jpeg" in url else url
             self.tiles.append(Tile(self, "tile%d" % i, name, url, (tw, th)))
@@ -390,6 +443,75 @@ class StripWindow(Screen):
         self.close_timer.stop()
         self.hide()
         Controller.instance.window_closed(self)
+
+
+class NotifyWindow(Screen):
+    """Notification mode (#49, like Kodi): a small window with one snapshot, the title (who/what) and the priority;
+    it does not take the remote and closes by itself. Without a snapshot only the text is shown."""
+
+    def __init__(self, session, stream, url, text):
+        c = config.plugins.camalert
+        size = getDesktop(0).size()
+        x, y, w, h, t = window_geometry(c.position.value, "small", size.width(), size.height(), c.title_size.value)
+        f = size.width() / 1920.0
+        self.skin = """<screen name="CamAlertNotify" position="%d,%d" size="%d,%d" flags="wfNoBorder" backgroundColor="#ff000000" zPosition="10">
+            <eLabel position="0,0" size="%d,%d" backgroundColor="#202020" zPosition="0" />
+            <widget name="title" position="%d,0" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" valign="center" zPosition="2" />
+            <widget name="photo" position="0,%d" size="%d,%d" alphatest="off" zPosition="1" />
+            %s
+        </screen>""" % (x, y, w, h + t, w, h + t, int(10 * f), w - int(20 * f), t, title_font(c.title_size.value, size.width()),
+                        t, w, h, error_widget("error", 0, t, w, h, f))
+        Screen.__init__(self, session)
+        self.stream, self.url, self.size = stream, url, (w, h)
+        self.path = "/tmp/camalert_notify.jpg"
+        self["title"] = Label(text)
+        self["photo"] = Pixmap()
+        self["error"] = Label("")
+        set_error(self, "error", "photo", False)
+        self.picload = ePicLoad()
+        self.active = False
+        self.close_timer = eTimer()
+        self.close_timer.callback.append(self.stop)
+
+    def start(self, seconds):
+        self.active = True
+        self.show()
+        self.close_timer.start(seconds * 1000, True)
+        if self.url:
+            threads.deferToThread(_download, self.url, self.path, orientation_for(self.stream)).addCallbacks(
+                self.loaded, self.failed)
+
+    def loaded(self, _path):
+        if not getattr(self, "active", False):
+            return
+        try:
+            self.picload.setPara((self.size[0], self.size[1], 1, 1, False, 1, "#ff000000"))
+            if self.picload.startDecode(self.path, 0, 0, False) == 0:
+                ptr = self.picload.getData()
+                if ptr is not None:
+                    self["photo"].instance.setPixmap(ptr)
+        except Exception as e:
+            log("notification photo failed:", e)
+
+    def failed(self, err):
+        if getattr(self, "active", False):
+            log("notification snapshot failed:", err.getErrorMessage(), level="verbose")
+            set_error(self, "error", "photo", True)
+
+    def stop(self):
+        self.active = False
+        self.close_timer.stop()
+        self.hide()
+        if Controller.instance is not None:
+            Controller.instance.notice_closed(self)
+
+
+def notification_text(title, priority):
+    """'Camera: Person · Front door' (+ '  ·  High' / 'Alarm' for a higher priority), like Kodi's notification."""
+    text = _("Camera: %s") % title
+    if priority in ("high", "alarm"):
+        text += "  ·  " + present.priority_label(priority, _)
+    return text
 
 
 def free_bytes(folder):
@@ -546,7 +668,7 @@ class KeyHook(object):
         return 1
 
 
-class TourScreen(Screen):
+class TourScreen(Screen, HelpBase):
     """Full-screen camera tour: shows one camera after the other. LEFT/RIGHT = previous/next, OK = hold,
     GREEN = live, EXIT = close."""
 
@@ -556,19 +678,23 @@ class TourScreen(Screen):
         f = sw / 1920.0
         self.skin = """<screen name="CamAlertTour" position="0,0" size="%d,%d" flags="wfNoBorder" backgroundColor="#000000">
             <widget name="tile0" position="0,0" size="%d,%d" alphatest="off" />
-            <widget name="title" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" zPosition="2" />
-        </screen>""" % (sw, sh, sw, sh, int(30 * f), int(20 * f), sw - int(60 * f), int(46 * f), int(30 * f))
+            %s
+            <widget name="title" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" zPosition="5" />
+        </screen>""" % (sw, sh, sw, sh, error_widget("error0", 0, 0, sw, sh, f), int(30 * f), int(20 * f), sw - int(60 * f),
+                        int(46 * f), int(30 * f))
         Screen.__init__(self, session)
+        init_help(self)
         self.cams, self.index, self.hold, self.interval = cams, 0, False, interval
         self["tile0"] = Pixmap()
+        self["error0"] = Label("")
         self["title"] = Label("")
         self.active = False
         self.tile = None
         self.timer = eTimer()
         self.timer.callback.append(lambda: self.step(1, auto=True))
-        self["actions"] = ActionMap(*action_map_args("tour", {
+        key_actions(self, "tour", {
             "hold": self.toggle_hold, "close": self.close, "prev": lambda: self.step(-1), "next": lambda: self.step(1),
-            "live": self.live}), prio=-1)
+            "live": self.live})
         self.onShown.append(self.started)
         self.onClose.append(self.stopped)
 
@@ -643,6 +769,7 @@ class Controller(object):
         self.keys = None
         self.notify_timer = eTimer()
         self.notify_timer.callback.append(self.resume_tv)
+        self.notice = None
         self.events = []
         self.last_shown = {}
         self.reason = ""
@@ -871,8 +998,13 @@ class Controller(object):
         else:
             if pause:
                 self.pause_tv()
-            Notifications.AddPopup(_("Camera: %s") % title, MessageBox.TYPE_INFO, seconds,
-                                   id="CamAlert")
+            self.close_notice()
+            text = notification_text(title, priority)
+            if snap_url:
+                self.notice = self.session.instantiateDialog(NotifyWindow, stream, snap_url, text)
+                self.notice.start(seconds)
+            else:
+                Notifications.AddPopup(text, MessageBox.TYPE_INFO, seconds, id="CamAlert")
             if self.paused:
                 self.notify_timer.start(seconds * 1000, True)
         return action
@@ -1167,8 +1299,22 @@ class Controller(object):
         except Exception as e:
             log("resume failed:", e)
 
+    def close_notice(self):
+        n, self.notice = self.notice, None
+        if n is not None:
+            n.active = False
+            n.close_timer.stop()
+            n.hide()
+            self.session.deleteDialog(n)
+
+    def notice_closed(self, n):
+        if n is self.notice:
+            self.notice = None
+            self.session.deleteDialog(n)
+
     def hide(self, resume=True):
         self.close_keys()
+        self.close_notice()
         if self.ptz_stream:
             self.leave_ptz()
         if self.window is not None:

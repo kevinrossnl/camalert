@@ -8,15 +8,17 @@ from enigma import eDVBDB
 from Screens.Screen import Screen
 from Screens.ChoiceBox import ChoiceBox
 from Screens.MessageBox import MessageBox
-from Components.ActionMap import ActionMap
 from Components.ConfigList import ConfigListScreen
+from Components.Label import Label
 from Components.Sources.StaticText import StaticText
-from Components.config import config, configfile, getConfigListEntry, ConfigSelection
+from Components.config import config, configfile, getConfigListEntry, ConfigNothing, ConfigSelection
 from twisted.internet import threads
 
 from . import _, __version__
 from . import server
 from . import mqtt
+from .helpable import HelpBase, help_actions, init_help
+from .camalert_core import schema
 from .display import CAMERA_FILE, Controller, all_camera_names, direct_cameras, open_url, pillow_available
 from .camalert_core.cameras import (display_name, format_map, format_titles, parse_cams, parse_map,
                                     parse_orientation, parse_refresh, parse_titles, title_for)
@@ -32,11 +34,69 @@ def fetch_streams(srv):
         return streams_from_json(r.read().decode("utf-8", "replace"))
 
 
-class CamAlertSetup(ConfigListScreen, Screen):
-    # Designed for 1920x1080 and scaled to the receiver's skin resolution (many skins are 1280x720).
+LEVELS = {"basic": 0, "advanced": 1, "expert": 2}  # config.usage.setup_level: simple / intermediate / expert
+PICKERS = ("titles", "orientation", "refresh")  # per-camera maps, edited with OK in choice lists
+# triggers: Frigate settings, then Foscam settings, each under its own sub-heading
+TRIGGER_GROUPS = (("frigate", "Frigate"), ("foscam", "Foscam"))
+
+
+def _section(section):
+    names = {"general": _("General"), "display": _("Display"), "rules": _("Rules"), "triggers": _("Triggers"),
+             "camera_control": _("Camera control"), "home_assistant": _("Home Assistant"), "api": _("API"),
+             "channels": _("Channel list"), "log": _("Log and diagnostics")}
+    return names.get(section, section)
+
+
+def image_level():
+    """0 / 1 / 2 = the image's setup level (simple / intermediate / expert); expert where the image has none."""
+    try:
+        return max(0, min(2, int(config.usage.setup_level.index)))
+    except Exception:
+        return 2
+
+
+def visible(sid, c):
+    """Whether a setting applies with the current values of the others (progressive disclosure)."""
+    go2rtc, mode = c.source.value == "go2rtc", c.mode.value
+    rules = {
+        "server": go2rtc, "rtsp_port": go2rtc, "titles": go2rtc, "orientation": go2rtc, "refresh": go2rtc,
+        "cooldown": go2rtc, "substreams": go2rtc,
+        "verify_ssl": not go2rtc or c.server.value.strip().lower().startswith("https"),
+        "position": mode == "photo", "size": mode == "photo", "window_keys": mode == "photo",
+        "title_size": mode == "photo", "strip_layout": mode == "photo",
+        "pause_tv": mode in ("photo", "notify"), "live_return": mode == "live", "live_volume": mode == "live",
+        "from_time": c.limit_hours.value, "until_time": c.limit_hours.value,
+        "frigate_enabled": c.mqtt_enabled.value,
+    }
+    if sid in rules:
+        return bool(rules[sid])
+    if sid.startswith("frigate_"):
+        return bool(c.mqtt_enabled.value and c.frigate_enabled.value)
+    if sid.startswith("foscam_") and sid != "foscam_enabled":
+        return bool(c.foscam_enabled.value)
+    if sid.startswith("mqtt_"):
+        return sid == "mqtt_enabled" or bool(c.mqtt_enabled.value)
+    return True
+
+
+def ordered():
+    """The Enigma2 settings in schema order; inside 'triggers' Frigate first, then Foscam."""
+    settings = [s for s in schema.for_platform("enigma2") if s.level != "internal"]
+
+    def key(item):
+        i, s = item
+        group = [n for n, (prefix, _l) in enumerate(TRIGGER_GROUPS) if s.id.startswith(prefix + "_")]
+        return (schema.SECTIONS.index(s.section), group[0] if s.section == "triggers" and group else 0, i)
+    return [s for _i, s in sorted(enumerate(settings), key=key)]
+
+
+class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
+    # Designed for 1920x1080 and scaled to the receiver's skin resolution (many skins are 1280x720). Used when
+    # the skin has no "Setup" screen; otherwise the skin's own Setup layout is used (skinName).
     SKIN = """<screen name="CamAlertSetup" position="center,center" size="{W},{H}" title="CamAlert">
         <widget name="config" position="{m},{m}" size="{cw},{ch}" itemHeight="{ih}" font="Regular;{fs}" scrollbarMode="showOnDemand" />
-        <widget source="help" render="Label" position="{m},{hy}" size="{cw},{hh}" font="Regular;{hf}" foregroundColor="#aaaaaa" />
+        <widget name="description" position="{m},{hy}" size="{cw},{hh}" font="Regular;{hf}" foregroundColor="#aaaaaa" />
+        <widget name="footnote" position="{m},{fy}" size="{cw},{fh}" font="Regular;{ff}" foregroundColor="#888888" halign="right" />
         <widget name="HelpWindow" position="0,0" size="1,1" zPosition="1" transparent="1" alphatest="on" />
         <widget source="VKeyIcon" render="Pixmap" position="0,0" size="1,1" conditional="VKeyIcon"><convert type="ConditionalShowHide" /></widget>
         <widget source="key_red" render="Label" position="{k0},{ky}" size="{kw},{kh}" backgroundColor="#9f1313" font="Regular;{hf}" halign="center" valign="center" />
@@ -52,166 +112,101 @@ class CamAlertSetup(ConfigListScreen, Screen):
         def v(x):
             return int(round(x * f))
         return CamAlertSetup.SKIN.format(
-            W=v(1100), H=v(820), m=v(20), cw=v(1060), ch=v(600), ih=v(42), fs=v(30), hy=v(630), hh=v(100), hf=v(26),
-            ky=v(755), kw=v(250), kh=v(46), k0=v(20), k1=v(290), k2=v(560), k3=v(830))
+            W=v(1100), H=v(820), m=v(20), cw=v(1060), ch=v(588), ih=v(42), fs=v(30), hy=v(616), hh=v(96), hf=v(26),
+            fy=v(714), fh=v(32), ff=v(22), ky=v(755), kw=v(250), kh=v(46), k0=v(20), k1=v(290), k2=v(560), k3=v(830))
 
     def __init__(self, session):
         from enigma import getDesktop
         self.skin = self.build_skin(getDesktop(0).size().width())
         Screen.__init__(self, session)
-        self.setTitle("CamAlert %s   (%s)" % (__version__, _("MENU = diagnostics / events")))
+        self.skinName = ["CamAlertSetup", "Setup"]  # after Screen.__init__, which sets it to the class name
+        init_help(self)
+        self.setTitle("CamAlert")
+        self.level = image_level()
+        self.help_texts = []
+        self["description"] = Label("")
+        self["footnote"] = Label("CamAlert %s" % __version__)
+        ConfigListScreen.__init__(self, [], session=session, on_change=self.build)
         self["key_red"] = StaticText(_("Cancel"))
         self["key_green"] = StaticText(_("Save"))
-        self["key_yellow"] = StaticText(_("Camera list"))
+        self["key_yellow"] = StaticText(_("Create channel list"))
         self["key_blue"] = StaticText(_("Test"))
-        self["help"] = StaticText("")
-        ConfigListScreen.__init__(self, [], session=session, on_change=self.build)
-        self["actions"] = ActionMap(["SetupActions", "ColorActions"], {
-            "cancel": self.cancel, "red": self.cancel, "green": self.save, "save": self.save,
-            "ok": self.ok, "yellow": self.make_bouquet, "blue": self.test}, -2)
-        self["menu_actions"] = ActionMap(["MenuActions"], {"menu": self.menu}, -2)
+        self["key_menu"] = StaticText("MENU")
+        help_actions(self, "actions", "SetupActions", {
+            "cancel": (self.cancel, _("Close without saving")), "save": (self.save, _("Save")),
+            "ok": (self.ok, _("Choose a value or camera"))}, -2)
+        help_actions(self, "colour_actions", "ColorActions", {
+            "red": (self.cancel, _("Close without saving")), "green": (self.save, _("Save")),
+            "yellow": (self.make_bouquet, _("Create channel list")),
+            "blue": (self.test, _("Save and show the default camera"))}, -2)
+        help_actions(self, "menu_actions", "MenuActions", {
+            "menu": (self.menu, _("Diagnostics, event list, all settings"))}, -2)
         self.build()
         self.onLayoutFinish.append(self.update_help)
         self["config"].onSelectionChanged.append(self.update_help)
 
+    def item(self, s, c):
+        """(label, config element, help) of one schema setting."""
+        el = getattr(c, s.key("enigma2"))
+        if s.id == "titles":
+            n = len(parse_titles(c.titles.value))
+            self.names_entry = el = ConfigSelection(choices=[("x", (_("%d own names") % n) if n else _("automatic"))])
+        elif s.id == "orientation":
+            n = len(parse_orientation(c.orientation.value))
+            self.orientation_entry = el = ConfigSelection(choices=[("x", (_("%d cameras") % n) if n else _("normal"))])
+        elif s.id == "refresh":
+            n = len(parse_refresh(c.refresh.value))
+            self.refresh_entry = el = ConfigSelection(choices=[("x", (_("%d cameras") % n) if n else _("as fast as possible"))])
+        text = _(s.help) if s.help else ""
+        if "%s" in text:
+            text = text % (CAMERA_FILE if s.id == "source" else DEVICES_FILE)
+        return _(s.label), el, text
+
     def build(self):
         c = config.plugins.camalert
-        items = [
-            (_("Enable CamAlert"), c.enabled, _("Turn the HTTP API and the camera display on or off.")),
-            (_("Cameras via"), c.source, _("go2rtc is recommended. Without go2rtc, list your cameras in %s") % CAMERA_FILE),
-        ]
-        if c.source.value == "go2rtc":
-            items += [
-                (_("go2rtc address"), c.server, _("Address of your go2rtc server, e.g. http://192.168.1.10:1984")),
-                (_("go2rtc RTSP port"), c.rtsp_port, _("Usually 8554. Used for live view and the camera list.")),
-            ]
-        if c.source.value == "direct" or c.server.value.strip().lower().startswith("https"):
-            items += [(_("Check certificates"), c.verify_ssl,
-                       _("Turn off for a self-signed certificate (only in your own network)."))]
-        items += [
-            (_("Default camera"), c.camera, _("Press OK to choose from the cameras in go2rtc.")),
-        ]
-        if c.source.value == "go2rtc":
-            n = len(parse_titles(c.titles.value))
-            self.names_entry = ConfigSelection(choices=[("x", (_("%d own names") % n) if n else _("automatic"))])
-            items += [(_("Camera names"), self.names_entry, _("Press OK to give a camera its own name (empty = automatic)."))]
-        items += [
-            (_("Display mode"), c.mode, _("Photo window keeps watching TV; live switches the channel to the camera.")),
-            (_("Duration (seconds)"), c.duration, _("How long the camera stays on screen.")),
-        ]
-        if c.mode.value == "photo":
-            items += [(_("Window position"), c.position, ""), (_("Window size"), c.size, ""),
-                      (_("Remote control in photo window"), c.window_keys,
-                       _("OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too.")),
-                      (_("Title size"), c.title_size, ""),
-                      (_("Multi-camera window layout"), c.strip_layout,
-                       _("A request with 2-4 cameras shows them together in one multi-camera window."))]
-        if c.mode.value in ("photo", "notify"):
-            items += [(_("Pause what is playing meanwhile"), c.pause_tv,
-                       _("Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift."))]
-        if c.mode.value == "live":
-            items += [(_("Return to what was playing"), c.live_return,
-                       _("Switch back to what you were watching when the time is up.")),
-                      (_("Volume during live view (%)"), c.live_volume,
-                       _("Percentage of the current volume while the camera is shown. 100 = unchanged."))]
-        if c.source.value == "go2rtc":
-            n_o = len(parse_orientation(c.orientation.value))
-            n_r = len(parse_refresh(c.refresh.value))
-            self.orientation_entry = ConfigSelection(choices=[("x", (_("%d cameras") % n_o) if n_o else _("normal"))])
-            self.refresh_entry = ConfigSelection(choices=[("x", (_("%d cameras") % n_r) if n_r else _("as fast as possible"))])
-            items += [(_("Turn or mirror image"), self.orientation_entry,
-                       _("Press OK to turn a camera that hangs upside down (needs python3-pillow).")),
-                      (_("Refresh interval"), self.refresh_entry,
-                       _("Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."))]
-        if c.source.value == "go2rtc":
-            items += [(_("Cooldown per camera"), c.cooldown,
-                       _("Seconds before the same camera is shown again, e.g. *=30|garden=120 (* = all cameras). Alarm always.")),
-                      (_("Live view substreams"), c.substreams,
-                       _("For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."))]
-        items += [(_("Do not disturb"), c.dnd, _("Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant.")),
-                  (_("Do not disturb blocks"), c.dnd_level, "")]
-        items += [(_("Only between certain times"), c.limit_hours, _("Ignore normal requests outside the chosen times. High and alarm always come through."))]
-        if c.limit_hours.value:
-            items += [(_("From"), c.from_time, ""), (_("Until"), c.until_time, _("May pass midnight, e.g. 07:00 to 23:00."))]
-        items += [(_("Not during a recording"), c.skip_recording, _("Ignore normal requests while the receiver is recording.")),
-                  (_("Not while playing"), c.skip_playing,
-                   _("Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through.")),
-                  (_("Wake up on alarm"), c.alarm_wake,
-                   _("Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on.")),
-                  (_("Tour: seconds per camera"), c.tour_interval, "")]
-        items += [
-            (_("HTTP port"), c.http_port, _("Port of the CamAlert API on this receiver (default 8099).")),
-            (_("Use HTTPS for the API"), c.api_https,
-             _("Uses a self-signed certificate; callers must turn off certificate checking.")),
-            (_("Allowed callers"), c.allow, _("'Local network only' is recommended.")),
-            (_("Access token (optional)"), c.token, _("If set, callers must add ?token=... to every request.")),
-            (_("Camera list name"), c.bouquet_name, _("Name of the channel list created with the yellow button.")),
-            (_("Update camera list automatically"), c.auto_bouquet,
-             _("Checks every 30 minutes for new or removed cameras and updates the channel list.")),
-            (_("Camera list position"), c.bouquet_position, _("Where the camera list appears among your channel lists.")),
-            (_("Mosaic cameras"), c.mosaic, _("Press OK to choose up to 9 cameras for the mosaic. Empty = all.")),
-            (_("MQTT (Home Assistant without YAML)"), c.mqtt_enabled,
-             _("Connects to your MQTT broker; with discovery the receiver appears in Home Assistant automatically.")),
-        ]
-        if c.mqtt_enabled.value:
-            items += [
-                (_("MQTT broker address"), c.mqtt_host, _("IP address or name of the MQTT broker, e.g. 192.168.1.10")),
-                (_("MQTT port"), c.mqtt_port, _("Usually 1883.")),
-                (_("MQTT user"), c.mqtt_user, ""),
-                (_("MQTT password"), c.mqtt_password, ""),
-                (_("Home Assistant discovery"), c.mqtt_discovery, _("Creates a device with a button per camera in Home Assistant.")),
-                (_("Name in Home Assistant"), c.mqtt_name, _("Empty = CamAlert + the receiver's host name.")),
-                (_("Frigate events"), c.frigate_enabled,
-                 _("Shows the camera when Frigate detects something (via MQTT, without Home Assistant).")),
-            ]
-            if c.frigate_enabled.value:
-                items += [
-                    (_("Frigate MQTT prefix"), c.frigate_prefix, _("Usually 'frigate'.")),
-                    (_("Frigate objects"), c.frigate_labels, _("Comma separated, e.g. person,car. Empty = all objects.")),
-                    (_("Frigate camera names"), c.frigate_map,
-                     _("Only if the names differ from go2rtc: frigate=go2rtc|other=other_stream")),
-                    (_("Frigate priority"), c.frigate_priority, ""),
-                    (_("Display mode"), c.frigate_mode, ""),
-                    (_("Duration (seconds)"), c.frigate_seconds, ""),
-                    (_("Frigate address (for clips)"), c.frigate_url,
-                     _("Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an event from the event list.")),
-                ]
-        items += [
-            (_("Colour keys to Home Assistant"), c.ha_buttons,
-             _("While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate).")),
-            (_("Camera control (PTZ) key"), c.ptz_key,
-             _("For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home).") % DEVICES_FILE),
-            (_("Doorbell chime"), c.chime, _("Plays a short ding-dong for requests with priority high or alarm (doorbell).")),
-            (_("Picons for the camera channels"), c.picons,
-             _("Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced.")),
-            (_("Foscam motion and sound alarms"), c.foscam_enabled,
-             _("Asks the Foscam cameras in %s for motion and sound alarms.") % DEVICES_FILE),
-        ]
-        if c.foscam_enabled.value:
-            items += [(_("Foscam priority"), c.foscam_priority, ""), (_("Display mode"), c.foscam_mode, ""),
-                      (_("Duration (seconds)"), c.foscam_seconds, ""),
-                      (_("Check every (seconds)"), c.foscam_interval, "")]
-        items += [
-            (_("Event snapshots folder"), c.event_folder, _("Small photos of the last 20 events (default /tmp/camalert_events).")),
-            (_("Log level"), c.log_level, _("camalert.log in /home/root/logs (or /tmp). Passwords and tokens are never logged.")),
-            (_("Remote syslog (host:port)"), c.log_syslog, _("Optional: also send the log via UDP (RFC 5424), e.g. to Loki/Alloy.")),
-            (_("Check for updates"), c.update_check, _("Looks once a day on GitHub for a new version and shows a message.")),
-        ]
-        self.help_texts = [i[2] for i in items]
-        self["config"].list = [getConfigListEntry(i[0], i[1]) for i in items]
+        rows, section, group = [], None, None
+        self.hidden = 0
+        for s in ordered():
+            if not visible(s.id, c):
+                continue
+            if LEVELS[s.level] > self.level:
+                self.hidden += 1
+                continue
+            if s.section != section:
+                section, group = s.section, None
+                rows.append(("-- %s --" % _section(section), ConfigNothing(), ""))
+            if s.section == "triggers":
+                g = [label for prefix, label in TRIGGER_GROUPS if s.id.startswith(prefix + "_")]
+                if g and g[0] != group:
+                    group = g[0]
+                    rows.append(("   %s" % group, ConfigNothing(), ""))
+            rows.append(self.item(s, c))
+        self.help_texts = [r[2] for r in rows]
+        self["config"].list = [getConfigListEntry(r[0], r[1]) for r in rows]
+        self["footnote"].setText("CamAlert %s" % __version__ + (
+            "   " + (_("%d more settings via MENU") % self.hidden) if self.hidden else ""))
 
     def menu(self):
-        self.session.openWithCallback(self.menu_chosen, ChoiceBox, title="CamAlert",
-                                      list=[(_("Diagnostics"), "diag"), (_("Event list"), "events")])
+        choices = [(_("Diagnostics"), "diag"), (_("Event list"), "events")]
+        if self.level < 2:
+            choices.append((_("Show all settings"), "all"))
+        elif image_level() < 2:
+            choices.append((_("Show fewer settings"), "fewer"))
+        self.session.openWithCallback(self.menu_chosen, ChoiceBox, title="CamAlert", list=choices)
 
     def menu_chosen(self, choice):
         from .diagnostics import DiagnosticsScreen, EventsScreen
-        if choice:
+        if not choice:
+            return
+        if choice[1] in ("all", "fewer"):
+            self.level = 2 if choice[1] == "all" else image_level()
+            self.build()
+        else:
             self.session.open(DiagnosticsScreen if choice[1] == "diag" else EventsScreen)
 
     def update_help(self):
         i = self["config"].getCurrentIndex()
-        self["help"].text = self.help_texts[i] if 0 <= i < len(self.help_texts) else ""
+        self["description"].setText(self.help_texts[i] if 0 <= i < len(self.help_texts) else "")
 
     def server(self):
         """Checks the camera source; returns True if cameras can be listed."""
@@ -384,12 +379,18 @@ class CamAlertSetup(ConfigListScreen, Screen):
         self.session.open(MessageBox, _("Could not reach go2rtc:\n%s") % message, MessageBox.TYPE_ERROR)
 
     def test(self):
-        c = config.plugins.camalert
-        if not c.camera.value:
+        """BLUE: asks, then saves the settings and shows the default camera for 15 seconds."""
+        if not config.plugins.camalert.camera.value:
             self.session.open(MessageBox, _("Choose a default camera first."), MessageBox.TYPE_WARNING)
             return
-        self.save(close=False)
-        self.close()
+        self.session.openWithCallback(self.test_confirmed, MessageBox,
+                                      _("Save the settings and show the default camera now?"), MessageBox.TYPE_YESNO)
+
+    def test_confirmed(self, yes):
+        if not yes:
+            return
+        c = config.plugins.camalert
+        self.save()
         Controller.instance.show(c.camera.value, 15, c.mode.value)
 
     def save(self, close=True):
@@ -412,7 +413,7 @@ class CamAlertSetup(ConfigListScreen, Screen):
             self.close()
 
     def cancel(self):
-        for x in self["config"].list:
-            x[1].cancel()
-        config.plugins.camalert.titles.cancel()
+        """Undoes every change, also those made in the choice lists (names, orientation, refresh, mosaic)."""
+        for el in config.plugins.camalert.content.items.values():
+            el.cancel()
         self.close()

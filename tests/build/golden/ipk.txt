@@ -43,6 +43,7 @@ data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_co
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/chime.wav
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/diagnostics.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/display.py
+data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/helpable.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/keys.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/locale/de/LC_MESSAGES/CamAlert.mo
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/locale/fr/LC_MESSAGES/CamAlert.mo

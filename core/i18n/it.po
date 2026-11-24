@@ -237,6 +237,10 @@ msgid "Check again"
 msgstr "Verifica di nuovo"
 
 #: e2
+msgid "Scroll"
+msgstr "Scorri"
+
+#: e2
 msgid "Last log lines:"
 msgstr "Ultime righe del log:"
 
@@ -253,8 +257,16 @@ msgid "Play clip"
 msgstr "Riproduci clip"
 
 #: e2
+msgid "Show this camera"
+msgstr "Mostra questa telecamera"
+
+#: e2
 msgid "Motion"
 msgstr "Movimento"
+
+#: e2 kodi:30527
+msgid "Camera not reachable"
+msgstr "Telecamera non raggiungibile"
 
 #: e2 kodi:30192 ha:entity.sensor.on_screen.state_attributes.cameras.name ha:services.mosaic.fields.cameras.name ha:services.show.fields.camera.name
 msgid "Cameras"
@@ -300,9 +312,41 @@ msgstr "Telecamere una dopo l'altra"
 msgid "The last camera requests"
 msgstr "Le ultime richieste delle telecamere"
 
+#: e2 kodi:30000
+msgid "General"
+msgstr "Generale"
+
+#: e2 kodi:30001
+msgid "Display"
+msgstr "Visualizzazione"
+
+#: e2 kodi:30002
+msgid "Rules"
+msgstr "Regole"
+
+#: e2 kodi:30004
+msgid "Triggers"
+msgstr "Attivatori"
+
+#: e2 kodi:30005
+msgid "Camera control"
+msgstr "Controllo telecamera"
+
+#: e2 kodi:30501
+msgid "Home Assistant"
+msgstr "Home Assistant"
+
+#: e2 kodi:30006 kodi:30500
+msgid "API"
+msgstr "API"
+
 #: e2
-msgid "MENU = diagnostics / events"
-msgstr "MENU = diagnostica / eventi"
+msgid "Channel list"
+msgstr "Elenco canali"
+
+#: e2 kodi:30007
+msgid "Log and diagnostics"
+msgstr "Log e diagnostica"
 
 #: e2
 msgid "Cancel"
@@ -313,60 +357,28 @@ msgid "Save"
 msgstr "Salva"
 
 #: e2
-msgid "Camera list"
-msgstr "Elenco telecamere"
+msgid "Create channel list"
+msgstr "Crea elenco canali"
 
 #: e2
 msgid "Test"
 msgstr "Prova"
 
-#: e2 kodi:30010
-msgid "Enable CamAlert"
-msgstr "Attiva CamAlert"
-
-#: e2 kodi:30011
-msgid "Turn the HTTP API and the camera display on or off."
-msgstr "Attiva o disattiva l'API HTTP e la visualizzazione delle telecamere."
-
-#: e2 kodi:30012
-msgid "Cameras via"
-msgstr "Telecamere tramite"
+#: e2
+msgid "Close without saving"
+msgstr "Chiudi senza salvare"
 
 #: e2
-msgid "go2rtc is recommended. Without go2rtc, list your cameras in %s"
-msgstr "Si consiglia go2rtc. Senza go2rtc, elenca le telecamere in %s"
-
-#: e2 kodi:30016
-msgid "go2rtc address"
-msgstr "Indirizzo go2rtc"
-
-#: e2 kodi:30017
-msgid "Address of your go2rtc server, e.g. http://192.168.1.10:1984"
-msgstr "Indirizzo del server go2rtc, ad es. http://192.168.1.10:1984"
-
-#: e2 kodi:30018
-msgid "go2rtc RTSP port"
-msgstr "Porta RTSP go2rtc"
+msgid "Choose a value or camera"
+msgstr "Scegliere un valore o una telecamera"
 
 #: e2
-msgid "Usually 8554. Used for live view and the camera list."
-msgstr "Di solito 8554. Usata per la visione live e l'elenco telecamere."
-
-#: e2 kodi:30020 ha:config.step.reconfigure.data.verify_ssl ha:config.step.user.data.verify_ssl
-msgid "Check certificates"
-msgstr "Verifica certificati"
-
-#: e2 kodi:30021
-msgid "Turn off for a self-signed certificate (only in your own network)."
-msgstr "Disattivare per un certificato autofirmato (solo nella propria rete)."
-
-#: e2 kodi:30024
-msgid "Default camera"
-msgstr "Telecamera predefinita"
+msgid "Save and show the default camera"
+msgstr "Salva e mostra la telecamera predefinita"
 
 #: e2
-msgid "Press OK to choose from the cameras in go2rtc."
-msgstr "Premere OK per scegliere tra le telecamere di go2rtc."
+msgid "Diagnostics, event list, all settings"
+msgstr "Diagnostica, elenco eventi, tutte le impostazioni"
 
 #: e2
 msgid "%d own names"
@@ -375,82 +387,6 @@ msgstr "%d nomi personalizzati"
 #: e2
 msgid "automatic"
 msgstr "automatico"
-
-#: e2 kodi:30027
-msgid "Camera names"
-msgstr "Nomi delle telecamere"
-
-#: e2
-msgid "Press OK to give a camera its own name (empty = automatic)."
-msgstr "Premere OK per dare un nome a una telecamera (vuoto = automatico)."
-
-#: e2 kodi:30040 ha:entity.sensor.on_screen.state_attributes.mode.name ha:services.show.fields.mode.name
-msgid "Display mode"
-msgstr "Modalità di visualizzazione"
-
-#: e2
-msgid "Photo window keeps watching TV; live switches the channel to the camera."
-msgstr "Finestra foto: la TV continua. Live: il canale passa alla telecamera."
-
-#: e2 kodi:30045
-msgid "Duration (seconds)"
-msgstr "Durata (secondi)"
-
-#: e2 kodi:30046
-msgid "How long the camera stays on screen."
-msgstr "Per quanto tempo resta visibile la telecamera."
-
-#: e2 kodi:30047
-msgid "Window position"
-msgstr "Posizione finestra"
-
-#: e2 kodi:30052
-msgid "Window size"
-msgstr "Dimensione finestra"
-
-#: e2 kodi:30066
-msgid "Remote control in photo window"
-msgstr "Telecomando nella finestra foto"
-
-#: e2
-msgid "OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too."
-msgstr "OK = live, SINISTRA/DESTRA = altra telecamera, EXIT = chiudi. Anche gli altri tasti chiudono."
-
-#: e2 kodi:30230
-msgid "Title size"
-msgstr "Dimensione del titolo"
-
-#: e2 kodi:30056
-msgid "Multi-camera window layout"
-msgstr "Disposizione della finestra con più telecamere"
-
-#: e2
-msgid "A request with 2-4 cameras shows them together in one multi-camera window."
-msgstr "Una richiesta con 2-4 telecamere le mostra insieme in una finestra con più telecamere."
-
-#: e2 kodi:30068
-msgid "Pause what is playing meanwhile"
-msgstr "Metti in pausa la riproduzione"
-
-#: e2
-msgid "Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift."
-msgstr "Mette in pausa il canale (timeshift) mentre è visibile la telecamera. Serve un disco o una chiavetta USB per il timeshift."
-
-#: e2 kodi:30070
-msgid "Return to what was playing"
-msgstr "Torna a ciò che era in riproduzione"
-
-#: e2
-msgid "Switch back to what you were watching when the time is up."
-msgstr "Torna a ciò che stavi guardando allo scadere del tempo."
-
-#: e2 kodi:30072
-msgid "Volume during live view (%)"
-msgstr "Volume durante la visione live (%)"
-
-#: e2 kodi:30073
-msgid "Percentage of the current volume while the camera is shown. 100 = unchanged."
-msgstr "Percentuale del volume attuale mentre è visibile la telecamera. 100 = invariato."
 
 #: e2
 msgid "%d cameras"
@@ -464,333 +400,9 @@ msgstr "normale"
 msgid "as fast as possible"
 msgstr "il più veloce possibile"
 
-#: e2 kodi:30062
-msgid "Turn or mirror image"
-msgstr "Ruota o specchia l'immagine"
-
 #: e2
-msgid "Press OK to turn a camera that hangs upside down (needs python3-pillow)."
-msgstr "Premere OK per ruotare una telecamera montata capovolta (richiede python3-pillow)."
-
-#: e2 kodi:30064
-msgid "Refresh interval"
-msgstr "Intervallo di aggiornamento"
-
-#: e2
-msgid "Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."
-msgstr "Premere OK per scaricare meno spesso le foto di una telecamera (secondi), ad es. per una telecamera lenta."
-
-#: e2 kodi:30255
-msgid "Cooldown per camera"
-msgstr "Attesa per telecamera"
-
-#: e2
-msgid "Seconds before the same camera is shown again, e.g. *=30|garden=120 (* = all cameras). Alarm always."
-msgstr "Secondi prima di mostrare di nuovo la stessa telecamera, ad es. *=30|garden=120 (* = tutte). Allarme sempre."
-
-#: e2 kodi:30257
-msgid "Live view substreams"
-msgstr "Substream per la visione live"
-
-#: e2
-msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
-msgstr "Per le telecamere che il ricevitore non riesce a riprodurre (H.265/4K): front_door=front_door_sub usa quello stream go2rtc per la visione live."
-
-#: e2 kodi:30102 kodi:30515 ha:entity.switch.dnd.name
-msgid "Do not disturb"
-msgstr "Non disturbare"
-
-#: e2 kodi:30103
-msgid "Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant."
-msgstr "Ignora le richieste con priorità normale (con 'Non disturbare blocca' anche alta). L'allarme passa sempre. Anche tramite API, MQTT e Home Assistant."
-
-#: e2 kodi:30104
-msgid "Do not disturb blocks"
-msgstr "Non disturbare blocca"
-
-#: e2 kodi:30090
-msgid "Only between certain times"
-msgstr "Solo in determinati orari"
-
-#: e2 kodi:30091
-msgid "Ignore normal requests outside the chosen times. High and alarm always come through."
-msgstr "Ignorare le richieste normali fuori dagli orari scelti. Alta e allarme passano sempre."
-
-#: e2 kodi:30092
-msgid "From"
-msgstr "Da"
-
-#: e2 kodi:30093
-msgid "Until"
-msgstr "Fino a"
-
-#: e2 kodi:30094
-msgid "May pass midnight, e.g. 07:00 to 23:00."
-msgstr "Può superare la mezzanotte, ad es. dalle 07:00 alle 23:00."
-
-#: e2
-msgid "Not during a recording"
-msgstr "Non durante una registrazione"
-
-#: e2
-msgid "Ignore normal requests while the receiver is recording."
-msgstr "Ignorare le richieste normali mentre il ricevitore registra."
-
-#: e2 kodi:30095
-msgid "Not while playing"
-msgstr "Non durante la riproduzione"
-
-#: e2
-msgid "Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through."
-msgstr "Ignorare le richieste normali durante la riproduzione di un video o di una registrazione (video) o di qualsiasi cosa (tutto). Alta e allarme passano sempre."
-
-#: e2 kodi:30100
-msgid "Wake up on alarm"
-msgstr "Risveglio in caso di allarme"
-
-#: e2
-msgid "Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on."
-msgstr "Le richieste con priorità 'alarm' accendono il ricevitore (e la TV tramite HDMI-CEC)."
-
-#: e2 kodi:30078
-msgid "Tour: seconds per camera"
-msgstr "Giro: secondi per telecamera"
-
-#: e2 kodi:30160
-msgid "HTTP port"
-msgstr "Porta HTTP"
-
-#: e2
-msgid "Port of the CamAlert API on this receiver (default 8099)."
-msgstr "Porta dell'API CamAlert su questo ricevitore (predefinita 8099)."
-
-#: e2 kodi:30168
-msgid "Use HTTPS for the API"
-msgstr "Usare HTTPS per l'API"
-
-#: e2 kodi:30169
-msgid "Uses a self-signed certificate; callers must turn off certificate checking."
-msgstr "Usa un certificato autofirmato; i chiamanti devono disattivare la verifica."
-
-#: e2 kodi:30162
-msgid "Allowed callers"
-msgstr "Chiamanti consentiti"
-
-#: e2 kodi:30163
-msgid "'Local network only' is recommended."
-msgstr "Si consiglia 'Solo rete locale'."
-
-#: e2 kodi:30166
-msgid "Access token (optional)"
-msgstr "Token di accesso (facoltativo)"
-
-#: e2 kodi:30167
-msgid "If set, callers must add ?token=... to every request."
-msgstr "Se impostato, ogni richiesta deve contenere ?token=..."
-
-#: e2
-msgid "Camera list name"
-msgstr "Nome elenco telecamere"
-
-#: e2
-msgid "Name of the channel list created with the yellow button."
-msgstr "Nome dell'elenco creato con il tasto giallo."
-
-#: e2
-msgid "Update camera list automatically"
-msgstr "Aggiorna l'elenco automaticamente"
-
-#: e2
-msgid "Checks every 30 minutes for new or removed cameras and updates the channel list."
-msgstr "Controlla ogni 30 minuti telecamere nuove o rimosse e aggiorna l'elenco."
-
-#: e2
-msgid "Camera list position"
-msgstr "Posizione dell'elenco"
-
-#: e2
-msgid "Where the camera list appears among your channel lists."
-msgstr "Dove appare l'elenco tra le liste di canali."
-
-#: e2 kodi:30029
-msgid "Mosaic cameras"
-msgstr "Telecamere del mosaico"
-
-#: e2
-msgid "Press OK to choose up to 9 cameras for the mosaic. Empty = all."
-msgstr "Premere OK per scegliere fino a 9 telecamere per il mosaico. Vuoto = tutte."
-
-#: e2 kodi:30110
-msgid "MQTT (Home Assistant without YAML)"
-msgstr "MQTT (Home Assistant senza YAML)"
-
-#: e2
-msgid "Connects to your MQTT broker; with discovery the receiver appears in Home Assistant automatically."
-msgstr "Si collega al broker MQTT; con il discovery il ricevitore compare da solo in Home Assistant."
-
-#: e2 kodi:30112
-msgid "MQTT broker address"
-msgstr "Indirizzo broker MQTT"
-
-#: e2 kodi:30113
-msgid "IP address or name of the MQTT broker, e.g. 192.168.1.10"
-msgstr "Indirizzo IP o nome del broker MQTT, ad es. 192.168.1.10"
-
-#: e2 kodi:30114
-msgid "MQTT port"
-msgstr "Porta MQTT"
-
-#: e2 kodi:30115
-msgid "Usually 1883."
-msgstr "Di solito 1883."
-
-#: e2 kodi:30116
-msgid "MQTT user"
-msgstr "Utente MQTT"
-
-#: e2 kodi:30117
-msgid "MQTT password"
-msgstr "Password MQTT"
-
-#: e2 kodi:30118
-msgid "Home Assistant discovery"
-msgstr "Discovery di Home Assistant"
-
-#: e2 kodi:30119
-msgid "Creates a device with a button per camera in Home Assistant."
-msgstr "Crea in Home Assistant un dispositivo con un pulsante per telecamera."
-
-#: e2 kodi:30120
-msgid "Name in Home Assistant"
-msgstr "Nome in Home Assistant"
-
-#: e2
-msgid "Empty = CamAlert + the receiver's host name."
-msgstr "Vuoto = CamAlert + nome host del ricevitore."
-
-#: e2 kodi:30130
-msgid "Frigate events"
-msgstr "Eventi Frigate"
-
-#: e2
-msgid "Shows the camera when Frigate detects something (via MQTT, without Home Assistant)."
-msgstr "Mostra la telecamera quando Frigate rileva qualcosa (via MQTT, senza Home Assistant)."
-
-#: e2 kodi:30132
-msgid "Frigate MQTT prefix"
-msgstr "Prefisso MQTT di Frigate"
-
-#: e2 kodi:30133
-msgid "Usually 'frigate'."
-msgstr "Di solito 'frigate'."
-
-#: e2 kodi:30259
-msgid "Frigate objects"
-msgstr "Oggetti Frigate"
-
-#: e2
-msgid "Comma separated, e.g. person,car. Empty = all objects."
-msgstr "Separati da virgole, ad es. person,car. Vuoto = tutti gli oggetti."
-
-#: e2 kodi:30136
-msgid "Frigate camera names"
-msgstr "Nomi delle telecamere Frigate"
-
-#: e2
-msgid "Only if the names differ from go2rtc: frigate=go2rtc|other=other_stream"
-msgstr "Solo se i nomi differiscono da go2rtc: frigate=go2rtc|other=other_stream"
-
-#: e2 kodi:30260
-msgid "Frigate priority"
-msgstr "Priorità Frigate"
-
-#: e2 kodi:30237
-msgid "Frigate address (for clips)"
-msgstr "Indirizzo Frigate (per le clip)"
-
-#: e2
-msgid "Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an event from the event list."
-msgstr "Facoltativo, ad es. http://192.168.1.10:5000 - permette di riprodurre la clip di un evento dall'elenco eventi."
-
-#: e2 kodi:30245
-msgid "Colour keys to Home Assistant"
-msgstr "Tasti colorati a Home Assistant"
-
-#: e2
-msgid "While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate)."
-msgstr "Mentre è mostrata una telecamera, i tasti colorati inviano un evento a Home Assistant (ad es. aprire il cancello)."
-
-#: e2 kodi:30239
-msgid "Camera control (PTZ) key"
-msgstr "Tasto per il controllo telecamera (PTZ)"
-
-#: e2
-msgid "For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home)."
-msgstr "Per le telecamere PTZ in %s: questo tasto attiva la modalità PTZ (frecce, CH+/CH-, OK = posizione iniziale)."
-
-#: e2 kodi:30232
-msgid "Doorbell chime"
-msgstr "Suono del campanello"
-
-#: e2
-msgid "Plays a short ding-dong for requests with priority high or alarm (doorbell)."
-msgstr "Riproduce un breve din-don per le richieste con priorità alta o allarme (campanello)."
-
-#: e2
-msgid "Picons for the camera channels"
-msgstr "Picon per i canali delle telecamere"
-
-#: e2
-msgid "Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced."
-msgstr "Crea un picon semplice (telecamera + nome) per ogni canale delle telecamere; i picon esistenti non vengono mai sostituiti."
-
-#: e2 kodi:30143
-msgid "Foscam motion and sound alarms"
-msgstr "Allarmi di movimento e audio Foscam"
-
-#: e2
-msgid "Asks the Foscam cameras in %s for motion and sound alarms."
-msgstr "Interroga le telecamere Foscam in %s sugli allarmi di movimento e audio."
-
-#: e2 kodi:30261
-msgid "Foscam priority"
-msgstr "Priorità Foscam"
-
-#: e2 kodi:30145
-msgid "Check every (seconds)"
-msgstr "Controlla ogni (secondi)"
-
-#: e2
-msgid "Event snapshots folder"
-msgstr "Cartella foto degli eventi"
-
-#: e2
-msgid "Small photos of the last 20 events (default /tmp/camalert_events)."
-msgstr "Piccole foto degli ultimi 20 eventi (predefinito /tmp/camalert_events)."
-
-#: e2 kodi:30247
-msgid "Log level"
-msgstr "Livello di log"
-
-#: e2
-msgid "camalert.log in /home/root/logs (or /tmp). Passwords and tokens are never logged."
-msgstr "camalert.log in /home/root/logs (o /tmp). Password e token non vengono mai registrati."
-
-#: e2 kodi:30251
-msgid "Remote syslog (host:port)"
-msgstr "Syslog remoto (host:porta)"
-
-#: e2
-msgid "Optional: also send the log via UDP (RFC 5424), e.g. to Loki/Alloy."
-msgstr "Facoltativo: invia il log anche via UDP (RFC 5424), ad es. a Loki/Alloy."
-
-#: e2
-msgid "Check for updates"
-msgstr "Cerca aggiornamenti"
-
-#: e2
-msgid "Looks once a day on GitHub for a new version and shows a message."
-msgstr "Cerca una volta al giorno su GitHub una nuova versione e mostra un messaggio."
+msgid "%d more settings via MENU"
+msgstr "Altre %d impostazioni con MENU"
 
 #: e2 kodi:30201
 msgid "Diagnostics"
@@ -799,6 +411,14 @@ msgstr "Diagnostica"
 #: e2
 msgid "Event list"
 msgstr "Elenco eventi"
+
+#: e2
+msgid "Show all settings"
+msgstr "Mostra tutte le impostazioni"
+
+#: e2
+msgid "Show fewer settings"
+msgstr "Mostra meno impostazioni"
 
 #: e2
 msgid "No cameras found in %s.\nSee the guide for the format."
@@ -840,6 +460,10 @@ msgstr "Impossibile raggiungere go2rtc:\n%s"
 msgid "go2rtc has no cameras configured."
 msgstr "Nessuna telecamera configurata in go2rtc."
 
+#: e2 kodi:30027
+msgid "Camera names"
+msgstr "Nomi delle telecamere"
+
 #: e2
 msgid "Name for %s (empty = automatic)"
 msgstr "Nome per %s (vuoto = automatico)"
@@ -860,13 +484,9 @@ msgstr "Elenco '%s' con %d telecamere creato."
 msgid "Choose a default camera first."
 msgstr "Scegliere prima una telecamera predefinita."
 
-#: e2 kodi:30006 kodi:30500
-msgid "API"
-msgstr "API"
-
-#: e2 kodi:30501
-msgid "Home Assistant"
-msgstr "Home Assistant"
+#: e2
+msgid "Save the settings and show the default camera now?"
+msgstr "Salvare le impostazioni e mostrare ora la telecamera predefinita?"
 
 #: e2 kodi:30502
 msgid "MQTT"
@@ -912,6 +532,10 @@ msgstr "Errore"
 msgid "Woken up"
 msgstr "Risvegliato"
 
+#: e2 kodi:30102 kodi:30515 ha:entity.switch.dnd.name
+msgid "Do not disturb"
+msgstr "Non disturbare"
+
 #: e2 kodi:30516
 msgid "Outside the chosen times"
 msgstr "Fuori dagli orari scelti"
@@ -955,10 +579,6 @@ msgstr "Telecamera sconosciuta"
 #: e2 kodi:30526
 msgid "Unknown camera or no valid go2rtc address"
 msgstr "Telecamera sconosciuta o nessun indirizzo go2rtc valido"
-
-#: e2 kodi:30527
-msgid "Camera not reachable"
-msgstr "Telecamera non raggiungibile"
 
 #: e2 kodi:30528
 msgid "Time"
@@ -1028,6 +648,74 @@ msgstr "in pausa"
 msgid "tour"
 msgstr "giro"
 
+#: e2 kodi:30010
+msgid "Enable CamAlert"
+msgstr "Attiva CamAlert"
+
+#: e2 kodi:30011
+msgid "Turn the HTTP API and the camera display on or off."
+msgstr "Attiva o disattiva l'API HTTP e la visualizzazione delle telecamere."
+
+#: e2 kodi:30012
+msgid "Cameras via"
+msgstr "Telecamere tramite"
+
+#: e2
+msgid "go2rtc is recommended. Without go2rtc, list your cameras in %s"
+msgstr "Si consiglia go2rtc. Senza go2rtc, elenca le telecamere in %s"
+
+#: e2 kodi:30016
+msgid "go2rtc address"
+msgstr "Indirizzo go2rtc"
+
+#: e2 kodi:30017
+msgid "Address of your go2rtc server, e.g. http://192.168.1.10:1984"
+msgstr "Indirizzo del server go2rtc, ad es. http://192.168.1.10:1984"
+
+#: e2 kodi:30018
+msgid "go2rtc RTSP port"
+msgstr "Porta RTSP go2rtc"
+
+#: e2
+msgid "Usually 8554. Used for live view and the camera list."
+msgstr "Di solito 8554. Usata per la visione live e l'elenco telecamere."
+
+#: e2 kodi:30024
+msgid "Default camera"
+msgstr "Telecamera predefinita"
+
+#: e2
+msgid "Press OK to choose from the cameras in go2rtc."
+msgstr "Premere OK per scegliere tra le telecamere di go2rtc."
+
+#: e2 kodi:30020 ha:config.step.reconfigure.data.verify_ssl ha:config.step.user.data.verify_ssl
+msgid "Check certificates"
+msgstr "Verifica certificati"
+
+#: e2 kodi:30021
+msgid "Turn off for a self-signed certificate (only in your own network)."
+msgstr "Disattivare per un certificato autofirmato (solo nella propria rete)."
+
+#: e2 kodi:30029
+msgid "Mosaic cameras"
+msgstr "Telecamere del mosaico"
+
+#: e2
+msgid "Press OK to choose up to 9 cameras for the mosaic. Empty = all."
+msgstr "Premere OK per scegliere fino a 9 telecamere per il mosaico. Vuoto = tutte."
+
+#: e2
+msgid "Press OK to give a camera its own name (empty = automatic)."
+msgstr "Premere OK per dare un nome a una telecamera (vuoto = automatico)."
+
+#: e2 kodi:30257
+msgid "Live view substreams"
+msgstr "Substream per la visione live"
+
+#: e2
+msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
+msgstr "Per le telecamere che il ricevitore non riesce a riprodurre (H.265/4K): front_door=front_door_sub usa quello stream go2rtc per la visione live."
+
 #: e2 kodi:30022
 msgid "Camera file (direct mode)"
 msgstr "File telecamere (diretto)"
@@ -1036,6 +724,110 @@ msgstr "File telecamere (diretto)"
 msgid "Empty = cameras.conf in the add-on data folder. One camera per line: name | rtsp-url | snapshot-url"
 msgstr "Vuoto = cameras.conf nella cartella dati. Una telecamera per riga: nome | url-rtsp | url-istantanea"
 
+#: e2 kodi:30040 ha:entity.sensor.on_screen.state_attributes.mode.name ha:services.show.fields.mode.name
+msgid "Display mode"
+msgstr "Modalità di visualizzazione"
+
+#: e2
+msgid "Photo window keeps watching TV; live switches the channel to the camera."
+msgstr "Finestra foto: la TV continua. Live: il canale passa alla telecamera."
+
+#: e2 kodi:30045
+msgid "Duration (seconds)"
+msgstr "Durata (secondi)"
+
+#: e2 kodi:30046
+msgid "How long the camera stays on screen."
+msgstr "Per quanto tempo resta visibile la telecamera."
+
+#: e2 kodi:30047
+msgid "Window position"
+msgstr "Posizione finestra"
+
+#: e2 kodi:30052
+msgid "Window size"
+msgstr "Dimensione finestra"
+
+#: e2 kodi:30070
+msgid "Return to what was playing"
+msgstr "Torna a ciò che era in riproduzione"
+
+#: e2
+msgid "Switch back to what you were watching when the time is up."
+msgstr "Torna a ciò che stavi guardando allo scadere del tempo."
+
+#: e2 kodi:30068
+msgid "Pause what is playing meanwhile"
+msgstr "Metti in pausa la riproduzione"
+
+#: e2
+msgid "Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift."
+msgstr "Mette in pausa il canale (timeshift) mentre è visibile la telecamera. Serve un disco o una chiavetta USB per il timeshift."
+
+#: e2 kodi:30072
+msgid "Volume during live view (%)"
+msgstr "Volume durante la visione live (%)"
+
+#: e2 kodi:30073
+msgid "Percentage of the current volume while the camera is shown. 100 = unchanged."
+msgstr "Percentuale del volume attuale mentre è visibile la telecamera. 100 = invariato."
+
+#: e2 kodi:30066
+msgid "Remote control in photo window"
+msgstr "Telecomando nella finestra foto"
+
+#: e2
+msgid "OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too."
+msgstr "OK = live, SINISTRA/DESTRA = altra telecamera, EXIT = chiudi. Anche gli altri tasti chiudono."
+
+#: e2 kodi:30078
+msgid "Tour: seconds per camera"
+msgstr "Giro: secondi per telecamera"
+
+#: e2 kodi:30062
+msgid "Turn or mirror image"
+msgstr "Ruota o specchia l'immagine"
+
+#: e2
+msgid "Press OK to turn a camera that hangs upside down (needs python3-pillow)."
+msgstr "Premere OK per ruotare una telecamera montata capovolta (richiede python3-pillow)."
+
+#: e2 kodi:30064
+msgid "Refresh interval"
+msgstr "Intervallo di aggiornamento"
+
+#: e2
+msgid "Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."
+msgstr "Premere OK per scaricare meno spesso le foto di una telecamera (secondi), ad es. per una telecamera lenta."
+
+#: e2 kodi:30056
+msgid "Multi-camera window layout"
+msgstr "Disposizione della finestra con più telecamere"
+
+#: e2
+msgid "A request with 2-4 cameras shows them together in one multi-camera window."
+msgstr "Una richiesta con 2-4 telecamere le mostra insieme in una finestra con più telecamere."
+
+#: e2 kodi:30230
+msgid "Title size"
+msgstr "Dimensione del titolo"
+
+#: e2 kodi:30232
+msgid "Doorbell chime"
+msgstr "Suono del campanello"
+
+#: e2
+msgid "Plays a short ding-dong for requests with priority high or alarm (doorbell)."
+msgstr "Riproduce un breve din-don per le richieste con priorità alta o allarme (campanello)."
+
+#: e2
+msgid "Picons for the camera channels"
+msgstr "Picon per i canali delle telecamere"
+
+#: e2
+msgid "Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced."
+msgstr "Crea un picon semplice (telecamera + nome) per ogni canale delle telecamere; i picon esistenti non vengono mai sostituiti."
+
 #: e2 kodi:30074
 msgid "Live stream format"
 msgstr "Formato della visione live"
@@ -1043,6 +835,142 @@ msgstr "Formato della visione live"
 #: e2 kodi:30075
 msgid "MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds."
 msgstr "MP4 via HTTP funziona con ogni installazione di go2rtc; RTSP richiede la porta RTSP di go2rtc; HLS è il più robusto ma ha qualche secondo di ritardo."
+
+#: e2
+msgid "Not during a recording"
+msgstr "Non durante una registrazione"
+
+#: e2
+msgid "Ignore normal requests while the receiver is recording."
+msgstr "Ignorare le richieste normali mentre il ricevitore registra."
+
+#: e2 kodi:30090
+msgid "Only between certain times"
+msgstr "Solo in determinati orari"
+
+#: e2 kodi:30091
+msgid "Ignore normal requests outside the chosen times. High and alarm always come through."
+msgstr "Ignorare le richieste normali fuori dagli orari scelti. Alta e allarme passano sempre."
+
+#: e2 kodi:30092
+msgid "From"
+msgstr "Da"
+
+#: e2 kodi:30093
+msgid "Until"
+msgstr "Fino a"
+
+#: e2 kodi:30094
+msgid "May pass midnight, e.g. 07:00 to 23:00."
+msgstr "Può superare la mezzanotte, ad es. dalle 07:00 alle 23:00."
+
+#: e2 kodi:30100
+msgid "Wake up on alarm"
+msgstr "Risveglio in caso di allarme"
+
+#: e2
+msgid "Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on."
+msgstr "Le richieste con priorità 'alarm' accendono il ricevitore (e la TV tramite HDMI-CEC)."
+
+#: e2 kodi:30103
+msgid "Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant."
+msgstr "Ignora le richieste con priorità normale (con 'Non disturbare blocca' anche alta). L'allarme passa sempre. Anche tramite API, MQTT e Home Assistant."
+
+#: e2 kodi:30104
+msgid "Do not disturb blocks"
+msgstr "Non disturbare blocca"
+
+#: e2 kodi:30255
+msgid "Cooldown per camera"
+msgstr "Attesa per telecamera"
+
+#: e2
+msgid "Seconds before the same camera is shown again, e.g. *=30|garden=120 (* = all cameras). Alarm always."
+msgstr "Secondi prima di mostrare di nuovo la stessa telecamera, ad es. *=30|garden=120 (* = tutte). Allarme sempre."
+
+#: e2 kodi:30095
+msgid "Not while playing"
+msgstr "Non durante la riproduzione"
+
+#: e2
+msgid "Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through."
+msgstr "Ignorare le richieste normali durante la riproduzione di un video o di una registrazione (video) o di qualsiasi cosa (tutto). Alta e allarme passano sempre."
+
+#: e2 kodi:30130
+msgid "Frigate events"
+msgstr "Eventi Frigate"
+
+#: e2
+msgid "Shows the camera when Frigate detects something (via MQTT, without Home Assistant)."
+msgstr "Mostra la telecamera quando Frigate rileva qualcosa (via MQTT, senza Home Assistant)."
+
+#: e2 kodi:30132
+msgid "Frigate MQTT prefix"
+msgstr "Prefisso MQTT di Frigate"
+
+#: e2 kodi:30133
+msgid "Usually 'frigate'."
+msgstr "Di solito 'frigate'."
+
+#: e2 kodi:30259
+msgid "Frigate objects"
+msgstr "Oggetti Frigate"
+
+#: e2
+msgid "Comma separated, e.g. person,car. Empty = all objects."
+msgstr "Separati da virgole, ad es. person,car. Vuoto = tutti gli oggetti."
+
+#: e2 kodi:30136
+msgid "Frigate camera names"
+msgstr "Nomi delle telecamere Frigate"
+
+#: e2
+msgid "Only if the names differ from go2rtc: frigate=go2rtc|other=other_stream"
+msgstr "Solo se i nomi differiscono da go2rtc: frigate=go2rtc|other=other_stream"
+
+#: e2 kodi:30260
+msgid "Frigate priority"
+msgstr "Priorità Frigate"
+
+#: e2 kodi:30143
+msgid "Foscam motion and sound alarms"
+msgstr "Allarmi di movimento e audio Foscam"
+
+#: e2
+msgid "Asks the Foscam cameras in %s for motion and sound alarms."
+msgstr "Interroga le telecamere Foscam in %s sugli allarmi di movimento e audio."
+
+#: e2 kodi:30261
+msgid "Foscam priority"
+msgstr "Priorità Foscam"
+
+#: e2 kodi:30237
+msgid "Frigate address (for clips)"
+msgstr "Indirizzo Frigate (per le clip)"
+
+#: e2
+msgid "Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an event from the event list."
+msgstr "Facoltativo, ad es. http://192.168.1.10:5000 - permette di riprodurre la clip di un evento dall'elenco eventi."
+
+#: e2 kodi:30145
+msgid "Check every (seconds)"
+msgstr "Controlla ogni (secondi)"
+
+#: e2 kodi:30239
+msgid "Camera control (PTZ) key"
+msgstr "Tasto per il controllo telecamera (PTZ)"
+
+#: e2
+msgid "For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home)."
+msgstr "Per le telecamere PTZ in %s: questo tasto attiva la modalità PTZ (frecce, CH+/CH-, OK = posizione iniziale)."
+
+#: e2 kodi:30245
+msgid "Colour keys to Home Assistant"
+msgstr "Tasti colorati a Home Assistant"
+
+#: e2
+msgid "While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate)."
+msgstr "Mentre è mostrata una telecamera, i tasti colorati inviano un evento a Home Assistant (ad es. aprire il cancello)."
 
 #: e2 kodi:30152
 msgid "Camera user (default)"
@@ -1056,33 +984,145 @@ msgstr "Usato se devices.conf non indica utente o password."
 msgid "Camera password (default)"
 msgstr "Password telecamera (predefinita)"
 
-#: kodi:30000
-msgid "General"
-msgstr "Generale"
+#: e2 kodi:30110
+msgid "MQTT (Home Assistant without YAML)"
+msgstr "MQTT (Home Assistant senza YAML)"
 
-#: kodi:30001
-msgid "Display"
-msgstr "Visualizzazione"
+#: e2
+msgid "Connects to your MQTT broker; with discovery the receiver appears in Home Assistant automatically."
+msgstr "Si collega al broker MQTT; con il discovery il ricevitore compare da solo in Home Assistant."
 
-#: kodi:30002
-msgid "Rules"
-msgstr "Regole"
+#: e2 kodi:30112
+msgid "MQTT broker address"
+msgstr "Indirizzo broker MQTT"
+
+#: e2 kodi:30113
+msgid "IP address or name of the MQTT broker, e.g. 192.168.1.10"
+msgstr "Indirizzo IP o nome del broker MQTT, ad es. 192.168.1.10"
+
+#: e2 kodi:30114
+msgid "MQTT port"
+msgstr "Porta MQTT"
+
+#: e2 kodi:30115
+msgid "Usually 1883."
+msgstr "Di solito 1883."
+
+#: e2 kodi:30116
+msgid "MQTT user"
+msgstr "Utente MQTT"
+
+#: e2 kodi:30117
+msgid "MQTT password"
+msgstr "Password MQTT"
+
+#: e2 kodi:30118
+msgid "Home Assistant discovery"
+msgstr "Discovery di Home Assistant"
+
+#: e2 kodi:30119
+msgid "Creates a device with a button per camera in Home Assistant."
+msgstr "Crea in Home Assistant un dispositivo con un pulsante per telecamera."
+
+#: e2 kodi:30120
+msgid "Name in Home Assistant"
+msgstr "Nome in Home Assistant"
+
+#: e2
+msgid "Empty = CamAlert + the receiver's host name."
+msgstr "Vuoto = CamAlert + nome host del ricevitore."
+
+#: e2 kodi:30168
+msgid "Use HTTPS for the API"
+msgstr "Usare HTTPS per l'API"
+
+#: e2 kodi:30169
+msgid "Uses a self-signed certificate; callers must turn off certificate checking."
+msgstr "Usa un certificato autofirmato; i chiamanti devono disattivare la verifica."
+
+#: e2 kodi:30160
+msgid "HTTP port"
+msgstr "Porta HTTP"
+
+#: e2
+msgid "Port of the CamAlert API on this receiver (default 8099)."
+msgstr "Porta dell'API CamAlert su questo ricevitore (predefinita 8099)."
+
+#: e2 kodi:30162
+msgid "Allowed callers"
+msgstr "Chiamanti consentiti"
+
+#: e2 kodi:30163
+msgid "'Local network only' is recommended."
+msgstr "Si consiglia 'Solo rete locale'."
+
+#: e2 kodi:30166
+msgid "Access token (optional)"
+msgstr "Token di accesso (facoltativo)"
+
+#: e2 kodi:30167
+msgid "If set, callers must add ?token=... to every request."
+msgstr "Se impostato, ogni richiesta deve contenere ?token=..."
+
+#: e2
+msgid "Camera list name"
+msgstr "Nome elenco telecamere"
+
+#: e2
+msgid "Name of the channel list created with the yellow button."
+msgstr "Nome dell'elenco creato con il tasto giallo."
+
+#: e2
+msgid "Update camera list automatically"
+msgstr "Aggiorna l'elenco automaticamente"
+
+#: e2
+msgid "Checks every 30 minutes for new or removed cameras and updates the channel list."
+msgstr "Controlla ogni 30 minuti telecamere nuove o rimosse e aggiorna l'elenco."
+
+#: e2
+msgid "Camera list position"
+msgstr "Posizione dell'elenco"
+
+#: e2
+msgid "Where the camera list appears among your channel lists."
+msgstr "Dove appare l'elenco tra le liste di canali."
+
+#: e2 kodi:30247
+msgid "Log level"
+msgstr "Livello di log"
+
+#: e2
+msgid "camalert.log in /home/root/logs (or /tmp). Passwords and tokens are never logged."
+msgstr "camalert.log in /home/root/logs (o /tmp). Password e token non vengono mai registrati."
+
+#: e2 kodi:30251
+msgid "Remote syslog (host:port)"
+msgstr "Syslog remoto (host:porta)"
+
+#: e2
+msgid "Optional: also send the log via UDP (RFC 5424), e.g. to Loki/Alloy."
+msgstr "Facoltativo: invia il log anche via UDP (RFC 5424), ad es. a Loki/Alloy."
+
+#: e2
+msgid "Event snapshots folder"
+msgstr "Cartella foto degli eventi"
+
+#: e2
+msgid "Small photos of the last 20 events (default /tmp/camalert_events)."
+msgstr "Piccole foto degli ultimi 20 eventi (predefinito /tmp/camalert_events)."
+
+#: e2
+msgid "Check for updates"
+msgstr "Cerca aggiornamenti"
+
+#: e2
+msgid "Looks once a day on GitHub for a new version and shows a message."
+msgstr "Cerca una volta al giorno su GitHub una nuova versione e mostra un messaggio."
 
 #: kodi:30003
 msgid "MQTT / Home Assistant"
 msgstr "MQTT / Home Assistant"
-
-#: kodi:30004
-msgid "Triggers"
-msgstr "Attivatori"
-
-#: kodi:30005
-msgid "Camera control"
-msgstr "Controllo telecamera"
-
-#: kodi:30007
-msgid "Log and diagnostics"
-msgstr "Log e diagnostica"
 
 #: kodi:30013
 msgid "go2rtc is recommended. Without go2rtc, list your cameras in cameras.conf."

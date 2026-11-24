@@ -55,3 +55,13 @@ def action_map_args(context, handlers):
     for acts in by_ctx.values():
         actions.update(acts)
     return sorted(by_ctx), actions
+
+
+def actionmap_actions(context, handlers):
+    """{ActionMap context: {action: (handler, logical action)}} from the key map, for HelpableActionMap."""
+    out = {}
+    for action, fn in handlers.items():
+        for key in keys_for("enigma2", context, action):
+            ctx, name = ACTIONMAP[key]
+            out.setdefault(ctx, {})[name] = (fn, action)
+    return out

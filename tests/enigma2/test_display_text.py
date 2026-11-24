@@ -14,7 +14,7 @@ CAMS = [("front_door", "Front door", SNAP % "front_door"), ("garden", "Garden", 
 
 class TestNoHardCodedHints(unittest.TestCase):
     def test_sources(self):
-        for name in ("display.py", "diagnostics.py"):
+        for name in ("display.py", "diagnostics.py", "setup.py"):
             text = open(os.path.join(_paths.ENIGMA2, name), encoding="utf-8").read()
             for pattern in (r'"[^"\n]*OK = live', r'"[^"\n]*< >', r'_\("EXIT = close"\)', r'_\("GREEN = live"\)',
                             r'MENU = diagnostics', r'%d-%m-%Y', r'reason = "[^"]'):

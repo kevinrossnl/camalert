@@ -101,6 +101,7 @@ class ImageCase(object):
             self.session.instantiateDialog(d.PhotoWindow, "front_door", SNAP % "front_door", "Front door", True),
             self.session.instantiateDialog(d.StripWindow, CAMS, True, None),
             self.session.instantiateDialog(d.PtzOverlay, "PTZ"),
+            self.session.instantiateDialog(d.NotifyWindow, "front_door", SNAP % "front_door", "Camera: Front door"),
         ]
         for s in screens:
             self.assertEqual(skin_problems(s, self.env.snapshot), [], type(s).__name__)

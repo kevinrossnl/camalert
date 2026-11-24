@@ -87,6 +87,27 @@ class _KodiLogic(object):
     def setUp(self):
         self.k = Built.module("klogic", self.kodi)
 
+    # UI guideline (#2, 8a "Key mapping (target)"): every Kodi screen, key -> action. Extra Kodi keys are allowed
+    # (STOP, MENU/INFO, PgUp/PgDn, UP in the tour); the guideline keys must all be there.
+    GUIDELINE = (
+        ("window", "key_action", ((7, "live"), (135, "live"), (1, "prev"), (2, "next"), (92, "close"),
+                                  (10, "close"), (88, "pass"), (89, "pass"), (91, "pass"), (3, "close_pass"))),
+        ("ptz", "ptz_action", ((3, "up"), (4, "down"), (1, "left"), (2, "right"), (184, "zoom_in"),
+                               (185, "zoom_out"), (5, "zoom_in"), (6, "zoom_out"), (7, "home"), (92, "leave"),
+                               (117, "leave"), (11, "leave"), (88, None))),
+        ("tour", "tour_key", ((1, "prev"), (2, "next"), (7, "hold"), (135, "hold"), ((122, 252), "live"),
+                              ((122, 0xF071), "live"), (79, "live"), (92, "close"), (10, "close"),
+                              ((122, 251), "none"))),
+        ("mosaic", "mosaic_key", ((7, "close"), (135, "close"), (92, "close"), (10, "close"))),
+        ("live", "live_key", ((1, "prev"), (2, "next"), (92, "close"), (117, "ptz"), (11, "ptz"), (12, "pause"))),
+    )
+
+    def test_keys_follow_the_ui_guideline(self):
+        for screen, fn, cases in self.GUIDELINE:
+            for key, want in cases:
+                args = key if isinstance(key, tuple) else (key,)
+                self.assertEqual(getattr(self.k, fn)(*args), want, (screen, key))
+
     def test_keys(self):
         k = self.k
         self.assertEqual(k.key_action(7), "live")
@@ -168,8 +189,9 @@ class _KodiLogic(object):
         self.assertEqual(k.colour_name(0xF071), "green")
         self.assertIsNone(k.colour_name(0))
         self.assertIsNone(k.colour_name(61453))
-        self.assertEqual(k.mosaic_key(92), "close")
-        self.assertEqual(k.mosaic_key(7), "none")
+        for aid in (7, 135, 10, 92, 13):  # OK (SELECT/ENTER), BACK (PREVIOUS_MENU/NAV_BACK), STOP close it (#58)
+            self.assertEqual(k.mosaic_key(aid), "close")
+        self.assertEqual(k.mosaic_key(1), "none")
         self.assertEqual(k.live_key(117), "ptz")
         self.assertEqual(k.live_key(79), "pause")
         self.assertTrue(k.chime_wanted("all", "normal"))
@@ -633,6 +655,13 @@ class _KodiModules(object):
             return
         mosaic = display.FullScreen(ctl, self.CAMS, self.settings(), tour=False)
         self.assertEqual(len(mosaic.tiles), 2)
+        for aid in (7, 135, 92):  # OK (SELECT, ENTER) and BACK close the mosaic (#58); LEFT does nothing
+            ctl.calls = []
+            m = display.FullScreen(ctl, self.CAMS, self.settings(), tour=False)
+            m.onAction(self.Action(1))
+            self.assertEqual(ctl.calls, [])
+            m.onAction(self.Action(aid))
+            self.assertEqual(ctl.calls, [("closed",)], aid)
 
     def test_live_overlay(self):
         display = Built.module("display")

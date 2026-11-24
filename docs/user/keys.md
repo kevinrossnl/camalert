@@ -39,7 +39,7 @@ does its normal job, so you can just keep zapping or navigating.
 
 | Action | Enigma2 | Kodi |
 |---|---|---|
-| close | OK / EXIT | BACK / STOP |
+| close | OK / EXIT | OK / BACK / STOP |
 
 ### Live view
 

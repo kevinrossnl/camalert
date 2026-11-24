@@ -14,7 +14,7 @@ Contexts:
     mosaic   full-screen mosaic
     live     live view (Kodi shows a bar; on Enigma2 the camera is a normal channel)
 Tour live is GREEN or PLAY on both players (UI guideline #2); Kodi reports GREEN as its colour action, klogic.tour_key
-turns that into the key name GREEN.
+turns that into the key name GREEN. The mosaic closes with OK or EXIT/BACK on both players (#58).
 Colour keys (red/green/yellow/blue) go to Home Assistant while a camera is on screen, except the configured
 PTZ key on a camera with PTZ (colour_action()).
 """
@@ -41,7 +41,7 @@ KEYMAP = {
                 "pass": ("VOLUME_UP", "VOLUME_DOWN", "MUTE")},
         "tour": {"prev": ("LEFT",), "next": ("RIGHT",), "hold": ("SELECT", "ENTER"), "live": ("GREEN", "PLAY", "UP"),
                  "close": ("PREVIOUS_MENU", "BACK", "STOP")},
-        "mosaic": {"close": ("PREVIOUS_MENU", "BACK", "STOP")},
+        "mosaic": {"close": ("SELECT", "ENTER", "PREVIOUS_MENU", "BACK", "STOP")},
         "live": {"prev": ("LEFT",), "next": ("RIGHT",), "close": ("PREVIOUS_MENU", "BACK", "STOP"),
                  "pause": ("PAUSE", "PLAY"), "ptz": ("CONTEXT_MENU", "SHOW_INFO")},
     },

@@ -128,7 +128,7 @@ class TestKeyHints(unittest.TestCase):
                          "OK = live   ◀ ▶ = other camera   MENU/INFO = camera control   BACK = close")
         self.assertEqual(p.key_hint("kodi", "ptz", EN, glyphs=False),
                          "^ v < > = move   CH+ CH- = zoom   OK = home position   BACK/MENU = end camera control")
-        self.assertEqual(p.key_hint("kodi", "mosaic", EN), "BACK/STOP = close")
+        self.assertEqual(p.key_hint("kodi", "mosaic", EN), "OK/BACK = close")  # #58
         self.assertIn("PAUSE/PLAY = pause", p.key_hint("kodi", "live", EN))
 
     def test_tour_status(self):

@@ -8,6 +8,8 @@
 **CamAlert** shows your IP cameras on the TV: on an **Enigma2 receiver** (openATV, OpenPLi, VTi, ... on VU+,
 Dreambox, Zgemma, Octagon and others) or a **Kodi** player (LibreELEC, CoreELEC, OSMC, Windows, Linux, Android;
 **Kodi 19 or newer**). Both players have the same Home Assistant integration, blueprints, MQTT topics and HTTP API.
+An **Android TV / Google TV / Fire TV app** (no Kodi needed) with the same API is available as a preview, not yet
+part of a release: see [Android TV and Fire TV](docs/players/androidtv.md).
 
 ![CamAlert photo window on top of a TV programme](docs/images/hero.jpg)
 

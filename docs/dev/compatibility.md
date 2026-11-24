@@ -22,8 +22,10 @@ enigma2 sources of each image; the source and commit are in each file. Not cover
 | Kodi | Status | Notes |
 |---|---|---|
 | 19 Matrix, 20 Nexus, 21 Omega, 22 Piers | CI: every Kodi call checked against Kodistubs of that version (`tests/kodi/compat/test_kodi_versions.py`) and strict stubs per version (`tests/kodi/stubs.py`) | #25 fixed (mosaic) |
-| Minimum | `xbmc.python` 3.0.0 = **Kodi 19 Matrix**; the docs say "Kodi 19 or newer" everywhere (`tests/test_docs.py`) | no real Kodi 19/20 box tested yet (#18) |
-| LibreELEC (Kodi 21) | box | |
+| Minimum | `xbmc.python` 3.0.0 = **Kodi 19 Matrix**; the docs say "Kodi 19 or newer" everywhere (`tests/test_docs.py`) | no real Kodi 19/20 box tested yet |
+| LibreELEC 12.2 (Kodi 21.3) | 2 boxes: fresh install, upgrades, e2e runner (#18, #35) | |
+| Windows 11 (Kodi 21.2) | box: install from zip, e2e runner (#18) | |
 | Fire TV / Android | untested (#19) | different paths (`special://` only), no ffmpeg |
 
-Work in progress: CI matrix over Python 3.8-3.14, container smoke tests (headless Kodi, Enigma2 under Xvfb) - see issue #21.
+Not yet: a CI matrix over several Python versions (#21; today the device code is checked against the Python 3.8
+grammar in the `lint` area) and a headless Kodi container smoke test (#37).

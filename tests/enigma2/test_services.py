@@ -138,8 +138,8 @@ Garden | rtsp://192.168.1.22/dup
 
     def test_actionmaps_come_from_the_key_map(self):
         ctx, acts = keys.action_map_args("tour", {"hold": 1, "close": 2, "prev": 3, "next": 4, "live": 5})
-        self.assertEqual(ctx, ["ColorActions", "DirectionActions", "OkCancelActions"])
-        self.assertEqual(acts, {"ok": 1, "cancel": 2, "left": 3, "right": 4, "green": 5})
+        self.assertEqual(ctx, ["ColorActions", "DirectionActions", "MediaPlayerActions", "OkCancelActions"])
+        self.assertEqual(acts, {"ok": 1, "cancel": 2, "left": 3, "right": 4, "green": 5, "play": 5})
         self.assertEqual(keys.action_map_args("mosaic", {"close": 9}), (["OkCancelActions"], {"ok": 9, "cancel": 9}))
 
 

@@ -14,7 +14,7 @@ COLOR_KEYS = {CODES[c.upper()]: c for c in COLOURS}  # 398-401 -> red/green/yell
 # ActionMap actions of the screens that use the image's keymap.xml (tour, mosaic)
 ACTIONMAP = {"OK": ("OkCancelActions", "ok"), "EXIT": ("OkCancelActions", "cancel"),
              "LEFT": ("DirectionActions", "left"), "RIGHT": ("DirectionActions", "right"),
-             "GREEN": ("ColorActions", "green")}
+             "GREEN": ("ColorActions", "green"), "PLAY": ("MediaPlayerActions", "play")}
 KEY_OK, KEY_EXIT, KEY_LEFT, KEY_RIGHT = CODES["OK"], CODES["EXIT"], CODES["LEFT"], CODES["RIGHT"]
 KEY_UP, KEY_DOWN, KEY_CHANNELUP, KEY_CHANNELDOWN = CODES["UP"], CODES["DOWN"], CODES["CHANNEL_UP"], CODES["CHANNEL_DOWN"]
 KEY_YELLOW = CODES["YELLOW"]

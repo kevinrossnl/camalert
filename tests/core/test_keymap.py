@@ -35,7 +35,12 @@ class TestKeymap(unittest.TestCase):
         self.assertEqual(keymap.action_for("enigma2", "window", "OK"), "live")
         self.assertIsNone(keymap.action_for("enigma2", "window", "RED"))
         self.assertIsNone(keymap.action_for("kodi", "ptz", None))
-        self.assertEqual(keymap.keys_for("kodi", "tour", "live"), ("PLAY", "UP"))
+        self.assertEqual(keymap.keys_for("kodi", "tour", "live"), ("GREEN", "PLAY", "UP"))
+
+    def test_tour_live_is_green_or_play_on_every_player(self):
+        """UI guideline (#2): tour live = GREEN or PLAY on Enigma2 and Kodi."""
+        for player in keymap.PLAYERS:
+            self.assertEqual(keymap.keys_for(player, "tour", "live")[:2], ("GREEN", "PLAY"), player)
 
     def test_ptz_is_left_only_with_exit_back_or_the_ptz_key(self):
         """#42: YELLOW was always a leave key on Enigma2."""

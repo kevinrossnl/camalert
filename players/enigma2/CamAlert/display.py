@@ -670,7 +670,7 @@ class KeyHook(object):
 
 class TourScreen(Screen, HelpBase):
     """Full-screen camera tour: shows one camera after the other. LEFT/RIGHT = previous/next, OK = hold,
-    GREEN = live, EXIT = close."""
+    GREEN or PLAY = live, EXIT = close."""
 
     def __init__(self, session, cams, interval):
         size = getDesktop(0).size()

@@ -19,9 +19,7 @@ class TestEvents(unittest.TestCase):
         self.assertEqual(ev.caller_source("curl/8.5"), "api")
         self.assertEqual(ev.event_title("Front door", "Person"), "Person · Front door")
         self.assertEqual(ev.event_title("Front door", None), "Front door")
-        line = ev.event_line({"time": 0, "camera": "garden", "label": "Person", "source": "frigate", "priority": "normal",
-                             "action": "show"})
-        self.assertIn("garden · Person  (frigate, normal) -> show", line)
+        self.assertFalse(hasattr(ev, "event_line"))  # English line removed; screens use present.event_line (#41)
         self.assertEqual(ev.diag_line(True, "pwd=x ok"), "[ OK ]  pwd=*** ok")
         self.assertEqual(ev.diag_line(False, "x")[:6], "[FAIL]")
 

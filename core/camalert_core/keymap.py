@@ -13,6 +13,8 @@ Contexts:
     tour     full-screen tour
     mosaic   full-screen mosaic
     live     live view (Kodi shows a bar; on Enigma2 the camera is a normal channel)
+Tour live is GREEN or PLAY on both players (UI guideline #2); Kodi reports GREEN as its colour action, klogic.tour_key
+turns that into the key name GREEN.
 Colour keys (red/green/yellow/blue) go to Home Assistant while a camera is on screen, except the configured
 PTZ key on a camera with PTZ (colour_action()).
 """
@@ -25,7 +27,7 @@ KEYMAP = {
         "ptz": {"up": ("UP",), "down": ("DOWN",), "left": ("LEFT",), "right": ("RIGHT",),
                 "zoom_in": ("CHANNEL_UP",), "zoom_out": ("CHANNEL_DOWN",), "home": ("OK",), "leave": ("EXIT",),
                 "pass": ("MUTE", "VOLUME_DOWN", "VOLUME_UP")},
-        "tour": {"prev": ("LEFT",), "next": ("RIGHT",), "hold": ("OK",), "live": ("GREEN",), "close": ("EXIT",)},
+        "tour": {"prev": ("LEFT",), "next": ("RIGHT",), "hold": ("OK",), "live": ("GREEN", "PLAY"), "close": ("EXIT",)},
         "mosaic": {"close": ("OK", "EXIT")},
         "live": {},
     },
@@ -37,7 +39,7 @@ KEYMAP = {
                 "zoom_in": ("PAGE_UP", "CHANNEL_UP"), "zoom_out": ("PAGE_DOWN", "CHANNEL_DOWN"),
                 "home": ("SELECT", "ENTER"), "leave": ("PREVIOUS_MENU", "BACK", "CONTEXT_MENU", "SHOW_INFO"),
                 "pass": ("VOLUME_UP", "VOLUME_DOWN", "MUTE")},
-        "tour": {"prev": ("LEFT",), "next": ("RIGHT",), "hold": ("SELECT", "ENTER"), "live": ("PLAY", "UP"),
+        "tour": {"prev": ("LEFT",), "next": ("RIGHT",), "hold": ("SELECT", "ENTER"), "live": ("GREEN", "PLAY", "UP"),
                  "close": ("PREVIOUS_MENU", "BACK", "STOP")},
         "mosaic": {"close": ("PREVIOUS_MENU", "BACK", "STOP")},
         "live": {"prev": ("LEFT",), "next": ("RIGHT",), "close": ("PREVIOUS_MENU", "BACK", "STOP"),

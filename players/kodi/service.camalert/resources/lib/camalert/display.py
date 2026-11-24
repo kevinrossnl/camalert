@@ -439,7 +439,7 @@ class FullScreen(xbmcgui.WindowDialog):
         if aid in VOLUME_KEYS:
             kodiapi.builtin(VOLUME_KEYS[aid])
             return
-        what = tour_key(aid) if self.tour else mosaic_key(aid)
+        what = tour_key(aid, action.getButtonCode()) if self.tour else mosaic_key(aid)
         if what == "close":
             self.ctl.fullscreen_closed(self)
         elif what in ("prev", "next"):

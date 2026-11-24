@@ -56,9 +56,13 @@ def forward_builtin(action_id):
     return "Action(%s)" % name if name else None
 
 
-def tour_key(action_id):
-    """Keys in the full-screen tour: prev / next / hold / live / close / none."""
-    return action_for("kodi", "tour", NAMES.get(action_id)) or "none"
+def tour_key(action_id, button_code=0):
+    """Keys in the full-screen tour: prev / next / hold / live / close / none. Colour keys arrive as one action
+    (ACTION_COLOUR); the button code says which, so GREEN can be live like on Enigma2."""
+    name = NAMES.get(action_id)
+    if name == "COLOUR":
+        name = (colour_name(button_code) or "").upper()
+    return action_for("kodi", "tour", name) or "none"
 
 
 def mosaic_key(action_id):

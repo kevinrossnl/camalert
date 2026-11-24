@@ -55,7 +55,7 @@ Passwords are stored by Kodi in the add-on's own `settings.xml` in its data fold
 - **Colour keys → Home Assistant** – while a camera is shown, RED / GREEN / YELLOW / BLUE fire a Home Assistant
   event (MQTT event entity `camalert/<id>/button` and the integration's webhook), for example to open the door.
   The colour key chosen under *Camera control* toggles PTZ on cameras that have it. On a keyboard: F1–F4.
-- **Mosaic** (up to 9 cameras) and **tour** (◀ ▶, OK = hold, PLAY = live, BACK).
+- **Mosaic** (up to 9 cameras) and **tour** (◀ ▶, OK = hold, GREEN or PLAY = live, BACK).
 
 ## Camera control (PTZ) and Foscam alarms
 

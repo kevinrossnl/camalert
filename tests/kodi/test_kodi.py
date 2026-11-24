@@ -619,6 +619,14 @@ class _KodiModules(object):
             tour.onAction(self.Action(aid))
         self.assertEqual(tour.index, 1)
         self.assertIn(("closed",), ctl.calls)
+        for aid, button in ((79, 0), (122, 252)):  # PLAY, GREEN (colour action + button code): live (#2)
+            ctl.calls = []
+            ctl.show = lambda *a: ctl.calls.append(("show",) + a)
+            display.FullScreen(ctl, self.CAMS, self.settings(), tour=True, interval=8).onAction(self.Action(aid, button))
+            self.assertIn(("show", self.CAMS[0][0], None, "live", "high"), ctl.calls)
+        ctl.calls = []
+        display.FullScreen(ctl, self.CAMS, self.settings(), tour=True, interval=8).onAction(self.Action(122, 251))
+        self.assertEqual(ctl.calls, [])  # RED does nothing in the tour
         if "mosaic labels" in KNOWN_STUB_PROBLEMS:  # fails like on a real Kodi; a fixed problem fails here too
             with self.assertRaises(TypeError, msg="fixed: remove 'mosaic labels' from KNOWN_STUB_PROBLEMS"):
                 display.FullScreen(ctl, self.CAMS, self.settings(), tour=False)

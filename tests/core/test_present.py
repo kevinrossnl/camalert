@@ -118,7 +118,7 @@ class TestKeyHints(unittest.TestCase):
                          "OK = live   ◀ ▶ = other camera   BLUE = camera control   EXIT = close")
         self.assertEqual(p.key_hint("enigma2", "ptz", EN, ptz_key="yellow"),
                          "▲ ▼ ◀ ▶ = move   CH+ CH- = zoom   OK = home position   EXIT/YELLOW = end camera control")
-        self.assertEqual(p.key_hint("enigma2", "tour", upper), "◀ ▶ = OTHER CAMERA   OK = PAUSE   GREEN = LIVE   EXIT = CLOSE")
+        self.assertEqual(p.key_hint("enigma2", "tour", upper), "◀ ▶ = OTHER CAMERA   OK = PAUSE   GREEN/PLAY = LIVE   EXIT = CLOSE")
         self.assertEqual(p.key_hint("enigma2", "mosaic", EN), "OK/EXIT = close")
         self.assertEqual(p.key_hint("enigma2", "live", EN), "")
 

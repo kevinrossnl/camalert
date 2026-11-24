@@ -156,10 +156,11 @@ def event_details(e, tr, language=None, fmt=None):
 # How a key is printed in a hint (the label on the remote: not translated, except the colour keys).
 KEY_NAMES = {
     "enigma2": {"OK": "OK", "EXIT": "EXIT", "LEFT": "◀", "RIGHT": "▶", "UP": "▲", "DOWN": "▼", "CHANNEL_UP": "CH+",
-                "CHANNEL_DOWN": "CH-", "GREEN": N_("GREEN")},
+                "CHANNEL_DOWN": "CH-", "GREEN": N_("GREEN"), "PLAY": "PLAY"},
     "kodi": {"SELECT": "OK", "ENTER": "OK", "PREVIOUS_MENU": "BACK", "BACK": "BACK", "STOP": "STOP", "LEFT": "◀",
              "RIGHT": "▶", "UP": "▲", "DOWN": "▼", "PAGE_UP": "CH+", "CHANNEL_UP": "CH+", "PAGE_DOWN": "CH-",
-             "CHANNEL_DOWN": "CH-", "CONTEXT_MENU": "MENU", "SHOW_INFO": "INFO", "PLAY": "PLAY", "PAUSE": "PAUSE"},
+             "CHANNEL_DOWN": "CH-", "CONTEXT_MENU": "MENU", "SHOW_INFO": "INFO", "PLAY": "PLAY", "PAUSE": "PAUSE",
+             "GREEN": N_("GREEN")},
 }
 COLOUR_NAMES = {"red": N_("RED"), "green": N_("GREEN"), "yellow": N_("YELLOW"), "blue": N_("BLUE")}
 ASCII = {"◀": "<", "▶": ">", "▲": "^", "▼": "v"}

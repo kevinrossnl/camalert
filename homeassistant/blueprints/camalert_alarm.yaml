@@ -22,7 +22,7 @@ blueprint:
           multiple: true
     camera:
       name: Camera or mosaic stream
-      description: A camera name, or the name of a live mosaic stream in go2rtc (see docs/mosaic.md).
+      description: A camera name, or the name of a live mosaic stream in go2rtc (see docs/user/mosaic.md).
       selector:
         text:
     mode:

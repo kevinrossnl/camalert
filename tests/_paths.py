@@ -13,6 +13,7 @@ TESTS = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(TESTS)
 TOOLS = os.path.join(ROOT, "tools")
 DOCS = os.path.join(ROOT, "docs")
+COMPATIBILITY_DOC = os.path.join(DOCS, "dev", "compatibility.md")
 PO = os.path.join(ROOT, "po")
 
 # Enigma2 plugin: the package folder and the folder that contains it (e2fake imports it as `CamAlert`).

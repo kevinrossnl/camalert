@@ -1,6 +1,13 @@
 # Changelog
 
 ## Unreleased
+- Docs reorganised (#24, #47): `docs/index.md` with `user/`, `players/` (`enigma2.md`, `kodi.md`), `integrations/`
+  (Home Assistant, MQTT, Frigate, HTTP API, monitoring) and `dev/`; generated pages from core: remote keys (key map),
+  glossary (with translations) and every setting (schema) (`tools/docs.py`); "player" instead of "receiver" where Kodi
+  is meant; Kodi 19 or newer everywhere; new screenshots without camera or TV content. `tests/test_docs.py` checks
+  links, anchors, generated blocks and wording.
+- Tour: GREEN or PLAY switches to live view on both players (Enigma2 had GREEN, Kodi PLAY).
+- Privacy (#8): `tools/check_images.py` refuses images with metadata (EXIF, GPS, XMP, ICC, text) in CI.
 - Enigma2: settings screen in sections in the order of the schema (General, Display, Rules, Triggers with Frigate
   and Foscam, Camera control, Home Assistant, API, Channel list, Log and diagnostics); settings follow the image's
   setup level (simple = basic settings, MENU = *Show all settings*); the skin's own Setup layout is used when it has

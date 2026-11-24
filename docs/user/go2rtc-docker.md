@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
     ports:
       - "1984:1984"   # web page + API (snapshots for the photo window)
-      - "8554:8554"   # RTSP (live view on the receiver)
+      - "8554:8554"   # RTSP (live view on the player)
     volumes:
       - /opt/go2rtc:/config:ro
 ```

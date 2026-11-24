@@ -21,7 +21,7 @@
 | `players/kodi/repository.camalert/` | Kodi repository add-on (`@REPO_URL@` filled in by the build; CI publishes `dist/kodi-repo/` on GitHub Pages) |
 | `po/` | Plugin translations (gettext), generated from `core/i18n/` (master catalogue + glossary, `tools/i18n/i18n.py`). `custom_components/camalert/translations/` = integration translations (generated too) |
 | `tools/` | `build_ipk.py` (package), `build_feed.py` (opkg Packages index), `build_kodi.py` (Kodi zip + repository), `make_chime.py`, `msgfmt.py`, `strings.py` (POT), `check_private.py` |
-| `docs/` | User documentation (English) |
+| `docs/` | Documentation (English): `index.md`, `user/`, `players/`, `integrations/`, `dev/` (see `docs/dev/docs.md`); generated parts via `tools/docs.py` |
 
 ## Rules (learned on real receivers)
 - A new or changed setting goes into `core/camalert_core/schema.py` first (same id on every player); then `_add()` / settings.xml.

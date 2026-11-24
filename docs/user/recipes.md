@@ -1,20 +1,20 @@
 # Recipes: other cameras, systems and situations
 
-CamAlert itself only needs **one URL**: `http://<receiver>:8099/camalert/show?cam=<go2rtc name>` (see [API](api.md)).
+CamAlert itself only needs **one URL**: `http://<player>:8099/camalert/show?cam=<go2rtc name>` (see [API](../integrations/api.md)).
 Use `POST` where the tool can (token in the `X-CamAlert-Token` header); the `GET` URLs below still work, but
 are deprecated in API version 1 and may go away in a later major version.
 Anything that can call a URL can trigger it. go2rtc does the camera side: whatever go2rtc can read, CamAlert can show.
 
 ## Cameras in a separate VLAN or subnet
-Keep the cameras isolated and let go2rtc be the only bridge: go2rtc needs access to the camera VLAN, the receivers only
-need access to go2rtc (port 1984 for snapshots, 8554 for live view). The receivers never talk to the cameras directly
+Keep the cameras isolated and let go2rtc be the only bridge: go2rtc needs access to the camera VLAN, the players only
+need access to go2rtc (port 1984 for snapshots, 8554 for live view). The players never talk to the cameras directly
 (except the optional [devices file](devices.md) for Foscam/ONVIF). Firewall rule of thumb:
 
 | From | To | Ports |
 |---|---|---|
 | go2rtc host | camera VLAN | RTSP 554 (or the camera's port) |
-| receivers | go2rtc host | 1984, 8554 |
-| Home Assistant / NVR | receivers | 8099 (CamAlert API) |
+| players | go2rtc host | 1984, 8554 |
+| Home Assistant / NVR | players | 8099 (CamAlert API) |
 
 IPv6 works too: use a literal address such as `fd00::10` or `[fd00::10]:1984` as go2rtc address.
 
@@ -23,8 +23,8 @@ Run one go2rtc per site and add the other site's cameras to your local go2rtc as
 (`remote_garden: rtsp://other-site-go2rtc:8554/garden`), preferably over a VPN. A name prefix per site keeps them
 apart in the camera list and in Home Assistant.
 
-## H.265 / 4K cameras the receiver cannot play
-Older receivers cannot decode H.265 or 4K. Two options:
+## H.265 / 4K cameras the player cannot play
+Older Enigma2 receivers and small Kodi devices cannot decode H.265 or 4K. Two options:
 
 1. Use the camera's substream for live view: add it to go2rtc (`front_door_sub: rtsp://.../stream2`) and set
    *Live view substreams* to `front_door=front_door_sub`. Snapshots keep using the main stream.
@@ -33,12 +33,12 @@ Older receivers cannot decode H.265 or 4K. Two options:
 ## NVRs and event sources
 | Source | How to trigger CamAlert |
 |---|---|
-| Frigate | built in (MQTT, see [features](features.md)), or Home Assistant |
+| Frigate | built in (MQTT, see [Frigate](../integrations/frigate.md)), or Home Assistant |
 | UniFi Protect | Home Assistant integration (motion / person / doorbell entities) + blueprint; Protect alarm manager webhook to the CamAlert URL |
-| Blue Iris | Alert action "Web request or MQTT": `http://<receiver>:8099/camalert/show?cam=&CAM` (camera short name = go2rtc name) |
+| Blue Iris | Alert action "Web request or MQTT": `http://<player>:8099/camalert/show?cam=&CAM` (camera short name = go2rtc name) |
 | Synology Surveillance Station | Action Rule, action type "Webhook" (or Notifications › Webhook) with the CamAlert URL |
 | Scrypted | Home Assistant, or a webhook/automation plugin calling the URL |
-| ZoneMinder | Event filter "Execute command": `wget -qO- "http://<receiver>:8099/camalert/show?cam=%MN%"` |
+| ZoneMinder | Event filter "Execute command": `wget -qO- "http://<player>:8099/camalert/show?cam=%MN%"` |
 | Shinobi | Monitor settings › Global detector › Webhook on detection with the CamAlert URL |
 | MotionEye | Motion notifications › "Call a web hook" with the CamAlert URL |
 | go2rtc / anything else | any HTTP GET; MQTT `camalert/<id>/show` |
@@ -58,27 +58,27 @@ they are normal go2rtc cameras for CamAlert. Expect a few seconds of delay.
 | Dahua VTO | Event to an HTTP server/alarm centre, or via Home Assistant |
 | Hikvision doorbell | "Notify surveillance center"/HTTP listening host, or via Home Assistant |
 
-Two-way audio is not possible on the receiver. The doorbell blueprint can send a notification with the camera to your
+Two-way audio is not possible on the player. The doorbell blueprint can send a notification with the camera to your
 phone so you can talk via the doorbell's own app.
 
 ## Without Home Assistant or MQTT
 | System | Example |
 |---|---|
-| Node-RED | `http request` node, method POST, URL `http://<receiver>:8099/camalert/show`, payload `{"cam": "front_door", "priority": "high"}` |
-| ioBroker | Script: `httpGet('http://<receiver>:8099/camalert/show?cam=front_door')` |
-| openHAB | Rule action: `sendHttpGetRequest("http://<receiver>:8099/camalert/show?cam=front_door")` |
-| Domoticz | Device "On action": `http://<receiver>:8099/camalert/show?cam=front_door` |
+| Node-RED | `http request` node, method POST, URL `http://<player>:8099/camalert/show`, payload `{"cam": "front_door", "priority": "high"}` |
+| ioBroker | Script: `httpGet('http://<player>:8099/camalert/show?cam=front_door')` |
+| openHAB | Rule action: `sendHttpGetRequest("http://<player>:8099/camalert/show?cam=front_door")` |
+| Domoticz | Device "On action": `http://<player>:8099/camalert/show?cam=front_door` |
 | Homey | Flow card "HTTP request" (HTTP request flow cards app) with the URL |
 | Jeedom | Scenario "HTTP request" with the URL |
 
-## Presence, quiet hours, several receivers
+## Presence, quiet hours, several players
 - *Only when someone is home / only when away*: add a condition on a person/zone entity in the blueprint automation, or
-  use two automations. *Do not disturb* with *Do not disturb blocks* = normal and doorbell is a quiet mode: everything is
-  logged in the event list, only alarms are shown.
-- *Cooldown per camera*: `*=30` avoids the same camera popping up again and again; a camera that is still on screen is
+  use two automations. *Do not disturb* with *Do not disturb blocks* = normal and doorbell: everything is logged in the event
+  list, only alarms are shown.
+- *Cooldown per camera*: `*=30` avoids showing the same camera again and again; a camera that is still on screen is
   extended instead.
-- *Per receiver camera sets*: each receiver has its own camera list/mosaic; in Home Assistant pick only the receivers
-  that should react. *Follow me*: target all receivers – receivers in standby ignore normal and doorbell requests, so
+- *Per player camera sets*: each player has its own camera list/mosaic; in Home Assistant pick only the players
+  that should react. *Follow me*: target all players – players in standby ignore normal and doorbell requests, so
   only the box that is on shows the camera.
 
 ## Other screens
@@ -87,6 +87,4 @@ Android TV/Fire TV" integration with an image), Chromecast (`media_player.play_m
 and Samsung Tizen (their notify services, text only). Use them in the same automation as `camalert.show`.
 
 ## Monitoring
-`/camalert/metrics` serves Prometheus metrics (requests by result, errors, camera not reachable, last event, uptime,
-do not disturb). `grafana/camalert-dashboard.json` is a ready-made Grafana dashboard. With *Remote syslog* the log goes to
-Loki/Alloy as well.
+See [monitoring](../integrations/monitoring.md).

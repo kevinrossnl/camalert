@@ -1,6 +1,6 @@
 # CamAlert for Kodi
 
-The Kodi add-on **CamAlert** (`service.camalert`) does the same as the Enigma2 plugin, on any Kodi 20 or newer:
+The Kodi add-on **CamAlert** (`service.camalert`) does the same as the Enigma2 plugin, on any Kodi 19 (Matrix) or newer:
 LibreELEC, CoreELEC, OSMC, Windows, Linux, macOS and Android TV boxes. It uses the **same HTTP API, MQTT topics
 and Home Assistant integration**, so blueprints and automations work unchanged – a Kodi is just another CamAlert
 device.
@@ -9,7 +9,7 @@ device.
 
 **With automatic updates (recommended)**
 
-1. Download `repository.camalert-x.y.z.zip` from the [latest release](../../../releases/latest) and copy it to
+1. Download `repository.camalert-x.y.z.zip` from the [latest release](https://github.com/kevinrossnl/camalert/releases/latest) and copy it to
    the Kodi device (USB stick, network share, or the Kodi download folder).
 2. Kodi › **Settings › System › Add-ons**: turn on **Unknown sources** (needed once for a zip file).
 3. Kodi › **Add-ons › Install from zip file** › choose the repository zip.
@@ -25,28 +25,29 @@ After installing, open **Add-ons › My add-ons › Services › CamAlert › Co
 
 | Tab | What |
 |---|---|
-| General | go2rtc address, live substreams (H.265 / 4K cameras) (or *Directly from the cameras* with `cameras.conf`), default camera (**Choose camera** lists them), camera titles, mosaic cameras, test buttons |
-| Display | photo window / live / notification, duration, corner and size, layout for 2–4 cameras in one window, rotate/mirror and refresh interval per camera, remote control in the window, pause what is playing, return to what was playing, volume during live view, live format, tour speed |
-| Rules | wait before showing the same camera again (cooldown), do not disturb, only between certain times, *not while playing* (off / films and recordings / everything), wake the screen on alarm (HDMI-CEC) |
+| General | go2rtc address, live substreams (H.265 / 4K cameras) (or *Directly from the cameras* with `cameras.conf`), default camera (**Choose camera** lists them), camera names, mosaic cameras, test buttons |
+| Display | photo window / live view / notification, duration, corner and size, multi-camera window layout, rotate/mirror and refresh interval per camera, remote control in the window, pause what is playing, return to what was playing, volume during live view, live format, tour speed |
+| Rules | cooldown per camera, do not disturb, only between certain times, *not while playing* (off / films and recordings / everything), wake up on alarm (screen on via HDMI-CEC) |
 | MQTT / Home Assistant | broker, login, discovery, name |
-| Triggers | Frigate detections (via MQTT), Foscam motion/sound alarm |
+| Triggers | [Frigate events](../integrations/frigate.md) (via MQTT), Foscam motion and sound alarms |
 | Camera control | default camera login for PTZ / Foscam, create `devices.conf` |
 | API | port (8099), allowed callers, token, HTTPS |
-| Log and diagnostics | log level (off / errors / normal / verbose), remote syslog, **Diagnostics** (checks go2rtc, every camera's snapshot, API, MQTT, last caller) and **Recent events** (last 20 requests with snapshot; OK shows the camera again or replays the Frigate clip) |
+| Log and diagnostics | log level (off / errors / normal / verbose), remote syslog, **Diagnostics** (checks go2rtc, every camera's snapshot, API, MQTT, last caller) and the **event list** (last 20 requests with snapshot; OK shows the camera again or replays the Frigate clip) |
 
-Display also has the **title size** (small / normal / large) and the **doorbell sound** (off / doorbell and alarm / every
-request; it follows Kodi's volume and mute).
+Display also has the **title size** (small / normal / large) and the **doorbell chime** (off / doorbell and alarm / every
+request; it follows Kodi's volume and mute). Every setting with its default: [settings](../user/settings.md).
 
-Passwords are stored by Kodi in the add-on's own `settings.xml` in its data folder and are never written to the log.
+Passwords are stored by Kodi in the add-on's own `settings.xml` in its data folder and are never written to the log
+(issue #55: document or move them).
 
 ## What you see
 
 - **Photo window** – a camera in a corner while the film or TV keeps playing. Remote: **OK** = live,
   **◀ ▶** = other camera, **MENU** (or **INFO**) = camera control (PTZ), **BACK** = close, any other key closes the
   window and does what it normally does. Volume keys keep working.
-- **Several cameras** – a request for 2 to 4 cameras (`cam=front_door,garden`) shows them together in one corner
+- **Multi-camera window** – a request for 2 to 4 cameras (`cam=front_door,garden`) shows them together in one
   window (below each other, next to each other or 2×2); more cameras open the mosaic.
-- **Live** – the camera full screen with a small bar: **◀ ▶** other camera, **MENU** = PTZ, **BACK** = back. When the
+- **Live view** – the camera full screen with a small bar: **◀ ▶** other camera, **MENU** = PTZ, **BACK** = back. When the
   time is up (or after BACK) Kodi **continues the film at the same position** or **returns to the same TV channel**.
   The volume can be lowered meanwhile.
 - **Notification** – a Kodi notification with a snapshot as icon.
@@ -55,7 +56,9 @@ Passwords are stored by Kodi in the add-on's own `settings.xml` in its data fold
 - **Colour keys → Home Assistant** – while a camera is shown, RED / GREEN / YELLOW / BLUE fire a Home Assistant
   event (MQTT event entity `camalert/<id>/button` and the integration's webhook), for example to open the door.
   The colour key chosen under *Camera control* toggles PTZ on cameras that have it. On a keyboard: F1–F4.
-- **Mosaic** (up to 9 cameras) and **tour** (◀ ▶, OK = hold, GREEN or PLAY = live, BACK).
+- **Mosaic** (up to 9 cameras) and **tour** (◀ ▶, OK = pause, GREEN or PLAY = live view, BACK).
+
+All keys: [remote keys](../user/keys.md). Kodi's skin fonts have no ◀ ▶, so the hints on screen show `< >`.
 
 ## Camera control (PTZ) and Foscam alarms
 
@@ -81,7 +84,7 @@ arrows pan and tilt, **CH+ / CH−** (or PAGE UP / DOWN) zoom, **OK** = home pos
 
 ## Differences with the Enigma2 plugin
 
-- Kodi has no standby: *screen off* (DPMS) counts as standby. An **alarm** request with *wake the screen* switches
+- Kodi has no standby: *screen off* (DPMS) counts as standby. An **alarm** request with *Wake up on alarm* switches
   the TV on via HDMI-CEC.
 - *Pause what is playing* pauses a film or live TV (timeshift has to be supported by your PVR add-on).
 - No camera channel list: use the mosaic, the tour, or Kodi favourites.
@@ -90,15 +93,15 @@ arrows pan and tilt, **CH+ / CH−** (or PAGE UP / DOWN) zoom, **OK** = home pos
   `rtsp://` address (Kodi does not know `rtspt://`).
 - Rotate/mirror applies to the photo window, mosaic and tour (not to the live video).
 - **Windows**: allow Kodi through the Windows firewall for the API port (8099) if Home Assistant cannot reach it;
-  *wake the screen* only works with a CEC adapter.
+  *Wake up on alarm* only works with a CEC adapter.
 
 ## Platforms
 
 | | Notes |
 |---|---|
-| LibreELEC / CoreELEC | Tested on LibreELEC 12 (Kodi 21). HDMI-CEC works out of the box (*wake the screen*, colour keys of the TV remote). |
+| LibreELEC / CoreELEC | Tested on LibreELEC 12 (Kodi 21). HDMI-CEC works out of the box (*Wake up on alarm*, colour keys of the TV remote). |
 | OSMC / Raspberry Pi | As LibreELEC. A Pi 4/5 decodes H.264 fine; for H.265 or 4K cameras set a *live substream*. |
-| Android TV / Nvidia Shield / Fire TV | Install from the repository zip as usual. Android may stop Kodi in the background: CamAlert only works while Kodi is running (in front or as the app that was last open). Keep the TV box from sleeping (Developer options › Stay awake, or Fire TV: Settings › Display & Sounds › Screen saver › Never) or *wake the screen* cannot work. Colour keys: most Fire TV / Android remotes have none – use MENU for PTZ. |
+| Android TV / Nvidia Shield / Fire TV | Install from the repository zip as usual. Android may stop Kodi in the background: CamAlert only works while Kodi is running (in front or as the app that was last open). Keep the TV box from sleeping (Developer options › Stay awake, or Fire TV: Settings › Display & Sounds › Screen saver › Never) or *Wake up on alarm* cannot work. Colour keys: most Fire TV / Android remotes have none – use MENU for PTZ. |
 | Windows | Data in `%APPDATA%\Kodi\userdata\addon_data\service.camalert\`. Windows asks once to allow Kodi through the firewall (needed for the API on port 8099). |
 | macOS / Linux desktop | Works the same; allow incoming connections for Kodi if the system firewall is on. |
 
@@ -111,18 +114,12 @@ Installed from the CamAlert repository, Kodi updates CamAlert by itself (Kodi ch
 every few hours; *Settings › System › Add-ons › Updates* decides whether it installs them automatically or only
 notifies).
 
-## Home Assistant
+## Home Assistant and monitoring
 
-Add the Kodi like a receiver: **Settings › Devices & services › Add integration › CamAlert**, enter the Kodi's IP
-address and port 8099 (and the token if you set one). Or switch on MQTT with discovery. Everything in
-[home-assistant.md](home-assistant.md) applies.
-
-## Monitoring
-
-`/camalert/metrics` returns Prometheus metrics (requests by result, errors, unreachable cameras, uptime, on screen,
-do not disturb) with the label `platform="kodi"`; the Grafana dashboard in `grafana/` works for receivers and Kodis.
-The API answers at most 30 requests per 10 seconds per caller (then HTTP 429) and logs a warning when it is called
-from outside the local network without a token.
+Add the Kodi like any player: **Settings › Devices & services › Add integration › CamAlert**, enter the Kodi's host
+name or IP address and port 8099 (and the token if you set one), or switch on MQTT with discovery. Everything in
+[Home Assistant](../integrations/home-assistant.md) applies; metrics and the Grafana dashboard:
+[monitoring](../integrations/monitoring.md).
 
 ## Troubleshooting
 

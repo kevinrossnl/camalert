@@ -2,7 +2,7 @@
 
 The fake modules (tests/enigma2/harness/e2fake.py) are built from API snapshots of the real enigma2 sources
 (tests/enigma2/harness/fixtures/e2api/*.json, made by tools/e2_api_snapshot.py): only methods that exist on that image,
-called with the parameters that image accepts. Results are summarised in docs/compatibility.md.
+called with the parameters that image accepts. Results are summarised in docs/dev/compatibility.md.
 """
 import os
 import re
@@ -166,7 +166,7 @@ for _name in SUPPORTED:
 
 
 class TestDreamOSKnownGaps(unittest.TestCase):
-    """DreamOS is not supported. These tests pin down why, so docs/compatibility.md stays true."""
+    """DreamOS is not supported. These tests pin down why, so docs/dev/compatibility.md stays true."""
 
     def setUp(self):
         self.env = e2fake.install("dreamos")
@@ -201,7 +201,8 @@ class TestSnapshots(unittest.TestCase):
                 self.assertIn(cls, snap["classes"], "%s: %s" % (name, cls))
 
     def test_compatibility_doc_lists_every_profile(self):
-        doc = os.path.join(e2fake.ROOT, "docs", "compatibility.md")
+        import _paths
+        doc = _paths.COMPATIBILITY_DOC
         with open(doc, encoding="utf-8") as f:
             text = f.read()
         for p in e2fake.PROFILES.values():

@@ -22,6 +22,7 @@ enigma2 sources of each image; the source and commit are in each file. Not cover
 | Kodi | Status | Notes |
 |---|---|---|
 | 19 Matrix, 20 Nexus, 21 Omega, 22 Piers | CI: every Kodi call checked against Kodistubs of that version (`tests/kodi/compat/test_kodi_versions.py`) and strict stubs per version (`tests/kodi/stubs.py`) | #25 fixed (mosaic) |
+| Minimum | `xbmc.python` 3.0.0 = **Kodi 19 Matrix**; the docs say "Kodi 19 or newer" everywhere (`tests/test_docs.py`) | no real Kodi 19/20 box tested yet (#18) |
 | LibreELEC (Kodi 21) | box | |
 | Fire TV / Android | untested (#19) | different paths (`special://` only), no ffmpeg |
 

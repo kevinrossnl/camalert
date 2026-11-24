@@ -2,7 +2,7 @@
 # CamAlert - show IP cameras (via go2rtc) on an Enigma2 receiver.
 # Copyright (C) 2026 CamAlert developers. Licensed under the GNU GPL v2 (see LICENSE).
 """HTTP API of the receiver: a thin Twisted adapter around camalert_core.api (routes, validation, access rules
-and answers are the same on every player, see docs/api.md)."""
+and answers are the same on every player, see docs/integrations/api.md)."""
 import os
 import subprocess
 import time

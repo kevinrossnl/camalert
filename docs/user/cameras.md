@@ -1,6 +1,6 @@
 # Camera stream addresses
 
-Replace `<user>`, `<password>` and the IP address with your own. Prefer the **sub stream** (lower resolution): it starts faster on the receiver. Test every address in VLC first.
+Replace `<user>`, `<password>` and the IP address with your own. Prefer the **sub stream** (lower resolution): it starts faster on the player. Test every address in VLC first.
 
 | Brand | Main stream | Sub stream |
 |---|---|---|

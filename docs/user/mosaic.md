@@ -1,10 +1,11 @@
 # Watching several cameras at once
 
-Enigma2 cannot play several network streams at the same time (picture-in-picture only plays TV channels). CamAlert offers two ways to see all cameras at once.
+A player cannot play several network streams at the same time (on Enigma2, picture-in-picture only plays TV channels). CamAlert offers two ways to see all cameras at once.
 
 ## Option 1 – Photo mosaic in CamAlert (no extra load on your server)
 
-**Menu › Plugins › CamAlert mosaic** (also in the blue *Extensions* menu) shows up to 9 cameras in a grid. Every tile shows a fresh picture about every 1–2 seconds. Press **EXIT** to close.
+**Menu › Plugins › CamAlert mosaic** (also in the blue *Extensions* menu; Kodi: *Show mosaic* in the settings or
+the Home Assistant button) shows up to 9 cameras in a grid. Every tile shows a fresh picture about every 1–2 seconds. Press **OK** or **EXIT** (Kodi: BACK) to close; a camera that does not answer shows *Camera not reachable*.
 
 - Choose the cameras in the settings: **Mosaic cameras** › OK (empty = all cameras, up to 9).
 - From Home Assistant or a script: `/camalert/mosaic?cam=front_door,garden,drive&sec=60` (or `/camalert/show` with more than one `cam`).
@@ -17,7 +18,7 @@ go2rtc can combine several cameras into one live video with ffmpeg. It then appe
   mosaic: "exec:ffmpeg -hide_banner -loglevel error -rtsp_transport tcp -i rtsp://127.0.0.1:8554/front_door -rtsp_transport tcp -i rtsp://127.0.0.1:8554/garden -rtsp_transport tcp -i rtsp://127.0.0.1:8554/drive -rtsp_transport tcp -i rtsp://127.0.0.1:8554/backyard -filter_complex [0:v]fps=10,scale=960:540,setsar=1[v0];[1:v]fps=10,scale=960:540,setsar=1[v1];[2:v]fps=10,scale=960:540,setsar=1[v2];[3:v]fps=10,scale=960:540,setsar=1[v3];[v0][v1][v2][v3]xstack=inputs=4:layout=0_0|w0_0|0_h0|w0_h0[out] -map [out] -c:v libx264 -preset superfast -tune zerolatency -g 10 -pix_fmt yuv420p -an -rtsp_transport tcp -f rtsp {output}"
 ```
 
-Replace the four camera names with your own (the names of your other streams). Restart go2rtc, then press **yellow** (*Camera list*) in CamAlert: the mosaic appears as a channel.
+Replace the four camera names with your own (the names of your other streams). Restart go2rtc. Enigma2: press **yellow** (*Create channel list*) in the CamAlert settings: the mosaic appears as a channel. Any player: show it like a camera (`cam=mosaic`, mode live) – the alarm blueprint can do this.
 
 - The server decodes 4 streams and encodes 1 new one: roughly 1–2 CPU cores on a typical NAS, **only while someone watches** the mosaic.
 - With a graphics card or Intel Quick Sync you can use hardware encoding; see the [go2rtc ffmpeg documentation](https://github.com/AlexxIT/go2rtc#source-ffmpeg).

@@ -1,5 +1,5 @@
 {
-  "_doc": "Glossary of the UI review (#2): use these words verbatim in every format; forbidden = synonyms and tone that the check refuses (regex, case-insensitive unless case is true). Tone: nl je, de du, fr vous, it and pl impersonal (#43). A text that contains a term (English, whole words) must contain its translation in contains_languages (Polish inflects: exact matches only); exact_only terms are checked only when the whole text is the term.",
+  "_doc": "Glossary of the UI review (#2): use these words verbatim in every format; forbidden = synonyms and tone that the check refuses (regex, case-insensitive unless case is true). Tone: nl je, de du, fr vous, it and pl impersonal (#43). A text that contains a term (English, whole words) must contain its translation in contains_languages (Polish inflects: exact matches only); exact_only terms are checked only when the whole text is the term. definition = the English explanation in docs/user/glossary.md (tools/docs.py).",
   "tone": {
     "nl": "je",
     "de": "du",
@@ -15,7 +15,8 @@
       "de": "Fotofenster",
       "fr": "Fenêtre photo",
       "it": "Finestra foto",
-      "pl": "Okno ze zdjęciem"
+      "pl": "Okno ze zdjęciem",
+      "definition": "A small window in a corner of the screen with a fresh camera picture every 1-2 seconds; the TV or film keeps playing."
     },
     {
       "id": "multi_camera_window",
@@ -24,7 +25,8 @@
       "de": "Fenster mit mehreren Kameras",
       "fr": "Fenêtre multi-caméras",
       "it": "Finestra con più telecamere",
-      "pl": "Okno z kilkoma kamerami"
+      "pl": "Okno z kilkoma kamerami",
+      "definition": "2 to 4 cameras together in one photo window (mode `strip`)."
     },
     {
       "id": "live_view",
@@ -33,7 +35,8 @@
       "de": "Live-Ansicht",
       "fr": "Direct",
       "it": "Visione live",
-      "pl": "Podgląd na żywo"
+      "pl": "Podgląd na żywo",
+      "definition": "The camera stream full screen; afterwards the player returns to what was playing."
     },
     {
       "id": "notification",
@@ -42,7 +45,8 @@
       "de": "Benachrichtigung",
       "fr": "Notification",
       "it": "Notifica",
-      "pl": "Powiadomienie"
+      "pl": "Powiadomienie",
+      "definition": "A small message with one picture of the camera."
     },
     {
       "id": "mosaic",
@@ -51,7 +55,8 @@
       "de": "Mosaik",
       "fr": "Mosaïque",
       "it": "Mosaico",
-      "pl": "Mozaika"
+      "pl": "Mozaika",
+      "definition": "Up to 9 cameras at once, full screen."
     },
     {
       "id": "tour",
@@ -60,7 +65,8 @@
       "de": "Rundgang",
       "fr": "Ronde",
       "it": "Giro",
-      "pl": "Obchód"
+      "pl": "Obchód",
+      "definition": "One camera after the other, full screen."
     },
     {
       "id": "paused",
@@ -69,7 +75,8 @@
       "de": "Angehalten",
       "fr": "En pause",
       "it": "In pausa",
-      "pl": "Wstrzymano"
+      "pl": "Wstrzymano",
+      "definition": "The tour stays on the current camera (OK)."
     },
     {
       "id": "display_mode",
@@ -78,7 +85,8 @@
       "de": "Anzeigemodus",
       "fr": "Mode d'affichage",
       "it": "Modalità di visualizzazione",
-      "pl": "Tryb wyświetlania"
+      "pl": "Tryb wyświetlania",
+      "definition": "How a camera is shown: photo window, live view or notification."
     },
     {
       "id": "duration",
@@ -87,7 +95,8 @@
       "de": "Dauer",
       "fr": "Durée",
       "it": "Durata",
-      "pl": "Czas"
+      "pl": "Czas",
+      "definition": "How long a camera stays on screen (seconds)."
     },
     {
       "id": "do_not_disturb",
@@ -96,7 +105,8 @@
       "de": "Nicht stören",
       "fr": "Ne pas déranger",
       "it": "Non disturbare",
-      "pl": "Nie przeszkadzać"
+      "pl": "Nie przeszkadzać",
+      "definition": "Blocks normal requests (and high ones if set); alarm always comes through."
     },
     {
       "id": "cooldown",
@@ -105,7 +115,8 @@
       "de": "Wartezeit",
       "fr": "Délai",
       "it": "Attesa",
-      "pl": "Odstęp"
+      "pl": "Odstęp",
+      "definition": "Minimum time before the same camera is shown again."
     },
     {
       "id": "priority_normal",
@@ -115,7 +126,8 @@
       "fr": "Normale",
       "it": "Normale",
       "pl": "Normalny",
-      "exact_only": true
+      "exact_only": true,
+      "definition": "Priority of a request that follows every rule (motion)."
     },
     {
       "id": "priority_high",
@@ -125,7 +137,8 @@
       "fr": "Haute",
       "it": "Alta",
       "pl": "Wysoki",
-      "exact_only": true
+      "exact_only": true,
+      "definition": "Priority that always comes through, except in standby (doorbell)."
     },
     {
       "id": "priority_alarm",
@@ -135,7 +148,8 @@
       "fr": "Alarme",
       "it": "Allarme",
       "pl": "Alarm",
-      "exact_only": true
+      "exact_only": true,
+      "definition": "Priority that always comes through and can wake the player."
     },
     {
       "id": "doorbell_chime",
@@ -144,7 +158,8 @@
       "de": "Türklingelton",
       "fr": "Son de sonnette",
       "it": "Suono del campanello",
-      "pl": "Dźwięk dzwonka"
+      "pl": "Dźwięk dzwonka",
+      "definition": "A short ding-dong played with high or alarm requests."
     },
     {
       "id": "camera_control",
@@ -153,7 +168,8 @@
       "de": "Kamerasteuerung (PTZ)",
       "fr": "Contrôle de la caméra (PTZ)",
       "it": "Controllo telecamera (PTZ)",
-      "pl": "Sterowanie kamerą (PTZ)"
+      "pl": "Sterowanie kamerą (PTZ)",
+      "definition": "Pan, tilt and zoom a camera with the remote (ONVIF or Foscam)."
     },
     {
       "id": "colour_keys",
@@ -162,7 +178,8 @@
       "de": "Farbtasten",
       "fr": "Touches de couleur",
       "it": "Tasti colorati",
-      "pl": "Kolorowe przyciski"
+      "pl": "Kolorowe przyciski",
+      "definition": "RED, GREEN, YELLOW and BLUE: sent to Home Assistant while a camera is on screen."
     },
     {
       "id": "camera_names",
@@ -171,7 +188,8 @@
       "de": "Kameranamen",
       "fr": "Noms des caméras",
       "it": "Nomi delle telecamere",
-      "pl": "Nazwy kamer"
+      "pl": "Nazwy kamer",
+      "definition": "The names shown for the cameras; by default made from the go2rtc names."
     },
     {
       "id": "event_list",
@@ -180,7 +198,8 @@
       "de": "Ereignisliste",
       "fr": "Liste des événements",
       "it": "Elenco eventi",
-      "pl": "Lista zdarzeń"
+      "pl": "Lista zdarzeń",
+      "definition": "The last 20 requests with what CamAlert did and why."
     },
     {
       "id": "diagnostics",
@@ -189,7 +208,8 @@
       "de": "Diagnose",
       "fr": "Diagnostic",
       "it": "Diagnostica",
-      "pl": "Diagnostyka"
+      "pl": "Diagnostyka",
+      "definition": "Checks of go2rtc, every camera, the API, MQTT and the log, on the TV."
     },
     {
       "id": "camera_not_reachable",
@@ -198,7 +218,8 @@
       "de": "Kamera nicht erreichbar",
       "fr": "Caméra injoignable",
       "it": "Telecamera non raggiungibile",
-      "pl": "Kamera nieosiągalna"
+      "pl": "Kamera nieosiągalna",
+      "definition": "Shown in a tile when a camera did not deliver a picture twice in a row."
     },
     {
       "id": "player",
@@ -207,7 +228,8 @@
       "de": "Wiedergabegerät",
       "fr": "Lecteur",
       "it": "Lettore",
-      "pl": "Odtwarzacz"
+      "pl": "Odtwarzacz",
+      "definition": "An Enigma2 receiver or a Kodi device with CamAlert."
     }
   ],
   "forbidden": {

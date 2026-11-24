@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # CamAlert for Kodi. Copyright (C) 2026 CamAlert developers. GPL v2.
 """HTTP API: a thin http.server adapter around camalert_core.api (routes, validation, access rules and answers
-are the same on every player, see docs/api.md)."""
+are the same on every player, see docs/integrations/api.md)."""
 import os
 import ssl
 import subprocess

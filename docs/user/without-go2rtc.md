@@ -5,7 +5,7 @@ go2rtc is recommended (faster start, fewer connections to your cameras, snapshot
 ## Set up
 
 1. In CamAlert set **Cameras via** to **Directly from the cameras**.
-2. Create the file `/etc/enigma2/camalert_cameras.conf` on the receiver (for example with *FileCommander*, FTP/WinSCP, or a network share). One camera per line:
+2. Create the camera file on the player – Enigma2: `/etc/enigma2/camalert_cameras.conf` (for example with *FileCommander*, FTP/WinSCP, or a network share); Kodi: `cameras.conf` in the add-on data folder (or the file set in *Camera file (direct mode)*, see [Kodi](../players/kodi.md#where-things-are)). One camera per line:
 
    ```
    # name        | live stream (RTSP)                                         | snapshot (optional)
@@ -16,7 +16,7 @@ go2rtc is recommended (faster start, fewer connections to your cameras, snapshot
 
    - The **name** is what you see on screen; in requests you use it in lowercase with `_` (`Front door` → `front_door`).
    - Lines starting with `#` are ignored.
-3. Open CamAlert: choose the **Default camera** (OK), press **yellow** for the channel list and **blue** to test.
+3. Open the CamAlert settings: choose the **Default camera** (OK) and test it (Enigma2: **yellow** creates the channel list, **blue** tests).
 
 ## Snapshot addresses
 
@@ -35,10 +35,10 @@ The photo window and the mosaic need a snapshot (JPEG) address. Without one, Cam
 
 ## Security
 
-`/etc/enigma2/camalert_cameras.conf` contains camera passwords. Give the cameras their own user with view-only rights, and do not share the file. Settings backups of the receiver may include it.
+The camera file contains camera passwords. Give the cameras their own user with view-only rights, and do not share the file. Settings backups of the player may include it.
 
 ## Differences with go2rtc
 
-- Every receiver connects to the cameras itself; some cameras allow only 2–4 connections.
+- Every player connects to the cameras itself; some cameras allow only 2–4 connections.
 - Starting is slower: nothing is kept "warm".
 - The live mosaic channel needs go2rtc; the photo mosaic works if your cameras have snapshot addresses.

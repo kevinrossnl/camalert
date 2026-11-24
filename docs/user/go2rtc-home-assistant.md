@@ -2,7 +2,7 @@
 
 If you run **Home Assistant OS** (or Supervised), you can install go2rtc as an app (formerly called add-on). This is the easiest way.
 
-> Home Assistant also has go2rtc built in (since 2024.11), but that one only listens inside Home Assistant itself. Your receiver cannot reach it, so you need the separate app below.
+> Home Assistant also has go2rtc built in (since 2024.11), but that one only listens inside Home Assistant itself. Your player cannot reach it, so you need the separate app below.
 
 1. In Home Assistant go to **Settings › Apps › App store** (older versions: *Add-on store*).
 2. Open the menu **⋮ › Repositories** and add `https://github.com/AlexxIT/hassio-addons`.

@@ -58,7 +58,9 @@
 - Tests: `python3 -m pytest` (see `tests/README.md`; `python3 -m unittest discover -s tests` also works). Packages: `python3 tools/build_ipk.py dist`, `python3 tools/build_kodi.py dist`.
 
 ## CI (Forgejo Actions, `.forgejo/workflows/tests.yml`)
-- Every area runs `sh tools/ci.sh <area>` (`lint`, `core`, `unit`, `build`, `privacy`); run the same locally before a push.
+- Every area runs `sh tools/ci.sh <area>` (`lint`, `core`, `unit`, `build`, `privacy`, `ha`); run the same locally before a push.
+  `ha` = Home Assistant runtime tests (#33, `tests/homeassistant/`): oldest (hacs.json) and latest Home Assistant on the
+  workstation, latest only in the NAS fallback; integration branch coverage >= 90 %.
 - Runner choice (#54): heavy jobs run on the **workstation runner** and fall back to the NAS runner (`truenas`) only
   when no workstation runner is online. The NAS disks cannot take a burst of parallel jobs.
   - `pick-runner` (tiny, on `truenas`, no installs) runs `tools/ci_pick_runner.py`: it asks

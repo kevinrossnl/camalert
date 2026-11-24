@@ -1,0 +1,4 @@
+# Home Assistant runtime tests (#33), oldest supported Home Assistant (hacs.json: 2025.1.0): Python 3.13.
+pytest-homeassistant-custom-component==0.13.201
+# newer pycares starts a thread that HA 2025.1's test harness reports as lingering
+pycares==4.5.0

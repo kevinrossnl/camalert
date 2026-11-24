@@ -19,7 +19,7 @@ except ImportError:  # optional, like the blueprint tests
 
 WORKFLOW = os.path.join(_paths.ROOT, ".forgejo", "workflows", "tests.yml")
 CI_SH = os.path.join(_paths.TOOLS, "ci.sh")
-AREAS = ["lint", "core", "unit", "build", "privacy"]
+AREAS = ["lint", "core", "unit", "build", "privacy", "ha"]
 PREF = ["werkstation", "skills-werkstation"]
 
 

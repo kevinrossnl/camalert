@@ -1,0 +1,98 @@
+{
+  "cameras": [
+    {
+      "name": "front_door",
+      "snapshot": "**REDACTED**",
+      "title": "Front door"
+    },
+    {
+      "name": "garden",
+      "snapshot": "**REDACTED**",
+      "title": "Garden"
+    }
+  ],
+  "entry": {
+    "data": {
+      "host": "**REDACTED**",
+      "https": false,
+      "port": "<port>",
+      "token": "**REDACTED**",
+      "verify_ssl": false
+    },
+    "title": "Living room",
+    "unique_id": "**REDACTED**"
+  },
+  "events": [
+    {
+      "action": "show",
+      "camera": "garden",
+      "frigate_id": null,
+      "label": "",
+      "priority": "normal",
+      "reason": "",
+      "source": "api",
+      "time": 1
+    }
+  ],
+  "integration_version": "1.0.0",
+  "log": [
+    "CamAlert started",
+    "show front_door token=***"
+  ],
+  "player": {
+    "api_version": 1,
+    "capabilities": [
+      "cameras",
+      "dnd",
+      "events",
+      "header_token",
+      "hide",
+      "log",
+      "metrics",
+      "mosaic",
+      "post",
+      "ptz",
+      "show",
+      "status",
+      "strip",
+      "tour",
+      "webhook"
+    ],
+    "integration_too_old": false,
+    "min_ha_version": "1.0.0",
+    "model": "Enigma2 receiver",
+    "platform": "enigma2",
+    "version": "1.0.0"
+  },
+  "status": {
+    "api_version": 1,
+    "capabilities": [
+      "cameras",
+      "dnd",
+      "events",
+      "header_token",
+      "hide",
+      "log",
+      "metrics",
+      "mosaic",
+      "post",
+      "ptz",
+      "show",
+      "status",
+      "strip",
+      "tour",
+      "webhook"
+    ],
+    "dnd": false,
+    "id": "**REDACTED**",
+    "live": null,
+    "min_ha_version": "1.0.0",
+    "mqtt": false,
+    "name": "Living room",
+    "paused": false,
+    "platform": "enigma2",
+    "result": true,
+    "version": "1.0.0",
+    "window": null
+  }
+}

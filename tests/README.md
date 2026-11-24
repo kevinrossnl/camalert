@@ -32,10 +32,30 @@ Python 3.8 (Kodi 19) needs `pip install "pytest<8.4"`. Optional: `pyyaml` (bluep
   Home Assistant text translated, same placeholders, no forbidden synonyms or tone, glossary terms verbatim,
   generated files up to date (#38/#43).
 
+## Home Assistant runtime tests (`homeassistant/`, #33)
+
+`pytest-homeassistant-custom-component` runs the integration in a real Home Assistant against `fake_player.py`: an
+aiohttp server on 127.0.0.1 that answers through `camalert_core.api.handle()` (the API of every player), with knobs
+for the token, capabilities, older players, HTTP errors (403/429/500), delays (timeouts) and a self-signed HTTPS
+certificate. `test_contract_fake.py` sends the whole HTTP contract table to it over real HTTP, so the fake answers
+exactly like Enigma2 and Kodi. Covered: config flow (errors, duplicates, reconfigure), setup/unload/reload, the
+coordinator, entities per capability, the actions (exact request on the player, errors raise), the webhook and the
+event entity, diagnostics redaction (`golden/diagnostics.json`, `UPDATE_GOLDEN=1` rewrites it) and the blueprints.
+
+```sh
+HA_VERSION=latest sh tools/ci.sh ha   # or min = oldest supported Home Assistant (hacs.json); needs uv + internet
+HA_PY=/path/to/venv/bin/python sh tools/ci.sh ha   # with an existing venv (pip install -r tests/homeassistant/requirements-latest.txt)
+```
+Needs Python 3.13 (min) / 3.14 (latest); without Home Assistant installed (the normal `python3 -m pytest`) this
+folder is skipped. Branch coverage of `custom_components/camalert` must stay >= 90 %. When `hacs.json` gets a newer
+minimum, raise `requirements-min.txt` to the matching `pytest-homeassistant-custom-component`; raise
+`requirements-latest.txt` now and then (its `homeassistant==` pin is the Home Assistant version tested).
+
 ## CI
 
 `.forgejo/workflows/tests.yml` runs on every push and pull request; each area is `sh tools/ci.sh <area>`
-(`lint`, `core`, `unit`, `build`, `privacy`), so `sh tools/ci.sh unit` locally runs exactly what CI runs.
+(`lint`, `core`, `unit`, `build`, `privacy`, `ha`), so `sh tools/ci.sh unit` locally runs exactly what CI runs.
+`ha` runs twice on the workstation (oldest and latest Home Assistant) and only with the latest one in the NAS fallback.
 Jobs run on the workstation runner when it is online, otherwise all areas run one after another in a single job on
 the NAS runner (#54; details in `DEVELOPMENT.md` › CI). `test_ci.py` checks the runner choice
 (`tools/ci_pick_runner.py`) and that every area runs in both modes and is checked by `gate`.

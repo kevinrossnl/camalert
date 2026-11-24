@@ -11,3 +11,4 @@ players/kodi/service.camalert/resources/media/chime.wav
 coverage.xml
 junit*.xml
 htmlcov/
+.venv-ha-*/

@@ -109,6 +109,24 @@ jobs:
             dist/*.ipk
             dist/*.zip
 
+  ha:
+    # Home Assistant runtime tests (#33): oldest supported (hacs.json) and latest Home Assistant
+    needs: pick-runner
+    if: needs.pick-runner.outputs.mode == 'parallel'
+    runs-on: ${{ needs.pick-runner.outputs.runner }}
+    container: {image: "node:20-bookworm"}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        ha: [min, latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Home Assistant ${{ matrix.ha }} runtime tests, integration coverage gate >= 90 %
+        env:
+          HA_VERSION: ${{ matrix.ha }}
+        run: sh tools/ci.sh ha
+
   privacy:
     needs: pick-runner
     if: needs.pick-runner.outputs.mode == 'parallel'
@@ -151,6 +169,8 @@ jobs:
           CAMALERT_DENYLIST: ${{ secrets.CAMALERT_DENYLIST }}
         run: sh tools/ci.sh unit
       - {name: golden listings, package tests and packages, if: "${{ !cancelled() }}", run: sh tools/ci.sh build}
+      # only the latest Home Assistant here: the oldest one runs on the workstation (keeps the NAS run short)
+      - {name: Home Assistant latest runtime tests, if: "${{ !cancelled() }}", run: sh tools/ci.sh ha}
       - uses: actions/upload-artifact@v3
         if: always()
         with:
@@ -168,7 +188,7 @@ jobs:
 
   gate:
     if: always()
-    needs: [pick-runner, lint, core, unit, build, privacy, sequential]
+    needs: [pick-runner, lint, core, unit, build, ha, privacy, sequential]
     runs-on: truenas
     container: {image: "node:20-bookworm"}
     timeout-minutes: 2
@@ -178,11 +198,11 @@ jobs:
           MODE: ${{ needs.pick-runner.outputs.mode }}
           RUNNER: ${{ needs.pick-runner.outputs.runner }}
           PICK: ${{ needs.pick-runner.result }}
-          PARALLEL: "${{ needs.lint.result }} ${{ needs.core.result }} ${{ needs.unit.result }} ${{ needs.build.result }} ${{ needs.privacy.result }}"
+          PARALLEL: "${{ needs.lint.result }} ${{ needs.core.result }} ${{ needs.unit.result }} ${{ needs.build.result }} ${{ needs.ha.result }} ${{ needs.privacy.result }}"
           SEQUENTIAL: ${{ needs.sequential.result }}
         run: |
           echo "pick-runner: $PICK -> runner=$RUNNER mode=$MODE"
-          echo "lint core unit build privacy: $PARALLEL; sequential: $SEQUENTIAL"
+          echo "lint core unit build ha privacy: $PARALLEL; sequential: $SEQUENTIAL"
           test "$PICK" = success || exit 1
           case "$MODE" in
             parallel)   for r in $PARALLEL; do test "$r" = success || exit 1; done ;;

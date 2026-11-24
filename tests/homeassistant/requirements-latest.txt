@@ -1,0 +1,2 @@
+# Home Assistant runtime tests (#33), latest Home Assistant: Python 3.14. Raise both pins together.
+pytest-homeassistant-custom-component==0.13.375

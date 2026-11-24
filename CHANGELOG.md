@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+- Home Assistant runtime tests (#33): the integration runs in a real Home Assistant (oldest supported 2025.1 and
+  latest) against a fake player that answers like Enigma2 and Kodi (contract table); CI area `ha`, integration
+  branch coverage 96 %.
 - Home Assistant (#44): player-neutral texts (Enigma2 receiver or Kodi), device model from `/camalert/status`
   platform, field descriptions in the config flow, *Check certificates* on by default (and it now really checks:
   before, the shared session never verified), a certificate error and unexpected errors shown in the form,

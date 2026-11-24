@@ -5,8 +5,10 @@
 #
 #   tools     install the Debian packages in $PACKAGES
 #   lint | core | unit | build | privacy   one area each (privacy needs CAMALERT_DENYLIST)
+#   ha        Home Assistant runtime tests (#33) for HA_VERSION=latest|min (tests/homeassistant/requirements-*.txt):
+#             a uv venv with the pinned pytest-homeassistant-custom-component; HA_PY=<python> uses an existing one
 set -eu
-area="${1:?usage: tools/ci.sh tools|lint|core|unit|build|privacy}"
+area="${1:?usage: tools/ci.sh tools|lint|core|unit|build|privacy|ha}"
 case "$area" in
   tools)
     echo "apt: ${PACKAGES:?PACKAGES not set}"
@@ -40,6 +42,22 @@ import os,re,sys
 deny=[w.strip().lower() for w in re.split(r"[\n,]",os.environ["CAMALERT_DENYLIST"]) if len(w.strip())>=3]
 t=sys.stdin.read().lower(); bad=[i+1 for i,w in enumerate(deny) if w in t]
 print("commit history: %d problems" % len(bad)); sys.exit(1 if bad else 0)'
+    ;;
+  ha)
+    v="${HA_VERSION:-latest}"
+    py="${HA_PY:-}"
+    if [ -z "$py" ]; then
+      if ! command -v uv > /dev/null; then
+        curl -LsSf "https://github.com/astral-sh/uv/releases/download/${UV_VERSION:-0.9.5}/uv-x86_64-unknown-linux-gnu.tar.gz" \
+          | tar xz -C /usr/local/bin --strip-components=1
+      fi
+      pyver=3.14; [ "$v" = min ] && pyver=3.13
+      uv venv -q --clear -p "$pyver" ".venv-ha-$v"
+      VIRTUAL_ENV=".venv-ha-$v" uv pip install -q -r "tests/homeassistant/requirements-$v.txt"
+      py=".venv-ha-$v/bin/python"
+    fi
+    "$py" -m pytest tests/homeassistant -o asyncio_mode=auto --junitxml="junit-ha-$v.xml" \
+      --cov=custom_components/camalert --cov-branch --cov-report=term-missing --cov-fail-under=90
     ;;
   *)
     echo "unknown area: $area" >&2

@@ -49,7 +49,7 @@ See [Install](../README.md#install), then restart the GUI.
 
 Open **Menu › Plugins › CamAlert**:
 
-![CamAlert settings (1)](images/settings-1.png) ![CamAlert settings (2)](images/settings-2.png)
+![CamAlert settings: general and display](images/enigma2/settings-1.png)
 
 
 1. **go2rtc address**: `http://<go2rtc-address>:1984` (for example `http://192.168.1.10:1984`).

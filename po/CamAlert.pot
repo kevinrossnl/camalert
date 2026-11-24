@@ -185,6 +185,9 @@ msgstr ""
 msgid "EXIT = close"
 msgstr ""
 
+msgid "%s - camera not reachable"
+msgstr ""
+
 msgid "hold"
 msgstr ""
 
@@ -357,6 +360,18 @@ msgid "Refresh interval"
 msgstr ""
 
 msgid "Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."
+msgstr ""
+
+msgid "Cooldown per camera"
+msgstr ""
+
+msgid "Seconds before the same camera is shown again, e.g. *=30|garden=120 (* = all cameras). Alarm always."
+msgstr ""
+
+msgid "Live view substreams"
+msgstr ""
+
+msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
 msgstr ""
 
 msgid "Do not disturb"

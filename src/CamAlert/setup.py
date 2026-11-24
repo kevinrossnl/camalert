@@ -120,6 +120,11 @@ class CamAlertSetup(ConfigListScreen, Screen):
                        _("Press OK to turn a camera that hangs upside down (needs python3-pillow).")),
                       (_("Refresh interval"), self.refresh_entry,
                        _("Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."))]
+        if c.source.value == "go2rtc":
+            items += [(_("Cooldown per camera"), c.cooldown,
+                       _("Seconds before the same camera is shown again, e.g. *=30|garden=120 (* = all cameras). Alarm always.")),
+                      (_("Live view substreams"), c.substreams,
+                       _("For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."))]
         items += [(_("Do not disturb"), c.dnd, _("Blocks requests with normal priority. Also via the API, MQTT and Home Assistant.")),
                   (_("Do not disturb blocks"), c.dnd_level, "")]
         items += [(_("Only between certain times"), c.limit_hours, _("Ignore requests outside the chosen times."))]

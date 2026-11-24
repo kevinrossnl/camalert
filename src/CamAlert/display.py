@@ -22,7 +22,7 @@ from .camlog import LOG
 from . import devices
 from Components.ActionMap import ActionMap
 
-from .logic import (chime_command, UPDATE_INTERVAL, github_repo, latest_tag, newer_version, title_font, add_event, alarm_edge, button_event, button_for, event_title, ptz_key, slug, redact, dnd_blocks, is_media_ref, parse_orientation, parse_refresh, refresh_delay, strip_geometry,
+from .logic import (cooldown_seconds, in_cooldown, live_stream_name, metrics_text, chime_command, UPDATE_INTERVAL, github_repo, latest_tag, newer_version, title_font, add_event, alarm_edge, button_event, button_for, event_title, ptz_key, slug, redact, dnd_blocks, is_media_ref, parse_orientation, parse_refresh, refresh_delay, strip_geometry,
                     valid_port, parse_titles, title_for, blocked_by_rules, clock_tuple, key_action, known_camera, neighbour, pick_priority, decide, display_name, grid, in_time_window, lowered_volume, normalize_server, parse_camera_file,
                     parse_cams, pick_mode, rtsp_url, service_ref, should_pause, snapshot_url, split_credentials,
                     stream_from_ref, tcp_url, window_geometry)
@@ -36,9 +36,12 @@ def log(*args, **kw):
     level = kw.get("level") or ("error" if "failed" in text or "error" in text.lower() else "normal")
     print("[CamAlert]", redact(text))
     LOG.write(level, text)
+    if level == "error":
+        STATS["errors"] += 1
 
 
 CAMERA_FILE = "/etc/enigma2/camalert_cameras.conf"
+STATS = {"errors": 0, "requests": {}, "started": time.time(), "last_event": 0, "unreachable": 0}
 
 
 def open_url(url, timeout=8):
@@ -78,7 +81,8 @@ def camera_urls(name):
     if not server:
         return None
     title = title_for(name, parse_titles(c.titles.value))
-    return rtsp_url(server, name, valid_port(c.rtsp_port.value, 8554)), snapshot_url(server, name), title
+    return (rtsp_url(server, live_stream_name(name, c.substreams.value), valid_port(c.rtsp_port.value, 8554)),
+            snapshot_url(server, name), title)
 
 
 def all_camera_names():
@@ -223,10 +227,12 @@ class PhotoWindow(Screen):
         </screen>""" % (x, y, w, h + t, w, h + t, int(10 * f), w - int(20 * f), t, title_font(c.title_size.value, size.width()), t, w, h)
         Screen.__init__(self, session)
         self.stream, self.url, self.size = stream, url, (w, h)
-        self["title"] = Label((title or display_name(stream)) + ("   OK = live  < >  EXIT" if hint else ""))
+        self.title_text = (title or display_name(stream)) + ("   OK = live  < >  EXIT" if hint else "")
+        self["title"] = Label(self.title_text)
         self["photo"] = Pixmap()
         self.picload = ePicLoad()
         self.busy = self.active = False
+        self.failures = 0
         self.close_timer = eTimer()
         self.close_timer.callback.append(self.stop)
 
@@ -250,6 +256,9 @@ class PhotoWindow(Screen):
         self.busy = False
         if not getattr(self, "active", False):  # window closed meanwhile (Enigma2 clears closed screens)
             return
+        if self.failures >= 2:
+            self["title"].setText(self.title_text)
+        self.failures = 0
         try:
             self.picload.setPara((self.size[0], self.size[1], 1, 1, False, 1, "#ff000000"))
             if self.picload.startDecode(PHOTO, 0, 0, False) == 0:
@@ -262,9 +271,15 @@ class PhotoWindow(Screen):
 
     def failed(self, err):
         self.busy = False
-        log("snapshot failed:", err.getErrorMessage())
-        if getattr(self, "active", False):
-            reactor.callLater(2, self.fetch)
+        self.failures += 1
+        if self.failures == 1:
+            log("snapshot failed:", err.getErrorMessage())
+        if not getattr(self, "active", False):
+            return
+        if self.failures == 2:  # show it instead of a black or frozen window
+            STATS["unreachable"] += 1
+            self["title"].setText(_("%s - camera not reachable") % self.title_text.split("   ")[0])
+        reactor.callLater(2, self.fetch)
 
     def stop(self):
         self.active = False
@@ -322,6 +337,30 @@ class StripWindow(Screen):
         self.close_timer.stop()
         self.hide()
         Controller.instance.window_closed(self)
+
+
+def free_bytes(folder):
+    try:
+        st = os.statvfs(folder)
+        return st.f_bavail * st.f_frsize
+    except OSError:
+        return 0
+
+
+def metrics():
+    """Prometheus metrics for /camalert/metrics."""
+    ctl = Controller.instance
+    st = ctl.status() if ctl else {}
+    return metrics_text({
+        "requests_total": ("counter", "Show requests by result", dict(STATS["requests"]) or {"show": 0}),
+        "errors_total": ("counter", "Errors logged", STATS["errors"]),
+        "unreachable_total": ("counter", "Times a camera was not reachable in the photo window", STATS["unreachable"]),
+        "last_event_timestamp_seconds": ("gauge", "Time of the last request", STATS["last_event"]),
+        "uptime_seconds": ("gauge", "Seconds since CamAlert started", time.time() - STATS["started"]),
+        "on_screen": ("gauge", "1 while a camera is on screen", 1 if st.get("window") or st.get("live") else 0),
+        "dnd": ("gauge", "Do not disturb on", 1 if st.get("dnd") else 0),
+        "events": ("gauge", "Events in the event list", len(ctl.events) if ctl else 0),
+    }, {"version": __version__})
 
 
 def event_folder():
@@ -550,6 +589,7 @@ class Controller(object):
         self.notify_timer = eTimer()
         self.notify_timer.callback.append(self.resume_tv)
         self.events = []
+        self.last_shown = {}
         self.reason = ""
         self.label = None
         self.last_caller = None  # (time, address, source) of the last API call
@@ -619,11 +659,20 @@ class Controller(object):
     def show(self, stream=None, seconds=None, mode=None, priority=None, source="api", label=None, event_id=None):
         """Handles a show request and logs it (source, decision and reason) in camalert.log and the event list."""
         self.reason, self.label = "", (label or "").strip()[:40] or None
+        cam = stream or config.plugins.camalert.camera.value
+        wait = cooldown_seconds(cam, config.plugins.camalert.cooldown.value)
+        on_screen = (self.window.stream if self.window else None) == cam
         try:
-            result = self._show(stream, seconds, mode, priority)
+            if not on_screen and pick_priority(priority) != "alarm" and in_cooldown(self.last_shown.get(cam), time.time(), wait):
+                self.reason, result = "cooldown (%d s)" % wait, "ignore"
+            else:
+                result = self._show(stream, seconds, mode, priority)
         finally:
             self.label = None
-        cam = stream or config.plugins.camalert.camera.value
+        if result == "show":
+            self.last_shown[cam] = time.time()
+        STATS["requests"][result] = STATS["requests"].get(result, 0) + 1
+        STATS["last_event"] = time.time()
         log("request from %s: camera=%s priority=%s mode=%s label=%s -> %s%s"
             % (source, cam, pick_priority(priority), mode or "-", label or "-", result,
                (" (%s)" % self.reason) if self.reason else ""), level="error" if result == "error" else "normal")
@@ -654,7 +703,7 @@ class Controller(object):
                     pass
         first = (cam or "").split(",")[0]
         urls = camera_urls(first) if first and action in ("show", "extend", "wake") else None
-        if urls and urls[1]:
+        if urls and urls[1] and free_bytes(event_folder()) > 8 * 1024 * 1024:  # low storage: no snapshots
             folder = event_folder()
             path = os.path.join(folder, "%d_%s.jpg" % (int(ev["time"]), slug(first)))
             url = urls[1].replace("width=640", "width=320")

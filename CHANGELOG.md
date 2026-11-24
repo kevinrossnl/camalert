@@ -18,3 +18,7 @@
   `/camalert/log`, `/camalert/events`, Home Assistant diagnostics download.
 - Update check (once a day, GitHub releases) and an opkg feed on GitHub Pages.
 - Doorbell chime, picons for the camera channels, title size for the photo window.
+- Robustness: cooldown per camera, substreams for live view (H.265/4K), IPv6 literal go2rtc addresses, "camera not
+  reachable" in the photo window, no event snapshots when storage is low, rate limiting and a warning for an API
+  reachable from outside without token, Prometheus `/camalert/metrics` + Grafana dashboard, recipes for other NVRs,
+  doorbells, cloud cameras and home automation systems.

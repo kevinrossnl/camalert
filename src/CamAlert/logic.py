@@ -35,11 +35,17 @@ def normalize_server(url):
     if not u:
         return None
     if "://" not in u:
+        if u.count(":") > 1 and not u.startswith("["):  # bare IPv6 literal, e.g. fd00::10
+            u = "[%s]" % u
         u = "http://" + u
-    p = urlsplit(u)
+    try:
+        p = urlsplit(u)
+        port = p.port
+    except ValueError:
+        return None
     if p.scheme not in ("http", "https") or not p.hostname:
         return None
-    port = p.port or (443 if p.scheme == "https" else 1984)
+    port = port or (443 if p.scheme == "https" else 1984)
     host = "[%s]" % p.hostname if ":" in p.hostname else p.hostname
     return "%s://%s:%d" % (p.scheme, host, port)
 
@@ -974,3 +980,70 @@ def chime_command(path, sink="alsasink"):
     """gstreamer command for the doorbell chime; ALSA plays next to the TV sound (dvbaudiosink) on Vu+ boxes."""
     return ["gst-launch-1.0", "-q", "filesrc", "location=%s" % path, "!", "wavparse", "!", "audioconvert", "!",
             "audioresample", "!", sink]
+
+
+# --- repeated triggers, metrics, rate limiting, substreams --------------------------------------------------------
+def cooldown_seconds(name, text):
+    """'*=30|garden=120' -> seconds for this camera (0 = no cooldown)."""
+    m = dict(p.split("=", 1) for p in (x.strip() for x in (text or "").split("|")) if "=" in p)
+    m = {k.strip(): v.strip() for k, v in m.items()}
+    for key in (name, "*"):
+        try:
+            return max(0, min(3600, int(float(m[key]))))
+        except (KeyError, ValueError):
+            continue
+    return 0
+
+
+def in_cooldown(last_shown, now, seconds):
+    """A camera shown less than `seconds` ago is not shown again (an open window is still extended)."""
+    return bool(seconds) and last_shown is not None and 0 <= now - last_shown < seconds
+
+
+def metrics_text(m, labels=None):
+    """Prometheus text format. m: {name: (type, help, value or {label_value: value})}."""
+    extra = ",".join('%s="%s"' % (k, str(v).replace('"', "'")) for k, v in sorted((labels or {}).items()))
+    out = []
+    for name in sorted(m):
+        kind, help_text, value = m[name]
+        out.append("# HELP camalert_%s %s" % (name, help_text))
+        out.append("# TYPE camalert_%s %s" % (name, kind))
+        if isinstance(value, dict):
+            for lv, v in sorted(value.items()):
+                lab = ",".join(x for x in (extra, 'key="%s"' % str(lv).replace('"', "'")) if x)
+                out.append("camalert_%s{%s} %s" % (name, lab, _num(v)))
+        else:
+            out.append("camalert_%s%s %s" % (name, "{%s}" % extra if extra else "", _num(value)))
+    return "\n".join(out) + "\n"
+
+
+def _num(v):
+    return ("%d" % v) if isinstance(v, bool) or float(v).is_integer() else ("%.6g" % v)
+
+
+class RateLimiter(object):
+    """At most `limit` requests per `window` seconds per caller address."""
+
+    def __init__(self, limit=30, window=10.0):
+        self.limit, self.window, self.seen = limit, window, {}
+
+    def allow(self, who, now):
+        times = [t for t in self.seen.get(who, ()) if now - t < self.window]
+        ok = len(times) < self.limit
+        if ok:
+            times.append(now)
+        self.seen[who] = times
+        if len(self.seen) > 256:  # forget idle callers
+            self.seen = {k: v for k, v in self.seen.items() if v and now - v[-1] < self.window}
+        return ok
+
+
+def exposed_without_token(allow, token, ip):
+    """True when the API answers a caller outside the private network without a token (worth a warning)."""
+    return allow == "any" and not token and not client_allowed(ip, "lan")
+
+
+def live_stream_name(name, substreams=""):
+    """go2rtc stream used for live view: 'front_door=front_door_sub|...' lets a box that cannot decode the main
+    stream (H.265 / 4K) use a substream; default the camera itself."""
+    return parse_map(substreams).get(name) or name

@@ -125,3 +125,5 @@ _add("update_checked", lambda: ConfigText(default="0", fixed_size=False))  # int
 _add("update_seen", lambda: ConfigText(default="", fixed_size=False))  # internal: newest version already announced
 _add("chime", lambda: ConfigYesNo(default=False))
 _add("picons", lambda: ConfigYesNo(default=False))
+_add("cooldown", lambda: ConfigText(default="", fixed_size=False))
+_add("substreams", lambda: ConfigText(default="", fixed_size=False))

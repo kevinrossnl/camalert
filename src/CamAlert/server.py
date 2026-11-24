@@ -12,6 +12,7 @@
     GET /camalert/webhook?url=...    (Home Assistant webhook for remote buttons; empty url removes it)
     GET /camalert/log?lines=200      (camalert.log, redacted)
     GET /camalert/events             (last 20 requests with decision)
+    GET /camalert/metrics            (Prometheus text format)
     GET /camalert/hide
     GET /camalert/status
 """
@@ -27,7 +28,7 @@ from Components.config import config, configfile
 from . import __version__
 from .display import Controller, all_camera_names, camera_urls, log
 from .camlog import LOG
-from .logic import PTZ_ACTIONS, caller_source, redact, valid_port, client_allowed, clamp_seconds, token_ok
+from .logic import RateLimiter, exposed_without_token, PTZ_ACTIONS, caller_source, redact, valid_port, client_allowed, clamp_seconds, token_ok
 
 _port = None
 CERT = "/etc/enigma2/camalert.crt"
@@ -66,6 +67,14 @@ class Api(resource.Resource):
         args = {k.decode(): v[0].decode() for k, v in req.args.items()}
         header = req.getHeader(b"x-camalert-token")
         given = args.get("token") or (header.decode() if isinstance(header, bytes) else header or "")
+        ip = req.getClientAddress().host
+        if not LIMIT.allow(ip, time.time()):
+            req.setResponseCode(429)
+            return b'{"result": false, "error": "too many requests"}'
+        if exposed_without_token(c.allow.value, c.token.value, ip) and ip not in WARNED:
+            WARNED.add(ip)
+            log("WARNING: API called from %s outside the local network without a token; set an access token" % ip,
+                level="error")
         if not client_allowed(req.getClientAddress().host, c.allow.value) or not token_ok(c.token.value, given):
             req.setResponseCode(403)
             return b'{"result": false, "error": "forbidden"}'
@@ -104,6 +113,10 @@ class Api(resource.Resource):
             elif action == "log":
                 n = int(args["lines"]) if args.get("lines", "").isdigit() else 200
                 out = {"result": True, "lines": [redact(x) for x in LOG.tail(min(n, 2000))]}
+            elif action == "metrics":
+                from .display import metrics
+                req.setHeader(b"content-type", b"text/plain; version=0.0.4")
+                return metrics().encode()
             elif action == "events":
                 out = {"result": True, "events": [{k: v for k, v in e.items() if k != "snapshot"}
                                                   for e in ctl.events]}
@@ -157,6 +170,10 @@ class Api(resource.Resource):
             req.setResponseCode(500)
             out = {"result": False, "error": "internal error"}
         return json.dumps(out).encode()
+
+
+LIMIT = RateLimiter(30, 10.0)
+WARNED = set()
 
 
 def start():

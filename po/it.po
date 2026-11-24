@@ -632,3 +632,18 @@ msgstr "Picon per i canali delle telecamere"
 
 msgid "Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced."
 msgstr "Crea un picon semplice (telecamera + nome) per ogni canale delle telecamere; i picon esistenti non vengono mai sostituiti."
+
+msgid "%s - camera not reachable"
+msgstr "%s - telecamera non raggiungibile"
+
+msgid "Cooldown per camera"
+msgstr "Pausa per telecamera"
+
+msgid "Seconds before the same camera is shown again, e.g. *=30|garden=120 (* = all cameras). Alarm always."
+msgstr "Secondi prima di mostrare di nuovo la stessa telecamera, ad es. *=30|garden=120 (* = tutte). Allarme sempre."
+
+msgid "Live view substreams"
+msgstr "Substream per la visione live"
+
+msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
+msgstr "Per le telecamere che il ricevitore non riesce a riprodurre (H.265/4K): front_door=front_door_sub usa quello stream go2rtc per il live."

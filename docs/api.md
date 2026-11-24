@@ -16,6 +16,7 @@ CamAlert listens on port **8099** (configurable). All requests are `GET` and ret
 | `/camalert/ptz?cam=garden&move=left` | Move a PTZ camera (`up`, `down`, `left`, `right`, `zoom_in`, `zoom_out`, `home`, `stop`); see [cameras with PTZ](devices.md) |
 | `/camalert/webhook?url=...` | Where to post remote control colour keys (set automatically by the Home Assistant integration; empty `url` removes it) |
 | `/camalert/events` | The last 20 requests: time, camera, label, source, priority, what CamAlert did and why |
+| `/camalert/metrics` | Prometheus metrics (see [recipes](recipes.md#monitoring)) |
 | `/camalert/log?lines=200` | The end of `camalert.log` (passwords and tokens are always removed) |
 
 Parameters: `cam` (go2rtc stream name, or several separated by commas), `sec` (5–300), `mode` (`photo`, `live`, `notify`, `strip` = several cameras in one window), `label` (optional who/what shown before the camera name in the title, e.g. `Person`), `priority` (`normal` follows the receiver's active hours and recording rule, `high` always, `alarm` always and may wake the receiver), `token` (only if you set an access token; can also be sent as header `X-CamAlert-Token`).

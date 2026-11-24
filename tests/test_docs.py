@@ -29,7 +29,7 @@ def doc_files():
     files = [os.path.join(ROOT, "README.md")] + sorted(glob.glob(os.path.join(ROOT, "docs", "**", "*.md"), recursive=True))
     files += sorted(glob.glob(os.path.join(ROOT, "**", "DEVELOPMENT.md"), recursive=True))
     files += [os.path.join(ROOT, p) for p in ("tests/README.md", "core/i18n/README.md", "homeassistant/blueprints/README.md",
-                                              "CHANGELOG.md")]
+                                              "CHANGELOG.md", "CONTRIBUTING.md", "SECURITY.md", "CODE_OF_CONDUCT.md")]
     return [f for f in files if os.path.isfile(f) and "/dist/" not in f and "/.venv" not in f]
 
 

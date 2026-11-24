@@ -1,0 +1,84 @@
+name: Bug report
+description: Something does not work as described.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please check [Troubleshooting](https://github.com/kevinrossnl/camalert/blob/main/docs/user/troubleshooting.md) first.
+        **Remove secrets** from everything you paste: passwords, tokens, RTSP addresses with keys, public IP addresses, host names, e-mail addresses and camera names you do not want to share.
+        Security problems: do not open an issue, see [SECURITY.md](https://github.com/kevinrossnl/camalert/blob/main/SECURITY.md).
+  - type: dropdown
+    id: player
+    attributes:
+      label: Player
+      description: Where does the problem happen?
+      options:
+        - Enigma2 receiver
+        - Kodi
+        - Android TV / Fire TV app (preview)
+        - Home Assistant integration or blueprint
+        - Other / not sure
+    validations:
+      required: true
+  - type: input
+    id: camalert_version
+    attributes:
+      label: CamAlert version
+      description: Shown in the settings or the diagnostics (for example 1.0.0).
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: player_version
+    attributes:
+      label: Player type and version
+      description: "Enigma2: receiver model, image and version (for example VU+ Uno 4K SE, openATV 7.6). Kodi: Kodi version and platform (for example Kodi 21.2 on LibreELEC). Android TV: device and Android / Fire OS version."
+    validations:
+      required: true
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version
+      description: Only if Home Assistant is involved (Settings › About).
+      placeholder: "2025.11.2"
+  - type: dropdown
+    id: trigger
+    attributes:
+      label: How is CamAlert asked to show a camera?
+      multiple: true
+      options:
+        - Home Assistant integration (action or blueprint)
+        - MQTT
+        - HTTP API (script, Node-RED, openHAB, ...)
+        - Frigate
+        - UniFi Protect events
+        - Foscam alarms
+        - By hand (remote, mosaic, tour)
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log excerpt and diagnostics (secrets removed)
+      description: "The CamAlert log (Enigma2: /home/root/logs/camalert.log or the diagnostics screen; Kodi: the add-on log) and/or the Home Assistant diagnostics download. Paste only the relevant lines."
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I removed passwords, tokens, RTSP keys, public IP addresses, host names and other private details from logs and screenshots.
+          required: true
+        - label: I use the latest CamAlert release (or say above why not).

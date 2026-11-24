@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security problem
+    url: https://github.com/kevinrossnl/camalert/security/advisories/new
+    about: Report vulnerabilities privately (never in a public issue). See SECURITY.md.
+  - name: Troubleshooting / FAQ
+    url: https://github.com/kevinrossnl/camalert/blob/main/docs/user/troubleshooting.md
+    about: Black picture, slow start, nothing appears, ... Most questions are answered here.
+  - name: Documentation
+    url: https://github.com/kevinrossnl/camalert/blob/main/docs/index.md
+    about: Step-by-step guide, players, Home Assistant, MQTT, HTTP API.

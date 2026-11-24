@@ -1,0 +1,38 @@
+name: Question
+description: Help with installing or setting up CamAlert.
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please check the [step-by-step guide](https://github.com/kevinrossnl/camalert/blob/main/docs/user/guide.md) and [Troubleshooting](https://github.com/kevinrossnl/camalert/blob/main/docs/user/troubleshooting.md) first.
+        **Remove secrets** from everything you paste (passwords, tokens, RTSP keys, public IP addresses, host names).
+  - type: dropdown
+    id: player
+    attributes:
+      label: Player
+      options:
+        - Enigma2 receiver
+        - Kodi
+        - Android TV / Fire TV app (preview)
+        - Home Assistant only
+        - Not installed yet
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: CamAlert version, player type and version, Home Assistant version (if used).
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      description: What do you want to achieve, what did you try, what happened?
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log excerpt (secrets removed, optional)
+      render: text

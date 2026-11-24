@@ -32,6 +32,9 @@ Python 3.8 (Kodi 19) needs `pip install "pytest<8.4"`. Optional: `pyyaml` (bluep
   the key map, glossary, settings table), relative links/images/anchors in README, docs and DEVELOPMENT.md files resolve,
   every docs page reachable from `docs/index.md`, no forbidden synonyms, "player" (not "receiver") where Kodi is
   meant, "Kodi 19 or newer" everywhere, one `DEVELOPMENT.md` per main folder naming files that exist. After changing the key map, glossary or schema: `python3 tools/docs.py update`.
+- `test_community.py` (#23): the GitHub community files (CONTRIBUTING, SECURITY with private vulnerability
+  reporting, Code of Conduct, issue forms asking for player, versions and redacted logs, pull request template)
+  exist, parse and link to the public repository.
 - `test_images.py` (#8): no metadata in images (`tools/check_images.py`, also run in the CI area `privacy`).
 - `e2e/` (#35): the end-to-end runner `tools/e2e` against fake devices (`e2e/e2e_fakes.py`: OpenWebif with mute
   toggle and OSD drawn from the CamAlert state, Kodi JSON-RPC over TCP, an ssh box): safety, restore, scenarios, geometry.

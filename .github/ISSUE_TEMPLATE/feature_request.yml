@@ -1,0 +1,36 @@
+name: Feature request
+description: An idea for a new feature or an improvement.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for the idea! Please search the existing issues first.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - Enigma2 receiver
+        - Kodi
+        - Android TV / Fire TV app
+        - Home Assistant integration or blueprints
+        - MQTT / HTTP API / other systems
+        - Documentation or translations
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What would you like to do, and why?
+      description: Describe the situation and what is missing now.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: How could it work?
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered

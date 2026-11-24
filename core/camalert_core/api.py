@@ -1,0 +1,349 @@
+# -*- coding: utf-8 -*-
+# CamAlert - show IP cameras on your TV.
+# Copyright (C) 2026 CamAlert developers. Licensed under the GNU GPL v2 (see LICENSE).
+"""The CamAlert HTTP API, the same on every player (#5): route table, validation, access rules and answers.
+
+The players only adapt their HTTP server to Request/Response and implement a Backend (settings, controller,
+camera list, log, metrics); everything else happens here, so Enigma2 and Kodi answer exactly the same.
+
+    POST /camalert/<action>   actions: show, mosaic, tour, hide, dnd (with on=...), ptz, webhook
+    GET  /camalert/<action>   reads: status, cameras, dnd (state), events, log, metrics
+                              (GET of an action still works, but is deprecated and logged once per caller)
+    Parameters: query string, form body or JSON object body.
+    Token: header X-CamAlert-Token (a token= query parameter still works: deprecated, logged once, redacted)
+
+Access: address allowlist (setting allow: lan / any) + token (if set), compared with hmac.compare_digest.
+log, events and metrics never answer callers outside the local network unless a token is set (and given).
+No server-side requests to caller-chosen addresses: cameras are names from the camera list (urls are built from
+the configured go2rtc server or camera file), the webhook must point into the local network.
+"""
+import ipaddress
+import json
+import re
+import time
+from urllib.parse import parse_qs, urlsplit
+
+from .access import RateLimiter, client_allowed, exposed_without_token, token_ok
+from .cameras import parse_cams
+from .devices.config import PTZ_ACTIONS
+from .events import caller_source
+from .obs.log import redact
+from .rules import MODES, PRIORITIES, clamp_seconds
+
+API_VERSION = 1
+MIN_HA_VERSION = "1.0.0"  # oldest Home Assistant integration that understands this API version
+CAPABILITIES = ("cameras", "dnd", "events", "header_token", "hide", "log", "metrics", "mosaic", "post", "ptz",
+                "show", "status", "strip", "tour", "webhook")
+NAME = re.compile(r"^[A-Za-z0-9_.-]+$")
+TRUE, FALSE = ("1", "true", "on", "yes"), ("0", "false", "off", "no")
+LOCAL_SUFFIXES = (".local", ".lan", ".home", ".home.arpa", ".internal")
+
+
+class Request(object):
+    def __init__(self, method, path, args=None, ip="", header_token=None, user_agent="", body=b"",
+                 content_type=""):
+        self.method, self.path, self.args, self.ip = (method or "GET").upper(), path or "", dict(args or {}), ip or ""
+        self.header_token, self.user_agent = header_token, user_agent or ""
+        self.body, self.content_type = body or b"", content_type or ""
+
+
+class Response(object):
+    def __init__(self, code, body, content_type="application/json", headers=None):
+        self.code, self.body, self.content_type, self.headers = code, body, content_type, dict(headers or {})
+
+    def payload(self):
+        """The body as bytes."""
+        return (self.body if isinstance(self.body, str) else json.dumps(self.body)).encode("utf-8")
+
+
+class Invalid(Exception):
+    """A parameter is missing or wrong (400)."""
+
+
+class Backend(object):
+    """What a player provides. controller(): show/hide/mosaic/tour/ptz_move/has_ptz/set_dnd/status/events and the
+    attribute last_caller (same interface on every player)."""
+    platform = ""
+    version = ""
+
+    def settings(self):
+        """{enabled, allow, token, duration, camera, dnd}"""
+        raise NotImplementedError
+
+    def controller(self):
+        raise NotImplementedError
+
+    def node(self):
+        """(id, name) of this player."""
+        raise NotImplementedError
+
+    def cameras(self):
+        """[{name, title, snapshot}] of every camera (may block: a network call in go2rtc mode)."""
+        raise NotImplementedError
+
+    def set_webhook(self, url):
+        raise NotImplementedError
+
+    def log_tail(self, lines):
+        raise NotImplementedError
+
+    def metrics(self):
+        raise NotImplementedError
+
+    def status_extra(self):
+        return {}
+
+    def log(self, message, level="normal"):
+        pass
+
+
+class Route(object):
+    def __init__(self, name, handler, action=False, sensitive=False, blocking=False):
+        self.name, self.handler, self.action, self.sensitive, self.blocking = name, handler, action, sensitive, blocking
+
+
+# --- parameters ---------------------------------------------------------------------------------------------------
+def cameras_param(value, many=True):
+    """None (= default) or 'a,b' with only valid camera names; Invalid otherwise."""
+    if value is None or not str(value).strip():
+        return None
+    names = [x for x in re.split(r"[,\s]+", str(value).strip()) if x]
+    if not names or any(not NAME.match(x) for x in names) or (not many and len(names) > 1):
+        raise Invalid("invalid camera name")
+    return ",".join(names)
+
+
+def choice_param(args, key, allowed):
+    value = args.get(key)
+    if value in (None, ""):
+        return None
+    if value not in allowed:
+        raise Invalid("invalid %s" % key)
+    return value
+
+
+def bool_param(value):
+    text = str(value).strip().lower()
+    if text in TRUE:
+        return True
+    if text in FALSE:
+        return False
+    raise Invalid("on must be 1 or 0")
+
+
+def local_url(url, caller_ip):
+    """The webhook may only point into the local network: an http(s) url whose host is the caller, a private /
+    loopback / link-local address or a local host name (no dots, or .local/.lan/.home/.home.arpa/.internal)."""
+    if not url.startswith(("http://", "https://")):
+        raise Invalid("url must start with http:// or https://")
+    try:
+        host = urlsplit(url).hostname or ""
+    except ValueError:
+        raise Invalid("invalid url")
+    if not host:
+        raise Invalid("invalid url")
+    if host == (caller_ip or "").replace("::ffff:", ""):
+        return url
+    try:
+        a = ipaddress.ip_address(host)
+        if a.is_private or a.is_loopback or a.is_link_local:
+            return url
+        raise Invalid("url must point to the local network")
+    except ValueError:
+        pass
+    if "." not in host or host.lower().endswith(LOCAL_SUFFIXES):
+        return url
+    raise Invalid("url must point to the local network")
+
+
+def parse_body(content_type, body):
+    """Parameters from a POST body: JSON object or form (application/x-www-form-urlencoded); else {}."""
+    if not body:
+        return {}
+    text = body.decode("utf-8", "replace") if isinstance(body, bytes) else str(body)
+    if "json" in (content_type or "") or text.lstrip().startswith("{"):
+        try:
+            d = json.loads(text)
+        except ValueError:
+            raise Invalid("invalid JSON body")
+        if not isinstance(d, dict):
+            raise Invalid("invalid JSON body")
+        return {k: ("" if v is None else str(v).lower() if isinstance(v, bool) else str(v)) for k, v in d.items()}
+    return {k: v[0] for k, v in parse_qs(text, keep_blank_values=True).items()}
+
+
+# --- handlers -------------------------------------------------------------------------------------------------------
+def _show(b, ctl, a, s, source):
+    cam = cameras_param(a.get("cam"))
+    mode = choice_param(a, "mode", MODES + ("strip",))
+    priority = choice_param(a, "priority", PRIORITIES)
+    sec = clamp_seconds(a.get("sec"), s["duration"]) if a.get("sec") else None
+    label = a.get("label")
+    res = ctl.show(cam, sec, mode, priority, source, label)
+    return {"result": res in ("show", "extend", "wake"), "action": res, "cam": cam or s["camera"]}
+
+
+def _hide(b, ctl, a, s, source):
+    ctl.hide()
+    return {"result": True, "action": "hide"}
+
+
+def _mosaic(b, ctl, a, s, source):
+    cam = cameras_param(a.get("cam"))
+    sec = clamp_seconds(a.get("sec"), 60) if a.get("sec") else 60
+    res = ctl.mosaic(cam, sec)
+    b.log("mosaic from %s: cameras=%s -> %s" % (source, cam or "-", res))
+    return {"result": res == "show", "action": res}
+
+
+def _tour(b, ctl, a, s, source):
+    cam = cameras_param(a.get("cam"))
+    iv = a.get("interval")
+    res = ctl.tour(cam, max(3, min(60, int(iv))) if iv and iv.isdigit() else None)
+    b.log("tour from %s: cameras=%s -> %s" % (source, cam or "-", res))
+    return {"result": res == "show", "action": res}
+
+
+def _dnd(b, ctl, a, s, source):
+    dnd = bool(s["dnd"])
+    if "on" in a:
+        dnd = bool_param(a["on"])
+        ctl.set_dnd(dnd)
+    return {"result": True, "action": "dnd", "dnd": dnd}
+
+
+def _ptz(b, ctl, a, s, source):
+    cam, move = a.get("cam"), a.get("move")
+    if move not in PTZ_ACTIONS or not cam or not NAME.match(cam) or not ctl.has_ptz(cam):
+        raise Invalid("camera without PTZ or unknown move")
+    return {"result": ctl.ptz_move(move, cam), "cam": cam, "move": move}
+
+
+def _webhook(b, ctl, a, s, source):
+    url = (a.get("url") or "").strip()
+    if url:
+        local_url(url, a.get("_ip"))
+    if url != s.get("ha_webhook", ""):
+        b.set_webhook(url)
+        b.log("Home Assistant webhook %s" % ("set" if url else "removed"))
+    return {"result": True, "webhook": bool(url)}
+
+
+def _cameras(b, ctl, a, s, source):
+    try:
+        cams = b.cameras()
+    except Exception as e:  # noqa: BLE001 - go2rtc / camera file not reachable
+        b.log("camera list failed: %s" % e, "error")
+        return {"result": False, "error": "camera source not reachable"}
+    return {"result": True, "cameras": cams}
+
+
+def _status(b, ctl, a, s, source):
+    node, name = b.node()
+    out = dict(ctl.status(), result=True, version=b.version, id=node, name=name, platform=b.platform,
+               api_version=API_VERSION, capabilities=list(CAPABILITIES), min_ha_version=MIN_HA_VERSION)
+    out.update(b.status_extra())
+    return out
+
+
+def _log(b, ctl, a, s, source):
+    n = int(a["lines"]) if (a.get("lines") or "").isdigit() else 200
+    return {"result": True, "lines": [redact(x) for x in b.log_tail(min(n, 2000))]}
+
+
+def _events(b, ctl, a, s, source):
+    return {"result": True, "events": [{k: v for k, v in e.items() if k != "snapshot"} for e in ctl.events]}
+
+
+def _metrics(b, ctl, a, s, source):
+    return Response(200, b.metrics(), "text/plain; version=0.0.4")
+
+
+ROUTES = {r.name: r for r in (
+    Route("show", _show, action=True), Route("camalert", _show, action=True), Route("hide", _hide, action=True),
+    Route("mosaic", _mosaic, action=True), Route("tour", _tour, action=True), Route("ptz", _ptz, action=True),
+    Route("webhook", _webhook, action=True), Route("dnd", _dnd), Route("status", _status),
+    Route("cameras", _cameras, blocking=True), Route("log", _log, sensitive=True),
+    Route("events", _events, sensitive=True), Route("metrics", _metrics, sensitive=True),
+)}
+
+
+def route_of(path):
+    """The Route for a path, or None."""
+    p = (path or "").rstrip("/")
+    if not (p == "/camalert" or p.startswith("/camalert/")):
+        return None
+    return ROUTES.get(p.rsplit("/", 1)[-1])
+
+
+# --- the request pipeline ------------------------------------------------------------------------------------------
+LIMIT = RateLimiter(30, 10.0)
+WARNED = set()   # callers already warned about (exposure, deprecations): log once per caller
+METHODS = ("GET", "POST")
+
+
+def _once(b, key, message, level="normal"):
+    if key not in WARNED:
+        WARNED.add(key)
+        b.log(message, level)
+
+
+def error(code, text):
+    return Response(code, {"result": False, "error": text})
+
+
+def handle(b, req, now=None):
+    """Response for one request. Never raises."""
+    now = time.time() if now is None else now
+    ip = req.ip
+    if not LIMIT.allow(ip, now):
+        return error(429, "too many requests")
+    try:
+        s = b.settings()
+    except Exception as e:  # noqa: BLE001
+        b.log("request failed: %s" % e, "error")
+        return error(500, "internal error")
+    if exposed_without_token(s["allow"], s["token"], ip):
+        _once(b, ("exposed", ip), "WARNING: API called from %s outside the local network without a token; set an "
+                                  "access token" % ip, "error")
+    query_token = req.args.pop("token", None)
+    given = req.header_token or query_token or ""
+    if not client_allowed(ip, s["allow"]) or not token_ok(s["token"], given):
+        return error(403, "forbidden")
+    if query_token and not req.header_token:
+        _once(b, ("query token", ip), "deprecated: %s sends the token in the URL; use the X-CamAlert-Token header" % ip)
+    if not s["enabled"]:
+        return Response(200, {"result": False, "error": "disabled"})
+    route = route_of(req.path)
+    if route is None:
+        return error(404, "unknown action")
+    if req.method not in METHODS:
+        return Response(405, {"result": False, "error": "method not allowed"}, headers={"Allow": "GET, POST"})
+    if route.sensitive and not client_allowed(ip, "lan") and not s["token"]:
+        return error(403, "forbidden")  # never readable from the internet without a token
+    headers = {}
+    try:
+        args = dict(req.args)
+        if req.method == "POST":
+            args.update(parse_body(req.content_type, req.body))
+            args.pop("token", None)
+        is_action = route.action or (route.name == "dnd" and "on" in args)
+        if is_action and req.method == "GET":
+            headers["Deprecation"] = "true"
+            _once(b, ("get", route.name, ip), "deprecated: %s uses GET for /camalert/%s; use POST" % (ip, route.name))
+        source = caller_source(req.user_agent)
+        ctl = b.controller()
+        ctl.last_caller = (now, ip, source)
+        b.log("API %s %s %s from %s (%s)" % (req.method, req.path, redact("&".join("%s=%s" % kv for kv in sorted(args.items()))), ip, source),
+              "verbose")
+        args["_ip"] = ip
+        out = route.handler(b, ctl, args, s, source)
+    except Invalid as e:
+        return Response(400, {"result": False, "error": str(e)}, headers=headers)
+    except Exception as e:  # noqa: BLE001 - never let a request break the player
+        b.log("request failed: %s" % e, "error")
+        return error(500, "internal error")
+    if isinstance(out, Response):
+        out.headers.update(headers)
+        return out
+    return Response(200, out, headers=headers)

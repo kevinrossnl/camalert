@@ -172,6 +172,7 @@ class _KodiLogic(object):
 class FakeController(object):
     def __init__(self):
         self.calls = []
+        self.dnd = False
         self.names, self.names_at = [], 0
         self.events = [{"time": 1, "camera": "garden", "label": "", "source": "api", "priority": "normal",
                         "action": "show", "reason": "", "snapshot": "/x.jpg", "frigate_id": None}]
@@ -207,80 +208,64 @@ class FakeController(object):
 
 
 class _KodiApi(object):
-    """Same answers as the Enigma2 plugin's server.py."""
+    """The Kodi HTTP adapter (server.Handler) over a real socket; the API itself is checked by the contract table
+    (tests/contract/test_http_contract.py) against both players."""
 
     def setUp(self):
+        import threading
+        from http.server import ThreadingHTTPServer
         self.server = Built.module("server", self.kodi)
-        self.server.LIMIT.seen.clear()
-        self.s = Built.module("klogic").parse_settings({"camera": "front_door"})
+        Built.module("camalert_core.api").LIMIT.seen.clear()
+        self.ctl = FakeController()
+        Built.module("controller").Controller.instance = self.ctl
+        Built.store.update({"camera": "front_door", "token": "secret"})
+        self.httpd = ThreadingHTTPServer(("127.0.0.1", 0), self.server.Handler)
+        self.thread = threading.Thread(target=self.httpd.serve_forever, args=(0.02,), daemon=True)
+        self.thread.start()
+        self.base = "http://127.0.0.1:%d" % self.httpd.server_address[1]
 
-    def handle(self, path, args=None, ip="192.168.1.5", header=None, user_agent="", **settings):
-        s = dict(self.s, **settings)
-        ctl = FakeController()
-        code, out = self.server.handle(ctl, path, args or {}, ip, header, s, user_agent)
-        return code, out, ctl
+    def tearDown(self):
+        self.httpd.shutdown()
+        self.httpd.server_close()
+        for k in ("camera", "token"):
+            Built.store.pop(k, None)
 
-    def test_access(self):
-        self.assertEqual(self.handle("/camalert/hide", ip="8.8.8.8")[:2], (403, {"result": False, "error": "forbidden"}))
-        self.assertEqual(self.handle("/camalert/hide", ip="8.8.8.8", allow="any")[0], 200)
-        self.assertEqual(self.handle("/camalert/hide", header="bad", token="secret")[0], 403)
-        self.assertEqual(self.handle("/camalert/hide", {"token": "secret"}, token="secret")[0], 200)
-        self.assertEqual(self.handle("/camalert/hide", header="secret", token="secret")[0], 200)
-        self.assertEqual(self.handle("/camalert/hide", enabled=False)[1], {"result": False, "error": "disabled"})
+    def request(self, path, method="GET", body=None, token="secret", ctype="application/json"):
+        import urllib.error
+        import urllib.request
+        headers = {"X-CamAlert-Token": token} if token else {}
+        if body is not None:
+            headers["Content-Type"] = ctype
+        req = urllib.request.Request(self.base + path, data=body, headers=headers, method=method)
+        try:
+            with urllib.request.urlopen(req, timeout=5) as r:
+                return r.status, dict(r.headers), r.read()
+        except urllib.error.HTTPError as e:
+            return e.code, dict(e.headers), e.read()
 
-    def test_actions(self):
-        code, out, ctl = self.handle("/camalert/show", {"cam": "garden", "sec": "20", "mode": "live", "priority": "alarm"})
-        self.assertEqual(out, {"result": True, "action": "show", "cam": "garden"})
-        self.assertEqual(ctl.calls, [("show", "garden", 20, "live", "alarm", "api", None)])
-        code, out, ctl = self.handle("/camalert/show", {"cam": "garden", "label": "Person"}, user_agent="HomeAssistant/2026.11 aiohttp/3.10")
-        self.assertEqual(ctl.calls, [("show", "garden", None, None, None, "ha", "Person")])
-        self.assertEqual(ctl.last_caller[1:], ("192.168.1.5", "ha"))
-        self.assertEqual(self.handle("/camalert/show")[1]["cam"], "front_door")
-        self.assertEqual(self.handle("/camalert/camalert")[1]["action"], "show")
-        self.assertEqual(self.handle("/camalert/hide")[1], {"result": True, "action": "hide"})
-        code, out, ctl = self.handle("/camalert/mosaic", {"cam": "a,b"})
-        self.assertEqual((out, ctl.calls), ({"result": True, "action": "show"}, [("mosaic", "a,b", 60)]))
-        code, out, ctl = self.handle("/camalert/tour", {"interval": "99"})
-        self.assertEqual((out["result"], ctl.calls), (False, [("tour", None, 60)]))
-        code, out, ctl = self.handle("/camalert/dnd", {"on": "1"})
-        self.assertEqual(ctl.calls, [("dnd", True)])
-        self.assertEqual(self.handle("/camalert/nonsense")[:2], (404, {"result": False, "error": "unknown action"}))
-        out = self.handle("/camalert/status")[1]
-        self.assertTrue(out["result"])
-        for key in ("version", "id", "name", "window", "live", "dnd"):
-            self.assertIn(key, out)
+    def test_post_json_with_header_token(self):
+        code, headers, body = self.request("/camalert/show", "POST", b'{"cam": "garden", "sec": 20}')
+        self.assertEqual((code, json.loads(body)["action"]), (200, "show"))
+        self.assertEqual(headers["Content-Type"], "application/json")
+        self.assertEqual(int(headers["Content-Length"]), len(body))
+        self.assertNotIn("Deprecation", headers)
+        self.assertEqual(self.ctl.calls, [("show", "garden", 20, None, None, "api", None)])
 
-    def test_new_actions(self):
-        code, out, ctl = self.handle("/camalert/ptz", {"cam": "garden", "move": "left"})
-        self.assertEqual((code, out, ctl.calls), (200, {"result": True, "cam": "garden", "move": "left"},
-                                                  [("ptz", "left", "garden")]))
-        self.assertEqual(self.handle("/camalert/ptz", {"cam": "front_door", "move": "left"})[0], 400)
-        self.assertEqual(self.handle("/camalert/ptz", {"cam": "garden", "move": "jump"})[0], 400)
-        self.assertEqual(self.handle("/camalert/webhook", {"url": "ftp://x"})[0], 400)
-        self.assertEqual(self.handle("/camalert/webhook", {"url": "http://ha:8123/api/webhook/abc"})[1],
-                         {"result": True, "webhook": True})
-        self.assertEqual(Built.store.get("ha_webhook"), "http://ha:8123/api/webhook/abc")
-        ev = self.handle("/camalert/events")[1]["events"]
-        self.assertEqual(ev[0]["camera"], "garden")
-        self.assertNotIn("snapshot", ev[0])
-        out = self.handle("/camalert/log", {"lines": "5"})[1]
-        self.assertTrue(out["result"])
-        self.assertIsInstance(out["lines"], list)
+    def test_get_action_is_deprecated_but_works(self):
+        code, headers, body = self.request("/camalert/hide")
+        self.assertEqual((code, headers.get("Deprecation")), (200, "true"))
 
-    def test_metrics_and_rate_limit(self):
-        code, out, ctl = self.handle("/camalert/metrics", ip="192.168.1.77")
-        self.assertEqual(code, 200)
-        self.assertIn('camalert_uptime_seconds{platform="kodi"', out)
-        codes = [self.handle("/camalert/status", ip="192.168.1.99")[0] for _ in range(35)]
-        self.assertIn(429, codes)
-        self.assertEqual(codes[0], 200)
+    def test_token_errors_and_methods(self):
+        self.assertEqual(self.request("/camalert/status", token=None)[0], 403)
+        self.assertEqual(self.request("/camalert/status?token=secret", token=None)[0], 200)  # deprecated
+        self.assertEqual(self.request("/camalert/hide", "PUT", b"")[0], 405)
+        self.assertEqual(self.request("/camalert/show", "POST", b"cam=a/b",
+                                      ctype="application/x-www-form-urlencoded")[0], 400)
 
-    def test_internal_error(self):
-        class Broken(FakeController):
-            def hide(self):
-                raise ValueError("boom")
-        code, out = self.server.handle(Broken(), "/camalert/hide", {}, "127.0.0.1", None, self.s)
-        self.assertEqual((code, out), (500, {"result": False, "error": "internal error"}))
+    def test_metrics_are_text(self):
+        code, headers, body = self.request("/camalert/metrics")
+        self.assertTrue(headers["Content-Type"].startswith("text/plain"))
+        self.assertIn(b'platform="kodi"', body)
 
 
 class _KodiModules(object):

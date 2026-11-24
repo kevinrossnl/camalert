@@ -13,16 +13,7 @@ from contract.api_table import ROUTES, TABLE
 from fakes.controller import RecordingController
 
 # (row name, player) -> issue that will remove the difference
-KNOWN = {
-    ("show_invalid_camera_name", "enigma2"): "#5",
-    ("show_invalid_camera_name", "kodi"): "#5",
-    ("show_post", "enigma2"): "#5",
-    ("show_post", "kodi"): "#5",
-    ("dnd_invalid_value", "enigma2"): "#5",
-    ("status", "enigma2"): "#5",
-    ("log_from_wan_needs_token", "enigma2"): "#5",
-    ("log_from_wan_needs_token", "kodi"): "#5",
-}
+KNOWN = {}  # all differences fixed by the API in core (#5); a new one needs an issue
 
 
 def differences(adapter, r):
@@ -34,7 +25,7 @@ def differences(adapter, r):
         adapter.set_cameras(r["cameras"])
     try:
         ans = adapter.call(Request(r["path"], r["args"], r["ip"], r["header"], r["user_agent"], r["settings"],
-                                   r["method"]), ctl)
+                                   r["method"], r["body"]), ctl)
     finally:
         if r["cameras"] is not None:
             adapter.set_cameras(None)
@@ -48,6 +39,10 @@ def differences(adapter, r):
                 out.append("%s=%r, expected %r" % (k, body.get(k), v))
     if r["calls"] is not None and ctl.calls != r["calls"]:
         out.append("controller calls %r, expected %r" % (ctl.calls, r["calls"]))
+    for k, v in r["headers"].items():
+        got = {x.lower(): y for x, y in (ans.headers or {}).items()}.get(k.lower())
+        if got != v:
+            out.append("header %s=%r, expected %r" % (k, got, v))
     if r["check"] is not None and not out:
         try:
             ok = r["check"](ans.body)

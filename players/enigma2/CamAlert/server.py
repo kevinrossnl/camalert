@@ -1,25 +1,12 @@
 # -*- coding: utf-8 -*-
 # CamAlert - show IP cameras (via go2rtc) on an Enigma2 receiver.
 # Copyright (C) 2026 CamAlert developers. Licensed under the GNU GPL v2 (see LICENSE).
-"""Small HTTP API on the receiver:
-
-    GET /camalert/show?cam=front_door&sec=30&mode=photo|live|notify|strip&priority=normal|high|alarm[&token=...]
-    GET /camalert/mosaic?cam=front_door,garden,drive&sec=60
-    GET /camalert/cameras
-    GET /camalert/tour?cam=front_door,garden&interval=8
-    GET /camalert/dnd?on=1|0         (do not disturb; without "on" it only reports the state)
-    GET /camalert/ptz?cam=garden&move=up|down|left|right|zoom_in|zoom_out|home|stop
-    GET /camalert/webhook?url=...    (Home Assistant webhook for remote buttons; empty url removes it)
-    GET /camalert/log?lines=200      (camalert.log, redacted)
-    GET /camalert/events             (last 20 requests with decision)
-    GET /camalert/metrics            (Prometheus text format)
-    GET /camalert/hide
-    GET /camalert/status
-"""
-import json
+"""HTTP API of the receiver: a thin Twisted adapter around camalert_core.api (routes, validation, access rules
+and answers are the same on every player, see docs/api.md)."""
 import os
 import subprocess
 import time
+from urllib.parse import parse_qs
 
 from twisted.web import resource, server
 from twisted.internet import reactor, threads
@@ -27,12 +14,8 @@ from Components.config import config, configfile
 
 from . import __version__
 from .display import Controller, all_camera_names, camera_urls, log
+from .camalert_core import api
 from .camalert_core.obs.camlog import LOG
-from .camalert_core.access import client_allowed, exposed_without_token, RateLimiter, token_ok
-from .camalert_core.devices.config import PTZ_ACTIONS
-from .camalert_core.events import caller_source
-from .camalert_core.obs.log import redact
-from .camalert_core.rules import clamp_seconds
 from .camalert_core.urls import valid_port
 
 _port = None
@@ -55,130 +38,104 @@ def ensure_certificate():
         return False
 
 
-def finish(req, out):
+class Backend(api.Backend):
+    """What camalert_core.api needs from the Enigma2 plugin."""
+    platform = "enigma2"
+    version = __version__
+
+    def settings(self):
+        c = config.plugins.camalert
+        return {"enabled": c.enabled.value, "allow": c.allow.value, "token": c.token.value,
+                "duration": int(c.duration.value), "camera": c.camera.value, "dnd": bool(c.dnd.value),
+                "ha_webhook": c.ha_webhook.value}
+
+    def controller(self):
+        return Controller.instance
+
+    def node(self):
+        from .mqtt import node_id, node_name
+        return node_id(), node_name()
+
+    def cameras(self):
+        """Runs in a thread (go2rtc mode needs the network)."""
+        cams = []
+        for n in all_camera_names():
+            urls = camera_urls(n)
+            cams.append({"name": n, "title": urls[2] if urls else n, "snapshot": bool(urls and urls[1])})
+        ctl = Controller.instance
+        if ctl is not None:
+            ctl._names, ctl._names_at = [c["name"] for c in cams], time.time()
+        return cams
+
+    def set_webhook(self, url):
+        c = config.plugins.camalert
+        c.ha_webhook.value = url
+        c.ha_webhook.save()
+        configfile.save()
+
+    def log_tail(self, lines):
+        return LOG.tail(lines)
+
+    def metrics(self):
+        from .display import metrics
+        return metrics()
+
+    def status_extra(self):
+        from . import mqtt
+        return {"mqtt": mqtt.connected()}
+
+    def log(self, message, level="normal"):
+        log(message, level=level)
+
+
+BACKEND = Backend()
+
+
+def write(req, resp):
+    """Writes an api.Response to a Twisted request; returns the body for render()."""
+    req.setResponseCode(resp.code)
+    req.setHeader(b"content-type", resp.content_type.encode())
+    for k, v in resp.headers.items():
+        req.setHeader(k.encode(), v.encode())
+    return resp.payload()
+
+
+def finish(req, resp):
     try:
-        req.write(json.dumps(out).encode())
+        req.write(write(req, resp))
         req.finish()
     except Exception:  # client went away
         pass
 
 
+def to_request(req):
+    def text(v):
+        return v.decode("utf-8", "replace") if isinstance(v, bytes) else (v or "")
+    method = text(req.method).upper()
+    body = b""
+    if method == "POST" and getattr(req, "content", None) is not None:
+        req.content.seek(0)
+        body = req.content.read(65536)
+    # Twisted puts form bodies into req.args too: only the query string counts as args, the body is parsed by api
+    query = text(req.uri).partition("?")[2]
+    args = {k: v[0] for k, v in parse_qs(query, keep_blank_values=True).items()}
+    return api.Request(method, text(req.path), args, req.getClientAddress().host,
+                       text(req.getHeader(b"x-camalert-token")) or None, text(req.getHeader(b"user-agent")), body,
+                       text(req.getHeader(b"content-type")))
+
+
 class Api(resource.Resource):
     isLeaf = True
 
-    def render_GET(self, req):
-        c = config.plugins.camalert
-        req.setHeader(b"content-type", b"application/json")
-        args = {k.decode(): v[0].decode() for k, v in req.args.items()}
-        header = req.getHeader(b"x-camalert-token")
-        given = args.get("token") or (header.decode() if isinstance(header, bytes) else header or "")
-        ip = req.getClientAddress().host
-        if not LIMIT.allow(ip, time.time()):
-            req.setResponseCode(429)
-            return b'{"result": false, "error": "too many requests"}'
-        if exposed_without_token(c.allow.value, c.token.value, ip) and ip not in WARNED:
-            WARNED.add(ip)
-            log("WARNING: API called from %s outside the local network without a token; set an access token" % ip,
-                level="error")
-        if not client_allowed(req.getClientAddress().host, c.allow.value) or not token_ok(c.token.value, given):
-            req.setResponseCode(403)
-            return b'{"result": false, "error": "forbidden"}'
-        if not c.enabled.value:
-            return b'{"result": false, "error": "disabled"}'
-        action = req.path.decode().rstrip("/").rsplit("/", 1)[-1]
-        ctl = Controller.instance
-        ua = req.getHeader(b"user-agent")
-        source = caller_source(ua.decode("utf-8", "replace") if isinstance(ua, bytes) else ua)
-        ctl.last_caller = (time.time(), req.getClientAddress().host, source)
-        log("API %s from %s (%s)" % (redact(req.uri.decode("utf-8", "replace")), req.getClientAddress().host, source),
-            level="verbose")
-        try:
-            if action == "hide":
-                ctl.hide()
-                out = {"result": True, "action": "hide"}
-            elif action == "ptz":
-                cam, move = args.get("cam"), args.get("move")
-                if move not in PTZ_ACTIONS or not ctl.has_ptz(cam):
-                    req.setResponseCode(400)
-                    out = {"result": False, "error": "camera without PTZ or unknown move"}
-                else:
-                    out = {"result": ctl.ptz_move(move, cam), "cam": cam, "move": move}
-            elif action == "webhook":
-                url = args.get("url", "")
-                if url and not url.startswith(("http://", "https://")):
-                    req.setResponseCode(400)
-                    out = {"result": False, "error": "url must start with http:// or https://"}
-                else:
-                    if url != c.ha_webhook.value:
-                        c.ha_webhook.value = url
-                        c.ha_webhook.save()
-                        configfile.save()
-                        log("Home Assistant webhook %s" % ("set" if url else "removed"))
-                    out = {"result": True, "webhook": bool(url)}
-            elif action == "log":
-                n = int(args["lines"]) if args.get("lines", "").isdigit() else 200
-                out = {"result": True, "lines": [redact(x) for x in LOG.tail(min(n, 2000))]}
-            elif action == "metrics":
-                from .display import metrics
-                req.setHeader(b"content-type", b"text/plain; version=0.0.4")
-                return metrics().encode()
-            elif action == "events":
-                out = {"result": True, "events": [{k: v for k, v in e.items() if k != "snapshot"}
-                                                  for e in ctl.events]}
-            elif action == "dnd":
-                if "on" in args:
-                    ctl.set_dnd(args["on"].lower() in ("1", "true", "on", "yes"))
-                out = {"result": True, "dnd": bool(c.dnd.value)}
-            elif action == "mosaic":
-                sec = clamp_seconds(args.get("sec"), 60) if args.get("sec") else 60
-                res = ctl.mosaic(args.get("cam"), sec)
-                log("mosaic from %s: cameras=%s -> %s" % (source, args.get("cam") or "-", res))
-                out = {"result": res == "show", "action": res}
-            elif action == "tour":
-                iv = args.get("interval")
-                res = ctl.tour(args.get("cam"), max(3, min(60, int(iv))) if iv and iv.isdigit() else None)
-                log("tour from %s: cameras=%s -> %s" % (source, args.get("cam") or "-", res))
-                out = {"result": res == "show", "action": res}
-            elif action == "cameras":
-                # go2rtc mode needs a network call: never block the GUI, answer from a thread
-                def collect():
-                    cams = []
-                    for n in all_camera_names():
-                        urls = camera_urls(n)
-                        cams.append({"name": n, "title": urls[2] if urls else n, "snapshot": bool(urls and urls[1])})
-                    return cams
-
-                def done(cams):
-                    if Controller.instance:
-                        import time
-                        Controller.instance._names = [c["name"] for c in cams]
-                        Controller.instance._names_at = time.time()
-                    finish(req, {"result": True, "cameras": cams})
-
-                def failed(err):
-                    log("camera list failed:", err.getErrorMessage())
-                    finish(req, {"result": False, "error": "camera source not reachable"})
-                threads.deferToThread(collect).addCallbacks(done, failed)
-                return server.NOT_DONE_YET
-            elif action == "status":
-                from .mqtt import node_id, node_name
-                out = dict(ctl.status(), result=True, version=__version__, id=node_id(), name=node_name())
-            elif action in ("show", "camalert"):
-                sec = clamp_seconds(args.get("sec"), int(c.duration.value)) if args.get("sec") else None
-                res = ctl.show(args.get("cam"), sec, args.get("mode"), args.get("priority"), source, args.get("label"))
-                out = {"result": res in ("show", "extend", "wake"), "action": res, "cam": args.get("cam") or c.camera.value}
-            else:
-                req.setResponseCode(404)
-                out = {"result": False, "error": "unknown action"}
-        except Exception as e:
-            log("request failed:", e)
-            req.setResponseCode(500)
-            out = {"result": False, "error": "internal error"}
-        return json.dumps(out).encode()
-
-
-LIMIT = RateLimiter(30, 10.0)
-WARNED = set()
+    def render(self, req):
+        r = to_request(req)
+        route = api.route_of(r.path)
+        if route is not None and route.blocking:  # never block the GUI: answer from a thread
+            threads.deferToThread(api.handle, BACKEND, r).addCallbacks(
+                lambda resp: finish(req, resp),
+                lambda err: finish(req, api.error(500, "internal error")))
+            return server.NOT_DONE_YET
+        return write(req, api.handle(BACKEND, r))
 
 
 def start():

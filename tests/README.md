@@ -19,8 +19,8 @@ Python 3.8 (Kodi 19) needs `pip install "pytest<8.4"`. Optional: `pyyaml` (bluep
 - The Enigma2 plugin runs inside `enigma2/harness/e2fake.py` (fake Enigma2 modules built from API snapshots of real images).
 - Privacy: `test_private.py` only finds personal words with the private denylist in `CAMALERT_DENYLIST`
   (see `DEVELOPMENT.md`).
-- `contract/`: the HTTP API table (`api_table.py`) runs against the Enigma2 handler (via e2fake) and the Kodi
-  handler. Known differences are listed in `KNOWN` with the issue that fixes them; a stale entry fails.
+- `contract/`: the HTTP API table (`api_table.py`) runs against `camalert_core.api` directly (`core/test_api.py`),
+  the Enigma2 adapter (via e2fake) and the Kodi adapter. Known differences are listed in `KNOWN` with the issue that fixes them; a stale entry fails.
   Use public example addresses for "outside the network" (Python treats the RFC 5737 ranges as private).
 - `fakes/broker.py`: in-process MQTT 3.1.1 broker (127.0.0.1, random port) on the shared codec;
   `contract/test_mqtt_contract.py` runs both MQTT clients against it and checks `contract/mqtt_table.py`.

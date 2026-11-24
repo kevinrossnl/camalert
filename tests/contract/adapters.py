@@ -8,6 +8,7 @@ against Enigma2 and Kodi:
 settings: enabled, allow, token, camera, duration, dnd (same names on both players).
 """
 import json
+from urllib.parse import urlencode
 
 import _paths
 from fakes.controller import RecordingController
@@ -43,11 +44,13 @@ class KodiAdapter(object):
         _paths.kodi_package()
         self.server = _paths.kodi_module("server")
         self.klogic = _paths.kodi_module("klogic")
+        self.controller = _paths.kodi_module("controller")
+        self.api = _paths.kodi_module("camalert_core.api")
         self.reset()
 
     def reset(self):
-        self.server.LIMIT.seen.clear()
-        self.server.WARNED.clear()
+        self.api.LIMIT.seen.clear()
+        self.api.WARNED.clear()
 
     def settings(self, values):
         self.store.clear()
@@ -71,21 +74,36 @@ class KodiAdapter(object):
         ctl = ctl or RecordingController()
         if not hasattr(self.server.Handler, "do_" + req.method):
             return Answer(501, None, "", ctl)  # http.server: "Unsupported method"
-        s = self.settings(req.settings)
-        code, out = self.server.handle(ctl, req.path, req.args, req.ip, req.header, s, req.user_agent)
-        return Answer(code, out, "text/plain" if isinstance(out, str) else "application/json", ctl)
+        self.settings(req.settings)
+        self.controller.Controller.instance = ctl
+        args, body, ctype = req.args, b"", ""
+        if req.method == "POST" and req.body is None:  # the table's parameters go into a form body
+            args, body, ctype = {}, urlencode(req.args).encode(), "application/x-www-form-urlencoded"
+        elif req.body is not None:
+            body, ctype = req.body, "application/json"
+        r = self.api.Request(req.method, req.path, args, req.ip, req.header, req.user_agent, body, ctype)
+        resp = self.api.handle(self.server.BACKEND, r)
+        ctype = resp.content_type.split(";")[0]
+        return Answer(resp.code, resp.body, ctype, ctl, resp.headers)
 
 
 class FakeTwistedRequest(object):
-    """What Api.render_GET uses of twisted.web.server.Request."""
+    """What Api.render uses of twisted.web.server.Request."""
 
     def __init__(self, req):
         self.method = req.method.encode()
         self.path = req.path.encode()
-        query = "&".join("%s=%s" % (k, v) for k, v in req.args.items())
+        args, body, ctype = req.args, req.body, None
+        if req.method == "POST" and body is None:  # the table's parameters go into a form body
+            args, body, ctype = {}, urlencode(req.args).encode(), b"application/x-www-form-urlencoded"
+        elif body is not None:
+            ctype = b"application/json"
+        query = urlencode(args)
         self.uri = (req.path + ("?" + query if query else "")).encode()
-        self.args = {k.encode(): [str(v).encode()] for k, v in req.args.items()}
+        self.args = {k.encode(): [str(v).encode()] for k, v in args.items()}
         self.headers = {}
+        if ctype:
+            self.headers[b"content-type"] = ctype
         if req.header is not None:
             self.headers[b"x-camalert-token"] = req.header.encode()
         if req.user_agent:
@@ -95,7 +113,7 @@ class FakeTwistedRequest(object):
         self.out_headers = {}
         self.written = b""
         self.finished = False
-        self.content = None if req.body is None else __import__("io").BytesIO(req.body)
+        self.content = __import__("io").BytesIO(body or b"")
 
     def getHeader(self, name):
         return self.headers.get(name.lower() if isinstance(name, bytes) else name.lower().encode())
@@ -127,14 +145,16 @@ class Enigma2Adapter(object):
         self.server = self.env.camalert.server
         self.display = self.env.camalert.display
         self.c = self.env.config.plugins.camalert
+        import importlib
+        self.api = importlib.import_module("CamAlert.camalert_core.api")
         self.reset()
 
     def close(self):
         self.e2fake.uninstall()
 
     def reset(self):
-        self.server.LIMIT.seen.clear()
-        self.server.WARNED.clear()
+        self.api.LIMIT.seen.clear()
+        self.api.WARNED.clear()
 
     def set_cameras(self, names):
         if not hasattr(self, "_orig"):
@@ -152,10 +172,7 @@ class Enigma2Adapter(object):
             getattr(self.c, k).value = v
         self.display.Controller.instance = ctl
         tw = FakeTwistedRequest(req)
-        render = getattr(self.server.Api(), "render_" + req.method, None)
-        if render is None:
-            return Answer(405, None, "", ctl)  # twisted.web: UnsupportedMethod
-        out = render(tw)
+        out = self.server.Api().render(tw)
         if out == 1:  # NOT_DONE_YET: run the deferred work as the reactor thread pool would
             for d in list(self.env.reactor.deferred):
                 self.env.reactor.deferred.remove(d)

@@ -1,7 +1,8 @@
-"""The Enigma2 HTTP API (server.Api.render_GET) driven through e2fake with a fake Twisted request (#30).
+"""The Enigma2 HTTP API adapter (server.Api.render -> camalert_core.api) driven through e2fake with a fake
+Twisted request (#30).
 
 The endpoint-by-endpoint behaviour is in tests/contract/test_http_contract.py (same table for Enigma2 and Kodi);
-this file checks what only the Twisted adapter does: headers, the threaded camera list, errors, logging.
+this file checks what only the Twisted adapter does: headers, the threaded camera list, POST bodies, errors.
 """
 import unittest
 
@@ -34,15 +35,18 @@ class TestEnigma2Server(unittest.TestCase):
         def broken():
             raise OSError("down")
         self.a.server.all_camera_names = broken
-        tw = FakeTwistedRequest(Request("/camalert/cameras"))
+        ans = self.a.call(Request("/camalert/cameras"))
+        self.assertEqual(ans.body, {"result": False, "error": "camera source not reachable"})
+
+    def test_post_form_and_headers(self):
+        ans = self.a.call(Request("/camalert/show", {"cam": "garden"}, method="POST"))
+        self.assertEqual((ans.code, ans.body["action"]), (200, "show"))
+        self.assertNotIn("deprecation", ans.headers)
+        ans = self.a.call(Request("/camalert/show", {"cam": "garden"}))
+        self.assertEqual(ans.headers.get("deprecation"), "true")
+        tw = FakeTwistedRequest(Request("/camalert/hide", method="POST"))
         self.a.display.Controller.instance = RecordingController()
-        self.assertEqual(self.a.server.Api().render_GET(tw), 1)
-        d = self.a.env.reactor.deferred.pop()
-        err = type("Failure", (), {"getErrorMessage": lambda self: "down"})()
-        for _ok, fail in d.callbacks:  # what Twisted does when the thread raised
-            fail(err)
-        self.assertIn(b"camera source not reachable", tw.written)
-        self.assertTrue(tw.finished)
+        self.assertIsInstance(self.a.server.Api().render(tw), bytes)
 
     def test_internal_error_is_500(self):
         ctl = RecordingController()

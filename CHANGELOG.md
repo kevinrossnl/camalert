@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+- Kodi: settings follow schema version 2 (#39): duration sliders in steps of 5 s, live volume in steps of 10 %,
+  keys `live_return` and `refresh` (settings saved under `live_resume` / `refresh_map` are moved on start),
+  own labels *Frigate objects*, *Frigate priority*, *Foscam priority*.
 - HTTP API version 1, one implementation for every player (`camalert_core.api`, #5): actions with `POST`
   (`GET` still works, deprecated: `Deprecation` header, logged once), token in the `X-CamAlert-Token` header
   (`?token=` deprecated, always redacted), `/camalert/status` has `platform`, `api_version`, `capabilities`,

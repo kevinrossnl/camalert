@@ -277,7 +277,7 @@ class Controller(object):
     def _live(self, stream, url, title, seconds, s, priority, kind, f, pos, was_paused, action):
         if action == "show":
             if self.live_stream is None:
-                self.resume = resume_plan(f, pos, kind, was_paused) if s["live_resume"] else None
+                self.resume = resume_plan(f, pos, kind, was_paused) if s["live_return"] else None
                 if priority != "alarm" and s["live_volume"] < 100:
                     vol = (kodiapi.jsonrpc("Application.GetProperties", {"properties": ["volume"]}) or {}).get("volume")
                     if vol is not None:

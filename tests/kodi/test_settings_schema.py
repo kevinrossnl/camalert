@@ -11,18 +11,9 @@ import schemacheck
 
 ACTIONS = {"choose_camera", "devices", "diagnostics", "events", "show_mosaic", "show_tour", "test"}  # buttons
 HIDDEN = {"mqtt_password", "ptz_password", "token"}
-# (schema id, field) -> issue. What the Kodi player still has to change for schema version 2 (#39):
-KNOWN = {
-    ("duration", "step"): "#39",       # Kodi slider step 1; schema (UI review): 5
-    ("frigate_seconds", "step"): "#39",
-    ("foscam_seconds", "step"): "#39",
-    ("live_volume", "step"): "#39",    # Kodi step 1; schema: 10
-    ("live_return", "key"): "#39",     # Kodi key live_resume (schema.migrate)
-    ("refresh", "key"): "#39",         # Kodi key refresh_map
-    # one shared Kodi label id per category ("Objects", "Priority"): needs own ids 'Frigate objects' / 'Frigate
-    # priority' / 'Foscam priority' in settings.xml + strings.po
-    ("frigate_labels", "label"): "#39", ("frigate_priority", "label"): "#39", ("foscam_priority", "label"): "#39",
-}
+# (schema id, field) -> issue. Empty since the Kodi round of #39 (settings.xml = schema version 2); a new
+# difference must be fixed or listed here with its issue.
+KNOWN = {}
 
 
 def kodi_settings():
@@ -98,8 +89,8 @@ class TestKodiSettingsSchema(unittest.TestCase):
                 self.assertEqual(k.RANGES[key], (self.xml[key]["min"], self.xml[key]["max"]), key)
 
     def test_validate_works_with_kodi_keys(self):
-        clean, problems = schemacheck.schema.validate({"duration": "999", "refresh_map": "a=1", "mode": "live"}, "kodi")
-        self.assertEqual((clean["duration"], clean["refresh_map"], clean["mode"]), (30, "a=1", "live"))
+        clean, problems = schemacheck.schema.validate({"duration": "999", "refresh": "a=1", "mode": "live"}, "kodi")
+        self.assertEqual((clean["duration"], clean["refresh"], clean["mode"]), (30, "a=1", "live"))
         self.assertEqual(problems, ["duration"])
 
 

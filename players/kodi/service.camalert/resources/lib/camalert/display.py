@@ -104,7 +104,7 @@ class Feeder(object):
     def __init__(self, tiles, s):
         self.tiles = list(tiles)  # dicts: name, url, control
         self.verify = s["verify_ssl"]
-        self.refresh = parse_refresh(s.get("refresh_map", ""))
+        self.refresh = parse_refresh(s.get("refresh", ""))
         self.active = True
         self.on_unreachable = None  # callback(tile, unreachable)
 
@@ -211,7 +211,7 @@ class Feeder(threading.Thread):
         threading.Thread.__init__(self, daemon=True)
         self.tiles = tiles  # list of dicts: name, url, control
         self.verify = s["verify_ssl"]
-        self.refresh = parse_refresh(s.get("refresh_map", "")) if isinstance(s, dict) else {}
+        self.refresh = parse_refresh(s.get("refresh", "")) if isinstance(s, dict) else {}
         self.active = True
         self.counter = {}
         self.lock = threading.Lock()

@@ -688,7 +688,7 @@ msgstr "Prefisso MQTT di Frigate"
 msgid "Usually 'frigate'."
 msgstr "Di solito 'frigate'."
 
-#: e2
+#: e2 kodi:30259
 msgid "Frigate objects"
 msgstr "Oggetti Frigate"
 
@@ -704,7 +704,7 @@ msgstr "Nomi delle telecamere Frigate"
 msgid "Only if the names differ from go2rtc: frigate=go2rtc|other=other_stream"
 msgstr "Solo se i nomi differiscono da go2rtc: frigate=go2rtc|other=other_stream"
 
-#: e2
+#: e2 kodi:30260
 msgid "Frigate priority"
 msgstr "Priorità Frigate"
 
@@ -756,7 +756,7 @@ msgstr "Allarmi di movimento e audio Foscam"
 msgid "Asks the Foscam cameras in %s for motion and sound alarms."
 msgstr "Interroga le telecamere Foscam in %s sugli allarmi di movimento e audio."
 
-#: e2
+#: e2 kodi:30261
 msgid "Foscam priority"
 msgstr "Priorità Foscam"
 

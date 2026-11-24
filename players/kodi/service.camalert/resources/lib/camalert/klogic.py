@@ -5,6 +5,7 @@
 import re
 from urllib.parse import quote, urlsplit
 
+from .camalert_core import schema
 from .camalert_core.keymap import action_for, keys_for
 
 # Kodi action ids (xbmcgui.ACTION_*)
@@ -73,9 +74,9 @@ def live_key(action_id):
 DEFAULTS = {
     "enabled": True, "source": "go2rtc", "server": "http://192.168.1.10:1984", "rtsp_port": 8554,
     "verify_ssl": True, "camera_file": "", "camera": "", "titles": "", "mosaic": "",
-    "orientation": "", "refresh_map": "", "strip_layout": "auto",
+    "orientation": "", "refresh": "", "strip_layout": "auto",
     "mode": "photo", "duration": 30, "position": "top_right", "size": "medium",
-    "pause_tv": False, "live_resume": True, "live_volume": 100, "live_format": "mp4",
+    "pause_tv": False, "live_return": True, "live_volume": 100, "live_format": "mp4",
     "limit_hours": False, "from_time": "07:00", "until_time": "23:00", "skip_playing": "off",
     "alarm_wake": False, "tour_interval": 8, "window_keys": True,
     "http_port": 8099, "allow": "lan", "token": "", "api_https": False,
@@ -131,6 +132,31 @@ def parse_settings(raw):
         else:
             out[key] = str(value).strip()
     return out
+
+
+def saved_values(xml_text):
+    """{id: value} of every setting in the add-on's settings file in the profile folder (Kodi 19+ writes
+    '<setting id="x">value</setting>', Kodi 18 a value attribute). Unreadable file = {}."""
+    import xml.etree.ElementTree as ET
+    try:
+        root = ET.fromstring(xml_text)
+    except (ET.ParseError, TypeError, ValueError):
+        return {}
+    out = {}
+    for el in root.iter("setting"):
+        sid = el.get("id")
+        if sid:
+            out[sid] = el.get("value") if el.get("value") is not None else (el.text or "")
+    return out
+
+
+def migrations(saved):
+    """Settings to write so a version-1 settings file keeps working with schema version 2 (#39): {key: value}
+    for keys schema.migrate() renamed (live_resume -> live_return, refresh_map -> refresh) when the new key is
+    not in the file yet (so a later change by the user always wins), and for values it changed; only settings
+    this add-on has. Empty when nothing needs to change."""
+    new = schema.migrate(saved, "kodi")
+    return {k: v for k, v in new.items() if k in DEFAULTS and saved.get(k) != v}
 
 
 # --- what is playing ------------------------------------------------------------------------------------------

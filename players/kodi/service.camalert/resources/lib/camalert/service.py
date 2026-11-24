@@ -22,6 +22,7 @@ def changed_parts(old, new):
 
 class Service(object):
     def __init__(self):
+        kodiapi.migrate_settings()  # before anything reads the settings (#39)
         self.ctl = Controller()
         self.ctl.listeners.append(mqtt.state_changed)
         self.settings = kodiapi.settings()

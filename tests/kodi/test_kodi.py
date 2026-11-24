@@ -113,6 +113,21 @@ class _KodiLogic(object):
         self.assertEqual(s["live_format"], "hls")
         self.assertEqual(s["tour_interval"], 8)
 
+    def test_settings_migration(self):
+        """A settings file of a version-1 add-on (#39): old keys move to the schema-version-2 keys."""
+        k = self.k
+        v1 = ('<settings version="2"><setting id="live_resume">false</setting><setting id="refresh_map">garden=5'
+              '</setting><setting id="duration" default="true">30</setting><setting id="chime">all</setting></settings>')
+        saved = k.saved_values(v1)
+        self.assertEqual(saved["live_resume"], "false")
+        self.assertEqual(k.migrations(saved), {"live_return": "false", "refresh": "garden=5"})
+        # the new key is already there (the user changed it later): it wins, nothing to write
+        self.assertEqual(k.migrations(dict(saved, live_return="true", refresh="")), {})
+        self.assertEqual(k.saved_values('<settings><setting id="refresh_map" value="a=1" /></settings>'),
+                         {"refresh_map": "a=1"})  # Kodi 18 format
+        self.assertEqual(k.migrations(k.saved_values("<settings><broken")), {})
+        self.assertEqual(k.migrations({"duration": "30", "mode": "live"}), {})
+
     def test_playing(self):
         k = self.k
         self.assertEqual(k.playing_kind("", False, False), "none")
@@ -288,6 +303,22 @@ class _KodiModules(object):
             self.assertEqual(json.loads(payload)["device"]["model"], "Kodi")
         self.assertTrue(any(t.endswith("/dnd/config") for t, _p in msgs))
         self.assertEqual(mqtt.trigger_settings({"frigate_enabled": True})["frigate_debounce"], 5)
+
+    def test_settings_file_is_migrated_on_start(self):
+        kodiapi = Built.module("kodiapi")
+        path = os.path.join(Built.profile, "settings.xml")
+        with open(path, "w", encoding="utf-8") as f:
+            f.write('<settings version="2"><setting id="live_resume">false</setting></settings>')
+        try:
+            self.assertEqual(kodiapi.migrate_settings(), ["live_return"])
+            self.assertEqual(Built.store["live_return"], "false")
+            self.assertFalse(kodiapi.settings()["live_return"])
+            os.remove(path)
+            self.assertEqual(kodiapi.migrate_settings(), [])  # no settings file yet (fresh install)
+        finally:
+            Built.store.pop("live_return", None)
+            if os.path.exists(path):
+                os.remove(path)
 
     def test_settings_restart(self):
         service = Built.module("service")

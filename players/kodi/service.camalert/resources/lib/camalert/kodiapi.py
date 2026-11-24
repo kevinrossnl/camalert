@@ -81,6 +81,23 @@ def settings():
     return parse_settings(raw)
 
 
+def migrate_settings():
+    """Moves settings saved by a version-1 add-on to their schema-version-2 keys (once; afterwards there is
+    nothing left to move). Returns the keys that were written."""
+    from .klogic import migrations, saved_values
+    path = os.path.join(profile_dir(), "settings.xml")
+    try:
+        with open(path, encoding="utf-8") as f:
+            todo = migrations(saved_values(f.read()))
+    except OSError:
+        return []
+    for key, value in sorted(todo.items()):
+        set_setting(key, value)
+    if todo:
+        log("settings migrated to schema version 2: %s" % ", ".join(sorted(todo)))
+    return sorted(todo)
+
+
 def set_setting(key, value):
     xbmcaddon.Addon(ADDON_ID).setSetting(key, str(value).lower() if isinstance(value, bool) else str(value))
 

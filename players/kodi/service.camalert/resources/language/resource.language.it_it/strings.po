@@ -781,6 +781,18 @@ msgctxt "#30258"
 msgid "For a camera this Kodi cannot play smoothly (H.265 / 4K): front_door=front_door_sub|... (go2rtc stream names)."
 msgstr "Per una telecamera che questo Kodi non riproduce bene (H.265 / 4K): porta=porta_sub|... (nomi stream go2rtc)."
 
+msgctxt "#30259"
+msgid "Frigate objects"
+msgstr "Oggetti Frigate"
+
+msgctxt "#30260"
+msgid "Frigate priority"
+msgstr "Priorità Frigate"
+
+msgctxt "#30261"
+msgid "Foscam priority"
+msgstr "Priorità Foscam"
+
 msgctxt "#30500"
 msgid "API"
 msgstr "API"

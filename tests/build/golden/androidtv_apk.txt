@@ -1,0 +1,24 @@
+dex files: yes
+file AndroidManifest.xml
+file resources.arsc
+file camalert/core.json
+res res/drawable/banner.xml
+res res/drawable/icon.xml
+res res/xml/network_security_config.xml
+badging package: name='org.camalert.tv' versionCode='1' versionName='@VERSION@'
+badging minSdkVersion:'25'
+badging targetSdkVersion:'37'
+badging uses-permission: name='android.permission.INTERNET'
+badging uses-permission: name='android.permission.ACCESS_NETWORK_STATE'
+badging uses-permission: name='android.permission.RECEIVE_BOOT_COMPLETED'
+badging uses-permission: name='android.permission.FOREGROUND_SERVICE'
+badging uses-permission: name='android.permission.FOREGROUND_SERVICE_SPECIAL_USE'
+badging uses-permission: name='android.permission.POST_NOTIFICATIONS'
+badging uses-permission: name='android.permission.SYSTEM_ALERT_WINDOW'
+badging uses-permission: name='android.permission.WAKE_LOCK'
+badging application-debuggable
+badging launchable-activity: name='org.camalert.tv.SettingsActivity'  label='' icon=''
+badging leanback-launchable-activity: name='org.camalert.tv.SettingsActivity'  label='' icon='' banner=''
+badging property: name='android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE' value='Local HTTP API and MQTT client that show home camera alerts as an overlay on the TV'
+badging uses-feature-not-required: name='android.hardware.touchscreen'
+badging uses-feature-not-required: name='android.software.leanback'

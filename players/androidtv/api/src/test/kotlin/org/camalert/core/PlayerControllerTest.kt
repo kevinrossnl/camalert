@@ -168,6 +168,12 @@ class PlayerControllerTest {
     }
 
     @Test
+    fun jsonNumbersLikePython() {
+        assertEquals("[1795536963.528, 2.5, 12.0, 20, 0.001]", Json.write(listOf(1795536963.528, 2.5, 12.0, 20, 0.001)))
+        assertEquals(mapOf("a" to listOf(1L, true, null, "x\u00e9")), Json.parse("{\"a\": [1, true, null, \"x\\u00e9\"]}"))
+    }
+
+    @Test
     fun presentAndNames() {
         val p = Present()
         assertEquals("Garden   (2/5, tour)", p.tourStatus("Garden", 2, 5, false))

@@ -17,3 +17,4 @@ htmlcov/
 tools/e2e/devices.local.yaml
 tools/e2e/devices.local.json
 /reports/
+/.android-sdk/

@@ -56,11 +56,12 @@ file table of that folder: read the root file **and** the one of the folder you 
 | `players/enigma2/po/` | Enigma2 translations, generated from `core/i18n/` (never edit by hand) |
 | `extras/grafana/` | Grafana dashboard |
 | `docs/` | documentation ([docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)) |
-| `tools/` | `build_ipk.py`, `build_feed.py`, `build_kodi.py` (packages), `ci.sh` + `ci_pick_runner.py` (CI), `check_private.py` + `check_images.py` (privacy), `docs.py` (generated docs), `export_contract.py` (contract and core data as JSON for the Android TV player), `i18n/i18n.py` (translations), `strings.py`, `msgfmt.py`, `make_chime.py`, `readme_images.py`, `e2_api_snapshot.py`, `kodi_api_snapshot.py`, `kodi_jsonrpc_snapshot.py`, `e2e/run.py` (end-to-end runner on real players, #35) |
+| `tools/` | `build_ipk.py`, `build_feed.py`, `build_kodi.py` (packages), `ci.sh` + `ci_pick_runner.py` (CI), `check_private.py` + `check_images.py` (privacy), `docs.py` (generated docs), `apk_listing.py` (golden APK listing), `export_contract.py` (contract and core data as JSON for the Android TV player), `i18n/i18n.py` (translations), `strings.py`, `msgfmt.py`, `make_chime.py`, `readme_images.py`, `e2_api_snapshot.py`, `kodi_api_snapshot.py`, `kodi_jsonrpc_snapshot.py`, `e2e/run.py` (end-to-end runner on real players, #35) |
 | `tests/` | all tests; `tests/_paths.py` is the only file that knows where things live |
 
 ## CI (Forgejo Actions, `.forgejo/workflows/tests.yml`)
-- Every area runs `sh tools/ci.sh <area>` (`lint`, `core`, `unit`, `build`, `privacy`, `ha`); run the same locally before a push.
+- Every area runs `sh tools/ci.sh <area>` (`lint`, `core`, `unit`, `build`, `privacy`, `ha`, `androidtv`); run the same locally before a push.
+  `androidtv` (#64) runs only on the workstation runner; in the NAS fallback it is skipped with a message.
   `ha` = Home Assistant runtime tests (#33, `tests/homeassistant/`): oldest (hacs.json) and latest Home Assistant on the
   workstation, latest only in the NAS fallback; integration branch coverage >= 90 %.
 - Runner choice (#54): heavy jobs run on the **workstation runner** and fall back to the NAS runner (`truenas`) only

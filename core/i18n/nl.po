@@ -4,27 +4,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
 
-#: e2 kodi:30042 ha:entity.sensor.on_screen.state_attributes.mode.state.photo ha:selector.mode.options.photo
+#: e2 kodi:30042 ha:entity.sensor.on_screen.state_attributes.mode.state.photo ha:selector.mode.options.photo atv:choice.frigate_mode.photo atv:choice.mode.photo
 msgid "Photo window"
 msgstr "Fotovenster"
 
-#: e2 kodi:30043 ha:entity.sensor.on_screen.state_attributes.mode.state.live ha:selector.mode.options.live
+#: e2 kodi:30043 ha:entity.sensor.on_screen.state_attributes.mode.state.live ha:selector.mode.options.live atv:choice.frigate_mode.live atv:choice.mode.live
 msgid "Live view"
 msgstr "Live beeld"
 
-#: e2 kodi:30044 ha:selector.mode.options.notify
+#: e2 kodi:30044 ha:selector.mode.options.notify atv:choice.frigate_mode.notify atv:choice.mode.notify
 msgid "Notification"
 msgstr "Melding"
 
-#: e2 kodi:30140 kodi:30231 kodi:30507 ha:selector.priority.options.normal
+#: e2 kodi:30140 kodi:30231 kodi:30507 ha:selector.priority.options.normal atv:choice.frigate_priority.normal atv:choice.log_level.normal atv:choice.title_size.normal
 msgid "Normal"
 msgstr "Normaal"
 
-#: e2
+#: e2 atv:choice.frigate_priority.high
 msgid "High (doorbell)"
 msgstr "Hoog (deurbel)"
 
-#: e2 kodi:30142 kodi:30509 ha:selector.priority.options.alarm
+#: e2 kodi:30142 kodi:30509 ha:selector.priority.options.alarm atv:choice.frigate_priority.alarm
 msgid "Alarm"
 msgstr "Alarm"
 
@@ -36,39 +36,39 @@ msgstr "go2rtc-server"
 msgid "Directly from the cameras"
 msgstr "Rechtstreeks van de camera's"
 
-#: e2 kodi:30048
+#: e2 kodi:30048 atv:choice.position.top_right
 msgid "Top right"
 msgstr "Rechtsboven"
 
-#: e2 kodi:30049
+#: e2 kodi:30049 atv:choice.position.top_left
 msgid "Top left"
 msgstr "Linksboven"
 
-#: e2 kodi:30050
+#: e2 kodi:30050 atv:choice.position.bottom_right
 msgid "Bottom right"
 msgstr "Rechtsonder"
 
-#: e2 kodi:30051
+#: e2 kodi:30051 atv:choice.position.bottom_left
 msgid "Bottom left"
 msgstr "Linksonder"
 
-#: e2 kodi:30053
+#: e2 kodi:30053 atv:choice.size.small atv:choice.title_size.small
 msgid "Small"
 msgstr "Klein"
 
-#: e2 kodi:30054
+#: e2 kodi:30054 atv:choice.size.medium
 msgid "Medium"
 msgstr "Middel"
 
-#: e2 kodi:30055
+#: e2 kodi:30055 atv:choice.size.large atv:choice.title_size.large
 msgid "Large"
 msgstr "Groot"
 
-#: e2 kodi:30164
+#: e2 kodi:30164 atv:choice.allow.lan
 msgid "Local network only"
 msgstr "Alleen lokaal netwerk"
 
-#: e2 kodi:30165
+#: e2 kodi:30165 atv:choice.allow.any
 msgid "Any address"
 msgstr "Elk adres"
 
@@ -84,51 +84,51 @@ msgstr "Onderaan"
 msgid "At the top"
 msgstr "Bovenaan"
 
-#: e2 kodi:30106
+#: e2 kodi:30106 atv:choice.dnd_level.normal
 msgid "Normal priority"
 msgstr "Normale prioriteit"
 
-#: e2 kodi:30107
+#: e2 kodi:30107 atv:choice.dnd_level.high
 msgid "Normal and high priority"
 msgstr "Normale en hoge prioriteit"
 
-#: e2 kodi:30097
+#: e2 kodi:30097 atv:choice.skip_playing.off
 msgid "Always show"
 msgstr "Altijd tonen"
 
-#: e2 kodi:30098
+#: e2 kodi:30098 atv:choice.skip_playing.video
 msgid "Not during movies and recordings"
 msgstr "Niet tijdens films en opnames"
 
-#: e2 kodi:30099
+#: e2 kodi:30099 atv:choice.skip_playing.all
 msgid "Not during anything (also live TV)"
 msgstr "Nooit tijdens afspelen (ook live-tv)"
 
-#: e2 kodi:30058
+#: e2 kodi:30058 atv:choice.strip_layout.auto
 msgid "Automatic"
 msgstr "Automatisch"
 
-#: e2 kodi:30059
+#: e2 kodi:30059 atv:choice.strip_layout.vertical
 msgid "Below each other"
 msgstr "Onder elkaar"
 
-#: e2 kodi:30060
+#: e2 kodi:30060 atv:choice.strip_layout.horizontal
 msgid "Next to each other"
 msgstr "Naast elkaar"
 
-#: e2
+#: e2 atv:choice.strip_layout.grid
 msgid "2 x 2"
 msgstr "2 x 2"
 
-#: e2 kodi:30234
+#: e2 kodi:30234 atv:choice.chime.off atv:choice.log_level.off
 msgid "Off"
 msgstr "Uit"
 
-#: e2 kodi:30249
+#: e2 kodi:30249 atv:choice.log_level.errors
 msgid "Errors only"
 msgstr "Alleen fouten"
 
-#: e2 kodi:30250
+#: e2 kodi:30250 atv:choice.log_level.verbose
 msgid "Verbose"
 msgstr "Uitgebreid"
 
@@ -148,11 +148,11 @@ msgstr "ROOD"
 msgid "GREEN"
 msgstr "GROEN"
 
-#: e2 kodi:30235
+#: e2 kodi:30235 atv:choice.chime.high
 msgid "Doorbell and alarm"
 msgstr "Deurbel en alarm"
 
-#: e2 kodi:30236
+#: e2 kodi:30236 atv:choice.chime.all
 msgid "Every request"
 msgstr "Elk verzoek"
 
@@ -312,23 +312,23 @@ msgstr "Camera's na elkaar"
 msgid "The last camera requests"
 msgstr "De laatste cameraverzoeken"
 
-#: e2 kodi:30000
+#: e2 kodi:30000 atv:section.general
 msgid "General"
 msgstr "Algemeen"
 
-#: e2 kodi:30001
+#: e2 kodi:30001 atv:section.display
 msgid "Display"
 msgstr "Weergave"
 
-#: e2 kodi:30002
+#: e2 kodi:30002 atv:section.rules
 msgid "Rules"
 msgstr "Regels"
 
-#: e2 kodi:30004
+#: e2 kodi:30004 atv:section.triggers
 msgid "Triggers"
 msgstr "Triggers"
 
-#: e2 kodi:30005
+#: e2 kodi:30005 atv:section.camera_control
 msgid "Camera control"
 msgstr "Camerabediening"
 
@@ -336,7 +336,7 @@ msgstr "Camerabediening"
 msgid "Home Assistant"
 msgstr "Home Assistant"
 
-#: e2 kodi:30006 kodi:30500
+#: e2 kodi:30006 kodi:30500 atv:section.api
 msgid "API"
 msgstr "API"
 
@@ -344,7 +344,7 @@ msgstr "API"
 msgid "Channel list"
 msgstr "Zenderlijst"
 
-#: e2 kodi:30007
+#: e2 kodi:30007 atv:section.log
 msgid "Log and diagnostics"
 msgstr "Log en diagnose"
 
@@ -404,11 +404,11 @@ msgstr "zo snel mogelijk"
 msgid "%d more settings via MENU"
 msgstr "%d andere instellingen via MENU"
 
-#: e2 kodi:30201
+#: e2 kodi:30201 atv:diagnostics
 msgid "Diagnostics"
 msgstr "Diagnose"
 
-#: e2 kodi:30204
+#: e2 kodi:30204 atv:events
 msgid "Event list"
 msgstr "Gebeurtenissen"
 
@@ -1124,7 +1124,7 @@ msgstr "Controleren op updates"
 msgid "Looks once a day on GitHub for a new version and shows a message."
 msgstr "Kijkt één keer per dag op GitHub of er een nieuwe versie is en toont een melding."
 
-#: kodi:30003
+#: kodi:30003 atv:section.home_assistant
 msgid "MQTT / Home Assistant"
 msgstr "MQTT / Home Assistant"
 
@@ -1180,11 +1180,11 @@ msgstr "Pauzeert een video of live-tv zolang de camera in beeld is en speelt daa
 msgid "After live view, continue the video at the same position or the same TV channel."
 msgstr "Na live beeld verder met de video op dezelfde plek of dezelfde tv-zender."
 
-#: kodi:30076
+#: kodi:30076 atv:choice.live_format.mp4
 msgid "MP4 (HTTP)"
 msgstr "MP4 (HTTP)"
 
-#: kodi:30077
+#: kodi:30077 atv:choice.live_format.rtsp
 msgid "RTSP"
 msgstr "RTSP"
 
@@ -1192,7 +1192,7 @@ msgstr "RTSP"
 msgid "How long each camera is shown in the tour."
 msgstr "Hoe lang elke camera in de rondgang te zien is."
 
-#: kodi:30080
+#: kodi:30080 atv:choice.live_format.hls
 msgid "HLS (HTTP, a few seconds delay)"
 msgstr "HLS (HTTP, paar seconden vertraging)"
 
@@ -1252,7 +1252,7 @@ msgstr "devices.conf aanmaken (voorbeeld)"
 msgid "Port of the CamAlert API on this Kodi (default 8099)."
 msgstr "Poort van de CamAlert-API op deze Kodi (standaard 8099)."
 
-#: kodi:30170
+#: kodi:30170 atv:test_show
 msgid "Test: show the default camera"
 msgstr "Test: standaardcamera tonen"
 
@@ -1284,7 +1284,7 @@ msgstr "Geen camerabediening ingesteld voor deze camera (devices.conf)."
 msgid "The CamAlert service is not running."
 msgstr "De CamAlert-service draait niet."
 
-#: kodi:30203
+#: kodi:30203 atv:no_events
 msgid "No events yet."
 msgstr "Nog geen gebeurtenissen."
 
@@ -1579,3 +1579,15 @@ msgstr "{name}: onbekende camera of geen camerabron ingesteld."
 #: ha:exceptions.several_failed.message
 msgid "Several players failed: {errors}"
 msgstr "Meerdere spelers gaven een fout: {errors}"
+
+#: atv:notification_running
+msgid "API on port %d"
+msgstr "API op poort %d"
+
+#: atv:overlay_missing
+msgid "CamAlert cannot show windows over other apps yet. Allow it in the settings, or on a computer: adb shell appops set org.camalert.tv SYSTEM_ALERT_WINDOW allow"
+msgstr "CamAlert mag nog geen vensters over andere apps tonen. Sta het toe in de instellingen, of op een computer: adb shell appops set org.camalert.tv SYSTEM_ALERT_WINDOW allow"
+
+#: atv:show_expert
+msgid "Show expert settings"
+msgstr "Expertinstellingen tonen"

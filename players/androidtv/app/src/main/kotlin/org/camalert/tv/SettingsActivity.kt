@@ -1,0 +1,168 @@
+// CamAlert for Android TV. Copyright (C) 2026 CamAlert developers. GPL v2.
+package org.camalert.tv
+
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.provider.Settings
+import android.text.InputType
+import androidx.fragment.app.FragmentActivity
+import androidx.leanback.preference.LeanbackPreferenceFragmentCompat
+import androidx.leanback.preference.LeanbackSettingsFragmentCompat
+import androidx.preference.EditTextPreference
+import androidx.preference.ListPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceScreen
+import androidx.preference.SwitchPreference
+import org.camalert.core.CoreData
+import org.camalert.core.Setting
+
+/**
+ * The on-TV settings (leanback): one screen per section of the shared schema (same ids, defaults and levels as on
+ * the other players, #38/#39), plus diagnostics, the event list and a test. Expert settings are hidden until
+ * "Show expert settings" is on; internal settings are never shown. Opening the app also starts the service.
+ */
+class SettingsActivity : FragmentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        CamAlertService.start(this)
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction().replace(android.R.id.content, Root()).commit()
+        }
+    }
+
+    class Root : LeanbackSettingsFragmentCompat() {
+        override fun onPreferenceStartInitialScreen() = startPreferenceFragment(Sections())
+
+        override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat, pref: Preference): Boolean {
+            val section = pref.extras.getString("section") ?: return false
+            startPreferenceFragment(Section().apply { arguments = Bundle().apply { putString("section", section) } })
+            return true
+        }
+
+        override fun onPreferenceStartScreen(caller: PreferenceFragmentCompat, pref: PreferenceScreen): Boolean = false
+    }
+
+    /** The first screen: sections, overlay permission, diagnostics, event list, test. */
+    class Sections : LeanbackPreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            val ctx = preferenceManager.context
+            preferenceManager.sharedPreferencesName = ctx.packageName + "_preferences"
+            val tr = Tr(ctx)
+            val screen = preferenceManager.createPreferenceScreen(ctx)
+            screen.title = "CamAlert"
+            val overlayOk = Settings.canDrawOverlays(ctx)
+            if (!overlayOk) {
+                screen.addPreference(Preference(ctx).apply {
+                    title = getString(R.string.overlay_missing)
+                    setOnPreferenceClickListener {
+                        try {
+                            startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + ctx.packageName)))
+                        } catch (e: Exception) {
+                            CamLog.log("no overlay permission screen on this device: use adb (docs/players/androidtv.md)")
+                        }
+                        true
+                    }
+                })
+            }
+            val data = CoreData.load()
+            for (section in data.sections) {
+                if (data.settings.none { it.section == section && it.level != "internal" }) continue
+                screen.addPreference(Preference(ctx).apply {
+                    title = tr.named("section.$section", section)
+                    fragment = Section::class.java.name
+                    extras.putString("section", section)
+                })
+            }
+            screen.addPreference(SwitchPreference(ctx).apply {
+                key = "ui_show_expert"
+                title = getString(R.string.show_expert)
+                setDefaultValue(false)
+            })
+            screen.addPreference(Preference(ctx).apply {
+                title = getString(R.string.test_show)
+                setOnPreferenceClickListener {
+                    val svc = CamAlertService.instance
+                    Thread { svc?.controller?.show(null, null, null, null, "menu", null) }.start()
+                    true
+                }
+            })
+            screen.addPreference(Preference(ctx).apply {
+                title = getString(R.string.diagnostics)
+                intent = Intent(ctx, InfoActivity::class.java).putExtra("what", "diagnostics")
+            })
+            screen.addPreference(Preference(ctx).apply {
+                title = getString(R.string.events)
+                intent = Intent(ctx, InfoActivity::class.java).putExtra("what", "events")
+            })
+            preferenceScreen = screen
+        }
+    }
+
+    /** One section of the schema. */
+    class Section : LeanbackPreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            val ctx = preferenceManager.context
+            preferenceManager.sharedPreferencesName = ctx.packageName + "_preferences"
+            val tr = Tr(ctx)
+            val section = arguments?.getString("section") ?: "general"
+            val expert = preferenceManager.sharedPreferences?.getBoolean("ui_show_expert", false) == true
+            val screen = preferenceManager.createPreferenceScreen(ctx)
+            screen.title = tr.named("section.$section", section)
+            for (s in CoreData.load().settings.filter { it.section == section }) {
+                if (s.level == "internal" || (s.level == "expert" && !expert)) continue
+                screen.addPreference(widget(s, tr))
+            }
+            preferenceScreen = screen
+        }
+
+        private fun label(s: Setting, tr: Tr) = tr(s.label ?: s.id).replace("%s", "go2rtc")
+
+        private fun widget(s: Setting, tr: Tr): Preference {
+            val ctx = preferenceManager.context
+            val p: Preference = when (s.type) {
+                "bool" -> SwitchPreference(ctx).apply { setDefaultValue(s.default) }
+                "choice" -> ListPreference(ctx).apply {
+                    val values = s.choices!!
+                    entryValues = values.toTypedArray()
+                    entries = values.map { tr.named("choice.${s.id}.$it", it) }.toTypedArray()
+                    setDefaultValue(s.default)
+                    summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
+                    dialogTitle = label(s, tr)
+                }
+                else -> EditTextPreference(ctx).apply {
+                    setDefaultValue(s.default?.toString() ?: "")
+                    dialogTitle = label(s, tr)
+                    val numeric = s.type == "int"
+                    val secret = s.type == "password"
+                    setOnBindEditTextListener { e ->
+                        e.inputType = when {
+                            numeric -> InputType.TYPE_CLASS_NUMBER
+                            secret -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                            else -> InputType.TYPE_CLASS_TEXT
+                        }
+                    }
+                    summaryProvider = Preference.SummaryProvider<EditTextPreference> { pref ->
+                        val v = pref.text ?: ""
+                        when {
+                            secret || s.id == "token" -> if (v.isEmpty()) "–" else "••••••"
+                            v.isEmpty() -> "–"
+                            else -> v + (if (s.unit != null && s.unit != "%") " " + s.unit else s.unit ?: "")
+                        }
+                    }
+                    setOnPreferenceChangeListener { _, value ->
+                        try { s.coerce(value); true } catch (e: Exception) { false }  // refuse invalid values (schema range)
+                    }
+                }
+            }
+            p.key = s.id
+            p.title = label(s, tr)
+            p.isPersistent = true
+            p.isIconSpaceReserved = false
+            if (s.type == "bool" && s.help != null) p.summary = tr(s.help!!).replace("%s", "go2rtc")
+            return p
+        }
+    }
+}

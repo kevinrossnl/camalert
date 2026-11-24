@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.CamAlert" parent="@android:style/Theme.DeviceDefault.NoActionBar">
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+    <style name="Theme.CamAlert.Settings" parent="@style/Theme.Leanback">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlayLeanback</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <color name="window_bg">#E0202020</color>
+    <color name="title_bg">#FF202020</color>
+    <color name="hint_bg">#99000000</color>
+    <color name="tile_error">#C0000000</color>
+</resources>

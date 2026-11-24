@@ -62,6 +62,8 @@ object Json {
         if (d.isNaN()) return "NaN"
         if (d.isInfinite()) return if (d > 0) "Infinity" else "-Infinity"
         if (d == Math.floor(d) && Math.abs(d) < 1e16) return String.format(java.util.Locale.ROOT, "%.1f", d)
+        val a = Math.abs(d)
+        if (a >= 1e-4 && a < 1e16) return java.math.BigDecimal(d.toString()).toPlainString()  // 1795536963.528, not 1.795536963528E9
         return d.toString()
     }
 

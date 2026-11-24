@@ -37,6 +37,10 @@ Python 3.8 (Kodi 19) needs `pip install "pytest<8.4"`. Optional: `pyyaml` (bluep
   toggle and OSD drawn from the CamAlert state, Kodi JSON-RPC over TCP, an ssh box): safety, restore, scenarios, geometry.
   Real devices only through `tools/e2e/run.py` ([docs/dev/e2e.md](../docs/dev/e2e.md)), never in CI.
 - `fakes/go2rtc.py`: fake go2rtc with demo cameras (solid-colour frames, `--unreachable`), for tests and screenshots.
+- Android TV player (#64): `test_export_contract.py` (the JSON that the Kotlin tests read is up to date with the
+  contract tables and the core), `test_androidtv_tools.py` (fake go2rtc on the device, golden APK listing). The
+  Kotlin tests themselves (every contract row, MQTT contract, core reference answers) run with Gradle:
+  `cd players/androidtv && ./gradlew :api:test`, in CI area `androidtv`.
 - `test_i18n.py`: the master translation catalogue (`core/i18n/`, `tools/i18n/i18n.py check`): every Enigma2, Kodi and
   Home Assistant text translated, same placeholders, no forbidden synonyms or tone, glossary terms verbatim,
   generated files up to date (#38/#43).
@@ -63,8 +67,10 @@ minimum, raise `requirements-min.txt` to the matching `pytest-homeassistant-cust
 ## CI
 
 `.forgejo/workflows/tests.yml` runs on every push and pull request; each area is `sh tools/ci.sh <area>`
-(`lint`, `core`, `unit`, `build`, `privacy`, `ha`), so `sh tools/ci.sh unit` locally runs exactly what CI runs.
+(`lint`, `core`, `unit`, `build`, `privacy`, `ha`, `androidtv`), so `sh tools/ci.sh unit` locally runs exactly what CI runs.
 `ha` runs twice on the workstation (oldest and latest Home Assistant) and only with the latest one in the NAS fallback.
+`androidtv` (JDK 17+, Android SDK from dl.google.com, Gradle) runs only on the workstation; the NAS fallback skips it
+with a message (#64).
 Jobs run on the workstation runner when it is online, otherwise all areas run one after another in a single job on
 the NAS runner (#54; details in `DEVELOPMENT.md` › CI). `test_ci.py` checks the runner choice
 (`tools/ci_pick_runner.py`) and that every area runs in both modes and is checked by `gate`.

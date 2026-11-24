@@ -1,6 +1,9 @@
 # CamAlert for Android TV and Fire TV
 
-**Status: in development (#64), not in a release yet.** The Android TV app shows your cameras on an Android TV
+**Status: in development (#64), not in a release yet.** Tested on a Fire TV Stick 4K (1st generation, Fire OS 6,
+Android 7.1) with demo cameras: photo window, multi-camera window, notification, mosaic, tour, *Camera not
+reachable* tiles, remote keys, settings screen and the API from another network. Not yet tested: live view with
+a real camera stream, MQTT with a real broker. The Android TV app shows your cameras on an Android TV
 or Fire TV device **without Kodi**: a photo window over whatever app is playing, the multi-camera window, mosaic,
 tour and live view. It has the **same HTTP API, MQTT topics and Home Assistant integration** as the other
 players (platform `androidtv`), so blueprints and automations work unchanged.
@@ -68,6 +71,18 @@ allow that port in your firewall from Home Assistant to the TV device.
 
 *Diagnostics* and the *event list* are in the settings. The log is also on the API (`/camalert/log`) and in
 `adb logcat -s CamAlert`. Passwords and tokens are never logged.
+
+## Testing with demo cameras
+
+Developers test the app with the fake go2rtc (solid-colour demo cameras, never real images). `adb reverse` does
+not work with Fire OS 6 over the network, so it runs on the TV device itself:
+
+```sh
+python3 players/androidtv/testing/fake_go2rtc_on_device.py start --serial 192.168.1.30:5555
+# go2rtc address in the app: http://127.0.0.1:11984 ; requests with test=1 never make sound
+curl -X POST -d "cam=front_door,garden,driveway&test=1" http://192.168.1.30:8099/camalert/show
+python3 players/androidtv/testing/fake_go2rtc_on_device.py stop --serial 192.168.1.30:5555
+```
 
 ## Build it yourself
 

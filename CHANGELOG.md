@@ -14,6 +14,11 @@
   as in the glossary instead of *Recent events*, *Switch to live stream* and *Notification only* (#60, #56).
 - End-to-end runner: checks `screen` while a screen is open and `none` after `hide`; EXIT cleanup is only a failure
   for players older than 1.0; the multi-camera window waits for its pictures like the photo window.
+- Android TV / Fire TV player without Kodi (#64, in development): `players/androidtv/` (Kotlin, Android 7.1+): the
+  same HTTP API v1 (all contract rows pass on the JVM), MQTT + Home Assistant discovery (model *Android TV*), photo
+  window, multi-camera window, notification, mosaic, tour and live view (Media3, muted by default) as overlays over
+  any app, leanback settings from the shared schema, translations from the master catalogue. CI area `androidtv`
+  (workstation runner only). Home Assistant shows the device model *Android TV*.
 - Enigma2 UI findings (#56): photo and multi-camera window titles stay on one line (font fitted to the window,
   key hints in their own strip at the bottom); mosaic and multi-camera tiles keep the camera name on *Camera not
   reachable*; the event list shows GREEN *Play clip* only for events with a clip; texts come only from CamAlert's own

@@ -19,4 +19,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "camalert-androidtv"
-include(":api")
+include(":api", ":app")

@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+- Kodi: the photo window shows *camera not reachable* again when a camera stops answering (the active snapshot
+  feeder never reported it); one thread per tile, so a slow camera no longer holds up the others; dead duplicate
+  `PtzMode`/`Feeder` classes removed (#51, #46).
 - Kodi: settings follow schema version 2 (#39): duration sliders in steps of 5 s, live volume in steps of 10 %,
   keys `live_return` and `refresh` (settings saved under `live_resume` / `refresh_map` are moved on start),
   own labels *Frigate objects*, *Frigate priority*, *Foscam priority*.

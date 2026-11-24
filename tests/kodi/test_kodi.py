@@ -409,6 +409,46 @@ class _KodiModules(object):
             if w.timer:
                 w.timer.cancel()
 
+    def wait_for(self, cond, seconds=3.0):
+        import time
+        end = time.time() + seconds
+        while time.time() < end and not cond():
+            time.sleep(0.01)
+        return cond()
+
+    def test_unreachable_camera_changes_the_title(self):
+        """#51: the active Feeder (one thread per tile) reports a camera that does not answer, and its recovery."""
+        display = Built.module("display")
+        sources = Built.module("sources")
+        controller = Built.module("controller")
+        with open(display.__file__, encoding="utf-8") as f:
+            text = f.read()
+        self.assertEqual((text.count("\nclass Feeder("), text.count("\nclass PtzMode(")), (1, 1))  # no dead copies
+        answers = {"ok": False}
+
+        def download(url, path, verify=True):
+            if not answers["ok"]:
+                raise IOError("timed out")
+            with open(path, "wb") as f:
+                f.write(b"jpg")
+            return path
+        self.addCleanup(setattr, sources, "download", sources.download)
+        sources.download = download
+        w = display.PhotoWindow(FakeController(), self.CAMS[:1], self.settings(), keys=True)
+        w.feeder.retry = 0.01
+        labels = []
+        w.label.setLabel = labels.append
+        before = controller.STATS["unreachable"]
+        w.feeder.start()
+        try:
+            self.assertTrue(self.wait_for(lambda: any("not reachable" in x for x in labels)), labels)
+            self.assertIn("Front door - camera not reachable", labels)
+            self.assertEqual(controller.STATS["unreachable"], before + 1)
+            answers["ok"] = True
+            self.assertTrue(self.wait_for(lambda: labels and "not reachable" not in labels[-1]), labels)
+        finally:
+            w.feeder.stop()
+
     def test_photo_window_keys(self):
         display = Built.module("display")
         ctl = FakeController()

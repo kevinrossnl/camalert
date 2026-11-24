@@ -107,6 +107,7 @@ class Feeder(object):
         self.refresh = parse_refresh(s.get("refresh", ""))
         self.active = True
         self.on_unreachable = None  # callback(tile, unreachable)
+        self.retry = 2.0  # seconds between attempts while a camera does not answer
 
     def start(self):
         for i in range(len(self.tiles)):
@@ -129,7 +130,7 @@ class Feeder(object):
                     kodiapi.log("snapshot failed for %s: %s" % (t["name"], e))
                 if fails[i] == 2 and self.on_unreachable:  # say so instead of a black or frozen picture
                     self.on_unreachable(t, True)
-                time.sleep(2)
+                time.sleep(self.retry)
                 continue
             if fails.get(i, 0) >= 2 and self.on_unreachable:
                 self.on_unreachable(t, False)
@@ -154,101 +155,6 @@ class Feeder(object):
 
     def replace(self, old_name, tile):
         self.tiles = [tile if t["name"] == old_name else t for t in self.tiles]
-
-    def stop(self):
-        self.active = False
-
-
-class PtzMode(object):
-    """PTZ mode shared by the photo window and the live overlay: arrows pan/tilt, channel/page up-down zoom,
-    OK = home position, BACK leaves PTZ mode."""
-    ptz = None
-
-    def ptz_toggle(self, name):
-        if self.ptz is not None:
-            self.ptz_leave()
-            return True
-        from .ptz import Ptz
-        p = Ptz(name)
-        if not p.available():
-            kodiapi.notify("CamAlert", kodiapi.tr(30196), "", 3000)
-            return False
-        self.ptz = p
-        self.ptz_label(True)
-        return True
-
-    def ptz_leave(self):
-        if self.ptz is not None:
-            self.ptz.stop()
-        self.ptz = None
-        self.ptz_label(False)
-
-    def ptz_action(self, aid):
-        """True when PTZ mode used the key."""
-        if self.ptz is None:
-            return False
-        k = ptz_action(aid)
-        if k is None:
-            return aid not in VOLUME_KEYS
-        if k == "leave":
-            self.ptz_leave()
-        else:
-            self.ptz.do(k)
-        self.ptz_used()
-        return True
-
-    def ptz_label(self, on):
-        pass
-
-    def ptz_used(self):
-        pass
-
-
-class Feeder(threading.Thread):
-    """Keeps fetching snapshots for a set of image controls (each camera with its own refresh interval)."""
-
-    def __init__(self, tiles, s):
-        threading.Thread.__init__(self, daemon=True)
-        self.tiles = tiles  # list of dicts: name, url, control
-        self.verify = s["verify_ssl"]
-        self.refresh = parse_refresh(s.get("refresh", "")) if isinstance(s, dict) else {}
-        self.active = True
-        self.counter = {}
-        self.lock = threading.Lock()
-
-    def run(self):
-        nxt = {id(t): 0.0 for t in self.tiles}
-        tmp = kodiapi.temp_dir()
-        while self.active:
-            now = time.time()
-            with self.lock:
-                tiles = list(self.tiles)
-            due = [t for t in tiles if nxt.get(id(t), 0) <= now]
-            for t in due:
-                if not self.active:
-                    return
-                n = self.counter.get(id(t), 0) + 1
-                self.counter[id(t)] = n
-                path, stale = frame_name(os.path.join(tmp, "f%x" % (id(t) & 0xffffff)), n)
-                start = time.time()
-                try:
-                    sources.download(t["url"], path, self.verify)
-                    if self.active:
-                        t["control"].setImage(path, False)
-                    try:
-                        os.remove(stale)
-                    except OSError:
-                        pass
-                except Exception as e:  # camera or go2rtc not reachable: try again a bit later
-                    kodiapi.log("snapshot failed for %s: %s" % (t["name"], e))
-                    nxt[id(t)] = time.time() + 2
-                    continue
-                nxt[id(t)] = start + max(refresh_delay(t["name"], self.refresh, 0.3), time.time() - start)
-            time.sleep(0.05)
-
-    def replace(self, old_name, tile):
-        with self.lock:
-            self.tiles = [tile if t["name"] == old_name else t for t in self.tiles]
 
     def stop(self):
         self.active = False

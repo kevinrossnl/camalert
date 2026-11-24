@@ -1,4 +1,4 @@
-"""CamAlert: show IP cameras on Enigma2 receivers and Kodi players that run CamAlert."""
+"""CamAlert: show IP cameras on the TV of players (Enigma2 receivers and Kodi) that run CamAlert."""
 from __future__ import annotations
 
 import logging
@@ -7,21 +7,21 @@ import voluptuous as vol
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform  # noqa: F401
 from homeassistant.core import HomeAssistant, ServiceCall
-from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.service import async_extract_config_entry_ids
 
-from .api import CamAlertApi, CamAlertError
-from .const import (CONF_HTTPS, CONF_TOKEN, CONF_VERIFY_SSL, DEFAULT_PORT, DOMAIN, EVENT_BUTTON, MODES, PRIORITIES,
-                    PTZ_MOVES, SIGNAL_BUTTON)
+from .api import CamAlertApi, CamAlertError, CamAlertNotSupported
+from .const import (BUTTONS, CONF_HTTPS, CONF_TOKEN, CONF_VERIFY_SSL, DEFAULT_PORT, DOMAIN, EVENT_BUTTON, MODES,
+                    PRIORITIES, PTZ_MOVES, SIGNAL_BUTTON)
 from .coordinator import CamAlertCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS = [Platform.BUTTON, Platform.SENSOR, Platform.SWITCH, Platform.EVENT]
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
-# Target is optional: without a target the action goes to every loaded receiver.
+# Target is optional: without a target the action goes to every loaded player.
 TARGET = dict(getattr(cv, "TARGET_SERVICE_FIELDS", {})) or {
     vol.Optional("device_id"): vol.All(cv.ensure_list, [cv.string]),
     vol.Optional("entity_id"): cv.comp_entity_ids,
@@ -49,6 +49,31 @@ MOSAIC_SCHEMA = vol.Schema({
 HIDE_SCHEMA = vol.Schema(dict(TARGET))
 
 
+def _error(key: str, **placeholders) -> HomeAssistantError:
+    """A translated error for the UI (strings.json > exceptions); the English text is also the message."""
+    return HomeAssistantError(EXCEPTIONS[key].format(**placeholders), translation_domain=DOMAIN, translation_key=key,
+                              translation_placeholders={k: str(v) for k, v in placeholders.items()})
+
+
+# = strings.json > exceptions (English; tests/homeassistant checks they are the same)
+EXCEPTIONS = {
+    "no_player": "No CamAlert player selected.",
+    "not_loaded": "CamAlert player not reachable (off or restarting): {names}",
+    "not_supported": "{name}: {action} is not supported by this player.",
+    "request_failed": "{name}: {error}",
+    "unknown_camera": "{name}: unknown camera or no camera source configured.",
+    "several_failed": "Several players failed: {errors}",
+}
+
+
+def make_api(hass: HomeAssistant, data) -> CamAlertApi:
+    """API client for a config entry (or the config flow's input). The certificate check needs the verifying
+    session: a request option cannot turn verification back on in a session made without it."""
+    https, verify = bool(data.get(CONF_HTTPS, False)), bool(data.get(CONF_VERIFY_SSL, False))
+    return CamAlertApi(async_get_clientsession(hass, verify_ssl=https and verify), data[CONF_HOST],
+                       data.get(CONF_PORT, DEFAULT_PORT), https, verify, data.get(CONF_TOKEN, ""))
+
+
 async def async_setup(hass: HomeAssistant, config) -> bool:
     async def targets(call: ServiceCall):
         try:  # Home Assistant 2025.x and newer: only the service call
@@ -57,29 +82,34 @@ async def async_setup(hass: HomeAssistant, config) -> bool:
             ids = await async_extract_config_entry_ids(hass, call)
         selected = [e for e in hass.config_entries.async_entries(DOMAIN) if not ids or e.entry_id in ids]
         if not selected:
-            raise HomeAssistantError("No CamAlert receiver selected")
+            raise _error("no_player")
         loaded = [e for e in selected if e.state is ConfigEntryState.LOADED]
         if not loaded:
-            raise HomeAssistantError("CamAlert receiver not reachable (off or restarting): %s"
-                                     % ", ".join(e.title for e in selected))
+            raise _error("not_loaded", names=", ".join(e.title for e in selected))
         return loaded
 
     async def run(call: ServiceCall, func, capability=None):
+        """Run the action on every target player; any failure raises (never silent, #4), after trying all."""
         errors = []
         for entry in await targets(call):
             if capability and not entry.runtime_data.api.supports(capability):
-                errors.append("%s: %s is not supported by this player" % (entry.title, capability))
+                errors.append(_error("not_supported", name=entry.title, action=capability))
                 continue
             try:
                 answer = await func(entry.runtime_data.api)
-                await entry.runtime_data.async_refresh()
-            except CamAlertError as err:
-                errors.append("%s: %s" % (entry.title, err))
+            except CamAlertNotSupported:
+                errors.append(_error("not_supported", name=entry.title, action=call.service))
                 continue
+            except CamAlertError as err:
+                errors.append(_error("request_failed", name=entry.title, error=err))
+                continue
+            await entry.runtime_data.async_request_refresh()
             if isinstance(answer, dict) and answer.get("action") == "error":
-                errors.append("%s: unknown camera or no camera source configured" % entry.title)
+                errors.append(_error("unknown_camera", name=entry.title))
+        if len(errors) == 1:
+            raise errors[0]
         if errors:
-            raise HomeAssistantError("; ".join(errors))
+            raise _error("several_failed", errors="; ".join(str(e) for e in errors))
 
     async def show(call: ServiceCall):
         await run(call, lambda api: api.show(call.data.get("camera"), call.data.get("seconds"), call.data.get("mode"),
@@ -102,14 +132,9 @@ async def async_setup(hass: HomeAssistant, config) -> bool:
 
 
 async def async_setup_entry(hass: HomeAssistant, entry) -> bool:
-    d = entry.data
-    api = CamAlertApi(async_get_clientsession(hass, verify_ssl=False), d[CONF_HOST], d.get(CONF_PORT, DEFAULT_PORT),
-                     d.get(CONF_HTTPS, False), d.get(CONF_VERIFY_SSL, False), d.get(CONF_TOKEN, ""))
+    api = make_api(hass, entry.data)
     coordinator = CamAlertCoordinator(hass, api, entry)
-    try:
-        await coordinator.async_config_entry_first_refresh()
-    except Exception as err:  # receiver off or unreachable: retry later
-        raise ConfigEntryNotReady(str(err)) from err
+    await coordinator.async_config_entry_first_refresh()  # player off or unreachable: ConfigEntryNotReady, retried
     entry.runtime_data = coordinator
     if api.integration_too_old():
         _LOGGER.warning("%s needs CamAlert integration %s or newer; please update it", entry.title, api.min_ha_version)
@@ -118,14 +143,24 @@ async def async_setup_entry(hass: HomeAssistant, entry) -> bool:
     return True
 
 
+def player_device(hass: HomeAssistant, entry):
+    """The device of a config entry (Home Assistant 2026.x: by identifier and entry; older: async_get_device)."""
+    from homeassistant.helpers import device_registry as dr
+    reg = dr.async_get(hass)
+    ident = (DOMAIN, entry.unique_id or entry.entry_id)
+    by_identifier = getattr(reg, "async_get_device_by_identifier", None)
+    if by_identifier is not None:
+        return by_identifier(ident, entry.entry_id)
+    return reg.async_get_device(identifiers={ident})
+
+
 def _webhook_id(entry) -> str:
     return "camalert_%s" % entry.entry_id
 
 
 async def _register_webhook(hass: HomeAssistant, entry, api) -> None:
-    """The receiver posts remote control colour keys to this webhook (only from the local network)."""
+    """The player posts remote control colour keys to this webhook (only from the local network)."""
     from homeassistant.components import webhook
-    from homeassistant.helpers import device_registry as dr
     from homeassistant.helpers.dispatcher import async_dispatcher_send
     from homeassistant.helpers.network import NoURLAvailableError, get_url
 
@@ -136,11 +171,12 @@ async def _register_webhook(hass: HomeAssistant, entry, api) -> None:
             return None
         button = str(data.get("button") or "")
         camera = str(data.get("camera") or "")
-        if button not in ("red", "green", "yellow", "blue"):
+        if button not in BUTTONS:
             return None
-        device = dr.async_get(hass).async_get_device(identifiers={(DOMAIN, entry.unique_id or entry.entry_id)})
-        hass.bus.async_fire(EVENT_BUTTON, {"device_id": device.id if device else None, "receiver": entry.title,
-                                          "camera": camera, "button": button})
+        device = player_device(hass, entry)
+        # "receiver" is kept for automations written before 1.0 (same value as "player")
+        hass.bus.async_fire(EVENT_BUTTON, {"device_id": device.id if device else None, "player": entry.title,
+                                          "receiver": entry.title, "camera": camera, "button": button})
         async_dispatcher_send(hass, SIGNAL_BUTTON % entry.entry_id, button, camera)
         return None
 
@@ -158,7 +194,7 @@ async def _register_webhook(hass: HomeAssistant, entry, api) -> None:
         return
     try:
         await api.webhook(url)
-    except CamAlertError as err:  # older plugin without /webhook, or HA's url is not in the local network
+    except CamAlertError as err:  # older player without /webhook, or HA's url is not in the local network
         _LOGGER.info("%s: colour keys only via MQTT (webhook: %s)", entry.title, err)
 
 
@@ -169,10 +205,8 @@ async def async_unload_entry(hass: HomeAssistant, entry) -> bool:
 
 
 async def async_remove_entry(hass: HomeAssistant, entry) -> None:
-    """Receiver removed from Home Assistant: tell it to stop posting buttons."""
-    d = entry.data
-    api = CamAlertApi(async_get_clientsession(hass, verify_ssl=False), d[CONF_HOST], d.get(CONF_PORT, DEFAULT_PORT),
-                     d.get(CONF_HTTPS, False), d.get(CONF_VERIFY_SSL, False), d.get(CONF_TOKEN, ""))
+    """Player removed from Home Assistant: tell it to stop posting buttons."""
+    api = make_api(hass, entry.data)
     try:
         await api.webhook("")
     except CamAlertError:

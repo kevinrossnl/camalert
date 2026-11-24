@@ -1,0 +1,24 @@
+{
+  "entity": {
+    "button": {
+      "show": {"default": "mdi:cctv"},
+      "mosaic": {"default": "mdi:view-grid"},
+      "hide": {"default": "mdi:close-box-outline"}
+    },
+    "sensor": {
+      "on_screen": {"default": "mdi:television", "state": {"none": "mdi:television-off"}}
+    },
+    "switch": {
+      "dnd": {"default": "mdi:bell-off", "state": {"off": "mdi:bell"}}
+    },
+    "event": {
+      "remote_button": {"default": "mdi:remote"}
+    }
+  },
+  "services": {
+    "show": {"service": "mdi:cctv"},
+    "mosaic": {"service": "mdi:view-grid"},
+    "hide": {"service": "mdi:close-box-outline"},
+    "ptz": {"service": "mdi:camera-control"}
+  }
+}

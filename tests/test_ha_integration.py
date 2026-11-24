@@ -50,6 +50,50 @@ class TestIntegration(unittest.TestCase):
         documented = {f for s in base.values() for f in s.get("fields", {})}
         self.assertEqual(fields, documented)
 
+    def test_exceptions_match_strings(self):
+        """The English fallback messages in __init__.py are the strings.json exceptions (#44)."""
+        import ast
+        tree = ast.parse(open(os.path.join(CC, "__init__.py"), encoding="utf-8").read())
+        node = next(n for n in tree.body if isinstance(n, ast.Assign) and getattr(n.targets[0], "id", "") == "EXCEPTIONS")
+        code = ast.literal_eval(node.value)
+        strings = json.load(open(os.path.join(CC, "strings.json"), encoding="utf-8"))["exceptions"]
+        self.assertEqual(code, {k: v["message"] for k, v in strings.items()})
+
+    def test_icons_match_entities_and_services(self):
+        icons = json.load(open(os.path.join(CC, "icons.json"), encoding="utf-8"))
+        base = json.load(open(os.path.join(CC, "strings.json"), encoding="utf-8"))
+        self.assertEqual({p: set(v) for p, v in icons["entity"].items()},
+                         {p: set(v) for p, v in base["entity"].items()})
+        self.assertEqual(set(icons["services"]), set(base["services"]))
+        for platform in icons["entity"].values():
+            for icon in platform.values():
+                self.assertTrue(icon["default"].startswith("mdi:"))
+        for f in os.listdir(CC):  # icons only in icons.json (#44)
+            if f.endswith(".py"):
+                self.assertNotIn("_attr_icon", open(os.path.join(CC, f), encoding="utf-8").read(), f)
+
+    def test_player_neutral_wording(self):
+        """Kodi uses the same integration: 'receiver' only where Enigma2 is meant (#44)."""
+        base = json.load(open(os.path.join(CC, "strings.json"), encoding="utf-8"))
+        texts = []
+
+        def walk(x):
+            if isinstance(x, dict):
+                for v in x.values():
+                    walk(v)
+            else:
+                texts.append(x)
+        walk(base)
+        for t in texts:
+            for m in re.finditer(r"receiver", t, re.I):
+                self.assertIn("Enigma2", t[max(0, m.start() - 9):m.start()], t)
+
+    def test_models(self):
+        self.assertEqual(api.model("enigma2"), "Enigma2 receiver")
+        self.assertEqual(api.model("kodi"), "Kodi")
+        self.assertEqual(api.model(None), "Enigma2 receiver")  # older players
+        self.assertEqual(api.model("other"), "CamAlert player (other)")
+
     def test_build_url(self):
         self.assertEqual(api.build_url("192.168.1.30", 8099, False, "show", {"cam": "front door", "sec": 20, "mode": None}),
                          "http://192.168.1.30:8099/camalert/show?cam=front+door&sec=20")

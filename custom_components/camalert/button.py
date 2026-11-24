@@ -19,14 +19,17 @@ async def async_setup_entry(hass, entry, async_add_entities):
         if new:
             async_add_entities(new)
 
-    async_add_entities([MosaicButton(coordinator, entry), HideButton(coordinator, entry)])
+    api = coordinator.api  # entities follow the player's capabilities (older players: everything)
+    async_add_entities(([MosaicButton(coordinator, entry)] if api.supports("mosaic") else [])
+                       + ([HideButton(coordinator, entry)] if api.supports("hide") else []))
+    if not api.supports("show"):
+        return
     add_new()
     entry.async_on_unload(coordinator.async_add_listener(add_new))
 
 
 class ShowButton(CamAlertEntity, ButtonEntity):
     _attr_translation_key = "show"
-    _attr_icon = "mdi:cctv"
 
     def __init__(self, coordinator, entry, cam):
         super().__init__(coordinator, entry, "show_" + cam["name"])
@@ -34,28 +37,24 @@ class ShowButton(CamAlertEntity, ButtonEntity):
         self._attr_translation_placeholders = {"camera": cam.get("title") or cam["name"]}
 
     async def async_press(self) -> None:
-        await self.coordinator.api.show(self._cam)
-        await self.coordinator.async_request_refresh()
+        await self._call(self.coordinator.api.show(self._cam))
 
 
 class MosaicButton(CamAlertEntity, ButtonEntity):
     _attr_translation_key = "mosaic"
-    _attr_icon = "mdi:view-grid"
 
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry, "mosaic")
 
     async def async_press(self) -> None:
-        await self.coordinator.api.mosaic()
+        await self._call(self.coordinator.api.mosaic())
 
 
 class HideButton(CamAlertEntity, ButtonEntity):
     _attr_translation_key = "hide"
-    _attr_icon = "mdi:close-box-outline"
 
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry, "hide")
 
     async def async_press(self) -> None:
-        await self.coordinator.api.hide()
-        await self.coordinator.async_request_refresh()
+        await self._call(self.coordinator.api.hide())

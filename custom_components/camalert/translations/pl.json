@@ -2,24 +2,52 @@
   "config": {
     "step": {
       "user": {
-        "title": "Dodaj odbiornik CamAlert",
-        "description": "Adres IP odbiornika Enigma2 z wtyczką CamAlert. Port, HTTPS i token jak ustawiono w CamAlert na odbiorniku.",
+        "title": "Dodaj odtwarzacz CamAlert",
+        "description": "Odtwarzacz to odbiornik Enigma2 lub Kodi z CamAlert. Port, HTTPS i token jak ustawiono w CamAlert na odtwarzaczu.",
         "data": {
-          "host": "Adres IP odbiornika",
-          "port": "Port CamAlert",
-          "https": "Odbiornik używa HTTPS",
-          "verify_ssl": "Sprawdzaj certyfikat (wyłącz dla certyfikatu CamAlert)",
-          "token": "Token dostępu (jeśli ustawiony w CamAlert)"
+          "host": "Nazwa hosta lub adres IP",
+          "port": "Port",
+          "https": "Używaj HTTPS",
+          "verify_ssl": "Sprawdzaj certyfikaty",
+          "token": "Token dostępu"
+        },
+        "data_description": {
+          "host": "Adres odtwarzacza (odbiornik Enigma2 lub Kodi) z CamAlert, np. 192.168.1.10.",
+          "port": "Port API CamAlert, jak ustawiono w CamAlert na odtwarzaczu. Domyślnie: 8099.",
+          "https": "Włączyć, jeśli HTTPS dla API jest włączone w CamAlert na odtwarzaczu.",
+          "verify_ssl": "Wyłączyć dla własnego (samopodpisanego) certyfikatu odtwarzacza. Tylko z HTTPS.",
+          "token": "Tylko jeśli w CamAlert na odtwarzaczu ustawiono token dostępu. Jest wysyłany w nagłówku, nigdy w adresie."
+        }
+      },
+      "reconfigure": {
+        "title": "Zmień odtwarzacz CamAlert",
+        "description": "Nowy adres, port, HTTPS lub token tego samego odtwarzacza.",
+        "data": {
+          "host": "Nazwa hosta lub adres IP",
+          "port": "Port",
+          "https": "Używaj HTTPS",
+          "verify_ssl": "Sprawdzaj certyfikaty",
+          "token": "Token dostępu"
+        },
+        "data_description": {
+          "host": "Adres odtwarzacza (odbiornik Enigma2 lub Kodi) z CamAlert, np. 192.168.1.10.",
+          "port": "Port API CamAlert, jak ustawiono w CamAlert na odtwarzaczu. Domyślnie: 8099.",
+          "https": "Włączyć, jeśli HTTPS dla API jest włączone w CamAlert na odtwarzaczu.",
+          "verify_ssl": "Wyłączyć dla własnego (samopodpisanego) certyfikatu odtwarzacza. Tylko z HTTPS.",
+          "token": "Tylko jeśli w CamAlert na odtwarzaczu ustawiono token dostępu. Jest wysyłany w nagłówku, nigdy w adresie."
         }
       }
     },
     "error": {
-      "cannot_connect": "Brak połączenia z odbiornikiem. Czy jest włączony, czy CamAlert jest zainstalowany i port jest poprawny?",
-      "forbidden": "Odbiornik odrzucił żądanie: sprawdź token lub 'Dozwoleni wywołujący' w CamAlert.",
-      "unknown": "Nieoczekiwany błąd"
+      "cannot_connect": "Odtwarzacz jest nieosiągalny. Czy jest włączony, czy CamAlert jest zainstalowany i czy port jest poprawny?",
+      "forbidden": "Odtwarzacz odrzucił żądanie: sprawdzić token lub 'Dozwoleni wywołujący' w CamAlert.",
+      "certificate": "Certyfikat odtwarzacza nie jest zaufany. Dla własnego certyfikatu CamAlert wyłączyć 'Sprawdzaj certyfikaty'.",
+      "unknown": "Nieoczekiwany błąd. Szczegóły są w dzienniku Home Assistant."
     },
     "abort": {
-      "already_configured": "Ten odbiornik jest już dodany."
+      "already_configured": "Ten odtwarzacz jest już dodany.",
+      "reconfigure_successful": "Odtwarzacz został zmieniony.",
+      "wrong_player": "Ten adres należy do innego odtwarzacza. Dodać go jako nowy odtwarzacz."
     }
   },
   "entity": {
@@ -36,7 +64,25 @@
     },
     "sensor": {
       "on_screen": {
-        "name": "Kamera na ekranie"
+        "name": "Kamera na ekranie",
+        "state": {
+          "none": "Nic"
+        },
+        "state_attributes": {
+          "mode": {
+            "name": "Tryb wyświetlania",
+            "state": {
+              "photo": "Okno ze zdjęciem",
+              "live": "Podgląd na żywo"
+            }
+          },
+          "paused": {
+            "name": "Wstrzymano"
+          },
+          "cameras": {
+            "name": "Kamery"
+          }
+        }
       }
     },
     "switch": {
@@ -64,16 +110,16 @@
     "mode": {
       "options": {
         "photo": "Okno ze zdjęciem",
-        "live": "Przełącz na obraz na żywo",
-        "notify": "Tylko powiadomienie",
+        "live": "Podgląd na żywo",
+        "notify": "Powiadomienie",
         "strip": "Okno z kilkoma kamerami"
       }
     },
     "priority": {
       "options": {
         "normal": "Normalny",
-        "high": "Wysoki (dzwonek)",
-        "alarm": "Alarm (wybudź odbiornik)"
+        "high": "Wysoki",
+        "alarm": "Alarm"
       }
     },
     "move": {
@@ -92,23 +138,23 @@
   "services": {
     "show": {
       "name": "Pokaż kamerę",
-      "description": "Pokazuje kamerę na telewizorze jednego lub kilku odbiorników.",
+      "description": "Pokazuje jedną lub więcej kamer na telewizorze jednego lub kilku odtwarzaczy. Bez celu: każdy odtwarzacz.",
       "fields": {
         "camera": {
-          "name": "Kamera",
-          "description": "Nazwa kamery (jak w go2rtc), np. drzwi. Puste = domyślna kamera odbiornika."
+          "name": "Kamery",
+          "description": "Jedna lub więcej nazw kamer jak w go2rtc, np. front_door. 2-4 kamery są pokazywane razem w oknie z kilkoma kamerami. Puste = domyślna kamera odtwarzacza."
         },
         "seconds": {
           "name": "Czas",
-          "description": "Jak długo kamera jest widoczna. Puste = ustawienie odbiornika."
+          "description": "Jak długo kamera pozostaje na ekranie. Puste = ustawienie odtwarzacza."
         },
         "mode": {
           "name": "Tryb wyświetlania",
-          "description": "Puste = ustawienie odbiornika."
+          "description": "Okno ze zdjęciem, podgląd na żywo, powiadomienie lub okno z kilkoma kamerami (2-4 kamery, telewizor pozostaje widoczny). Puste = ustawienie odtwarzacza."
         },
         "priority": {
           "name": "Priorytet",
-          "description": "normal: według reguł odbiornika (godziny, nie podczas nagrywania). high: zawsze (dzwonek). alarm: zawsze i może wybudzić odbiornik."
+          "description": "Normalny stosuje reguły odtwarzacza (nie przeszkadzać, przedział czasu, nie podczas odtwarzania). Wysoki zawsze przechodzi (dzwonek). Alarm zawsze przechodzi i budzi też odbiornik Enigma2 ze stanu czuwania."
         },
         "label": {
           "name": "Kto/co",
@@ -118,25 +164,25 @@
     },
     "mosaic": {
       "name": "Pokaż mozaikę",
-      "description": "Pokazuje kilka kamer naraz (mozaika zdjęć).",
+      "description": "Pokazuje kilka kamer naraz w mozaice na pełnym ekranie.",
       "fields": {
         "cameras": {
           "name": "Kamery",
-          "description": "Do 9 kamer. Puste = ustawienie mozaiki odbiornika."
+          "description": "Do 9 nazw kamer. Puste = ustawienie mozaiki odtwarzacza."
         },
         "seconds": {
           "name": "Czas",
-          "description": "Jak długo kamera jest widoczna. Puste = ustawienie odbiornika."
+          "description": "Jak długo mozaika pozostaje na ekranie. Puste = ustawienie odtwarzacza."
         }
       }
     },
     "hide": {
       "name": "Ukryj kamerę",
-      "description": "Zamyka kamerę i wraca do telewizji."
+      "description": "Zamyka okno kamery i wraca do telewizji."
     },
     "ptz": {
-      "name": "Porusz kamerą (PTZ)",
-      "description": "Obraca, pochyla lub przybliża kamerę wpisaną z ONVIF lub Foscam w pliku urządzeń odbiornika.",
+      "name": "Sterowanie kamerą (PTZ)",
+      "description": "Obraca, pochyla lub przybliża kamerę wpisaną z ONVIF lub Foscam w pliku urządzeń odtwarzacza.",
       "fields": {
         "camera": {
           "name": "Kamera",
@@ -147,6 +193,26 @@
           "description": "Porusza się około pół sekundy, potem się zatrzymuje."
         }
       }
+    }
+  },
+  "exceptions": {
+    "no_player": {
+      "message": "Nie wybrano odtwarzacza CamAlert."
+    },
+    "not_loaded": {
+      "message": "Odtwarzacz CamAlert nieosiągalny (wyłączony lub uruchamia się ponownie): {names}"
+    },
+    "not_supported": {
+      "message": "{name}: {action} nie jest obsługiwane przez ten odtwarzacz."
+    },
+    "request_failed": {
+      "message": "{name}: {error}"
+    },
+    "unknown_camera": {
+      "message": "{name}: nieznana kamera lub nie skonfigurowano źródła kamer."
+    },
+    "several_failed": {
+      "message": "Kilka odtwarzaczy zgłosiło błąd: {errors}"
     }
   }
 }

@@ -1,6 +1,14 @@
 # Changelog
 
 ## Unreleased
+- Home Assistant (#44): player-neutral texts (Enigma2 receiver or Kodi), device model from `/camalert/status`
+  platform, field descriptions in the config flow, *Check certificates* on by default (and it now really checks:
+  before, the shared session never verified), a certificate error and unexpected errors shown in the form,
+  *Reconfigure* (address, port, HTTPS, token of the same player), icons in `icons.json`, sensor *Camera on screen*
+  as an enum with a translated *Nothing* state, translated action errors (`HomeAssistantError` with translation key)
+  for actions, buttons and the switch, entities only for capabilities the player has, diagnostics with platform,
+  version, API and capabilities and with address, ids and snapshot URLs redacted; the `camalert_button` event has
+  `player` (`receiver` kept). Works with the device registry of Home Assistant 2026.x.
 - Enigma2: key hints of the photo window, multi-camera window, mosaic, tour and camera control are built from the
   core key map and translated (`camalert_core.present`, ◀ ▶ with the image's fallback font, otherwise < >); the event
   list stores reason codes and shows source, priority, result and reason translated, dates in the menu

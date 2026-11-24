@@ -2,24 +2,52 @@
   "config": {
     "step": {
       "user": {
-        "title": "Add a CamAlert receiver",
-        "description": "IP address of the Enigma2 receiver with the CamAlert plugin. Port, HTTPS and token as set in CamAlert on the receiver.",
+        "title": "Add a CamAlert player",
+        "description": "A player is an Enigma2 receiver or Kodi with CamAlert. Port, HTTPS and token as set in CamAlert on the player.",
         "data": {
-          "host": "IP address of the receiver",
-          "port": "CamAlert port",
-          "https": "Receiver uses HTTPS",
-          "verify_ssl": "Check certificate (off for CamAlert's own certificate)",
-          "token": "Access token (if set in CamAlert)"
+          "host": "Host name or IP address",
+          "port": "Port",
+          "https": "Use HTTPS",
+          "verify_ssl": "Check certificates",
+          "token": "Access token"
+        },
+        "data_description": {
+          "host": "Address of the player (Enigma2 receiver or Kodi) with CamAlert, e.g. 192.168.1.10.",
+          "port": "Port of the CamAlert API, as set in CamAlert on the player. Default: 8099.",
+          "https": "Turn on if HTTPS is on for the API in CamAlert on the player.",
+          "verify_ssl": "Turn off for the player's own (self-signed) certificate. Only used with HTTPS.",
+          "token": "Only if an access token is set in CamAlert on the player. It is sent in a header, never in the address."
+        }
+      },
+      "reconfigure": {
+        "title": "Change the CamAlert player",
+        "description": "New address, port, HTTPS or token of the same player.",
+        "data": {
+          "host": "Host name or IP address",
+          "port": "Port",
+          "https": "Use HTTPS",
+          "verify_ssl": "Check certificates",
+          "token": "Access token"
+        },
+        "data_description": {
+          "host": "Address of the player (Enigma2 receiver or Kodi) with CamAlert, e.g. 192.168.1.10.",
+          "port": "Port of the CamAlert API, as set in CamAlert on the player. Default: 8099.",
+          "https": "Turn on if HTTPS is on for the API in CamAlert on the player.",
+          "verify_ssl": "Turn off for the player's own (self-signed) certificate. Only used with HTTPS.",
+          "token": "Only if an access token is set in CamAlert on the player. It is sent in a header, never in the address."
         }
       }
     },
     "error": {
-      "cannot_connect": "Cannot reach the receiver. Is it on, is CamAlert installed and is the port correct?",
-      "forbidden": "The receiver refused the request: check the token, or 'Allowed callers' in CamAlert.",
-      "unknown": "Unexpected error"
+      "cannot_connect": "Cannot reach the player. Is it on, is CamAlert installed and is the port correct?",
+      "forbidden": "The player refused the request: check the token, or 'Allowed callers' in CamAlert.",
+      "certificate": "The player's certificate is not trusted. For CamAlert's own certificate, turn off Check certificates.",
+      "unknown": "Unexpected error. Details are in the Home Assistant log."
     },
     "abort": {
-      "already_configured": "This receiver is already added."
+      "already_configured": "This player is already added.",
+      "reconfigure_successful": "The player was changed.",
+      "wrong_player": "This address belongs to another player. Add it as a new player instead."
     }
   },
   "entity": {
@@ -36,7 +64,25 @@
     },
     "sensor": {
       "on_screen": {
-        "name": "Camera on screen"
+        "name": "Camera on screen",
+        "state": {
+          "none": "Nothing"
+        },
+        "state_attributes": {
+          "mode": {
+            "name": "Display mode",
+            "state": {
+              "photo": "Photo window",
+              "live": "Live view"
+            }
+          },
+          "paused": {
+            "name": "Paused"
+          },
+          "cameras": {
+            "name": "Cameras"
+          }
+        }
       }
     },
     "switch": {
@@ -64,16 +110,16 @@
     "mode": {
       "options": {
         "photo": "Photo window",
-        "live": "Switch to live stream",
-        "notify": "Notification only",
+        "live": "Live view",
+        "notify": "Notification",
         "strip": "Multi-camera window"
       }
     },
     "priority": {
       "options": {
         "normal": "Normal",
-        "high": "High (doorbell)",
-        "alarm": "Alarm (wake receiver)"
+        "high": "High",
+        "alarm": "Alarm"
       }
     },
     "move": {
@@ -92,23 +138,23 @@
   "services": {
     "show": {
       "name": "Show camera",
-      "description": "Shows a camera on the TV of one or more receivers.",
+      "description": "Shows one or more cameras on the TV of one or more players. Without a target: every player.",
       "fields": {
         "camera": {
-          "name": "Camera",
-          "description": "Name of the camera (as in go2rtc), e.g. front_door. Empty = default camera of the receiver."
+          "name": "Cameras",
+          "description": "One or more camera names as in go2rtc, e.g. front_door. 2-4 cameras are shown together in the multi-camera window. Empty = default camera of the player."
         },
         "seconds": {
           "name": "Duration",
-          "description": "How long the camera stays on screen. Empty = setting of the receiver."
+          "description": "How long the camera stays on screen. Empty = setting of the player."
         },
         "mode": {
           "name": "Display mode",
-          "description": "Empty = setting of the receiver."
+          "description": "Photo window, live view, notification, or the multi-camera window (2-4 cameras, the TV stays visible). Empty = setting of the player."
         },
         "priority": {
           "name": "Priority",
-          "description": "normal: follows the receiver's rules (active hours, not while recording). high: always (doorbell). alarm: always, and may wake the receiver."
+          "description": "Normal follows the rules of the player (do not disturb, time window, not while playing). High always comes through (doorbell). Alarm always comes through and also wakes an Enigma2 receiver from standby."
         },
         "label": {
           "name": "Who/what",
@@ -118,25 +164,25 @@
     },
     "mosaic": {
       "name": "Show mosaic",
-      "description": "Shows several cameras at once (photo mosaic).",
+      "description": "Shows several cameras at once in a full-screen mosaic.",
       "fields": {
         "cameras": {
           "name": "Cameras",
-          "description": "Up to 9 cameras. Empty = mosaic setting of the receiver."
+          "description": "Up to 9 camera names. Empty = mosaic setting of the player."
         },
         "seconds": {
           "name": "Duration",
-          "description": "How long the camera stays on screen. Empty = setting of the receiver."
+          "description": "How long the mosaic stays on screen. Empty = setting of the player."
         }
       }
     },
     "hide": {
       "name": "Hide camera",
-      "description": "Closes the camera and returns to TV."
+      "description": "Closes the camera window and returns to TV."
     },
     "ptz": {
-      "name": "Move camera (PTZ)",
-      "description": "Pans, tilts or zooms a camera listed with ONVIF or Foscam in the receiver's devices file.",
+      "name": "Camera control (PTZ)",
+      "description": "Pans, tilts or zooms a camera that is listed with ONVIF or Foscam in the devices file of the player.",
       "fields": {
         "camera": {
           "name": "Camera",
@@ -147,6 +193,26 @@
           "description": "Moves for about half a second, then stops."
         }
       }
+    }
+  },
+  "exceptions": {
+    "no_player": {
+      "message": "No CamAlert player selected."
+    },
+    "not_loaded": {
+      "message": "CamAlert player not reachable (off or restarting): {names}"
+    },
+    "not_supported": {
+      "message": "{name}: {action} is not supported by this player."
+    },
+    "request_failed": {
+      "message": "{name}: {error}"
+    },
+    "unknown_camera": {
+      "message": "{name}: unknown camera or no camera source configured."
+    },
+    "several_failed": {
+      "message": "Several players failed: {errors}"
     }
   }
 }

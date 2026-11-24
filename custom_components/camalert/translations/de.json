@@ -2,24 +2,52 @@
   "config": {
     "step": {
       "user": {
-        "title": "CamAlert-Receiver hinzufügen",
-        "description": "IP-Adresse des Enigma2-Receivers mit dem CamAlert-Plugin. Port, HTTPS und Token wie in CamAlert auf dem Receiver eingestellt.",
+        "title": "CamAlert-Wiedergabegerät hinzufügen",
+        "description": "Ein Wiedergabegerät ist ein Enigma2-Receiver oder Kodi mit CamAlert. Port, HTTPS und Token wie in CamAlert auf dem Wiedergabegerät eingestellt.",
         "data": {
-          "host": "IP-Adresse des Receivers",
-          "port": "CamAlert-Port",
-          "https": "Receiver nutzt HTTPS",
-          "verify_ssl": "Zertifikat prüfen (aus beim eigenen Zertifikat von CamAlert)",
-          "token": "Zugriffstoken (falls in CamAlert gesetzt)"
+          "host": "Hostname oder IP-Adresse",
+          "port": "Port",
+          "https": "HTTPS verwenden",
+          "verify_ssl": "Zertifikate prüfen",
+          "token": "Zugriffstoken"
+        },
+        "data_description": {
+          "host": "Adresse des Wiedergabegeräts (Enigma2-Receiver oder Kodi) mit CamAlert, z. B. 192.168.1.10.",
+          "port": "Port der CamAlert-API, wie in CamAlert auf dem Wiedergabegerät eingestellt. Standard: 8099.",
+          "https": "Einschalten, wenn HTTPS für die API in CamAlert auf dem Wiedergabegerät an ist.",
+          "verify_ssl": "Für das eigene (selbst signierte) Zertifikat des Wiedergabegeräts ausschalten. Nur bei HTTPS.",
+          "token": "Nur wenn in CamAlert auf dem Wiedergabegerät ein Zugriffstoken eingestellt ist. Es wird in einem Header gesendet, nie in der Adresse."
+        }
+      },
+      "reconfigure": {
+        "title": "CamAlert-Wiedergabegerät ändern",
+        "description": "Neue Adresse, neuer Port, HTTPS oder Token desselben Wiedergabegeräts.",
+        "data": {
+          "host": "Hostname oder IP-Adresse",
+          "port": "Port",
+          "https": "HTTPS verwenden",
+          "verify_ssl": "Zertifikate prüfen",
+          "token": "Zugriffstoken"
+        },
+        "data_description": {
+          "host": "Adresse des Wiedergabegeräts (Enigma2-Receiver oder Kodi) mit CamAlert, z. B. 192.168.1.10.",
+          "port": "Port der CamAlert-API, wie in CamAlert auf dem Wiedergabegerät eingestellt. Standard: 8099.",
+          "https": "Einschalten, wenn HTTPS für die API in CamAlert auf dem Wiedergabegerät an ist.",
+          "verify_ssl": "Für das eigene (selbst signierte) Zertifikat des Wiedergabegeräts ausschalten. Nur bei HTTPS.",
+          "token": "Nur wenn in CamAlert auf dem Wiedergabegerät ein Zugriffstoken eingestellt ist. Es wird in einem Header gesendet, nie in der Adresse."
         }
       }
     },
     "error": {
-      "cannot_connect": "Receiver nicht erreichbar. Ist er an, ist CamAlert installiert und stimmt der Port?",
-      "forbidden": "Der Receiver lehnt die Anfrage ab: Token oder 'Erlaubte Aufrufer' in CamAlert prüfen.",
-      "unknown": "Unerwarteter Fehler"
+      "cannot_connect": "Das Wiedergabegerät ist nicht erreichbar. Ist es an, ist CamAlert installiert und stimmt der Port?",
+      "forbidden": "Das Wiedergabegerät hat die Anfrage abgelehnt: prüfe das Token oder 'Erlaubte Aufrufer' in CamAlert.",
+      "certificate": "Dem Zertifikat des Wiedergabegeräts wird nicht vertraut. Schalte für das eigene Zertifikat von CamAlert 'Zertifikate prüfen' aus.",
+      "unknown": "Unerwarteter Fehler. Details stehen im Home-Assistant-Protokoll."
     },
     "abort": {
-      "already_configured": "Dieser Receiver ist bereits hinzugefügt."
+      "already_configured": "Dieses Wiedergabegerät ist bereits hinzugefügt.",
+      "reconfigure_successful": "Das Wiedergabegerät wurde geändert.",
+      "wrong_player": "Diese Adresse gehört zu einem anderen Wiedergabegerät. Füge es als neues Wiedergabegerät hinzu."
     }
   },
   "entity": {
@@ -36,7 +64,25 @@
     },
     "sensor": {
       "on_screen": {
-        "name": "Kamera im Bild"
+        "name": "Kamera im Bild",
+        "state": {
+          "none": "Nichts"
+        },
+        "state_attributes": {
+          "mode": {
+            "name": "Anzeigemodus",
+            "state": {
+              "photo": "Fotofenster",
+              "live": "Live-Ansicht"
+            }
+          },
+          "paused": {
+            "name": "Angehalten"
+          },
+          "cameras": {
+            "name": "Kameras"
+          }
+        }
       }
     },
     "switch": {
@@ -64,16 +110,16 @@
     "mode": {
       "options": {
         "photo": "Fotofenster",
-        "live": "Zur Live-Ansicht wechseln",
-        "notify": "Nur Benachrichtigung",
+        "live": "Live-Ansicht",
+        "notify": "Benachrichtigung",
         "strip": "Fenster mit mehreren Kameras"
       }
     },
     "priority": {
       "options": {
         "normal": "Normal",
-        "high": "Hoch (Türklingel)",
-        "alarm": "Alarm (Receiver wecken)"
+        "high": "Hoch",
+        "alarm": "Alarm"
       }
     },
     "move": {
@@ -92,23 +138,23 @@
   "services": {
     "show": {
       "name": "Kamera anzeigen",
-      "description": "Zeigt eine Kamera auf dem Fernseher eines oder mehrerer Receiver.",
+      "description": "Zeigt eine oder mehrere Kameras auf dem Fernseher eines oder mehrerer Wiedergabegeräte. Ohne Ziel: jedes Wiedergabegerät.",
       "fields": {
         "camera": {
-          "name": "Kamera",
-          "description": "Name der Kamera (wie in go2rtc), z. B. haustuer. Leer = Standardkamera des Receivers."
+          "name": "Kameras",
+          "description": "Ein oder mehrere Kameranamen wie in go2rtc, z. B. front_door. 2-4 Kameras werden zusammen im Fenster mit mehreren Kameras gezeigt. Leer = Standardkamera des Wiedergabegeräts."
         },
         "seconds": {
           "name": "Dauer",
-          "description": "Wie lange die Kamera angezeigt wird. Leer = Einstellung des Receivers."
+          "description": "Wie lange die Kamera im Bild bleibt. Leer = Einstellung des Wiedergabegeräts."
         },
         "mode": {
           "name": "Anzeigemodus",
-          "description": "Leer = Einstellung des Receivers."
+          "description": "Fotofenster, Live-Ansicht, Benachrichtigung oder das Fenster mit mehreren Kameras (2-4 Kameras, der Fernseher bleibt sichtbar). Leer = Einstellung des Wiedergabegeräts."
         },
         "priority": {
           "name": "Priorität",
-          "description": "normal: folgt den Regeln des Receivers (aktive Zeiten, nicht während Aufnahme). high: immer (Türklingel). alarm: immer, darf den Receiver wecken."
+          "description": "Normal folgt den Regeln des Wiedergabegeräts (nicht stören, Zeitfenster, nicht während der Wiedergabe). Hoch kommt immer durch (Türklingel). Alarm kommt immer durch und weckt auch einen Enigma2-Receiver aus dem Standby."
         },
         "label": {
           "name": "Wer/was",
@@ -118,25 +164,25 @@
     },
     "mosaic": {
       "name": "Mosaik anzeigen",
-      "description": "Zeigt mehrere Kameras gleichzeitig (Fotomosaik).",
+      "description": "Zeigt mehrere Kameras gleichzeitig in einem Mosaik im Vollbild.",
       "fields": {
         "cameras": {
           "name": "Kameras",
-          "description": "Bis zu 9 Kameras. Leer = Mosaik-Einstellung des Receivers."
+          "description": "Bis zu 9 Kameranamen. Leer = Mosaik-Einstellung des Wiedergabegeräts."
         },
         "seconds": {
           "name": "Dauer",
-          "description": "Wie lange die Kamera angezeigt wird. Leer = Einstellung des Receivers."
+          "description": "Wie lange das Mosaik im Bild bleibt. Leer = Einstellung des Wiedergabegeräts."
         }
       }
     },
     "hide": {
       "name": "Kamera ausblenden",
-      "description": "Schließt die Kamera und kehrt zum Fernsehen zurück."
+      "description": "Schließt das Kamerafenster und kehrt zum Fernsehen zurück."
     },
     "ptz": {
-      "name": "Kamera bewegen (PTZ)",
-      "description": "Schwenkt, neigt oder zoomt eine Kamera, die mit ONVIF oder Foscam in der Gerätedatei des Receivers steht.",
+      "name": "Kamerasteuerung (PTZ)",
+      "description": "Schwenkt, neigt oder zoomt eine Kamera, die mit ONVIF oder Foscam in der Gerätedatei des Wiedergabegeräts steht.",
       "fields": {
         "camera": {
           "name": "Kamera",
@@ -147,6 +193,26 @@
           "description": "Bewegt etwa eine halbe Sekunde und stoppt dann."
         }
       }
+    }
+  },
+  "exceptions": {
+    "no_player": {
+      "message": "Kein CamAlert-Wiedergabegerät ausgewählt."
+    },
+    "not_loaded": {
+      "message": "CamAlert-Wiedergabegerät nicht erreichbar (aus oder startet neu): {names}"
+    },
+    "not_supported": {
+      "message": "{name}: {action} wird von diesem Wiedergabegerät nicht unterstützt."
+    },
+    "request_failed": {
+      "message": "{name}: {error}"
+    },
+    "unknown_camera": {
+      "message": "{name}: unbekannte Kamera oder keine Kameraquelle eingestellt."
+    },
+    "several_failed": {
+      "message": "Mehrere Wiedergabegeräte meldeten einen Fehler: {errors}"
     }
   }
 }

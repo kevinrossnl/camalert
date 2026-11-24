@@ -2,24 +2,52 @@
   "config": {
     "step": {
       "user": {
-        "title": "CamAlert-ontvanger toevoegen",
-        "description": "IP-adres van de Enigma2-ontvanger met de CamAlert-plugin. Poort, HTTPS en token zoals ingesteld in CamAlert op de ontvanger.",
+        "title": "CamAlert-speler toevoegen",
+        "description": "Een speler is een Enigma2-receiver of Kodi met CamAlert. Poort, HTTPS en token zoals ingesteld in CamAlert op de speler.",
         "data": {
-          "host": "IP-adres van de ontvanger",
-          "port": "CamAlert-poort",
-          "https": "Ontvanger gebruikt HTTPS",
-          "verify_ssl": "Certificaat controleren (uit bij het eigen certificaat van CamAlert)",
-          "token": "Toegangstoken (als ingesteld in CamAlert)"
+          "host": "Hostnaam of IP-adres",
+          "port": "Poort",
+          "https": "HTTPS gebruiken",
+          "verify_ssl": "Certificaten controleren",
+          "token": "Toegangstoken"
+        },
+        "data_description": {
+          "host": "Adres van de speler (Enigma2-receiver of Kodi) met CamAlert, bijv. 192.168.1.10.",
+          "port": "Poort van de CamAlert-API, zoals ingesteld in CamAlert op de speler. Standaard: 8099.",
+          "https": "Zet aan als HTTPS voor de API aan staat in CamAlert op de speler.",
+          "verify_ssl": "Zet uit voor het eigen (zelfondertekende) certificaat van de speler. Alleen bij HTTPS.",
+          "token": "Alleen als er een toegangstoken is ingesteld in CamAlert op de speler. Het wordt in een header verstuurd, nooit in het adres."
+        }
+      },
+      "reconfigure": {
+        "title": "CamAlert-speler wijzigen",
+        "description": "Nieuw adres, nieuwe poort, HTTPS of token van dezelfde speler.",
+        "data": {
+          "host": "Hostnaam of IP-adres",
+          "port": "Poort",
+          "https": "HTTPS gebruiken",
+          "verify_ssl": "Certificaten controleren",
+          "token": "Toegangstoken"
+        },
+        "data_description": {
+          "host": "Adres van de speler (Enigma2-receiver of Kodi) met CamAlert, bijv. 192.168.1.10.",
+          "port": "Poort van de CamAlert-API, zoals ingesteld in CamAlert op de speler. Standaard: 8099.",
+          "https": "Zet aan als HTTPS voor de API aan staat in CamAlert op de speler.",
+          "verify_ssl": "Zet uit voor het eigen (zelfondertekende) certificaat van de speler. Alleen bij HTTPS.",
+          "token": "Alleen als er een toegangstoken is ingesteld in CamAlert op de speler. Het wordt in een header verstuurd, nooit in het adres."
         }
       }
     },
     "error": {
-      "cannot_connect": "Ontvanger niet bereikbaar. Staat hij aan, is CamAlert geïnstalleerd en klopt de poort?",
-      "forbidden": "De ontvanger weigert het verzoek: controleer het token of 'Toegestane aanroepers' in CamAlert.",
-      "unknown": "Onverwachte fout"
+      "cannot_connect": "De speler is niet bereikbaar. Staat hij aan, is CamAlert geïnstalleerd en klopt de poort?",
+      "forbidden": "De speler weigerde het verzoek: controleer het token, of 'Toegestane aanroepers' in CamAlert.",
+      "certificate": "Het certificaat van de speler wordt niet vertrouwd. Zet voor het eigen certificaat van CamAlert 'Certificaten controleren' uit.",
+      "unknown": "Onverwachte fout. Details staan in het Home Assistant-logboek."
     },
     "abort": {
-      "already_configured": "Deze ontvanger is al toegevoegd."
+      "already_configured": "Deze speler is al toegevoegd.",
+      "reconfigure_successful": "De speler is gewijzigd.",
+      "wrong_player": "Dit adres hoort bij een andere speler. Voeg hem toe als nieuwe speler."
     }
   },
   "entity": {
@@ -36,7 +64,25 @@
     },
     "sensor": {
       "on_screen": {
-        "name": "Camera in beeld"
+        "name": "Camera in beeld",
+        "state": {
+          "none": "Niets"
+        },
+        "state_attributes": {
+          "mode": {
+            "name": "Weergavemodus",
+            "state": {
+              "photo": "Fotovenster",
+              "live": "Live beeld"
+            }
+          },
+          "paused": {
+            "name": "Gepauzeerd"
+          },
+          "cameras": {
+            "name": "Camera's"
+          }
+        }
       }
     },
     "switch": {
@@ -64,16 +110,16 @@
     "mode": {
       "options": {
         "photo": "Fotovenster",
-        "live": "Omschakelen naar live beeld",
-        "notify": "Alleen melding",
+        "live": "Live beeld",
+        "notify": "Melding",
         "strip": "Venster met meerdere camera's"
       }
     },
     "priority": {
       "options": {
         "normal": "Normaal",
-        "high": "Hoog (deurbel)",
-        "alarm": "Alarm (ontvanger wekken)"
+        "high": "Hoog",
+        "alarm": "Alarm"
       }
     },
     "move": {
@@ -92,23 +138,23 @@
   "services": {
     "show": {
       "name": "Camera tonen",
-      "description": "Toont een camera op de tv van een of meer ontvangers.",
+      "description": "Toont een of meer camera's op de tv van een of meer spelers. Zonder doel: elke speler.",
       "fields": {
         "camera": {
-          "name": "Camera",
-          "description": "Naam van de camera (zoals in go2rtc), bijv. oprit. Leeg = standaardcamera van de ontvanger."
+          "name": "Camera's",
+          "description": "Een of meer cameranamen zoals in go2rtc, bijv. front_door. 2-4 camera's worden samen getoond in het venster met meerdere camera's. Leeg = standaardcamera van de speler."
         },
         "seconds": {
           "name": "Duur",
-          "description": "Hoe lang de camera in beeld blijft. Leeg = instelling van de ontvanger."
+          "description": "Hoe lang de camera in beeld blijft. Leeg = instelling van de speler."
         },
         "mode": {
           "name": "Weergavemodus",
-          "description": "Leeg = instelling van de ontvanger."
+          "description": "Fotovenster, live beeld, melding, of het venster met meerdere camera's (2-4 camera's, de tv blijft zichtbaar). Leeg = instelling van de speler."
         },
         "priority": {
           "name": "Prioriteit",
-          "description": "normal: volgt de regels van de ontvanger (actieve uren, niet tijdens opname). high: altijd (deurbel). alarm: altijd, en mag de ontvanger wekken."
+          "description": "Normaal volgt de regels van de speler (niet storen, tijdvenster, niet tijdens afspelen). Hoog komt altijd door (deurbel). Alarm komt altijd door en wekt ook een Enigma2-receiver uit stand-by."
         },
         "label": {
           "name": "Wie/wat",
@@ -118,25 +164,25 @@
     },
     "mosaic": {
       "name": "Mozaïek tonen",
-      "description": "Toont meerdere camera's tegelijk (fotomozaïek).",
+      "description": "Toont meerdere camera's tegelijk in een mozaïek op het hele scherm.",
       "fields": {
         "cameras": {
           "name": "Camera's",
-          "description": "Tot 9 camera's. Leeg = mozaïek-instelling van de ontvanger."
+          "description": "Tot 9 cameranamen. Leeg = mozaïekinstelling van de speler."
         },
         "seconds": {
           "name": "Duur",
-          "description": "Hoe lang de camera in beeld blijft. Leeg = instelling van de ontvanger."
+          "description": "Hoe lang het mozaïek in beeld blijft. Leeg = instelling van de speler."
         }
       }
     },
     "hide": {
       "name": "Camera verbergen",
-      "description": "Sluit de camera en gaat terug naar tv."
+      "description": "Sluit het cameravenster en gaat terug naar tv."
     },
     "ptz": {
-      "name": "Camera bewegen (PTZ)",
-      "description": "Draait, kantelt of zoomt een camera die met ONVIF of Foscam in het apparatenbestand van de ontvanger staat.",
+      "name": "Camerabediening (PTZ)",
+      "description": "Draait, kantelt of zoomt een camera die met ONVIF of Foscam in het apparatenbestand van de speler staat.",
       "fields": {
         "camera": {
           "name": "Camera",
@@ -147,6 +193,26 @@
           "description": "Beweegt ongeveer een halve seconde en stopt dan."
         }
       }
+    }
+  },
+  "exceptions": {
+    "no_player": {
+      "message": "Geen CamAlert-speler gekozen."
+    },
+    "not_loaded": {
+      "message": "CamAlert-speler niet bereikbaar (uit of herstart): {names}"
+    },
+    "not_supported": {
+      "message": "{name}: {action} wordt niet ondersteund door deze speler."
+    },
+    "request_failed": {
+      "message": "{name}: {error}"
+    },
+    "unknown_camera": {
+      "message": "{name}: onbekende camera of geen camerabron ingesteld."
+    },
+    "several_failed": {
+      "message": "Meerdere spelers gaven een fout: {errors}"
     }
   }
 }

@@ -10,12 +10,12 @@ from .entity import CamAlertEntity
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    async_add_entities([ButtonEvent(entry.runtime_data, entry)])
+    if entry.runtime_data.api.supports("webhook"):  # colour keys reach Home Assistant through the webhook
+        async_add_entities([ButtonEvent(entry.runtime_data, entry)])
 
 
 class ButtonEvent(CamAlertEntity, EventEntity):
     _attr_translation_key = "remote_button"
-    _attr_icon = "mdi:remote"
     _attr_event_types = BUTTONS
 
     def __init__(self, coordinator, entry):

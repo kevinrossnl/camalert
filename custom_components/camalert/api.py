@@ -11,6 +11,8 @@ from urllib.parse import urlencode
 
 INTEGRATION_VERSION = "1.0.0"  # = manifest.json version
 ACTIONS = ("show", "mosaic", "tour", "hide", "ptz", "webhook")  # change something on the player: POST
+TIMEOUT = 10  # seconds per request
+MODELS = {"enigma2": "Enigma2 receiver", "kodi": "Kodi"}  # device model per /status platform (#44)
 
 
 def build_url(host: str, port: int, https: bool, action: str, params: dict | None = None) -> str:
@@ -22,7 +24,7 @@ def build_url(host: str, port: int, https: bool, action: str, params: dict | Non
 
 
 def show_params(cam, mode=None):
-    """camera may be one name, 'a,b' or a list: 2-4 cameras are shown together in one corner window (strip)."""
+    """camera may be one name, 'a,b' or a list: 2-4 cameras are shown together in the multi-camera window (strip)."""
     if isinstance(cam, (list, tuple)):
         names = [str(c).strip() for c in cam if str(c).strip()]
     else:
@@ -50,8 +52,27 @@ def plan_request(action: str, params: dict | None, capabilities) -> tuple[str, d
     return "GET", params, None
 
 
+def model(platform) -> str:
+    """Device model for the /status platform; older players without platform were all Enigma2 receivers."""
+    if not platform:
+        return MODELS["enigma2"]
+    return MODELS.get(platform, "CamAlert player (%s)" % platform)
+
+
 class CamAlertError(Exception):
     """Player not reachable or request refused."""
+
+
+class CamAlertForbidden(CamAlertError):
+    """403: wrong or missing token, or the caller is not allowed ('Allowed callers' in CamAlert)."""
+
+
+class CamAlertCertificateError(CamAlertError):
+    """HTTPS with certificate check on, but the player's certificate is not trusted (CamAlert's own certificate)."""
+
+
+class CamAlertNotSupported(CamAlertError):
+    """The player does not know this action (older plugin or not available on this platform)."""
 
 
 class CamAlertApi:
@@ -67,6 +88,10 @@ class CamAlertApi:
         """True if the player has this capability (unknown/older players: assume yes, they tell with an error)."""
         return self.capabilities is None or capability in self.capabilities
 
+    @property
+    def model(self) -> str:
+        return model(self.platform)
+
     def integration_too_old(self) -> bool:
         return bool(self.min_ha_version) and version_tuple(self.min_ha_version) > version_tuple(INTEGRATION_VERSION)
 
@@ -76,23 +101,30 @@ class CamAlertApi:
         method, query, body = plan_request(action, params, self.capabilities)
         headers = {"X-CamAlert-Token": self.token} if self.token else {}
         url = build_url(self.host, self.port, self.https, action, query)
-        kwargs = {"headers": headers, "ssl": self.verify_ssl if self.https else None,
-                  "timeout": aiohttp.ClientTimeout(total=10)}
+        kwargs = {"headers": headers, "timeout": aiohttp.ClientTimeout(total=TIMEOUT)}
+        if self.https and not self.verify_ssl:
+            kwargs["ssl"] = False  # CamAlert's own certificate; with the check on, the session verifies it
         if body is not None:
             kwargs["json"] = body
+        cert_errors = tuple(e for e in (getattr(aiohttp, "ClientConnectorCertificateError", None),
+                                        getattr(aiohttp, "ClientSSLError", None)) if e)
         try:
             async with self._session.request(method, url, **kwargs) as resp:
                 data = await resp.json(content_type=None)
+        except cert_errors as err:
+            raise CamAlertCertificateError(str(err)) from err
         except (aiohttp.ClientError, TimeoutError, ValueError) as err:
-            raise CamAlertError(str(err)) from err
+            raise CamAlertError(str(err) or type(err).__name__) from err
         if resp.status == 400 and isinstance(data, dict) and data.get("error"):
             raise CamAlertError(data["error"])
         if resp.status == 403:
-            raise CamAlertError("forbidden (token or network)")
+            raise CamAlertForbidden("forbidden (token or network)")
         if resp.status == 429:
             raise CamAlertError("too many requests")
         if resp.status in (404, 405, 501):
-            raise CamAlertError("not supported by this player (%s)" % action)
+            raise CamAlertNotSupported("not supported by this player (%s)" % action)
+        if resp.status >= 500:
+            raise CamAlertError("player error (HTTP %d)" % resp.status)
         if not isinstance(data, dict):
             raise CamAlertError("unexpected answer")
         return data

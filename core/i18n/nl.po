@@ -4,15 +4,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
 
-#: e2 kodi:30042 ha:selector.mode.options.photo
+#: e2 kodi:30042 ha:entity.sensor.on_screen.state_attributes.mode.state.photo ha:selector.mode.options.photo
 msgid "Photo window"
 msgstr "Fotovenster"
 
-#: e2 kodi:30043 ha:selector.mode.options.live
+#: e2 kodi:30043
 msgid "Switch to live stream"
 msgstr "Omschakelen naar live beeld"
 
-#: e2 kodi:30044 ha:selector.mode.options.notify
+#: e2 kodi:30044
 msgid "Notification only"
 msgstr "Alleen melding"
 
@@ -20,11 +20,11 @@ msgstr "Alleen melding"
 msgid "Normal"
 msgstr "Normaal"
 
-#: e2 ha:selector.priority.options.high
+#: e2
 msgid "High (doorbell)"
 msgstr "Hoog (deurbel)"
 
-#: e2 kodi:30142 kodi:30509
+#: e2 kodi:30142 kodi:30509 ha:selector.priority.options.alarm
 msgid "Alarm"
 msgstr "Alarm"
 
@@ -256,7 +256,7 @@ msgstr "Clip afspelen"
 msgid "Motion"
 msgstr "Beweging"
 
-#: e2 kodi:30192 ha:services.mosaic.fields.cameras.name
+#: e2 kodi:30192 ha:entity.sensor.on_screen.state_attributes.cameras.name ha:services.mosaic.fields.cameras.name ha:services.show.fields.camera.name
 msgid "Cameras"
 msgstr "Camera's"
 
@@ -268,7 +268,7 @@ msgstr "%s - camera niet bereikbaar"
 msgid "Camera: %s"
 msgstr "Camera: %s"
 
-#: e2
+#: e2 ha:services.ptz.name
 msgid "Camera control (PTZ)"
 msgstr "Camerabediening (PTZ)"
 
@@ -352,7 +352,7 @@ msgstr "go2rtc RTSP-poort"
 msgid "Usually 8554. Used for live view and the camera list."
 msgstr "Meestal 8554. Gebruikt voor live beeld en de cameralijst."
 
-#: e2 kodi:30020
+#: e2 kodi:30020 ha:config.step.reconfigure.data.verify_ssl ha:config.step.user.data.verify_ssl
 msgid "Check certificates"
 msgstr "Certificaten controleren"
 
@@ -384,7 +384,7 @@ msgstr "Cameranamen"
 msgid "Press OK to give a camera its own name (empty = automatic)."
 msgstr "Druk op OK om een camera een eigen naam te geven (leeg = automatisch)."
 
-#: e2 kodi:30040 ha:services.show.fields.mode.name
+#: e2 kodi:30040 ha:entity.sensor.on_screen.state_attributes.mode.name ha:services.show.fields.mode.name
 msgid "Display mode"
 msgstr "Weergavemodus"
 
@@ -888,7 +888,7 @@ msgstr "Menu"
 msgid "Wake up"
 msgstr "Wekken"
 
-#: e2 kodi:30141 kodi:30508
+#: e2 kodi:30141 kodi:30508 ha:selector.priority.options.high
 msgid "High"
 msgstr "Hoog"
 
@@ -964,7 +964,7 @@ msgstr "Camera niet bereikbaar"
 msgid "Time"
 msgstr "Tijd"
 
-#: e2 kodi:30529 ha:services.ptz.fields.camera.name ha:services.show.fields.camera.name
+#: e2 kodi:30529 ha:services.ptz.fields.camera.name
 msgid "Camera"
 msgstr "Camera"
 
@@ -1301,48 +1301,84 @@ msgid "For a camera this Kodi cannot play smoothly (H.265 / 4K): front_door=fron
 msgstr "Voor een camera die deze Kodi niet vloeiend afspeelt (H.265 / 4K): voor=voor_sub|... (go2rtc-streamnamen)."
 
 #: ha:config.step.user.title
-msgid "Add a CamAlert receiver"
-msgstr "CamAlert-ontvanger toevoegen"
+msgid "Add a CamAlert player"
+msgstr "CamAlert-speler toevoegen"
 
 #: ha:config.step.user.description
-msgid "IP address of the Enigma2 receiver with the CamAlert plugin. Port, HTTPS and token as set in CamAlert on the receiver."
-msgstr "IP-adres van de Enigma2-ontvanger met de CamAlert-plugin. Poort, HTTPS en token zoals ingesteld in CamAlert op de ontvanger."
+msgid "A player is an Enigma2 receiver or Kodi with CamAlert. Port, HTTPS and token as set in CamAlert on the player."
+msgstr "Een speler is een Enigma2-receiver of Kodi met CamAlert. Poort, HTTPS en token zoals ingesteld in CamAlert op de speler."
 
-#: ha:config.step.user.data.host
-msgid "IP address of the receiver"
-msgstr "IP-adres van de ontvanger"
+#: ha:config.step.reconfigure.data.host ha:config.step.user.data.host
+msgid "Host name or IP address"
+msgstr "Hostnaam of IP-adres"
 
-#: ha:config.step.user.data.port
-msgid "CamAlert port"
-msgstr "CamAlert-poort"
+#: ha:config.step.reconfigure.data.port ha:config.step.user.data.port
+msgid "Port"
+msgstr "Poort"
 
-#: ha:config.step.user.data.https
-msgid "Receiver uses HTTPS"
-msgstr "Ontvanger gebruikt HTTPS"
+#: ha:config.step.reconfigure.data.https ha:config.step.user.data.https
+msgid "Use HTTPS"
+msgstr "HTTPS gebruiken"
 
-#: ha:config.step.user.data.verify_ssl
-msgid "Check certificate (off for CamAlert's own certificate)"
-msgstr "Certificaat controleren (uit bij het eigen certificaat van CamAlert)"
+#: ha:config.step.reconfigure.data.token ha:config.step.user.data.token
+msgid "Access token"
+msgstr "Toegangstoken"
 
-#: ha:config.step.user.data.token
-msgid "Access token (if set in CamAlert)"
-msgstr "Toegangstoken (als ingesteld in CamAlert)"
+#: ha:config.step.reconfigure.data_description.host ha:config.step.user.data_description.host
+msgid "Address of the player (Enigma2 receiver or Kodi) with CamAlert, e.g. 192.168.1.10."
+msgstr "Adres van de speler (Enigma2-receiver of Kodi) met CamAlert, bijv. 192.168.1.10."
+
+#: ha:config.step.reconfigure.data_description.port ha:config.step.user.data_description.port
+msgid "Port of the CamAlert API, as set in CamAlert on the player. Default: 8099."
+msgstr "Poort van de CamAlert-API, zoals ingesteld in CamAlert op de speler. Standaard: 8099."
+
+#: ha:config.step.reconfigure.data_description.https ha:config.step.user.data_description.https
+msgid "Turn on if HTTPS is on for the API in CamAlert on the player."
+msgstr "Zet aan als HTTPS voor de API aan staat in CamAlert op de speler."
+
+#: ha:config.step.reconfigure.data_description.verify_ssl ha:config.step.user.data_description.verify_ssl
+msgid "Turn off for the player's own (self-signed) certificate. Only used with HTTPS."
+msgstr "Zet uit voor het eigen (zelfondertekende) certificaat van de speler. Alleen bij HTTPS."
+
+#: ha:config.step.reconfigure.data_description.token ha:config.step.user.data_description.token
+msgid "Only if an access token is set in CamAlert on the player. It is sent in a header, never in the address."
+msgstr "Alleen als er een toegangstoken is ingesteld in CamAlert op de speler. Het wordt in een header verstuurd, nooit in het adres."
+
+#: ha:config.step.reconfigure.title
+msgid "Change the CamAlert player"
+msgstr "CamAlert-speler wijzigen"
+
+#: ha:config.step.reconfigure.description
+msgid "New address, port, HTTPS or token of the same player."
+msgstr "Nieuw adres, nieuwe poort, HTTPS of token van dezelfde speler."
 
 #: ha:config.error.cannot_connect
-msgid "Cannot reach the receiver. Is it on, is CamAlert installed and is the port correct?"
-msgstr "Ontvanger niet bereikbaar. Staat hij aan, is CamAlert geïnstalleerd en klopt de poort?"
+msgid "Cannot reach the player. Is it on, is CamAlert installed and is the port correct?"
+msgstr "De speler is niet bereikbaar. Staat hij aan, is CamAlert geïnstalleerd en klopt de poort?"
 
 #: ha:config.error.forbidden
-msgid "The receiver refused the request: check the token, or 'Allowed callers' in CamAlert."
-msgstr "De ontvanger weigert het verzoek: controleer het token of 'Toegestane aanroepers' in CamAlert."
+msgid "The player refused the request: check the token, or 'Allowed callers' in CamAlert."
+msgstr "De speler weigerde het verzoek: controleer het token, of 'Toegestane aanroepers' in CamAlert."
+
+#: ha:config.error.certificate
+msgid "The player's certificate is not trusted. For CamAlert's own certificate, turn off Check certificates."
+msgstr "Het certificaat van de speler wordt niet vertrouwd. Zet voor het eigen certificaat van CamAlert 'Certificaten controleren' uit."
 
 #: ha:config.error.unknown
-msgid "Unexpected error"
-msgstr "Onverwachte fout"
+msgid "Unexpected error. Details are in the Home Assistant log."
+msgstr "Onverwachte fout. Details staan in het Home Assistant-logboek."
 
 #: ha:config.abort.already_configured
-msgid "This receiver is already added."
-msgstr "Deze ontvanger is al toegevoegd."
+msgid "This player is already added."
+msgstr "Deze speler is al toegevoegd."
+
+#: ha:config.abort.reconfigure_successful
+msgid "The player was changed."
+msgstr "De speler is gewijzigd."
+
+#: ha:config.abort.wrong_player
+msgid "This address belongs to another player. Add it as a new player instead."
+msgstr "Dit adres hoort bij een andere speler. Voeg hem toe als nieuwe speler."
 
 #: ha:entity.button.show.name
 msgid "Show {camera}"
@@ -1359,6 +1395,18 @@ msgstr "Camera verbergen"
 #: ha:entity.sensor.on_screen.name
 msgid "Camera on screen"
 msgstr "Camera in beeld"
+
+#: ha:entity.sensor.on_screen.state.none
+msgid "Nothing"
+msgstr "Niets"
+
+#: ha:entity.sensor.on_screen.state_attributes.mode.state.live ha:selector.mode.options.live
+msgid "Live view"
+msgstr "Live beeld"
+
+#: ha:entity.sensor.on_screen.state_attributes.paused.name
+msgid "Paused"
+msgstr "Gepauzeerd"
 
 #: ha:entity.event.remote_button.name
 msgid "Remote button"
@@ -1380,13 +1428,13 @@ msgstr "Geel"
 msgid "Blue"
 msgstr "Blauw"
 
+#: ha:selector.mode.options.notify
+msgid "Notification"
+msgstr "Melding"
+
 #: ha:selector.mode.options.strip
 msgid "Multi-camera window"
 msgstr "Venster met meerdere camera's"
-
-#: ha:selector.priority.options.alarm
-msgid "Alarm (wake receiver)"
-msgstr "Alarm (ontvanger wekken)"
 
 #: ha:selector.move.options.up
 msgid "Up"
@@ -1421,28 +1469,28 @@ msgid "Stop"
 msgstr "Stop"
 
 #: ha:services.show.description
-msgid "Shows a camera on the TV of one or more receivers."
-msgstr "Toont een camera op de tv van een of meer ontvangers."
+msgid "Shows one or more cameras on the TV of one or more players. Without a target: every player."
+msgstr "Toont een of meer camera's op de tv van een of meer spelers. Zonder doel: elke speler."
 
 #: ha:services.show.fields.camera.description
-msgid "Name of the camera (as in go2rtc), e.g. front_door. Empty = default camera of the receiver."
-msgstr "Naam van de camera (zoals in go2rtc), bijv. oprit. Leeg = standaardcamera van de ontvanger."
+msgid "One or more camera names as in go2rtc, e.g. front_door. 2-4 cameras are shown together in the multi-camera window. Empty = default camera of the player."
+msgstr "Een of meer cameranamen zoals in go2rtc, bijv. front_door. 2-4 camera's worden samen getoond in het venster met meerdere camera's. Leeg = standaardcamera van de speler."
 
 #: ha:services.mosaic.fields.seconds.name ha:services.show.fields.seconds.name
 msgid "Duration"
 msgstr "Duur"
 
-#: ha:services.mosaic.fields.seconds.description ha:services.show.fields.seconds.description
-msgid "How long the camera stays on screen. Empty = setting of the receiver."
-msgstr "Hoe lang de camera in beeld blijft. Leeg = instelling van de ontvanger."
+#: ha:services.show.fields.seconds.description
+msgid "How long the camera stays on screen. Empty = setting of the player."
+msgstr "Hoe lang de camera in beeld blijft. Leeg = instelling van de speler."
 
 #: ha:services.show.fields.mode.description
-msgid "Empty = setting of the receiver."
-msgstr "Leeg = instelling van de ontvanger."
+msgid "Photo window, live view, notification, or the multi-camera window (2-4 cameras, the TV stays visible). Empty = setting of the player."
+msgstr "Fotovenster, live beeld, melding, of het venster met meerdere camera's (2-4 camera's, de tv blijft zichtbaar). Leeg = instelling van de speler."
 
 #: ha:services.show.fields.priority.description
-msgid "normal: follows the receiver's rules (active hours, not while recording). high: always (doorbell). alarm: always, and may wake the receiver."
-msgstr "normal: volgt de regels van de ontvanger (actieve uren, niet tijdens opname). high: altijd (deurbel). alarm: altijd, en mag de ontvanger wekken."
+msgid "Normal follows the rules of the player (do not disturb, time window, not while playing). High always comes through (doorbell). Alarm always comes through and also wakes an Enigma2 receiver from standby."
+msgstr "Normaal volgt de regels van de speler (niet storen, tijdvenster, niet tijdens afspelen). Hoog komt altijd door (deurbel). Alarm komt altijd door en wekt ook een Enigma2-receiver uit stand-by."
 
 #: ha:services.show.fields.label.name
 msgid "Who/what"
@@ -1453,24 +1501,24 @@ msgid "Optional text before the camera name in the title, e.g. Person."
 msgstr "Optionele tekst vóór de cameranaam in de titel, bijv. Persoon."
 
 #: ha:services.mosaic.description
-msgid "Shows several cameras at once (photo mosaic)."
-msgstr "Toont meerdere camera's tegelijk (fotomozaïek)."
+msgid "Shows several cameras at once in a full-screen mosaic."
+msgstr "Toont meerdere camera's tegelijk in een mozaïek op het hele scherm."
 
 #: ha:services.mosaic.fields.cameras.description
-msgid "Up to 9 cameras. Empty = mosaic setting of the receiver."
-msgstr "Tot 9 camera's. Leeg = mozaïek-instelling van de ontvanger."
+msgid "Up to 9 camera names. Empty = mosaic setting of the player."
+msgstr "Tot 9 cameranamen. Leeg = mozaïekinstelling van de speler."
+
+#: ha:services.mosaic.fields.seconds.description
+msgid "How long the mosaic stays on screen. Empty = setting of the player."
+msgstr "Hoe lang het mozaïek in beeld blijft. Leeg = instelling van de speler."
 
 #: ha:services.hide.description
-msgid "Closes the camera and returns to TV."
-msgstr "Sluit de camera en gaat terug naar tv."
-
-#: ha:services.ptz.name
-msgid "Move camera (PTZ)"
-msgstr "Camera bewegen (PTZ)"
+msgid "Closes the camera window and returns to TV."
+msgstr "Sluit het cameravenster en gaat terug naar tv."
 
 #: ha:services.ptz.description
-msgid "Pans, tilts or zooms a camera listed with ONVIF or Foscam in the receiver's devices file."
-msgstr "Draait, kantelt of zoomt een camera die met ONVIF of Foscam in het apparatenbestand van de ontvanger staat."
+msgid "Pans, tilts or zooms a camera that is listed with ONVIF or Foscam in the devices file of the player."
+msgstr "Draait, kantelt of zoomt een camera die met ONVIF of Foscam in het apparatenbestand van de speler staat."
 
 #: ha:services.ptz.fields.camera.description
 msgid "Name of the camera as in the devices file."
@@ -1483,3 +1531,27 @@ msgstr "Beweging"
 #: ha:services.ptz.fields.move.description
 msgid "Moves for about half a second, then stops."
 msgstr "Beweegt ongeveer een halve seconde en stopt dan."
+
+#: ha:exceptions.no_player.message
+msgid "No CamAlert player selected."
+msgstr "Geen CamAlert-speler gekozen."
+
+#: ha:exceptions.not_loaded.message
+msgid "CamAlert player not reachable (off or restarting): {names}"
+msgstr "CamAlert-speler niet bereikbaar (uit of herstart): {names}"
+
+#: ha:exceptions.not_supported.message
+msgid "{name}: {action} is not supported by this player."
+msgstr "{name}: {action} wordt niet ondersteund door deze speler."
+
+#: ha:exceptions.request_failed.message
+msgid "{name}: {error}"
+msgstr "{name}: {error}"
+
+#: ha:exceptions.unknown_camera.message
+msgid "{name}: unknown camera or no camera source configured."
+msgstr "{name}: onbekende camera of geen camerabron ingesteld."
+
+#: ha:exceptions.several_failed.message
+msgid "Several players failed: {errors}"
+msgstr "Meerdere spelers gaven een fout: {errors}"

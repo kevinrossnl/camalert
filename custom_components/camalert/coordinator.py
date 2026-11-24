@@ -1,4 +1,4 @@
-"""Polls a receiver for what is on screen and which cameras exist."""
+"""Polls a player for what is on screen and which cameras exist."""
 from __future__ import annotations
 
 import logging

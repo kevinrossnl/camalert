@@ -2,24 +2,52 @@
   "config": {
     "step": {
       "user": {
-        "title": "Aggiungere un ricevitore CamAlert",
-        "description": "Indirizzo IP del ricevitore Enigma2 con il plugin CamAlert. Porta, HTTPS e token come impostati in CamAlert sul ricevitore.",
+        "title": "Aggiungere un lettore CamAlert",
+        "description": "Un lettore è un ricevitore Enigma2 o Kodi con CamAlert. Porta, HTTPS e token come impostati in CamAlert sul lettore.",
         "data": {
-          "host": "Indirizzo IP del ricevitore",
-          "port": "Porta CamAlert",
-          "https": "Il ricevitore usa HTTPS",
-          "verify_ssl": "Verifica certificato (disattiva per il certificato di CamAlert)",
-          "token": "Token di accesso (se impostato in CamAlert)"
+          "host": "Nome host o indirizzo IP",
+          "port": "Porta",
+          "https": "Usa HTTPS",
+          "verify_ssl": "Verifica certificati",
+          "token": "Token di accesso"
+        },
+        "data_description": {
+          "host": "Indirizzo del lettore (ricevitore Enigma2 o Kodi) con CamAlert, ad es. 192.168.1.10.",
+          "port": "Porta dell'API CamAlert, come impostata in CamAlert sul lettore. Predefinita: 8099.",
+          "https": "Da attivare se HTTPS è attivo per l'API in CamAlert sul lettore.",
+          "verify_ssl": "Da disattivare per il certificato proprio (autofirmato) del lettore. Solo con HTTPS.",
+          "token": "Solo se in CamAlert sul lettore è impostato un token di accesso. Viene inviato in un header, mai nell'indirizzo."
+        }
+      },
+      "reconfigure": {
+        "title": "Modificare il lettore CamAlert",
+        "description": "Nuovo indirizzo, porta, HTTPS o token dello stesso lettore.",
+        "data": {
+          "host": "Nome host o indirizzo IP",
+          "port": "Porta",
+          "https": "Usa HTTPS",
+          "verify_ssl": "Verifica certificati",
+          "token": "Token di accesso"
+        },
+        "data_description": {
+          "host": "Indirizzo del lettore (ricevitore Enigma2 o Kodi) con CamAlert, ad es. 192.168.1.10.",
+          "port": "Porta dell'API CamAlert, come impostata in CamAlert sul lettore. Predefinita: 8099.",
+          "https": "Da attivare se HTTPS è attivo per l'API in CamAlert sul lettore.",
+          "verify_ssl": "Da disattivare per il certificato proprio (autofirmato) del lettore. Solo con HTTPS.",
+          "token": "Solo se in CamAlert sul lettore è impostato un token di accesso. Viene inviato in un header, mai nell'indirizzo."
         }
       }
     },
     "error": {
-      "cannot_connect": "Ricevitore non raggiungibile. È acceso, CamAlert è installato e la porta è corretta?",
-      "forbidden": "Il ricevitore rifiuta la richiesta: controlla il token o 'Chiamanti consentiti' in CamAlert.",
-      "unknown": "Errore imprevisto"
+      "cannot_connect": "Il lettore non è raggiungibile. È acceso, CamAlert è installato e la porta è corretta?",
+      "forbidden": "Il lettore ha rifiutato la richiesta: verificare il token o 'Chiamanti consentiti' in CamAlert.",
+      "certificate": "Il certificato del lettore non è attendibile. Per il certificato proprio di CamAlert, disattivare 'Verifica certificati'.",
+      "unknown": "Errore imprevisto. I dettagli sono nel log di Home Assistant."
     },
     "abort": {
-      "already_configured": "Questo ricevitore è già stato aggiunto."
+      "already_configured": "Questo lettore è già stato aggiunto.",
+      "reconfigure_successful": "Il lettore è stato modificato.",
+      "wrong_player": "Questo indirizzo appartiene a un altro lettore. Aggiungerlo come nuovo lettore."
     }
   },
   "entity": {
@@ -36,7 +64,25 @@
     },
     "sensor": {
       "on_screen": {
-        "name": "Telecamera sullo schermo"
+        "name": "Telecamera sullo schermo",
+        "state": {
+          "none": "Niente"
+        },
+        "state_attributes": {
+          "mode": {
+            "name": "Modalità di visualizzazione",
+            "state": {
+              "photo": "Finestra foto",
+              "live": "Visione live"
+            }
+          },
+          "paused": {
+            "name": "In pausa"
+          },
+          "cameras": {
+            "name": "Telecamere"
+          }
+        }
       }
     },
     "switch": {
@@ -64,16 +110,16 @@
     "mode": {
       "options": {
         "photo": "Finestra foto",
-        "live": "Passa alla visione live",
-        "notify": "Solo notifica",
+        "live": "Visione live",
+        "notify": "Notifica",
         "strip": "Finestra con più telecamere"
       }
     },
     "priority": {
       "options": {
         "normal": "Normale",
-        "high": "Alta (campanello)",
-        "alarm": "Allarme (risveglia ricevitore)"
+        "high": "Alta",
+        "alarm": "Allarme"
       }
     },
     "move": {
@@ -92,23 +138,23 @@
   "services": {
     "show": {
       "name": "Mostra telecamera",
-      "description": "Mostra una telecamera sulla TV di uno o più ricevitori.",
+      "description": "Mostra una o più telecamere sulla TV di uno o più lettori. Senza destinazione: ogni lettore.",
       "fields": {
         "camera": {
-          "name": "Telecamera",
-          "description": "Nome della telecamera (come in go2rtc), ad es. porta_ingresso. Vuoto = telecamera predefinita del ricevitore."
+          "name": "Telecamere",
+          "description": "Uno o più nomi delle telecamere come in go2rtc, ad es. front_door. 2-4 telecamere vengono mostrate insieme nella finestra con più telecamere. Vuoto = telecamera predefinita del lettore."
         },
         "seconds": {
           "name": "Durata",
-          "description": "Per quanto tempo resta visibile. Vuoto = impostazione del ricevitore."
+          "description": "Per quanto tempo la telecamera resta sullo schermo. Vuoto = impostazione del lettore."
         },
         "mode": {
           "name": "Modalità di visualizzazione",
-          "description": "Vuoto = impostazione del ricevitore."
+          "description": "Finestra foto, visione live, notifica o la finestra con più telecamere (2-4 telecamere, la TV resta visibile). Vuoto = impostazione del lettore."
         },
         "priority": {
           "name": "Priorità",
-          "description": "normal: segue le regole del ricevitore (orari attivi, non durante la registrazione). high: sempre (campanello). alarm: sempre, e può risvegliare il ricevitore."
+          "description": "Normale segue le regole del lettore (non disturbare, fascia oraria, non durante la riproduzione). Alta passa sempre (campanello). Allarme passa sempre e riattiva anche un ricevitore Enigma2 dallo standby."
         },
         "label": {
           "name": "Chi/cosa",
@@ -118,25 +164,25 @@
     },
     "mosaic": {
       "name": "Mostra mosaico",
-      "description": "Mostra più telecamere insieme (mosaico di foto).",
+      "description": "Mostra più telecamere insieme in un mosaico a schermo intero.",
       "fields": {
         "cameras": {
           "name": "Telecamere",
-          "description": "Fino a 9 telecamere. Vuoto = impostazione mosaico del ricevitore."
+          "description": "Fino a 9 nomi delle telecamere. Vuoto = impostazione del mosaico del lettore."
         },
         "seconds": {
           "name": "Durata",
-          "description": "Per quanto tempo resta visibile. Vuoto = impostazione del ricevitore."
+          "description": "Per quanto tempo il mosaico resta sullo schermo. Vuoto = impostazione del lettore."
         }
       }
     },
     "hide": {
       "name": "Nascondi telecamera",
-      "description": "Chiude la telecamera e torna alla TV."
+      "description": "Chiude la finestra della telecamera e torna alla TV."
     },
     "ptz": {
-      "name": "Muovi telecamera (PTZ)",
-      "description": "Ruota, inclina o zooma una telecamera elencata con ONVIF o Foscam nel file dispositivi del ricevitore.",
+      "name": "Controllo telecamera (PTZ)",
+      "description": "Ruota, inclina o zooma una telecamera elencata con ONVIF o Foscam nel file dei dispositivi del lettore.",
       "fields": {
         "camera": {
           "name": "Telecamera",
@@ -147,6 +193,26 @@
           "description": "Si muove per circa mezzo secondo, poi si ferma."
         }
       }
+    }
+  },
+  "exceptions": {
+    "no_player": {
+      "message": "Nessun lettore CamAlert selezionato."
+    },
+    "not_loaded": {
+      "message": "Lettore CamAlert non raggiungibile (spento o in riavvio): {names}"
+    },
+    "not_supported": {
+      "message": "{name}: {action} non è supportato da questo lettore."
+    },
+    "request_failed": {
+      "message": "{name}: {error}"
+    },
+    "unknown_camera": {
+      "message": "{name}: telecamera sconosciuta o nessuna sorgente di telecamere configurata."
+    },
+    "several_failed": {
+      "message": "Più lettori hanno restituito un errore: {errors}"
     }
   }
 }

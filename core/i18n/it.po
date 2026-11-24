@@ -4,15 +4,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: it\n"
 
-#: e2 kodi:30042 ha:selector.mode.options.photo
+#: e2 kodi:30042 ha:entity.sensor.on_screen.state_attributes.mode.state.photo ha:selector.mode.options.photo
 msgid "Photo window"
 msgstr "Finestra foto"
 
-#: e2 kodi:30043 ha:selector.mode.options.live
+#: e2 kodi:30043
 msgid "Switch to live stream"
 msgstr "Passa alla visione live"
 
-#: e2 kodi:30044 ha:selector.mode.options.notify
+#: e2 kodi:30044
 msgid "Notification only"
 msgstr "Solo notifica"
 
@@ -20,11 +20,11 @@ msgstr "Solo notifica"
 msgid "Normal"
 msgstr "Normale"
 
-#: e2 ha:selector.priority.options.high
+#: e2
 msgid "High (doorbell)"
 msgstr "Alta (campanello)"
 
-#: e2 kodi:30142 kodi:30509
+#: e2 kodi:30142 kodi:30509 ha:selector.priority.options.alarm
 msgid "Alarm"
 msgstr "Allarme"
 
@@ -256,7 +256,7 @@ msgstr "Riproduci clip"
 msgid "Motion"
 msgstr "Movimento"
 
-#: e2 kodi:30192 ha:services.mosaic.fields.cameras.name
+#: e2 kodi:30192 ha:entity.sensor.on_screen.state_attributes.cameras.name ha:services.mosaic.fields.cameras.name ha:services.show.fields.camera.name
 msgid "Cameras"
 msgstr "Telecamere"
 
@@ -268,7 +268,7 @@ msgstr "%s - telecamera non raggiungibile"
 msgid "Camera: %s"
 msgstr "Telecamera: %s"
 
-#: e2
+#: e2 ha:services.ptz.name
 msgid "Camera control (PTZ)"
 msgstr "Controllo telecamera (PTZ)"
 
@@ -352,7 +352,7 @@ msgstr "Porta RTSP go2rtc"
 msgid "Usually 8554. Used for live view and the camera list."
 msgstr "Di solito 8554. Usata per la visione live e l'elenco telecamere."
 
-#: e2 kodi:30020
+#: e2 kodi:30020 ha:config.step.reconfigure.data.verify_ssl ha:config.step.user.data.verify_ssl
 msgid "Check certificates"
 msgstr "Verifica certificati"
 
@@ -384,7 +384,7 @@ msgstr "Nomi delle telecamere"
 msgid "Press OK to give a camera its own name (empty = automatic)."
 msgstr "Premere OK per dare un nome a una telecamera (vuoto = automatico)."
 
-#: e2 kodi:30040 ha:services.show.fields.mode.name
+#: e2 kodi:30040 ha:entity.sensor.on_screen.state_attributes.mode.name ha:services.show.fields.mode.name
 msgid "Display mode"
 msgstr "Modalità di visualizzazione"
 
@@ -888,7 +888,7 @@ msgstr "Menu"
 msgid "Wake up"
 msgstr "Risveglio"
 
-#: e2 kodi:30141 kodi:30508
+#: e2 kodi:30141 kodi:30508 ha:selector.priority.options.high
 msgid "High"
 msgstr "Alta"
 
@@ -964,7 +964,7 @@ msgstr "Telecamera non raggiungibile"
 msgid "Time"
 msgstr "Ora"
 
-#: e2 kodi:30529 ha:services.ptz.fields.camera.name ha:services.show.fields.camera.name
+#: e2 kodi:30529 ha:services.ptz.fields.camera.name
 msgid "Camera"
 msgstr "Telecamera"
 
@@ -1301,48 +1301,84 @@ msgid "For a camera this Kodi cannot play smoothly (H.265 / 4K): front_door=fron
 msgstr "Per una telecamera che questo Kodi non riproduce bene (H.265 / 4K): porta=porta_sub|... (nomi stream go2rtc)."
 
 #: ha:config.step.user.title
-msgid "Add a CamAlert receiver"
-msgstr "Aggiungere un ricevitore CamAlert"
+msgid "Add a CamAlert player"
+msgstr "Aggiungere un lettore CamAlert"
 
 #: ha:config.step.user.description
-msgid "IP address of the Enigma2 receiver with the CamAlert plugin. Port, HTTPS and token as set in CamAlert on the receiver."
-msgstr "Indirizzo IP del ricevitore Enigma2 con il plugin CamAlert. Porta, HTTPS e token come impostati in CamAlert sul ricevitore."
+msgid "A player is an Enigma2 receiver or Kodi with CamAlert. Port, HTTPS and token as set in CamAlert on the player."
+msgstr "Un lettore è un ricevitore Enigma2 o Kodi con CamAlert. Porta, HTTPS e token come impostati in CamAlert sul lettore."
 
-#: ha:config.step.user.data.host
-msgid "IP address of the receiver"
-msgstr "Indirizzo IP del ricevitore"
+#: ha:config.step.reconfigure.data.host ha:config.step.user.data.host
+msgid "Host name or IP address"
+msgstr "Nome host o indirizzo IP"
 
-#: ha:config.step.user.data.port
-msgid "CamAlert port"
-msgstr "Porta CamAlert"
+#: ha:config.step.reconfigure.data.port ha:config.step.user.data.port
+msgid "Port"
+msgstr "Porta"
 
-#: ha:config.step.user.data.https
-msgid "Receiver uses HTTPS"
-msgstr "Il ricevitore usa HTTPS"
+#: ha:config.step.reconfigure.data.https ha:config.step.user.data.https
+msgid "Use HTTPS"
+msgstr "Usa HTTPS"
 
-#: ha:config.step.user.data.verify_ssl
-msgid "Check certificate (off for CamAlert's own certificate)"
-msgstr "Verifica certificato (disattiva per il certificato di CamAlert)"
+#: ha:config.step.reconfigure.data.token ha:config.step.user.data.token
+msgid "Access token"
+msgstr "Token di accesso"
 
-#: ha:config.step.user.data.token
-msgid "Access token (if set in CamAlert)"
-msgstr "Token di accesso (se impostato in CamAlert)"
+#: ha:config.step.reconfigure.data_description.host ha:config.step.user.data_description.host
+msgid "Address of the player (Enigma2 receiver or Kodi) with CamAlert, e.g. 192.168.1.10."
+msgstr "Indirizzo del lettore (ricevitore Enigma2 o Kodi) con CamAlert, ad es. 192.168.1.10."
+
+#: ha:config.step.reconfigure.data_description.port ha:config.step.user.data_description.port
+msgid "Port of the CamAlert API, as set in CamAlert on the player. Default: 8099."
+msgstr "Porta dell'API CamAlert, come impostata in CamAlert sul lettore. Predefinita: 8099."
+
+#: ha:config.step.reconfigure.data_description.https ha:config.step.user.data_description.https
+msgid "Turn on if HTTPS is on for the API in CamAlert on the player."
+msgstr "Da attivare se HTTPS è attivo per l'API in CamAlert sul lettore."
+
+#: ha:config.step.reconfigure.data_description.verify_ssl ha:config.step.user.data_description.verify_ssl
+msgid "Turn off for the player's own (self-signed) certificate. Only used with HTTPS."
+msgstr "Da disattivare per il certificato proprio (autofirmato) del lettore. Solo con HTTPS."
+
+#: ha:config.step.reconfigure.data_description.token ha:config.step.user.data_description.token
+msgid "Only if an access token is set in CamAlert on the player. It is sent in a header, never in the address."
+msgstr "Solo se in CamAlert sul lettore è impostato un token di accesso. Viene inviato in un header, mai nell'indirizzo."
+
+#: ha:config.step.reconfigure.title
+msgid "Change the CamAlert player"
+msgstr "Modificare il lettore CamAlert"
+
+#: ha:config.step.reconfigure.description
+msgid "New address, port, HTTPS or token of the same player."
+msgstr "Nuovo indirizzo, porta, HTTPS o token dello stesso lettore."
 
 #: ha:config.error.cannot_connect
-msgid "Cannot reach the receiver. Is it on, is CamAlert installed and is the port correct?"
-msgstr "Ricevitore non raggiungibile. È acceso, CamAlert è installato e la porta è corretta?"
+msgid "Cannot reach the player. Is it on, is CamAlert installed and is the port correct?"
+msgstr "Il lettore non è raggiungibile. È acceso, CamAlert è installato e la porta è corretta?"
 
 #: ha:config.error.forbidden
-msgid "The receiver refused the request: check the token, or 'Allowed callers' in CamAlert."
-msgstr "Il ricevitore rifiuta la richiesta: controlla il token o 'Chiamanti consentiti' in CamAlert."
+msgid "The player refused the request: check the token, or 'Allowed callers' in CamAlert."
+msgstr "Il lettore ha rifiutato la richiesta: verificare il token o 'Chiamanti consentiti' in CamAlert."
+
+#: ha:config.error.certificate
+msgid "The player's certificate is not trusted. For CamAlert's own certificate, turn off Check certificates."
+msgstr "Il certificato del lettore non è attendibile. Per il certificato proprio di CamAlert, disattivare 'Verifica certificati'."
 
 #: ha:config.error.unknown
-msgid "Unexpected error"
-msgstr "Errore imprevisto"
+msgid "Unexpected error. Details are in the Home Assistant log."
+msgstr "Errore imprevisto. I dettagli sono nel log di Home Assistant."
 
 #: ha:config.abort.already_configured
-msgid "This receiver is already added."
-msgstr "Questo ricevitore è già stato aggiunto."
+msgid "This player is already added."
+msgstr "Questo lettore è già stato aggiunto."
+
+#: ha:config.abort.reconfigure_successful
+msgid "The player was changed."
+msgstr "Il lettore è stato modificato."
+
+#: ha:config.abort.wrong_player
+msgid "This address belongs to another player. Add it as a new player instead."
+msgstr "Questo indirizzo appartiene a un altro lettore. Aggiungerlo come nuovo lettore."
 
 #: ha:entity.button.show.name
 msgid "Show {camera}"
@@ -1359,6 +1395,18 @@ msgstr "Nascondi telecamera"
 #: ha:entity.sensor.on_screen.name
 msgid "Camera on screen"
 msgstr "Telecamera sullo schermo"
+
+#: ha:entity.sensor.on_screen.state.none
+msgid "Nothing"
+msgstr "Niente"
+
+#: ha:entity.sensor.on_screen.state_attributes.mode.state.live ha:selector.mode.options.live
+msgid "Live view"
+msgstr "Visione live"
+
+#: ha:entity.sensor.on_screen.state_attributes.paused.name
+msgid "Paused"
+msgstr "In pausa"
 
 #: ha:entity.event.remote_button.name
 msgid "Remote button"
@@ -1380,13 +1428,13 @@ msgstr "Giallo"
 msgid "Blue"
 msgstr "Blu"
 
+#: ha:selector.mode.options.notify
+msgid "Notification"
+msgstr "Notifica"
+
 #: ha:selector.mode.options.strip
 msgid "Multi-camera window"
 msgstr "Finestra con più telecamere"
-
-#: ha:selector.priority.options.alarm
-msgid "Alarm (wake receiver)"
-msgstr "Allarme (risveglia ricevitore)"
 
 #: ha:selector.move.options.up
 msgid "Up"
@@ -1421,28 +1469,28 @@ msgid "Stop"
 msgstr "Stop"
 
 #: ha:services.show.description
-msgid "Shows a camera on the TV of one or more receivers."
-msgstr "Mostra una telecamera sulla TV di uno o più ricevitori."
+msgid "Shows one or more cameras on the TV of one or more players. Without a target: every player."
+msgstr "Mostra una o più telecamere sulla TV di uno o più lettori. Senza destinazione: ogni lettore."
 
 #: ha:services.show.fields.camera.description
-msgid "Name of the camera (as in go2rtc), e.g. front_door. Empty = default camera of the receiver."
-msgstr "Nome della telecamera (come in go2rtc), ad es. porta_ingresso. Vuoto = telecamera predefinita del ricevitore."
+msgid "One or more camera names as in go2rtc, e.g. front_door. 2-4 cameras are shown together in the multi-camera window. Empty = default camera of the player."
+msgstr "Uno o più nomi delle telecamere come in go2rtc, ad es. front_door. 2-4 telecamere vengono mostrate insieme nella finestra con più telecamere. Vuoto = telecamera predefinita del lettore."
 
 #: ha:services.mosaic.fields.seconds.name ha:services.show.fields.seconds.name
 msgid "Duration"
 msgstr "Durata"
 
-#: ha:services.mosaic.fields.seconds.description ha:services.show.fields.seconds.description
-msgid "How long the camera stays on screen. Empty = setting of the receiver."
-msgstr "Per quanto tempo resta visibile. Vuoto = impostazione del ricevitore."
+#: ha:services.show.fields.seconds.description
+msgid "How long the camera stays on screen. Empty = setting of the player."
+msgstr "Per quanto tempo la telecamera resta sullo schermo. Vuoto = impostazione del lettore."
 
 #: ha:services.show.fields.mode.description
-msgid "Empty = setting of the receiver."
-msgstr "Vuoto = impostazione del ricevitore."
+msgid "Photo window, live view, notification, or the multi-camera window (2-4 cameras, the TV stays visible). Empty = setting of the player."
+msgstr "Finestra foto, visione live, notifica o la finestra con più telecamere (2-4 telecamere, la TV resta visibile). Vuoto = impostazione del lettore."
 
 #: ha:services.show.fields.priority.description
-msgid "normal: follows the receiver's rules (active hours, not while recording). high: always (doorbell). alarm: always, and may wake the receiver."
-msgstr "normal: segue le regole del ricevitore (orari attivi, non durante la registrazione). high: sempre (campanello). alarm: sempre, e può risvegliare il ricevitore."
+msgid "Normal follows the rules of the player (do not disturb, time window, not while playing). High always comes through (doorbell). Alarm always comes through and also wakes an Enigma2 receiver from standby."
+msgstr "Normale segue le regole del lettore (non disturbare, fascia oraria, non durante la riproduzione). Alta passa sempre (campanello). Allarme passa sempre e riattiva anche un ricevitore Enigma2 dallo standby."
 
 #: ha:services.show.fields.label.name
 msgid "Who/what"
@@ -1453,24 +1501,24 @@ msgid "Optional text before the camera name in the title, e.g. Person."
 msgstr "Testo facoltativo prima del nome della telecamera nel titolo, ad es. Persona."
 
 #: ha:services.mosaic.description
-msgid "Shows several cameras at once (photo mosaic)."
-msgstr "Mostra più telecamere insieme (mosaico di foto)."
+msgid "Shows several cameras at once in a full-screen mosaic."
+msgstr "Mostra più telecamere insieme in un mosaico a schermo intero."
 
 #: ha:services.mosaic.fields.cameras.description
-msgid "Up to 9 cameras. Empty = mosaic setting of the receiver."
-msgstr "Fino a 9 telecamere. Vuoto = impostazione mosaico del ricevitore."
+msgid "Up to 9 camera names. Empty = mosaic setting of the player."
+msgstr "Fino a 9 nomi delle telecamere. Vuoto = impostazione del mosaico del lettore."
+
+#: ha:services.mosaic.fields.seconds.description
+msgid "How long the mosaic stays on screen. Empty = setting of the player."
+msgstr "Per quanto tempo il mosaico resta sullo schermo. Vuoto = impostazione del lettore."
 
 #: ha:services.hide.description
-msgid "Closes the camera and returns to TV."
-msgstr "Chiude la telecamera e torna alla TV."
-
-#: ha:services.ptz.name
-msgid "Move camera (PTZ)"
-msgstr "Muovi telecamera (PTZ)"
+msgid "Closes the camera window and returns to TV."
+msgstr "Chiude la finestra della telecamera e torna alla TV."
 
 #: ha:services.ptz.description
-msgid "Pans, tilts or zooms a camera listed with ONVIF or Foscam in the receiver's devices file."
-msgstr "Ruota, inclina o zooma una telecamera elencata con ONVIF o Foscam nel file dispositivi del ricevitore."
+msgid "Pans, tilts or zooms a camera that is listed with ONVIF or Foscam in the devices file of the player."
+msgstr "Ruota, inclina o zooma una telecamera elencata con ONVIF o Foscam nel file dei dispositivi del lettore."
 
 #: ha:services.ptz.fields.camera.description
 msgid "Name of the camera as in the devices file."
@@ -1483,3 +1531,27 @@ msgstr "Movimento"
 #: ha:services.ptz.fields.move.description
 msgid "Moves for about half a second, then stops."
 msgstr "Si muove per circa mezzo secondo, poi si ferma."
+
+#: ha:exceptions.no_player.message
+msgid "No CamAlert player selected."
+msgstr "Nessun lettore CamAlert selezionato."
+
+#: ha:exceptions.not_loaded.message
+msgid "CamAlert player not reachable (off or restarting): {names}"
+msgstr "Lettore CamAlert non raggiungibile (spento o in riavvio): {names}"
+
+#: ha:exceptions.not_supported.message
+msgid "{name}: {action} is not supported by this player."
+msgstr "{name}: {action} non è supportato da questo lettore."
+
+#: ha:exceptions.request_failed.message
+msgid "{name}: {error}"
+msgstr "{name}: {error}"
+
+#: ha:exceptions.unknown_camera.message
+msgid "{name}: unknown camera or no camera source configured."
+msgstr "{name}: telecamera sconosciuta o nessuna sorgente di telecamere configurata."
+
+#: ha:exceptions.several_failed.message
+msgid "Several players failed: {errors}"
+msgstr "Più lettori hanno restituito un errore: {errors}"

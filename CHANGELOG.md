@@ -7,7 +7,7 @@ actions and blueprint inputs stay backwards compatible.
 
 ## [Unreleased]
 
-## [1.0.0] - YYYY-MM-DD
+## [1.0.0] - 2026-11-24
 
 First public release. CamAlert shows your IP cameras on the TV of a **player**: an Enigma2 receiver or a Kodi
 device (Kodi 19 or newer), controlled by Home Assistant, MQTT, Frigate, UniFi Protect or its HTTP API.

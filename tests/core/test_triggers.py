@@ -43,7 +43,7 @@ class TestTriggers(unittest.TestCase):
         self.assertEqual(mqtt_topics.mqtt_command(b'{"cam": "a", "label": "Person"}')["label"], "Person")
 
     def test_registry(self):
-        self.assertEqual(sorted(triggers.REGISTRY), ["foscam", "frigate"])
+        self.assertEqual(sorted(triggers.REGISTRY), ["foscam", "frigate", "unifi"])
         self.assertEqual(triggers.enabled_sources({}), [])
         on = triggers.enabled_sources({"frigate_enabled": True, "foscam_enabled": True})
         self.assertEqual([s.name for s in on], ["foscam", "frigate"])

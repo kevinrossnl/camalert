@@ -7,7 +7,8 @@ A source has a name, a transport and turns its input into a Trigger:
 
     transport "mqtt"   topics() -> [topic], parse(topic, payload, now) -> Trigger or None     (Frigate)
     transport "poll"   check(name, previous, now) -> Trigger or None, poll(name, device)     (Foscam alarms)
-    transport "webhook" parse(path, payload, now)                                              (later: UniFi, ...)
+    transport "poll"   (also UniFi Protect, #9: one console = one device, check() picks the newest new event)
+    transport "webhook" parse(path, payload, now)                                              (later)
 
 Sources only read a plain settings dict (the same keys on every player, see each source), so Enigma2 and Kodi
 use the same code; the player does the network I/O in its own way (Twisted thread, Kodi thread) and calls
@@ -86,4 +87,4 @@ def dispatch(sources, topic, payload, now=0.0):
     return False, None
 
 
-from . import foscam, frigate  # noqa: E402,F401  (register the built-in sources)
+from . import foscam, frigate, unifi  # noqa: E402,F401  (register the built-in sources)

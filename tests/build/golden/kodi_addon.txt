@@ -19,6 +19,7 @@ file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/devices/cli
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/devices/config.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/devices/foscam.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/devices/onvif.py
+file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/devices/unifi.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/events.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/i18n.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/keymap.py
@@ -36,6 +37,7 @@ file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/schema.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/triggers/__init__.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/triggers/foscam.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/triggers/frigate.py
+file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/triggers/unifi.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/update.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/urls.py
 file rw-r--r-- service.camalert/resources/lib/camalert/controller.py

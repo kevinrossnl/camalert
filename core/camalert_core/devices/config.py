@@ -8,7 +8,7 @@ from ..urls import valid_port
 
 # Credentials live only in a local file on the receiver (DEVICES_FILE), never in the settings or in logs.
 DEVICES_FILE = "/etc/enigma2/camalert_devices.conf"
-DEVICE_TYPES = ("foscam", "onvif")
+DEVICE_TYPES = ("foscam", "onvif", "unifi")
 PTZ_ACTIONS = ("up", "down", "left", "right", "zoom_in", "zoom_out", "home", "stop")
 
 
@@ -27,7 +27,7 @@ def parse_devices(text):
         if not name or kind not in DEVICE_TYPES or not addr:
             continue
         host, _sep, port = addr.rpartition(":") if addr.count(":") == 1 else (addr, "", "")
-        default = 88 if kind == "foscam" else 80
+        default = {"foscam": 88, "unifi": 443}.get(kind, 80)
         out[name] = {"type": kind, "host": host, "port": valid_port(port, default) if port else default,
                      "user": parts[3].strip() if len(parts) > 3 else "",
                      "password": parts[4] if len(parts) > 4 else ""}

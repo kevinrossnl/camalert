@@ -1,6 +1,10 @@
 # Changelog
 
 ## Unreleased
+- Core (#9): UniFi Protect as a trigger source without Home Assistant: devices-file type `unifi`
+  (`name|unifi|host[:443]|user|password`, a local "View Only" Protect user), read-only client (login, bootstrap,
+  events, snapshots) and `triggers/unifi.py` (ring, person, vehicle, animal, package, motion). The players and
+  their settings follow in separate issues.
 - Blueprint *CamAlert - doorbell on the players and an LG webOS TV* (#16): as the doorbell blueprint, plus a
   notification with an optional snapshot on an LG TV through the LG webOS TV integration (only while the TV is on).
 - API (#63): `/camalert/status` reports `screen` (`none`, `photo`, `strip`, `notification`, `live`, `mosaic`,

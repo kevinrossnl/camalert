@@ -45,6 +45,6 @@ glossary: `python3 tools/docs.py update`.
 | `schema` | the one settings schema (id, section, level, type, default, range/step, unit, label/help, platforms) and `migrate()` (#38/#7/#39) |
 | `update` | update check |
 | `mqtt/` | `codec`, `topics` (incl. discovery) |
-| `devices/` | `config`, `foscam`, `onvif`, `client` (network calls) |
+| `devices/` | `config`, `foscam`, `onvif`, `unifi` (UniFi Protect helpers, #9), `client` (network calls; `Protect` = read-only Protect session) |
 | `obs/` | `log` (levels + `redact()`), `camlog`, `metrics` |
-| `triggers/` | registry of trigger sources (`frigate`, `foscam`); a new source is one class with `@register` (#6) |
+| `triggers/` | registry of trigger sources (`frigate`, `foscam`, `unifi`); a new source is one class with `@register` (#6) |

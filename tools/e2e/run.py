@@ -54,19 +54,16 @@ def main(argv=None):
         return 2
     options = {"allow_quiet": a.allow_quiet, "wake": a.wake, "nobody_watching": names(a.nobody_watching),
                "dry_run": a.dry_run}
-    code = 0
+    plan = {}
     for name in chosen:
-        selected = names(a.scenario) or devices[name]["scenarios"] or list(CORE)
-        bad = [s for s in selected if s not in CORE]
+        plan[name] = names(a.scenario) or devices[name]["scenarios"] or list(CORE)
+        bad = [s for s in plan[name] if s not in CORE]
         if bad:
             print("unknown scenario(s): %s" % ", ".join(bad))
             return 2
-        data = Runner({name: devices[name]}, ha_cfg, options, a.reports).run([name], selected)
-        for d in data["devices"]:
-            print("%s: %s %s" % (d["device"], d["status"], d.get("reason", "")))
-            if d["status"] in ("failed", "error"):
-                code = 1
-        print("report: %s (privacy findings: %d)" % (os.path.join(a.reports, data["run"]), data["privacy_findings"]))
+    data = Runner({n: devices[n] for n in chosen}, ha_cfg, options, a.reports).run(chosen, plan)
+    code = 1 if any(d["status"] in ("failed", "error") for d in data["devices"]) else 0
+    print("report: %s (privacy findings: %d)" % (os.path.join(a.reports, data["run"]), data["privacy_findings"]))
     return code
 
 

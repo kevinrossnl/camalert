@@ -122,6 +122,21 @@ class TestEnigma2Run(Base):
         self.assertEqual((res["status"], res["mute"]), ("passed", "volume 0 (mute not confirmed)"))
         self.assert_restored(rx)
 
+    def test_late_mute_state_is_read_again_not_toggled_again(self):
+        rx = self.receiver()
+        real = rx.route
+        state = {"n": 0}
+
+        def route(path, q):
+            if path == "/api/vol" and not q.get("set") and rx.muted and state["n"] < 1:
+                state["n"] += 1  # the first read after the toggle still says "not muted"
+                return ({"result": True, "current": rx.volume, "ismute": False},)
+            return real(path, q)
+        rx.route = route
+        res, _ = self.run_on(rx, scenarios=["show"])
+        self.assertEqual(res["mute"], "muted")
+        self.assert_restored(rx)
+
     def test_no_scenario_when_it_cannot_be_made_quiet(self):
         rx = self.receiver(mute_works=False, set0_works=False)
         res, _ = self.run_on(rx)
@@ -277,6 +292,20 @@ class TestKodiRun(Base):
         self.assertEqual(res["status"], "skipped")
         self.assertIn("nothing playing", res["reason"])
         self.assertNotIn("Application.SetMute", k.requests)
+
+    def test_late_mute_state(self):
+        k = self.kodi()
+        real = k.answer
+        seen = {"n": 0}
+
+        def answer(req):
+            if req["method"] == "Application.GetProperties" and k.muted and seen["n"] < 1:
+                seen["n"] += 1
+                return {"jsonrpc": "2.0", "id": req["id"], "result": {"volume": k.volume, "muted": False}}
+            return real(req)
+        k.answer = answer
+        res, _ = self.run_on(k, name="kodi", scenarios=["show"])
+        self.assertEqual(res["mute"], "muted")
 
     def test_mute_fallback(self):
         k = self.kodi(mute_works=False)

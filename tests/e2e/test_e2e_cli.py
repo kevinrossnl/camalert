@@ -50,6 +50,19 @@ class TestCli(unittest.TestCase):
         self.assertEqual(code, 0, out)
         self.assertIn("boven: dry-run", out)
         self.assertEqual((self.rx.saveconfig_calls, self.rx.ctl.calls), ([], []))
+        self.assertEqual(len(os.listdir(self.tmp)), 2)  # devices.json + one run folder
+        k = Receiver(Clock())
+        try:
+            two = {"devices": {"boven": self.rx.profile(cameras="real", ssh=""),
+                               "beneden": k.profile(cameras="real", ssh="")}}
+            code, out = self.main("--device", "boven,beneden", "--dry-run", "--nobody-watching", "boven,beneden",
+                                  profile=two)
+            self.assertEqual(code, 0, out)
+            run = out.split("report: ")[1].split(" ")[0]
+            with open(os.path.join(run, "report.json")) as f:
+                self.assertEqual([d["device"] for d in json.load(f)["devices"]], ["boven", "beneden"])
+        finally:
+            k.close()
         self.assertEqual(self.main()[0], 2)
         self.assertEqual(self.main("--device", "nope")[0], 2)
         self.assertEqual(self.main("--device", "boven", "--scenario", "dance")[0], 2)

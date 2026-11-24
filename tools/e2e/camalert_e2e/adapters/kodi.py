@@ -77,7 +77,7 @@ class Kodi(object):
         ch["mute"] = "pending"
         save()
         self.rpc.call("Application.SetMute", {"mute": True})
-        if self.app()["muted"]:
+        if self._reads_muted():
             ch["mute"] = "mute"
             save()
             return "muted"
@@ -87,6 +87,14 @@ class Kodi(object):
         if int(self.app()["volume"]) == 0:
             return "volume 0 (mute not confirmed)"
         raise SafetyError("could not mute or set the volume to 0")
+
+    def _reads_muted(self):
+        """Kodi may report the new mute state a moment later (seen once on a real player): read a few times."""
+        for wait in (0, 0.5, 1.0):
+            self.sleep(wait)
+            if self.app()["muted"]:
+                return True
+        return False
 
     def verify_quiet(self):
         a = self.app()

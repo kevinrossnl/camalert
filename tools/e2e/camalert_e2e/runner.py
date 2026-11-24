@@ -163,10 +163,11 @@ class Runner(object):
 
     # --- the whole run ---------------------------------------------------------------------------------------------
     def run(self, names, selected):
+        """selected: a list of scenarios for every device, or {device: [scenarios]}."""
         results = []
         for name in names:
             self.log("%s:" % name)
-            res = self.run_device(name, selected)
+            res = self.run_device(name, selected[name] if isinstance(selected, dict) else selected)
             self.log("%s: %s %s" % (name, res["status"], res.get("reason", "")))
             results.append(res)
         data = {"run": self.store.run_id, "dry_run": bool(self.options.get("dry_run")), "devices": results}

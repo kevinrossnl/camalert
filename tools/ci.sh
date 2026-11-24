@@ -37,6 +37,7 @@ case "$area" in
     # blocks the GitHub mirror if anything personal slipped in (files and the whole commit history)
     test -n "${CAMALERT_DENYLIST:-}" || { echo "secret CAMALERT_DENYLIST missing"; exit 1; }
     python3 tools/check_private.py .
+    python3 tools/check_images.py .   # no EXIF/text/ICC metadata in images (#8)
     git log --format='%an %ae%n%B' | python3 -c '
 import os,re,sys
 deny=[w.strip().lower() for w in re.split(r"[\n,]",os.environ["CAMALERT_DENYLIST"]) if len(w.strip())>=3]

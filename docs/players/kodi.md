@@ -56,7 +56,17 @@ Passwords are stored by Kodi in the add-on's own `settings.xml` in its data fold
 - **Colour keys → Home Assistant** – while a camera is shown, RED / GREEN / YELLOW / BLUE fire a Home Assistant
   event (MQTT event entity `camalert/<id>/button` and the integration's webhook), for example to open the door.
   The colour key chosen under *Camera control* toggles PTZ on cameras that have it. On a keyboard: F1–F4.
-- **Mosaic** (up to 9 cameras) and **tour** (◀ ▶, OK = pause, GREEN or PLAY = live view, BACK).
+- **Mosaic** (up to 9 cameras; OK or BACK closes) and **tour** (◀ ▶, OK = pause, GREEN or PLAY = live view, BACK).
+
+| | |
+|---|---|
+| ![Photo window with a label and the key hint](../images/kodi/photo-window.png) | **Photo window**: title (*Doorbell · Front door*) with the key hint `OK = live   < > = other camera   BACK = close` |
+| ![Multi-camera window with one camera not reachable](../images/kodi/multi-camera-window.png) | **Multi-camera window**: 2–4 cameras; a camera that does not answer shows *Camera not reachable* |
+| ![Mosaic of four demo cameras](../images/kodi/mosaic.png) | **Mosaic**: up to 9 cameras, one tile *Camera not reachable*; OK or BACK closes |
+| ![Tour with its key hint](../images/kodi/tour.png) | **Tour**: `< >` = other camera, OK = pause, GREEN or PLAY = live view, BACK or STOP = close |
+| ![Settings of the add-on](../images/kodi/settings.png) | **Settings** (Add-ons › My add-ons › Services › CamAlert › Configure), in sections |
+| ![Event list with an ignored request](../images/kodi/event-list.png) | **Event list** (*Log and diagnostics* › *Recent events* in the settings): the last 20 requests with source, priority, result and reason, plus a small snapshot |
+| ![Diagnostics](../images/kodi/diagnostics.png) | **Diagnostics** (*Log and diagnostics* › *Diagnostics* in the settings): go2rtc, a snapshot of every camera, API port, last API call, log |
 
 All keys: [remote keys](../user/keys.md). Kodi's skin fonts have no ◀ ▶, so the hints on screen show `< >`.
 

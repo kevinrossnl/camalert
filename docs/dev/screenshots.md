@@ -15,8 +15,12 @@ Screenshots in the docs show **only CamAlert's own screens**, never a camera pic
 | `images/enigma2/event-list.png` | event list, an ignored request with its reason |
 | `images/enigma2/diagnostics.png` | diagnostics |
 | `images/enigma2/key-help.png` | HELP key in the tour |
+| `images/kodi/photo-window.png`, `multi-camera-window.png` | Kodi photo window (label, key hint) and multi-camera window, cropped to the window |
+| `images/kodi/mosaic.png`, `tour.png` | Kodi mosaic (one tile *Camera not reachable*) and tour with their key hints |
+| `images/kodi/settings.png`, `event-list.png`, `diagnostics.png` | Kodi settings, event list (an ignored request) and diagnostics, cropped to the dialog |
 
-The Enigma2 screenshots were taken on openATV 8.0.1 with its default skin (MetrixHD, 1280x720 OSD).
+The Enigma2 screenshots were taken on openATV 8.0.1 with its default skin (MetrixHD, 1280x720 OSD); the Kodi
+screenshots on Kodi 21 (LibreELEC) with Estuary at 1920x1080, cropped and scaled to 2/3.
 
 ## How to take them (Enigma2)
 
@@ -40,4 +44,19 @@ The Enigma2 screenshots were taken on openATV 8.0.1 with its default skin (Metri
 6. Look at every picture at full size (privacy checklist), crop away other plugins or vendor pictures, then
    `python3 tools/check_images.py --strip <files>` and `python3 tools/check_images.py .`.
 
-Kodi: the same with Estuary and nothing playing; the fake go2rtc runs on any computer in the network.
+## How to take them (Kodi)
+
+1. **Quiet and neutral first**, nothing playing (JSON-RPC `Player.GetActivePlayers` is empty). Write down volume
+   and mute (`Application.GetProperties`), then `Application.SetMute` true. Copy the add-on folder and its data
+   folder (`settings.xml`, `camalert.log`, `events/`).
+2. **Demo setup.** Start the fake go2rtc on the player (`python3 tests/fakes/go2rtc.py --unreachable driveway`),
+   stop Kodi, put a demo `settings.xml` in the data folder (go2rtc `http://127.0.0.1:1984`, default camera
+   `front_door`, camera names, **an access token**) and start Kodi.
+3. **Neutral background:** the home screen shows posters of your library, so open the System screen
+   (`GUI.ActivateWindow` `settings`) before every screenshot and crop to CamAlert's own window.
+4. Open the screens through the API on `127.0.0.1` (with the token) and `Addons.ExecuteAddon` (`events`,
+   `diagnostics`, no parameter = settings); take each picture with `Input.ExecuteAction` `screenshot` (Kodi's
+   screenshot folder). Fill the event list first as for Enigma2.
+5. **Restore everything:** stop Kodi, put back both folders, stop the fake go2rtc, start Kodi, restore volume and
+   mute. Use one JSON-RPC connection at a time: many short connections in a row crashed Kodi 21 once.
+6. Review, crop, `python3 tools/check_images.py --strip <files>` as for Enigma2.

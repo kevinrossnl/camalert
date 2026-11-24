@@ -13,6 +13,7 @@
   links, anchors, generated blocks and wording.
 - Tour: GREEN or PLAY switches to live view on both players (Enigma2 had GREEN, Kodi PLAY).
 - Kodi: OK closes the mosaic, like BACK (UI guideline: *OK or BACK*, #58).
+- Docs: Kodi screenshots (photo window, multi-camera window, mosaic, tour, settings, event list, diagnostics) with demo cameras and the Kodi screenshot procedure (#57).
 - Privacy (#8): `tools/check_images.py` refuses images with metadata (EXIF, GPS, XMP, ICC, text) in CI.
 - Enigma2: settings screen in sections in the order of the schema (General, Display, Rules, Triggers with Frigate
   and Foscam, Camera control, Home Assistant, API, Channel list, Log and diagnostics); settings follow the image's

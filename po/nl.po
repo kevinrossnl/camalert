@@ -645,6 +645,120 @@ msgstr "Zenderlijst '%s' met %d camera's aangemaakt."
 msgid "Choose a default camera first."
 msgstr "Kies eerst een standaardcamera."
 
+msgid "API"
+msgstr "API"
+
+msgid "Home Assistant"
+msgstr "Home Assistant"
+
+msgid "MQTT"
+msgstr "MQTT"
+
+msgid "Frigate"
+msgstr "Frigate"
+
+msgid "Foscam"
+msgstr "Foscam"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Wake up"
+msgstr "Wekken"
+
+msgid "High"
+msgstr "Hoog"
+
+msgid "Alarm"
+msgstr "Alarm"
+
+msgid "Shown"
+msgstr "Getoond"
+
+msgid "Extended"
+msgstr "Verlengd"
+
+msgid "Ignored"
+msgstr "Genegeerd"
+
+msgid "Error"
+msgstr "Fout"
+
+msgid "Woken up"
+msgstr "Gewekt"
+
+msgid "Outside the chosen times"
+msgstr "Buiten de gekozen tijden"
+
+msgid "Recording in progress"
+msgstr "Opname bezig"
+
+msgid "Something is playing"
+msgstr "Er wordt iets afgespeeld"
+
+msgid "In standby"
+msgstr "In stand-by"
+
+msgid "Screen off"
+msgstr "Scherm uit"
+
+msgid "Woken up from standby"
+msgstr "Uit stand-by gewekt"
+
+msgid "Cooldown (%d s)"
+msgstr "Wachttijd (%d s)"
+
+msgid "Already on screen"
+msgstr "Al in beeld"
+
+msgid "No camera given and no default camera set"
+msgstr "Geen camera opgegeven en geen standaardcamera ingesteld"
+
+msgid "Unknown camera"
+msgstr "Onbekende camera"
+
+msgid "Unknown camera or no valid go2rtc address"
+msgstr "Onbekende camera of geen geldig go2rtc-adres"
+
+msgid "Camera not reachable"
+msgstr "Camera niet bereikbaar"
+
+msgid "Time"
+msgstr "Tijd"
+
+msgid "Camera"
+msgstr "Camera"
+
+msgid "Reason"
+msgstr "Reden"
+
+msgid "live"
+msgstr "live"
+
+msgid "other camera"
+msgstr "andere camera"
+
+msgid "camera control"
+msgstr "camerabediening"
+
+msgid "close"
+msgstr "sluiten"
+
+msgid "move"
+msgstr "bewegen"
+
+msgid "zoom"
+msgstr "zoomen"
+
+msgid "home position"
+msgstr "beginpositie"
+
+msgid "end camera control"
+msgstr "camerabediening stoppen"
+
+msgid "pause"
+msgstr "pauze"
+
 msgid "Camera file (direct mode)"
 msgstr "Camerabestand (rechtstreeks)"
 

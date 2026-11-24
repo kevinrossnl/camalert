@@ -35,6 +35,7 @@ def diag_line(ok, text):
 
 
 def event_line(e):
+    """English line with raw codes (old screens); new screens use present.event_line(e, tr) (#41)."""
     import time as _t
     who = (" · " + e["label"]) if e.get("label") else ""
     return "%s  %s%s  (%s, %s) -> %s" % (_t.strftime("%H:%M:%S", _t.localtime(e["time"])), e["camera"], who,

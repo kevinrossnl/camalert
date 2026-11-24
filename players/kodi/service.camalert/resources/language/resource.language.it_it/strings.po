@@ -37,210 +37,6 @@ msgctxt "#30007"
 msgid "Log and diagnostics"
 msgstr "Log e diagnostica"
 
-msgctxt "#30200"
-msgid "Checking..."
-msgstr "Verifica in corso..."
-
-msgctxt "#30201"
-msgid "Diagnostics"
-msgstr "Diagnostica"
-
-msgctxt "#30202"
-msgid "The CamAlert service is not running."
-msgstr "Il servizio CamAlert non è attivo."
-
-msgctxt "#30203"
-msgid "No events yet."
-msgstr "Ancora nessun evento."
-
-msgctxt "#30204"
-msgid "Recent events"
-msgstr "Eventi recenti"
-
-msgctxt "#30205"
-msgid "Show camera"
-msgstr "Mostra telecamera"
-
-msgctxt "#30206"
-msgid "Play Frigate clip"
-msgstr "Riproduci clip Frigate"
-
-msgctxt "#30210"
-msgid "go2rtc reachable (%d cameras, %d ms)"
-msgstr "go2rtc raggiungibile (%d telecamere, %d ms)"
-
-msgctxt "#30211"
-msgid "go2rtc not reachable: %s"
-msgstr "go2rtc non raggiungibile: %s"
-
-msgctxt "#30212"
-msgid "No valid go2rtc address"
-msgstr "Nessun indirizzo go2rtc valido"
-
-msgctxt "#30213"
-msgid "%s: no snapshot address (live only)"
-msgstr "%s: nessun indirizzo foto (solo live)"
-
-msgctxt "#30214"
-msgid "%s: snapshot %d ms"
-msgstr "%s: foto %d ms"
-
-msgctxt "#30215"
-msgid "%s: snapshot failed (%s)"
-msgstr "%s: foto non riuscita (%s)"
-
-msgctxt "#30216"
-msgid "API listening on port %d"
-msgstr "API in ascolto sulla porta %d"
-
-msgctxt "#30217"
-msgid "API not listening on port %d"
-msgstr "API non in ascolto sulla porta %d"
-
-msgctxt "#30218"
-msgid "MQTT connected"
-msgstr "MQTT connesso"
-
-msgctxt "#30219"
-msgid "MQTT not connected"
-msgstr "MQTT non connesso"
-
-msgctxt "#30220"
-msgid "Last API call %s from %s (%s)"
-msgstr "Ultima chiamata API %s da %s (%s)"
-
-msgctxt "#30221"
-msgid "No API call since the last start"
-msgstr "Nessuna chiamata API dall'ultimo avvio"
-
-msgctxt "#30222"
-msgid "Devices file: %s"
-msgstr "File dispositivi: %s"
-
-msgctxt "#30223"
-msgid "Do not disturb is on"
-msgstr "Non disturbare è attivo"
-
-msgctxt "#30224"
-msgid "Log: %s"
-msgstr "Log: %s"
-
-msgctxt "#30230"
-msgid "Title size"
-msgstr "Dimensione del titolo"
-
-msgctxt "#30231"
-msgid "Normal"
-msgstr "Normale"
-
-msgctxt "#30232"
-msgid "Doorbell chime"
-msgstr "Suono del campanello"
-
-msgctxt "#30233"
-msgid "Plays a chime when a camera appears (follows Kodi's volume)."
-msgstr "Suona un campanello quando appare una telecamera (segue il volume di Kodi)."
-
-msgctxt "#30234"
-msgid "Off"
-msgstr "Disattivato"
-
-msgctxt "#30235"
-msgid "Doorbell and alarm"
-msgstr "Campanello e allarme"
-
-msgctxt "#30236"
-msgid "Every request"
-msgstr "Ogni richiesta"
-
-msgctxt "#30237"
-msgid "Frigate address (for clips)"
-msgstr "Indirizzo Frigate (per le clip)"
-
-msgctxt "#30238"
-msgid "e.g. http://192.168.1.10:5000 - lets you replay Frigate clips from the event list."
-msgstr "ad es. http://192.168.1.10:5000 - per rivedere le clip Frigate dall'elenco eventi."
-
-msgctxt "#30239"
-msgid "Camera control (PTZ) key"
-msgstr "Tasto per il controllo telecamera (PTZ)"
-
-msgctxt "#30240"
-msgid "On cameras with PTZ this key toggles camera control (MENU works too)."
-msgstr "Sulle telecamere PTZ questo tasto attiva il controllo (anche MENU)."
-
-msgctxt "#30241"
-msgid "RED"
-msgstr "ROSSO"
-
-msgctxt "#30242"
-msgid "GREEN"
-msgstr "VERDE"
-
-msgctxt "#30243"
-msgid "YELLOW"
-msgstr "GIALLO"
-
-msgctxt "#30244"
-msgid "BLUE"
-msgstr "BLU"
-
-msgctxt "#30245"
-msgid "Colour keys to Home Assistant"
-msgstr "Tasti colorati a Home Assistant"
-
-msgctxt "#30246"
-msgid "While a camera is shown the colour keys trigger a Home Assistant event (e.g. open the door)."
-msgstr "Durante la visualizzazione i tasti colorati inviano un evento a Home Assistant (ad es. aprire la porta)."
-
-msgctxt "#30247"
-msgid "Log level"
-msgstr "Livello di log"
-
-msgctxt "#30248"
-msgid "camalert.log in the add-on data folder (2 x 1 MB), besides kodi.log. Passwords are never logged."
-msgstr "camalert.log nella cartella dati (2 x 1 MB), oltre a kodi.log. Le password non vengono mai registrate."
-
-msgctxt "#30249"
-msgid "Errors only"
-msgstr "Solo errori"
-
-msgctxt "#30250"
-msgid "Verbose"
-msgstr "Dettagliato"
-
-msgctxt "#30251"
-msgid "Remote syslog (host:port)"
-msgstr "Syslog remoto (host:porta)"
-
-msgctxt "#30252"
-msgid "Optional, e.g. 192.168.1.10:514 (UDP). Empty = off."
-msgstr "Facoltativo, ad es. 192.168.1.10:514 (UDP). Vuoto = disattivato."
-
-msgctxt "#30253"
-msgid "Home Assistant webhook"
-msgstr "Webhook Home Assistant"
-
-msgctxt "#30254"
-msgid "%s - camera not reachable"
-msgstr "%s - telecamera non raggiungibile"
-
-msgctxt "#30255"
-msgid "Cooldown per camera"
-msgstr "Attesa per telecamera"
-
-msgctxt "#30256"
-msgid "Seconds per camera, e.g. *=30|garden=120 (* = all). An open window is still extended; alarm always passes."
-msgstr "Secondi per telecamera, ad es. *=30|giardino=120 (* = tutte). Una finestra aperta viene prolungata; l'allarme passa sempre."
-
-msgctxt "#30257"
-msgid "Live view substreams"
-msgstr "Substream per la visione live"
-
-msgctxt "#30258"
-msgid "For a camera this Kodi cannot play smoothly (H.265 / 4K): front_door=front_door_sub|... (go2rtc stream names)."
-msgstr "Per una telecamera che questo Kodi non riproduce bene (H.265 / 4K): porta=porta_sub|... (nomi stream go2rtc)."
-
 msgctxt "#30010"
 msgid "Enable CamAlert"
 msgstr "Attiva CamAlert"
@@ -477,10 +273,6 @@ msgctxt "#30077"
 msgid "RTSP"
 msgstr "RTSP"
 
-msgctxt "#30080"
-msgid "HLS (HTTP, a few seconds delay)"
-msgstr "HLS (HTTP, qualche secondo di ritardo)"
-
 msgctxt "#30078"
 msgid "Tour: seconds per camera"
 msgstr "Giro: secondi per telecamera"
@@ -488,6 +280,10 @@ msgstr "Giro: secondi per telecamera"
 msgctxt "#30079"
 msgid "How long each camera is shown in the tour."
 msgstr "Quanto resta ogni telecamera nel giro."
+
+msgctxt "#30080"
+msgid "HLS (HTTP, a few seconds delay)"
+msgstr "HLS (HTTP, qualche secondo di ritardo)"
 
 msgctxt "#30090"
 msgid "Only between certain times"
@@ -780,3 +576,403 @@ msgstr "Telecamere"
 msgctxt "#30196"
 msgid "No camera control set up for this camera (devices.conf)."
 msgstr "Nessun controllo impostato per questa telecamera (devices.conf)."
+
+msgctxt "#30200"
+msgid "Checking..."
+msgstr "Verifica in corso..."
+
+msgctxt "#30201"
+msgid "Diagnostics"
+msgstr "Diagnostica"
+
+msgctxt "#30202"
+msgid "The CamAlert service is not running."
+msgstr "Il servizio CamAlert non è attivo."
+
+msgctxt "#30203"
+msgid "No events yet."
+msgstr "Ancora nessun evento."
+
+msgctxt "#30204"
+msgid "Recent events"
+msgstr "Eventi recenti"
+
+msgctxt "#30205"
+msgid "Show camera"
+msgstr "Mostra telecamera"
+
+msgctxt "#30206"
+msgid "Play Frigate clip"
+msgstr "Riproduci clip Frigate"
+
+msgctxt "#30210"
+msgid "go2rtc reachable (%d cameras, %d ms)"
+msgstr "go2rtc raggiungibile (%d telecamere, %d ms)"
+
+msgctxt "#30211"
+msgid "go2rtc not reachable: %s"
+msgstr "go2rtc non raggiungibile: %s"
+
+msgctxt "#30212"
+msgid "No valid go2rtc address"
+msgstr "Nessun indirizzo go2rtc valido"
+
+msgctxt "#30213"
+msgid "%s: no snapshot address (live only)"
+msgstr "%s: nessun indirizzo foto (solo live)"
+
+msgctxt "#30214"
+msgid "%s: snapshot %d ms"
+msgstr "%s: foto %d ms"
+
+msgctxt "#30215"
+msgid "%s: snapshot failed (%s)"
+msgstr "%s: foto non riuscita (%s)"
+
+msgctxt "#30216"
+msgid "API listening on port %d"
+msgstr "API in ascolto sulla porta %d"
+
+msgctxt "#30217"
+msgid "API not listening on port %d"
+msgstr "API non in ascolto sulla porta %d"
+
+msgctxt "#30218"
+msgid "MQTT connected"
+msgstr "MQTT connesso"
+
+msgctxt "#30219"
+msgid "MQTT not connected"
+msgstr "MQTT non connesso"
+
+msgctxt "#30220"
+msgid "Last API call %s from %s (%s)"
+msgstr "Ultima chiamata API %s da %s (%s)"
+
+msgctxt "#30221"
+msgid "No API call since the last start"
+msgstr "Nessuna chiamata API dall'ultimo avvio"
+
+msgctxt "#30222"
+msgid "Devices file: %s"
+msgstr "File dispositivi: %s"
+
+msgctxt "#30223"
+msgid "Do not disturb is on"
+msgstr "Non disturbare è attivo"
+
+msgctxt "#30224"
+msgid "Log: %s"
+msgstr "Log: %s"
+
+msgctxt "#30230"
+msgid "Title size"
+msgstr "Dimensione del titolo"
+
+msgctxt "#30231"
+msgid "Normal"
+msgstr "Normale"
+
+msgctxt "#30232"
+msgid "Doorbell chime"
+msgstr "Suono del campanello"
+
+msgctxt "#30233"
+msgid "Plays a chime when a camera appears (follows Kodi's volume)."
+msgstr "Suona un campanello quando appare una telecamera (segue il volume di Kodi)."
+
+msgctxt "#30234"
+msgid "Off"
+msgstr "Disattivato"
+
+msgctxt "#30235"
+msgid "Doorbell and alarm"
+msgstr "Campanello e allarme"
+
+msgctxt "#30236"
+msgid "Every request"
+msgstr "Ogni richiesta"
+
+msgctxt "#30237"
+msgid "Frigate address (for clips)"
+msgstr "Indirizzo Frigate (per le clip)"
+
+msgctxt "#30238"
+msgid "e.g. http://192.168.1.10:5000 - lets you replay Frigate clips from the event list."
+msgstr "ad es. http://192.168.1.10:5000 - per rivedere le clip Frigate dall'elenco eventi."
+
+msgctxt "#30239"
+msgid "Camera control (PTZ) key"
+msgstr "Tasto per il controllo telecamera (PTZ)"
+
+msgctxt "#30240"
+msgid "On cameras with PTZ this key toggles camera control (MENU works too)."
+msgstr "Sulle telecamere PTZ questo tasto attiva il controllo (anche MENU)."
+
+msgctxt "#30241"
+msgid "RED"
+msgstr "ROSSO"
+
+msgctxt "#30242"
+msgid "GREEN"
+msgstr "VERDE"
+
+msgctxt "#30243"
+msgid "YELLOW"
+msgstr "GIALLO"
+
+msgctxt "#30244"
+msgid "BLUE"
+msgstr "BLU"
+
+msgctxt "#30245"
+msgid "Colour keys to Home Assistant"
+msgstr "Tasti colorati a Home Assistant"
+
+msgctxt "#30246"
+msgid "While a camera is shown the colour keys trigger a Home Assistant event (e.g. open the door)."
+msgstr "Durante la visualizzazione i tasti colorati inviano un evento a Home Assistant (ad es. aprire la porta)."
+
+msgctxt "#30247"
+msgid "Log level"
+msgstr "Livello di log"
+
+msgctxt "#30248"
+msgid "camalert.log in the add-on data folder (2 x 1 MB), besides kodi.log. Passwords are never logged."
+msgstr "camalert.log nella cartella dati (2 x 1 MB), oltre a kodi.log. Le password non vengono mai registrate."
+
+msgctxt "#30249"
+msgid "Errors only"
+msgstr "Solo errori"
+
+msgctxt "#30250"
+msgid "Verbose"
+msgstr "Dettagliato"
+
+msgctxt "#30251"
+msgid "Remote syslog (host:port)"
+msgstr "Syslog remoto (host:porta)"
+
+msgctxt "#30252"
+msgid "Optional, e.g. 192.168.1.10:514 (UDP). Empty = off."
+msgstr "Facoltativo, ad es. 192.168.1.10:514 (UDP). Vuoto = disattivato."
+
+msgctxt "#30253"
+msgid "Home Assistant webhook"
+msgstr "Webhook Home Assistant"
+
+msgctxt "#30254"
+msgid "%s - camera not reachable"
+msgstr "%s - telecamera non raggiungibile"
+
+msgctxt "#30255"
+msgid "Cooldown per camera"
+msgstr "Attesa per telecamera"
+
+msgctxt "#30256"
+msgid "Seconds per camera, e.g. *=30|garden=120 (* = all). An open window is still extended; alarm always passes."
+msgstr "Secondi per telecamera, ad es. *=30|giardino=120 (* = tutte). Una finestra aperta viene prolungata; l'allarme passa sempre."
+
+msgctxt "#30257"
+msgid "Live view substreams"
+msgstr "Substream per la visione live"
+
+msgctxt "#30258"
+msgid "For a camera this Kodi cannot play smoothly (H.265 / 4K): front_door=front_door_sub|... (go2rtc stream names)."
+msgstr "Per una telecamera che questo Kodi non riproduce bene (H.265 / 4K): porta=porta_sub|... (nomi stream go2rtc)."
+
+msgctxt "#30500"
+msgid "API"
+msgstr "API"
+
+msgctxt "#30501"
+msgid "Home Assistant"
+msgstr "Home Assistant"
+
+msgctxt "#30502"
+msgid "MQTT"
+msgstr "MQTT"
+
+msgctxt "#30503"
+msgid "Frigate"
+msgstr "Frigate"
+
+msgctxt "#30504"
+msgid "Foscam"
+msgstr "Foscam"
+
+msgctxt "#30505"
+msgid "Menu"
+msgstr "Menu"
+
+msgctxt "#30506"
+msgid "Wake up"
+msgstr "Risveglio"
+
+msgctxt "#30507"
+msgid "Normal"
+msgstr "Normale"
+
+msgctxt "#30508"
+msgid "High"
+msgstr "Alta"
+
+msgctxt "#30509"
+msgid "Alarm"
+msgstr "Allarme"
+
+msgctxt "#30510"
+msgid "Shown"
+msgstr "Mostrato"
+
+msgctxt "#30511"
+msgid "Extended"
+msgstr "Prolungato"
+
+msgctxt "#30512"
+msgid "Ignored"
+msgstr "Ignorato"
+
+msgctxt "#30513"
+msgid "Error"
+msgstr "Errore"
+
+msgctxt "#30514"
+msgid "Woken up"
+msgstr "Risvegliato"
+
+msgctxt "#30515"
+msgid "Do not disturb"
+msgstr "Non disturbare"
+
+msgctxt "#30516"
+msgid "Outside the chosen times"
+msgstr "Fuori dagli orari scelti"
+
+msgctxt "#30517"
+msgid "Recording in progress"
+msgstr "Registrazione in corso"
+
+msgctxt "#30518"
+msgid "Something is playing"
+msgstr "Riproduzione in corso"
+
+msgctxt "#30519"
+msgid "In standby"
+msgstr "In standby"
+
+msgctxt "#30520"
+msgid "Screen off"
+msgstr "Schermo spento"
+
+msgctxt "#30521"
+msgid "Woken up from standby"
+msgstr "Risvegliato dallo standby"
+
+msgctxt "#30522"
+msgid "Cooldown (%d s)"
+msgstr "Attesa (%d s)"
+
+msgctxt "#30523"
+msgid "Already on screen"
+msgstr "Già sullo schermo"
+
+msgctxt "#30524"
+msgid "No camera given and no default camera set"
+msgstr "Nessuna telecamera indicata e nessuna telecamera predefinita impostata"
+
+msgctxt "#30525"
+msgid "Unknown camera"
+msgstr "Telecamera sconosciuta"
+
+msgctxt "#30526"
+msgid "Unknown camera or no valid go2rtc address"
+msgstr "Telecamera sconosciuta o nessun indirizzo go2rtc valido"
+
+msgctxt "#30527"
+msgid "Camera not reachable"
+msgstr "Telecamera non raggiungibile"
+
+msgctxt "#30528"
+msgid "Time"
+msgstr "Ora"
+
+msgctxt "#30529"
+msgid "Camera"
+msgstr "Telecamera"
+
+msgctxt "#30530"
+msgid "Source"
+msgstr "Origine"
+
+msgctxt "#30531"
+msgid "Priority"
+msgstr "Priorità"
+
+msgctxt "#30532"
+msgid "Result"
+msgstr "Risultato"
+
+msgctxt "#30533"
+msgid "Reason"
+msgstr "Motivo"
+
+msgctxt "#30534"
+msgid "GREEN"
+msgstr "VERDE"
+
+msgctxt "#30535"
+msgid "RED"
+msgstr "ROSSO"
+
+msgctxt "#30536"
+msgid "YELLOW"
+msgstr "GIALLO"
+
+msgctxt "#30537"
+msgid "BLUE"
+msgstr "BLU"
+
+msgctxt "#30538"
+msgid "live"
+msgstr "live"
+
+msgctxt "#30539"
+msgid "other camera"
+msgstr "altra telecamera"
+
+msgctxt "#30540"
+msgid "camera control"
+msgstr "controllo telecamera"
+
+msgctxt "#30541"
+msgid "close"
+msgstr "chiudere"
+
+msgctxt "#30542"
+msgid "move"
+msgstr "spostare"
+
+msgctxt "#30543"
+msgid "zoom"
+msgstr "zoom"
+
+msgctxt "#30544"
+msgid "home position"
+msgstr "posizione iniziale"
+
+msgctxt "#30545"
+msgid "end camera control"
+msgstr "terminare il controllo telecamera"
+
+msgctxt "#30546"
+msgid "pause"
+msgstr "pausa"
+
+msgctxt "#30547"
+msgid "paused"
+msgstr "in pausa"
+
+msgctxt "#30548"
+msgid "tour"
+msgstr "giro"

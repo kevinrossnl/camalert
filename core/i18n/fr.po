@@ -96,7 +96,7 @@ msgstr "Côte à côte"
 msgid "2 x 2"
 msgstr "2 x 2"
 
-#: e2 kodi:30140 kodi:30231 ha:selector.priority.options.normal
+#: e2 kodi:30140 kodi:30231 kodi:30507 ha:selector.priority.options.normal
 msgid "Normal"
 msgstr "Normale"
 
@@ -116,19 +116,19 @@ msgstr "Erreurs seulement"
 msgid "Verbose"
 msgstr "Détaillé"
 
-#: e2 kodi:30244
+#: e2 kodi:30244 kodi:30537
 msgid "BLUE"
 msgstr "BLEU"
 
-#: e2 kodi:30243
+#: e2 kodi:30243 kodi:30536
 msgid "YELLOW"
 msgstr "JAUNE"
 
-#: e2 kodi:30241
+#: e2 kodi:30241 kodi:30535
 msgid "RED"
 msgstr "ROUGE"
 
-#: e2 kodi:30242
+#: e2 kodi:30242 kodi:30534
 msgid "GREEN"
 msgstr "VERT"
 
@@ -228,15 +228,15 @@ msgstr "Aucun événement pour l'instant"
 msgid "Play clip"
 msgstr "Lire le clip"
 
-#: e2
+#: e2 kodi:30530
 msgid "Source"
 msgstr "Source"
 
-#: e2 kodi:30139 ha:services.show.fields.priority.name
+#: e2 kodi:30139 kodi:30531 ha:services.show.fields.priority.name
 msgid "Priority"
 msgstr "Priorité"
 
-#: e2
+#: e2 kodi:30532
 msgid "Result"
 msgstr "Résultat"
 
@@ -256,11 +256,11 @@ msgstr "EXIT = fermer"
 msgid "%s - camera not reachable"
 msgstr "%s - caméra injoignable"
 
-#: e2 kodi:30190
+#: e2 kodi:30190 kodi:30547
 msgid "paused"
 msgstr "en pause"
 
-#: e2 kodi:30191
+#: e2 kodi:30191 kodi:30548
 msgid "tour"
 msgstr "ronde"
 
@@ -500,7 +500,7 @@ msgstr "Sous-flux pour le direct"
 msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
 msgstr "Pour les caméras que le récepteur ne peut pas lire (H.265/4K) : front_door=front_door_sub utilise ce flux go2rtc en direct."
 
-#: e2 kodi:30102 ha:entity.switch.dnd.name
+#: e2 kodi:30102 kodi:30515 ha:entity.switch.dnd.name
 msgid "Do not disturb"
 msgstr "Ne pas déranger"
 
@@ -860,6 +860,158 @@ msgstr "Liste '%s' avec %d caméras créée."
 msgid "Choose a default camera first."
 msgstr "Choisissez d'abord une caméra par défaut."
 
+#: e2 kodi:30006 kodi:30500
+msgid "API"
+msgstr "API"
+
+#: e2 kodi:30501
+msgid "Home Assistant"
+msgstr "Home Assistant"
+
+#: e2 kodi:30502
+msgid "MQTT"
+msgstr "MQTT"
+
+#: e2 kodi:30503
+msgid "Frigate"
+msgstr "Frigate"
+
+#: e2 kodi:30504
+msgid "Foscam"
+msgstr "Foscam"
+
+#: e2 kodi:30505
+msgid "Menu"
+msgstr "Menu"
+
+#: e2 kodi:30506
+msgid "Wake up"
+msgstr "Réveil"
+
+#: e2 kodi:30141 kodi:30508
+msgid "High"
+msgstr "Haute"
+
+#: e2 kodi:30142 kodi:30509
+msgid "Alarm"
+msgstr "Alarme"
+
+#: e2 kodi:30510
+msgid "Shown"
+msgstr "Affiché"
+
+#: e2 kodi:30511
+msgid "Extended"
+msgstr "Prolongé"
+
+#: e2 kodi:30512
+msgid "Ignored"
+msgstr "Ignoré"
+
+#: e2 kodi:30513
+msgid "Error"
+msgstr "Erreur"
+
+#: e2 kodi:30514
+msgid "Woken up"
+msgstr "Réveillé"
+
+#: e2 kodi:30516
+msgid "Outside the chosen times"
+msgstr "En dehors des heures choisies"
+
+#: e2 kodi:30517
+msgid "Recording in progress"
+msgstr "Enregistrement en cours"
+
+#: e2 kodi:30518
+msgid "Something is playing"
+msgstr "Une lecture est en cours"
+
+#: e2 kodi:30519
+msgid "In standby"
+msgstr "En veille"
+
+#: e2 kodi:30520
+msgid "Screen off"
+msgstr "Écran éteint"
+
+#: e2 kodi:30521
+msgid "Woken up from standby"
+msgstr "Sorti de veille"
+
+#: e2 kodi:30522
+msgid "Cooldown (%d s)"
+msgstr "Délai (%d s)"
+
+#: e2 kodi:30523
+msgid "Already on screen"
+msgstr "Déjà à l'écran"
+
+#: e2 kodi:30524
+msgid "No camera given and no default camera set"
+msgstr "Aucune caméra indiquée et aucune caméra par défaut définie"
+
+#: e2 kodi:30525
+msgid "Unknown camera"
+msgstr "Caméra inconnue"
+
+#: e2 kodi:30526
+msgid "Unknown camera or no valid go2rtc address"
+msgstr "Caméra inconnue ou aucune adresse go2rtc valide"
+
+#: e2 kodi:30527
+msgid "Camera not reachable"
+msgstr "Caméra injoignable"
+
+#: e2 kodi:30528
+msgid "Time"
+msgstr "Heure"
+
+#: e2 kodi:30529 ha:services.ptz.fields.camera.name ha:services.show.fields.camera.name
+msgid "Camera"
+msgstr "Caméra"
+
+#: e2 kodi:30533
+msgid "Reason"
+msgstr "Raison"
+
+#: e2 kodi:30538
+msgid "live"
+msgstr "direct"
+
+#: e2 kodi:30539
+msgid "other camera"
+msgstr "autre caméra"
+
+#: e2 kodi:30540
+msgid "camera control"
+msgstr "contrôle de la caméra"
+
+#: e2 kodi:30541
+msgid "close"
+msgstr "fermer"
+
+#: e2 kodi:30542
+msgid "move"
+msgstr "déplacer"
+
+#: e2 kodi:30543
+msgid "zoom"
+msgstr "zoom"
+
+#: e2 kodi:30544
+msgid "home position"
+msgstr "position initiale"
+
+#: e2 kodi:30545
+msgid "end camera control"
+msgstr "quitter le contrôle de la caméra"
+
+#: e2 kodi:30546
+msgid "pause"
+msgstr "pause"
+
 #: e2 kodi:30022
 msgid "Camera file (direct mode)"
 msgstr "Fichier caméras (mode direct)"
@@ -924,13 +1076,181 @@ msgstr "Déclencheurs"
 msgid "Camera control"
 msgstr "Contrôle caméra"
 
-#: kodi:30006
-msgid "API"
-msgstr "API"
-
 #: kodi:30007
 msgid "Log and diagnostics"
 msgstr "Journal et diagnostic"
+
+#: kodi:30013
+msgid "go2rtc is recommended. Without go2rtc, list your cameras in cameras.conf."
+msgstr "go2rtc est recommandé. Sans go2rtc, listez les caméras dans cameras.conf."
+
+#: kodi:30019
+msgid "Usually 8554. Only used with the RTSP live format."
+msgstr "Généralement 8554. Utilisé seulement avec le format RTSP."
+
+#: kodi:30025
+msgid "Camera name, e.g. front_door. Use 'Choose camera' to pick it from the list."
+msgstr "Nom de la caméra, p. ex. porte. Utilisez « Choisir la caméra »."
+
+#: kodi:30028
+msgid "Optional: name=Title|name2=Title 2"
+msgstr "Optionnel : nom=Titre|nom2=Titre 2"
+
+#: kodi:30030
+msgid "Comma separated, up to 9. Empty = all."
+msgstr "Séparées par des virgules, 9 max. Vide = toutes."
+
+#: kodi:30041
+msgid "Photo window keeps playing what you watch; live shows the camera stream full screen."
+msgstr "La fenêtre photo laisse tourner le programme ; le direct affiche la caméra en plein écran."
+
+#: kodi:30057
+msgid "Layout when a request names 2 to 4 cameras (photo window)."
+msgstr "Disposition quand une demande cite 2 à 4 caméras (fenêtre photo)."
+
+#: kodi:30061
+msgid "Grid (2x2)"
+msgstr "Grille (2x2)"
+
+#: kodi:30063
+msgid "e.g. front_door=rot180|garden=mirror (rot180, mirror, flip)"
+msgstr "p. ex. porte=rot180|jardin=mirror (rot180, mirror, flip)"
+
+#: kodi:30065
+msgid "Seconds between pictures, e.g. front_door=0.5|garden=5. Default: as fast as possible."
+msgstr "Secondes entre les images, p. ex. porte=0.5|jardin=5. Par défaut : au plus vite."
+
+#: kodi:30067
+msgid "OK = live, LEFT/RIGHT = other camera, MENU = PTZ, BACK = close. Any other key closes it too."
+msgstr "OK = direct, GAUCHE/DROITE = autre caméra, MENU = PTZ, RETOUR = fermer. Toute autre touche ferme aussi."
+
+#: kodi:30069
+msgid "Pauses a video or live TV while the camera is shown and continues afterwards."
+msgstr "Met en pause la vidéo ou la TV pendant l'affichage, puis reprend."
+
+#: kodi:30071
+msgid "After live view, continue the video at the same position or the same TV channel."
+msgstr "Après le direct, reprendre la vidéo au même endroit ou la même chaîne."
+
+#: kodi:30076
+msgid "MP4 (HTTP)"
+msgstr "MP4 (HTTP)"
+
+#: kodi:30077
+msgid "RTSP"
+msgstr "RTSP"
+
+#: kodi:30079
+msgid "How long each camera is shown in the tour."
+msgstr "Durée de chaque caméra pendant la ronde."
+
+#: kodi:30080
+msgid "HLS (HTTP, a few seconds delay)"
+msgstr "HLS (HTTP, quelques secondes de retard)"
+
+#: kodi:30096
+msgid "Normal-priority requests are ignored while you watch this. High and alarm always pass."
+msgstr "Les demandes normales sont ignorées pendant ce visionnage. Haute et alarme passent toujours."
+
+#: kodi:30097
+msgid "Always show"
+msgstr "Toujours afficher"
+
+#: kodi:30098
+msgid "Not during movies and recordings"
+msgstr "Pas pendant les films et enregistrements"
+
+#: kodi:30099
+msgid "Not during anything (also live TV)"
+msgstr "Jamais pendant une lecture (TV comprise)"
+
+#: kodi:30101
+msgid "Requests with priority 'alarm' switch the TV on via HDMI-CEC."
+msgstr "Les demandes « alarm » allument la TV via HDMI-CEC."
+
+#: kodi:30105
+msgid "Which priorities are held back while do not disturb is on."
+msgstr "Priorités bloquées en mode ne pas déranger."
+
+#: kodi:30106
+msgid "Normal priority"
+msgstr "Priorité normale"
+
+#: kodi:30107
+msgid "Normal and high priority"
+msgstr "Priorités normale et haute"
+
+#: kodi:30111
+msgid "Connects to your MQTT broker; with discovery this Kodi appears in Home Assistant automatically."
+msgstr "Se connecte au broker MQTT ; avec la découverte, ce Kodi apparaît dans Home Assistant."
+
+#: kodi:30121
+msgid "Empty = CamAlert + the name of this Kodi."
+msgstr "Vide = CamAlert + le nom de ce Kodi."
+
+#: kodi:30131
+msgid "Shows the camera when Frigate detects something (via the MQTT broker)."
+msgstr "Affiche la caméra quand Frigate détecte quelque chose (via MQTT)."
+
+#: kodi:30134
+msgid "Objects"
+msgstr "Objets"
+
+#: kodi:30135
+msgid "e.g. person,car. Empty = all."
+msgstr "p. ex. person,car. Vide = tous."
+
+#: kodi:30137
+msgid "Only if they differ: frigate_name=camera|..."
+msgstr "Seulement s'ils diffèrent : nom_frigate=caméra|..."
+
+#: kodi:30144
+msgid "Asks the Foscam cameras in devices.conf for motion and sound alarms."
+msgstr "Interroge les caméras Foscam de devices.conf sur les alarmes."
+
+#: kodi:30150
+msgid "Cameras with PTZ or Foscam alarms"
+msgstr "Caméras avec PTZ ou alarme Foscam"
+
+#: kodi:30151
+msgid "Listed in devices.conf in the add-on data folder, one per line: name|onvif|address:80|user|password (or foscam, port 88)"
+msgstr "Listées dans devices.conf du dossier de données, une par ligne : nom|onvif|adresse:80|utilisateur|motdepasse (ou foscam, port 88)"
+
+#: kodi:30155
+msgid "Create devices.conf (example)"
+msgstr "Créer devices.conf (exemple)"
+
+#: kodi:30161
+msgid "Port of the CamAlert API on this Kodi (default 8099)."
+msgstr "Port de l'API CamAlert sur ce Kodi (8099 par défaut)."
+
+#: kodi:30170
+msgid "Test: show the default camera"
+msgstr "Test : afficher la caméra par défaut"
+
+#: kodi:30171 ha:services.mosaic.name
+msgid "Show mosaic"
+msgstr "Afficher la mosaïque"
+
+#: kodi:30172
+msgid "Start tour"
+msgstr "Lancer la ronde"
+
+#: kodi:30181
+msgid "Could not reach the camera source:\n%s"
+msgstr "Source des caméras injoignable :\n%s"
+
+#: kodi:30182
+msgid "No cameras found."
+msgstr "Aucune caméra trouvée."
+
+#: kodi:30185
+msgid "devices.conf is in:\n%s"
+msgstr "devices.conf se trouve dans :\n%s"
+
+#: kodi:30196
+msgid "No camera control set up for this camera (devices.conf)."
+msgstr "Pas de contrôle configuré pour cette caméra (devices.conf)."
 
 #: kodi:30202
 msgid "The CamAlert service is not running."
@@ -995,186 +1315,6 @@ msgstr "Secondes par caméra, p. ex. *=30|jardin=120 (* = toutes). Une fenêtre 
 #: kodi:30258
 msgid "For a camera this Kodi cannot play smoothly (H.265 / 4K): front_door=front_door_sub|... (go2rtc stream names)."
 msgstr "Pour une caméra que ce Kodi ne lit pas bien (H.265 / 4K) : porte=porte_sub|... (noms de flux go2rtc)."
-
-#: kodi:30013
-msgid "go2rtc is recommended. Without go2rtc, list your cameras in cameras.conf."
-msgstr "go2rtc est recommandé. Sans go2rtc, listez les caméras dans cameras.conf."
-
-#: kodi:30019
-msgid "Usually 8554. Only used with the RTSP live format."
-msgstr "Généralement 8554. Utilisé seulement avec le format RTSP."
-
-#: kodi:30025
-msgid "Camera name, e.g. front_door. Use 'Choose camera' to pick it from the list."
-msgstr "Nom de la caméra, p. ex. porte. Utilisez « Choisir la caméra »."
-
-#: kodi:30028
-msgid "Optional: name=Title|name2=Title 2"
-msgstr "Optionnel : nom=Titre|nom2=Titre 2"
-
-#: kodi:30030
-msgid "Comma separated, up to 9. Empty = all."
-msgstr "Séparées par des virgules, 9 max. Vide = toutes."
-
-#: kodi:30041
-msgid "Photo window keeps playing what you watch; live shows the camera stream full screen."
-msgstr "La fenêtre photo laisse tourner le programme ; le direct affiche la caméra en plein écran."
-
-#: kodi:30057
-msgid "Layout when a request names 2 to 4 cameras (photo window)."
-msgstr "Disposition quand une demande cite 2 à 4 caméras (fenêtre photo)."
-
-#: kodi:30061
-msgid "Grid (2x2)"
-msgstr "Grille (2x2)"
-
-#: kodi:30063
-msgid "e.g. front_door=rot180|garden=mirror (rot180, mirror, flip)"
-msgstr "p. ex. porte=rot180|jardin=mirror (rot180, mirror, flip)"
-
-#: kodi:30065
-msgid "Seconds between pictures, e.g. front_door=0.5|garden=5. Default: as fast as possible."
-msgstr "Secondes entre les images, p. ex. porte=0.5|jardin=5. Par défaut : au plus vite."
-
-#: kodi:30067
-msgid "OK = live, LEFT/RIGHT = other camera, MENU = PTZ, BACK = close. Any other key closes it too."
-msgstr "OK = direct, GAUCHE/DROITE = autre caméra, MENU = PTZ, RETOUR = fermer. Toute autre touche ferme aussi."
-
-#: kodi:30069
-msgid "Pauses a video or live TV while the camera is shown and continues afterwards."
-msgstr "Met en pause la vidéo ou la TV pendant l'affichage, puis reprend."
-
-#: kodi:30071
-msgid "After live view, continue the video at the same position or the same TV channel."
-msgstr "Après le direct, reprendre la vidéo au même endroit ou la même chaîne."
-
-#: kodi:30076
-msgid "MP4 (HTTP)"
-msgstr "MP4 (HTTP)"
-
-#: kodi:30077
-msgid "RTSP"
-msgstr "RTSP"
-
-#: kodi:30080
-msgid "HLS (HTTP, a few seconds delay)"
-msgstr "HLS (HTTP, quelques secondes de retard)"
-
-#: kodi:30079
-msgid "How long each camera is shown in the tour."
-msgstr "Durée de chaque caméra pendant la ronde."
-
-#: kodi:30096
-msgid "Normal-priority requests are ignored while you watch this. High and alarm always pass."
-msgstr "Les demandes normales sont ignorées pendant ce visionnage. Haute et alarme passent toujours."
-
-#: kodi:30097
-msgid "Always show"
-msgstr "Toujours afficher"
-
-#: kodi:30098
-msgid "Not during movies and recordings"
-msgstr "Pas pendant les films et enregistrements"
-
-#: kodi:30099
-msgid "Not during anything (also live TV)"
-msgstr "Jamais pendant une lecture (TV comprise)"
-
-#: kodi:30101
-msgid "Requests with priority 'alarm' switch the TV on via HDMI-CEC."
-msgstr "Les demandes « alarm » allument la TV via HDMI-CEC."
-
-#: kodi:30105
-msgid "Which priorities are held back while do not disturb is on."
-msgstr "Priorités bloquées en mode ne pas déranger."
-
-#: kodi:30106
-msgid "Normal priority"
-msgstr "Priorité normale"
-
-#: kodi:30107
-msgid "Normal and high priority"
-msgstr "Priorités normale et haute"
-
-#: kodi:30111
-msgid "Connects to your MQTT broker; with discovery this Kodi appears in Home Assistant automatically."
-msgstr "Se connecte au broker MQTT ; avec la découverte, ce Kodi apparaît dans Home Assistant."
-
-#: kodi:30121
-msgid "Empty = CamAlert + the name of this Kodi."
-msgstr "Vide = CamAlert + le nom de ce Kodi."
-
-#: kodi:30131
-msgid "Shows the camera when Frigate detects something (via the MQTT broker)."
-msgstr "Affiche la caméra quand Frigate détecte quelque chose (via MQTT)."
-
-#: kodi:30134
-msgid "Objects"
-msgstr "Objets"
-
-#: kodi:30135
-msgid "e.g. person,car. Empty = all."
-msgstr "p. ex. person,car. Vide = tous."
-
-#: kodi:30137
-msgid "Only if they differ: frigate_name=camera|..."
-msgstr "Seulement s'ils diffèrent : nom_frigate=caméra|..."
-
-#: kodi:30141
-msgid "High"
-msgstr "Haute"
-
-#: kodi:30142
-msgid "Alarm"
-msgstr "Alarme"
-
-#: kodi:30144
-msgid "Asks the Foscam cameras in devices.conf for motion and sound alarms."
-msgstr "Interroge les caméras Foscam de devices.conf sur les alarmes."
-
-#: kodi:30150
-msgid "Cameras with PTZ or Foscam alarms"
-msgstr "Caméras avec PTZ ou alarme Foscam"
-
-#: kodi:30151
-msgid "Listed in devices.conf in the add-on data folder, one per line: name|onvif|address:80|user|password (or foscam, port 88)"
-msgstr "Listées dans devices.conf du dossier de données, une par ligne : nom|onvif|adresse:80|utilisateur|motdepasse (ou foscam, port 88)"
-
-#: kodi:30155
-msgid "Create devices.conf (example)"
-msgstr "Créer devices.conf (exemple)"
-
-#: kodi:30161
-msgid "Port of the CamAlert API on this Kodi (default 8099)."
-msgstr "Port de l'API CamAlert sur ce Kodi (8099 par défaut)."
-
-#: kodi:30170
-msgid "Test: show the default camera"
-msgstr "Test : afficher la caméra par défaut"
-
-#: kodi:30171 ha:services.mosaic.name
-msgid "Show mosaic"
-msgstr "Afficher la mosaïque"
-
-#: kodi:30172
-msgid "Start tour"
-msgstr "Lancer la ronde"
-
-#: kodi:30181
-msgid "Could not reach the camera source:\n%s"
-msgstr "Source des caméras injoignable :\n%s"
-
-#: kodi:30182
-msgid "No cameras found."
-msgstr "Aucune caméra trouvée."
-
-#: kodi:30185
-msgid "devices.conf is in:\n%s"
-msgstr "devices.conf se trouve dans :\n%s"
-
-#: kodi:30196
-msgid "No camera control set up for this camera (devices.conf)."
-msgstr "Pas de contrôle configuré pour cette caméra (devices.conf)."
 
 #: ha:config.step.user.title
 msgid "Add a CamAlert receiver"
@@ -1299,10 +1439,6 @@ msgstr "Arrêt"
 #: ha:services.show.description
 msgid "Shows a camera on the TV of one or more receivers."
 msgstr "Affiche une caméra sur la TV d'un ou plusieurs récepteurs."
-
-#: ha:services.ptz.fields.camera.name ha:services.show.fields.camera.name
-msgid "Camera"
-msgstr "Caméra"
 
 #: ha:services.show.fields.camera.description
 msgid "Name of the camera (as in go2rtc), e.g. front_door. Empty = default camera of the receiver."

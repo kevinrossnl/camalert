@@ -644,6 +644,120 @@ msgstr ""
 msgid "Choose a default camera first."
 msgstr ""
 
+msgid "API"
+msgstr ""
+
+msgid "Home Assistant"
+msgstr ""
+
+msgid "MQTT"
+msgstr ""
+
+msgid "Frigate"
+msgstr ""
+
+msgid "Foscam"
+msgstr ""
+
+msgid "Menu"
+msgstr ""
+
+msgid "Wake up"
+msgstr ""
+
+msgid "High"
+msgstr ""
+
+msgid "Alarm"
+msgstr ""
+
+msgid "Shown"
+msgstr ""
+
+msgid "Extended"
+msgstr ""
+
+msgid "Ignored"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Woken up"
+msgstr ""
+
+msgid "Outside the chosen times"
+msgstr ""
+
+msgid "Recording in progress"
+msgstr ""
+
+msgid "Something is playing"
+msgstr ""
+
+msgid "In standby"
+msgstr ""
+
+msgid "Screen off"
+msgstr ""
+
+msgid "Woken up from standby"
+msgstr ""
+
+msgid "Cooldown (%d s)"
+msgstr ""
+
+msgid "Already on screen"
+msgstr ""
+
+msgid "No camera given and no default camera set"
+msgstr ""
+
+msgid "Unknown camera"
+msgstr ""
+
+msgid "Unknown camera or no valid go2rtc address"
+msgstr ""
+
+msgid "Camera not reachable"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Camera"
+msgstr ""
+
+msgid "Reason"
+msgstr ""
+
+msgid "live"
+msgstr ""
+
+msgid "other camera"
+msgstr ""
+
+msgid "camera control"
+msgstr ""
+
+msgid "close"
+msgstr ""
+
+msgid "move"
+msgstr ""
+
+msgid "zoom"
+msgstr ""
+
+msgid "home position"
+msgstr ""
+
+msgid "end camera control"
+msgstr ""
+
+msgid "pause"
+msgstr ""
+
 msgid "Camera file (direct mode)"
 msgstr ""
 

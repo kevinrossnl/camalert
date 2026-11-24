@@ -645,6 +645,120 @@ msgstr "Kanalliste '%s' mit %d Kameras erstellt."
 msgid "Choose a default camera first."
 msgstr "Bitte zuerst eine Standardkamera wählen."
 
+msgid "API"
+msgstr "API"
+
+msgid "Home Assistant"
+msgstr "Home Assistant"
+
+msgid "MQTT"
+msgstr "MQTT"
+
+msgid "Frigate"
+msgstr "Frigate"
+
+msgid "Foscam"
+msgstr "Foscam"
+
+msgid "Menu"
+msgstr "Menü"
+
+msgid "Wake up"
+msgstr "Aufwecken"
+
+msgid "High"
+msgstr "Hoch"
+
+msgid "Alarm"
+msgstr "Alarm"
+
+msgid "Shown"
+msgstr "Angezeigt"
+
+msgid "Extended"
+msgstr "Verlängert"
+
+msgid "Ignored"
+msgstr "Ignoriert"
+
+msgid "Error"
+msgstr "Fehler"
+
+msgid "Woken up"
+msgstr "Geweckt"
+
+msgid "Outside the chosen times"
+msgstr "Außerhalb der gewählten Zeiten"
+
+msgid "Recording in progress"
+msgstr "Aufnahme läuft"
+
+msgid "Something is playing"
+msgstr "Es wird etwas abgespielt"
+
+msgid "In standby"
+msgstr "Im Standby"
+
+msgid "Screen off"
+msgstr "Bildschirm aus"
+
+msgid "Woken up from standby"
+msgstr "Aus dem Standby geweckt"
+
+msgid "Cooldown (%d s)"
+msgstr "Wartezeit (%d s)"
+
+msgid "Already on screen"
+msgstr "Bereits angezeigt"
+
+msgid "No camera given and no default camera set"
+msgstr "Keine Kamera angegeben und keine Standardkamera eingestellt"
+
+msgid "Unknown camera"
+msgstr "Unbekannte Kamera"
+
+msgid "Unknown camera or no valid go2rtc address"
+msgstr "Unbekannte Kamera oder keine gültige go2rtc-Adresse"
+
+msgid "Camera not reachable"
+msgstr "Kamera nicht erreichbar"
+
+msgid "Time"
+msgstr "Zeit"
+
+msgid "Camera"
+msgstr "Kamera"
+
+msgid "Reason"
+msgstr "Grund"
+
+msgid "live"
+msgstr "live"
+
+msgid "other camera"
+msgstr "andere Kamera"
+
+msgid "camera control"
+msgstr "Kamerasteuerung"
+
+msgid "close"
+msgstr "schließen"
+
+msgid "move"
+msgstr "bewegen"
+
+msgid "zoom"
+msgstr "zoomen"
+
+msgid "home position"
+msgstr "Grundposition"
+
+msgid "end camera control"
+msgstr "Kamerasteuerung beenden"
+
+msgid "pause"
+msgstr "Pause"
+
 msgid "Camera file (direct mode)"
 msgstr "Kameradatei (direkt)"
 

@@ -37,210 +37,6 @@ msgctxt "#30007"
 msgid "Log and diagnostics"
 msgstr ""
 
-msgctxt "#30200"
-msgid "Checking..."
-msgstr ""
-
-msgctxt "#30201"
-msgid "Diagnostics"
-msgstr ""
-
-msgctxt "#30202"
-msgid "The CamAlert service is not running."
-msgstr ""
-
-msgctxt "#30203"
-msgid "No events yet."
-msgstr ""
-
-msgctxt "#30204"
-msgid "Recent events"
-msgstr ""
-
-msgctxt "#30205"
-msgid "Show camera"
-msgstr ""
-
-msgctxt "#30206"
-msgid "Play Frigate clip"
-msgstr ""
-
-msgctxt "#30210"
-msgid "go2rtc reachable (%d cameras, %d ms)"
-msgstr ""
-
-msgctxt "#30211"
-msgid "go2rtc not reachable: %s"
-msgstr ""
-
-msgctxt "#30212"
-msgid "No valid go2rtc address"
-msgstr ""
-
-msgctxt "#30213"
-msgid "%s: no snapshot address (live only)"
-msgstr ""
-
-msgctxt "#30214"
-msgid "%s: snapshot %d ms"
-msgstr ""
-
-msgctxt "#30215"
-msgid "%s: snapshot failed (%s)"
-msgstr ""
-
-msgctxt "#30216"
-msgid "API listening on port %d"
-msgstr ""
-
-msgctxt "#30217"
-msgid "API not listening on port %d"
-msgstr ""
-
-msgctxt "#30218"
-msgid "MQTT connected"
-msgstr ""
-
-msgctxt "#30219"
-msgid "MQTT not connected"
-msgstr ""
-
-msgctxt "#30220"
-msgid "Last API call %s from %s (%s)"
-msgstr ""
-
-msgctxt "#30221"
-msgid "No API call since the last start"
-msgstr ""
-
-msgctxt "#30222"
-msgid "Devices file: %s"
-msgstr ""
-
-msgctxt "#30223"
-msgid "Do not disturb is on"
-msgstr ""
-
-msgctxt "#30224"
-msgid "Log: %s"
-msgstr ""
-
-msgctxt "#30230"
-msgid "Title size"
-msgstr ""
-
-msgctxt "#30231"
-msgid "Normal"
-msgstr ""
-
-msgctxt "#30232"
-msgid "Doorbell chime"
-msgstr ""
-
-msgctxt "#30233"
-msgid "Plays a chime when a camera appears (follows Kodi's volume)."
-msgstr ""
-
-msgctxt "#30234"
-msgid "Off"
-msgstr ""
-
-msgctxt "#30235"
-msgid "Doorbell and alarm"
-msgstr ""
-
-msgctxt "#30236"
-msgid "Every request"
-msgstr ""
-
-msgctxt "#30237"
-msgid "Frigate address (for clips)"
-msgstr ""
-
-msgctxt "#30238"
-msgid "e.g. http://192.168.1.10:5000 - lets you replay Frigate clips from the event list."
-msgstr ""
-
-msgctxt "#30239"
-msgid "Camera control (PTZ) key"
-msgstr ""
-
-msgctxt "#30240"
-msgid "On cameras with PTZ this key toggles camera control (MENU works too)."
-msgstr ""
-
-msgctxt "#30241"
-msgid "RED"
-msgstr ""
-
-msgctxt "#30242"
-msgid "GREEN"
-msgstr ""
-
-msgctxt "#30243"
-msgid "YELLOW"
-msgstr ""
-
-msgctxt "#30244"
-msgid "BLUE"
-msgstr ""
-
-msgctxt "#30245"
-msgid "Colour keys to Home Assistant"
-msgstr ""
-
-msgctxt "#30246"
-msgid "While a camera is shown the colour keys trigger a Home Assistant event (e.g. open the door)."
-msgstr ""
-
-msgctxt "#30247"
-msgid "Log level"
-msgstr ""
-
-msgctxt "#30248"
-msgid "camalert.log in the add-on data folder (2 x 1 MB), besides kodi.log. Passwords are never logged."
-msgstr ""
-
-msgctxt "#30249"
-msgid "Errors only"
-msgstr ""
-
-msgctxt "#30250"
-msgid "Verbose"
-msgstr ""
-
-msgctxt "#30251"
-msgid "Remote syslog (host:port)"
-msgstr ""
-
-msgctxt "#30252"
-msgid "Optional, e.g. 192.168.1.10:514 (UDP). Empty = off."
-msgstr ""
-
-msgctxt "#30253"
-msgid "Home Assistant webhook"
-msgstr ""
-
-msgctxt "#30254"
-msgid "%s - camera not reachable"
-msgstr ""
-
-msgctxt "#30255"
-msgid "Cooldown per camera"
-msgstr ""
-
-msgctxt "#30256"
-msgid "Seconds per camera, e.g. *=30|garden=120 (* = all). An open window is still extended; alarm always passes."
-msgstr ""
-
-msgctxt "#30257"
-msgid "Live view substreams"
-msgstr ""
-
-msgctxt "#30258"
-msgid "For a camera this Kodi cannot play smoothly (H.265 / 4K): front_door=front_door_sub|... (go2rtc stream names)."
-msgstr ""
-
 msgctxt "#30010"
 msgid "Enable CamAlert"
 msgstr ""
@@ -477,16 +273,16 @@ msgctxt "#30077"
 msgid "RTSP"
 msgstr ""
 
-msgctxt "#30080"
-msgid "HLS (HTTP, a few seconds delay)"
-msgstr ""
-
 msgctxt "#30078"
 msgid "Tour: seconds per camera"
 msgstr ""
 
 msgctxt "#30079"
 msgid "How long each camera is shown in the tour."
+msgstr ""
+
+msgctxt "#30080"
+msgid "HLS (HTTP, a few seconds delay)"
 msgstr ""
 
 msgctxt "#30090"
@@ -779,4 +575,404 @@ msgstr ""
 
 msgctxt "#30196"
 msgid "No camera control set up for this camera (devices.conf)."
+msgstr ""
+
+msgctxt "#30200"
+msgid "Checking..."
+msgstr ""
+
+msgctxt "#30201"
+msgid "Diagnostics"
+msgstr ""
+
+msgctxt "#30202"
+msgid "The CamAlert service is not running."
+msgstr ""
+
+msgctxt "#30203"
+msgid "No events yet."
+msgstr ""
+
+msgctxt "#30204"
+msgid "Recent events"
+msgstr ""
+
+msgctxt "#30205"
+msgid "Show camera"
+msgstr ""
+
+msgctxt "#30206"
+msgid "Play Frigate clip"
+msgstr ""
+
+msgctxt "#30210"
+msgid "go2rtc reachable (%d cameras, %d ms)"
+msgstr ""
+
+msgctxt "#30211"
+msgid "go2rtc not reachable: %s"
+msgstr ""
+
+msgctxt "#30212"
+msgid "No valid go2rtc address"
+msgstr ""
+
+msgctxt "#30213"
+msgid "%s: no snapshot address (live only)"
+msgstr ""
+
+msgctxt "#30214"
+msgid "%s: snapshot %d ms"
+msgstr ""
+
+msgctxt "#30215"
+msgid "%s: snapshot failed (%s)"
+msgstr ""
+
+msgctxt "#30216"
+msgid "API listening on port %d"
+msgstr ""
+
+msgctxt "#30217"
+msgid "API not listening on port %d"
+msgstr ""
+
+msgctxt "#30218"
+msgid "MQTT connected"
+msgstr ""
+
+msgctxt "#30219"
+msgid "MQTT not connected"
+msgstr ""
+
+msgctxt "#30220"
+msgid "Last API call %s from %s (%s)"
+msgstr ""
+
+msgctxt "#30221"
+msgid "No API call since the last start"
+msgstr ""
+
+msgctxt "#30222"
+msgid "Devices file: %s"
+msgstr ""
+
+msgctxt "#30223"
+msgid "Do not disturb is on"
+msgstr ""
+
+msgctxt "#30224"
+msgid "Log: %s"
+msgstr ""
+
+msgctxt "#30230"
+msgid "Title size"
+msgstr ""
+
+msgctxt "#30231"
+msgid "Normal"
+msgstr ""
+
+msgctxt "#30232"
+msgid "Doorbell chime"
+msgstr ""
+
+msgctxt "#30233"
+msgid "Plays a chime when a camera appears (follows Kodi's volume)."
+msgstr ""
+
+msgctxt "#30234"
+msgid "Off"
+msgstr ""
+
+msgctxt "#30235"
+msgid "Doorbell and alarm"
+msgstr ""
+
+msgctxt "#30236"
+msgid "Every request"
+msgstr ""
+
+msgctxt "#30237"
+msgid "Frigate address (for clips)"
+msgstr ""
+
+msgctxt "#30238"
+msgid "e.g. http://192.168.1.10:5000 - lets you replay Frigate clips from the event list."
+msgstr ""
+
+msgctxt "#30239"
+msgid "Camera control (PTZ) key"
+msgstr ""
+
+msgctxt "#30240"
+msgid "On cameras with PTZ this key toggles camera control (MENU works too)."
+msgstr ""
+
+msgctxt "#30241"
+msgid "RED"
+msgstr ""
+
+msgctxt "#30242"
+msgid "GREEN"
+msgstr ""
+
+msgctxt "#30243"
+msgid "YELLOW"
+msgstr ""
+
+msgctxt "#30244"
+msgid "BLUE"
+msgstr ""
+
+msgctxt "#30245"
+msgid "Colour keys to Home Assistant"
+msgstr ""
+
+msgctxt "#30246"
+msgid "While a camera is shown the colour keys trigger a Home Assistant event (e.g. open the door)."
+msgstr ""
+
+msgctxt "#30247"
+msgid "Log level"
+msgstr ""
+
+msgctxt "#30248"
+msgid "camalert.log in the add-on data folder (2 x 1 MB), besides kodi.log. Passwords are never logged."
+msgstr ""
+
+msgctxt "#30249"
+msgid "Errors only"
+msgstr ""
+
+msgctxt "#30250"
+msgid "Verbose"
+msgstr ""
+
+msgctxt "#30251"
+msgid "Remote syslog (host:port)"
+msgstr ""
+
+msgctxt "#30252"
+msgid "Optional, e.g. 192.168.1.10:514 (UDP). Empty = off."
+msgstr ""
+
+msgctxt "#30253"
+msgid "Home Assistant webhook"
+msgstr ""
+
+msgctxt "#30254"
+msgid "%s - camera not reachable"
+msgstr ""
+
+msgctxt "#30255"
+msgid "Cooldown per camera"
+msgstr ""
+
+msgctxt "#30256"
+msgid "Seconds per camera, e.g. *=30|garden=120 (* = all). An open window is still extended; alarm always passes."
+msgstr ""
+
+msgctxt "#30257"
+msgid "Live view substreams"
+msgstr ""
+
+msgctxt "#30258"
+msgid "For a camera this Kodi cannot play smoothly (H.265 / 4K): front_door=front_door_sub|... (go2rtc stream names)."
+msgstr ""
+
+msgctxt "#30500"
+msgid "API"
+msgstr ""
+
+msgctxt "#30501"
+msgid "Home Assistant"
+msgstr ""
+
+msgctxt "#30502"
+msgid "MQTT"
+msgstr ""
+
+msgctxt "#30503"
+msgid "Frigate"
+msgstr ""
+
+msgctxt "#30504"
+msgid "Foscam"
+msgstr ""
+
+msgctxt "#30505"
+msgid "Menu"
+msgstr ""
+
+msgctxt "#30506"
+msgid "Wake up"
+msgstr ""
+
+msgctxt "#30507"
+msgid "Normal"
+msgstr ""
+
+msgctxt "#30508"
+msgid "High"
+msgstr ""
+
+msgctxt "#30509"
+msgid "Alarm"
+msgstr ""
+
+msgctxt "#30510"
+msgid "Shown"
+msgstr ""
+
+msgctxt "#30511"
+msgid "Extended"
+msgstr ""
+
+msgctxt "#30512"
+msgid "Ignored"
+msgstr ""
+
+msgctxt "#30513"
+msgid "Error"
+msgstr ""
+
+msgctxt "#30514"
+msgid "Woken up"
+msgstr ""
+
+msgctxt "#30515"
+msgid "Do not disturb"
+msgstr ""
+
+msgctxt "#30516"
+msgid "Outside the chosen times"
+msgstr ""
+
+msgctxt "#30517"
+msgid "Recording in progress"
+msgstr ""
+
+msgctxt "#30518"
+msgid "Something is playing"
+msgstr ""
+
+msgctxt "#30519"
+msgid "In standby"
+msgstr ""
+
+msgctxt "#30520"
+msgid "Screen off"
+msgstr ""
+
+msgctxt "#30521"
+msgid "Woken up from standby"
+msgstr ""
+
+msgctxt "#30522"
+msgid "Cooldown (%d s)"
+msgstr ""
+
+msgctxt "#30523"
+msgid "Already on screen"
+msgstr ""
+
+msgctxt "#30524"
+msgid "No camera given and no default camera set"
+msgstr ""
+
+msgctxt "#30525"
+msgid "Unknown camera"
+msgstr ""
+
+msgctxt "#30526"
+msgid "Unknown camera or no valid go2rtc address"
+msgstr ""
+
+msgctxt "#30527"
+msgid "Camera not reachable"
+msgstr ""
+
+msgctxt "#30528"
+msgid "Time"
+msgstr ""
+
+msgctxt "#30529"
+msgid "Camera"
+msgstr ""
+
+msgctxt "#30530"
+msgid "Source"
+msgstr ""
+
+msgctxt "#30531"
+msgid "Priority"
+msgstr ""
+
+msgctxt "#30532"
+msgid "Result"
+msgstr ""
+
+msgctxt "#30533"
+msgid "Reason"
+msgstr ""
+
+msgctxt "#30534"
+msgid "GREEN"
+msgstr ""
+
+msgctxt "#30535"
+msgid "RED"
+msgstr ""
+
+msgctxt "#30536"
+msgid "YELLOW"
+msgstr ""
+
+msgctxt "#30537"
+msgid "BLUE"
+msgstr ""
+
+msgctxt "#30538"
+msgid "live"
+msgstr ""
+
+msgctxt "#30539"
+msgid "other camera"
+msgstr ""
+
+msgctxt "#30540"
+msgid "camera control"
+msgstr ""
+
+msgctxt "#30541"
+msgid "close"
+msgstr ""
+
+msgctxt "#30542"
+msgid "move"
+msgstr ""
+
+msgctxt "#30543"
+msgid "zoom"
+msgstr ""
+
+msgctxt "#30544"
+msgid "home position"
+msgstr ""
+
+msgctxt "#30545"
+msgid "end camera control"
+msgstr ""
+
+msgctxt "#30546"
+msgid "pause"
+msgstr ""
+
+msgctxt "#30547"
+msgid "paused"
+msgstr ""
+
+msgctxt "#30548"
+msgid "tour"
 msgstr ""

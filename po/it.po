@@ -645,6 +645,120 @@ msgstr "Elenco '%s' con %d telecamere creato."
 msgid "Choose a default camera first."
 msgstr "Scegliere prima una telecamera predefinita."
 
+msgid "API"
+msgstr "API"
+
+msgid "Home Assistant"
+msgstr "Home Assistant"
+
+msgid "MQTT"
+msgstr "MQTT"
+
+msgid "Frigate"
+msgstr "Frigate"
+
+msgid "Foscam"
+msgstr "Foscam"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Wake up"
+msgstr "Risveglio"
+
+msgid "High"
+msgstr "Alta"
+
+msgid "Alarm"
+msgstr "Allarme"
+
+msgid "Shown"
+msgstr "Mostrato"
+
+msgid "Extended"
+msgstr "Prolungato"
+
+msgid "Ignored"
+msgstr "Ignorato"
+
+msgid "Error"
+msgstr "Errore"
+
+msgid "Woken up"
+msgstr "Risvegliato"
+
+msgid "Outside the chosen times"
+msgstr "Fuori dagli orari scelti"
+
+msgid "Recording in progress"
+msgstr "Registrazione in corso"
+
+msgid "Something is playing"
+msgstr "Riproduzione in corso"
+
+msgid "In standby"
+msgstr "In standby"
+
+msgid "Screen off"
+msgstr "Schermo spento"
+
+msgid "Woken up from standby"
+msgstr "Risvegliato dallo standby"
+
+msgid "Cooldown (%d s)"
+msgstr "Attesa (%d s)"
+
+msgid "Already on screen"
+msgstr "Già sullo schermo"
+
+msgid "No camera given and no default camera set"
+msgstr "Nessuna telecamera indicata e nessuna telecamera predefinita impostata"
+
+msgid "Unknown camera"
+msgstr "Telecamera sconosciuta"
+
+msgid "Unknown camera or no valid go2rtc address"
+msgstr "Telecamera sconosciuta o nessun indirizzo go2rtc valido"
+
+msgid "Camera not reachable"
+msgstr "Telecamera non raggiungibile"
+
+msgid "Time"
+msgstr "Ora"
+
+msgid "Camera"
+msgstr "Telecamera"
+
+msgid "Reason"
+msgstr "Motivo"
+
+msgid "live"
+msgstr "live"
+
+msgid "other camera"
+msgstr "altra telecamera"
+
+msgid "camera control"
+msgstr "controllo telecamera"
+
+msgid "close"
+msgstr "chiudere"
+
+msgid "move"
+msgstr "spostare"
+
+msgid "zoom"
+msgstr "zoom"
+
+msgid "home position"
+msgstr "posizione iniziale"
+
+msgid "end camera control"
+msgstr "terminare il controllo telecamera"
+
+msgid "pause"
+msgstr "pausa"
+
 msgid "Camera file (direct mode)"
 msgstr "File telecamere (diretto)"
 

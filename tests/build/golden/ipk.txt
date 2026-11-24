@@ -22,6 +22,7 @@ data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_co
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/devices/foscam.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/devices/onvif.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/events.py
+data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/i18n.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/keymap.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/layout.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/mqtt/__init__.py
@@ -31,6 +32,7 @@ data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_co
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/obs/camlog.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/obs/log.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/obs/metrics.py
+data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/present.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/rules.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/schema.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/triggers/__init__.py

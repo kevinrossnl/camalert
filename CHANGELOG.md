@@ -5,6 +5,8 @@
   the camera names now sit on a dark strip instead (#25).
 - Enigma2: in PTZ mode YELLOW always left PTZ mode; now only EXIT and the configured PTZ key do, as documented (#42).
 - One remote-key map per player in the core (`camalert_core.keymap`); the Enigma2 and Kodi key handlers use it (#42).
+- One settings schema for both players (`camalert_core.schema`, schema version 1): the Enigma2 settings and the
+  Kodi settings.xml are checked against it; the remaining differences are listed for #39 (#38, #7).
 - Kodi: Foscam alarms appear in the event list with source "foscam" (was "api").
 - Trigger sources (Frigate, Foscam) are a registry in the core (`camalert_core.triggers`): both players use the
   same parsing; new sources (UniFi Protect, ...) only need a class there (#6).

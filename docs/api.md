@@ -57,14 +57,20 @@ If your go2rtc address starts with `https://` (for example behind a reverse prox
 
 ## Security
 
-- By default only callers from private networks (192.168.x.x, 10.x.x.x, 172.16–31.x.x, IPv6 ULA) are accepted.
+- By default (*Allowed callers: local network only*) only these addresses are accepted: 10.0.0.0/8,
+  172.16.0.0/12, 192.168.0.0/16, 100.64.0.0/10 (CGNAT, also used by Tailscale), loopback (127.0.0.0/8, ::1),
+  link-local (169.254.0.0/16, fe80::/10) and IPv6 unique local addresses (fc00::/7). Everything else is refused,
+  including the documentation ranges (192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32).
 - Set an **access token** in the settings if other people use your network; send it in the `X-CamAlert-Token`
   header. Tokens are compared in constant time.
 - `log`, `events` and `metrics` never answer callers outside the local network unless a token is set (even with
   *Allowed callers: any address*).
 - CamAlert only fetches pictures and streams of the configured cameras (go2rtc server or camera file): requests
-  name a camera, never a URL. The webhook must point into the local network (caller address, private address or a
-  local host name such as `homeassistant.local`).
+  name a camera, never a URL. The webhook must point into the local network: the caller's address, an address
+  from the list above, a local host name (no dots, or ending in `.local`, `.lan`, `.home`, `.home.arpa`,
+  `.internal`), or a host name that resolves **only** to such addresses (for example a split-DNS name of Home
+  Assistant). The name is resolved when the webhook is set and again before every post; if it resolves to any
+  other address, the request is refused (400) or the post is skipped.
 - Never forward port 8099 to the internet.
 
 ## Examples

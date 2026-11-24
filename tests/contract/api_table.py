@@ -6,9 +6,10 @@ Known differences between a player and the contract live in KNOWN in test_http_c
 issue; a fixed difference makes its KNOWN entry stale, which fails the test.
 """
 
-# A public address. Not an RFC 5737 one: Python counts 192.0.2.0/24, 198.51.100.0/24 and 203.0.113.0/24 as
-# private (ipaddress.is_private), so client_allowed() lets them in like the LAN.
+# A public address. Since #52 the RFC 5737 documentation ranges are outside the local network too (DOC below).
 WAN = "8.8.8.8"
+DOC = "203.0.113.9"
+TAILSCALE = "100.101.102.103"
 LAN = "192.168.1.5"
 HA_UA = "HomeAssistant/2026.11 aiohttp/3.10"
 CAMERAS = ["front_door", "garden"]
@@ -53,6 +54,8 @@ TABLE = [
     # --- access: address allowlist, tokens, enabled, methods -------------------------------------------------
     row("lan_without_token", "/camalert/hide", json={"result": True, "action": "hide"}, calls=[("hide",)]),
     row("wan_refused", "/camalert/hide", ip=WAN, code=403, json={"result": False, "error": "forbidden"}, calls=[]),
+    row("documentation_range_refused", "/camalert/hide", ip=DOC, code=403, calls=[]),
+    row("tailscale_allowed", "/camalert/hide", ip=TAILSCALE, calls=[("hide",)]),
     row("wan_allowed_with_any", "/camalert/hide", ip=WAN, settings={"allow": "any"}, calls=[("hide",)]),
     row("token_missing", "/camalert/hide", settings={"token": "secret"}, code=403, json={"error": "forbidden"},
         calls=[]),
@@ -118,7 +121,12 @@ TABLE = [
         json={"result": True, "webhook": True}),
     row("webhook_internet_refused", "/camalert/webhook", {"url": "http://" + WAN + "/api/webhook/abc"}, code=400,
         json={"result": False}),
-    row("webhook_internet_name_refused", "/camalert/webhook", {"url": "https://example.com/hook"}, code=400),
+    row("webhook_internet_name_refused", "/camalert/webhook", {"url": "https://ha.public.example/hook"}, code=400),
+    row("webhook_name_partly_public_refused", "/camalert/webhook", {"url": "https://ha.mixed.example/hook"}, code=400),
+    row("webhook_unresolvable_name_refused", "/camalert/webhook", {"url": "https://nothing.example/hook"}, code=400),
+    row("webhook_split_dns_name", "/camalert/webhook", {"url": "https://ha.split-dns.example:8123/api/webhook/abc"},
+        json={"result": True, "webhook": True}),
+    row("webhook_documentation_ip_refused", "/camalert/webhook", {"url": "http://" + DOC + "/hook"}, code=400),
     row("webhook_removed", "/camalert/webhook", {"url": ""}, json={"result": True, "webhook": False}),
     # --- read-only ---------------------------------------------------------------------------------------------
     get("status", "/camalert/status", check=status_keys),

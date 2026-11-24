@@ -11,7 +11,10 @@ import json
 from urllib.parse import urlencode
 
 import _paths
+from fakes import dns
 from fakes.controller import RecordingController
+
+dns.install()  # webhook host names under .example resolve without real DNS (#53)
 
 DEFAULTS = {"enabled": True, "allow": "lan", "token": "", "camera": "front_door", "duration": 30, "dnd": False,
             "ha_webhook": ""}

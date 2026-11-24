@@ -13,6 +13,7 @@ import xbmcgui
 from . import kodiapi, sources
 from .display import FullScreen, LiveOverlay, PhotoWindow, open_window
 from .klogic import blocked_by_playing, chime_wanted, kodi_volume, live_mime, playing_kind, resume_plan
+from .camalert_core.access import url_target
 from .camalert_core.cameras import known_camera, neighbour, parse_cams, slug
 from .camalert_core.events import add_event, event_title
 from .camalert_core.keymap import button_event, colour_action
@@ -504,6 +505,9 @@ class Controller(object):
 
             def post():
                 try:
+                    why = url_target(hook)  # checked again on use: a host name may resolve elsewhere now (#53)
+                    if why:
+                        raise ValueError(why)
                     req = urllib.request.Request(hook, data=body, headers={"Content-Type": "application/json"})
                     urllib.request.urlopen(req, timeout=5).close()
                 except Exception as e:

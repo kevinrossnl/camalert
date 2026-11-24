@@ -17,13 +17,12 @@ log, events and metrics never answer callers outside the local network unless a 
 No server-side requests to caller-chosen addresses: cameras are names from the camera list (urls are built from
 the configured go2rtc server or camera file), the webhook must point into the local network.
 """
-import ipaddress
 import json
 import re
 import time
-from urllib.parse import parse_qs, urlsplit
+from urllib.parse import parse_qs
 
-from .access import RateLimiter, client_allowed, exposed_without_token, token_ok
+from .access import RateLimiter, client_allowed, exposed_without_token, token_ok, url_target
 from .cameras import parse_cams
 from .devices.config import PTZ_ACTIONS
 from .events import caller_source
@@ -36,7 +35,6 @@ CAPABILITIES = ("cameras", "dnd", "events", "header_token", "hide", "log", "metr
                 "show", "status", "strip", "tour", "webhook")
 NAME = re.compile(r"^[A-Za-z0-9_.-]+$")
 TRUE, FALSE = ("1", "true", "on", "yes"), ("0", "false", "off", "no")
-LOCAL_SUFFIXES = (".local", ".lan", ".home", ".home.arpa", ".internal")
 
 
 class Request(object):
@@ -131,29 +129,13 @@ def bool_param(value):
     raise Invalid("on must be 1 or 0")
 
 
-def local_url(url, caller_ip):
-    """The webhook may only point into the local network: an http(s) url whose host is the caller, a private /
-    loopback / link-local address or a local host name (no dots, or .local/.lan/.home/.home.arpa/.internal)."""
-    if not url.startswith(("http://", "https://")):
-        raise Invalid("url must start with http:// or https://")
-    try:
-        host = urlsplit(url).hostname or ""
-    except ValueError:
-        raise Invalid("invalid url")
-    if not host:
-        raise Invalid("invalid url")
-    if host == (caller_ip or "").replace("::ffff:", ""):
-        return url
-    try:
-        a = ipaddress.ip_address(host)
-        if a.is_private or a.is_loopback or a.is_link_local:
-            return url
-        raise Invalid("url must point to the local network")
-    except ValueError:
-        pass
-    if "." not in host or host.lower().endswith(LOCAL_SUFFIXES):
-        return url
-    raise Invalid("url must point to the local network")
+def local_url(url, caller_ip, resolver=None):
+    """The webhook may only point into the local network (access.url_target, #53); Invalid otherwise.
+    A host name with dots is resolved (blocking: the webhook route runs in a thread on Enigma2)."""
+    why = url_target(url, caller_ip, resolver)
+    if why:
+        raise Invalid(why)
+    return url
 
 
 def parse_body(content_type, body):
@@ -262,7 +244,7 @@ def _metrics(b, ctl, a, s, source):
 ROUTES = {r.name: r for r in (
     Route("show", _show, action=True), Route("camalert", _show, action=True), Route("hide", _hide, action=True),
     Route("mosaic", _mosaic, action=True), Route("tour", _tour, action=True), Route("ptz", _ptz, action=True),
-    Route("webhook", _webhook, action=True), Route("dnd", _dnd), Route("status", _status),
+    Route("webhook", _webhook, action=True, blocking=True), Route("dnd", _dnd), Route("status", _status),
     Route("cameras", _cameras, blocking=True), Route("log", _log, sensitive=True),
     Route("events", _events, sensitive=True), Route("metrics", _metrics, sensitive=True),
 )}

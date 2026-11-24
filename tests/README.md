@@ -21,7 +21,7 @@ Python 3.8 (Kodi 19) needs `pip install "pytest<8.4"`. Optional: `pyyaml` (bluep
   (see `DEVELOPMENT.md`).
 - `contract/`: the HTTP API table (`api_table.py`) runs against `camalert_core.api` directly (`core/test_api.py`),
   the Enigma2 adapter (via e2fake) and the Kodi adapter. Known differences are listed in `KNOWN` with the issue that fixes them; a stale entry fails.
-  Use public example addresses for "outside the network" (Python treats the RFC 5737 ranges as private).
+  "Outside the network" can be any public address; since #52 the RFC 5737 / RFC 3849 documentation ranges count as outside too (`access.LAN_NETWORKS`). Webhook host names under `.example` resolve through `tests/fakes/dns.py` (no real DNS).
 - `fakes/broker.py`: in-process MQTT 3.1.1 broker (127.0.0.1, random port) on the shared codec;
   `contract/test_mqtt_contract.py` runs both MQTT clients against it and checks `contract/mqtt_table.py`.
 - `kodi/stubs.py`: strict xbmc modules per Kodi version (19-22), generated from `kodi/fixtures/kodi_api/`:

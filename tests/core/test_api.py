@@ -147,14 +147,16 @@ class TestApiDetails(unittest.TestCase):
 
     def test_local_url(self):
         ok = ("http://192.168.1.20:8123/x", "https://[fd00::1]/x", "http://homeassistant/x", "http://ha.local/x",
-              "http://ha.home.arpa/x", "http://8.8.8.8/x")
+              "http://ha.home.arpa/x", "http://ha.lan.example/x", "http://8.8.8.8/x")
+        lan = lambda host: ["192.168.1.20"] if host == "ha.lan.example" else []  # noqa: E731
         for url in ok[:-1]:
-            self.assertEqual(api.local_url(url, "192.168.1.5"), url)
+            self.assertEqual(api.local_url(url, "192.168.1.5", lan), url)
         self.assertEqual(api.local_url(ok[-1], "8.8.8.8"), ok[-1])  # the caller itself
         for url in ("http://8.8.8.8/x", "https://example.com/x", "file:///etc/passwd", "http://:80/x",
-                    "http://[zz/x"):
+                    "http://[zz/x", "http://198.51.100.7/x"):
             with self.assertRaises(api.Invalid):
-                api.local_url(url, "192.168.1.5")
+                api.local_url(url, "192.168.1.5", lambda host: ["203.0.113.10"])
+        self.assertTrue(api.ROUTES["webhook"].blocking)  # resolving a name blocks: Enigma2 answers from a thread
 
     def test_cameras_failure_and_webhook(self):
         self.b.camera_list = None

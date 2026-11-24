@@ -68,10 +68,13 @@ class Backend(api.Backend):
         return cams
 
     def set_webhook(self, url):
-        c = config.plugins.camalert
-        c.ha_webhook.value = url
-        c.ha_webhook.save()
-        configfile.save()
+        """Called from a thread (the webhook route resolves host names, #53): save on the main thread."""
+        def save():
+            c = config.plugins.camalert
+            c.ha_webhook.value = url
+            c.ha_webhook.save()
+            configfile.save()
+        reactor.callFromThread(save)
 
     def log_tail(self, lines):
         return LOG.tail(lines)

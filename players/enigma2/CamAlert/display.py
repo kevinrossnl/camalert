@@ -22,6 +22,7 @@ from .camalert_core.obs.camlog import LOG
 from .camalert_core.devices import client as devices
 from Components.ActionMap import ActionMap
 
+from .camalert_core.access import url_target
 from .camalert_core.cameras import (display_name, known_camera, live_stream_name, neighbour, parse_camera_file,
                                     parse_cams, parse_orientation, parse_refresh, parse_titles, refresh_delay, slug,
                                     title_for)
@@ -1013,6 +1014,9 @@ class Controller(object):
             body = button_event(node_id(), camera, button).encode("utf-8")
 
             def post():
+                why = url_target(hook)  # checked again on use: a host name may resolve elsewhere now (#53)
+                if why:
+                    raise ValueError(why)
                 req = urllib.request.Request(hook, data=body, headers={"Content-Type": "application/json"})
                 with urllib.request.urlopen(req, timeout=5) as r:
                     return r.status

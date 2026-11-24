@@ -32,6 +32,18 @@ class TestIntegration(unittest.TestCase):
         self.assertEqual(m["version"], plugin, "plugin and integration share one version")
         json.load(open(os.path.join(ROOT, "hacs.json")))
 
+    def test_manifest_categories(self):
+        """HACS warns without `categories` (#80). Same rules as hassfest: 1-3 unique values `category` or
+        `category.subcategory` from https://contributors.home-assistant.io/core/integrations/categories/,
+        and no parent next to its own subcategory."""
+        cats = json.load(open(os.path.join(CC, "manifest.json")))["categories"]
+        self.assertTrue(1 <= len(cats) <= 3)
+        self.assertEqual(len(set(cats)), len(cats))
+        for c in cats:
+            self.assertRegex(c, r"^[a-z0-9_]+(\.[a-z0-9_]+)?$")
+            self.assertNotIn(c.partition(".")[0], cats if "." in c else [])
+        self.assertEqual(cats[0], "security_safety.cameras")
+
     def test_translations_complete(self):
         base = json.load(open(os.path.join(CC, "strings.json"), encoding="utf-8"))
         for f in os.listdir(os.path.join(CC, "translations")):

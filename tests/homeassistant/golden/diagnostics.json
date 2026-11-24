@@ -34,7 +34,7 @@
       "time": 1
     }
   ],
-  "integration_version": "1.0.0",
+  "integration_version": "1.0.1",
   "log": [
     "CamAlert started",
     "show front_door token=***"

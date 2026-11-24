@@ -7,6 +7,22 @@ actions and blueprint inputs stay backwards compatible.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-24
+
+### Fixed
+
+- **Home Assistant:** the integration now lists its categories (*Security & safety › Cameras* and *Media &
+  entertainment › TV & streaming*), so the HACS check no longer warns about missing categories.
+- **Project website:** <https://kevinrossnl.github.io/camalert/> showed "404 Not Found". It now has a small start page
+  with the install steps for each player (opkg feed for Enigma2, Kodi repository, HACS custom repository) and links
+  to the latest release; no cookies, no tracking, nothing loaded from other sites.
+
+### Changed
+
+- **Enigma2:** the `.ipk` download example in the [install guide](docs/players/enigma2.md#install) points to the
+  current release.
+- Enigma2 plugin, Kodi add-on and Home Assistant integration are now version 1.0.1; nothing else changed for them.
+
 ## [1.0.0] - 2026-11-24
 
 First public release. CamAlert shows your IP cameras on the TV of a **player**: an Enigma2 receiver or a Kodi
@@ -108,5 +124,6 @@ device (Kodi 19 or newer), controlled by Home Assistant, MQTT, Frigate, UniFi Pr
 - Every player and the Home Assistant integration in English, Dutch, German, French, Italian and Polish, from one
   master catalogue with a shared glossary ([Translating](docs/dev/translating.md)).
 
-[Unreleased]: https://github.com/kevinrossnl/camalert/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/kevinrossnl/camalert/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/kevinrossnl/camalert/releases/tag/v1.0.1
 [1.0.0]: https://github.com/kevinrossnl/camalert/releases/tag/v1.0.0

@@ -48,6 +48,9 @@ off only for the player's own self-signed certificate.
 | `camalert.mosaic` | players, cameras (list), seconds |
 | `camalert.hide` | players |
 
+Target (*players*): one or more CamAlert players (devices), their entities or their areas; no target = every
+player. Existing automations with `target: device_id:` keep working.
+
 An action that fails (player not reachable, unknown camera, not supported) raises a translated error in the
 automation trace; with several players all are tried first.
 

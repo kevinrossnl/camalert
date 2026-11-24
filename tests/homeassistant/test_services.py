@@ -57,6 +57,40 @@ async def test_target_selects_one_player(hass, player, kodi):
     assert kodi.ctl.calls == [("hide",)] and player.ctl.calls == []
 
 
+async def test_target_entity_and_area_of_a_player(hass, player, kodi):
+    """services.yaml filters the target on CamAlert entities (hassfest): an entity or area of one player works."""
+    from homeassistant.helpers import area_registry as ar, device_registry as dr, entity_registry as er
+    await setup_player(hass, player)
+    k = await setup_player(hass, kodi)
+    device = player_device(hass, k)
+    entity = next(e.entity_id for e in er.async_entries_for_device(er.async_get(hass), device.id))
+    await call(hass, "hide", entity_id=entity)
+    assert kodi.ctl.calls == [("hide",)] and player.ctl.calls == []
+    area = ar.async_get(hass).async_create("Living room").id
+    dr.async_get(hass).async_update_device(device.id, area_id=area)
+    await call(hass, "hide", area_id=area)
+    assert kodi.ctl.calls == [("hide",), ("hide",)] and player.ctl.calls == []
+
+
+async def test_services_yaml_valid_for_home_assistant(hass, player):
+    """The hassfest rules for targets, checked with Home Assistant's own selector schema, and the descriptions load."""
+    import os
+    import yaml
+    from homeassistant.helpers import selector
+    from homeassistant.helpers.service import async_get_all_descriptions
+    import custom_components.camalert as integration
+    services = yaml.safe_load(open(os.path.join(os.path.dirname(integration.__file__), "services.yaml")))
+    for name, service in services.items():
+        assert "device" not in service["target"], name  # hassfest: no device filter on target
+        selector.TargetSelector.CONFIG_SCHEMA(service["target"])
+        for field in service.get("fields", {}).values():
+            selector.validate_selector(field["selector"])
+    await setup_player(hass, player)
+    descriptions = (await async_get_all_descriptions(hass))[DOMAIN]
+    assert sorted(descriptions) == ["hide", "mosaic", "ptz", "show"]
+    assert descriptions["show"]["target"] == {"entity": [{"integration": DOMAIN}]}
+
+
 @pytest.mark.parametrize("data", [{"seconds": 2}, {"seconds": 301}, {"mode": "corner"}, {"priority": "urgent"}])
 async def test_show_schema(hass, player, data):
     await setup_player(hass, player)

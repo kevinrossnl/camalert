@@ -50,6 +50,15 @@ class TestIntegration(unittest.TestCase):
         documented = {f for s in base.values() for f in s.get("fields", {})}
         self.assertEqual(fields, documented)
 
+    def test_service_targets_pass_hassfest(self):
+        """hassfest: no device filter on target (use the entity filter); every action targets CamAlert players."""
+        import yaml
+        services = yaml.safe_load(open(os.path.join(CC, "services.yaml")))
+        self.assertEqual(sorted(services), ["hide", "mosaic", "ptz", "show"])
+        for name, service in services.items():
+            self.assertEqual(service["target"], {"entity": {"integration": "camalert"}}, name)
+            self.assertNotIn("device", service["target"], name)
+
     def test_exceptions_match_strings(self):
         """The English fallback messages in __init__.py are the strings.json exceptions (#44)."""
         import ast

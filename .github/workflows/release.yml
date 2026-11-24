@@ -2,6 +2,7 @@ name: build and release
 # GitHub only (the Forgejo CI is .forgejo/workflows/tests.yml). Every push and pull request: hassfest, the HACS
 # check, the tests and the packages. A tag vX.Y.Z (= __version__) also creates the GitHub release with the packages
 # and publishes GitHub Pages (Settings › Pages › Source: GitHub Actions): the opkg feed and the Kodi repository.
+# While the repository is private the HACS check and Pages are skipped (not failed).
 # The Pages site only holds the packages of the LATEST release; older versions stay available as release assets.
 # The Android TV app is not released yet: no APK until release signing exists (#65).
 on:
@@ -16,9 +17,11 @@ jobs:
   hassfest:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: home-assistant/actions/hassfest@master
   hacs:
+    # the HACS action can only validate public repositories: skipped (not failed) while the repository is private
+    if: ${{ !github.event.repository.private }}
     runs-on: ubuntu-latest
     steps:
       - uses: hacs/action@main
@@ -29,10 +32,10 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0   # full history, like the Forgejo checkout
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: tests (network-free, same areas as the Forgejo CI)
@@ -79,7 +82,7 @@ jobs:
             | sed -E "s#\]\(([A-Za-z][^):]*\.md[^)]*)\)#](https://github.com/${GITHUB_REPOSITORY}/blob/${GITHUB_REF_NAME}/\1)#g" \
             > dist/release-notes.md   # relative links point to the files of the tag
           test -s dist/release-notes.md
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: packages
           path: |
@@ -87,7 +90,7 @@ jobs:
             dist/*.zip
       - name: release
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           body_path: dist/release-notes.md
           files: |
@@ -104,12 +107,14 @@ jobs:
           printf 'src/gz camalert https://%s.github.io/camalert\n' "${{ github.repository_owner }}" > feed/camalert-feed.conf
           mkdir -p feed/kodi
           cp -r dist/kodi-repo/. feed/kodi/
-      - uses: actions/upload-pages-artifact@v3
-        if: startsWith(github.ref, 'refs/tags/v')
+      - uses: actions/upload-pages-artifact@v5
+        if: startsWith(github.ref, 'refs/tags/v') && !github.event.repository.private
         with:
           path: feed
   pages:
-    if: startsWith(github.ref, 'refs/tags/v')
+    # GitHub Pages only for a public repository (GitHub Free has no Pages for private ones); the release itself
+    # is created either way
+    if: startsWith(github.ref, 'refs/tags/v') && !github.event.repository.private
     needs: [build, hassfest, hacs]
     runs-on: ubuntu-latest
     permissions:
@@ -120,4 +125,4 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

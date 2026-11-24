@@ -1,6 +1,8 @@
+# Targets: hassfest does not allow a device filter on target. The entity filter still lets you pick CamAlert
+# players (devices), their entities or areas; calls with target.device_id keep working (__init__.py).
 show:
   target:
-    device:
+    entity:
       integration: camalert
   fields:
     camera:
@@ -39,7 +41,7 @@ show:
         text:
 mosaic:
   target:
-    device:
+    entity:
       integration: camalert
   fields:
     cameras:
@@ -57,11 +59,11 @@ mosaic:
           unit_of_measurement: s
 hide:
   target:
-    device:
+    entity:
       integration: camalert
 ptz:
   target:
-    device:
+    entity:
       integration: camalert
   fields:
     camera:

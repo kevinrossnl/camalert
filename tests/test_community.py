@@ -98,6 +98,33 @@ class ReleaseWorkflow(unittest.TestCase):
         self.assertIn('test "${GITHUB_REF_NAME}" = "v$ver"', self.text)
         self.assertIn("CHANGELOG.md has no dated section", self.text)
 
+    def test_private_repository_skips_hacs_and_pages(self):
+        """The HACS action only validates public repositories and GitHub Free has no Pages for private ones:
+        both are skipped (not failed) while the repository is private; the release itself still runs."""
+        jobs = self.wf["jobs"]
+        self.assertIn("!github.event.repository.private", jobs["hacs"]["if"])
+        self.assertIn("!github.event.repository.private", jobs["pages"]["if"])
+        self.assertIn("startsWith(github.ref, 'refs/tags/v')", jobs["pages"]["if"])
+        steps = jobs["build"]["steps"]
+        upload = next(s for s in steps if s.get("uses", "").startswith("actions/upload-pages-artifact"))
+        self.assertIn("!github.event.repository.private", upload["if"])
+        release = next(s for s in steps if s.get("uses", "").startswith("softprops/action-gh-release"))
+        self.assertNotIn("private", release["if"])
+        self.assertNotIn("if", jobs["hassfest"])
+        self.assertNotIn("if", jobs["build"])
+
+    def test_actions_on_node24_majors(self):
+        """Node.js 20 actions are deprecated on GitHub: at least these majors (all node24)."""
+        import re
+        minimum = {"actions/checkout": 7, "actions/setup-python": 7, "actions/upload-artifact": 7,
+                   "actions/download-artifact": 8, "actions/upload-pages-artifact": 5, "actions/deploy-pages": 5,
+                   "softprops/action-gh-release": 3}
+        used = re.findall(r"uses: ([\w.-]+/[\w.-]+)@v(\d+)", self.text)
+        self.assertTrue(used)
+        for name, major in used:
+            self.assertIn(name, minimum, name)
+            self.assertGreaterEqual(int(major), minimum[name], name)
+
     def test_runs_the_ci_areas(self):
         for area in ("lint", "core", "unit"):
             self.assertIn("sh tools/ci.sh %s" % area, self.text)

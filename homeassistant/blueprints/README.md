@@ -7,7 +7,7 @@ with a default) after the existing ones of its group; a key is never renamed or 
 
 Order in every blueprint: **trigger → `players` → `camera`/`cameras` → `mode` → `seconds` → `label` → conditions
 (`when`, `alarm_panel`, `from_time`, `until_time`) → `action` → other screens (`webos_notify`, `message`,
-`snapshot_camera`, `snapshot_file`, `tv`)**.
+`snapshot_camera`, `snapshot_file`, `tv`, `snapshot_url`)**.
 
 | Key | Meaning | Default | Blueprints |
 |---|---|---|---|
@@ -25,9 +25,10 @@ Order in every blueprint: **trigger → `players` → `camera`/`cameras` → `mo
 | `action` | What a colour key does | – | button |
 | `webos_notify` | Notify action of the LG TV (LG webOS TV integration), e.g. `notify.lg_webos_tv_living_room`; `notify.` may be left out | – | doorbell webOS |
 | `message` | Text of the LG TV notification; empty = who/what (or `Doorbell`) and the camera name | empty | doorbell webOS |
-| `snapshot_camera` | Camera entity for the picture in the LG TV notification; empty = text only | empty | doorbell webOS |
+| `snapshot_camera` | Camera entity for the picture in the LG TV notification; empty = text only. The TV refuses pictures over 100 KB (then nothing is shown, #74): prefer `snapshot_url` | empty | doorbell webOS |
 | `snapshot_file` | Where that snapshot is saved (an allowed folder, never `www`: public without login) | `/media/camalert_webos.jpg` | doorbell webOS |
 | `tv` | The LG TV's media player: notify only while it is on; empty = always try | empty | doorbell webOS |
+| `snapshot_url` | Small picture for the LG TV notification (#74), e.g. `http://192.168.1.10:1984/api/frame.jpeg?src=front_door&width=640`; downloaded with the Downloader integration (download folder = folder of `snapshot_file`), used instead of `snapshot_camera`; download failed or no answer within 15 s = text only | empty | doorbell webOS |
 
 Priorities are fixed per blueprint: doorbell (also webOS) and motion `high`, alarm `alarm`.
 Blueprints cannot be translated: option labels use the English glossary terms (`core/i18n/glossary.json`).

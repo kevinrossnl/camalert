@@ -92,5 +92,12 @@ LG TV gets a notification with a snapshot (only while it is on). Find the TV's n
 **Developer tools › Actions** (`notify.lg_webos_tv_...`). The snapshot is saved in `/media` by default; do not
 use `www`, which Home Assistant serves without login.
 
+The LG TV refuses pictures over **100 KB** (102400 bytes); a snapshot of a main stream is usually larger, and then
+the TV shows nothing at all (#74). Use **Snapshot URL** instead: a small go2rtc frame such as
+`http://192.168.1.10:1984/api/frame.jpeg?src=front_door&width=640` (about 25 KB). It is downloaded with the
+**Downloader** integration (Settings › Devices & services › Add integration › Downloader; download folder `/media`,
+the folder of *Snapshot file*). No YAML and no restart needed. If the download fails or takes more than 15 seconds,
+the notification is sent as text only.
+
 ## Monitoring
 See [monitoring](../integrations/monitoring.md).

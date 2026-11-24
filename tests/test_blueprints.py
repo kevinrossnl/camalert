@@ -25,7 +25,7 @@ FROZEN = {
     "camalert_doorbell_webos.yaml": [("doorbell", None), ("players", None), ("camera", None), ("mode", "photo"),
                                      ("seconds", 30), ("label", ""), ("webos_notify", None), ("message", ""),
                                      ("snapshot_camera", ""), ("snapshot_file", "/media/camalert_webos.jpg"),
-                                     ("tv", "")],
+                                     ("tv", ""), ("snapshot_url", "")],
 }
 # option labels = glossary terms (blueprints cannot be translated)
 MODE_OPTIONS = [{"label": "Photo window", "value": "photo"}, {"label": "Live view", "value": "live"},
@@ -90,3 +90,32 @@ class TestBlueprints(unittest.TestCase):
         default = d["blueprint"]["input"]["snapshot_file"]["default"]
         self.assertNotIn("/www/", default)
         self.assertTrue(default.startswith("/media/"))
+
+    def test_webos_small_snapshot(self):
+        """#74: the LG TV refuses pictures over 100 KB; the URL route waits for the Downloader event and falls back
+        to text only, and every LG notify step continues on error."""
+        path = os.path.join(_paths.BLUEPRINTS, "camalert_doorbell_webos.yaml")
+        d = self.load(path)
+        inputs = d["blueprint"]["input"]
+        self.assertIn("100 KB", inputs["snapshot_url"]["description"])
+        self.assertIn("100 KB", inputs["snapshot_camera"]["description"])
+        self.assertIn("width=", inputs["snapshot_url"]["description"])
+        text = open(path, encoding="utf-8").read()
+        for event in ("downloader_download_completed", "downloader_download_failed"):
+            self.assertIn("event_type: %s" % event, text)
+        self.assertIn("continue_on_timeout: true", text)
+        steps = []
+
+        def walk(x):
+            if isinstance(x, dict):
+                if "action" in x and x["action"] != "camalert.show":
+                    steps.append(x)
+                for v in x.values():
+                    walk(v)
+            elif isinstance(x, list):
+                for v in x:
+                    walk(v)
+        walk(d["actions"])
+        self.assertTrue(steps)
+        for step in steps:
+            self.assertIs(step.get("continue_on_error"), True, step["action"])

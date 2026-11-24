@@ -64,7 +64,8 @@ blueprint:
       name: Snapshot camera (optional)
       description: >-
         Camera entity for the picture in the notification. Empty = text only. The snapshot is saved in
-        snapshot_file and replaced at every ring.
+        snapshot_file and replaced at every ring. The LG TV refuses pictures over 100 KB (102400 bytes, #74) and
+        then shows nothing: a main-stream snapshot is usually larger, so prefer "Snapshot URL" below.
       default: ""
       selector:
         entity:
@@ -87,6 +88,17 @@ blueprint:
           filter:
             - integration: webostv
               domain: media_player
+    snapshot_url:
+      name: Snapshot URL (optional)
+      description: >-
+        A small picture for the notification (#74), e.g. the go2rtc frame
+        http://192.168.1.10:1984/api/frame.jpeg?src=front_door&width=640 (about 25 KB; the LG TV refuses more than
+        100 KB). Needs the Downloader integration with the folder of snapshot_file (default /media) as download
+        folder. Used instead of the snapshot camera. When the download fails or takes longer than 15 seconds, the
+        notification is sent as text only.
+      default: ""
+      selector:
+        text:
 mode: single
 max_exceeded: silent
 variables:
@@ -97,6 +109,8 @@ variables:
   snapshot_camera_in: !input snapshot_camera
   snapshot_file_in: !input snapshot_file
   tv_in: !input tv
+  snapshot_url_in: !input snapshot_url
+  snapshot_name: "{{ (snapshot_file_in | trim).split('/') | last }}"
   webos_message: >-
     {{ message_in | trim if message_in | trim else ((label_in | trim or 'Doorbell') ~ ' - ' ~ camera_in) }}
   webos_action: >-
@@ -124,23 +138,70 @@ actions:
       - condition: template
         value_template: "{{ not tv_in or states(tv_in) not in ['off', 'unavailable', 'unknown'] }}"
     then:
-      - if:
-          - condition: template
-            value_template: "{{ snapshot_camera_in | length > 0 }}"
-        then:
-          - action: camera.snapshot
-            target:
-              entity_id: "{{ snapshot_camera_in }}"
-            data:
-              filename: "{{ snapshot_file_in }}"
-            continue_on_error: true
-          - action: "{{ webos_action }}"
-            data:
-              message: "{{ webos_message }}"
-              data:
-                icon: "{{ snapshot_file_in }}"
-            continue_on_error: true
-        else:
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ snapshot_url_in | trim | length > 0 }}"
+            sequence:
+              # #74: a small picture through the Downloader integration. The download runs while the first branch
+              # waits for its completed/failed event; failed or no event within 15 s = text only.
+              - parallel:
+                  - sequence:
+                      - wait_for_trigger:
+                          - trigger: event
+                            event_type: downloader_download_completed
+                            event_data:
+                              url: !input snapshot_url
+                          - trigger: event
+                            event_type: downloader_download_failed
+                            event_data:
+                              url: !input snapshot_url
+                        timeout: "00:00:15"
+                        continue_on_timeout: true
+                      - if:
+                          - condition: template
+                            value_template: >-
+                              {{ wait.trigger is not none
+                                 and wait.trigger.event.event_type == 'downloader_download_completed' }}
+                        then:
+                          - action: "{{ webos_action }}"
+                            data:
+                              message: "{{ webos_message }}"
+                              data:
+                                icon: "{{ snapshot_file_in | trim }}"
+                            continue_on_error: true
+                        else:
+                          - action: "{{ webos_action }}"
+                            data:
+                              message: "{{ webos_message }}"
+                            continue_on_error: true
+                  - sequence:
+                      - delay:
+                          milliseconds: 100
+                      - action: downloader.download_file
+                        data:
+                          url: "{{ snapshot_url_in | trim }}"
+                          filename: "{{ snapshot_name }}"
+                          overwrite: true
+                        continue_on_error: true
+          - conditions:
+              - condition: template
+                value_template: "{{ snapshot_camera_in | length > 0 }}"
+            sequence:
+              # the LG TV refuses pictures over 100 KB (#74): a large snapshot means no notification at all
+              - action: camera.snapshot
+                target:
+                  entity_id: "{{ snapshot_camera_in }}"
+                data:
+                  filename: "{{ snapshot_file_in }}"
+                continue_on_error: true
+              - action: "{{ webos_action }}"
+                data:
+                  message: "{{ webos_message }}"
+                  data:
+                    icon: "{{ snapshot_file_in }}"
+                continue_on_error: true
+        default:
           - action: "{{ webos_action }}"
             data:
               message: "{{ webos_message }}"

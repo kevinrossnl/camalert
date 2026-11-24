@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+- Blueprint *CamAlert - doorbell on the players and an LG webOS TV* (#74): new optional input `snapshot_url` for a
+  small picture (e.g. a go2rtc frame with `width=640`), downloaded with the Downloader integration; download failed
+  or no answer within 15 s = text only. The LG TV refuses pictures over 100 KB (documented at `snapshot_camera`).
 - Kodi (#71): *UniFi Protect events* in the service add-on (Configure › Triggers): a poll thread per add-on
   (restarted when the setting changes), the same settings, display mode *Log only*, source *UniFi Protect* in the
   event list and the poll status in the diagnostics; `unifi` lines in `devices.conf` never get the default camera

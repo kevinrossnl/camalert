@@ -169,3 +169,65 @@ async def test_doorbell_webos_text_only_and_tv_off(hass, player, blueprints):
     hass.states.async_set("binary_sensor.door", "on")
     await hass.async_block_till_done()
     assert calls == [("notify", "lg_webos_tv_living_room", {"message": "Someone at the door"})]
+
+
+def _fake_downloader(hass, result):
+    """downloader.download_file as the Downloader integration does it: the event fires before the action returns
+    (#74). result = "completed", "failed" or None (no event: the wait times out)."""
+    calls = []
+
+    async def download(call):
+        calls.append(dict(call.data))
+        if result:
+            hass.bus.async_fire("downloader_download_%s" % result,
+                                {"url": call.data["url"], "filename": call.data["filename"]})
+    hass.services.async_register("downloader", "download_file", download)
+    return calls
+
+
+from datetime import timedelta  # noqa: E402
+
+from homeassistant.util import dt as dt_util  # noqa: E402
+from pytest_homeassistant_custom_component.common import async_fire_time_changed  # noqa: E402
+
+SMALL = "http://192.168.1.10:1984/api/frame.jpeg?src=front_door&width=640"
+
+
+async def _ring_webos_url(hass, player, blueprints, result):
+    entry = await setup_player(hass, player)
+    calls = _fake_webos(hass)
+    downloads = _fake_downloader(hass, result)
+    hass.states.async_set("binary_sensor.door", "off")
+    await automations(hass, ("door", "camalert_doorbell_webos.yaml", {
+        "doorbell": ["binary_sensor.door"], "players": [player_device(hass, entry).id], "camera": "front_door",
+        "webos_notify": "notify.lg_webos_tv_living_room", "snapshot_camera": "camera.front_door",
+        "snapshot_url": SMALL}))
+    hass.states.async_set("binary_sensor.door", "on")
+    await hass.async_block_till_done()
+    async_fire_time_changed(hass, dt_util.utcnow() + timedelta(seconds=1))  # the short delay before the download
+    await hass.async_block_till_done()
+    return calls, downloads
+
+
+async def test_doorbell_webos_snapshot_url(hass, player, blueprints):
+    """#74: the small picture is downloaded into the snapshot file and sent; the snapshot camera is not used."""
+    calls, downloads = await _ring_webos_url(hass, player, blueprints, "completed")
+    assert downloads == [{"url": SMALL, "filename": "camalert_webos.jpg", "overwrite": True}]
+    assert calls == [("notify", "lg_webos_tv_living_room",
+                      {"message": "Doorbell - front_door", "data": {"icon": "/media/camalert_webos.jpg"}})]
+
+
+async def test_doorbell_webos_snapshot_url_failed(hass, player, blueprints):
+    """#74: a failed download sends the notification as text only (never an old picture)."""
+    calls, downloads = await _ring_webos_url(hass, player, blueprints, "failed")
+    assert len(downloads) == 1
+    assert calls == [("notify", "lg_webos_tv_living_room", {"message": "Doorbell - front_door"})]
+
+
+async def test_doorbell_webos_snapshot_url_timeout(hass, player, blueprints):
+    """#74: no answer from the Downloader within 15 s = text only."""
+    calls, downloads = await _ring_webos_url(hass, player, blueprints, None)
+    assert len(downloads) == 1
+    async_fire_time_changed(hass, dt_util.utcnow() + timedelta(seconds=16))
+    await hass.async_block_till_done()
+    assert calls == [("notify", "lg_webos_tv_living_room", {"message": "Doorbell - front_door"})]

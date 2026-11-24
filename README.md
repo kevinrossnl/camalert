@@ -53,6 +53,8 @@ server. It can also [connect to the cameras directly](docs/user/without-go2rtc.m
 
 *The camera pictures are solid test colours (demo cameras) or drawn: no real footage, no TV programme.*
 
+![Demo: the doorbell camera appears in a photo window over the TV, then the mosaic and the tour](docs/images/demo.gif)
+
 | Photo window | Mosaic – one camera not reachable |
 |---|---|
 | ![Photo window with "Person · Front door" and the key hint](docs/images/enigma2/photo-window.png) | ![Mosaic of four demo cameras](docs/images/enigma2/mosaic.png) |

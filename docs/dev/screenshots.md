@@ -2,7 +2,7 @@
 
 Screenshots in the docs show **only CamAlert's own screens**, never a camera picture or a TV programme
 (checklist: [privacy](privacy.md)). Illustrations with a drawn TV picture (`docs/images/hero.jpg`, `mosaic.jpg`,
-`tour.jpg`, `flow.png`) are made by `tools/readme_images.py`.
+`tour.jpg`, `flow.png`, the demo GIF `demo.gif`) are made by `tools/readme_images.py`.
 
 | File | What |
 |---|---|

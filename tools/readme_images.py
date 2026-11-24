@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Draws the illustrations in docs/images/ (no real cameras, no real TV pictures).
+"""Draws the illustrations in docs/images/ (no real cameras, no real TV pictures), including the demo GIF
+(`demo.gif`, #23: photo window over the TV, mosaic, tour).
 
     python3 tools/readme_images.py
 
@@ -307,6 +308,46 @@ def flow():
     return img
 
 
+def caption(img, text):
+    """A caption strip at the bottom of a demo frame (the GIF explains itself without the README)."""
+    img = img.convert("RGB")
+    ov = Image.new("RGBA", (W, 84), (0, 0, 0, 190))
+    img.paste(ov, (0, H - 84), ov)
+    ImageDraw.Draw(img).text((W // 2, H - 42), text, font=font(36, True), fill=(255, 255, 255), anchor="mm")
+    return img
+
+
+def photo_window(times):
+    img = test_pattern()
+    x, y, w, h, t = window_geometry("top_right", "medium", W, H)
+    d = ImageDraw.Draw(img)
+    d.rectangle((x, y, x + w - 1, y + t - 1), fill=(0x20, 0x20, 0x20))
+    d.text((x + 10, y + t // 2), "Person · Front door   OK = live  ◀ ▶  EXIT", font=font(26), fill=(255, 255, 255),
+           anchor="lm")
+    img.paste(camera("front_door", "Front door", times, (w, h), "21:05:%02d" % (10 + times)), (x, y + t))
+    return img
+
+
+def demo_frames():
+    """(image, milliseconds) of the demo GIF: TV -> doorbell -> photo window (refreshing) -> mosaic -> tour -> TV."""
+    frames = [(caption(test_pattern(), "Watching TV ..."), 1400)]
+    for i in range(3):
+        frames.append((caption(photo_window(i + 1), "Doorbell: the camera appears, you keep watching"), 900))
+    frames.append((caption(mosaic(), "Mosaic: all cameras at once"), 1800))
+    frames.append((caption(tour(), "Tour: one camera after the other, GREEN = live"), 1600))
+    frames.append((caption(test_pattern(), "EXIT: back to your programme"), 1400))
+    return frames
+
+
+def save_gif(frames, name, scale=2):
+    path = os.path.join(OUT, name)
+    small = [img.resize((W // scale, H // scale), Image.LANCZOS).quantize(colors=96, method=Image.MEDIANCUT)
+             for img, _ in frames]
+    small[0].save(path, save_all=True, append_images=small[1:], duration=[ms for _, ms in frames], loop=0,
+                  optimize=True)
+    print(name, os.path.getsize(path) // 1024, "KB")
+
+
 def save(img, name):
     path = os.path.join(OUT, name)
     if name.endswith(".jpg"):
@@ -322,3 +363,4 @@ if __name__ == "__main__":
     save(mosaic(), "mosaic.jpg")
     save(tour(), "tour.jpg")
     save(flow(), "flow.png")
+    save_gif(demo_frames(), "demo.gif")

@@ -19,3 +19,5 @@ Python 3.8 (Kodi 19) needs `pip install "pytest<8.4"`. Optional: `pyyaml` (bluep
 - `contract/`: the HTTP API table (`api_table.py`) runs against the Enigma2 handler (via e2fake) and the Kodi
   handler. Known differences are listed in `KNOWN` with the issue that fixes them; a stale entry fails.
   Use public example addresses for "outside the network" (Python treats the RFC 5737 ranges as private).
+- `fakes/broker.py`: in-process MQTT 3.1.1 broker (127.0.0.1, random port) on the shared codec;
+  `contract/test_mqtt_contract.py` runs both MQTT clients against it and checks `contract/mqtt_table.py`.

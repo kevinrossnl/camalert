@@ -36,7 +36,13 @@ Python 3.8 (Kodi 19) needs `pip install "pytest<8.4"`. Optional: `pyyaml` (bluep
 - `e2e/` (#35): the end-to-end runner `tools/e2e` against fake devices (`e2e/e2e_fakes.py`: OpenWebif with mute
   toggle and OSD drawn from the CamAlert state, Kodi JSON-RPC over TCP, an ssh box): safety, restore, scenarios, geometry.
   Real devices only through `tools/e2e/run.py` ([docs/dev/e2e.md](../docs/dev/e2e.md)), never in CI.
-- `fakes/go2rtc.py`: fake go2rtc with demo cameras (solid-colour frames, `--unreachable`), for tests and screenshots.
+- `fakes/go2rtc.py`: fake go2rtc with demo cameras (solid-colour frames, `--unreachable`), for tests and screenshots; the Kodi
+  module tests run against it (`FakeGo2rtc().start()` on 127.0.0.1).
+- **Network-free (#73):** `netguard.py`, installed by `conftest.py` for every pytest run, blocks outbound sockets (TCP
+  connect, UDP sendto) to anything but loopback with `NetworkBlocked` (an `OSError`) and fails the test that tried,
+  also when the code under test swallowed the error; the run ends with a list of blocked addresses. Use a fake on
+  127.0.0.1 (`tests/fakes`) instead of a real server; `netguard.expect_blocked()` is only for the guard's own tests
+  (`test_network_guard.py`).
 - Android TV player (#64): `test_export_contract.py` (the JSON that the Kotlin tests read is up to date with the
   contract tables and the core), `test_androidtv_tools.py` (fake go2rtc on the device, golden APK listing). The
   Kotlin tests themselves (every contract row, MQTT contract, core reference answers) run with Gradle:

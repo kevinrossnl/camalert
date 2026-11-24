@@ -14,7 +14,7 @@ FOLDERS = {"core": "core", "contract": "contract", "enigma2": "enigma2", "kodi":
 FILES = {
     "ha": ("test_ha_integration", "test_blueprints"),
     "build": ("test_build", "test_private", "test_images", "test_translations", "test_i18n", "test_ci", "test_docs"),
-    "contract": ("test_fake_go2rtc",),
+    "contract": ("test_fake_go2rtc", "test_network_guard"),
 }
 
 
@@ -28,3 +28,33 @@ def pytest_collection_modifyitems(config, items):
             area = next((a for a, files in FILES.items() if name in files), None)
         if area:
             item.add_marker(getattr(pytest.mark, area))
+
+
+
+# --- Network guard (#73): no test reaches the network; see tests/netguard.py ----------------------------------------
+import pytest  # noqa: E402
+
+import netguard  # noqa: E402
+
+netguard.install()
+
+
+@pytest.fixture(autouse=True)
+def network_guard(request):
+    """Fails the test when it (or a thread it started) tried to reach a non-loopback address, also when the code
+    under test swallowed the NetworkBlocked error."""
+    netguard.CURRENT["test"] = request.node.nodeid
+    yield
+    netguard.CURRENT["test"] = None
+    mine = netguard.blocked(request.node.nodeid)
+    if mine:
+        pytest.fail("network access blocked during this test (#73): %s; tests use fakes on 127.0.0.1 (tests/fakes)"
+                    % ", ".join(mine), pytrace=False)
+
+
+def pytest_sessionfinish(session, exitstatus):
+    lines = netguard.summary()
+    if lines:
+        sys.stderr.write("\nNETWORK GUARD (#73): blocked outbound sockets:\n  %s\n" % "\n  ".join(lines))
+        if session.exitstatus == 0:
+            session.exitstatus = 1

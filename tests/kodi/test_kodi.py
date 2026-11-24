@@ -20,6 +20,7 @@ ADDON = _paths.KODI_ADDON
 _paths.tools()
 import build_kodi  # noqa: E402
 from kodi import stubs as kodi_stubs  # noqa: E402
+from fakes.go2rtc import FakeGo2rtc  # noqa: E402
 
 # Problems the strict Kodi stubs find, each with its issue (a fixed one fails its test)
 KNOWN_STUB_PROBLEMS = {}
@@ -325,10 +326,24 @@ class _KodiApi(object):
 
 
 class _KodiModules(object):
+    go2rtc = None
+
+    @classmethod
+    def setUpClass(cls):
+        # snapshots and camera lists come from the fake go2rtc on 127.0.0.1, never from the network (#73)
+        cls.go2rtc = FakeGo2rtc().start()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.go2rtc.shutdown()
+        cls.go2rtc.server_close()
+
     def setUp(self):
         Built.get(self.kodi)
         kodi_stubs.JSONRPC_PROBLEMS[:] = []
         kodi_stubs.CALLS[:] = []
+        Built.store["server"] = self.go2rtc.url
+        self.addCleanup(Built.store.pop, "server", None)
 
     def tearDown(self):
         self.assertEqual(kodi_stubs.JSONRPC_PROBLEMS, [], "JSON-RPC requests this Kodi version refuses")
@@ -412,7 +427,7 @@ class _KodiModules(object):
         ctl_mod = Built.module("controller")
         sources = Built.module("sources")
         Built.store.update({"cooldown": "*=60", "camera": "garden", "substreams": "garden=garden_sub",
-                            "server": "http://192.168.1.10:1984"})
+                            "server": self.go2rtc.url})
         try:
             ctl = ctl_mod.Controller()
             ctl._show = lambda *a: "show"
@@ -732,7 +747,7 @@ class _KodiModules(object):
 
     def test_live_view_lowers_the_volume_through_jsonrpc(self):
         ctl_mod = Built.module("controller")
-        Built.store.update({"live_volume": "50", "server": "http://192.168.1.10:1984"})
+        Built.store.update({"live_volume": "50", "server": self.go2rtc.url})
         try:
             ctl = ctl_mod.Controller()
             ctl._show_overlay = lambda *a: None

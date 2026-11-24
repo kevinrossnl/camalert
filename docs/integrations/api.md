@@ -75,6 +75,25 @@ If your go2rtc address starts with `https://` (for example behind a reverse prox
   other address, the request is refused (400) or the post is skipped.
 - Never forward port 8099 to the internet.
 
+### Where passwords and tokens are stored
+
+| Secret | Enigma2 | Kodi | Android TV | Home Assistant |
+|---|---|---|---|---|
+| API access token | `/etc/enigma2/settings` | `settings.xml` in the add-on data folder | app settings (private app storage) | the integration's config entry (`.storage/core.config_entries`) |
+| MQTT password | `/etc/enigma2/settings` | `settings.xml` in the add-on data folder | app settings (private app storage) | – |
+| Camera logins (PTZ, Foscam, UniFi Protect console) | `/etc/enigma2/camalert_devices.conf` | `devices.conf` in the add-on data folder; the default camera login (*Camera user / password (default)*) in `settings.xml` | – (no camera control yet) | – |
+
+- These are plain text files on the player, like every other setting of the image, Kodi or Android. Anyone who can
+  read them (root or ssh access to an Enigma2 receiver, the Kodi `userdata` folder, for example over a network share or in
+  a Kodi backup) can read the secrets. The Android TV app keeps its settings in private storage and is excluded
+  from Android backups.
+- CamAlert never writes them to `camalert.log`, `/camalert/log`, the event list, diagnostics or MQTT: everything
+  logged goes through one redaction function.
+- Use separate logins with as few rights as possible: a camera user that may only view/move, a UniFi Protect user
+  with *View Only* and *Restrict to local access only*, an MQTT user only for CamAlert. On Enigma2 make the devices
+  file readable for root only (`chmod 600`). Locations of the Kodi add-on data folder per system:
+  [Kodi](../players/kodi.md#where-things-are).
+
 ## Examples
 
 ```sh

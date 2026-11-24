@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Lists all translatable strings: _("...") in the plugin source and N_("...") in the shared core (texts the core
 # hands to the players, #41). Copyright (C) 2026 CamAlert developers, GPL v2.
-# Translations live in the master catalogue core/i18n/ (tools/i18n/i18n.py), not in po/ (generated).
+# Translations live in the master catalogue core/i18n/ (tools/i18n/i18n.py), not in players/enigma2/po/ (generated).
 import ast
 import glob
 import os

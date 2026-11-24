@@ -14,12 +14,12 @@ ROOT = os.path.dirname(TESTS)
 TOOLS = os.path.join(ROOT, "tools")
 DOCS = os.path.join(ROOT, "docs")
 COMPATIBILITY_DOC = os.path.join(DOCS, "dev", "compatibility.md")
-PO = os.path.join(ROOT, "po")
 
 # Enigma2 plugin: the package folder and the folder that contains it (e2fake imports it as `CamAlert`).
 PLAYERS = os.path.join(ROOT, "players")
 ENIGMA2_PARENT = os.path.join(PLAYERS, "enigma2")
 ENIGMA2 = os.path.join(ENIGMA2_PARENT, "CamAlert")
+PO = os.path.join(ENIGMA2_PARENT, "po")  # Enigma2 translations, generated from core/i18n/
 # Shared core (plain Python 3.8+, no Enigma2, Kodi or Home Assistant imports); the builds copy the whole package
 # into every player package as `camalert_core`.
 CORE_PARENT = os.path.join(ROOT, "core")

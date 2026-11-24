@@ -21,6 +21,10 @@ Read the root [DEVELOPMENT.md](../../DEVELOPMENT.md) first (privacy, how we work
 | `picons.py` | picons for the camera channels (plain Python) |
 | `chime.wav` | doorbell chime (made by `tools/make_chime.py`) |
 
+`po/` (next to `CamAlert/`): `CamAlert.pot` and one `<lang>.po` per language, **generated** from the master
+catalogue `core/i18n/` by `python3 tools/i18n/i18n.py build`; never edit them by hand. `build_ipk.py` compiles them
+into `CamAlert/locale/<lang>/LC_MESSAGES/CamAlert.mo`. `_()` only uses this domain (#56).
+
 Tests: `tests/enigma2/` (fake Enigma2 from API snapshots of real images, `harness/e2fake.py`); package:
 `python3 tools/build_ipk.py dist` (golden listing in `tests/build/golden/`).
 

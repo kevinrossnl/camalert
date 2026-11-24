@@ -15,7 +15,7 @@ English sources (where a text is written):
     kodi  players/kodi/service.camalert/resources/language/resource.language.en_gb/strings.po (ids >= 30000;
           an id never changes meaning; N_() texts of the core get ids from KODI_CORE_IDS automatically)
     ha    custom_components/camalert/strings.json
-Outputs (generated, do not edit by hand): po/CamAlert.pot, po/<lang>.po, Kodi resource.language.<ll_cc>/strings.po,
+Outputs (generated, do not edit by hand): players/enigma2/po/CamAlert.pot + <lang>.po, Kodi resource.language.<ll_cc>/strings.po,
 custom_components/camalert/translations/<lang>.json (en.json = strings.json).
 """
 import ast
@@ -30,7 +30,7 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 import strings as e2strings  # noqa: E402
 
 CAT = os.path.join(ROOT, "core", "i18n")
-PO = os.path.join(ROOT, "po")
+PO = os.path.join(ROOT, "players", "enigma2", "po")
 KODI_LANG = os.path.join(ROOT, "players", "kodi", "service.camalert", "resources", "language")
 HA = os.path.join(ROOT, "custom_components", "camalert")
 LANGS = ("nl", "de", "fr", "it", "pl")

@@ -22,7 +22,7 @@ Read the root [DEVELOPMENT.md](../DEVELOPMENT.md) first (privacy, how we work, C
 ## Translations (`i18n/`)
 One master catalogue (#38/#43, format in [i18n/README.md](i18n/README.md)). English stays in the sources (`_()` in
 the plugin, `N_()` in the core, Kodi `resource.language.en_gb/strings.po`, HA `strings.json`); after changing them run
-`python3 tools/i18n/i18n.py update`, translate the empty `msgstr` in `i18n/<lang>.po`, then `build`. `po/`, the
+`python3 tools/i18n/i18n.py update`, translate the empty `msgstr` in `i18n/<lang>.po`, then `build`. `players/enigma2/po/`, the
 other Kodi `strings.po` and HA `translations/*.json` are generated: never edit them by hand. `tests/test_i18n.py`
 fails on missing translations, placeholder mismatches, forbidden synonyms/tone and glossary terms not used verbatim
 (`i18n/glossary.json`; tone nl *je*, de *du*, fr *vous*, it/pl impersonal). A glossary change also changes the docs

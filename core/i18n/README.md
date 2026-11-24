@@ -1,7 +1,7 @@
 # Master translation catalogue (#38, #43)
 
 Every user-facing text of CamAlert is translated **once**, here, and the three translation formats are generated
-from it. Do not edit `po/*.po`, the Kodi `strings.po` of other languages than English, or
+from it. Do not edit `players/enigma2/po/*.po`, the Kodi `strings.po` of other languages than English, or
 `custom_components/camalert/translations/*.json` by hand: run the tool instead.
 
 | File | What |
@@ -20,7 +20,7 @@ from it. Do not edit `po/*.po`, the Kodi `strings.po` of other languages than En
 ```sh
 python3 tools/i18n/i18n.py update   # after changing English texts: adds new msgids (empty msgstr), drops unused ones
 # translate the empty msgstr in core/i18n/<lang>.po (glossary terms verbatim, tone as above)
-python3 tools/i18n/i18n.py build    # writes po/CamAlert.pot, po/<lang>.po, Kodi strings.po, HA translations
+python3 tools/i18n/i18n.py build    # writes players/enigma2/po/CamAlert.pot + <lang>.po, Kodi strings.po, HA translations
 python3 tools/i18n/i18n.py check    # what tests/test_i18n.py runs
 ```
 One English text has one translation everywhere. If a place really needs another wording, add an entry with a

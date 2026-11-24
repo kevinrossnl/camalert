@@ -1,7 +1,7 @@
 # Translating CamAlert
 
 Every user-facing text is translated **once**, in the master catalogue `core/i18n/` (one gettext file per language:
-`nl.po`, `de.po`, `fr.po`, `it.po`, `pl.po`). The Enigma2 `po/` files, the Kodi `strings.po` files and the Home
+`nl.po`, `de.po`, `fr.po`, `it.po`, `pl.po`). The Enigma2 `players/enigma2/po/` files, the Kodi `strings.po` files and the Home
 Assistant `translations/*.json` are generated from it – do not edit those by hand.
 
 - **Improve a translation:** edit the `msgstr` in `core/i18n/<language>.po` (with any text editor or

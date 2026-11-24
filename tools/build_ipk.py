@@ -13,6 +13,7 @@ from msgfmt import make_mo, parse_po  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 SRC = os.path.join(ROOT, "players", "enigma2", "CamAlert")
+PO = os.path.join(ROOT, "players", "enigma2", "po")  # generated from core/i18n/ (tools/i18n/i18n.py build)
 CORE = os.path.join(ROOT, "core", "camalert_core")  # copied whole into the plugin as CamAlert/camalert_core/
 DEST = "usr/lib/enigma2/python/Plugins/Extensions/CamAlert"
 PKG = "enigma2-plugin-extensions-camalert"
@@ -70,12 +71,12 @@ def data(tar):
         else:
             add(tar, "./%s/camalert_core/%s" % (DEST, rel), open(os.path.join(CORE, rel), "rb").read())
     add_dir(tar, "./%s/locale" % DEST)
-    for po in sorted(os.listdir(os.path.join(ROOT, "po"))):
+    for po in sorted(os.listdir(PO)):
         if po.endswith(".po"):
             lang = po[:-3]
             add_dir(tar, "./%s/locale/%s" % (DEST, lang))
             add_dir(tar, "./%s/locale/%s/LC_MESSAGES" % (DEST, lang))
-            mo = make_mo(parse_po(open(os.path.join(ROOT, "po", po), encoding="utf-8").read()))
+            mo = make_mo(parse_po(open(os.path.join(PO, po), encoding="utf-8").read()))
             add(tar, "./%s/locale/%s/LC_MESSAGES/CamAlert.mo" % (DEST, lang), mo)
 
 

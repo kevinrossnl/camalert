@@ -14,7 +14,7 @@ PO = _paths.PO
 class TestTranslations(unittest.TestCase):
     def test_pot_up_to_date(self):
         self.assertEqual(open(os.path.join(PO, "CamAlert.pot"), encoding="utf-8").read(), pot(),
-                         "run: python3 tools/strings.py > po/CamAlert.pot")
+                         "run: python3 tools/i18n/i18n.py build")
 
     def test_every_language_complete_and_placeholders_match(self):
         wanted = [s for s in strings() if s]

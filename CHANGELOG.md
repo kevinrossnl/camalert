@@ -6,6 +6,9 @@
   reachable*; the event list shows GREEN *Play clip* only for events with a clip; texts come only from CamAlert's own
   catalogue (English images no longer turn *Normal* into *normal*); *Do not disturb blocks* values *Normal priority* /
   *Normal and high priority* (like Kodi); display modes *Live view* / *Notification* (glossary).
+- End-to-end runner `tools/e2e/run.py` (#35): show, multi-camera window, mosaic, tour, do not disturb, PTZ against a
+  fake camera and Home Assistant calls on a real receiver or Kodi player, with preconditions, verified mute, state
+  snapshot and restore (`--restore last`), OSD geometry checks with demo cameras and a local report (`docs/dev/e2e.md`).
 - Docs reorganised (#24, #47): `docs/index.md` with `user/`, `players/` (`enigma2.md`, `kodi.md`), `integrations/`
   (Home Assistant, MQTT, Frigate, HTTP API, monitoring) and `dev/`; generated pages from core: remote keys (key map),
   glossary (with translations) and every setting (schema) (`tools/docs.py`); "player" instead of "receiver" where Kodi

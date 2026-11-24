@@ -54,7 +54,7 @@ file table of that folder: read the root file **and** the one of the folder you 
 | `players/enigma2/po/` | Enigma2 translations, generated from `core/i18n/` (never edit by hand) |
 | `extras/grafana/` | Grafana dashboard |
 | `docs/` | documentation ([docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)) |
-| `tools/` | `build_ipk.py`, `build_feed.py`, `build_kodi.py` (packages), `ci.sh` + `ci_pick_runner.py` (CI), `check_private.py` + `check_images.py` (privacy), `docs.py` (generated docs), `i18n/i18n.py` (translations), `strings.py`, `msgfmt.py`, `make_chime.py`, `readme_images.py`, `e2_api_snapshot.py`, `kodi_api_snapshot.py`, `kodi_jsonrpc_snapshot.py` |
+| `tools/` | `build_ipk.py`, `build_feed.py`, `build_kodi.py` (packages), `ci.sh` + `ci_pick_runner.py` (CI), `check_private.py` + `check_images.py` (privacy), `docs.py` (generated docs), `i18n/i18n.py` (translations), `strings.py`, `msgfmt.py`, `make_chime.py`, `readme_images.py`, `e2_api_snapshot.py`, `kodi_api_snapshot.py`, `kodi_jsonrpc_snapshot.py`, `e2e/run.py` (end-to-end runner on real players, #35) |
 | `tests/` | all tests; `tests/_paths.py` is the only file that knows where things live |
 
 ## CI (Forgejo Actions, `.forgejo/workflows/tests.yml`)

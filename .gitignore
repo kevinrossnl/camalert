@@ -12,3 +12,8 @@ coverage.xml
 junit*.xml
 htmlcov/
 .venv-ha-*/
+
+# end-to-end runner (#35): local device profiles and reports (screenshots, state snapshots) never go into git
+tools/e2e/devices.local.yaml
+tools/e2e/devices.local.json
+/reports/

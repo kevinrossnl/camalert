@@ -1,0 +1,38 @@
+# Copy to devices.local.yaml (git-ignored, checked by tests/e2e/test_profiles.py) and fill in your own devices.
+# Secrets are never written here: only the NAMES of environment variables (*_env). Docs: docs/dev/e2e.md
+devices:
+  living_room:
+    type: enigma2
+    host: 192.168.1.20
+    camalert_port: 8099
+    token_env: CAMALERT_TOKEN_LIVING_ROOM   # only if the CamAlert API has an access token
+    openwebif_port: 80
+    # openwebif_user_env: OWIF_USER
+    # openwebif_password_env: OWIF_PASSWORD
+    ssh: living-room-receiver               # host alias from ~/.ssh/config (key login), needed for fake cameras
+    cameras: fake                           # fake (go2rtc + PTZ camera on the receiver, screenshots) or real
+    allowed_hours: "10:00-22:00"
+    sleep_hours: "23:00-08:00"
+    watching: confirm                       # confirm (interactive / --nobody-watching) or ha
+    # ha_media_player: media_player.living_room_tv
+    # ha_device_id: 0123456789abcdef        # the CamAlert device in Home Assistant, for the ha scenario
+  bedroom:
+    type: enigma2
+    host: 192.168.1.21
+    quiet: true                             # needs --allow-quiet, never inside sleep_hours
+    sleep_hours: "21:30-09:00"
+    allowed_hours: "10:00-20:00"
+    cameras: real                           # no ssh: own cameras, no screenshots, no PTZ
+    scenarios: [show, dnd]
+  kodi_living_room:
+    type: kodi
+    host: 192.168.1.30
+    jsonrpc: tcp                            # tcp (port 9090), http (8080 + *_env) or ssh (local port over ssh)
+    jsonrpc_port: 9090
+    ssh: kodi-living-room                   # optional: reads the chime setting
+    cameras: real
+    real_cameras: [front_door, garden]
+    allowed_hours: "10:00-23:00"
+ha:
+  url: http://192.168.1.5:8123
+  token_env: HA_TOKEN                       # long-lived token; without it the ha scenario is skipped

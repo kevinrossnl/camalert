@@ -35,6 +35,11 @@ KODI_LIB = os.path.join(KODI_ADDON, "resources", "lib", "camalert")
 HA = os.path.join(ROOT, "custom_components", "camalert")
 BLUEPRINTS = os.path.join(ROOT, "homeassistant", "blueprints")
 
+# End-to-end runner for real devices (#35) and its local, git-ignored files (device profiles, reports).
+E2E = os.path.join(TOOLS, "e2e")
+E2E_LOCAL_PROFILES = os.path.join(E2E, "devices.local.yaml")
+REPORTS = os.path.join(ROOT, "reports")
+
 # Fixtures of the compatibility tests.
 E2_API_FIXTURES = os.path.join(TESTS, "enigma2", "harness", "fixtures", "e2api")
 KODI_API_FIXTURES = os.path.join(TESTS, "kodi", "fixtures", "kodi_api")
@@ -46,6 +51,11 @@ def add(*paths):
     for p in reversed(paths):
         if p not in sys.path:
             sys.path.insert(0, p)
+
+
+def e2e():
+    """Makes the e2e runner importable: `from camalert_e2e import runner`."""
+    add(E2E)
 
 
 def core():

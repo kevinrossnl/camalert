@@ -3,6 +3,9 @@
 ## Unreleased
 - Kodi: the mosaic opened with a TypeError on every Kodi version (`ControlLabel(shadowColor=...)` does not exist);
   the camera names now sit on a dark strip instead (#25).
+- Kodi: Foscam alarms appear in the event list with source "foscam" (was "api").
+- Trigger sources (Frigate, Foscam) are a registry in the core (`camalert_core.triggers`): both players use the
+  same parsing; new sources (UniFi Protect, ...) only need a class there (#6).
 
 ## 1.0.0 (unreleased)
 - Enigma2 plugin: photo window (remote control: OK = live, LEFT/RIGHT = other camera), live view, notification; mosaic and camera tour; settings screen; camera channel list; go2rtc or direct camera mode; pause TV; active hours; ignore while recording; lower volume during live view; priorities normal / high / alarm (wake from standby); HTTP(S) API with token; MQTT with Home Assistant discovery.

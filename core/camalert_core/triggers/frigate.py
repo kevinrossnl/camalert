@@ -56,3 +56,40 @@ def frigate_clip_url(frigate_url, event_id):
     if not base.startswith(("http://", "https://")):
         base = "http://" + base
     return "%s/api/events/%s/clip.mp4" % (base, event_id)
+
+
+def frigate_topic(prefix):
+    """'<prefix>/events' (default prefix 'frigate')."""
+    return "%s/events" % ((prefix or "frigate").strip().strip("/") or "frigate")
+
+
+from . import Trigger, TriggerSource, register  # noqa: E402
+
+
+@register
+class FrigateSource(TriggerSource):
+    """Frigate detections via MQTT. Settings: frigate_enabled, frigate_prefix, frigate_labels, frigate_map,
+    frigate_priority, optional frigate_mode / frigate_seconds (None = player default) and frigate_debounce
+    (seconds: 'update' events of one camera come in bursts)."""
+    name = "frigate"
+    transport = "mqtt"
+
+    def __init__(self, settings):
+        TriggerSource.__init__(self, settings)
+        self.seen = {}
+
+    def topics(self):
+        return [frigate_topic(self.settings.get("frigate_prefix"))]
+
+    def parse(self, topic, payload, now=0.0):
+        s = self.settings
+        event = frigate_event(payload)
+        stream = frigate_stream(event, s.get("frigate_labels", ""), s.get("frigate_map", ""))
+        if not stream:
+            return None
+        debounce = s.get("frigate_debounce") or 0
+        if debounce and now - self.seen.get(stream, -1e18) < debounce:
+            return None
+        self.seen[stream] = now
+        return Trigger(stream, s.get("frigate_priority") or "normal", "frigate", frigate_title(event), event["id"],
+                       s.get("frigate_mode") or None, s.get("frigate_seconds") or None)

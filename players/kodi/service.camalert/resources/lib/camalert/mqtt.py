@@ -17,7 +17,7 @@ from .camalert_core.mqtt.codec import (mqtt_connect, MQTT_DISCONNECT, mqtt_parse
                                        mqtt_split, mqtt_subscribe)
 from .camalert_core.mqtt.topics import discovery, mqtt_command
 from .camalert_core.rules import clamp_seconds
-from .camalert_core.triggers.frigate import frigate_event, frigate_stream, frigate_title
+from .camalert_core.triggers import dispatch, enabled_sources, mqtt_topics
 from .camalert_core.urls import valid_port
 from .server import node_id, node_name
 
@@ -34,8 +34,10 @@ def kodi_discovery(node, name, cams):
     return out
 
 
-def frigate_topic(prefix):
-    return "%s/events" % ((prefix or "frigate").strip().strip("/") or "frigate")
+def trigger_settings(s):
+    """Settings of the trigger sources (#6): the Kodi settings already use their keys; Frigate 'update' events
+    come in bursts, so Kodi ignores repeats within 5 seconds."""
+    return dict(s, frigate_debounce=5)
 
 
 class Client(threading.Thread):
@@ -114,8 +116,7 @@ class Client(threading.Thread):
         self.up = True
         kodiapi.log("MQTT connected as %s" % self.node)
         topics = [self.prefix + t for t in ("show", "mosaic", "hide", "dnd/set")]
-        if s["frigate_enabled"]:
-            topics.append(frigate_topic(s["frigate_prefix"]))
+        topics += mqtt_topics(enabled_sources(trigger_settings(s), "mqtt"))  # Frigate etc. (#6)
         self.send(mqtt_subscribe(1, topics))
         self.publish("availability", "online", retain=True)
         self.publish_state()
@@ -146,8 +147,15 @@ class Client(threading.Thread):
         if not s["enabled"] or self.ctl is None:
             return
         try:
-            if s["frigate_enabled"] and topic == frigate_topic(s["frigate_prefix"]):
-                self.frigate(payload, s)
+            sources = enabled_sources(trigger_settings(s), "mqtt")
+            for src in sources:
+                if hasattr(src, "seen"):
+                    src.seen = self.frigate_seen  # keep the debounce state between messages
+            handled, trig = dispatch(sources, topic, payload, time.time())
+            if handled:
+                if trig:
+                    kodiapi.log("%s detection on %s" % (trig.source.capitalize(), trig.camera))
+                    self.ctl.show(*trig.show_args())
                 return
             action = topic[len(self.prefix):] if topic.startswith(self.prefix) else ""
             if action == "hide":
@@ -164,19 +172,6 @@ class Client(threading.Thread):
             kodiapi.log("MQTT command failed: %s" % e)
         time.sleep(0.5)
         self.publish_state()
-
-    def frigate(self, payload, s):
-        event = frigate_event(payload)
-        stream = frigate_stream(event, s["frigate_labels"], s["frigate_map"])
-        if not stream:
-            return
-        now = time.time()
-        if now - self.frigate_seen.get(stream, 0) < 5:  # 'update' events come in bursts
-            return
-        self.frigate_seen[stream] = now
-        kodiapi.log("Frigate detection on %s" % stream)
-        self.ctl.show(stream, s["frigate_seconds"], s["frigate_mode"], s["frigate_priority"], "frigate",
-                      frigate_title(event), event["id"])
 
     def stop(self):
         self.stopping.set()

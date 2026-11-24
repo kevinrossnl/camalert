@@ -16,14 +16,14 @@ from twisted.internet import reactor, task, threads
 from twisted.internet.protocol import Protocol, ReconnectingClientFactory
 from Components.config import config
 
-from .display import Controller, all_camera_names, camera_urls, log
+from .display import Controller, all_camera_names, camera_urls, log, trigger_settings
 from .camalert_core.cameras import slug
 from .camalert_core.keymap import button_event
 from .camalert_core.mqtt.codec import (mqtt_connect, MQTT_DISCONNECT, mqtt_parse_publish, MQTT_PING, mqtt_publish,
                                        mqtt_split, mqtt_subscribe)
 from .camalert_core.mqtt.topics import discovery, mqtt_command
 from .camalert_core.rules import clamp_seconds
-from .camalert_core.triggers.frigate import frigate_event, frigate_stream, frigate_title
+from .camalert_core.triggers import dispatch, enabled_sources, mqtt_topics
 from .camalert_core.urls import valid_port
 
 _connector = None
@@ -79,8 +79,7 @@ class CamAlertMqtt(Protocol):
         _factory.protocol_instance = self
         topics = [self.prefix + "show", self.prefix + "mosaic", self.prefix + "hide", self.prefix + "dnd/set"]
         c = config.plugins.camalert
-        if c.frigate_enabled.value:
-            topics.append("%s/events" % (c.frigate_prefix.value.strip().strip("/") or "frigate"))
+        topics += mqtt_topics(enabled_sources(trigger_settings(), "mqtt"))  # Frigate etc. (#6)
         self.transport.write(mqtt_subscribe(1, topics))
         self.publish("availability", "online", retain=True)
         self.publish_state()
@@ -111,11 +110,10 @@ class CamAlertMqtt(Protocol):
         ctl = Controller.instance
         if not c.enabled.value or ctl is None:
             return
-        if c.frigate_enabled.value and topic == "%s/events" % (c.frigate_prefix.value.strip().strip("/") or "frigate"):
-            event = frigate_event(payload)
-            stream = frigate_stream(event, c.frigate_labels.value, c.frigate_map.value)
-            if stream:
-                ctl.show(stream, None, None, c.frigate_priority.value, "frigate", frigate_title(event), event["id"])
+        handled, trig = dispatch(enabled_sources(trigger_settings(), "mqtt"), topic, payload)
+        if handled:  # a trigger source (Frigate, ...) owns this topic
+            if trig:
+                ctl.show(*trig.show_args())
                 reactor.callLater(0.5, self.publish_state)
             return
         action = topic.rsplit("/", 1)[-1]

@@ -179,6 +179,9 @@ msgstr ""
 msgid "Result"
 msgstr ""
 
+msgid "Motion"
+msgstr ""
+
 msgid "Cameras"
 msgstr ""
 
@@ -198,9 +201,6 @@ msgid "GREEN = live"
 msgstr ""
 
 msgid "Camera: %s"
-msgstr ""
-
-msgid "Motion"
 msgstr ""
 
 msgid "PTZ %s: arrows = move, CH+/CH- = zoom, OK = home, EXIT = done"

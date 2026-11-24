@@ -298,8 +298,7 @@ class _KodiModules(object):
         for topic, payload in msgs:
             self.assertEqual(json.loads(payload)["device"]["model"], "Kodi")
         self.assertTrue(any(t.endswith("/dnd/config") for t, _p in msgs))
-        self.assertEqual(mqtt.frigate_topic(""), "frigate/events")
-        self.assertEqual(mqtt.frigate_topic("frigate2/"), "frigate2/events")
+        self.assertEqual(mqtt.trigger_settings({"frigate_enabled": True})["frigate_debounce"], 5)
 
     def test_settings_restart(self):
         service = Built.module("service")

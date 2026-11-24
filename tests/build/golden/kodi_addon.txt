@@ -30,6 +30,7 @@ file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/obs/log.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/obs/metrics.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/rules.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/triggers/__init__.py
+file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/triggers/foscam.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/triggers/frigate.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/update.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/urls.py

@@ -25,12 +25,12 @@ from Components.ActionMap import ActionMap
 from .camalert_core.cameras import (display_name, known_camera, live_stream_name, neighbour, parse_camera_file,
                                     parse_cams, parse_orientation, parse_refresh, parse_titles, refresh_delay, slug,
                                     title_for)
-from .camalert_core.devices.foscam import alarm_edge
 from .camalert_core.events import add_event, event_title
 from .camalert_core.keymap import button_event, button_for
 from .camalert_core.layout import grid, strip_geometry, title_font, window_geometry
 from .camalert_core.obs.log import redact
 from .camalert_core.obs.metrics import metrics_text
+from .camalert_core.triggers.foscam import FoscamSource
 from .camalert_core.rules import (blocked_by_rules, clock_tuple, cooldown_seconds, decide, dnd_blocks, in_cooldown,
                                   in_time_window, lowered_volume, pick_mode, pick_priority, should_pause)
 from .camalert_core.update import latest_tag, newer_version, UPDATE_INTERVAL
@@ -94,6 +94,15 @@ def camera_urls(name):
     title = title_for(name, parse_titles(c.titles.value))
     return (rtsp_url(server, live_stream_name(name, c.substreams.value), valid_port(c.rtsp_port.value, 8554)),
             snapshot_url(server, name), title)
+
+
+def trigger_settings():
+    """The settings of the trigger sources (#6), with the keys camalert_core.triggers expects."""
+    c = config.plugins.camalert
+    return {"frigate_enabled": c.frigate_enabled.value, "frigate_prefix": c.frigate_prefix.value,
+            "frigate_labels": c.frigate_labels.value, "frigate_map": c.frigate_map.value,
+            "frigate_priority": c.frigate_priority.value,
+            "foscam_enabled": c.foscam_poll.value, "foscam_priority": c.device_priority.value, "foscam_label": _("Motion")}
 
 
 def all_camera_names():
@@ -882,25 +891,27 @@ class Controller(object):
 
     def poll_devices(self):
         c = config.plugins.camalert
-        if not c.enabled.value or not c.foscam_poll.value:
+        source = FoscamSource(trigger_settings())
+        if not c.enabled.value or not source.enabled():
             return
-        for name, dev in self.load_devices().items():
-            if dev["type"] != "foscam" or self.alarms.get(name) == "busy":
+        for name, dev in source.devices(self.load_devices()).items():
+            if self.alarms.get(name) == "busy":
                 continue
             previous = self.alarms.get(name, False)
             self.alarms[name] = "busy"
 
             def done(alarm, name=name, previous=previous):
                 self.alarms[name] = alarm
-                if alarm_edge(previous, alarm):
-                    self.show(name, None, None, config.plugins.camalert.device_priority.value, "foscam", _("Motion"))
+                trig = source.check(name, previous, alarm)
+                if trig:
+                    self.show(*trig.show_args())
 
             def failed(err, name=name, previous=previous):
                 self.alarms[name] = previous
                 if previous is not None:  # log once, not every 2 seconds
                     log("Foscam %s: %s" % (name, err.getErrorMessage()), level="error")
                 self.alarms[name] = None
-            threads.deferToThread(devices.foscam_state, dev).addCallbacks(done, failed)
+            threads.deferToThread(source.poll, dev).addCallbacks(done, failed)
 
     def has_ptz(self, name):
         return bool(name) and name in self.load_devices()

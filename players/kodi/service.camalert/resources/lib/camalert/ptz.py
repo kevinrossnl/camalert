@@ -11,7 +11,7 @@ import time
 from . import kodiapi
 from .camalert_core.devices import client as devices
 from .klogic import with_default_login
-from .camalert_core.devices.foscam import alarm_edge
+from .camalert_core.triggers.foscam import FoscamSource
 
 EXAMPLE = """# CamAlert camera control (PTZ) and Foscam alarms. One camera per line:
 #   name|type|host:port|user|password
@@ -91,17 +91,19 @@ class FoscamPoller(threading.Thread):
     def run(self):
         while not self.stopping.is_set():
             s = kodiapi.settings()
-            for name, d in all_devices(s).items():
-                if d["type"] != "foscam" or self.stopping.is_set():
+            source = FoscamSource(s)  # (#6) Kodi shows no label; Enigma2 shows "Motion" (#39)
+            for name, d in source.devices(all_devices(s)).items():
+                if self.stopping.is_set():
                     continue
                 try:
-                    now = devices.foscam_state(d)
+                    now = source.poll(d)
                 except Exception as e:
                     kodiapi.log("Foscam %s: %s" % (name, e))
                     continue
-                if alarm_edge(self.state.get(name), now):
+                trig = source.check(name, self.state.get(name), now)
+                if trig:
                     kodiapi.log("Foscam alarm on %s" % name)
-                    self.ctl.show(name, s["foscam_seconds"], s["foscam_mode"], s["foscam_priority"])
+                    self.ctl.show(*trig.show_args())
                 self.state[name] = now
             self.stopping.wait(s["foscam_interval"])
 

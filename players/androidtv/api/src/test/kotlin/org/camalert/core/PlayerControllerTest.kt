@@ -32,6 +32,8 @@ class PlayerControllerTest {
         assertEquals(listOf("photo front_door 30"), display.calls)
         assertEquals("front_door", ctl.status()["window"])
         assertEquals("photo", ctl.status()["screen"])
+        ctl.hide()
+        assertEquals("none", ctl.status()["screen"])
         val e = ctl.events[0]
         assertEquals(listOf("front_door", "api", "normal", "show", ""), listOf(e["camera"], e["source"], e["priority"], e["action"], e["reason"]))
     }
@@ -69,6 +71,7 @@ class PlayerControllerTest {
         assertEquals("live front_door 30 100", display.calls.last())  // alarm: volume unchanged
         assertEquals("show", show("garden", mode = "notify"))
         assertEquals("notify garden 30", display.calls.last())
+        assertEquals("notification", ctl.status()["screen"])
     }
 
     @Test
@@ -142,7 +145,7 @@ class PlayerControllerTest {
         assertEquals("tour front_door,garden 8", display.calls.last())
         assertEquals("tour", ctl.status()["screen"])
         ctl.hide()
-        assertNull(ctl.status()["screen"])
+        assertEquals("none", ctl.status()["screen"])
         ctl.setDnd(true)
         assertEquals(true, ctl.status()["dnd"])
         env.values["server"] = ""

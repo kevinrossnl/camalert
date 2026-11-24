@@ -11,6 +11,8 @@ import java.net.URLDecoder
  *     GET  /camalert/<action>   reads: status, cameras, dnd (state), events, log, metrics
  *                               (GET of an action still works, but is deprecated and logged once per caller)
  *     Parameters: query string, form body or JSON object body.
+ *     test=1 on any request (#62): the caller source becomes "test": no chime, the event is tagged "test".
+ *     status answers "screen" (#63): none / photo / strip / notification / live / mosaic / tour.
  *     Token: header X-CamAlert-Token (a token= query parameter still works: deprecated, logged once, redacted)
  *
  * The Kotlin tests run every row of the shared contract table (tests/contract/api_table.py, exported to JSON by
@@ -107,11 +109,11 @@ class Api(val data: CoreData = CoreData.load()) {
             return v
         }
 
-        fun boolParam(value: String): Boolean {
+        fun boolParam(value: String, name: String = "on"): Boolean {
             val t = value.trim().lowercase()
             if (t in TRUE) return true
             if (t in FALSE) return false
-            throw Invalid("on must be 1 or 0")
+            throw Invalid("$name must be 1 or 0")
         }
 
         /** Parameters from a POST body: JSON object or form; else {}. */
@@ -219,6 +221,9 @@ class Api(val data: CoreData = CoreData.load()) {
         out["platform"] = b.platform; out["api_version"] = data.apiVersion; out["capabilities"] = data.capabilities
         out["min_ha_version"] = data.minHaVersion
         out.putAll(b.statusExtra())
+        if (out["screen"] !in data.screens) {  // a controller that does not know it (#63)
+            out["screen"] = if (out["window"] != null) "photo" else if (out["live"] != null) "live" else "none"
+        }
         return out
     }
 
@@ -285,7 +290,8 @@ class Api(val data: CoreData = CoreData.load()) {
                 headers["Deprecation"] = "true"
                 once(b, "get|${route.name}|$ip", "deprecated: $ip uses GET for /camalert/${route.name}; use POST")
             }
-            val source = Events.callerSource(req.userAgent)
+            var source = Events.callerSource(req.userAgent)
+            if ("test" in args && boolParam(args.remove("test")!!, "test")) source = data.testSource  // #62: no chime, tagged
             val ctl = b.controller()
             ctl.lastCaller = Triple(now, ip, source)
             b.log("API ${req.method} ${req.path} ${Obs.redact(args.entries.sortedBy { it.key }.joinToString("&") { "${it.key}=${it.value}" })} from $ip ($source)", "verbose")

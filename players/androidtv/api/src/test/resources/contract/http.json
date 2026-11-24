@@ -886,6 +886,192 @@
   },
   {
    "args": {
+    "cam": "garden",
+    "test": "1"
+   },
+   "body": null,
+   "calls": [
+    [
+     "show",
+     "garden",
+     null,
+     null,
+     null,
+     "test",
+     null
+    ]
+   ],
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "action": "show",
+    "result": true
+   },
+   "method": "POST",
+   "name": "show_test_flag",
+   "path": "/camalert/show",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "cam": "garden",
+    "test": "true"
+   },
+   "body": null,
+   "calls": [
+    [
+     "show",
+     "garden",
+     null,
+     null,
+     null,
+     "test",
+     null
+    ]
+   ],
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": null,
+   "method": "POST",
+   "name": "show_test_flag_from_home_assistant",
+   "path": "/camalert/show",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "token": ""
+   },
+   "user_agent": "HomeAssistant/2026.11 aiohttp/3.10"
+  },
+  {
+   "args": {
+    "cam": "garden",
+    "test": "0"
+   },
+   "body": null,
+   "calls": [
+    [
+     "show",
+     "garden",
+     null,
+     null,
+     null,
+     "api",
+     null
+    ]
+   ],
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": null,
+   "method": "POST",
+   "name": "show_test_flag_off",
+   "path": "/camalert/show",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "cam": "garden",
+    "test": "x"
+   },
+   "body": null,
+   "calls": [],
+   "cameras": null,
+   "check": null,
+   "code": 400,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "error": "test must be 1 or 0",
+    "result": false
+   },
+   "method": "POST",
+   "name": "show_test_flag_invalid",
+   "path": "/camalert/show",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "test": "1"
+   },
+   "body": null,
+   "calls": [
+    [
+     "mosaic",
+     null,
+     60
+    ]
+   ],
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": null,
+   "method": "POST",
+   "name": "mosaic_test_flag",
+   "path": "/camalert/mosaic",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
     "cam": "garden"
    },
    "body": null,
@@ -1912,6 +2098,15 @@
    "user_agent": ""
   }
  ],
+ "screens": [
+  "none",
+  "photo",
+  "strip",
+  "notification",
+  "live",
+  "mosaic",
+  "tour"
+ ],
  "status_keys": [
   "result",
   "version",
@@ -1925,6 +2120,7 @@
   "api_version",
   "capabilities",
   "min_ha_version",
-  "mqtt"
+  "mqtt",
+  "screen"
  ]
 }

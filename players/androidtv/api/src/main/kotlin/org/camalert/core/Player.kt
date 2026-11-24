@@ -229,7 +229,14 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
         val sc = display.screen()
         return linkedMapOf("window" to (if (sc.kind == "photo" || sc.kind == "notify") sc.stream else null),
             "live" to (if (sc.kind == "live") sc.stream else null), "paused" to false,
-            "dnd" to (env.settings()["dnd"] == true), "screen" to sc.kind)
+            "dnd" to (env.settings()["dnd"] == true), "screen" to screenName(sc.kind))
+    }
+
+    /** The "screen" value of /camalert/status (#63). */
+    fun screenName(kind: String?) = when (kind) {
+        null -> "none"
+        "notify" -> "notification"
+        else -> kind
     }
 
     fun metrics(version: String, platform: String): String {

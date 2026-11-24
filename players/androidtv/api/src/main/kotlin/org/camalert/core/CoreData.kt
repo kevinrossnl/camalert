@@ -12,6 +12,8 @@ class CoreData(val raw: Map<String, Any?>) {
     val minHaVersion = raw["min_ha_version"] as String
     val capabilities = raw["capabilities"] as List<String>
     val ptzActions = raw["ptz_actions"] as List<String>
+    val screens = raw["screens"] as List<String>
+    val testSource = raw["test_source"] as String
     val schemaVersion = (raw["schema_version"] as Number).toInt()
     val sections = raw["sections"] as List<String>
     val levels = raw["levels"] as List<String>

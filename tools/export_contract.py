@@ -29,7 +29,7 @@ for p in (os.path.join(ROOT, "core"), TESTS):
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from camalert_core import access, api, keymap, present, rules, schema  # noqa: E402
+from camalert_core import access, api, keymap, layout, present, rules, schema  # noqa: E402
 from camalert_core.devices.config import PTZ_ACTIONS  # noqa: E402
 from camalert_core.mqtt import topics as mqtt_topics  # noqa: E402
 from camalert_core.obs import log as obslog, metrics as obsmetrics  # noqa: E402
@@ -106,6 +106,7 @@ def http_contract():
                        "status": ctl.status()},
         "dns": dns.NAMES,
         "status_keys": list(T.STATUS_KEYS),
+        "screens": list(T.SCREENS),
         "rate_limit": {"ip": "192.168.1.99", "requests": 35, "limit": api.LIMIT.limit, "window": api.LIMIT.window},
         "rows": rows,
     }
@@ -208,8 +209,25 @@ def core_reference():
                 clean[k] = v
         settings.append({"values": values, "clean": {k: v for k, v in clean.items() if k in sub},
                          "problems": sorted(p for p in probs if p in sub)})
+    geometry = []
+    for sw, sh in ((1920, 1080), (1280, 720), (3840, 2160)):
+        for pos in layout.POSITIONS:
+            for size in layout.SIZES:
+                for ts in layout.TITLE_SIZES:
+                    geometry.append({"kind": "window", "args": [pos, size, sw, sh, ts],
+                                     "out": list(layout.window_geometry(pos, size, sw, sh, ts))})
+                for n in (2, 3, 4):
+                    for lay in layout.STRIP_LAYOUTS:
+                        x, y, w, h, title, tiles = layout.strip_geometry(n, lay, pos, size, sw, sh)
+                        geometry.append({"kind": "strip", "args": [n, lay, pos, size, sw, sh],
+                                         "out": [x, y, w, h, title, [list(t) for t in tiles]]})
+        for n in range(1, 10):
+            geometry.append({"kind": "grid", "args": [n, sw, sh], "out": [list(t) for t in layout.grid(n, sw, sh)]})
+        for ts in layout.TITLE_SIZES:
+            geometry.append({"kind": "title_font", "args": [ts, sw], "out": layout.title_font(ts, sw)})
     return {
         "_": HEADER,
+        "geometry": geometry,
         "redact": [{"in": t, "out": obslog.redact(t)} for t in REDACT],
         "url_target": [{"url": u, "caller": c, "why": access.url_target(u, c, resolver)} for u, c in URLS],
         "lan_address": [{"ip": a, "lan": access.lan_address(a)} for a in ADDRESSES],
@@ -256,6 +274,8 @@ def runtime():
         "api_version": api.API_VERSION,
         "min_ha_version": api.MIN_HA_VERSION,
         "capabilities": list(api.CAPABILITIES),
+        "screens": list(api.SCREENS),
+        "test_source": __import__("camalert_core.events", fromlist=["x"]).TEST_SOURCE,
         "ptz_actions": list(PTZ_ACTIONS),
         "modes": list(rules.MODES),
         "priorities": list(rules.PRIORITIES),

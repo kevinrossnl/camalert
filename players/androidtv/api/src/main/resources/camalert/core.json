@@ -21,9 +21,11 @@
   "mosaic",
   "post",
   "ptz",
+  "screen",
   "show",
   "status",
   "strip",
+  "test",
   "tour",
   "webhook"
  ],
@@ -356,6 +358,15 @@
   "wake": "Woken up"
  },
  "schema_version": 2,
+ "screens": [
+  "none",
+  "photo",
+  "strip",
+  "notification",
+  "live",
+  "mosaic",
+  "tour"
+ ],
  "sections": [
   "general",
   "display",
@@ -1115,6 +1126,8 @@
   "ha": "Home Assistant",
   "menu": "Menu",
   "mqtt": "MQTT",
+  "test": "Test request",
   "wake": "Wake up"
- }
+ },
+ "test_source": "test"
 }

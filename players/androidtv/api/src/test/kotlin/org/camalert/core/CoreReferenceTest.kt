@@ -56,6 +56,22 @@ class CoreReferenceTest {
     }
 
     @Test
+    fun geometry() {
+        for (c in cases("geometry")) {
+            val a = c["args"] as List<Any?>
+            fun i(k: Int) = (a[k] as Number).toInt()
+            val got: Any = when (c["kind"]) {
+                "window" -> Layout.window(a[0] as String, a[1] as String, i(2), i(3), a[4] as String).let { listOf(it.x, it.y, it.w, it.h, it.title) }
+                "strip" -> Layout.strip(i(0), a[1] as String, a[2] as String, a[3] as String, i(4), i(5)).let { w ->
+                    listOf(w.x, w.y, w.w, w.h, w.title, w.tiles.map { listOf(it.x, it.y, it.w, it.h) }) }
+                "grid" -> Layout.grid(i(0), i(1), i(2)).map { listOf(it.x, it.y, it.w, it.h) }
+                else -> Layout.titleFont(a[0] as String, i(1))
+            }
+            assertEquals("${c["kind"]} $a", Json.write(c["out"]), Json.write(got))
+        }
+    }
+
+    @Test
     fun metricsText() {
         for (c in cases("metrics")) {
             val m = (c["metrics"] as Map<String, List<Any?>>).mapValues { (_, v) -> Obs.Metric(v[0] as String, v[1] as String, v[2]!!) }

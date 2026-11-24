@@ -95,7 +95,8 @@ class HttpContractTest {
         "status_keys" -> {
             val b = body as Map<String, Any?>
             (Exported.http["status_keys"] as List<String>).all { it in b } && b["result"] == true && (b["api_version"] as? Number)?.toInt() == 1 &&
-                (b["capabilities"] as List<String>).containsAll(listOf("post", "header_token", "show", "ptz"))
+                (b["capabilities"] as List<String>).containsAll(listOf("post", "header_token", "show", "ptz", "screen", "test")) &&
+                b["screen"] in (Exported.http["screens"] as List<String>)
         }
         "no_snapshot_paths" -> {
             val ev = (body as Map<String, Any?>)["events"] as List<Map<String, Any?>>

@@ -1,0 +1,18 @@
+file rw-r--r-- repository.camalert/addon.xml
+file rw-r--r-- repository.camalert/icon.png
+addon id=repository.camalert version=1.0.0 provider=CamAlert developers
+extension xbmc.addon.repository name=CamAlert repository
+  info https://example.invalid/kodi/addons.xml
+  checksum https://example.invalid/kodi/addons.xml.md5
+  datadir https://example.invalid/kodi
+extension xbmc.addon.metadata
+  platform all
+  license GPL-2.0-only
+  icon icon.png
+file addons.xml
+file addons.xml.md5
+file index.html
+file repository.camalert/repository.camalert-1.0.0.zip
+file service.camalert/service.camalert-@VERSION@.zip
+addons.xml service.camalert @VERSION@
+addons.xml repository.camalert 1.0.0

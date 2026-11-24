@@ -1,0 +1,40 @@
+file rw-r--r-- service.camalert/LICENSE.txt
+file rw-r--r-- service.camalert/addon.xml
+file rw-r--r-- service.camalert/default.py
+file rw-r--r-- service.camalert/resources/fanart.jpg
+file rw-r--r-- service.camalert/resources/icon.png
+file rw-r--r-- service.camalert/resources/language/resource.language.de_de/strings.po
+file rw-r--r-- service.camalert/resources/language/resource.language.en_gb/strings.po
+file rw-r--r-- service.camalert/resources/language/resource.language.fr_fr/strings.po
+file rw-r--r-- service.camalert/resources/language/resource.language.it_it/strings.po
+file rw-r--r-- service.camalert/resources/language/resource.language.nl_nl/strings.po
+file rw-r--r-- service.camalert/resources/language/resource.language.pl_pl/strings.po
+file rw-r--r-- service.camalert/resources/lib/camalert/__init__.py
+file rw-r--r-- service.camalert/resources/lib/camalert/camlog.py
+file rw-r--r-- service.camalert/resources/lib/camalert/controller.py
+file rw-r--r-- service.camalert/resources/lib/camalert/devices.py
+file rw-r--r-- service.camalert/resources/lib/camalert/diag.py
+file rw-r--r-- service.camalert/resources/lib/camalert/display.py
+file rw-r--r-- service.camalert/resources/lib/camalert/klogic.py
+file rw-r--r-- service.camalert/resources/lib/camalert/kodiapi.py
+file rw-r--r-- service.camalert/resources/lib/camalert/logic.py
+file rw-r--r-- service.camalert/resources/lib/camalert/mqtt.py
+file rw-r--r-- service.camalert/resources/lib/camalert/ptz.py
+file rw-r--r-- service.camalert/resources/lib/camalert/script.py
+file rw-r--r-- service.camalert/resources/lib/camalert/server.py
+file rw-r--r-- service.camalert/resources/lib/camalert/service.py
+file rw-r--r-- service.camalert/resources/lib/camalert/sources.py
+file rw-r--r-- service.camalert/resources/media/chime.wav
+file rw-r--r-- service.camalert/resources/media/white.png
+file rw-r--r-- service.camalert/resources/settings.xml
+file rw-r--r-- service.camalert/service.py
+addon id=service.camalert version=@VERSION@ provider=CamAlert developers
+requires xbmc.python 3.0.0
+extension xbmc.service library=service.py start=login
+extension xbmc.python.script library=default.py
+extension xbmc.addon.metadata
+  platform all
+  license GPL-2.0-only
+  source https://github.com/kevinrossnl/camalert
+  icon resources/icon.png
+  fanart resources/fanart.jpg

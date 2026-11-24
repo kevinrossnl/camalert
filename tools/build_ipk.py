@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # Builds enigma2-plugin-extensions-camalert_<version>_all.ipk without opkg tools.
 # Copyright (C) 2026 CamAlert developers, GPL v2.
+import gzip
 import io
 import os
 import re
 import sys
 import tarfile
-import time
 
 sys.path.insert(0, os.path.dirname(__file__))
 from msgfmt import make_mo, parse_po  # noqa: E402
@@ -15,6 +15,8 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 SRC = os.path.join(ROOT, "src", "CamAlert")
 DEST = "usr/lib/enigma2/python/Plugins/Extensions/CamAlert"
 PKG = "enigma2-plugin-extensions-camalert"
+# Fixed timestamps: the same sources always give the same ipk (sha256), like the Kodi zip (#28).
+STAMP = int(os.environ.get("SOURCE_DATE_EPOCH", "1767225600"))  # 2026-01-01 00:00:00 UTC
 
 
 def version():
@@ -23,21 +25,21 @@ def version():
 
 def add(tar, name, data, mode=0o644):
     info = tarfile.TarInfo(name)
-    info.size, info.mode, info.mtime, info.uid, info.gid = len(data), mode, int(time.time()), 0, 0
+    info.size, info.mode, info.mtime, info.uid, info.gid = len(data), mode, STAMP, 0, 0
     tar.addfile(info, io.BytesIO(data))
 
 
 def add_dir(tar, name):
     info = tarfile.TarInfo(name)
-    info.type, info.mode, info.mtime = tarfile.DIRTYPE, 0o755, int(time.time())
+    info.type, info.mode, info.mtime = tarfile.DIRTYPE, 0o755, STAMP
     tar.addfile(info)
 
 
 def targz(builder):
     buf = io.BytesIO()
-    with tarfile.open(fileobj=buf, mode="w:gz", format=tarfile.GNU_FORMAT) as tar:
+    with tarfile.open(fileobj=buf, mode="w", format=tarfile.GNU_FORMAT) as tar:
         builder(tar)
-    return buf.getvalue()
+    return gzip.compress(buf.getvalue(), 9, mtime=0)
 
 
 def data(tar):
@@ -91,7 +93,7 @@ def control(tar, owner):
 def ar(members):
     out = b"!<arch>\n"
     for name, payload in members:
-        hdr = "%-16s%-12d%-6d%-6d%-8s%-10d`\n" % (name, int(time.time()), 0, 0, "100644", len(payload))
+        hdr = "%-16s%-12d%-6d%-6d%-8s%-10d`\n" % (name, STAMP, 0, 0, "100644", len(payload))
         out += hdr.encode() + payload + (b"\n" if len(payload) % 2 else b"")
     return out
 

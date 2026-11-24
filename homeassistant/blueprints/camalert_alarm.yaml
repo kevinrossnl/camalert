@@ -1,8 +1,9 @@
 blueprint:
   name: CamAlert - alarm triggered
   description: >-
-    When the alarm goes off: wakes the receivers (if "Wake receiver on alarm" is on in CamAlert), and shows the
-    camera or live mosaic channel in full screen. Needs the CamAlert integration.
+    When the alarm goes off: wakes Enigma2 receivers (if "Wake receiver on alarm" is on in CamAlert) and shows the
+    camera or a live mosaic stream (priority "alarm"). Needs the CamAlert integration. Inputs: see
+    homeassistant/blueprints/README.md.
   domain: automation
   source_url: https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_alarm.yaml
   input:
@@ -12,8 +13,9 @@ blueprint:
         entity:
           filter:
             - domain: alarm_control_panel
-    receivers:
-      name: Receivers
+    players:
+      name: Players (receivers / Kodi)
+      description: CamAlert players that show the camera.
       selector:
         device:
           integration: camalert
@@ -23,13 +25,30 @@ blueprint:
       description: A camera name, or the name of a live mosaic stream in go2rtc (see docs/mosaic.md).
       selector:
         text:
+    mode:
+      name: Display mode
+      default: live
+      selector:
+        select:
+          options:
+            - {label: Photo window, value: photo}
+            - {label: Live view, value: live}
+            - {label: Notification, value: notify}
     seconds:
       name: Duration
       default: 300
       selector:
         number: {min: 5, max: 300, step: 5, unit_of_measurement: s}
+    label:
+      name: Who/what (optional)
+      description: Text before the camera name in the title. Empty = none.
+      default: Alarm
+      selector:
+        text:
 mode: single
 max_exceeded: silent
+variables:
+  label_in: !input label
 triggers:
   - trigger: state
     entity_id: !input alarm_panel
@@ -37,10 +56,11 @@ triggers:
 actions:
   - action: camalert.show
     target:
-      device_id: !input receivers
+      device_id: !input players
     data:
       camera: !input camera
       seconds: !input seconds
-      mode: live
+      mode: !input mode
       priority: alarm
+      label: "{{ label_in | trim }}"
     continue_on_error: true

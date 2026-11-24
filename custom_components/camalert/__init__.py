@@ -30,7 +30,8 @@ TARGET = dict(getattr(cv, "TARGET_SERVICE_FIELDS", {})) or {
 
 SHOW_SCHEMA = vol.Schema({
     **TARGET,
-    vol.Optional("camera"): vol.Any(cv.string, vol.All(cv.ensure_list, [cv.string])),
+    # a list first: cv.string would turn a template's list result back into its text "['a', 'b']"
+    vol.Optional("camera"): vol.Any(vol.All(list, [cv.string]), cv.string),
     vol.Optional("seconds"): vol.All(vol.Coerce(int), vol.Range(min=5, max=300)),
     vol.Optional("mode"): vol.In(MODES),
     vol.Optional("priority"): vol.In(PRIORITIES),

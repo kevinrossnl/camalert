@@ -1,6 +1,12 @@
 # Changelog
 
 ## Unreleased
+- Blueprints (#45): inputs frozen for 1.x – same keys, order and defaults in every blueprint (trigger, `players`,
+  `camera`/`cameras`, `mode`, `seconds`, `label`, conditions, `action`; `homeassistant/blueprints/README.md`);
+  `receivers` became `players`, doorbell `triggers_in` became `doorbell`, new `label` (doorbell, motion, alarm) and
+  `mode` (alarm), glossary option labels. Re-save automations made from an older copy.
+- Home Assistant: `camalert.show` with a list of cameras from a template (motion blueprint with several cameras
+  typed in) sent the text `['a', 'b']` and the player refused it; lists now stay lists.
 - Home Assistant runtime tests (#33): the integration runs in a real Home Assistant (oldest supported 2025.1 and
   latest) against a fake player that answers like Enigma2 and Kodi (contract table); CI area `ha`, integration
   branch coverage 96 %.

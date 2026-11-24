@@ -1,12 +1,13 @@
 blueprint:
   name: CamAlert - doorbell or person at the door
   description: >-
-    Always shows a camera on your TV (priority "high": also outside the receiver's active hours and during
-    recordings) when the doorbell rings or a person is detected. Needs the CamAlert integration.
+    Always shows a camera on the TV (priority "high": also with do not disturb, outside the time window and while
+    playing) when the doorbell rings or a person is detected. Needs the CamAlert integration. Inputs: see
+    homeassistant/blueprints/README.md.
   domain: automation
   source_url: https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_doorbell.yaml
   input:
-    triggers_in:
+    doorbell:
       name: Doorbell / person sensor
       description: Doorbell (event or binary sensor) or person detection. You can pick several.
       selector:
@@ -14,23 +15,18 @@ blueprint:
           multiple: true
           filter:
             - domain: [binary_sensor, event]
-    receivers:
-      name: Receivers
-      description: CamAlert receivers that show the camera (receivers in standby ignore it).
+    players:
+      name: Players (receivers / Kodi)
+      description: CamAlert players that show the camera (Enigma2 receivers in standby ignore it).
       selector:
         device:
           integration: camalert
           multiple: true
     camera:
       name: Camera
-      description: Camera name as in go2rtc, e.g. front_door
+      description: Camera name as in go2rtc, e.g. front_door.
       selector:
         text:
-    seconds:
-      name: Duration
-      default: 30
-      selector:
-        number: {min: 5, max: 300, step: 5, unit_of_measurement: s}
     mode:
       name: Display mode
       default: photo
@@ -38,13 +34,26 @@ blueprint:
         select:
           options:
             - {label: Photo window, value: photo}
-            - {label: Switch to live stream, value: live}
-            - {label: Notification only, value: notify}
+            - {label: Live view, value: live}
+            - {label: Notification, value: notify}
+    seconds:
+      name: Duration
+      default: 30
+      selector:
+        number: {min: 5, max: 300, step: 5, unit_of_measurement: s}
+    label:
+      name: Who/what (optional)
+      description: Text before the camera name in the title, e.g. Doorbell. Empty = none.
+      default: ""
+      selector:
+        text:
 mode: single
 max_exceeded: silent
+variables:
+  label_in: !input label
 triggers:
   - trigger: state
-    entity_id: !input triggers_in
+    entity_id: !input doorbell
 conditions:
   - condition: template
     value_template: >-
@@ -53,10 +62,11 @@ conditions:
 actions:
   - action: camalert.show
     target:
-      device_id: !input receivers
+      device_id: !input players
     data:
       camera: !input camera
       seconds: !input seconds
       mode: !input mode
       priority: high
+      label: "{{ label_in | trim }}"
     continue_on_error: true

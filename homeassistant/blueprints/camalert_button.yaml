@@ -2,17 +2,12 @@ blueprint:
   name: CamAlert - remote button does something
   description: >-
     While a camera is on the TV, a colour key on the remote runs an action, e.g. open the gate or unlock the
-    door when the doorbell camera shows who is there. The receiver must be added with the CamAlert integration
+    door when the doorbell camera shows who is there. The player must be added with the CamAlert integration
     (or via MQTT: then use the "Remote button" event entity of the MQTT device in your own automation).
+    Inputs: see homeassistant/blueprints/README.md.
   domain: automation
   source_url: https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_button.yaml
   input:
-    receivers:
-      name: Receivers
-      selector:
-        device:
-          integration: camalert
-          multiple: true
     button:
       name: Colour key
       default: green
@@ -23,6 +18,12 @@ blueprint:
             - {label: Green, value: green}
             - {label: Yellow, value: yellow}
             - {label: Blue, value: blue}
+    players:
+      name: Players (receivers / Kodi)
+      selector:
+        device:
+          integration: camalert
+          multiple: true
     camera:
       name: Only for this camera (optional)
       description: Camera name as in go2rtc. Empty = any camera.
@@ -36,7 +37,7 @@ blueprint:
 mode: single
 max_exceeded: silent
 variables:
-  receivers: !input receivers
+  players: !input players
   wanted_camera: !input camera
 triggers:
   - trigger: event
@@ -46,6 +47,6 @@ triggers:
 conditions:
   - condition: template
     value_template: >-
-      {{ trigger.event.data.device_id in receivers
+      {{ trigger.event.data.device_id in players
          and (wanted_camera | trim == '' or trigger.event.data.camera == wanted_camera | trim) }}
 actions: !input action

@@ -114,10 +114,12 @@ class Api(resource.Resource):
             elif action == "mosaic":
                 sec = clamp_seconds(args.get("sec"), 60) if args.get("sec") else 60
                 res = ctl.mosaic(args.get("cam"), sec)
+                log("mosaic from %s: cameras=%s -> %s" % (source, args.get("cam") or "-", res))
                 out = {"result": res == "show", "action": res}
             elif action == "tour":
                 iv = args.get("interval")
                 res = ctl.tour(args.get("cam"), max(3, min(60, int(iv))) if iv and iv.isdigit() else None)
+                log("tour from %s: cameras=%s -> %s" % (source, args.get("cam") or "-", res))
                 out = {"result": res == "show", "action": res}
             elif action == "cameras":
                 # go2rtc mode needs a network call: never block the GUI, answer from a thread

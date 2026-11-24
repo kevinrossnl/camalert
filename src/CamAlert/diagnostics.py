@@ -146,7 +146,7 @@ class EventsScreen(Screen):
         self["photo"] = Pixmap()
         self["info"] = Label("")
         self["key_red"] = StaticText(_("Close"))
-        self["key_green"] = StaticText(_("Play clip") if config.plugins.camalert.frigate_url.value.strip() else "")
+        self["key_green"] = StaticText(_("Play clip") if config.plugins.camalert.frigate_url.value.strip() else " ")
         self["actions"] = ActionMap(["OkCancelActions", "ColorActions"], {
             "cancel": self.close, "red": self.close, "ok": self.show_camera, "green": self.play_clip}, -1)
         self.picload = ePicLoad()

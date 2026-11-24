@@ -492,6 +492,50 @@ class _KodiModules(object):
         kodiapi._core_ids = None
         return kodiapi
 
+    def test_unreachable_tile_is_dimmed_with_text(self):
+        """#49: every tile type shows a dimmed 'Camera not reachable' layer instead of a frozen or black picture."""
+        display = Built.module("display")
+        sources = Built.module("sources")
+        self.core_strings()
+        down = {"garden"}
+
+        def download(url, path, verify=True):
+            if any("src=%s&" % c in url for c in down):
+                raise IOError("timed out")
+            with open(path, "wb") as f:
+                f.write(b"jpg")
+            return path
+        self.addCleanup(setattr, sources, "download", sources.download)
+        sources.download = download
+
+        def watch(win):
+            seen = {}
+            for tile in win.tiles:
+                dim, text = tile["error"]
+                self.assertEqual(text._args[4], "Camera not reachable")
+                dim.setVisible = lambda v, n=tile["name"]: seen.__setitem__(n, v)
+            win.feeder.retry = 0.01
+            return seen
+
+        strip = display.PhotoWindow(FakeController(), self.CAMS, self.settings(), keys=True)
+        titles = []
+        strip.label.setLabel = titles.append
+        mosaic = display.FullScreen(FakeController(), self.CAMS, self.settings(), tour=False)
+        tour = display.FullScreen(FakeController(), self.CAMS[::-1], self.settings(), tour=True)
+        for win in (strip, mosaic, tour):
+            seen = watch(win)
+            win.feeder.start()
+            try:
+                self.assertTrue(self.wait_for(lambda: seen.get("garden") is True), (win, seen))
+                self.assertNotIn("front_door", seen)  # the camera that answers keeps its picture
+                if win is tour:
+                    down.clear()
+                    self.assertTrue(self.wait_for(lambda: seen.get("garden") is False), seen)
+                    down.add("garden")
+            finally:
+                win.feeder.stop()
+        self.assertEqual(titles, [])  # a multi-camera window keeps its title; the tile says it
+
     def test_key_hints_come_from_the_key_map(self):
         """#41: no hard-coded English hints; the photo window, PTZ, live, tour and mosaic hints are
         present.key_hint() texts, translated through Kodi string ids."""

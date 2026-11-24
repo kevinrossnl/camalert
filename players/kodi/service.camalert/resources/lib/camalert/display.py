@@ -12,7 +12,7 @@ from .klogic import (PTZ_TOGGLE as TOGGLE_IDS, SCREEN_H, SCREEN_W, colour_name, 
                      live_key, mosaic_key, ptz_action, title_font_name, tour_key)
 from .camalert_core.cameras import parse_orientation, parse_refresh, refresh_delay
 from .camalert_core.events import event_title
-from .camalert_core.present import key_hint, tour_status
+from .camalert_core.present import key_hint, reason_label, tour_status
 from .camalert_core.layout import grid, strip_geometry, window_geometry
 
 WHITE = None
@@ -37,6 +37,30 @@ def has_ptz(name, s):
         return name in all_devices(s)
     except Exception:  # a broken devices.conf must not stop the window
         return False
+
+
+def add_error_overlay(win, tile, x, y, w, h, font="font13"):
+    """Dimmed layer with the translated 'Camera not reachable' over one tile, hidden until the Feeder reports
+    the camera (#49): no silent frozen or black picture."""
+    dim = xbmcgui.ControlImage(x, y, w, h, white(), colorDiffuse="C0000000")
+    text = xbmcgui.ControlLabel(x + 8, y, max(10, w - 16), h, reason_label("unreachable", kodiapi.core_tr()),
+                                font=font, textColor="FFFFFFFF", alignment=0x00000002 | 0x00000004)
+    win.addControl(dim)
+    win.addControl(text)
+    for c in (dim, text):
+        c.setVisible(False)
+    tile["error"] = (dim, text)
+
+
+def show_error(tile, bad):
+    for c in tile.get("error", ()):
+        c.setVisible(bool(bad))
+
+
+def count_unreachable(bad):
+    if bad:
+        from .controller import STATS
+        STATS["unreachable"] += 1
 
 
 def white():
@@ -136,8 +160,11 @@ class Feeder(object):
         tmp = kodiapi.temp_dir()
         n = 0
         fails = {}
+        last = None
         while self.active:
             t = self.tiles[i]
+            if t is not last:  # another camera in this tile (tour, other camera): count its failures from 0
+                fails[i], last = 0, t
             n += 1
             path, stale = frame_name(os.path.join(tmp, "f%d_%x" % (i, id(self) & 0xffff)), n)
             start = time.time()
@@ -210,6 +237,8 @@ class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
             self.addControl(img)
             orient(img, name, orientation)
             self.tiles.append({"name": name, "url": url, "control": img})
+        for tile, (tx, ty, tw, th) in zip(self.tiles, tiles):
+            add_error_overlay(self, tile, x + tx, y + ty, tw, th, font)
         self.stream = self.cams[0][0] if n == 1 else ",".join(c[0] for c in self.cams)
         self.title_text = names
         self.hint_label = None
@@ -246,6 +275,7 @@ class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
         self.tiles[0] = dict(self.tiles[0], name=name, url=url)
         self.feeder.replace(old, self.tiles[0])
         orient(self.tiles[0]["control"], name, self.orientation)
+        show_error(self.tiles[0], False)
         self.stream = name
         self.title_text = title
         self.ptz_label(False)
@@ -257,9 +287,11 @@ class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
                                      hint("window", self.settings, has_ptz(self.stream, self.settings)))
 
     def unreachable(self, tile, bad):
-        from .controller import STATS
+        count_unreachable(bad)
+        show_error(tile, bad)
+        if len(self.tiles) != 1:
+            return
         if bad:
-            STATS["unreachable"] += 1
             self.label.setLabel(kodiapi.tr(30254) % self.title_text)
         else:
             self.ptz_label(self.ptz is not None)
@@ -325,6 +357,7 @@ class FullScreen(xbmcgui.WindowDialog):
             self.addControl(img)
             self.tiles = [{"name": self.cams[0][0], "url": self.cams[0][2], "control": img}]
             orient(img, self.cams[0][0], self.orientation)
+            add_error_overlay(self, self.tiles[0], 0, top, SCREEN_W, SCREEN_H - top)
         else:
             self.tiles = []
             cells = grid(len(self.cams), SCREEN_W, SCREEN_H - top)
@@ -333,6 +366,7 @@ class FullScreen(xbmcgui.WindowDialog):
                 self.addControl(img)
                 orient(img, name, self.orientation)
                 self.tiles.append({"name": name, "url": url, "control": img})
+                add_error_overlay(self, self.tiles[-1], x, y + top, w, h)
             for (name, title, url), (x, y, w, h) in zip(self.cams, cells):  # labels on top of all pictures
                 # dark strip behind the label: ControlLabel has no shadowColor in any Kodi version (#25)
                 self.addControl(xbmcgui.ControlImage(x, y + top + h - 34, w, 34, white(), colorDiffuse="99000000"))
@@ -341,6 +375,7 @@ class FullScreen(xbmcgui.WindowDialog):
         self.title = xbmcgui.ControlLabel(12, 2, SCREEN_W - 24, 32, "", font="font13", textColor="FFFFFFFF")
         self.addControl(self.title)
         self.feeder = Feeder(self.tiles, s)
+        self.feeder.on_unreachable = self.unreachable
         self.timer = None
         self.close_timer = None
         self.seconds = seconds
@@ -353,6 +388,10 @@ class FullScreen(xbmcgui.WindowDialog):
                                                             kodiapi.core_tr()), hint("tour")))
         else:
             self.title.setLabel("%s      %s" % (kodiapi.tr(30192), hint("mosaic")))
+
+    def unreachable(self, tile, bad):
+        count_unreachable(bad)
+        show_error(tile, bad)
 
     def start(self):
         self.feeder.start()
@@ -380,6 +419,7 @@ class FullScreen(xbmcgui.WindowDialog):
         self.tiles[0] = dict(self.tiles[0], name=name, url=url)
         self.feeder.replace(old, self.tiles[0])
         orient(self.tiles[0]["control"], name, self.orientation)
+        show_error(self.tiles[0], False)
         self.update_title()
         self.schedule()
 

@@ -1,6 +1,8 @@
 # Troubleshooting
 
 **The photo window or test shows nothing**
+- Diagnostics say *go2rtc address not set* or *No valid go2rtc address*? Enter the address of your go2rtc server in
+  the settings (there is no default address, #73); until then CamAlert has no cameras and contacts nothing.
 - Open `http://<go2rtc>:1984/api/frame.jpeg?src=<camera>` in a browser. No picture? Then go2rtc cannot reach the camera: check the RTSP address in `go2rtc.yaml`.
 - Snapshots need ffmpeg; it is included in the official go2rtc image and app.
 

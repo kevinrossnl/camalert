@@ -1,6 +1,13 @@
 # Changelog
 
 ## Unreleased
+- Settings (#73): no default go2rtc address any more (it was `http://192.168.1.10:1984`, which a new install
+  contacted on any network). Empty = not set: no network calls, the diagnostics say *go2rtc address not set*, the
+  Enigma2 settings open on the go2rtc address, Kodi shows a notification when the service starts and *Choose camera*
+  says why there are no cameras. A saved address is kept. If you never changed the old default and your go2rtc
+  really runs on `192.168.1.10:1984`, enter it once.
+- Tests (#73): the test run is network-free: `tests/netguard.py` blocks every socket to a non-loopback address and
+  fails the test that tried; the Kodi tests use the fake go2rtc on 127.0.0.1.
 - Blueprint *CamAlert - doorbell on the players and an LG webOS TV* (#74): new optional input `snapshot_url` for a
   small picture (e.g. a go2rtc frame with `width=640`), downloaded with the Downloader integration; download failed
   or no answer within 15 s = text only. The LG TV refuses pictures over 100 KB (documented at `snapshot_camera`).

@@ -55,7 +55,8 @@ have the same names, Enigma2-only steps are marked):
 ![CamAlert settings: general and display](../images/enigma2/settings-1.png)
 
 
-1. **go2rtc address**: `http://<go2rtc-address>:1984` (for example `http://192.168.1.10:1984`).
+1. **go2rtc address**: `http://<go2rtc-address>:1984` (for example `http://192.168.1.10:1984`). A new install has no
+   address: until you enter one CamAlert contacts nothing, and the settings and diagnostics say *go2rtc address not set*.
 2. **Default camera**: select the line and press **OK**; choose your door camera from the list.
 3. **Display mode**: *Photo window* (you keep watching TV), *Live view* or *Notification*.
 4. **Duration**: how long the camera stays on screen.

@@ -22,6 +22,18 @@ jobs:
       - name: Python 3.8 grammar + import lint
         run: python3 -m pytest -m "lint" --junitxml=junit-lint.xml
 
+  core:
+    runs-on: truenas
+    container: {image: "node:20-bookworm"}
+    steps:
+      - uses: actions/checkout@v4
+      - name: tools
+        run: "{ apt-get update -qq && apt-get install -y -qq --no-install-recommends $PACKAGES; } > /dev/null"
+      - name: core tests, branch coverage gate >= 90 %
+        run: |
+          python3 -m coverage run --source=core/camalert_core -m pytest tests/core --junitxml=junit-core.xml
+          python3 -m coverage report --fail-under=90
+
   unit:
     runs-on: truenas
     container: {image: "node:20-bookworm"}
@@ -85,13 +97,13 @@ jobs:
 
   gate:
     if: always()
-    needs: [lint, unit, build, privacy]
+    needs: [lint, core, unit, build, privacy]
     runs-on: truenas
     container: {image: "node:20-bookworm"}
     steps:
       - name: all jobs passed
         env:
-          RESULTS: "${{ needs.lint.result }} ${{ needs.unit.result }} ${{ needs.build.result }} ${{ needs.privacy.result }}"
+          RESULTS: "${{ needs.lint.result }} ${{ needs.core.result }} ${{ needs.unit.result }} ${{ needs.build.result }} ${{ needs.privacy.result }}"
         run: |
-          echo "lint unit build privacy: $RESULTS"
+          echo "lint core unit build privacy: $RESULTS"
           for r in $RESULTS; do test "$r" = success || exit 1; done

@@ -2,15 +2,20 @@
 # Copyright (C) 2026 CamAlert developers. GPL v2. Plain Python (no Enigma2 imports).
 import glob
 import os
-
-try:
-    from .logic import picon_name
-except ImportError:
-    from logic import picon_name
+import re
 
 MADE = "/etc/enigma2/camalert_picons.txt"  # picons we made ourselves: only these are ever overwritten
 FONTS = ("/usr/share/fonts/nmsbd.ttf", "/usr/share/fonts/lsansd.ttf", "/usr/share/fonts/DejaVuSans-Bold.ttf",
          "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")
+
+
+def picon_name(title):
+    """Service-name picon file name (as Enigma2 looks it up for stream services): 'Grüner Weg' ->
+    'grunerweg.png'."""
+    import unicodedata
+    name = unicodedata.normalize("NFKD", title or "").encode("ascii", "ignore").decode("ascii")
+    name = re.sub(r"[^a-z0-9]", "", name.replace("&", "and").replace("+", "plus").replace("*", "star").lower())
+    return (name + ".png") if name else None
 
 
 def picon_folder():

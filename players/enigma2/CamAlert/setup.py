@@ -18,8 +18,11 @@ from . import _, __version__
 from . import server
 from . import mqtt
 from .display import CAMERA_FILE, Controller, all_camera_names, direct_cameras, open_url, pillow_available
-from .logic import (DEVICES_FILE, format_map, parse_map, parse_orientation, parse_refresh, valid_port, format_titles, parse_titles, title_for, BOUQUET_FILE, add_to_bouquets, bouquet_text, display_name, normalize_server, parse_cams,
-                    streams_from_json)
+from .camalert_core.cameras import (display_name, format_map, format_titles, parse_cams, parse_map,
+                                    parse_orientation, parse_refresh, parse_titles, title_for)
+from .camalert_core.devices.config import DEVICES_FILE
+from .camalert_core.urls import normalize_server, streams_from_json, valid_port
+from .services import add_to_bouquets, BOUQUET_FILE, bouquet_text
 
 E2 = "/etc/enigma2/"
 

@@ -8,7 +8,9 @@ import time
 import xbmc
 
 from . import __version__, kodiapi, ptz, sources
-from .logic import diag_line, normalize_server, redact, valid_port
+from .camalert_core.events import diag_line
+from .camalert_core.obs.log import redact
+from .camalert_core.urls import normalize_server, valid_port
 
 
 def collect(state):

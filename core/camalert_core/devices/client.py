@@ -6,9 +6,10 @@ import time
 import urllib.error
 import urllib.request
 
-from .logic import (DEVICES_FILE, PTZ_VECTORS, foscam_alarm, foscam_ptz, foscam_url, onvif_body, onvif_created,
-                    onvif_envelope, onvif_fault, onvif_profile_token, onvif_time, onvif_xaddrs, parse_devices,
-                    device_base)
+from .config import DEVICES_FILE, PTZ_VECTORS, device_base, parse_devices
+from .foscam import foscam_alarm, foscam_ptz, foscam_url
+from .onvif import (onvif_body, onvif_created, onvif_envelope, onvif_fault, onvif_profile_token, onvif_time,
+                    onvif_xaddrs)
 
 TIMEOUT = 4
 MOVE_SECONDS = 0.5

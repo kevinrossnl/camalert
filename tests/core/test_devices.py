@@ -11,9 +11,11 @@ from urllib.parse import parse_qs, urlsplit
 
 import _paths  # noqa: E402
 
-_paths.shared()
-from camalert_core import devices as D  # noqa: E402
-from camalert_core import logic as L  # noqa: E402
+_paths.core()
+from camalert_core.devices import client  # noqa: E402
+from camalert_core.devices import config as dev_config  # noqa: E402
+from camalert_core.devices import foscam  # noqa: E402
+from camalert_core.devices import onvif  # noqa: E402
 
 FOSCAM_STATE = ("<CGI_Result><result>0</result><IOAlarm>0</IOAlarm><motionDetectAlarm>%s</motionDetectAlarm>"
                 "<soundAlarm>%s</soundAlarm><record>0</record><sdState>1</sdState></CGI_Result>")
@@ -94,7 +96,7 @@ class MockCamera(BaseHTTPRequestHandler):
 
 class TestDeviceLogic(unittest.TestCase):
     def test_parse_devices(self):
-        d = L.parse_devices("# name|type|host:port|user|password\n"
+        d = dev_config.parse_devices("# name|type|host:port|user|password\n"
                             "garden|foscam|192.168.1.50:88|admin|pa|ss\n"
                             "drive|onvif|192.168.1.51|admin|secret\n"
                             "broken|other|1.2.3.4|a|b\nnope\n")
@@ -102,42 +104,29 @@ class TestDeviceLogic(unittest.TestCase):
         self.assertEqual(d["garden"], {"type": "foscam", "host": "192.168.1.50", "port": 88, "user": "admin",
                                        "password": "pa|ss"})
         self.assertEqual(d["drive"]["port"], 80)
-        self.assertEqual(L.parse_devices("cam|foscam|10.0.0.2")["cam"]["port"], 88)
+        self.assertEqual(dev_config.parse_devices("cam|foscam|10.0.0.2")["cam"]["port"], 88)
 
     def test_foscam(self):
         dev = {"host": "10.0.0.2", "port": 88, "user": "admin", "password": "a&b"}
-        self.assertEqual(L.foscam_url(dev, "ptzMoveUp"),
+        self.assertEqual(foscam.foscam_url(dev, "ptzMoveUp"),
                          "http://10.0.0.2:88/cgi-bin/CGIProxy.fcgi?cmd=ptzMoveUp&usr=admin&pwd=a%26b")
-        self.assertTrue(L.foscam_alarm(FOSCAM_STATE % ("2", "1")))
-        self.assertTrue(L.foscam_alarm(FOSCAM_STATE % ("1", "2")))
-        self.assertFalse(L.foscam_alarm(FOSCAM_STATE % ("1", "1")))
-        self.assertFalse(L.foscam_alarm(FOSCAM_STATE % ("0", "0")))
-        self.assertFalse(L.foscam_alarm("<CGI_Result><result>-2</result></CGI_Result>"))
-        self.assertTrue(L.alarm_edge(False, True))
-        self.assertFalse(L.alarm_edge(True, True))
-        self.assertEqual(L.foscam_ptz("left"), ("ptzMoveLeft", "ptzStopRun"))
-        self.assertEqual(L.foscam_ptz("zoom_in"), ("zoomIn", "zoomStop"))
-        self.assertEqual(L.foscam_ptz("home"), ("ptzReset", None))
-
-    def test_ptz_keys(self):
-        self.assertEqual(L.ptz_key(L.KEY_UP), "up")
-        self.assertEqual(L.ptz_key(L.KEY_CHANNELUP), "zoom_in")
-        self.assertEqual(L.ptz_key(L.KEY_OK), "home")
-        self.assertEqual(L.ptz_key(L.KEY_EXIT), "leave")
-        self.assertIsNone(L.ptz_key(115))
-        self.assertEqual(L.button_for(L.KEY_YELLOW, "yellow", has_ptz=True), "ptz")
-        self.assertEqual(L.button_for(L.KEY_YELLOW, "yellow", has_ptz=False), "yellow")
-        self.assertEqual(L.button_for(401, "blue", has_ptz=True), "ptz")
-        self.assertEqual(L.button_for(398, "blue", has_ptz=True), "red")
-        self.assertIsNone(L.button_for(398, "blue", enabled=False))
-        self.assertIsNone(L.button_for(352))
+        self.assertTrue(foscam.foscam_alarm(FOSCAM_STATE % ("2", "1")))
+        self.assertTrue(foscam.foscam_alarm(FOSCAM_STATE % ("1", "2")))
+        self.assertFalse(foscam.foscam_alarm(FOSCAM_STATE % ("1", "1")))
+        self.assertFalse(foscam.foscam_alarm(FOSCAM_STATE % ("0", "0")))
+        self.assertFalse(foscam.foscam_alarm("<CGI_Result><result>-2</result></CGI_Result>"))
+        self.assertTrue(foscam.alarm_edge(False, True))
+        self.assertFalse(foscam.alarm_edge(True, True))
+        self.assertEqual(foscam.foscam_ptz("left"), ("ptzMoveLeft", "ptzStopRun"))
+        self.assertEqual(foscam.foscam_ptz("zoom_in"), ("zoomIn", "zoomStop"))
+        self.assertEqual(foscam.foscam_ptz("home"), ("ptzReset", None))
 
     def test_wsse_digest(self):
         # checked against: (nonce bytes; created; password) | openssl dgst -sha1 -binary | base64
-        self.assertEqual(L.wsse_digest("secret", bytes(range(16)), "2026-11-23T20:15:00Z"),
+        self.assertEqual(onvif.wsse_digest("secret", bytes(range(16)), "2026-11-23T20:15:00Z"),
                          "U43YeZrn1WbFqQ23Y+2cSwndwwA=")
-        self.assertEqual(L.onvif_created(1795464900), "2026-11-23T20:15:00Z")
-        env = L.onvif_envelope(L.onvif_body("GetProfiles"), "ad<min", "secret", bytes(range(16)), "2026-11-23T20:15:00Z")
+        self.assertEqual(onvif.onvif_created(1795464900), "2026-11-23T20:15:00Z")
+        env = onvif.onvif_envelope(onvif.onvif_body("GetProfiles"), "ad<min", "secret", bytes(range(16)), "2026-11-23T20:15:00Z")
         self.assertIn("<Username>ad&lt;min</Username>", env)
         self.assertIn("U43YeZrn1WbFqQ23Y+2cSwndwwA=", env)
         self.assertIn(base64.b64encode(bytes(range(16))).decode(), env)
@@ -145,15 +134,15 @@ class TestDeviceLogic(unittest.TestCase):
 
     def test_onvif_bodies_and_parsers(self):
         self.assertIn('<tt:PanTilt x="-0.5" y="0"/><tt:Zoom x="0"/>',
-                      L.onvif_body("ContinuousMove", token="P1", vector=L.PTZ_VECTORS["left"]))
-        self.assertIn("<tptz:ProfileToken>P1</tptz:ProfileToken>", L.onvif_body("GotoHomePosition", token="P1"))
-        self.assertIn("<tptz:PanTilt>true</tptz:PanTilt>", L.onvif_body("Stop", token="P1"))
-        self.assertEqual(L.onvif_xaddrs(CAPS.format(base="http://cam")),
+                      onvif.onvif_body("ContinuousMove", token="P1", vector=dev_config.PTZ_VECTORS["left"]))
+        self.assertIn("<tptz:ProfileToken>P1</tptz:ProfileToken>", onvif.onvif_body("GotoHomePosition", token="P1"))
+        self.assertIn("<tptz:PanTilt>true</tptz:PanTilt>", onvif.onvif_body("Stop", token="P1"))
+        self.assertEqual(onvif.onvif_xaddrs(CAPS.format(base="http://cam")),
                          {"media": "http://cam/onvif/Media", "ptz": "http://cam/onvif/PTZ"})
-        self.assertEqual(L.onvif_profile_token(PROFILES), "Profile_1")
-        self.assertEqual(L.onvif_time(TIME), 1795464900)
-        self.assertEqual(L.onvif_fault(FAULT), "Sender not Authorized")
-        self.assertIsNone(L.onvif_fault(OK % "Stop"))
+        self.assertEqual(onvif.onvif_profile_token(PROFILES), "Profile_1")
+        self.assertEqual(onvif.onvif_time(TIME), 1795464900)
+        self.assertEqual(onvif.onvif_fault(FAULT), "Sender not Authorized")
+        self.assertIsNone(onvif.onvif_fault(OK % "Stop"))
 
 
 class TestMockCamera(unittest.TestCase):
@@ -176,26 +165,26 @@ class TestMockCamera(unittest.TestCase):
 
     def test_foscam_poll_and_ptz(self):
         MockCamera.alarm = "1"
-        self.assertFalse(D.foscam_state(self.dev("foscam")))
+        self.assertFalse(client.foscam_state(self.dev("foscam")))
         MockCamera.alarm = "2"
-        self.assertTrue(D.foscam_state(self.dev("foscam")))
-        D.ptz(self.dev("foscam"), "up", 0.01)
-        D.ptz(self.dev("foscam"), "zoom_out", 0.01)
-        D.ptz(self.dev("foscam"), "home")
+        self.assertTrue(client.foscam_state(self.dev("foscam")))
+        client.ptz(self.dev("foscam"), "up", 0.01)
+        client.ptz(self.dev("foscam"), "zoom_out", 0.01)
+        client.ptz(self.dev("foscam"), "home")
         self.assertEqual(MockCamera.calls, ["getDevState", "getDevState", "ptzMoveUp", "ptzStopRun", "zoomOut",
                                             "zoomStop", "ptzReset"])
-        with self.assertRaises(D.DeviceError) as e:
-            D.ptz(self.dev("foscam", "wrong"), "up", 0.01)
+        with self.assertRaises(client.DeviceError) as e:
+            client.ptz(self.dev("foscam", "wrong"), "up", 0.01)
         self.assertNotIn("wrong", str(e.exception))
 
     def test_onvif_ptz(self):
-        orig = D.time.time
-        D.time.time = lambda: 1795464900 - 3600  # receiver clock an hour behind: the camera clock is used
+        orig = client.time.time
+        client.time.time = lambda: 1795464900 - 3600  # receiver clock an hour behind: the camera clock is used
         try:
-            D.ptz(self.dev("onvif"), "right", 0.01)
-            D.ptz(self.dev("onvif"), "home")
+            client.ptz(self.dev("onvif"), "right", 0.01)
+            client.ptz(self.dev("onvif"), "home")
         finally:
-            D.time.time = orig
+            client.time.time = orig
         actions = [(c[0], c[1]) for c in MockCamera.calls]
         self.assertEqual(actions, [("/onvif/device_service", "GetSystemDateAndTime"),
                                    ("/onvif/device_service", "GetCapabilities"), ("/onvif/Media", "GetProfiles"),
@@ -204,8 +193,8 @@ class TestMockCamera(unittest.TestCase):
         self.assertEqual(MockCamera.calls[-1][2], ["Profile_1"])
 
     def test_onvif_wrong_password(self):
-        with self.assertRaises(D.DeviceError) as e:
-            D.ptz(self.dev("onvif", "nope"), "left", 0.01)
+        with self.assertRaises(client.DeviceError) as e:
+            client.ptz(self.dev("onvif", "nope"), "left", 0.01)
         self.assertIn("Sender not Authorized", str(e.exception))
         self.assertNotIn("nope", str(e.exception))
 

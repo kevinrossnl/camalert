@@ -5,7 +5,8 @@ import socket
 import threading
 import time
 
-from .logic import LOG_MAX_BYTES, log_allowed, parse_hostport, redact, syslog_line
+from ..urls import parse_hostport
+from .log import LOG_MAX_BYTES, log_allowed, redact, syslog_line
 
 DIRS = ("/home/root/logs", "/tmp")
 MIN_FREE = 4 * 1024 * 1024

@@ -17,9 +17,12 @@ from Components.config import config
 from twisted.internet import threads
 
 from . import _, __version__
-from .camlog import LOG
+from .camalert_core.obs.camlog import LOG
 from .display import Controller, all_camera_names, camera_urls, devices, log, open_url
-from .logic import diag_line, event_line, frigate_clip_url, normalize_server, redact, valid_port
+from .camalert_core.events import diag_line, event_line
+from .camalert_core.obs.log import redact
+from .camalert_core.triggers.frigate import frigate_clip_url
+from .camalert_core.urls import normalize_server, valid_port
 
 
 def _skin(name, f, extra):

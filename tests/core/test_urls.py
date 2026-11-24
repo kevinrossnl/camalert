@@ -1,0 +1,45 @@
+"""camalert_core.urls: server addresses, stream and snapshot URLs."""
+import unittest
+
+import _paths
+
+_paths.core()
+from camalert_core import urls  # noqa: E402
+
+
+class TestUrls(unittest.TestCase):
+    def test_normalize_server(self):
+        self.assertEqual(urls.normalize_server("192.168.1.10"), "http://192.168.1.10:1984")
+        self.assertEqual(urls.normalize_server("http://cam.local:1984/"), "http://cam.local:1984")
+        self.assertEqual(urls.normalize_server("https://go2rtc.example"), "https://go2rtc.example:443")
+        self.assertIsNone(urls.normalize_server(""))
+        self.assertIsNone(urls.normalize_server("ftp://x"))
+
+    def test_streams_from_json(self):
+        self.assertEqual(urls.streams_from_json('{"garden": {}, "front_door": {}, "bad name": {}}'), ["front_door", "garden"])
+        self.assertEqual(urls.streams_from_json("not json"), [])
+        self.assertEqual(urls.streams_from_json("[]"), [])
+
+    def test_valid_port(self):
+        self.assertEqual(urls.valid_port("8554", 1), 8554)
+        self.assertEqual(urls.valid_port(0, 8099), 8099)
+        self.assertEqual(urls.valid_port("x", 1883), 1883)
+        self.assertEqual(urls.valid_port(70000, 1883), 1883)
+
+    def test_ipv6_servers(self):
+        self.assertEqual(urls.normalize_server("fd00::10"), "http://[fd00::10]:1984")
+        self.assertEqual(urls.normalize_server("[fd00::10]:1985"), "http://[fd00::10]:1985")
+        self.assertEqual(urls.normalize_server("https://[2001:db8::1]"), "https://[2001:db8::1]:443")
+        self.assertIsNone(urls.normalize_server("http://host:99999"))
+        self.assertEqual(urls.rtsp_url("http://[fd00::10]:1984", "garden"), "rtspt://[fd00::10]:8554/garden")
+        self.assertEqual(urls.snapshot_url("http://[fd00::10]:1984", "garden"),
+                         "http://[fd00::10]:1984/api/frame.jpeg?src=garden&width=640")
+
+    def test_split_credentials(self):
+        self.assertEqual(urls.split_credentials("http://admin:" + "p%40ss@cam:8080/snap.jpg?x=1"),
+                         ("http://cam:8080/snap.jpg?x=1", "admin", "p@ss"))
+        self.assertEqual(urls.split_credentials("http://cam/snap.jpg"), ("http://cam/snap.jpg", None, None))
+
+
+if __name__ == "__main__":
+    unittest.main()

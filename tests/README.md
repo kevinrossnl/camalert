@@ -5,10 +5,13 @@ python3 -m pytest                       # everything (pytest is the runner; unit
 python3 -m pytest -m kodi               # one area: core, contract, enigma2, kodi, ha, build
 python3 -m coverage run -m pytest && python3 -m coverage report   # branch coverage of every layer
 python3 -m unittest discover -s tests   # still works without pytest
+# core coverage gate (CI): branch coverage of core/camalert_core by tests/core alone must stay >= 90 %
+python3 -m coverage run --source=core/camalert_core -m pytest tests/core && python3 -m coverage report --fail-under=90
 ```
 
 Python 3.8 (Kodi 19) needs `pip install "pytest<8.4"`. Optional: `pyyaml` (blueprint tests).
 
+- `core/` tests one core module each (`test_<module>.py`), no player code.
 - `_paths.py` is the only file that knows where things live in the repository. Tests `import _paths` and take
   their paths from it; when files move, only `_paths.py` changes.
 - The Kodi add-on is imported from the source tree (`_paths.kodi_package()`), so coverage measures the real files.

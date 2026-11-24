@@ -16,7 +16,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, os.path.join(ROOT, "core"))
-from camalert_core.logic import grid, window_geometry  # noqa: E402
+from camalert_core.layout import grid, window_geometry  # noqa: E402
 
 OUT = os.path.join(ROOT, "docs", "images")
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"

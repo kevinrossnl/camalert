@@ -1,4 +1,4 @@
-"""Minimal in-process MQTT 3.1.1 broker for tests (#31), built on the shared codec (logic.mqtt_*).
+"""Minimal in-process MQTT 3.1.1 broker for tests (#31), built on the core codec (camalert_core.mqtt.codec).
 
     with Broker() as b:            # listens on 127.0.0.1:<free port>
         b.port
@@ -16,8 +16,8 @@ import time
 
 import _paths
 
-_paths.shared()
-from camalert_core import logic  # noqa: E402
+_paths.core()
+from camalert_core.mqtt import codec  # noqa: E402
 
 CONNACK_OK = b"\x20\x02\x00\x00"
 PINGRESP = b"\xd0\x00"
@@ -96,7 +96,7 @@ class _Conn(object):
                     continue
                 if not data:
                     break
-                packets, buf = logic.mqtt_split(buf + data)
+                packets, buf = codec.mqtt_split(buf + data)
                 for kind, flags, body in packets:
                     self.packet(kind, flags, body)
                     if kind == 14:  # DISCONNECT
@@ -117,7 +117,7 @@ class _Conn(object):
                 self.will = (info["will_topic"], info["will_payload"], info["will_retain"])
             self.send(CONNACK_OK if b.accept(info) else b"\x20\x02\x00\x05")
         elif kind == 3:
-            topic, payload = logic.mqtt_parse_publish(flags, body)
+            topic, payload = codec.mqtt_parse_publish(flags, body)
             b.route(topic, payload, bool(flags & 0x01), self.client_id)
         elif kind == 8:
             pid, i, topics = body[:2], 2, []
@@ -127,10 +127,10 @@ class _Conn(object):
                 topics.append(t.decode())
             self.subs += topics
             b.subscriptions.append((self.client_id, topics))
-            self.send(b"\x90" + logic._mqtt_len(2 + len(topics)) + pid + b"\x00" * len(topics))
+            self.send(b"\x90" + codec._mqtt_len(2 + len(topics)) + pid + b"\x00" * len(topics))
             for t, (payload, _c) in sorted(b.retained.items()):
                 if any(topic_matches(s, t) for s in topics):
-                    self.send(logic.mqtt_publish(t, payload, True))
+                    self.send(codec.mqtt_publish(t, payload, True))
         elif kind == 12:
             self.send(PINGRESP)
 
@@ -192,7 +192,7 @@ class Broker(object):
             self.lock.notify_all()
         for c in list(self.conns):
             if any(topic_matches(s, topic) for s in c.subs):
-                c.send(logic.mqtt_publish(topic, payload, False))
+                c.send(codec.mqtt_publish(topic, payload, False))
 
     def gone(self, conn):
         if conn in self.conns:

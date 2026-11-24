@@ -23,9 +23,6 @@ ENIGMA2 = os.path.join(ENIGMA2_PARENT, "CamAlert")
 # into every player package as `camalert_core`.
 CORE_PARENT = os.path.join(ROOT, "core")
 CORE = os.path.join(CORE_PARENT, "camalert_core")
-SHARED = CORE
-# temporary shims in the players (#1): <player package>/<name>.py is camalert_core.<name>
-SHIMS = ("logic", "devices", "camlog")
 
 # Kodi add-on and repository add-on.
 KODI = os.path.join(PLAYERS, "kodi")
@@ -51,11 +48,28 @@ def add(*paths):
 
 
 def core():
-    """Makes the core importable: `from camalert_core import logic`."""
+    """Makes the core importable: `from camalert_core import rules`."""
     add(CORE_PARENT)
 
 
-shared = core
+def core_names(exclude_private=True):
+    """{name: module path} of everything defined at module level in the core (for the import checks)."""
+    import ast
+    out = {}
+    for d, dirs, files in os.walk(CORE):
+        dirs[:] = [x for x in dirs if x != "__pycache__"]
+        for f in files:
+            if f.endswith(".py"):
+                p = os.path.join(d, f)
+                with open(p, encoding="utf-8") as fh:
+                    tree = ast.parse(fh.read())
+                for n in tree.body:
+                    names = [n.name] if isinstance(n, (ast.FunctionDef, ast.ClassDef)) else \
+                        [t.id for t in getattr(n, "targets", []) if isinstance(t, ast.Name)]
+                    for name in names:
+                        if not (exclude_private and name.startswith("_")):
+                            out[name] = p
+    return out
 
 
 def attach_core(package):

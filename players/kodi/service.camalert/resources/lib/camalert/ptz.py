@@ -8,9 +8,10 @@ import queue
 import threading
 import time
 
-from . import devices, kodiapi
+from . import kodiapi
+from .camalert_core.devices import client as devices
 from .klogic import with_default_login
-from .logic import alarm_edge
+from .camalert_core.devices.foscam import alarm_edge
 
 EXAMPLE = """# CamAlert camera control (PTZ) and Foscam alarms. One camera per line:
 #   name|type|host:port|user|password

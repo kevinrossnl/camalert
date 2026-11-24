@@ -58,14 +58,14 @@ def camlog():
     """Own rotating log (camalert.log, 2 x 1 MB) in the add-on data folder, plus optional remote syslog."""
     global _camlog
     if _camlog is None:
-        from .camlog import CamLog
+        from .camalert_core.obs.camlog import CamLog
         _camlog = CamLog(dirs=(profile_dir(),))
     return _camlog
 
 
 def log(msg, level="normal"):
     """level: error / normal / verbose. Everything is redacted; verbose only goes to camalert.log."""
-    from .logic import redact
+    from .camalert_core.obs.log import redact
     msg = redact(msg)
     if level != "verbose":
         xbmc.log("[CamAlert] %s" % msg, xbmc.LOGERROR if level == "error" else xbmc.LOGINFO)

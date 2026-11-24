@@ -56,7 +56,8 @@ def diagnostics():
 
 
 def events():
-    from .logic import event_line, frigate_clip_url
+    from .camalert_core.events import event_line
+    from .camalert_core.triggers.frigate import frigate_clip_url
     st = service_state()
     if st is None:
         xbmcgui.Dialog().ok("CamAlert", kodiapi.tr(30202))

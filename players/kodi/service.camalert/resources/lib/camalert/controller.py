@@ -13,9 +13,11 @@ import xbmcgui
 from . import kodiapi, sources
 from .display import FullScreen, LiveOverlay, PhotoWindow, open_window
 from .klogic import blocked_by_playing, chime_wanted, kodi_volume, live_mime, playing_kind, resume_plan
-from .logic import (add_event, blocked_by_rules, button_event, button_for, clamp_seconds, clock_tuple, cooldown_seconds,
-                    decide, dnd_blocks, event_title, in_cooldown, in_time_window, known_camera, neighbour, parse_cams,
-                    pick_mode, pick_priority, slug)
+from .camalert_core.cameras import known_camera, neighbour, parse_cams, slug
+from .camalert_core.events import add_event, event_title
+from .camalert_core.keymap import button_event, button_for
+from .camalert_core.rules import (blocked_by_rules, clamp_seconds, clock_tuple, cooldown_seconds, decide, dnd_blocks,
+                                  in_cooldown, in_time_window, pick_mode, pick_priority)
 
 STATS = {"errors": 0, "requests": {}, "started": time.time(), "last_event": 0, "unreachable": 0}
 
@@ -30,7 +32,7 @@ def free_bytes(folder):
 def metrics():
     """Prometheus metrics for /camalert/metrics (same names as the Enigma2 plugin)."""
     from . import __version__
-    from .logic import metrics_text
+    from .camalert_core.obs.metrics import metrics_text
     ctl = Controller.instance
     st = ctl.status() if ctl else {}
     return metrics_text({

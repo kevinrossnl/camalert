@@ -7,8 +7,8 @@ import urllib.request
 
 from . import kodiapi
 from .klogic import live_url
-from .logic import (live_stream_name, display_name, normalize_server, parse_camera_file, parse_titles, snapshot_url, split_credentials,
-                    streams_from_json, title_for)
+from .camalert_core.cameras import display_name, live_stream_name, parse_camera_file, parse_titles, title_for
+from .camalert_core.urls import normalize_server, snapshot_url, split_credentials, streams_from_json
 
 
 def camera_file():

@@ -23,7 +23,7 @@ from kodi import stubs as kodi_stubs  # noqa: E402
 
 # Problems the strict Kodi stubs find, each with its issue (a fixed one fails its test)
 KNOWN_STUB_PROBLEMS = {}
-MODULES = ("kodiapi", "sources", "display", "controller", "server", "mqtt", "ptz", "service", "script", "diag", "camlog")
+MODULES = ("kodiapi", "sources", "display", "controller", "server", "mqtt", "ptz", "service", "script", "diag")
 LANGS = ("en_gb", "nl_nl", "de_de", "fr_fr", "it_it", "pl_pl")
 
 
@@ -480,24 +480,9 @@ class _KodiModules(object):
 
 class TestKodiImports(unittest.TestCase):
     def test_used_shared_names_are_imported(self):
-        """Every name from the shared logic.py / klogic.py that a Kodi module uses must be imported."""
-        import ast
-        lib = _paths.KODI_LIB
-        exported = set()
-        for path in (os.path.join(_paths.SHARED, "logic.py"), os.path.join(lib, "klogic.py")):
-            with open(path, encoding="utf-8") as f:
-                tree = ast.parse(f.read())
-            exported |= {n.name for n in tree.body if isinstance(n, (ast.FunctionDef, ast.ClassDef))}
-        for f in os.listdir(lib):
-            if not f.endswith(".py") or f == "klogic.py" or f[:-3] in _paths.SHIMS:
-                continue
-            with open(os.path.join(lib, f), encoding="utf-8") as fh:
-                tree = ast.parse(fh.read())
-            imported = {a.asname or a.name for n in ast.walk(tree) if isinstance(n, ast.ImportFrom) for a in n.names}
-            defined = {n.name for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.ClassDef))}
-            used = {n.id for n in ast.walk(tree) if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Load)}
-            missing = (used & exported) - imported - defined
-            self.assertFalse(missing, "%s uses %s without importing it" % (f, sorted(missing)))
+        """Every name from the core or klogic.py that a Kodi module uses must be imported."""
+        import importcheck
+        self.assertEqual(importcheck.check_folder(_paths.KODI_LIB, ("klogic.py",)), {})
 
 
 class TestKodiPackage(unittest.TestCase):
@@ -507,8 +492,9 @@ class TestKodiPackage(unittest.TestCase):
         names = zipfile.ZipFile(b.addon_zip).namelist()
         self.assertTrue(all(n.startswith("service.camalert/") for n in names))
         for f in ("addon.xml", "service.py", "default.py", "LICENSE.txt", "resources/settings.xml", "resources/icon.png",
-                  "resources/fanart.jpg", "resources/lib/camalert/logic.py", "resources/lib/camalert/devices.py",
-                  "resources/lib/camalert/controller.py", "resources/lib/camalert/camlog.py", "resources/media/chime.wav"):
+                  "resources/fanart.jpg", "resources/lib/camalert/camalert_core/rules.py",
+                  "resources/lib/camalert/controller.py", "resources/lib/camalert/camalert_core/obs/camlog.py",
+                  "resources/media/chime.wav"):
             self.assertIn("service.camalert/" + f, names)
         for lang in LANGS:
             self.assertIn("service.camalert/resources/language/resource.language.%s/strings.po" % lang, names)

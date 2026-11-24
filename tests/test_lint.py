@@ -80,6 +80,16 @@ class TestLint(unittest.TestCase):
             found += forbidden_imports(p)
         self.assertEqual(found, [])
 
+    def test_core_modules_import_what_they_use(self):
+        import importcheck
+        exported = set(_paths.core_names(exclude_private=False))
+        found = {}
+        for p in shared_code():
+            m = importcheck.missing_imports(p, exported - importcheck.module_names(p))
+            if m:
+                found[os.path.relpath(p, _paths.ROOT)] = m
+        self.assertEqual(found, {})
+
     @unittest.skipIf(sys.version_info < (3, 8), "feature_version needs Python 3.8+")
     def test_grammar_check_finds_new_syntax(self):
         """Self test: syntax of newer Python versions is refused."""

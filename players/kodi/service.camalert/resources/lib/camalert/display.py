@@ -10,7 +10,9 @@ import xbmcgui
 from . import kodiapi, sources
 from .klogic import (PTZ_TOGGLE as TOGGLE_IDS, SCREEN_H, SCREEN_W, colour_code, forward_builtin, frame_name, key_action,
                      ptz_action, title_font_name, tour_key)
-from .logic import event_title, grid, parse_orientation, parse_refresh, refresh_delay, strip_geometry, window_geometry
+from .camalert_core.cameras import parse_orientation, parse_refresh, refresh_delay
+from .camalert_core.events import event_title
+from .camalert_core.layout import grid, strip_geometry, window_geometry
 
 WHITE = None
 ANIM = {"rot180": "effect=rotate end=180 center=auto", "mirror": "effect=rotatey end=180 center=auto",

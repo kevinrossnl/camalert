@@ -18,7 +18,7 @@ class TestBuild(unittest.TestCase):
             self.assertEqual(open(os.path.join(d, "debian-binary")).read(), "2.0\n")
             names = tarfile.open(os.path.join(d, "data.tar.gz")).getnames()
             base = "./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/"
-            for f in ("plugin.py", "__init__.py", "logic.py", "display.py", "server.py", "setup.py", "camalert.png",
+            for f in ("plugin.py", "__init__.py", "camalert_core/rules.py", "display.py", "server.py", "setup.py", "camalert.png",
                       "locale/nl/LC_MESSAGES/CamAlert.mo", "locale/de/LC_MESSAGES/CamAlert.mo"):
                 self.assertIn(base + f, names)
             control = tarfile.open(os.path.join(d, "control.tar.gz")).extractfile("./control").read().decode()

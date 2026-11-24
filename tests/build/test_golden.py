@@ -47,10 +47,10 @@ class TestGoldenListings(unittest.TestCase):
                 self.assertEqual(open(a, "rb").read(), open(b, "rb").read())
 
     def test_listing_sees_a_missing_file(self):
-        """Self test: a package without logic.py gives a different listing."""
+        """Self test: a package without display.py gives a different listing."""
         golden = open(os.path.join(GOLDEN, "ipk.txt"), encoding="utf-8").read()
-        self.assertIn("CamAlert/logic.py", golden)
-        self.assertNotEqual(golden.replace("CamAlert/logic.py\n", ""), golden)
+        self.assertIn("CamAlert/display.py", golden)
+        self.assertNotEqual(golden.replace("CamAlert/display.py\n", ""), golden)
 
 
 if __name__ == "__main__":

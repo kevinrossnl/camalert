@@ -12,7 +12,9 @@ from Components.config import config
 from twisted.internet import threads
 
 from .display import all_camera_names, direct_cameras, log
-from .logic import BOUQUET_FILE, bouquet_text, normalize_server, parse_titles, place_in_bouquets, valid_port
+from .camalert_core.cameras import parse_titles
+from .camalert_core.urls import normalize_server, valid_port
+from .services import BOUQUET_FILE, bouquet_text, place_in_bouquets
 
 E2 = "/etc/enigma2/"
 INTERVAL = 30 * 60 * 1000

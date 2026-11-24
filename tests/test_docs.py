@@ -168,6 +168,22 @@ class TestDocs(unittest.TestCase):
         self.assertTrue(claims)
         self.assertEqual([c for c in claims if c[1] != "19"], [])
 
+    def test_release_download_links_match_the_version(self):
+        """#80: example downloads of a fixed release (outside CHANGELOG.md) name the current version, so an install
+        command copied from the docs installs the latest release."""
+        ver = re.search(r'__version__ = "([^"]+)"', open(os.path.join(_paths.ENIGMA2, "__init__.py")).read()).group(1)
+        found, bad = 0, []
+        for path in doc_files():
+            if rel(path) == "CHANGELOG.md":
+                continue
+            for m in re.finditer(r"releases/download/v([^/\s]+)/[^\s)]*?_([0-9][^_\s)]*)_all\.ipk",
+                                 open(path, encoding="utf-8").read()):
+                found += 1
+                if m.group(1) != ver or m.group(2) != ver:
+                    bad.append("%s: %s" % (rel(path), m.group(0)))
+        self.assertTrue(found)
+        self.assertEqual(bad, [])
+
 
 if __name__ == "__main__":
     unittest.main()

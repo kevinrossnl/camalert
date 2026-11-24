@@ -82,7 +82,9 @@ file table of that folder: read the root file **and** the one of the folder you 
 - No `actions/cache`: the runner cache server is not reachable from the NAS job containers (timeouts).
 
 ## Release
-1. Raise the version in `players/enigma2/CamAlert/__init__.py` and `custom_components/camalert/manifest.json`; in
+1. Raise the version in `players/enigma2/CamAlert/__init__.py`, `custom_components/camalert/manifest.json` (+
+   `INTEGRATION_VERSION` in `api.py`), the Kodi `service.camalert` `addon.xml` and `__version__`, and the example `.ipk`
+   download in `docs/players/enigma2.md` (tests check they agree); in
    `CHANGELOG.md` move the *Unreleased* items into `## [X.Y.Z] - YYYY-MM-DD` (real date, user-facing wording, grouped
    by player/area) and add its compare link at the bottom.
 2. Tag `vX.Y.Z` and push; GitHub Actions (`.github/workflows/release.yml`) checks tag = `__version__` and a dated

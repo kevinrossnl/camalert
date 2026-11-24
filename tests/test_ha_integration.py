@@ -30,6 +30,9 @@ class TestIntegration(unittest.TestCase):
         self.assertTrue(m["config_flow"])
         plugin = re.search(r'__version__ = "([^"]+)"', open(os.path.join(_paths.ENIGMA2, "__init__.py")).read()).group(1)
         self.assertEqual(m["version"], plugin, "plugin and integration share one version")
+        kodi = os.path.join(_paths.KODI_ADDON, "addon.xml")
+        self.assertRegex(open(kodi, encoding="utf-8").read(), r'id="service.camalert"[^>]*version="%s"' % re.escape(plugin))
+        self.assertIn('__version__ = "%s"' % plugin, open(os.path.join(_paths.KODI_LIB, "__init__.py")).read())
         json.load(open(os.path.join(ROOT, "hacs.json")))
 
     def test_manifest_categories(self):

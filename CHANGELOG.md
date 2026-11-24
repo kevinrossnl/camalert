@@ -1,6 +1,19 @@
 # Changelog
 
 ## Unreleased
+- API (#63): `/camalert/status` reports `screen` (`none`, `photo`, `strip`, `notification`, `live`, `mosaic`,
+  `tour`); capability `screen`. Enigma2: `hide` (and Home Assistant `camalert.hide`) now also closes the mosaic and
+  the tour, also when several are stacked.
+- API (#62): `test=1` on any request makes it a test: no doorbell chime, the event gets the source *Test request*
+  (translated); capability `test`. The end-to-end runner always sends it.
+- Doorbell chime (#20): a muted player plays no chime (Enigma2 plays it through ALSA, which the receiver's mute does
+  not reach; `chime skipped` in the log).
+- Enigma2: after the go2rtc server or camera source changes, cameras of the new source are no longer refused as
+  unknown for up to a minute.
+- Kodi: diagnostics show the operating system instead of *Busy* (#59); *Event list*, *Live view* and *Notification*
+  as in the glossary instead of *Recent events*, *Switch to live stream* and *Notification only* (#60, #56).
+- End-to-end runner: checks `screen` while a screen is open and `none` after `hide`; EXIT cleanup is only a failure
+  for players older than 1.0; the multi-camera window waits for its pictures like the photo window.
 - Enigma2 UI findings (#56): photo and multi-camera window titles stay on one line (font fitted to the window,
   key hints in their own strip at the bottom); mosaic and multi-camera tiles keep the camera name on *Camera not
   reachable*; the event list shows GREEN *Play clip* only for events with a clip; texts come only from CamAlert's own

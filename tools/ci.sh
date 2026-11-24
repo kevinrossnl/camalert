@@ -48,10 +48,11 @@ print("commit history: %d problems" % len(bad)); sys.exit(1 if bad else 0)'
     py="${HA_PY:-}"
     if [ -z "$py" ]; then
       if ! command -v uv > /dev/null; then
-        curl -LsSf "https://github.com/astral-sh/uv/releases/download/${UV_VERSION:-0.9.5}/uv-x86_64-unknown-linux-gnu.tar.gz" \
+        curl -LsSf "https://github.com/astral-sh/uv/releases/download/${UV_VERSION:-0.13.8}/uv-x86_64-unknown-linux-gnu.tar.gz" \
           | tar xz -C /usr/local/bin --strip-components=1
       fi
-      pyver=3.14; [ "$v" = min ] && pyver=3.13
+      # exact versions: homeassistant 2026.10 needs Python >= 3.14.2 (an older uv would pick 3.14.0)
+      pyver=3.14.10; [ "$v" = min ] && pyver=3.13.18
       uv venv -q --clear -p "$pyver" ".venv-ha-$v"
       VIRTUAL_ENV=".venv-ha-$v" uv pip install -q -r "tests/homeassistant/requirements-$v.txt"
       py=".venv-ha-$v/bin/python"

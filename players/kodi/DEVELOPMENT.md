@@ -15,7 +15,7 @@ Read the root [DEVELOPMENT.md](../../DEVELOPMENT.md) first (privacy, how we work
 | `resources/lib/camalert/controller.py` | show / hide / live / resume |
 | `resources/lib/camalert/display.py` | windows: photo window, multi-camera window, mosaic, tour, live bar, PTZ |
 | `resources/lib/camalert/server.py` | HTTP adapter + backend for `camalert_core.api` |
-| `resources/lib/camalert/mqtt.py`, `ptz.py`, `sources.py`, `diag.py`, `script.py` | MQTT, camera control, camera sources, diagnostics, settings buttons / event list |
+| `resources/lib/camalert/mqtt.py`, `ptz.py`, `sources.py`, `diag.py`, `script.py` | MQTT, camera control + Foscam and UniFi Protect pollers (`ptz.py`), camera sources, diagnostics, settings buttons / event list |
 | `repository.camalert/` | Kodi repository add-on (`@REPO_URL@` filled in by the build; CI publishes `dist/kodi-repo/` on GitHub Pages) |
 
 The build (`python3 tools/build_kodi.py dist`) copies `core/camalert_core/` in as `camalert_core/`. Tests:

@@ -52,8 +52,12 @@ fresh session.
 The first answer after a start, a setting change or an error only remembers what is there: old events never pop up.
 When several new events arrive in one check, the most important one is shown (ring, person, vehicle, animal,
 package, motion). Events get the source *UniFi Protect* in the event list. The diagnostics screen shows the last
-check, the last event and the last error (never a password or cookie). Enigma2 makes the devices file readable for
-root only (`chmod 600`) when it reads it.
+check, the last event and the last error (never a password or cookie). Both players make the devices file readable
+for its owner only (`chmod 600`) when they read it; on Kodi a `unifi` line never gets the default camera login.
+
+Where to turn it on: Enigma2 *Settings › Triggers › UniFi Protect* (setup level *Advanced*, or MENU › *Show all
+settings*); Kodi 19 or newer *Add-ons › My add-ons › Services › CamAlert › Configure › Triggers* (settings level
+*Advanced*).
 
 ## PTZ from the remote
 In the photo window or in live view of a camera that is listed in the devices file, press the *PTZ key* (default BLUE):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # CamAlert for Kodi. Copyright (C) 2026 CamAlert developers. GPL v2.
-"""Background service: HTTP API, MQTT, Foscam poller and the controller; restarts parts when settings change."""
+"""Background service: HTTP API, MQTT, Foscam and UniFi Protect pollers and the controller; restarts parts when settings change."""
 import json
 
 import xbmc
@@ -12,8 +12,14 @@ RESTART_KEYS = {
     "server": ("http_port", "api_https"),
     "mqtt": ("mqtt_enabled", "mqtt_host", "mqtt_port", "mqtt_user", "mqtt_password", "mqtt_discovery", "mqtt_name",
              "frigate_enabled", "frigate_prefix"),
-    "ptz": ("foscam_enabled",),
+    "ptz": ("foscam_enabled", "unifi_enabled"),
 }
+
+
+def unifi_state():
+    """The UniFi Protect poll status for the diagnostics dialog (#71); errors are already redacted."""
+    from .camalert_core.triggers.unifi import STATUS
+    return {k: getattr(STATUS, k) for k in ("last_poll", "last_ok", "error", "last_event", "consoles")}
 
 
 def changed_parts(old, new):
@@ -81,7 +87,7 @@ class Service(object):
             from . import mqtt
             Window(10000).setProperty("camalert.state", json.dumps({
                 "events": self.ctl.events, "last_caller": self.ctl.last_caller, "mqtt": mqtt.connected(),
-                "log": kodiapi.camlog().path, "time": c.get("time")}))
+                "log": kodiapi.camlog().path, "time": c.get("time"), "unifi": unifi_state()}))
         elif what == "play":
             self.ctl.play_clip(c.get("url"), c.get("title"))
 

@@ -19,6 +19,16 @@ def caller_text(at, source):
     return event_time(at, kodiapi.language(), fmt=kodiapi.date_format()), source_label(source, kodiapi.core_tr())
 
 
+def unifi_lines(status):
+    """Diagnostics lines from the service's UniFi Protect poll status (a dict, see service.unifi_state)."""
+    from .camalert_core.present import event_time
+    from .camalert_core.triggers.unifi import PollStatus
+    st = PollStatus()
+    st.__dict__.update(status or {})
+    when = lambda ts: event_time(ts, kodiapi.language(), fmt=kodiapi.date_format())  # noqa: E731
+    return [diag_line(ok, text) for ok, text in st.lines(kodiapi.core_tr(), when)]
+
+
 def collect(state):
     s = kodiapi.settings()
     tr = kodiapi.tr
@@ -73,6 +83,8 @@ def collect(state):
     devs = ptz.all_devices(s)
     if devs:
         lines.append(diag_line(True, tr(30222) % ", ".join("%s (%s)" % (n, d["type"]) for n, d in sorted(devs.items()))))
+    if s["unifi_enabled"]:  # UniFi Protect source (#71): last check, last event, last error (redacted)
+        lines.extend(unifi_lines(state.get("unifi")))
     if s["dnd"]:
         lines.append(diag_line(None, tr(30223)))
     lines.append(diag_line(bool(state.get("log")) or s["log_level"] == "off", tr(30224) % (state.get("log") or "-")))

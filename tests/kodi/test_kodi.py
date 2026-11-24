@@ -226,6 +226,11 @@ class _KodiLogic(object):
         self.assertEqual((d["b"]["user"], d["b"]["password"]), ("u", "p"))
 
 
+def types_ns(**kw):
+    import types
+    return types.SimpleNamespace(**kw)
+
+
 class FakeController(object):
     def __init__(self):
         self.calls = []
@@ -395,6 +400,95 @@ class _KodiModules(object):
         self.assertEqual(service.changed_parts({"http_port": 1}, {"http_port": 2}), {"server"})
         self.assertEqual(service.changed_parts({"mqtt_host": "a"}, {"mqtt_host": "b"}), {"mqtt"})
         self.assertEqual(service.changed_parts({"duration": 1}, {"duration": 2}), set())
+
+    def unifi_setup(self, enabled="true"):
+        """#71: devices.conf with a UniFi console and an ONVIF camera, the source on, polls answered by a fake."""
+        ptz = Built.module("ptz")
+        path = ptz.device_file()
+        with open(path, "w", encoding="utf-8") as f:
+            f.write("protect|unifi|192.168.1.1:443|viewer|secret\ndoor|onvif|192.168.1.11:80||\n")
+        os.chmod(path, 0o644)
+        self.addCleanup(os.remove, path)
+        keys = {"unifi_enabled": enabled, "unifi_kinds": "ring,motion", "ptz_user": "admin", "ptz_password": "pw"}
+        Built.store.update(keys)
+        self.addCleanup(lambda: [Built.store.pop(k, None) for k in keys])
+        self.answers = []
+        self.addCleanup(setattr, ptz.UnifiSource, "poll", ptz.UnifiSource.poll)
+        ptz.UnifiSource.poll = staticmethod(lambda dev: self.answers.pop(0)(dev))
+        ptz.UNIFI_STATUS.reset()
+        shown = []
+        poller = ptz.UnifiPoller(types_ns(show=lambda *a: shown.append(a)))
+        return ptz, poller, shown
+
+    @staticmethod
+    def unifi_answer(*ids, kind="motion"):
+        cam = "65a1b2c3d4e5f60718293a4b"
+        return lambda dev: {"now": 1, "cams": {cam: "garden"},
+                            "events": [{"id": i, "type": kind, "camera": cam, "smartDetectTypes": []} for i in ids]}
+
+    def test_unifi_poller_baseline_then_event(self):
+        ptz, poller, shown = self.unifi_setup()
+        seen = []
+        self.answers += [lambda dev: seen.append(dev) or self.unifi_answer("1")(dev), self.unifi_answer("1", "2")]
+        poller.once()
+        self.assertEqual(shown, [])  # first answer: old events never on screen
+        self.assertEqual((seen[0]["user"], seen[0]["password"]), ("viewer", "secret"))
+        self.assertEqual(os.stat(ptz.device_file()).st_mode & 0o777, 0o600)
+        poller.once()
+        self.assertEqual(shown, [("garden", 30, "photo", "normal", "unifi", "Motion", None)])
+        self.assertEqual(ptz.UNIFI_STATUS.last_event["camera"], "garden")
+        self.assertEqual(ptz.UNIFI_STATUS.consoles, 1)
+        # consoles are never PTZ cameras and never get the default camera login
+        self.assertEqual(set(ptz.ptz_devices()), {"door"})
+        self.assertEqual(ptz.all_devices()["door"]["user"], "admin")
+        self.assertFalse(Built.module("controller").Controller().has_ptz("protect"))
+
+    def test_unifi_poller_error_is_logged_once_and_resets_the_baseline(self):
+        ptz, poller, shown = self.unifi_setup()
+        kodiapi = Built.module("kodiapi")
+        logged = []
+        self.addCleanup(setattr, kodiapi, "log", kodiapi.log)
+        kodiapi.log = lambda text, level="normal": logged.append(text)
+
+        def fail(dev):
+            raise ValueError("UniFi Protect login: HTTP 401 password=secret")
+        self.answers += [self.unifi_answer("1"), fail, fail, self.unifi_answer("1", "9", kind="ring")]
+        for _i in range(4):
+            poller.once()
+        self.assertEqual(len([t for t in logged if "HTTP 401" in t]), 1)
+        self.assertFalse([t for t in logged if "secret" in t])
+        self.assertEqual(shown, [])  # after an error the next answer is a new baseline
+        self.assertIsNone(ptz.UNIFI_STATUS.error)
+        diag = Built.module("diag")
+        ptz.UNIFI_STATUS.failed("UniFi Protect events: not reachable (URLError)")
+        lines = diag.unifi_lines(Built.module("service").unifi_state())
+        self.assertTrue(lines[0].startswith("[FAIL]"), lines)
+        self.assertTrue(any("garden" not in l and "UniFi" in l for l in lines))
+        self.assertTrue(diag.unifi_lines(None)[0].startswith("[FAIL]"))  # no console known yet
+
+    def test_unifi_poller_off_polls_nothing(self):
+        ptz, poller, shown = self.unifi_setup(enabled="false")
+        ptz.UNIFI_STATUS.consoles = 3
+        poller.once()
+        self.assertEqual((shown, ptz.UNIFI_STATUS.consoles, poller.state), ([], 0, {}))
+        self.assertEqual(ptz.unifi_interval({"unifi_interval": "1"}), 2)
+        self.assertEqual(ptz.unifi_interval({}), 5)
+        service = Built.module("service")
+        self.assertEqual(service.changed_parts({"unifi_enabled": False}, {"unifi_enabled": True}), {"ptz"})
+
+    def test_unifi_log_only_mode(self):
+        ctl_mod, kodiapi = Built.module("controller"), Built.module("kodiapi")
+        rang = []
+        self.addCleanup(setattr, kodiapi, "chime", kodiapi.chime)
+        kodiapi.chime = lambda: rang.append(1)
+        Built.store.update({"chime": "all"})
+        self.addCleanup(Built.store.pop, "chime", None)
+        ctl = ctl_mod.Controller()
+        ctl._show = lambda *a: self.fail("log only must not open anything")
+        self.assertEqual(ctl.show("garden", 10, "log", "alarm", "unifi", "Person"), "ignore")
+        e = ctl.events[0]
+        self.assertEqual((e["source"], e["action"], e["reason"], e["label"], rang),
+                         ("unifi", "ignore", "log_only", "Person", []))
 
     def test_live_item_skips_probe(self):
         ctl = Built.module("controller")

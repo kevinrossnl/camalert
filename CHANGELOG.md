@@ -1,6 +1,10 @@
 # Changelog
 
 ## Unreleased
+- Kodi (#71): *UniFi Protect events* in the service add-on (Configure › Triggers): a poll thread per add-on
+  (restarted when the setting changes), the same settings, display mode *Log only*, source *UniFi Protect* in the
+  event list and the poll status in the diagnostics; `unifi` lines in `devices.conf` never get the default camera
+  login and are never PTZ cameras.
 - Enigma2 (#70): *UniFi Protect events* (Settings › Triggers › UniFi Protect): polls the consoles of type `unifi` in
   the devices file in a thread every *Check every (seconds)*, starts and stops with the setting, event types,
   camera names, priority, display mode and duration, per event type rules (`ring=alarm/live|motion=normal/log`);

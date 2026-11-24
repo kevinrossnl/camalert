@@ -33,8 +33,8 @@ def hint(context, s=None, has_ptz=False):
 def has_ptz(name, s):
     """True when devices.conf has camera control for this camera (only then the hint offers it)."""
     try:
-        from .ptz import all_devices
-        return name in all_devices(s)
+        from .ptz import ptz_devices
+        return name in ptz_devices(s)
     except Exception:  # a broken devices.conf must not stop the window
         return False
 

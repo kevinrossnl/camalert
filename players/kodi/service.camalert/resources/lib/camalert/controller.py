@@ -127,6 +127,12 @@ class Controller(object):
         """Handles a show request; logs it (source, decision, reason) and keeps it in the event list."""
         s = kodiapi.settings()
         cam = stream or s["camera"]
+        if mode == "log":  # display mode 'log only' (#71): event list and log, nothing on screen, no chime
+            reason = reason_code("log_only")
+            kodiapi.log("request from %s: camera=%s priority=%s mode=log label=%s -> ignore (%s)"
+                        % (source, cam, pick_priority(priority), label or "-", reason))
+            self.record_event(cam, label, source, pick_priority(priority), "ignore", reason, event_id)
+            return "ignore"
         wait = cooldown_seconds(cam, s["cooldown"])
         with self.lock:
             self.reason, self.label, self.source = "", (label or "").strip()[:40] or None, source
@@ -490,7 +496,7 @@ class Controller(object):
     # --- camera control and colour keys ----------------------------------------------------------------------
     def has_ptz(self, name):
         from . import ptz
-        return bool(name) and name in ptz.all_devices()
+        return bool(name) and name in ptz.ptz_devices()
 
     def ptz_move(self, action, name=None):
         from . import ptz

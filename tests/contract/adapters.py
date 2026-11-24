@@ -55,8 +55,22 @@ class KodiAdapter(object):
             self.store[k] = str(v).lower() if isinstance(v, bool) else str(v)
         return self.klogic.parse_settings(self.store)
 
+    def set_cameras(self, names):
+        """go2rtc answers with these cameras (None = restore)."""
+        src = _paths.kodi_module("sources")
+        if not hasattr(self, "_orig"):
+            self._orig = (src.all_camera_names, src.camera_urls)
+        if names is None:
+            src.all_camera_names, src.camera_urls = self._orig
+            return
+        src.all_camera_names = lambda s=None: list(names)
+        src.camera_urls = lambda n, s=None: ("http://x/%s.mp4" % n, "http://x/%s.jpg" % n,
+                                              n.replace("_", " ").capitalize())
+
     def call(self, req, ctl=None):
         ctl = ctl or RecordingController()
+        if not hasattr(self.server.Handler, "do_" + req.method):
+            return Answer(501, None, "", ctl)  # http.server: "Unsupported method"
         s = self.settings(req.settings)
         code, out = self.server.handle(ctl, req.path, req.args, req.ip, req.header, s, req.user_agent)
         return Answer(code, out, "text/plain" if isinstance(out, str) else "application/json", ctl)
@@ -122,13 +136,25 @@ class Enigma2Adapter(object):
         self.server.LIMIT.seen.clear()
         self.server.WARNED.clear()
 
+    def set_cameras(self, names):
+        if not hasattr(self, "_orig"):
+            self._orig = (self.server.all_camera_names, self.server.camera_urls)
+        if names is None:
+            self.server.all_camera_names, self.server.camera_urls = self._orig
+            return
+        self.server.all_camera_names = lambda: list(names)
+        self.server.camera_urls = lambda n: ("rtspt://x/%s" % n, "http://x/%s.jpg" % n,
+                                             n.replace("_", " ").capitalize())
+
     def call(self, req, ctl=None):
         ctl = ctl or RecordingController()
         for k, v in req.settings.items():
             getattr(self.c, k).value = v
         self.display.Controller.instance = ctl
         tw = FakeTwistedRequest(req)
-        render = getattr(self.server.Api(), "render_" + req.method)
+        render = getattr(self.server.Api(), "render_" + req.method, None)
+        if render is None:
+            return Answer(405, None, "", ctl)  # twisted.web: UnsupportedMethod
         out = render(tw)
         if out == 1:  # NOT_DONE_YET: run the deferred work as the reactor thread pool would
             for d in list(self.env.reactor.deferred):

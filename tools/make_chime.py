@@ -30,4 +30,4 @@ def build(path):
 
 
 if __name__ == "__main__":
-    print(build(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "..", "src", "CamAlert", "chime.wav")))
+    print(build(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "..", "players", "enigma2", "CamAlert", "chime.wav")))

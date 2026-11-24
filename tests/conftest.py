@@ -8,21 +8,23 @@ if HERE not in sys.path:
 
 import _paths  # noqa: E402,F401
 
-# file name -> marker; run one area with e.g. `pytest -m kodi`
-AREAS = {
-    "core": ("test_logic", "test_devices", "test_robustness", "test_logging_and_more", "test_imports"),
-    "contract": ("test_http_contract", "test_mqtt_contract"),
-    "enigma2": ("test_enigma2_images", "test_init_settings", "test_enigma2_server", "test_enigma2_mqtt"),
-    "kodi": ("test_kodi", "test_kodi_versions"),
+# folder (under tests/) or file name -> marker; run one area with e.g. `pytest -m kodi`
+FOLDERS = {"core": "core", "contract": "contract", "enigma2": "enigma2", "kodi": "kodi", "homeassistant": "ha",
+           "build": "build"}
+FILES = {
+    "core": ("test_logic", "test_devices", "test_robustness", "test_logging_and_more"),
     "ha": ("test_ha_integration", "test_blueprints"),
-    "build": ("test_build", "test_golden", "test_private", "test_translations"),
+    "build": ("test_build", "test_private", "test_translations"),
 }
 
 
 def pytest_collection_modifyitems(config, items):
     import pytest
     for item in items:
-        name = os.path.splitext(os.path.basename(str(item.fspath)))[0]
-        for area, files in AREAS.items():
-            if name in files:
-                item.add_marker(getattr(pytest.mark, area))
+        rel = os.path.relpath(str(item.fspath), HERE).replace(os.sep, "/")
+        area = FOLDERS.get(rel.split("/")[0]) if "/" in rel else None
+        if area is None:
+            name = os.path.splitext(os.path.basename(rel))[0]
+            area = next((a for a, files in FILES.items() if name in files), None)
+        if area:
+            item.add_marker(getattr(pytest.mark, area))

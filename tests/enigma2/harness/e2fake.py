@@ -1,6 +1,6 @@
 """Fake Enigma2 environment for compatibility tests, built from API snapshots of real images.
 
-tests/compat/fixtures/e2api/<api>.json is made by tools/e2_api_snapshot.py from an image's enigma2 sources:
+tests/enigma2/harness/fixtures/e2api/<api>.json is made by tools/e2_api_snapshot.py from an image's enigma2 sources:
 class methods (with inherited ones) and their parameters, module level names
 and the skin attributes the image understands.
 The fake classes here only have the methods of that snapshot and check every call against the real parameter
@@ -25,7 +25,7 @@ ROOT = _paths.ROOT
 FIXTURES = _paths.E2_API_FIXTURES
 SRC = _paths.ENIGMA2_PARENT
 
-# Known differences per image. "api" = which snapshot in tests/compat/fixtures/e2api is used.
+# Known differences per image. "api" = which snapshot in tests/enigma2/harness/fixtures/e2api is used.
 # "python" = Python of current releases; "verified" = where the facts come from.
 PROFILES = {
     "openatv": {
@@ -782,7 +782,7 @@ def uninstall():
 
 
 def install(profile_name):
-    """Installs the fake modules of an image and imports CamAlert (src/CamAlert) fresh."""
+    """Installs the fake modules of an image and imports CamAlert (players/enigma2/CamAlert) fresh."""
     uninstall()
     profile = dict(PROFILES[profile_name], name=profile_name)
     snap = api(profile["api"])

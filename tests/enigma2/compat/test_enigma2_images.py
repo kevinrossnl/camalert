@@ -1,7 +1,7 @@
 """The Enigma2 plugin against the API of other images (openATV, OpenPLi, OpenBH, VTi, DreamOS).
 
-The fake modules (tests/compat/e2fake.py) are built from API snapshots of the real enigma2 sources
-(tests/compat/fixtures/e2api/*.json, made by tools/e2_api_snapshot.py): only methods that exist on that image,
+The fake modules (tests/enigma2/harness/e2fake.py) are built from API snapshots of the real enigma2 sources
+(tests/enigma2/harness/fixtures/e2api/*.json, made by tools/e2_api_snapshot.py): only methods that exist on that image,
 called with the parameters that image accepts. Results are summarised in docs/compatibility.md.
 """
 import os
@@ -12,7 +12,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 import _paths  # noqa: E402,F401
-from compat import e2fake  # noqa: E402
+from enigma2.harness import e2fake  # noqa: E402
 
 SUPPORTED = ("openatv", "openpli", "openbh", "vti")
 SNAP = "http://192.168.1.10:1984/api/frame.jpeg?src=%s&width=640"

@@ -122,7 +122,7 @@ class TestEventsButtonsUpdates(unittest.TestCase):
         self.assertIn("location=/x/chime.wav", cmd)
         self.assertEqual(cmd[-1], "alsasink")
         import wave
-        w = wave.open(os.path.join(os.path.dirname(__file__), "..", "src", "CamAlert", "chime.wav"))
+        w = wave.open(os.path.join(_paths.ENIGMA2, "chime.wav"))
         self.assertEqual((w.getnchannels(), w.getsampwidth(), w.getframerate()), (1, 2, 22050))
         self.assertLess(w.getnframes() / 22050.0, 2.0)
 

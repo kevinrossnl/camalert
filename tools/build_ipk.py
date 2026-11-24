@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from msgfmt import make_mo, parse_po  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-SRC = os.path.join(ROOT, "src", "CamAlert")
+SRC = os.path.join(ROOT, "players", "enigma2", "CamAlert")
 DEST = "usr/lib/enigma2/python/Plugins/Extensions/CamAlert"
 PKG = "enigma2-plugin-extensions-camalert"
 # Fixed timestamps: the same sources always give the same ipk (sha256), like the Kodi zip (#28).

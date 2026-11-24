@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Writes a JSON snapshot of the Kodi Python API (xbmc, xbmcgui, xbmcaddon, xbmcvfs) of one Kodi version.
 
-    kodi_api_snapshot.py <unpacked Kodistubs dir> <kodi major> > tests/compat/fixtures/kodi_api/<major>.json
+    kodi_api_snapshot.py <unpacked Kodistubs dir> <kodi major> > tests/kodi/fixtures/kodi_api/<major>.json
 
 Kodistubs (https://github.com/romanvm/Kodistubs, on PyPI as `Kodistubs==<major>.*`) are generated from Kodi's own
 API documentation for each release. Only the stub sources are parsed (ast), nothing is executed. The snapshot is
-used by tests/compat/test_kodi_versions.py to check that the add-on only uses API that exists in Kodi 19-22.
+used by tests/kodi/compat/test_kodi_versions.py to check that the add-on only uses API that exists in Kodi 19-22.
 Copyright (C) 2026 CamAlert developers, GPL v2.
 """
 import ast

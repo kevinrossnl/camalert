@@ -31,8 +31,8 @@ class KodiClient(object):
     platform = "kodi"
 
     def __init__(self, port):
-        import kodi_stubs
-        self.store = kodi_stubs.install({"mqtt_enabled": "true", "mqtt_host": "127.0.0.1", "mqtt_port": str(port),
+        from kodi import stubs
+        self.store = stubs.install({"mqtt_enabled": "true", "mqtt_host": "127.0.0.1", "mqtt_port": str(port),
                                          "mqtt_discovery": "true", "mqtt_name": "CamAlert test",
                                          "frigate_enabled": "true"})
         _paths.kodi_package()
@@ -73,7 +73,7 @@ class Enigma2Client(object):
     platform = "enigma2"
 
     def __init__(self, port):
-        from compat import e2fake
+        from enigma2.harness import e2fake
         self.e2fake = e2fake
         self.env = e2fake.install("openatv")
         c = self.env.config.plugins.camalert

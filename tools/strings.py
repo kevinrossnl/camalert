@@ -6,7 +6,7 @@ import os
 import re
 import sys
 
-ROOT = os.path.join(os.path.dirname(__file__), "..", "src", "CamAlert")
+ROOT = os.path.join(os.path.dirname(__file__), "..", "players", "enigma2", "CamAlert")
 
 
 def strings():

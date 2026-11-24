@@ -38,8 +38,8 @@ class KodiAdapter(object):
     platform = "kodi"
 
     def __init__(self):
-        import kodi_stubs
-        self.store = kodi_stubs.install()
+        from kodi import stubs
+        self.store = stubs.install()
         _paths.kodi_package()
         self.server = _paths.kodi_module("server")
         self.klogic = _paths.kodi_module("klogic")
@@ -121,7 +121,7 @@ class Enigma2Adapter(object):
     platform = "enigma2"
 
     def __init__(self, profile="openatv"):
-        from compat import e2fake
+        from enigma2.harness import e2fake
         self.e2fake = e2fake
         self.env = e2fake.install(profile)
         self.server = self.env.camalert.server

@@ -3,8 +3,8 @@
 [run]
 branch = True
 source =
-    src/CamAlert
-    kodi/service.camalert/resources/lib/camalert
+    players/enigma2/CamAlert
+    players/kodi/service.camalert/resources/lib/camalert
     custom_components/camalert
     tools
 omit =

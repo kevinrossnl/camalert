@@ -1,5 +1,5 @@
 """Kodi add-on (service.camalert): pure helpers, the HTTP API handler, the built zip and its metadata.
-Runs without Kodi: tests/kodi_stubs.py makes strict xbmc modules per Kodi version (19-22) from the Kodistubs fixtures."""
+Runs without Kodi: tests/kodi/stubs.py makes strict xbmc modules per Kodi version (19-22) from the Kodistubs fixtures."""
 import hashlib
 import importlib
 import json
@@ -19,7 +19,7 @@ ROOT = _paths.ROOT
 ADDON = _paths.KODI_ADDON
 _paths.tools()
 import build_kodi  # noqa: E402
-import kodi_stubs  # noqa: E402
+from kodi import stubs as kodi_stubs  # noqa: E402
 
 # Problems the strict Kodi stubs find, each with its issue (a fixed one fails its test)
 KNOWN_STUB_PROBLEMS = {}
@@ -520,7 +520,7 @@ class TestKodiPackage(unittest.TestCase):
     def test_every_module_imports_from_the_zip(self):
         """Smoke test of the package as Kodi gets it (separate interpreter, so it does not mix with the sources)."""
         b = Built.get()
-        code = ("import sys; sys.path[:0] = [%r, %r]; import kodi_stubs; kodi_stubs.install(profile=%r); "
+        code = ("import sys; sys.path[:0] = [%r, %r]; from kodi import stubs; stubs.install(profile=%r); "
                 "import importlib; [importlib.import_module('camalert.' + m) for m in %r]"
                 % (_paths.TESTS, os.path.join(b.tmp, "service.camalert", "resources", "lib"), b.profile, MODULES))
         subprocess.check_call([sys.executable, "-c", code])

@@ -3,7 +3,7 @@
 
     python3 tools/readme_images.py
 
-Needs Pillow and numpy. Geometry follows src/CamAlert/logic.py (window_geometry, grid).
+Needs Pillow and numpy. Geometry follows players/enigma2/CamAlert/logic.py (window_geometry, grid).
 Copyright (C) 2026 CamAlert developers, GPL v2.
 """
 import math
@@ -15,7 +15,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, os.path.join(ROOT, "src", "CamAlert"))
+sys.path.insert(0, os.path.join(ROOT, "players", "enigma2", "CamAlert"))
 from logic import grid, window_geometry  # noqa: E402
 
 OUT = os.path.join(ROOT, "docs", "images")

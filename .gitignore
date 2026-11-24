@@ -4,10 +4,10 @@ __pycache__/
 *.ipk
 
 # shared logic copied in by tools/build_kodi.py
-kodi/service.camalert/resources/lib/camalert/logic.py
-kodi/service.camalert/resources/lib/camalert/devices.py
-kodi/service.camalert/resources/lib/camalert/camlog.py
-kodi/service.camalert/resources/media/chime.wav
+players/kodi/service.camalert/resources/lib/camalert/logic.py
+players/kodi/service.camalert/resources/lib/camalert/devices.py
+players/kodi/service.camalert/resources/lib/camalert/camlog.py
+players/kodi/service.camalert/resources/media/chime.wav
 
 # test and coverage output
 .coverage

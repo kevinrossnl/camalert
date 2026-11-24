@@ -1,8 +1,8 @@
 """The Kodi add-on only uses Kodi Python API that exists in Kodi 19 (Matrix), 20 (Nexus), 21 (Omega) and 22 (Piers).
 
-tests/compat/fixtures/kodi_api/<major>.json is made by tools/kodi_api_snapshot.py from Kodistubs of that release
+tests/kodi/fixtures/kodi_api/<major>.json is made by tools/kodi_api_snapshot.py from Kodistubs of that release
 (generated from Kodi's API documentation). The add-on sources are read with ast, nothing is imported, so this
-also covers code paths the functional tests (tests/test_kodi.py) do not reach. Checked:
+also covers code paths the functional tests (tests/kodi/test_kodi.py) do not reach. Checked:
   - every xbmc*.name exists (function, class or constant);
   - calls of module functions, constructors and methods on objects made from Kodi classes, including
     self.method() in add-on classes that subclass a Kodi class, fit the parameter list of that version.

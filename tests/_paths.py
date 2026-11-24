@@ -16,14 +16,15 @@ DOCS = os.path.join(ROOT, "docs")
 PO = os.path.join(ROOT, "po")
 
 # Enigma2 plugin: the package folder and the folder that contains it (e2fake imports it as `CamAlert`).
-ENIGMA2_PARENT = os.path.join(ROOT, "src")
+PLAYERS = os.path.join(ROOT, "players")
+ENIGMA2_PARENT = os.path.join(PLAYERS, "enigma2")
 ENIGMA2 = os.path.join(ENIGMA2_PARENT, "CamAlert")
 # Shared plain-Python modules (no Enigma2, Kodi or Home Assistant imports), reused by the Kodi add-on.
 SHARED = ENIGMA2
 SHARED_MODULES = ("logic.py", "devices.py", "camlog.py")
 
 # Kodi add-on and repository add-on.
-KODI = os.path.join(ROOT, "kodi")
+KODI = os.path.join(PLAYERS, "kodi")
 KODI_ADDON = os.path.join(KODI, "service.camalert")
 KODI_REPO_ADDON = os.path.join(KODI, "repository.camalert")
 KODI_LIB = os.path.join(KODI_ADDON, "resources", "lib", "camalert")
@@ -33,8 +34,9 @@ HA = os.path.join(ROOT, "custom_components", "camalert")
 BLUEPRINTS = os.path.join(ROOT, "homeassistant", "blueprints")
 
 # Fixtures of the compatibility tests.
-E2_API_FIXTURES = os.path.join(TESTS, "compat", "fixtures", "e2api")
-KODI_API_FIXTURES = os.path.join(TESTS, "compat", "fixtures", "kodi_api")
+E2_API_FIXTURES = os.path.join(TESTS, "enigma2", "harness", "fixtures", "e2api")
+KODI_API_FIXTURES = os.path.join(TESTS, "kodi", "fixtures", "kodi_api")
+KODI_JSONRPC_FIXTURES = os.path.join(TESTS, "kodi", "fixtures", "jsonrpc")
 
 
 def add(*paths):

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Writes the JSON-RPC methods of one Kodi version (name, parameters, required, allowed values) for the strict
-Kodi stubs (tests/kodi_stubs.py, #29).
+Kodi stubs (tests/kodi/stubs.py, #29).
 
-    kodi_jsonrpc_snapshot.py <methods.json> <types.json> <kodi major> > tests/compat/fixtures/jsonrpc/<major>.json
+    kodi_jsonrpc_snapshot.py <methods.json> <types.json> <kodi major> > tests/kodi/fixtures/jsonrpc/<major>.json
 
 methods.json / types.json are Kodi's own schema (xbmc/interfaces/json-rpc/schema/ in the Kodi sources, branch
 Matrix = 19, Nexus = 20, Omega = 21, Piers = 22): public data, no device needed.

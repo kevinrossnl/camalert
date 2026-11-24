@@ -1,24 +1,25 @@
 """Strict stand-ins for Kodi's Python modules, generated per Kodi version (#29).
 
-The modules, functions, classes and parameter lists come from tests/compat/fixtures/kodi_api/<version>.json
+The modules, functions, classes and parameter lists come from tests/kodi/fixtures/kodi_api/<version>.json
 (Kodistubs of that release, see tools/kodi_api_snapshot.py):
   - a name that does not exist in that Kodi version raises AttributeError;
   - a call with arguments that version does not accept raises TypeError (like the real C++ bindings);
   - every call is recorded in CALLS;
-  - executeJSONRPC checks method and parameters against tests/compat/fixtures/jsonrpc/<version>.json (from
+  - executeJSONRPC checks method and parameters against tests/kodi/fixtures/jsonrpc/<version>.json (from
     Kodi's own JSON-RPC schema) and answers with a small schema-valid result; problems go to JSONRPC_PROBLEMS;
   - xbmc.Monitor aborts after MONITOR["waits"] waits, so the service loop really runs.
 
-    store = kodi_stubs.install(settings={"camera": "garden"}, version=21)
+    store = stubs.install(settings={"camera": "garden"}, version=21)
 """
 import json
 import os
 import sys
 import types
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-API = os.path.join(HERE, "compat", "fixtures", "kodi_api")
-JSONRPC = os.path.join(HERE, "compat", "fixtures", "jsonrpc")
+import _paths
+
+API = _paths.KODI_API_FIXTURES
+JSONRPC = _paths.KODI_JSONRPC_FIXTURES
 VERSIONS = (19, 20, 21, 22)
 DEFAULT_VERSION = 21
 
@@ -152,7 +153,7 @@ def install(settings=None, profile="/tmp/camalert-test-profile", version=DEFAULT
     del LOGGED[:]
     MONITOR["waits"] = 0
     if addon_path is None:
-        addon_path = os.path.join(os.path.dirname(HERE), "kodi", "service.camalert") + os.sep
+        addon_path = _paths.KODI_ADDON + os.sep
 
     def translate(p):
         return p.replace("special://profile/addon_data/service.camalert/", profile + "/") \

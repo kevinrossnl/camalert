@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Writes a JSON snapshot of the Enigma2 Python API that CamAlert relies on, read from an image's enigma2 sources.
 
-    e2_api_snapshot.py <enigma2 python dir> <name> "<source description>" > tests/compat/fixtures/e2api/<name>.json
+    e2_api_snapshot.py <enigma2 python dir> <name> "<source description>" > tests/enigma2/harness/fixtures/e2api/<name>.json
 
 <enigma2 python dir> is `lib/python` of an enigma2 checkout (openATV, OpenPLi, OpenBH, ...) or
 `usr/lib/enigma2/python` of an installed image. Parsing is text based (regular expressions), so it also works for
 Python 2 sources (DreamOS). Nothing is imported or executed. The snapshot feeds the fake Enigma2 modules in
-tests/compat/e2fake.py, so the plugin is tested against the real method names and signatures of each image.
+tests/enigma2/harness/e2fake.py, so the plugin is tested against the real method names and signatures of each image.
 Copyright (C) 2026 CamAlert developers, GPL v2.
 """
 import json

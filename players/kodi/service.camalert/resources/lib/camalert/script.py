@@ -93,6 +93,25 @@ def events():
         send(do="play", url=clip, title="%s %s" % (e["camera"], e.get("label") or ""))
 
 
+def camera_password():
+    """#55: the default camera password is kept in devices.conf; show whether one is stored, change or remove it."""
+    ptz.move_camera_password()  # one typed in the settings just now
+    stored = bool(ptz.default_login()[1])
+    choices = [kodiapi.tr(30279)] + ([kodiapi.tr(30280)] if stored else [])
+    heading = "%s: %s" % (kodiapi.tr(30154), kodiapi.tr(30277 if stored else 30278))
+    i = xbmcgui.Dialog().select(heading, choices)
+    if i == 0:
+        password = xbmcgui.Dialog().input(kodiapi.tr(30154), type=xbmcgui.INPUT_ALPHANUM,
+                                          option=xbmcgui.ALPHANUM_HIDE_INPUT)
+        if not password:
+            return
+        ptz.store_default_password(password)
+        xbmcgui.Dialog().ok("CamAlert", kodiapi.tr(30281))
+    elif i == 1:
+        ptz.store_default_password("")
+        xbmcgui.Dialog().ok("CamAlert", kodiapi.tr(30282))
+
+
 def run(args):
     what = args[0] if args else "settings"
     if what == "choose_camera":
@@ -111,6 +130,8 @@ def run(args):
         diagnostics()
     elif what == "events":
         events()
+    elif what == "camera_password":
+        camera_password()
     elif what == "devices":
         xbmcgui.Dialog().ok("CamAlert", kodiapi.tr(30185) % ptz.ensure_example())
     else:

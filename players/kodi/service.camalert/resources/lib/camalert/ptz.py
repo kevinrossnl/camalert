@@ -10,14 +10,15 @@ import time
 
 from . import kodiapi
 from .camalert_core.devices import client as devices
-from .klogic import with_default_login
+from .klogic import stored_default_login, with_default_login, with_default_password
 from .camalert_core.triggers.foscam import FoscamSource
 from .camalert_core.triggers.unifi import STATUS as UNIFI_STATUS, UnifiSource, labels as unifi_labels
 
 EXAMPLE = """# CamAlert camera control (PTZ), Foscam alarms and UniFi Protect events. One camera per line:
 #   name|type|host:port|user|password
 # name = CamAlert camera name, type = onvif, foscam or unifi (a UniFi Protect console, View Only user).
-# Empty user/password = the add-on settings (not for unifi).
+# Empty user/password = the add-on's default camera login (not for unifi). The add-on keeps the default
+# password itself on the line *|default|*||password (set it in the add-on settings, not here).
 # front_door|onvif|192.0.2.10:80|admin|secret
 # garden|foscam|192.0.2.11:88|admin|secret
 # protect|unifi|192.0.2.1:443|camalert|secret
@@ -37,12 +38,70 @@ def ensure_example():
     return p
 
 
+def _read_devices():
+    try:
+        with open(device_file(), encoding="utf-8") as f:
+            return f.read()
+    except OSError:
+        return None
+
+
+def write_devices(text):
+    """Atomic write, owner only (0600): a temporary file in the same folder, then rename."""
+    p = device_file()
+    tmp = p + ".tmp"
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(text)
+            f.flush()
+            os.fsync(f.fileno())
+        os.chmod(tmp, 0o600)
+        os.replace(tmp, p)
+    except BaseException:
+        try:
+            os.remove(tmp)
+        except OSError:
+            pass
+        raise
+
+
+def default_login():
+    """(user, password) the add-on stored in devices.conf (#55)."""
+    return stored_default_login(_read_devices() or "")
+
+
+def store_default_password(password):
+    """Sets ('' removes) the default camera password in devices.conf; makes the file (with the example) if needed."""
+    text = _read_devices()
+    write_devices(with_default_password(EXAMPLE if text is None else text, password))
+
+
+def move_camera_password():
+    """#55: a camera password typed in the add-on settings goes to devices.conf and the setting is emptied, so
+    settings.xml never keeps it. Runs on service start (migration of older installs) and on every settings change;
+    nothing to do (False) when the setting is empty. If devices.conf cannot be written the setting stays (and works)."""
+    password = kodiapi.addon_setting("ptz_password")
+    if not password:
+        return False
+    try:
+        store_default_password(password)
+    except OSError as e:
+        kodiapi.log("camera password (default) could not be moved to devices.conf: %s" % (e.strerror or "error"),
+                    "error")
+        return False
+    kodiapi.set_setting("ptz_password", "")
+    kodiapi.log("camera password (default) moved from the add-on settings to devices.conf")
+    return True
+
+
 def all_devices(s=None):
     """Every line of devices.conf; cameras get the add-on's default login, UniFi consoles never (#71)."""
     s = s or kodiapi.settings()
     devs = devices.load_devices(device_file())
-    out = with_default_login({n: d for n, d in devs.items() if d.get("type") != "unifi"}, s["ptz_user"],
-                             s["ptz_password"])
+    user, password = default_login()
+    out = with_default_login({n: d for n, d in devs.items() if d.get("type") != "unifi"}, s["ptz_user"] or user,
+                             s["ptz_password"] or password)
     out.update((n, d) for n, d in devs.items() if d.get("type") == "unifi")
     return out
 

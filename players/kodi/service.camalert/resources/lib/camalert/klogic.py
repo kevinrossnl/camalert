@@ -261,6 +261,36 @@ def with_default_login(devs, user, password):
     return out
 
 
+# The add-on's default camera password lives in devices.conf, not in settings.xml (#55): one line
+# '*|default|*|user|password'. parse_devices (both players) skips it because 'default' is no device type.
+DEFAULT_LOGIN = "*|default|*"
+
+
+def _is_default_login(line):
+    parts = line.strip().split("|", 2)
+    return len(parts) >= 2 and parts[0].strip() == "*" and parts[1].strip().lower() == "default"
+
+
+def stored_default_login(text):
+    """(user, password) of the default-login line in devices.conf text, ('', '') when there is none."""
+    for line in (text or "").splitlines():
+        if _is_default_login(line):
+            parts = line.strip().split("|", 4)
+            return (parts[3].strip() if len(parts) > 3 else "", parts[4] if len(parts) > 4 else "")
+    return "", ""
+
+
+def with_default_password(text, password):
+    """devices.conf text with the default camera password set ('' removes it). Every other line stays as it is;
+    there is never more than one default-login line; a user written there by hand is kept."""
+    password = (password or "").replace("\r", "").replace("\n", "")
+    user = stored_default_login(text)[0]
+    lines = [line for line in (text or "").splitlines() if not _is_default_login(line)]
+    if password:
+        lines.append("%s|%s|%s" % (DEFAULT_LOGIN, user, password))
+    return "\n".join(lines) + "\n" if lines else ""
+
+
 # --- colour keys, title size, chime ---------------------------------------------------------------------------
 # Kodi button codes of the colour keys (measured on Kodi 21): remote and CEC (251-254) and keyboard F1-F4 (KEY_VKEY | VK_F1..)
 COLOUR_BUTTONS = {251: "red", 252: "green", 253: "yellow", 254: "blue",

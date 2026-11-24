@@ -1444,6 +1444,42 @@ msgstr "Per una telecamera che questo Kodi non riproduce bene (H.265 / 4K): port
 msgid "Asks the UniFi Protect consoles in devices.conf for events (doorbell, person, vehicle, ...)."
 msgstr "Interroga le console UniFi Protect in devices.conf sugli eventi (campanello, persona, veicolo, ...)."
 
+#: kodi:30275
+msgid "Change camera password (default)"
+msgstr "Cambia password telecamera (predefinita)"
+
+#: kodi:30276
+msgid "Shows whether a default camera password is stored and lets you change or remove it. It is kept in devices.conf, not in the Kodi settings."
+msgstr "Indica se è salvata una password predefinita per le telecamere e permette di cambiarla o rimuoverla. È conservata in devices.conf, non nelle impostazioni di Kodi."
+
+#: kodi:30277
+msgid "•••• (stored)"
+msgstr "•••• (salvata)"
+
+#: kodi:30278
+msgid "Not set"
+msgstr "Non impostata"
+
+#: kodi:30279
+msgid "Change password"
+msgstr "Cambia password"
+
+#: kodi:30280
+msgid "Remove stored password"
+msgstr "Rimuovi la password salvata"
+
+#: kodi:30281
+msgid "Camera password stored in devices.conf."
+msgstr "Password telecamera salvata in devices.conf."
+
+#: kodi:30282
+msgid "Camera password removed."
+msgstr "Password telecamera rimossa."
+
+#: kodi:30283
+msgid "Used when devices.conf has no password for a camera. A password typed here is moved to devices.conf and this field is emptied again."
+msgstr "Usata se devices.conf non indica una password per una telecamera. Una password inserita qui viene spostata in devices.conf e il campo viene svuotato."
+
 #: ha:config.step.user.title
 msgid "Add a CamAlert player"
 msgstr "Aggiungere un lettore CamAlert"

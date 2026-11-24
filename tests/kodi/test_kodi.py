@@ -225,6 +225,31 @@ class _KodiLogic(object):
         self.assertEqual((d["a"]["user"], d["a"]["password"]), ("x", "y"))
         self.assertEqual((d["b"]["user"], d["b"]["password"]), ("u", "p"))
 
+    def test_default_password_line(self):
+        """#55: the default camera password is one '*|default|*' line in devices.conf; other lines never change."""
+        k = self.k
+        cams = "# comment\nfront_door|onvif|192.168.1.10:80|admin|a|b\ngarden|foscam|192.168.1.11:88||\n"
+        self.assertEqual(k.stored_default_login(cams), ("", ""))
+        self.assertEqual(k.stored_default_login(None), ("", ""))
+        once = k.with_default_password(cams, "s|e cret")
+        self.assertEqual(once, cams + "*|default|*||s|e cret\n")
+        self.assertEqual(k.stored_default_login(once), ("", "s|e cret"))
+        self.assertEqual(k.with_default_password(once, "s|e cret"), once)  # idempotent, never a second line
+        twice = k.with_default_password(once, "new\r\n")
+        self.assertEqual(twice.count("*|default|"), 1)
+        self.assertEqual(k.stored_default_login(twice), ("", "new"))
+        self.assertTrue(twice.startswith(cams))
+        self.assertEqual(k.with_default_password(twice, ""), cams)  # removed
+        self.assertEqual(k.with_default_password("", ""), "")
+        self.assertEqual(k.with_default_password(None, "x"), "*|default|*||x\n")
+        # a user written on the line by hand is kept and read
+        hand = " * | DEFAULT |*|viewer|old\n"
+        self.assertEqual(k.stored_default_login(hand), ("viewer", "old"))
+        self.assertEqual(k.with_default_password(hand, "new"), "*|default|*|viewer|new\n")
+        # both players' parser skips the line, so Enigma2 and the device list ignore it
+        from camalert_core.devices.config import parse_devices
+        self.assertEqual(set(parse_devices(twice)), {"front_door", "garden"})
+
 
 def types_ns(**kw):
     import types
@@ -982,6 +1007,143 @@ class _KodiModules(object):
         server = [e for e in root.iter("setting") if e.get("id") == "server"][0]
         self.assertEqual(server.findtext("default") or "", "")
         self.assertEqual(server.find("constraints").findtext("allowempty"), "true")
+
+    def password_setup(self, devices_text=None):
+        """#55: a clean devices.conf (or none) and the stored settings restored afterwards."""
+        ptz = Built.module("ptz")
+        path = ptz.device_file()
+        for p in (path, path + ".tmp"):
+            if os.path.exists(p):
+                os.remove(p)
+        if devices_text is not None:
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(devices_text)
+            os.chmod(path, 0o644)
+        self.addCleanup(lambda: os.path.exists(path) and os.remove(path))
+        saved = dict(Built.store)
+        self.addCleanup(lambda: (Built.store.clear(), Built.store.update(saved)))
+        kodi_stubs.LOGGED[:] = []
+        return ptz, path
+
+    def assert_secret_nowhere(self, secret):
+        """The password is not in the stored settings (= settings.xml), Kodi's log or camalert.log."""
+        self.assertNotIn(secret, json.dumps(Built.store))
+        self.assertFalse([m for m in kodi_stubs.LOGGED if secret in m])
+        log = Built.module("kodiapi").camlog().path
+        if os.path.exists(log):
+            with open(log, encoding="utf-8") as f:
+                self.assertNotIn(secret, f.read())
+
+    def test_camera_password_moves_to_devices_conf(self):
+        """#55: on service start (migration of an existing install) a camera password in the settings goes into
+        devices.conf (0600, camera lines kept) and the setting is emptied; afterwards nothing changes."""
+        cams = "front_door|onvif|192.168.1.10:80||\nprotect|unifi|192.168.1.1:443|viewer|console-pw\n"
+        ptz, path = self.password_setup(cams)
+        service = Built.module("service")
+        Built.store.update({"ptz_user": "admin", "ptz_password": "Secr3t|pw"})
+        svc = service.Service()
+        self.assertEqual(Built.store["ptz_password"], "")
+        self.assertEqual(Built.store["ptz_user"], "admin")  # the user name is no secret and stays
+        with open(path, encoding="utf-8") as f:
+            text = f.read()
+        self.assertEqual(text, cams + "*|default|*||Secr3t|pw\n")
+        self.assertEqual(os.stat(path).st_mode & 0o777, 0o600)
+        self.assertFalse(os.path.exists(path + ".tmp"))
+        self.assert_secret_nowhere("Secr3t")
+        self.assertTrue([m for m in kodi_stubs.LOGGED if "moved from the add-on settings to devices.conf" in m])
+        # cameras still get the default login, UniFi consoles keep their own
+        devs = ptz.all_devices()
+        self.assertEqual((devs["front_door"]["user"], devs["front_door"]["password"]), ("admin", "Secr3t|pw"))
+        self.assertEqual(devs["protect"]["password"], "console-pw")
+        # idempotent: a new start or settings change with an empty field changes nothing
+        mtime = os.stat(path).st_mtime_ns
+        self.assertFalse(svc.move_secrets())
+        svc.settings_changed()
+        self.assertEqual(os.stat(path).st_mtime_ns, mtime)
+        # a new password typed in the settings replaces the stored one (one line), on settings change
+        Built.store["ptz_password"] = "Other9"
+        svc.settings_changed()
+        with open(path, encoding="utf-8") as f:
+            text = f.read()
+        self.assertEqual(text, cams + "*|default|*||Other9\n")
+        self.assertEqual(Built.store["ptz_password"], "")
+        self.assertEqual(svc.settings["ptz_password"], "")
+        self.assert_secret_nowhere("Other9")
+
+    def test_camera_password_without_devices_conf(self):
+        """#55: no devices.conf yet: it is made with the example and the password line, owner only."""
+        ptz, path = self.password_setup()
+        Built.store["ptz_password"] = "Secr3t"
+        self.assertTrue(ptz.move_camera_password())
+        with open(path, encoding="utf-8") as f:
+            text = f.read()
+        self.assertTrue(text.startswith(ptz.EXAMPLE))
+        self.assertEqual(ptz.default_login(), ("", "Secr3t"))
+        self.assertEqual(os.stat(path).st_mode & 0o777, 0o600)
+        self.assertFalse(ptz.move_camera_password())
+
+    def test_camera_password_kept_when_devices_conf_cannot_be_written(self):
+        """#55: if devices.conf cannot be written the setting stays (cameras keep working) and the error is logged
+        without the password; nothing half-written is left."""
+        ptz, path = self.password_setup()
+        Built.store["ptz_password"] = "Secr3t"
+        self.addCleanup(setattr, ptz.os, "replace", ptz.os.replace)
+
+        def fail(*a):
+            raise OSError(13, "Permission denied")
+        ptz.os.replace = fail
+        self.assertFalse(ptz.move_camera_password())
+        self.assertEqual(Built.store["ptz_password"], "Secr3t")
+        self.assertFalse(os.path.exists(path + ".tmp"))
+        self.assertEqual(ptz.all_devices({"ptz_user": "", "ptz_password": "Secr3t"}), {})
+        self.assertTrue([m for m in kodi_stubs.LOGGED if "could not be moved" in m and "Permission denied" in m])
+        self.assertFalse([m for m in kodi_stubs.LOGGED if "Secr3t" in m])
+        # the service never stops on an unexpected error either
+        ptz.os.replace = lambda *a: 1 / 0
+        self.assertFalse(Built.module("service").Service.move_secrets())
+        self.assertTrue([m for m in kodi_stubs.LOGGED if "not moved: ZeroDivisionError" in m])
+
+    def test_change_camera_password_button(self):
+        """#55: the settings button shows whether a password is stored (never the password) and changes or removes
+        it directly in devices.conf; the input dialog hides what is typed."""
+        ptz, path = self.password_setup("garden|foscam|192.168.1.11:88||\n")
+        script = Built.module("script")
+        xbmcgui = script.xbmcgui
+        seen, said, answers, inputs = [], [], [], []
+        for name in ("select", "input", "ok"):
+            self.addCleanup(setattr, xbmcgui.Dialog, name, getattr(xbmcgui.Dialog, name))
+        xbmcgui.Dialog.select = lambda self, heading, items, **kw: seen.append((heading, list(items))) or answers.pop(0)
+        xbmcgui.Dialog.input = lambda self, heading, *a, **kw: inputs.append(kw) or "N3w|pw"
+        xbmcgui.Dialog.ok = lambda self, heading, message: said.append(message)
+        answers += [0]
+        script.run(["camera_password"])
+        self.assertEqual(seen[0], ("Camera password (default): Not set", ["Change password"]))
+        self.assertEqual(inputs[0]["option"], xbmcgui.ALPHANUM_HIDE_INPUT)
+        self.assertEqual(ptz.default_login(), ("", "N3w|pw"))
+        self.assertEqual(said, ["Camera password stored in devices.conf."])
+        self.assertEqual(os.stat(path).st_mode & 0o777, 0o600)
+        answers += [-1]  # cancelled: nothing changes
+        script.run(["camera_password"])
+        self.assertEqual(seen[1], ("Camera password (default): \u2022\u2022\u2022\u2022 (stored)",
+                                   ["Change password", "Remove stored password"]))
+        self.assertNotIn("N3w", json.dumps(seen))
+        xbmcgui.Dialog.input = lambda self, heading, *a, **kw: ""  # empty input = no change
+        answers += [0]
+        script.run(["camera_password"])
+        self.assertEqual(ptz.default_login()[1], "N3w|pw")
+        answers += [1]
+        script.run(["camera_password"])
+        self.assertEqual(ptz.default_login(), ("", ""))
+        with open(path, encoding="utf-8") as f:
+            self.assertEqual(f.read(), "garden|foscam|192.168.1.11:88||\n")
+        self.assertEqual(said[-1], "Camera password removed.")
+        # a password typed in the settings field just before is moved first
+        Built.store["ptz_password"] = "Typed1"
+        answers += [-1]
+        script.run(["camera_password"])
+        self.assertEqual(Built.store["ptz_password"], "")
+        self.assertTrue(seen[-1][0].endswith("(stored)"))
+        self.assert_secret_nowhere("Typed1")
 
     def test_service_loop_runs_until_abort(self):
         service = Built.module("service")

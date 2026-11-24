@@ -845,6 +845,42 @@ msgctxt "#30274"
 msgid "Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30|driveway=normal/log"
 msgstr "Facultatif, prioritaire sur le type d'événement : camera=priority/mode/seconds, p. ex. front_door=high/photo/30|driveway=normal/log"
 
+msgctxt "#30275"
+msgid "Change camera password (default)"
+msgstr "Modifier le mot de passe caméra (défaut)"
+
+msgctxt "#30276"
+msgid "Shows whether a default camera password is stored and lets you change or remove it. It is kept in devices.conf, not in the Kodi settings."
+msgstr "Indique si un mot de passe caméra par défaut est enregistré et vous permet de le modifier ou de le supprimer. Il est conservé dans devices.conf, pas dans les paramètres de Kodi."
+
+msgctxt "#30277"
+msgid "•••• (stored)"
+msgstr "•••• (enregistré)"
+
+msgctxt "#30278"
+msgid "Not set"
+msgstr "Non défini"
+
+msgctxt "#30279"
+msgid "Change password"
+msgstr "Modifier le mot de passe"
+
+msgctxt "#30280"
+msgid "Remove stored password"
+msgstr "Supprimer le mot de passe enregistré"
+
+msgctxt "#30281"
+msgid "Camera password stored in devices.conf."
+msgstr "Mot de passe caméra enregistré dans devices.conf."
+
+msgctxt "#30282"
+msgid "Camera password removed."
+msgstr "Mot de passe caméra supprimé."
+
+msgctxt "#30283"
+msgid "Used when devices.conf has no password for a camera. A password typed here is moved to devices.conf and this field is emptied again."
+msgstr "Utilisé si devices.conf n'indique pas de mot de passe pour une caméra. Un mot de passe saisi ici est déplacé dans devices.conf et ce champ est vidé."
+
 msgctxt "#30500"
 msgid "API"
 msgstr "API"

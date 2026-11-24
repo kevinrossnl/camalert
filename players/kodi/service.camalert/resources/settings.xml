@@ -91,7 +91,8 @@
       <group id="1">
         <setting id="devices" type="action" label="30155" help="30151"><level>1</level><data>RunScript(service.camalert,devices)</data><control type="button" format="action"><close>true</close></control></setting>
         <setting id="ptz_user" type="string" label="30152" help="30153"><level>1</level><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><heading>30152</heading></control></setting>
-        <setting id="ptz_password" type="string" label="30154" help="30153"><level>1</level><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><heading>30154</heading><hidden>true</hidden></control></setting>
+        <setting id="ptz_password" type="string" label="30154" help="30283"><level>1</level><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><heading>30154</heading><hidden>true</hidden></control></setting>
+        <setting id="camera_password" type="action" label="30275" help="30276"><level>1</level><data>RunScript(service.camalert,camera_password)</data><control type="button" format="action"><close>true</close></control></setting>
         <setting id="ptz_key" type="string" label="30239" help="30240"><level>1</level><default>blue</default><constraints><options><option label="30244">blue</option><option label="30243">yellow</option><option label="30241">red</option><option label="30242">green</option><option label="30234">off</option></options></constraints><control type="spinner" format="string"/></setting>
         <setting id="ha_buttons" type="boolean" label="30245" help="30246"><level>1</level><default>true</default><control type="toggle"/></setting>
       </group>

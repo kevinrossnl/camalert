@@ -29,11 +29,21 @@ def changed_parts(old, new):
 class Service(object):
     def __init__(self):
         kodiapi.migrate_settings()  # before anything reads the settings (#39)
+        self.move_secrets()
         self.ctl = Controller()
         self.ctl.listeners.append(mqtt.state_changed)
         self.settings = kodiapi.settings()
         self.monitor = kodiapi.Monitor(self.settings_changed)
         self.window_cmd = None
+
+    @staticmethod
+    def move_secrets():
+        """#55: the camera password never stays in settings.xml (see ptz.move_camera_password)."""
+        try:
+            return ptz.move_camera_password()
+        except Exception as e:  # never stop the service; the message never contains the password
+            kodiapi.log("camera password (default) not moved: %s" % type(e).__name__, "error")
+            return False
 
     def configure_log(self, s):
         kodiapi.camlog().configure(s["log_level"], s["log_syslog"])
@@ -49,6 +59,7 @@ class Service(object):
         ptz.start(self.ctl)
 
     def settings_changed(self):
+        self.move_secrets()
         new = kodiapi.settings()
         parts = changed_parts(self.settings, new)
         dnd_changed = new["dnd"] != self.settings["dnd"]

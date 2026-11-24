@@ -132,6 +132,11 @@ def migrate_settings():
     return sorted(todo)
 
 
+def addon_setting(key):
+    """One raw setting, read from a fresh Addon object (Kodi caches settings per instance)."""
+    return xbmcaddon.Addon(ADDON_ID).getSetting(key)
+
+
 def set_setting(key, value):
     xbmcaddon.Addon(ADDON_ID).setSetting(key, str(value).lower() if isinstance(value, bool) else str(value))
 

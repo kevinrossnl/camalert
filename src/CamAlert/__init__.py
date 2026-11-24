@@ -123,3 +123,5 @@ _add("update_check", lambda: ConfigYesNo(default=True))
 _add("frigate_url", lambda: ConfigText(default="", fixed_size=False))
 _add("update_checked", lambda: ConfigText(default="0", fixed_size=False))  # internal: time of the last check
 _add("update_seen", lambda: ConfigText(default="", fixed_size=False))  # internal: newest version already announced
+_add("chime", lambda: ConfigYesNo(default=False))
+_add("picons", lambda: ConfigYesNo(default=False))

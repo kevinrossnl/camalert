@@ -10,16 +10,22 @@ CamAlert listens on port **8099** (configurable). All requests are `GET` and ret
 | `/camalert/cameras` | List of cameras (name, title, has snapshot) |
 | `/camalert/mosaic?cam=front_door,garden&sec=60` | Full-screen photo mosaic (up to 9 cameras; without `cam` the *Mosaic cameras* setting) |
 | `/camalert/hide` | Close the photo window / return from live view now |
-| `/camalert/status` | What is on screen, and the plugin version |
+| `/camalert/status` | What is on screen, do-not-disturb state, and the plugin version |
+| `/camalert/show?cam=front_door,garden` | 2–4 cameras together in one corner window (TV stays visible); more than 4 = mosaic |
+| `/camalert/dnd?on=1` / `?on=0` | Do not disturb on/off (without `on`: only report the state) |
+| `/camalert/ptz?cam=garden&move=left` | Move a PTZ camera (`up`, `down`, `left`, `right`, `zoom_in`, `zoom_out`, `home`, `stop`); see [cameras with PTZ](devices.md) |
+| `/camalert/webhook?url=...` | Where to post remote control colour keys (set automatically by the Home Assistant integration; empty `url` removes it) |
+| `/camalert/events` | The last 20 requests: time, camera, label, source, priority, what CamAlert did and why |
+| `/camalert/log?lines=200` | The end of `camalert.log` (passwords and tokens are always removed) |
 
-Parameters: `cam` (go2rtc stream name), `sec` (5–300), `mode` (`photo`, `live`, `notify`), `priority` (`normal` follows the receiver's active hours and recording rule, `high` always, `alarm` always and may wake the receiver), `token` (only if you set an access token; can also be sent as header `X-CamAlert-Token`).
+Parameters: `cam` (go2rtc stream name, or several separated by commas), `sec` (5–300), `mode` (`photo`, `live`, `notify`, `strip` = several cameras in one window), `label` (optional who/what shown before the camera name in the title, e.g. `Person`), `priority` (`normal` follows the receiver's active hours and recording rule, `high` always, `alarm` always and may wake the receiver), `token` (only if you set an access token; can also be sent as header `X-CamAlert-Token`).
 
 Answer of `show`: `{"result": true, "action": "show", "cam": "garden"}`. `action` is
 
 - `show` – shown now,
 - `wake` – priority alarm: the receiver is being woken up, the camera follows a few seconds later,
 - `extend` – was already on screen, the time is extended,
-- `ignore` – not shown, because the receiver is in standby or you are already watching that camera,
+- `ignore` – not shown: the receiver is in standby, you are already watching that camera, or a rule blocked it (do not disturb, active hours, recording, playing a recording or video). `/camalert/events` and `camalert.log` say which one,
 - `error` – no valid go2rtc address configured.
 
 Calling `show` again while the camera is on screen extends the time, so repeated motion events keep it open.

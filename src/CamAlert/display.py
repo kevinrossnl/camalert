@@ -22,7 +22,7 @@ from .camlog import LOG
 from . import devices
 from Components.ActionMap import ActionMap
 
-from .logic import (UPDATE_INTERVAL, github_repo, latest_tag, newer_version, title_font, add_event, alarm_edge, button_event, button_for, event_title, ptz_key, slug, redact, dnd_blocks, is_media_ref, parse_orientation, parse_refresh, refresh_delay, strip_geometry,
+from .logic import (chime_command, UPDATE_INTERVAL, github_repo, latest_tag, newer_version, title_font, add_event, alarm_edge, button_event, button_for, event_title, ptz_key, slug, redact, dnd_blocks, is_media_ref, parse_orientation, parse_refresh, refresh_delay, strip_geometry,
                     valid_port, parse_titles, title_for, blocked_by_rules, clock_tuple, key_action, known_camera, neighbour, pick_priority, decide, display_name, grid, in_time_window, lowered_volume, normalize_server, parse_camera_file,
                     parse_cams, pick_mode, rtsp_url, service_ref, should_pause, snapshot_url, split_credentials,
                     stream_from_ref, tcp_url, window_geometry)
@@ -628,7 +628,20 @@ class Controller(object):
             % (source, cam, pick_priority(priority), mode or "-", label or "-", result,
                (" (%s)" % self.reason) if self.reason else ""), level="error" if result == "error" else "normal")
         self.record_event(cam, label, source, pick_priority(priority), result, self.reason, event_id)
+        if result == "show" and pick_priority(priority) in ("high", "alarm") and config.plugins.camalert.chime.value:
+            self.chime()
         return result
+
+    def chime(self):
+        path = os.path.join(os.path.dirname(__file__), "chime.wav")
+        if not os.path.exists(path):
+            return
+        try:
+            import subprocess
+            subprocess.Popen(chime_command(path), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            log("chime", level="verbose")
+        except OSError as e:
+            log("chime failed:", e)
 
     def record_event(self, cam, label, source, priority, action, reason, event_id=None):
         ev = {"time": time.time(), "camera": cam, "label": label or "", "source": source, "priority": priority,

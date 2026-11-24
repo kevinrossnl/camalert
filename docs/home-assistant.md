@@ -21,11 +21,18 @@ There are three ways to connect CamAlert to Home Assistant. **The integration is
 
 - A **button per camera** ("Show Front door"), a **Mosaic** button and **Hide camera**.
 - A sensor **Camera on screen**.
+- A switch **Do not disturb** (blocks normal requests; doorbell and alarm still come through, configurable on the receiver).
+- An event entity **Remote button**: while a camera is on screen, the colour keys of the remote fire an event
+  (`red`, `green`, `yellow`, `blue`, with the camera as attribute). The integration also fires the bus event
+  `camalert_button` (`device_id`, `receiver`, `camera`, `button`). Use the blueprint *CamAlert - remote button does
+  something* to, for example, open the gate with GREEN when the doorbell camera shows who is there.
+- **Download diagnostics** on the integration entry: status, last events and the receiver's log (redacted).
 - Actions you can use in automations and scripts:
 
 | Action | Fields |
 |---|---|
-| `camalert.show` | receivers (target), camera, seconds, mode (photo / live / notify), priority (normal / high / alarm) |
+| `camalert.show` | receivers (target), camera (one or more: 2–4 are shown together in one corner window), seconds, mode (photo / live / notify / strip), priority (normal / high / alarm), label (who/what, e.g. Person) |
+| `camalert.ptz` | receivers, camera, move (up / down / left / right / zoom_in / zoom_out / home / stop) |
 | `camalert.mosaic` | receivers, cameras (list), seconds |
 | `camalert.hide` | receivers |
 
@@ -65,6 +72,9 @@ Topics (`<id>` = receiver id, see the device in Home Assistant):
 | `camalert/<id>/mosaic` | empty, or `cam1,cam2,...` |
 | `camalert/<id>/hide` | empty |
 | `camalert/<id>/state` | (published) camera on screen or `none` |
+| `camalert/<id>/dnd/set` | `ON` / `OFF`: do not disturb (discovery creates a switch) |
+| `camalert/<id>/dnd` | (published) `ON` / `OFF` |
+| `camalert/<id>/button` | (published) `{"event_type": "green", "camera": "front_door", ...}` when a colour key is pressed while a camera is on screen (discovery creates an event entity) |
 | `camalert/<id>/availability` | (published) `online` / `offline` |
 
 ## 3. REST command (YAML)

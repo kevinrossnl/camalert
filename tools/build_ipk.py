@@ -45,7 +45,7 @@ def data(tar):
     for i in range(1, len(parts) + 1):
         add_dir(tar, "./" + "/".join(parts[:i]))
     for f in sorted(os.listdir(SRC)):
-        if f.endswith((".py", ".png")):
+        if f.endswith((".py", ".png", ".wav")):
             add(tar, "./%s/%s" % (DEST, f), open(os.path.join(SRC, f), "rb").read())
     add_dir(tar, "./%s/locale" % DEST)
     for po in sorted(os.listdir(os.path.join(ROOT, "po"))):

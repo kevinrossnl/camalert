@@ -111,6 +111,19 @@ class TestEventsButtonsUpdates(unittest.TestCase):
         self.assertIsNone(L.latest_tag('{"tag_name": "v2.0.0-rc1", "prerelease": true}'))
         self.assertIsNone(L.latest_tag("not json"))
 
+    def test_picons_and_chime(self):
+        self.assertEqual(L.picon_name("Grüner Weg"), "grunerweg.png")
+        self.assertEqual(L.picon_name("Tom & Jerry+*"), "tomandjerryplusstar.png")
+        self.assertIsNone(L.picon_name("!!"))
+        cmd = L.chime_command("/x/chime.wav")
+        self.assertEqual(cmd[0], "gst-launch-1.0")
+        self.assertIn("location=/x/chime.wav", cmd)
+        self.assertEqual(cmd[-1], "alsasink")
+        import wave
+        w = wave.open(os.path.join(os.path.dirname(__file__), "..", "src", "CamAlert", "chime.wav"))
+        self.assertEqual((w.getnchannels(), w.getsampwidth(), w.getframerate()), (1, 2, 22050))
+        self.assertLess(w.getnframes() / 22050.0, 2.0)
+
     def test_title_size(self):
         self.assertEqual(L.window_geometry("top_right", "medium", 1920, 1080, "large")[4], 56)
         self.assertEqual(L.window_geometry("top_right", "medium", 1280, 720)[4], 26)

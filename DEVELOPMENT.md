@@ -9,14 +9,14 @@
 ## Layout
 | Path | What |
 |---|---|
-| `src/CamAlert/` | Enigma2 plugin (Python 3). `logic.py` = pure functions with unit tests; `display.py` (photo window, mosaic, tour, live, controller), `server.py` (HTTP API), `mqtt.py` (MQTT + discovery), `bouquet.py` (camera channel list, auto update), `setup.py` (settings screen), `plugin.py` (entry points) |
-| `custom_components/camalert/` | Home Assistant integration (config flow, buttons, sensor, actions `show`/`mosaic`/`hide`). Same version number as the plugin (`manifest.json` = `__version__`) |
-| `homeassistant/blueprints/` | Blueprints: doorbell, motion (armed / times), alarm |
+| `src/CamAlert/` | Enigma2 plugin (Python 3). `logic.py` = pure functions with unit tests; `display.py` (photo window, mosaic, tour, live, controller), `server.py` (HTTP API), `mqtt.py` (MQTT + discovery), `bouquet.py` (camera channel list, auto update), `setup.py` (settings screen), `plugin.py` (entry points), `devices.py` (Foscam/ONVIF client, plain Python), `camlog.py` (camalert.log + syslog, plain Python), `diagnostics.py` (diagnostics + event list screens), `picons.py` (picons, plain Python), `chime.wav` (made by `tools/make_chime.py`) |
+| `custom_components/camalert/` | Home Assistant integration (config flow, buttons, sensor, DND switch, remote-button event entity + webhook, diagnostics, actions `show`/`mosaic`/`hide`/`ptz`). Same version number as the plugin (`manifest.json` = `__version__`) |
+| `homeassistant/blueprints/` | Blueprints: doorbell, motion (armed / times), alarm, remote button |
 | `homeassistant/camalert_package.yaml` | REST-command alternative (YAML) |
 | `kodi/service.camalert/` | Kodi add-on. `resources/lib/camalert/`: `klogic.py` (pure, tested), `controller.py` (show/hide/live/resume), `display.py` (windows), `server.py` (same API as Enigma2), `mqtt.py`, `ptz.py`, `sources.py`, `kodiapi.py` (only place that talks to xbmc). `logic.py` and `devices.py` are **copied in from `src/CamAlert/` by `tools/build_kodi.py`** (git-ignored there) |
 | `kodi/repository.camalert/` | Kodi repository add-on (`@REPO_URL@` filled in by the build; CI publishes `dist/kodi-repo/` on GitHub Pages) |
 | `po/` | Plugin translations (gettext). `custom_components/camalert/translations/` = integration translations |
-| `tools/` | `build_ipk.py` (package), `build_kodi.py` (Kodi zip + repository), `msgfmt.py`, `strings.py` (POT), `check_private.py` |
+| `tools/` | `build_ipk.py` (package), `build_feed.py` (opkg Packages index), `build_kodi.py` (Kodi zip + repository), `make_chime.py`, `msgfmt.py`, `strings.py` (POT), `check_private.py` |
 | `docs/` | User documentation (English) |
 
 ## Rules (learned on real receivers)
@@ -25,6 +25,10 @@
 - Screens can be cleared by Enigma2 after closing: late callbacks must use `getattr(self, "active", False)`.
 - Skins are designed for 1920x1080 and scaled to the desktop width (many skins are 1280x720).
 - Settings are written with `configfile.save()` on save.
+- `logic.py`, `devices.py`, `camlog.py` and `picons.py` have no Enigma2 imports: the Kodi add-on (`kodi/`) reuses them.
+- Everything that is logged or shown in diagnostics goes through `redact()`; camera passwords live only in
+  `/etc/enigma2/camalert_devices.conf`, never in settings.
+- Key hooks: `GlobalKeys` (colour keys / PTZ, priority -0x7FFFFFFF) runs before `KeyHook` (photo window, -0x7FFFFFFE).
 
 ## Rules (learned on real Kodi boxes)
 - Create a window **and** call `doModal()` in one dedicated thread (`display.open_window`): Kodi runs `onAction` in the thread that created the window, and only modal windows get the remote keys.
@@ -44,4 +48,4 @@
 
 ## Release
 1. Raise the version in `src/CamAlert/__init__.py` and `custom_components/camalert/manifest.json`, update `CHANGELOG.md`.
-2. Tag `vX.Y.Z` and push; GitHub Actions builds the `.ipk` and the Kodi zips, runs hassfest and the HACS check, creates the release and publishes the Kodi repository on GitHub Pages (Settings › Pages › Source: GitHub Actions). The Kodi add-on version is always `__version__`.
+2. Tag `vX.Y.Z` and push; GitHub Actions builds the `.ipk` and the Kodi zips, runs hassfest and the HACS check, creates the release and publishes GitHub Pages (Settings › Pages › Source: GitHub Actions): the Kodi repository and the opkg feed (`Packages.gz`, `camalert-feed.conf`) in one site. The Kodi add-on version is always `__version__`.

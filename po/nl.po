@@ -620,3 +620,15 @@ msgstr "Gebeurtenissenlijst"
 
 msgid "CamAlert %s is available (installed: %s).\nUpdate via the software update or: opkg update && opkg upgrade"
 msgstr "CamAlert %s is beschikbaar (geïnstalleerd: %s).\nBijwerken via de software-update of: opkg update && opkg upgrade"
+
+msgid "Doorbell chime"
+msgstr "Deurbelgeluid"
+
+msgid "Plays a short ding-dong for requests with priority high or alarm (doorbell)."
+msgstr "Speelt een kort ding-dong bij verzoeken met prioriteit hoog of alarm (deurbel)."
+
+msgid "Picons for the camera channels"
+msgstr "Picons voor de camerazenders"
+
+msgid "Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced."
+msgstr "Maakt een eenvoudig picon (camera + naam) voor elke camerazender; bestaande picons worden nooit vervangen."

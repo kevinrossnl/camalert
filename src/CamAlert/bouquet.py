@@ -59,7 +59,20 @@ def apply(names, force=False):
     if changed:
         reload()
         log("camera list updated:", len(names), "cameras")
+    if config.plugins.camalert.picons.value:
+        make_picons(names)
     return changed, len(names)
+
+
+def make_picons(names):
+    from twisted.internet import threads
+    from . import picons
+    from .display import camera_urls
+    titles = [u[2] for u in (camera_urls(n) for n in names) if u]
+    threads.deferToThread(picons.make, titles).addCallbacks(
+        lambda r: log("picons: %d written, %d existing kept (%s)" % r) if r[2] else
+        log("picons: no writable picon folder (read-only or missing), nothing written"),
+        lambda e: log("picons failed:", e.getErrorMessage()))
 
 
 def reload():

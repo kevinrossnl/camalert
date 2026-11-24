@@ -533,6 +533,18 @@ msgstr ""
 msgid "For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home)."
 msgstr ""
 
+msgid "Doorbell chime"
+msgstr ""
+
+msgid "Plays a short ding-dong for requests with priority high or alarm (doorbell)."
+msgstr ""
+
+msgid "Picons for the camera channels"
+msgstr ""
+
+msgid "Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced."
+msgstr ""
+
 msgid "Foscam motion alarms"
 msgstr ""
 

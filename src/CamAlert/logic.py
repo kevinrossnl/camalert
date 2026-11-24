@@ -958,3 +958,19 @@ def latest_tag(release_json):
     except (ValueError, TypeError):
         return None
     return d.get("tag_name") if isinstance(d, dict) and not d.get("draft") and not d.get("prerelease") else None
+
+
+# --- picons for the camera channels -------------------------------------------------------------------------------
+def picon_name(title):
+    """Service-name picon file name (as Enigma2 looks it up for stream services): 'Grüner Weg' ->
+    'grunerweg.png'."""
+    import unicodedata
+    name = unicodedata.normalize("NFKD", title or "").encode("ascii", "ignore").decode("ascii")
+    name = re.sub(r"[^a-z0-9]", "", name.replace("&", "and").replace("+", "plus").replace("*", "star").lower())
+    return (name + ".png") if name else None
+
+
+def chime_command(path, sink="alsasink"):
+    """gstreamer command for the doorbell chime; ALSA plays next to the TV sound (dvbaudiosink) on Vu+ boxes."""
+    return ["gst-launch-1.0", "-q", "filesrc", "location=%s" % path, "!", "wavparse", "!", "audioconvert", "!",
+            "audioresample", "!", sink]

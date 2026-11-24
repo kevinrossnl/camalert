@@ -119,6 +119,12 @@ class TestEnigma2Run(Base):
         self.assertEqual(res["scenarios"][0]["status"], "passed", res["scenarios"][0]["checks"])
         self.assertEqual(len(res["scenarios"][0]["screenshots"]), 3)  # same file name, three attempts
 
+    def test_strip_loaded_late_is_waited_for(self):
+        rx = self.receiver()
+        rx.blank_grabs = 3
+        res, _ = self.run_on(rx, scenarios=["strip"])
+        self.assertEqual(res["scenarios"][0]["status"], "passed", res["scenarios"][0]["checks"])
+
     def test_boolean_settings_come_back_true(self):
         """/api/settings shows 'True'; saveconfig needs 'true' (real receiver): foscam_enabled must stay on."""
         rx = self.receiver()

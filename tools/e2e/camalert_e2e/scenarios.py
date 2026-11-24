@@ -104,10 +104,16 @@ def strip(ctx, r):
         return
     r.check(ctx.wait_window(",".join(cams)) == ",".join(cams), "status window = both cameras")
     ctx.check_screen(r, "strip", "multi-camera window")
-    img = ctx.screenshot("strip")
-    if img is not None:
-        rects = geometry.strip_rects(2, ctx.settings, img.width, img.height)
-        r.check(*geometry.check_tiles(img, cams, ctx.colours, rects))
+    if ctx.fake:
+        # like the photo window: the tiles appear before their pictures are loaded (seen on a real receiver)
+        for attempt in range(5):
+            img = ctx.screenshot("strip")
+            ok, detail = geometry.check_tiles(img, cams, ctx.colours,
+                                              geometry.strip_rects(2, ctx.settings, img.width, img.height))
+            if ok:
+                break
+            ctx.sleep(1.5)
+        r.check(ok, detail)
     ctx.camalert.hide()
     r.check(ctx.wait_window(None) is None, "hidden again")
     ctx.check_screen(r, "none", "hide closed the multi-camera window")

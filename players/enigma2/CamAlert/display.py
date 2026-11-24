@@ -853,6 +853,8 @@ class Controller(object):
         LOG.configure(c.log_level.value, c.log_syslog.value)
         c.log_level.addNotifier(lambda _e: LOG.configure(c.log_level.value, c.log_syslog.value), initial_call=False)
         c.log_syslog.addNotifier(lambda _e: LOG.configure(c.log_level.value, c.log_syslog.value), initial_call=False)
+        for name in ("source", "server"):  # another camera source: the cached camera names are stale
+            getattr(c, name).addNotifier(lambda _e: self.camera_source_changed(), initial_call=False)
         log("CamAlert %s started" % __version__)
         self.update_timer = eTimer()
         self.update_timer.callback.append(self.check_update)
@@ -1307,6 +1309,12 @@ class Controller(object):
         w["title"].setText(w.title_text)
         w["hint"].setText(window_hint(target))
         w.extend(int(config.plugins.camalert.duration.value))
+
+    def camera_source_changed(self):
+        """The camera source setting changed (settings screen, OpenWebif): forget the cached camera list, so a
+        camera of the new source is not refused as unknown for up to a minute; fetch the new list."""
+        self._names, self._names_at = [], 0
+        self.refresh_names()
 
     def refresh_names(self):
         """Caches the camera list (go2rtc mode needs the network) for LEFT/RIGHT in the photo window."""

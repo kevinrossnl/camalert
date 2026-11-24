@@ -63,6 +63,20 @@ class TestScreen(Base):
         self.assertEqual(self.ctl.fullscreens, [])
 
 
+class TestCameraSourceChange(Base):
+    def test_new_server_forgets_the_cached_camera_names(self):
+        """Found by the e2e runner on a real receiver: right after the server changed, a camera of the new server
+        was refused as unknown_camera for up to a minute (cached list of the old server)."""
+        import inspect
+        init = inspect.getsource(self.d.Controller.__init__)  # the fake config's addNotifier is a no-op
+        self.assertIn('for name in ("source", "server")', init)
+        self.assertIn("camera_source_changed", init)
+        self.ctl._names, self.ctl._names_at = ["old_cam"], __import__("time").time()
+        self.ctl.camera_source_changed()
+        self.assertEqual((self.ctl._names, self.ctl._names_at), ([], 0))
+        self.assertNotEqual(self.ctl.show("garden", 10, "photo", "normal"), "error")
+
+
 class TestTestFlag(Base):
     def test_no_chime_for_a_test_request(self):
         rang = []

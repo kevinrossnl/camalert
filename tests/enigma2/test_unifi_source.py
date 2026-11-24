@@ -4,6 +4,7 @@ import unittest
 
 import _paths  # noqa: F401
 from enigma2.test_ui_findings import Base
+from fakes.go2rtc import FakeGo2rtc
 
 CONSOLE = {"type": "unifi", "host": "192.168.1.1", "port": 443, "user": "viewer", "password": "secret"}
 CAM_ID = "65a1b2c3d4e5f60718293a4b"
@@ -117,6 +118,10 @@ class TestLogOnly(Base):
 class TestDiagnostics(Base):
     def test_unifi_lines(self):
         diag = self.ca.diagnostics
+        fake = FakeGo2rtc().start()  # diagnostics ask go2rtc for its cameras: the fake on 127.0.0.1 (#73)
+        self.addCleanup(fake.server_close)
+        self.addCleanup(fake.shutdown)
+        self.c.server.value = fake.url
         self.d.UNIFI_STATUS.reset()
         self.assertFalse([l for l in diag.collect() if "UniFi" in l])  # source off: no lines
         self.c.unifi_enabled.value = True

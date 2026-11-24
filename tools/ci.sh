@@ -1,0 +1,54 @@
+#!/bin/sh
+# The CI steps per area (#26, #54), used by .forgejo/workflows/tests.yml in both modes: one job per area on the
+# workstation runner (parallel) and one job running every area in turn on the NAS fallback (sequential).
+# Also works locally:  sh tools/ci.sh lint   (tools needs root + apt; the other areas only python3 + pytest).
+#
+#   tools     install the Debian packages in $PACKAGES (APT_CACHE=<dir> keeps the .deb files there for a cache)
+#   lint | core | unit | build | privacy   one area each (privacy needs CAMALERT_DENYLIST)
+set -eu
+area="${1:?usage: tools/ci.sh tools|lint|core|unit|build|privacy}"
+case "$area" in
+  tools)
+    opt=""
+    if [ -n "${APT_CACHE:-}" ]; then
+      mkdir -p "$APT_CACHE/partial"
+      opt="-o Dir::Cache::Archives=$APT_CACHE"
+    fi
+    n=$(ls "${APT_CACHE:-/nonexistent}"/*.deb 2>/dev/null | wc -l)
+    echo "apt: ${PACKAGES:?PACKAGES not set} (cached .deb files: $n)"
+    # shellcheck disable=SC2086
+    { apt-get update -qq && apt-get install -y -qq --no-install-recommends $opt $PACKAGES; } > /dev/null
+    ;;
+  lint)
+    python3 -m pytest -m "lint" --junitxml=junit-lint.xml
+    ;;
+  core)
+    # branch coverage of the core by tests/core alone must stay >= 90 %
+    python3 -m coverage run --source=core/camalert_core -m pytest tests/core --junitxml=junit-core.xml
+    python3 -m coverage report --fail-under=90
+    ;;
+  unit)
+    python3 -m coverage run -m pytest --junitxml=junit-unit.xml
+    python3 -m coverage report
+    python3 -m coverage xml
+    ;;
+  build)
+    python3 -m pytest -m build --junitxml=junit-build.xml
+    python3 tools/build_ipk.py dist
+    python3 tools/build_kodi.py dist
+    ;;
+  privacy)
+    # blocks the GitHub mirror if anything personal slipped in (files and the whole commit history)
+    test -n "${CAMALERT_DENYLIST:-}" || { echo "secret CAMALERT_DENYLIST missing"; exit 1; }
+    python3 tools/check_private.py .
+    git log --format='%an %ae%n%B' | python3 -c '
+import os,re,sys
+deny=[w.strip().lower() for w in re.split(r"[\n,]",os.environ["CAMALERT_DENYLIST"]) if len(w.strip())>=3]
+t=sys.stdin.read().lower(); bad=[i+1 for i,w in enumerate(deny) if w in t]
+print("commit history: %d problems" % len(bad)); sys.exit(1 if bad else 0)'
+    ;;
+  *)
+    echo "unknown area: $area" >&2
+    exit 2
+    ;;
+esac

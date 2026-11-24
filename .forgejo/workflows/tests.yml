@@ -1,10 +1,26 @@
-# Tests on every push and every pull request (#26). Each area is its own job; `gate` is the one required
-# check (together with `privacy`): it fails when any job failed, so branch protection needs only these two.
+# Tests on every push and every pull request (#26). `gate` is the one required check: it fails when any area failed.
+#
+# Runner choice (#54): a burst of parallel jobs overloads the NAS disks, so the heavy work runs on the workstation
+# runner (Docker Desktop) and falls back to the NAS runner (`truenas`) only when no workstation runner is online.
+# - `pick-runner` (tiny, on `truenas`) asks the Forgejo API which runners are online (tools/ci_pick_runner.py,
+#   secret RUNNER_STATUS_TOKEN = token with scope read:user; without it the fallback is used) and outputs
+#   `runner` (a label) and `mode`.
+# - mode `parallel` (workstation): one job per area, `runs-on: ${{ needs.pick-runner.outputs.runner }}`.
+# - mode `sequential` (fallback): the job `sequential` runs every area in turn in one container on the NAS
+#   (one package install instead of five, apt .deb cache).
+# - Every area runs `tools/ci.sh <area>`, so both modes run exactly the same commands.
+# - Test the fallback without stopping the workstation: Actions › tests › Run workflow › force_runner = truenas.
 name: tests
 on:
   push:
   pull_request:
   workflow_dispatch:
+    inputs:
+      force_runner:
+        description: "auto = workstation when online, else truenas (sequential); werkstation / truenas force one"
+        type: choice
+        options: [auto, werkstation, truenas]
+        default: auto
 
 env:
   # node:20-bookworm has Python 3.11 + git (actions/checkout needs node). Debian packages: no pip at run time.
@@ -12,42 +28,61 @@ env:
   PYTEST_ADDOPTS: "-rN"
 
 jobs:
-  lint:
+  pick-runner:
     runs-on: truenas
     container: {image: "node:20-bookworm"}
+    timeout-minutes: 2
+    outputs:
+      runner: ${{ steps.pick.outputs.runner }}
+      mode: ${{ steps.pick.outputs.mode }}
     steps:
       - uses: actions/checkout@v4
-      - name: tools
-        run: "{ apt-get update -qq && apt-get install -y -qq --no-install-recommends $PACKAGES; } > /dev/null"
-      - name: Python 3.8 grammar + import lint
-        run: python3 -m pytest -m "lint" --junitxml=junit-lint.xml
+        with:
+          sparse-checkout: tools/ci_pick_runner.py
+          sparse-checkout-cone-mode: false
+      - id: pick
+        name: pick the runner
+        env:
+          RUNNER_STATUS_TOKEN: ${{ secrets.RUNNER_STATUS_TOKEN }}
+          FORCE_RUNNER: ${{ inputs.force_runner || 'auto' }}
+        run: python3 tools/ci_pick_runner.py >> "$GITHUB_OUTPUT"
+
+  # ---- mode parallel: one job per area on the picked (workstation) runner ----
+  lint:
+    needs: pick-runner
+    if: needs.pick-runner.outputs.mode == 'parallel'
+    runs-on: ${{ needs.pick-runner.outputs.runner }}
+    container: {image: "node:20-bookworm"}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - {name: tools, run: sh tools/ci.sh tools}
+      - {name: Python 3.8 grammar + import lint, run: sh tools/ci.sh lint}
 
   core:
-    runs-on: truenas
+    needs: pick-runner
+    if: needs.pick-runner.outputs.mode == 'parallel'
+    runs-on: ${{ needs.pick-runner.outputs.runner }}
     container: {image: "node:20-bookworm"}
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: tools
-        run: "{ apt-get update -qq && apt-get install -y -qq --no-install-recommends $PACKAGES; } > /dev/null"
-      - name: core tests, branch coverage gate >= 90 %
-        run: |
-          python3 -m coverage run --source=core/camalert_core -m pytest tests/core --junitxml=junit-core.xml
-          python3 -m coverage report --fail-under=90
+      - {name: tools, run: sh tools/ci.sh tools}
+      - {name: "core tests, branch coverage gate >= 90 %", run: sh tools/ci.sh core}
 
   unit:
-    runs-on: truenas
+    needs: pick-runner
+    if: needs.pick-runner.outputs.mode == 'parallel'
+    runs-on: ${{ needs.pick-runner.outputs.runner }}
     container: {image: "node:20-bookworm"}
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: tools
-        run: "{ apt-get update -qq && apt-get install -y -qq --no-install-recommends $PACKAGES; } > /dev/null"
+      - {name: tools, run: sh tools/ci.sh tools}
       - name: all tests with coverage
         env:
           CAMALERT_DENYLIST: ${{ secrets.CAMALERT_DENYLIST }}
-        run: |
-          python3 -m coverage run -m pytest --junitxml=junit-unit.xml
-          python3 -m coverage report
-          python3 -m coverage xml
+        run: sh tools/ci.sh unit
       - uses: actions/upload-artifact@v3
         if: always()
         with:
@@ -57,18 +92,15 @@ jobs:
             coverage.xml
 
   build:
-    runs-on: truenas
+    needs: pick-runner
+    if: needs.pick-runner.outputs.mode == 'parallel'
+    runs-on: ${{ needs.pick-runner.outputs.runner }}
     container: {image: "node:20-bookworm"}
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: tools
-        run: "{ apt-get update -qq && apt-get install -y -qq --no-install-recommends $PACKAGES; } > /dev/null"
-      - name: golden listings and package tests
-        run: python3 -m pytest -m build --junitxml=junit-build.xml
-      - name: build packages
-        run: |
-          python3 tools/build_ipk.py dist
-          python3 tools/build_kodi.py dist
+      - {name: tools, run: sh tools/ci.sh tools}
+      - {name: golden listings, package tests and packages, run: sh tools/ci.sh build}
       - uses: actions/upload-artifact@v3
         with:
           name: dist
@@ -77,8 +109,11 @@ jobs:
             dist/*.zip
 
   privacy:
-    runs-on: truenas
+    needs: pick-runner
+    if: needs.pick-runner.outputs.mode == 'parallel'
+    runs-on: ${{ needs.pick-runner.outputs.runner }}
     container: {image: "node:20-bookworm"}
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -86,24 +121,75 @@ jobs:
       - name: privacy check (blocks the GitHub mirror if anything personal slipped in)
         env:
           CAMALERT_DENYLIST: ${{ secrets.CAMALERT_DENYLIST }}
-        run: |
-          test -n "$CAMALERT_DENYLIST" || { echo "secret CAMALERT_DENYLIST missing"; exit 1; }
-          python3 tools/check_private.py .
-          git log --format='%an %ae%n%B' | CAMALERT_DENYLIST="$CAMALERT_DENYLIST" python3 -c '
-          import os,re,sys
-          deny=[w.strip().lower() for w in re.split(r"[\n,]",os.environ["CAMALERT_DENYLIST"]) if len(w.strip())>=3]
-          t=sys.stdin.read().lower(); bad=[i+1 for i,w in enumerate(deny) if w in t]
-          print("commit history: %d problems" % len(bad)); sys.exit(1 if bad else 0)'
+        run: sh tools/ci.sh privacy
+
+  # ---- mode sequential: the NAS fallback runs every area in turn in one container ----
+  sequential:
+    needs: pick-runner
+    if: needs.pick-runner.outputs.mode == 'sequential'
+    runs-on: ${{ needs.pick-runner.outputs.runner }}
+    container: {image: "node:20-bookworm"}
+    timeout-minutes: 30
+    env:
+      APT_CACHE: /root/.cache/camalert-apt
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/cache@v4
+        with:
+          path: /root/.cache/camalert-apt
+          key: apt-bookworm-${{ hashFiles('tools/ci.sh') }}
+          restore-keys: apt-bookworm-
+      - {name: tools, run: sh tools/ci.sh tools}
+      - name: privacy check (blocks the GitHub mirror if anything personal slipped in)
+        if: ${{ !cancelled() }}
+        env:
+          CAMALERT_DENYLIST: ${{ secrets.CAMALERT_DENYLIST }}
+        run: sh tools/ci.sh privacy
+      - {name: Python 3.8 grammar + import lint, if: "${{ !cancelled() }}", run: sh tools/ci.sh lint}
+      - {name: "core tests, branch coverage gate >= 90 %", if: "${{ !cancelled() }}", run: sh tools/ci.sh core}
+      - name: all tests with coverage
+        if: ${{ !cancelled() }}
+        env:
+          CAMALERT_DENYLIST: ${{ secrets.CAMALERT_DENYLIST }}
+        run: sh tools/ci.sh unit
+      - {name: golden listings, package tests and packages, if: "${{ !cancelled() }}", run: sh tools/ci.sh build}
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: |
+            junit-unit.xml
+            coverage.xml
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: dist
+          path: |
+            dist/*.ipk
+            dist/*.zip
 
   gate:
     if: always()
-    needs: [lint, core, unit, build, privacy]
+    needs: [pick-runner, lint, core, unit, build, privacy, sequential]
     runs-on: truenas
     container: {image: "node:20-bookworm"}
+    timeout-minutes: 2
     steps:
-      - name: all jobs passed
+      - name: all areas passed (in either mode)
         env:
-          RESULTS: "${{ needs.lint.result }} ${{ needs.core.result }} ${{ needs.unit.result }} ${{ needs.build.result }} ${{ needs.privacy.result }}"
+          MODE: ${{ needs.pick-runner.outputs.mode }}
+          RUNNER: ${{ needs.pick-runner.outputs.runner }}
+          PICK: ${{ needs.pick-runner.result }}
+          PARALLEL: "${{ needs.lint.result }} ${{ needs.core.result }} ${{ needs.unit.result }} ${{ needs.build.result }} ${{ needs.privacy.result }}"
+          SEQUENTIAL: ${{ needs.sequential.result }}
         run: |
-          echo "lint core unit build privacy: $RESULTS"
-          for r in $RESULTS; do test "$r" = success || exit 1; done
+          echo "pick-runner: $PICK -> runner=$RUNNER mode=$MODE"
+          echo "lint core unit build privacy: $PARALLEL; sequential: $SEQUENTIAL"
+          test "$PICK" = success || exit 1
+          case "$MODE" in
+            parallel)   for r in $PARALLEL; do test "$r" = success || exit 1; done ;;
+            sequential) test "$SEQUENTIAL" = success || exit 1 ;;
+            *)          echo "unknown mode"; exit 1 ;;
+          esac

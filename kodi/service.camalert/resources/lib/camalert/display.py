@@ -396,8 +396,10 @@ class FullScreen(xbmcgui.WindowDialog):
                 orient(img, name, self.orientation)
                 self.tiles.append({"name": name, "url": url, "control": img})
             for (name, title, url), (x, y, w, h) in zip(self.cams, cells):  # labels on top of all pictures
+                # dark strip behind the label: ControlLabel has no shadowColor in any Kodi version (#25)
+                self.addControl(xbmcgui.ControlImage(x, y + top + h - 34, w, 34, white(), colorDiffuse="99000000"))
                 self.addControl(xbmcgui.ControlLabel(x + 8, y + top + h - 34, w - 16, 30, title, font="font13",
-                                                     textColor="FFFFFFFF", shadowColor="FF000000"))
+                                                     textColor="FFFFFFFF"))
         self.title = xbmcgui.ControlLabel(12, 2, SCREEN_W - 24, 32, "", font="font13", textColor="FFFFFFFF")
         self.addControl(self.title)
         self.feeder = Feeder(self.tiles, s)

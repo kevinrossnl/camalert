@@ -22,7 +22,7 @@ import build_kodi  # noqa: E402
 import kodi_stubs  # noqa: E402
 
 # Problems the strict Kodi stubs find, each with its issue (a fixed one fails its test)
-KNOWN_STUB_PROBLEMS = {"mosaic labels": "#25"}  # xbmcgui.ControlLabel(shadowColor=...) exists in no Kodi version
+KNOWN_STUB_PROBLEMS = {}
 MODULES = ("kodiapi", "sources", "display", "controller", "server", "mqtt", "ptz", "service", "script", "diag", "camlog")
 LANGS = ("en_gb", "nl_nl", "de_de", "fr_fr", "it_it", "pl_pl")
 

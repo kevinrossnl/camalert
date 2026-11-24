@@ -21,9 +21,7 @@ ADDON = _paths.KODI_ADDON
 FIXTURES = _paths.KODI_API_FIXTURES
 VERSIONS = (19, 20, 21, 22)
 # Known problems with an open issue: "file:line-free message" -> issue. A stale entry fails the test.
-KNOWN = {
-    "kodi/service.camalert/resources/lib/camalert/display.py xbmcgui.ControlLabel() arguments": "#25",
-}
+KNOWN = {}
 # xbmc.python version shipped with each Kodi major (addon.xml <import addon="xbmc.python" version=...>)
 XBMC_PYTHON = {19: "3.0.0", 20: "3.0.1", 21: "3.0.1", 22: "3.0.1"}
 

@@ -21,3 +21,7 @@ Python 3.8 (Kodi 19) needs `pip install "pytest<8.4"`. Optional: `pyyaml` (bluep
   Use public example addresses for "outside the network" (Python treats the RFC 5737 ranges as private).
 - `fakes/broker.py`: in-process MQTT 3.1.1 broker (127.0.0.1, random port) on the shared codec;
   `contract/test_mqtt_contract.py` runs both MQTT clients against it and checks `contract/mqtt_table.py`.
+- `kodi_stubs.py`: strict xbmc modules per Kodi version (19-22), generated from `compat/fixtures/kodi_api/`:
+  unknown names raise AttributeError, wrong arguments TypeError, every call is recorded, JSON-RPC requests are
+  checked against `compat/fixtures/jsonrpc/` (Kodi's own schema, `tools/kodi_jsonrpc_snapshot.py`), and
+  `MONITOR["waits"]` lets the service loop run. The Kodi functional tests run once per version.

@@ -1,0 +1,3033 @@
+{
+ "kodi": 22,
+ "methods": {
+  "Addons.ExecuteAddon": {
+   "params": [
+    {
+     "name": "addonid",
+     "required": true
+    },
+    {
+     "name": "params",
+     "required": false
+    },
+    {
+     "name": "wait",
+     "required": false
+    }
+   ]
+  },
+  "Addons.GetAddonDetails": {
+   "params": [
+    {
+     "name": "addonid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "Addons.GetAddons": {
+   "params": [
+    {
+     "name": "type",
+     "required": false
+    },
+    {
+     "enum": [
+      "audio",
+      "executable",
+      "image",
+      "unknown",
+      "video"
+     ],
+     "name": "content",
+     "required": false
+    },
+    {
+     "name": "enabled",
+     "required": false
+    },
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "installed",
+     "required": false
+    }
+   ]
+  },
+  "Addons.SetAddonEnabled": {
+   "params": [
+    {
+     "name": "addonid",
+     "required": true
+    },
+    {
+     "name": "enabled",
+     "required": true
+    }
+   ]
+  },
+  "Application.GetProperties": {
+   "params": [
+    {
+     "enum": [
+      "language",
+      "muted",
+      "name",
+      "sorttokens",
+      "version",
+      "volume"
+     ],
+     "name": "properties",
+     "required": true
+    }
+   ]
+  },
+  "Application.Quit": {
+   "params": []
+  },
+  "Application.SetMute": {
+   "params": [
+    {
+     "name": "mute",
+     "required": true
+    }
+   ]
+  },
+  "Application.SetVolume": {
+   "params": [
+    {
+     "name": "volume",
+     "required": true
+    }
+   ]
+  },
+  "AudioLibrary.Clean": {
+   "params": [
+    {
+     "name": "showdialogs",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.Export": {
+   "params": [
+    {
+     "name": "options",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.GetAlbumDetails": {
+   "params": [
+    {
+     "name": "albumid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.GetAlbums": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    },
+    {
+     "name": "filter",
+     "required": false
+    },
+    {
+     "name": "includesingles",
+     "required": false
+    },
+    {
+     "name": "allroles",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.GetArtistDetails": {
+   "params": [
+    {
+     "name": "artistid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.GetArtists": {
+   "params": [
+    {
+     "name": "albumartistsonly",
+     "required": false
+    },
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    },
+    {
+     "name": "filter",
+     "required": false
+    },
+    {
+     "name": "allroles",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.GetAvailableArt": {
+   "params": [
+    {
+     "name": "item",
+     "required": true
+    },
+    {
+     "name": "arttype",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.GetAvailableArtTypes": {
+   "params": [
+    {
+     "name": "item",
+     "required": true
+    }
+   ]
+  },
+  "AudioLibrary.GetGenres": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.GetProperties": {
+   "params": [
+    {
+     "enum": [
+      "albumslastadded",
+      "albumsmodified",
+      "artistlinksupdated",
+      "artistslastadded",
+      "artistsmodified",
+      "genreslastadded",
+      "librarylastcleaned",
+      "librarylastupdated",
+      "missingartistid",
+      "songslastadded",
+      "songsmodified"
+     ],
+     "name": "properties",
+     "required": true
+    }
+   ]
+  },
+  "AudioLibrary.GetRecentlyAddedAlbums": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.GetRecentlyAddedSongs": {
+   "params": [
+    {
+     "name": "albumlimit",
+     "required": false
+    },
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.GetRecentlyPlayedAlbums": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.GetRecentlyPlayedSongs": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.GetRoles": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.GetSongDetails": {
+   "params": [
+    {
+     "name": "songid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.GetSongs": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    },
+    {
+     "name": "filter",
+     "required": false
+    },
+    {
+     "name": "includesingles",
+     "required": false
+    },
+    {
+     "name": "allroles",
+     "required": false
+    },
+    {
+     "name": "singlesonly",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.GetSources": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.RefreshAlbum": {
+   "params": [
+    {
+     "name": "albumid",
+     "required": true
+    }
+   ]
+  },
+  "AudioLibrary.RefreshArtist": {
+   "params": [
+    {
+     "name": "artistid",
+     "required": true
+    }
+   ]
+  },
+  "AudioLibrary.Scan": {
+   "params": [
+    {
+     "name": "directory",
+     "required": false
+    },
+    {
+     "name": "showdialogs",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.SetAlbumDetails": {
+   "params": [
+    {
+     "name": "albumid",
+     "required": true
+    },
+    {
+     "name": "title",
+     "required": false
+    },
+    {
+     "name": "artist",
+     "required": false
+    },
+    {
+     "name": "description",
+     "required": false
+    },
+    {
+     "name": "genre",
+     "required": false
+    },
+    {
+     "name": "theme",
+     "required": false
+    },
+    {
+     "name": "mood",
+     "required": false
+    },
+    {
+     "name": "style",
+     "required": false
+    },
+    {
+     "name": "type",
+     "required": false
+    },
+    {
+     "name": "albumlabel",
+     "required": false
+    },
+    {
+     "name": "rating",
+     "required": false
+    },
+    {
+     "name": "year",
+     "required": false
+    },
+    {
+     "name": "userrating",
+     "required": false
+    },
+    {
+     "name": "votes",
+     "required": false
+    },
+    {
+     "name": "musicbrainzalbumid",
+     "required": false
+    },
+    {
+     "name": "musicbrainzreleasegroupid",
+     "required": false
+    },
+    {
+     "name": "sortartist",
+     "required": false
+    },
+    {
+     "name": "displayartist",
+     "required": false
+    },
+    {
+     "name": "musicbrainzalbumartistid",
+     "required": false
+    },
+    {
+     "name": "art",
+     "required": false
+    },
+    {
+     "name": "isboxset",
+     "required": false
+    },
+    {
+     "name": "releasedate",
+     "required": false
+    },
+    {
+     "name": "originaldate",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.SetArtistDetails": {
+   "params": [
+    {
+     "name": "artistid",
+     "required": true
+    },
+    {
+     "name": "artist",
+     "required": false
+    },
+    {
+     "name": "instrument",
+     "required": false
+    },
+    {
+     "name": "style",
+     "required": false
+    },
+    {
+     "name": "mood",
+     "required": false
+    },
+    {
+     "name": "born",
+     "required": false
+    },
+    {
+     "name": "formed",
+     "required": false
+    },
+    {
+     "name": "description",
+     "required": false
+    },
+    {
+     "name": "genre",
+     "required": false
+    },
+    {
+     "name": "died",
+     "required": false
+    },
+    {
+     "name": "disbanded",
+     "required": false
+    },
+    {
+     "name": "yearsactive",
+     "required": false
+    },
+    {
+     "name": "musicbrainzartistid",
+     "required": false
+    },
+    {
+     "name": "sortname",
+     "required": false
+    },
+    {
+     "name": "type",
+     "required": false
+    },
+    {
+     "name": "gender",
+     "required": false
+    },
+    {
+     "name": "disambiguation",
+     "required": false
+    },
+    {
+     "name": "art",
+     "required": false
+    }
+   ]
+  },
+  "AudioLibrary.SetSongDetails": {
+   "params": [
+    {
+     "name": "songid",
+     "required": true
+    },
+    {
+     "name": "title",
+     "required": false
+    },
+    {
+     "name": "artist",
+     "required": false
+    },
+    {
+     "name": "genre",
+     "required": false
+    },
+    {
+     "name": "year",
+     "required": false
+    },
+    {
+     "name": "rating",
+     "required": false
+    },
+    {
+     "name": "track",
+     "required": false
+    },
+    {
+     "name": "disc",
+     "required": false
+    },
+    {
+     "name": "duration",
+     "required": false
+    },
+    {
+     "name": "comment",
+     "required": false
+    },
+    {
+     "name": "musicbrainztrackid",
+     "required": false
+    },
+    {
+     "name": "musicbrainzartistid",
+     "required": false
+    },
+    {
+     "name": "playcount",
+     "required": false
+    },
+    {
+     "name": "lastplayed",
+     "required": false
+    },
+    {
+     "name": "userrating",
+     "required": false
+    },
+    {
+     "name": "votes",
+     "required": false
+    },
+    {
+     "name": "displayartist",
+     "required": false
+    },
+    {
+     "name": "sortartist",
+     "required": false
+    },
+    {
+     "name": "mood",
+     "required": false
+    },
+    {
+     "name": "art",
+     "required": false
+    },
+    {
+     "name": "disctitle",
+     "required": false
+    },
+    {
+     "name": "releasedate",
+     "required": false
+    },
+    {
+     "name": "originaldate",
+     "required": false
+    },
+    {
+     "name": "bpm",
+     "required": false
+    },
+    {
+     "name": "songvideourl",
+     "required": false
+    }
+   ]
+  },
+  "Database.GetDatabaseName": {
+   "params": [
+    {
+     "enum": [
+      "addons",
+      "epg",
+      "music",
+      "textures",
+      "tv",
+      "videos",
+      "viewmodes"
+     ],
+     "name": "type",
+     "required": true
+    }
+   ]
+  },
+  "Favourites.AddFavourite": {
+   "params": [
+    {
+     "name": "title",
+     "required": true
+    },
+    {
+     "enum": [
+      "androidapp",
+      "media",
+      "script",
+      "unknown",
+      "window"
+     ],
+     "name": "type",
+     "required": true
+    },
+    {
+     "name": "path",
+     "required": false
+    },
+    {
+     "name": "window",
+     "required": false
+    },
+    {
+     "name": "windowparameter",
+     "required": false
+    },
+    {
+     "name": "thumbnail",
+     "required": false
+    }
+   ]
+  },
+  "Favourites.GetFavourites": {
+   "params": [
+    {
+     "name": "type",
+     "required": false
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "Files.Download": {
+   "params": [
+    {
+     "name": "path",
+     "required": true
+    }
+   ]
+  },
+  "Files.GetDirectory": {
+   "params": [
+    {
+     "name": "directory",
+     "required": true
+    },
+    {
+     "enum": [
+      "files",
+      "games",
+      "music",
+      "pictures",
+      "programs",
+      "video"
+     ],
+     "name": "media",
+     "required": false
+    },
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    }
+   ]
+  },
+  "Files.GetFileDetails": {
+   "params": [
+    {
+     "name": "file",
+     "required": true
+    },
+    {
+     "enum": [
+      "files",
+      "games",
+      "music",
+      "pictures",
+      "programs",
+      "video"
+     ],
+     "name": "media",
+     "required": false
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "Files.GetSources": {
+   "params": [
+    {
+     "enum": [
+      "files",
+      "games",
+      "music",
+      "pictures",
+      "programs",
+      "video"
+     ],
+     "name": "media",
+     "required": true
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "Files.PrepareDownload": {
+   "params": [
+    {
+     "name": "path",
+     "required": true
+    }
+   ]
+  },
+  "Files.SetFileDetails": {
+   "params": [
+    {
+     "name": "file",
+     "required": true
+    },
+    {
+     "enum": [
+      "files",
+      "games",
+      "music",
+      "pictures",
+      "programs",
+      "video"
+     ],
+     "name": "media",
+     "required": true
+    },
+    {
+     "name": "playcount",
+     "required": false
+    },
+    {
+     "name": "lastplayed",
+     "required": false
+    },
+    {
+     "name": "resume",
+     "required": false
+    }
+   ]
+  },
+  "GUI.ActivateScreenSaver": {
+   "params": []
+  },
+  "GUI.ActivateWindow": {
+   "params": [
+    {
+     "name": "window",
+     "required": true
+    },
+    {
+     "name": "parameters",
+     "required": false
+    }
+   ]
+  },
+  "GUI.GetProperties": {
+   "params": [
+    {
+     "enum": [
+      "currentcontrol",
+      "currentwindow",
+      "fullscreen",
+      "skin",
+      "stereoscopicmode"
+     ],
+     "name": "properties",
+     "required": true
+    }
+   ]
+  },
+  "GUI.GetStereoscopicModes": {
+   "params": []
+  },
+  "GUI.SetFullscreen": {
+   "params": [
+    {
+     "name": "fullscreen",
+     "required": true
+    }
+   ]
+  },
+  "GUI.SetStereoscopicMode": {
+   "params": [
+    {
+     "enum": [
+      "anaglyph_cyan_red",
+      "anaglyph_green_magenta",
+      "hardware_based",
+      "monoscopic",
+      "next",
+      "off",
+      "previous",
+      "row_interleaved",
+      "select",
+      "split_horizontal",
+      "split_vertical",
+      "toggle",
+      "tomono"
+     ],
+     "name": "mode",
+     "required": true
+    }
+   ]
+  },
+  "GUI.ShowNotification": {
+   "params": [
+    {
+     "name": "title",
+     "required": true
+    },
+    {
+     "name": "message",
+     "required": true
+    },
+    {
+     "name": "image",
+     "required": false
+    },
+    {
+     "name": "displaytime",
+     "required": false
+    }
+   ]
+  },
+  "GUI.TakeScreenshot": {
+   "params": [
+    {
+     "enum": [
+      "both",
+      "composite",
+      "video"
+     ],
+     "name": "content",
+     "required": false
+    }
+   ]
+  },
+  "Input.Back": {
+   "params": []
+  },
+  "Input.ButtonEvent": {
+   "params": [
+    {
+     "name": "button",
+     "required": true
+    },
+    {
+     "enum": [
+      "KB",
+      "R1",
+      "R2",
+      "XG"
+     ],
+     "name": "keymap",
+     "required": true
+    },
+    {
+     "name": "holdtime",
+     "required": false
+    }
+   ]
+  },
+  "Input.ContextMenu": {
+   "params": []
+  },
+  "Input.Down": {
+   "params": []
+  },
+  "Input.ExecuteAction": {
+   "params": [
+    {
+     "name": "action",
+     "required": true
+    }
+   ]
+  },
+  "Input.Home": {
+   "params": []
+  },
+  "Input.Info": {
+   "params": []
+  },
+  "Input.Left": {
+   "params": []
+  },
+  "Input.Right": {
+   "params": []
+  },
+  "Input.Select": {
+   "params": []
+  },
+  "Input.SendText": {
+   "params": [
+    {
+     "name": "text",
+     "required": true
+    },
+    {
+     "name": "done",
+     "required": false
+    }
+   ]
+  },
+  "Input.ShowCodec": {
+   "params": []
+  },
+  "Input.ShowOSD": {
+   "params": []
+  },
+  "Input.ShowPlayerProcessInfo": {
+   "params": []
+  },
+  "Input.Up": {
+   "params": []
+  },
+  "JSONRPC.GetConfiguration": {
+   "params": []
+  },
+  "JSONRPC.Introspect": {
+   "params": [
+    {
+     "name": "getdescriptions",
+     "required": false
+    },
+    {
+     "name": "getmetadata",
+     "required": false
+    },
+    {
+     "name": "filterbytransport",
+     "required": false
+    },
+    {
+     "name": "filter",
+     "required": false
+    }
+   ]
+  },
+  "JSONRPC.NotifyAll": {
+   "params": [
+    {
+     "name": "sender",
+     "required": true
+    },
+    {
+     "name": "message",
+     "required": true
+    },
+    {
+     "name": "data",
+     "required": false
+    }
+   ]
+  },
+  "JSONRPC.Permission": {
+   "params": []
+  },
+  "JSONRPC.Ping": {
+   "params": []
+  },
+  "JSONRPC.SetConfiguration": {
+   "params": [
+    {
+     "name": "notifications",
+     "required": false
+    }
+   ]
+  },
+  "JSONRPC.Version": {
+   "params": []
+  },
+  "PVR.AddTimer": {
+   "params": [
+    {
+     "name": "broadcastid",
+     "required": true
+    },
+    {
+     "name": "timerrule",
+     "required": false
+    },
+    {
+     "name": "reminder",
+     "required": false
+    }
+   ]
+  },
+  "PVR.DeleteTimer": {
+   "params": [
+    {
+     "name": "timerid",
+     "required": true
+    }
+   ]
+  },
+  "PVR.GetBroadcastDetails": {
+   "params": [
+    {
+     "name": "broadcastid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "PVR.GetBroadcastIsPlayable": {
+   "params": [
+    {
+     "name": "broadcastid",
+     "required": true
+    }
+   ]
+  },
+  "PVR.GetBroadcasts": {
+   "params": [
+    {
+     "name": "channelid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    }
+   ]
+  },
+  "PVR.GetChannelDetails": {
+   "params": [
+    {
+     "name": "channelid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "PVR.GetChannelGroupDetails": {
+   "params": [
+    {
+     "name": "channelgroupid",
+     "required": true
+    },
+    {
+     "name": "channels",
+     "required": false
+    }
+   ]
+  },
+  "PVR.GetChannelGroups": {
+   "params": [
+    {
+     "enum": [
+      "radio",
+      "tv"
+     ],
+     "name": "channeltype",
+     "required": true
+    },
+    {
+     "name": "limits",
+     "required": false
+    }
+   ]
+  },
+  "PVR.GetChannels": {
+   "params": [
+    {
+     "name": "channelgroupid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "PVR.GetClients": {
+   "params": [
+    {
+     "name": "limits",
+     "required": false
+    }
+   ]
+  },
+  "PVR.GetPlayableBroadcasts": {
+   "params": [
+    {
+     "name": "channelid",
+     "required": true
+    },
+    {
+     "name": "starttime",
+     "required": true
+    },
+    {
+     "name": "endtime",
+     "required": true
+    },
+    {
+     "name": "limits",
+     "required": false
+    }
+   ]
+  },
+  "PVR.GetProperties": {
+   "params": [
+    {
+     "enum": [
+      "available",
+      "recording",
+      "scanning"
+     ],
+     "name": "properties",
+     "required": true
+    }
+   ]
+  },
+  "PVR.GetRecordingDetails": {
+   "params": [
+    {
+     "name": "recordingid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "PVR.GetRecordings": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "PVR.GetTimerDetails": {
+   "params": [
+    {
+     "name": "timerid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "PVR.GetTimers": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "PVR.Record": {
+   "params": [
+    {
+     "name": "record",
+     "required": false
+    },
+    {
+     "name": "channel",
+     "required": false
+    }
+   ]
+  },
+  "PVR.Scan": {
+   "params": [
+    {
+     "name": "clientid",
+     "required": false
+    }
+   ]
+  },
+  "PVR.ToggleTimer": {
+   "params": [
+    {
+     "name": "broadcastid",
+     "required": true
+    },
+    {
+     "name": "timerrule",
+     "required": false
+    }
+   ]
+  },
+  "Player.AddSubtitle": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "name": "subtitle",
+     "required": true
+    }
+   ]
+  },
+  "Player.GetActivePlayers": {
+   "params": []
+  },
+  "Player.GetAudioDelay": {
+   "params": []
+  },
+  "Player.GetChapters": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    }
+   ]
+  },
+  "Player.GetItem": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "Player.GetPlayers": {
+   "params": [
+    {
+     "enum": [
+      "all",
+      "audio",
+      "video"
+     ],
+     "name": "media",
+     "required": false
+    }
+   ]
+  },
+  "Player.GetProperties": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "enum": [
+      "audiostreams",
+      "cachepercentage",
+      "canchangespeed",
+      "canmove",
+      "canrepeat",
+      "canrotate",
+      "canseek",
+      "canshuffle",
+      "canzoom",
+      "currentaudiostream",
+      "currentsubtitle",
+      "currentvideostream",
+      "live",
+      "partymode",
+      "percentage",
+      "playlistid",
+      "position",
+      "repeat",
+      "shuffled",
+      "speed",
+      "subtitleenabled",
+      "subtitles",
+      "time",
+      "totaltime",
+      "type",
+      "videostreams"
+     ],
+     "name": "properties",
+     "required": true
+    }
+   ]
+  },
+  "Player.GetViewMode": {
+   "params": []
+  },
+  "Player.GoTo": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "name": "to",
+     "required": true
+    }
+   ]
+  },
+  "Player.Move": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "enum": [
+      "down",
+      "left",
+      "right",
+      "up"
+     ],
+     "name": "direction",
+     "required": true
+    }
+   ]
+  },
+  "Player.Open": {
+   "params": [
+    {
+     "name": "item",
+     "required": false
+    },
+    {
+     "name": "options",
+     "required": false
+    }
+   ]
+  },
+  "Player.PlayPause": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "name": "play",
+     "required": false
+    }
+   ]
+  },
+  "Player.Rotate": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "enum": [
+      "clockwise",
+      "counterclockwise"
+     ],
+     "name": "value",
+     "required": false
+    }
+   ]
+  },
+  "Player.Seek": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "name": "value",
+     "required": true
+    }
+   ]
+  },
+  "Player.SetAudioDelay": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "name": "offset",
+     "required": true
+    }
+   ]
+  },
+  "Player.SetAudioStream": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "name": "stream",
+     "required": true
+    }
+   ]
+  },
+  "Player.SetPartymode": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "name": "partymode",
+     "required": true
+    }
+   ]
+  },
+  "Player.SetRepeat": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "name": "repeat",
+     "required": true
+    }
+   ]
+  },
+  "Player.SetShuffle": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "name": "shuffle",
+     "required": true
+    }
+   ]
+  },
+  "Player.SetSpeed": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "name": "speed",
+     "required": true
+    }
+   ]
+  },
+  "Player.SetSubtitle": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "name": "subtitle",
+     "required": true
+    },
+    {
+     "name": "enable",
+     "required": false
+    }
+   ]
+  },
+  "Player.SetTempo": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "name": "tempo",
+     "required": true
+    }
+   ]
+  },
+  "Player.SetVideoStream": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "name": "stream",
+     "required": true
+    }
+   ]
+  },
+  "Player.SetViewMode": {
+   "params": [
+    {
+     "name": "viewmode",
+     "required": true
+    }
+   ]
+  },
+  "Player.Stop": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    }
+   ]
+  },
+  "Player.Zoom": {
+   "params": [
+    {
+     "name": "playerid",
+     "required": true
+    },
+    {
+     "name": "zoom",
+     "required": true
+    }
+   ]
+  },
+  "Playlist.Add": {
+   "params": [
+    {
+     "name": "playlistid",
+     "required": true
+    },
+    {
+     "name": "item",
+     "required": true
+    }
+   ]
+  },
+  "Playlist.Clear": {
+   "params": [
+    {
+     "name": "playlistid",
+     "required": true
+    }
+   ]
+  },
+  "Playlist.GetItems": {
+   "params": [
+    {
+     "name": "playlistid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "Playlist.GetPlaylists": {
+   "params": []
+  },
+  "Playlist.GetProperties": {
+   "params": [
+    {
+     "name": "playlistid",
+     "required": true
+    },
+    {
+     "enum": [
+      "size",
+      "type"
+     ],
+     "name": "properties",
+     "required": true
+    }
+   ]
+  },
+  "Playlist.Insert": {
+   "params": [
+    {
+     "name": "playlistid",
+     "required": true
+    },
+    {
+     "name": "position",
+     "required": true
+    },
+    {
+     "name": "item",
+     "required": true
+    }
+   ]
+  },
+  "Playlist.Remove": {
+   "params": [
+    {
+     "name": "playlistid",
+     "required": true
+    },
+    {
+     "name": "position",
+     "required": true
+    }
+   ]
+  },
+  "Playlist.Swap": {
+   "params": [
+    {
+     "name": "playlistid",
+     "required": true
+    },
+    {
+     "name": "position1",
+     "required": true
+    },
+    {
+     "name": "position2",
+     "required": true
+    }
+   ]
+  },
+  "Profiles.GetCurrentProfile": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "Profiles.GetProfiles": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "Profiles.LoadProfile": {
+   "params": [
+    {
+     "name": "profile",
+     "required": true
+    },
+    {
+     "name": "prompt",
+     "required": false
+    },
+    {
+     "name": "password",
+     "required": false
+    }
+   ]
+  },
+  "Settings.GetCategories": {
+   "params": [
+    {
+     "enum": [
+      "advanced",
+      "basic",
+      "expert",
+      "standard"
+     ],
+     "name": "level",
+     "required": false
+    },
+    {
+     "name": "section",
+     "required": false
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "Settings.GetSections": {
+   "params": [
+    {
+     "enum": [
+      "advanced",
+      "basic",
+      "expert",
+      "standard"
+     ],
+     "name": "level",
+     "required": false
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "Settings.GetSettingValue": {
+   "params": [
+    {
+     "name": "setting",
+     "required": true
+    }
+   ]
+  },
+  "Settings.GetSettings": {
+   "params": [
+    {
+     "enum": [
+      "advanced",
+      "basic",
+      "expert",
+      "standard"
+     ],
+     "name": "level",
+     "required": false
+    },
+    {
+     "name": "filter",
+     "required": false
+    }
+   ]
+  },
+  "Settings.GetSkinSettingValue": {
+   "params": [
+    {
+     "name": "setting",
+     "required": true
+    }
+   ]
+  },
+  "Settings.GetSkinSettings": {
+   "params": []
+  },
+  "Settings.ResetSettingValue": {
+   "params": [
+    {
+     "name": "setting",
+     "required": true
+    }
+   ]
+  },
+  "Settings.SetSettingValue": {
+   "params": [
+    {
+     "name": "setting",
+     "required": true
+    },
+    {
+     "name": "value",
+     "required": true
+    }
+   ]
+  },
+  "Settings.SetSkinSettingValue": {
+   "params": [
+    {
+     "name": "setting",
+     "required": true
+    },
+    {
+     "name": "value",
+     "required": true
+    }
+   ]
+  },
+  "System.EjectOpticalDrive": {
+   "params": []
+  },
+  "System.GetProperties": {
+   "params": [
+    {
+     "enum": [
+      "canhibernate",
+      "canreboot",
+      "canshutdown",
+      "cansuspend"
+     ],
+     "name": "properties",
+     "required": true
+    }
+   ]
+  },
+  "System.Hibernate": {
+   "params": []
+  },
+  "System.Reboot": {
+   "params": []
+  },
+  "System.Shutdown": {
+   "params": []
+  },
+  "System.Suspend": {
+   "params": []
+  },
+  "Textures.GetTextures": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "filter",
+     "required": false
+    }
+   ]
+  },
+  "Textures.RemoveTexture": {
+   "params": [
+    {
+     "name": "textureid",
+     "required": true
+    }
+   ]
+  },
+  "VideoLibrary.Clean": {
+   "params": [
+    {
+     "name": "showdialogs",
+     "required": false
+    },
+    {
+     "enum": [
+      "movies",
+      "musicvideos",
+      "tvshows",
+      "video"
+     ],
+     "name": "content",
+     "required": false
+    },
+    {
+     "name": "directory",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.Export": {
+   "params": [
+    {
+     "name": "options",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetAvailableArt": {
+   "params": [
+    {
+     "name": "item",
+     "required": true
+    },
+    {
+     "name": "arttype",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetAvailableArtTypes": {
+   "params": [
+    {
+     "name": "item",
+     "required": true
+    }
+   ]
+  },
+  "VideoLibrary.GetEpisodeDetails": {
+   "params": [
+    {
+     "name": "episodeid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetEpisodes": {
+   "params": [
+    {
+     "name": "tvshowid",
+     "required": false
+    },
+    {
+     "name": "season",
+     "required": false
+    },
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    },
+    {
+     "name": "filter",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetGenres": {
+   "params": [
+    {
+     "enum": [
+      "movie",
+      "musicvideo",
+      "tvshow"
+     ],
+     "name": "type",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetInProgressTVShows": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetMovieDetails": {
+   "params": [
+    {
+     "name": "movieid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetMovieSetDetails": {
+   "params": [
+    {
+     "name": "setid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "movies",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetMovieSets": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetMovies": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    },
+    {
+     "name": "filter",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetMusicVideoDetails": {
+   "params": [
+    {
+     "name": "musicvideoid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetMusicVideos": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    },
+    {
+     "name": "filter",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetRecentlyAddedEpisodes": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetRecentlyAddedMovies": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetRecentlyAddedMusicVideos": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetSeasonDetails": {
+   "params": [
+    {
+     "name": "seasonid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetSeasons": {
+   "params": [
+    {
+     "name": "tvshowid",
+     "required": false
+    },
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetTVShowDetails": {
+   "params": [
+    {
+     "name": "tvshowid",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetTVShows": {
+   "params": [
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    },
+    {
+     "name": "filter",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.GetTags": {
+   "params": [
+    {
+     "enum": [
+      "movie",
+      "musicvideo",
+      "tvshow"
+     ],
+     "name": "type",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "required": false
+    },
+    {
+     "name": "limits",
+     "required": false
+    },
+    {
+     "name": "sort",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.RefreshEpisode": {
+   "params": [
+    {
+     "name": "episodeid",
+     "required": true
+    },
+    {
+     "name": "ignorenfo",
+     "required": false
+    },
+    {
+     "name": "title",
+     "required": true
+    }
+   ]
+  },
+  "VideoLibrary.RefreshMovie": {
+   "params": [
+    {
+     "name": "movieid",
+     "required": true
+    },
+    {
+     "name": "ignorenfo",
+     "required": false
+    },
+    {
+     "name": "title",
+     "required": true
+    }
+   ]
+  },
+  "VideoLibrary.RefreshMusicVideo": {
+   "params": [
+    {
+     "name": "musicvideoid",
+     "required": true
+    },
+    {
+     "name": "ignorenfo",
+     "required": false
+    },
+    {
+     "name": "title",
+     "required": true
+    }
+   ]
+  },
+  "VideoLibrary.RefreshTVShow": {
+   "params": [
+    {
+     "name": "tvshowid",
+     "required": true
+    },
+    {
+     "name": "ignorenfo",
+     "required": false
+    },
+    {
+     "name": "refreshepisodes",
+     "required": false
+    },
+    {
+     "name": "title",
+     "required": true
+    }
+   ]
+  },
+  "VideoLibrary.RemoveEpisode": {
+   "params": [
+    {
+     "name": "episodeid",
+     "required": true
+    }
+   ]
+  },
+  "VideoLibrary.RemoveMovie": {
+   "params": [
+    {
+     "name": "movieid",
+     "required": true
+    }
+   ]
+  },
+  "VideoLibrary.RemoveMusicVideo": {
+   "params": [
+    {
+     "name": "musicvideoid",
+     "required": true
+    }
+   ]
+  },
+  "VideoLibrary.RemoveTVShow": {
+   "params": [
+    {
+     "name": "tvshowid",
+     "required": true
+    }
+   ]
+  },
+  "VideoLibrary.Scan": {
+   "params": [
+    {
+     "name": "directory",
+     "required": false
+    },
+    {
+     "name": "showdialogs",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.SetEpisodeDetails": {
+   "params": [
+    {
+     "name": "episodeid",
+     "required": true
+    },
+    {
+     "name": "title",
+     "required": false
+    },
+    {
+     "name": "playcount",
+     "required": false
+    },
+    {
+     "name": "runtime",
+     "required": false
+    },
+    {
+     "name": "director",
+     "required": false
+    },
+    {
+     "name": "plot",
+     "required": false
+    },
+    {
+     "name": "rating",
+     "required": false
+    },
+    {
+     "name": "votes",
+     "required": false
+    },
+    {
+     "name": "lastplayed",
+     "required": false
+    },
+    {
+     "name": "writer",
+     "required": false
+    },
+    {
+     "name": "firstaired",
+     "required": false
+    },
+    {
+     "name": "productioncode",
+     "required": false
+    },
+    {
+     "name": "season",
+     "required": false
+    },
+    {
+     "name": "episode",
+     "required": false
+    },
+    {
+     "name": "originaltitle",
+     "required": false
+    },
+    {
+     "name": "thumbnail",
+     "required": false
+    },
+    {
+     "name": "fanart",
+     "required": false
+    },
+    {
+     "name": "art",
+     "required": false
+    },
+    {
+     "name": "resume",
+     "required": false
+    },
+    {
+     "name": "userrating",
+     "required": false
+    },
+    {
+     "name": "ratings",
+     "required": false
+    },
+    {
+     "name": "dateadded",
+     "required": false
+    },
+    {
+     "name": "uniqueid",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.SetMovieDetails": {
+   "params": [
+    {
+     "name": "movieid",
+     "required": true
+    },
+    {
+     "name": "title",
+     "required": false
+    },
+    {
+     "name": "playcount",
+     "required": false
+    },
+    {
+     "name": "runtime",
+     "required": false
+    },
+    {
+     "name": "director",
+     "required": false
+    },
+    {
+     "name": "studio",
+     "required": false
+    },
+    {
+     "name": "year",
+     "required": false
+    },
+    {
+     "name": "plot",
+     "required": false
+    },
+    {
+     "name": "genre",
+     "required": false
+    },
+    {
+     "name": "rating",
+     "required": false
+    },
+    {
+     "name": "mpaa",
+     "required": false
+    },
+    {
+     "name": "imdbnumber",
+     "required": false
+    },
+    {
+     "name": "votes",
+     "required": false
+    },
+    {
+     "name": "lastplayed",
+     "required": false
+    },
+    {
+     "name": "originaltitle",
+     "required": false
+    },
+    {
+     "name": "trailer",
+     "required": false
+    },
+    {
+     "name": "tagline",
+     "required": false
+    },
+    {
+     "name": "plotoutline",
+     "required": false
+    },
+    {
+     "name": "writer",
+     "required": false
+    },
+    {
+     "name": "country",
+     "required": false
+    },
+    {
+     "name": "top250",
+     "required": false
+    },
+    {
+     "name": "sorttitle",
+     "required": false
+    },
+    {
+     "name": "set",
+     "required": false
+    },
+    {
+     "name": "showlink",
+     "required": false
+    },
+    {
+     "name": "thumbnail",
+     "required": false
+    },
+    {
+     "name": "fanart",
+     "required": false
+    },
+    {
+     "name": "tag",
+     "required": false
+    },
+    {
+     "name": "art",
+     "required": false
+    },
+    {
+     "name": "resume",
+     "required": false
+    },
+    {
+     "name": "userrating",
+     "required": false
+    },
+    {
+     "name": "ratings",
+     "required": false
+    },
+    {
+     "name": "dateadded",
+     "required": false
+    },
+    {
+     "name": "premiered",
+     "required": false
+    },
+    {
+     "name": "uniqueid",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.SetMovieSetDetails": {
+   "params": [
+    {
+     "name": "setid",
+     "required": true
+    },
+    {
+     "name": "title",
+     "required": false
+    },
+    {
+     "name": "art",
+     "required": false
+    },
+    {
+     "name": "plot",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.SetMusicVideoDetails": {
+   "params": [
+    {
+     "name": "musicvideoid",
+     "required": true
+    },
+    {
+     "name": "title",
+     "required": false
+    },
+    {
+     "name": "playcount",
+     "required": false
+    },
+    {
+     "name": "runtime",
+     "required": false
+    },
+    {
+     "name": "director",
+     "required": false
+    },
+    {
+     "name": "studio",
+     "required": false
+    },
+    {
+     "name": "year",
+     "required": false
+    },
+    {
+     "name": "plot",
+     "required": false
+    },
+    {
+     "name": "album",
+     "required": false
+    },
+    {
+     "name": "artist",
+     "required": false
+    },
+    {
+     "name": "genre",
+     "required": false
+    },
+    {
+     "name": "track",
+     "required": false
+    },
+    {
+     "name": "lastplayed",
+     "required": false
+    },
+    {
+     "name": "thumbnail",
+     "required": false
+    },
+    {
+     "name": "fanart",
+     "required": false
+    },
+    {
+     "name": "tag",
+     "required": false
+    },
+    {
+     "name": "art",
+     "required": false
+    },
+    {
+     "name": "resume",
+     "required": false
+    },
+    {
+     "name": "rating",
+     "required": false
+    },
+    {
+     "name": "userrating",
+     "required": false
+    },
+    {
+     "name": "dateadded",
+     "required": false
+    },
+    {
+     "name": "premiered",
+     "required": false
+    },
+    {
+     "name": "uniqueid",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.SetSeasonDetails": {
+   "params": [
+    {
+     "name": "seasonid",
+     "required": true
+    },
+    {
+     "name": "art",
+     "required": false
+    },
+    {
+     "name": "userrating",
+     "required": false
+    },
+    {
+     "name": "title",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.SetSourceContent": {
+   "params": [
+    {
+     "name": "path",
+     "required": true
+    },
+    {
+     "enum": [
+      "movies",
+      "musicvideos",
+      "none",
+      "tvshows"
+     ],
+     "name": "content",
+     "required": true
+    },
+    {
+     "name": "scraperid",
+     "required": false
+    },
+    {
+     "name": "scrapersettings",
+     "required": false
+    },
+    {
+     "name": "scanrecursive",
+     "required": false
+    },
+    {
+     "name": "usedirectorynames",
+     "required": false
+    },
+    {
+     "name": "containssingleitem",
+     "required": false
+    },
+    {
+     "name": "noupdate",
+     "required": false
+    },
+    {
+     "enum": [
+      "clear",
+      "exclude",
+      "remove"
+     ],
+     "name": "clearmode",
+     "required": false
+    },
+    {
+     "name": "refresh",
+     "required": false
+    }
+   ]
+  },
+  "VideoLibrary.SetTVShowDetails": {
+   "params": [
+    {
+     "name": "tvshowid",
+     "required": true
+    },
+    {
+     "name": "title",
+     "required": false
+    },
+    {
+     "name": "playcount",
+     "required": false
+    },
+    {
+     "name": "studio",
+     "required": false
+    },
+    {
+     "name": "plot",
+     "required": false
+    },
+    {
+     "name": "genre",
+     "required": false
+    },
+    {
+     "name": "rating",
+     "required": false
+    },
+    {
+     "name": "mpaa",
+     "required": false
+    },
+    {
+     "name": "imdbnumber",
+     "required": false
+    },
+    {
+     "name": "premiered",
+     "required": false
+    },
+    {
+     "name": "votes",
+     "required": false
+    },
+    {
+     "name": "lastplayed",
+     "required": false
+    },
+    {
+     "name": "originaltitle",
+     "required": false
+    },
+    {
+     "name": "trailer",
+     "required": false
+    },
+    {
+     "name": "sorttitle",
+     "required": false
+    },
+    {
+     "name": "episodeguide",
+     "required": false
+    },
+    {
+     "name": "thumbnail",
+     "required": false
+    },
+    {
+     "name": "fanart",
+     "required": false
+    },
+    {
+     "name": "tag",
+     "required": false
+    },
+    {
+     "name": "art",
+     "required": false
+    },
+    {
+     "name": "userrating",
+     "required": false
+    },
+    {
+     "name": "ratings",
+     "required": false
+    },
+    {
+     "name": "dateadded",
+     "required": false
+    },
+    {
+     "name": "runtime",
+     "required": false
+    },
+    {
+     "name": "status",
+     "required": false
+    },
+    {
+     "name": "uniqueid",
+     "required": false
+    }
+   ]
+  },
+  "XBMC.GetInfoBooleans": {
+   "params": [
+    {
+     "name": "booleans",
+     "required": true
+    }
+   ]
+  },
+  "XBMC.GetInfoLabels": {
+   "params": [
+    {
+     "name": "labels",
+     "required": true
+    }
+   ]
+  }
+ },
+ "source": "Kodi JSON-RPC schema (methods.json, types.json)"
+}

@@ -1,5 +1,5 @@
 """Kodi add-on (service.camalert): pure helpers, the HTTP API handler, the built zip and its metadata.
-Runs without Kodi: tests/kodi_stubs.py stands in for the xbmc modules."""
+Runs without Kodi: tests/kodi_stubs.py makes strict xbmc modules per Kodi version (19-22) from the Kodistubs fixtures."""
 import hashlib
 import importlib
 import json
@@ -21,6 +21,8 @@ _paths.tools()
 import build_kodi  # noqa: E402
 import kodi_stubs  # noqa: E402
 
+# Problems the strict Kodi stubs find, each with its issue (a fixed one fails its test)
+KNOWN_STUB_PROBLEMS = {"mosaic labels": "#25"}  # xbmcgui.ControlLabel(shadowColor=...) exists in no Kodi version
 MODULES = ("kodiapi", "sources", "display", "controller", "server", "mqtt", "ptz", "service", "script", "diag", "camlog")
 LANGS = ("en_gb", "nl_nl", "de_de", "fr_fr", "it_it", "pl_pl")
 
@@ -34,15 +36,17 @@ def po_strings(lang):
 
 
 class Built(object):
-    """The add-on package imported from the source tree (with the Kodi stubs), plus the built zips once.
+    """The add-on package imported from the source tree with the strict stubs of one Kodi version, plus the built
+    zips (once).
 
     Importing the sources (not the extracted zip) lets coverage measure the real files (#27); the zip itself is
     checked by TestKodiPackage, including a smoke import of every module from the extracted zip."""
     tmp = None
     store = None
+    version = None
 
     @classmethod
-    def get(cls):
+    def get(cls, version=None):
         if cls.tmp is None:
             cls.tmp = tempfile.mkdtemp()
             cls.addon_zip, cls.repo_zip, cls.tree = build_kodi.build(cls.tmp, "https://example.invalid/kodi")
@@ -50,13 +54,17 @@ class Built(object):
                 z.extractall(cls.tmp)
             cls.profile = os.path.join(cls.tmp, "profile")
             os.makedirs(cls.profile)
-            cls.store = kodi_stubs.install(profile=cls.profile)
+        version = version or cls.version or kodi_stubs.DEFAULT_VERSION
+        if version != cls.version or "camalert" not in sys.modules or "xbmc" not in sys.modules \
+                or getattr(sys.modules["xbmc"], "KODI_VERSION", None) != version:
+            cls.store = kodi_stubs.install(profile=cls.profile, version=version)
+            cls.version = version
             _paths.kodi_package()
         return cls
 
     @classmethod
-    def module(cls, name):
-        cls.get()
+    def module(cls, name, version=None):
+        cls.get(version)
         return importlib.import_module("camalert." + name)
 
 
@@ -65,9 +73,11 @@ def tearDownModule():
         shutil.rmtree(Built.tmp, ignore_errors=True)
 
 
-class TestKodiLogic(unittest.TestCase):
+class _KodiLogic(object):
+    kodi = None
+
     def setUp(self):
-        self.k = Built.module("klogic")
+        self.k = Built.module("klogic", self.kodi)
 
     def test_keys(self):
         k = self.k
@@ -192,11 +202,11 @@ class FakeController(object):
         self.calls.append(("dnd", on))
 
 
-class TestKodiApi(unittest.TestCase):
+class _KodiApi(object):
     """Same answers as the Enigma2 plugin's server.py."""
 
     def setUp(self):
-        self.server = Built.module("server")
+        self.server = Built.module("server", self.kodi)
         self.server.LIMIT.seen.clear()
         self.s = Built.module("klogic").parse_settings({"camera": "front_door"})
 
@@ -269,7 +279,14 @@ class TestKodiApi(unittest.TestCase):
         self.assertEqual((code, out), (500, {"result": False, "error": "internal error"}))
 
 
-class TestKodiModules(unittest.TestCase):
+class _KodiModules(object):
+    def setUp(self):
+        Built.get(self.kodi)
+        kodi_stubs.JSONRPC_PROBLEMS[:] = []
+        kodi_stubs.CALLS[:] = []
+
+    def tearDown(self):
+        self.assertEqual(kodi_stubs.JSONRPC_PROBLEMS, [], "JSON-RPC requests this Kodi version refuses")
     def test_all_modules_import(self):
         for name in MODULES:
             Built.module(name)
@@ -343,6 +360,122 @@ class TestKodiModules(unittest.TestCase):
         kodiapi._english = None
         self.assertEqual(kodiapi.tr(30192), "Cameras")
         self.assertEqual(kodiapi.tr(30181), "Could not reach the camera source:\n%s")
+
+    # --- windows, keys, the service loop and JSON-RPC under the strict stubs of this Kodi version (#29) -------
+    CAMS = [("front_door", "Front door", "http://192.168.1.10:1984/api/frame.jpeg?src=front_door&width=640"),
+            ("garden", "Garden", "http://192.168.1.10:1984/api/frame.jpeg?src=garden&width=640")]
+
+    class Action(object):
+        def __init__(self, aid, button=0):
+            self.aid, self.button = aid, button
+
+        def getId(self):
+            return self.aid
+
+        def getButtonCode(self):
+            return self.button
+
+    def settings(self, **kw):
+        return dict(Built.module("klogic").parse_settings({}), **kw)
+
+    def test_photo_window_and_strip(self):
+        display = Built.module("display")
+        ctl = FakeController()
+        for cams in (self.CAMS[:1], self.CAMS):
+            w = display.PhotoWindow(ctl, cams, self.settings(), keys=True, label="Person")
+            self.assertEqual(len(w.tiles), len(cams))
+            w.ptz_label(True)
+            w.unreachable(w.tiles[0], True)
+            w.unreachable(w.tiles[0], False)
+            if w.timer:
+                w.timer.cancel()
+
+    def test_photo_window_keys(self):
+        display = Built.module("display")
+        ctl = FakeController()
+        ctl.window_to_live = lambda s: ctl.calls.append(("live", s))
+        ctl.other_camera = lambda step: ctl.calls.append(("other", step))
+        w = display.PhotoWindow(ctl, self.CAMS[:1], self.settings(), keys=True)
+        for aid in (7, 1, 2, 88, 92):  # OK, LEFT, RIGHT, volume up, BACK
+            w.onAction(self.Action(aid))
+        self.assertEqual(ctl.calls, [("live", "front_door"), ("other", -1), ("other", 1), ("hide",)])
+
+    def test_mosaic_and_tour_windows(self):
+        display = Built.module("display")
+        ctl = FakeController()
+        ctl.fullscreen_closed = lambda f: ctl.calls.append(("closed",))
+        tour = display.FullScreen(ctl, self.CAMS, self.settings(), tour=True, interval=8)
+        for aid in (2, 7, 7, 92):  # next, hold, hold, BACK
+            tour.onAction(self.Action(aid))
+        self.assertEqual(tour.index, 1)
+        self.assertIn(("closed",), ctl.calls)
+        if "mosaic labels" in KNOWN_STUB_PROBLEMS:  # fails like on a real Kodi; a fixed problem fails here too
+            with self.assertRaises(TypeError, msg="fixed: remove 'mosaic labels' from KNOWN_STUB_PROBLEMS"):
+                display.FullScreen(ctl, self.CAMS, self.settings(), tour=False)
+            return
+        mosaic = display.FullScreen(ctl, self.CAMS, self.settings(), tour=False)
+        self.assertEqual(len(mosaic.tiles), 2)
+
+    def test_live_overlay(self):
+        display = Built.module("display")
+        ctl = FakeController()
+        ctl.live_other = lambda step: ctl.calls.append(("other", step))
+        o = display.LiveOverlay(ctl, "garden", "Garden")
+        o.set_camera("front_door", "Front door")
+        for aid in (1, 92):
+            o.onAction(self.Action(aid))
+        self.assertEqual(ctl.calls, [("other", -1), ("hide",)])
+
+    def test_live_view_lowers_the_volume_through_jsonrpc(self):
+        ctl_mod = Built.module("controller")
+        Built.store.update({"live_volume": "50", "server": "http://192.168.1.10:1984"})
+        try:
+            ctl = ctl_mod.Controller()
+            ctl._show_overlay = lambda *a: None
+            s = Built.module("kodiapi").settings()
+            ctl._live("garden", "http://x/api/stream.mp4?src=garden", "Garden", 10, s, "normal", "none", "", 0, False,
+                      "show")
+            self.assertEqual(ctl.saved_volume, 80)
+            self.assertTrue(kodi_stubs.calls("xbmc.Player.play"))
+            ctl.end_live()
+            sent = [json.loads(c[1][0]) for c in kodi_stubs.calls("xbmc.executeJSONRPC")]
+            self.assertEqual([r["method"] for r in sent], ["Application.GetProperties", "Application.SetVolume",
+                                                           "Application.SetVolume"])
+            self.assertEqual(sent[1]["params"], {"volume": 40})
+        finally:
+            for k in ("live_volume", "server"):
+                Built.store.pop(k, None)
+
+    def test_jsonrpc_check_sees_wrong_requests(self):
+        """Self test of the strict stub: an unknown method and an unknown property are refused."""
+        kodiapi = Built.module("kodiapi")
+        self.assertIsNone(kodiapi.jsonrpc("Application.Explode"))
+        self.assertIsNone(kodiapi.jsonrpc("Application.GetProperties", {"properties": ["colour"]}))
+        self.assertEqual(len(kodi_stubs.JSONRPC_PROBLEMS), 2)
+        kodi_stubs.JSONRPC_PROBLEMS[:] = []
+
+    def test_strict_stubs_refuse_unknown_arguments(self):
+        import xbmcgui
+        with self.assertRaises(TypeError):
+            xbmcgui.ControlImage(0, 0, 10, 10, "", nonsense=1)
+        with self.assertRaises(AttributeError):
+            getattr(xbmcgui, "ControlWebBrowser")
+
+    def test_service_loop_runs_until_abort(self):
+        service = Built.module("service")
+        started = []
+        for name in ("server", "mqtt", "ptz"):
+            mod = Built.module(name)
+            self.addCleanup(setattr, mod, "start", mod.start)
+            self.addCleanup(setattr, mod, "stop", mod.stop)
+            mod.start = lambda *a, n=name: started.append(n)
+            mod.stop = lambda *a, n=name: started.append("stop " + n)
+        kodi_stubs.MONITOR["waits"] = 3
+        svc = service.Service()
+        svc.run()
+        self.assertEqual(started[:3], ["server", "mqtt", "ptz"])
+        self.assertIn("stop server", started)
+        self.assertLess(kodi_stubs.MONITOR["waits"], 1)
 
 
 class TestKodiImports(unittest.TestCase):
@@ -469,6 +602,13 @@ class TestKodiSettingsAndStrings(unittest.TestCase):
                 self.assertEqual(msgid, self.en[i][0], (lang, i))
                 self.assertTrue(msgstr, (lang, i))
                 self.assertEqual(msgid.count("%s"), msgstr.count("%s"), (lang, i))
+
+
+# the functional tests run once per Kodi version, each with the strict stubs of that version (#29)
+for _v in kodi_stubs.VERSIONS:
+    for _base in (_KodiLogic, _KodiApi, _KodiModules):
+        _name = "TestKodi%s_%d" % (_base.__name__[5:], _v)
+        globals()[_name] = type(_name, (_base, unittest.TestCase), {"kodi": _v})
 
 
 if __name__ == "__main__":

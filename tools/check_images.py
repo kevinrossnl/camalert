@@ -54,13 +54,61 @@ def _jpeg_segments(data):
     raise ValueError("broken JPEG")
 
 
-def _gif_problems(data):
+def _gif_blocks(data):
+    """Labels of the extension blocks of a GIF, read block by block (so LZW image data that happens to contain
+    0x21 0xFE is not taken for a comment). (label, first sub-block) per extension; ValueError if broken."""
+    if len(data) < 13:
+        raise ValueError("broken GIF")
+    flags = data[10]
+    i = 13 + (3 * 2 ** ((flags & 7) + 1) if flags & 0x80 else 0)  # global colour table
+
+    def sub_blocks(i):
+        first = None
+        while True:
+            if i >= len(data):
+                raise ValueError("broken GIF")
+            n = data[i]
+            if n == 0:
+                return i + 1, first
+            if first is None:
+                first = data[i + 1:i + 1 + n]
+            i += 1 + n
+
     out = []
-    if b"\x21\xfe" in data:
-        out.append("comment extension")
-    if b"\x21\xff" in data and b"NETSCAPE2.0" not in data:
-        out.append("application extension")
-    return out
+    while i < len(data):
+        b = data[i]
+        if b == 0x3B:  # trailer
+            return out
+        if b == 0x21:
+            label = data[i + 1]
+            i, first = sub_blocks(i + 2)
+            out.append((label, first))
+        elif b == 0x2C:  # image descriptor (+ local colour table) and its LZW data
+            flags = data[i + 9]
+            i += 10 + (3 * 2 ** ((flags & 7) + 1) if flags & 0x80 else 0)
+            i, _ = sub_blocks(i + 1)
+        else:
+            raise ValueError("broken GIF")
+    raise ValueError("broken GIF")
+
+
+def _gif_problems(data):
+    try:
+        blocks = _gif_blocks(data)
+    except (ValueError, IndexError):  # not parseable: fall back to a (strict) byte search
+        out = []
+        if b"\x21\xfe" in data:
+            out.append("comment extension")
+        if b"\x21\xff" in data and b"NETSCAPE2.0" not in data:
+            out.append("application extension")
+        return out
+    out = []
+    for label, first in blocks:
+        if label == 0xFE:
+            out.append("comment extension")
+        elif label == 0xFF and first != b"NETSCAPE2.0":  # NETSCAPE2.0 = loop count of an animation
+            out.append("application extension")
+    return sorted(set(out))
 
 
 def _webp_chunks(data):

@@ -53,6 +53,13 @@ class TestImageCheck(unittest.TestCase):
 
     def test_gif_webp_and_fakes(self):
         self.assertEqual(C.metadata(b"GIF89a" + bytes(10) + b"\x21\xfe\x03abc\x00;"), ["GIF comment extension"])
+        # a well-formed GIF is read block by block: 0x21 0xFE inside the LZW image data is not a comment (#23)
+        gif = (b"GIF89a" + bytes([1, 0, 1, 0, 0x80, 0, 0]) + bytes(6)                  # 1x1, 2-colour table
+               + b"\x21\xff\x0bNETSCAPE2.0\x03\x01\x00\x00\x00"                       # loop count: allowed
+               + b"\x2c" + bytes([0, 0, 0, 0, 1, 0, 1, 0, 0]) + b"\x02\x02\x21\xfe\x00;")  # image data with 21 fe
+        self.assertEqual(C.metadata(gif), [])
+        self.assertEqual(C.metadata(gif[:-1] + b"\x21\xfe\x01x\x00;"), ["GIF comment extension"])
+        self.assertEqual(C.metadata(gif[:-1] + b"\x21\xff\x03XMP\x00;"), ["GIF application extension"])
         webp = b"RIFF" + struct.pack("<I", 20) + b"WEBP" + b"EXIF" + struct.pack("<I", 2) + b"MM"
         self.assertEqual(C.metadata(webp), ["WebP chunk EXIF"])
         with self.assertRaises(ValueError):

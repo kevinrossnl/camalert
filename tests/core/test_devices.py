@@ -145,6 +145,20 @@ class TestDeviceLogic(unittest.TestCase):
         self.assertIsNone(onvif.onvif_fault(OK % "Stop"))
 
 
+class TestSecureFile(unittest.TestCase):
+    def test_devices_file_becomes_owner_only(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            p = os.path.join(d, "devices.conf")
+            with open(p, "w") as f:
+                f.write("protect|unifi|192.168.1.1|viewer|secret\n")
+            os.chmod(p, 0o644)
+            self.assertTrue(client.secure_file(p))
+            self.assertEqual(os.stat(p).st_mode & 0o777, 0o600)
+            self.assertFalse(client.secure_file(p))  # already private
+            self.assertFalse(client.secure_file(os.path.join(d, "missing")))
+
+
 class TestMockCamera(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

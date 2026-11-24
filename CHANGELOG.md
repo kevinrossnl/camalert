@@ -1,6 +1,12 @@
 # Changelog
 
 ## Unreleased
+- Enigma2 (#70): *UniFi Protect events* (Settings › Triggers › UniFi Protect): polls the consoles of type `unifi` in
+  the devices file in a thread every *Check every (seconds)*, starts and stops with the setting, event types,
+  camera names, priority, display mode and duration, per event type rules (`ring=alarm/live|motion=normal/log`);
+  new display mode *Log only* (event list and log, nothing on screen, no chime); events with the source
+  *UniFi Protect*; diagnostics show the last check, last event and last error (redacted). The devices file is made
+  readable for root only. `unifi` lines are never PTZ cameras. Docs: [devices](docs/user/devices.md).
 - Core (#9): UniFi Protect as a trigger source without Home Assistant: devices-file type `unifi`
   (`name|unifi|host[:443]|user|password`, a local "View Only" Protect user), read-only client (login, bootstrap,
   events, snapshots) and `triggers/unifi.py` (ring, person, vehicle, animal, package, motion). The players and

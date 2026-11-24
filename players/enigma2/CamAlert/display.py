@@ -20,6 +20,7 @@ from twisted.internet import reactor, threads
 from . import _, __version__
 from .camalert_core.obs.camlog import LOG
 from .camalert_core.devices import client as devices
+from .camalert_core.devices.client import secure_file
 
 from .camalert_core.access import url_target
 from .camalert_core.cameras import (display_name, known_camera, live_stream_name, neighbour, parse_camera_file,
@@ -33,6 +34,7 @@ from .camalert_core.layout import grid, strip_geometry, title_font, window_geome
 from .camalert_core.obs.log import redact
 from .camalert_core.obs.metrics import metrics_text
 from .camalert_core.triggers.foscam import FoscamSource
+from .camalert_core.triggers.unifi import STATUS as UNIFI_STATUS, UnifiSource, labels as unifi_labels
 from .camalert_core.rules import (blocked_by_rules, clock_tuple, cooldown_seconds, decide, dnd_blocks, in_cooldown,
                                   in_time_window, lowered_volume, pick_mode, pick_priority, should_pause)
 from .camalert_core.update import latest_tag, newer_version, UPDATE_INTERVAL
@@ -167,7 +169,11 @@ def trigger_settings():
             "frigate_seconds": int(c.frigate_seconds.value),
             "foscam_enabled": c.foscam_enabled.value, "foscam_priority": c.foscam_priority.value,
             "foscam_mode": c.foscam_mode.value, "foscam_seconds": int(c.foscam_seconds.value),
-            "foscam_label": _("Motion")}
+            "foscam_label": _("Motion"),
+            "unifi_enabled": c.unifi_enabled.value, "unifi_kinds": c.unifi_kinds.value,
+            "unifi_cameras": c.unifi_cameras.value, "unifi_priority": c.unifi_priority.value,
+            "unifi_mode": c.unifi_mode.value, "unifi_seconds": int(c.unifi_seconds.value),
+            "unifi_rules": c.unifi_rules.value, "unifi_labels": unifi_labels(_)}
 
 
 def chime_wanted(setting, priority):
@@ -848,6 +854,11 @@ class Controller(object):
         self.poll_timer.callback.append(self.poll_devices)
         self.poll_seconds = self.poll_interval()
         self.poll_timer.start(self.poll_seconds * 1000, False)
+        self.unifi_state = {}  # console name -> last answer, None (first poll / after an error) or "busy"
+        self.unifi_timer = eTimer()
+        self.unifi_timer.callback.append(self.poll_unifi)
+        self.unifi_seconds = self.unifi_interval()
+        self.unifi_timer.start(self.unifi_seconds * 1000, False)
         self.button_hook = GlobalKeys()
         c = config.plugins.camalert
         LOG.configure(c.log_level.value, c.log_syslog.value)
@@ -893,6 +904,14 @@ class Controller(object):
         except (TypeError, ValueError):
             return 2
 
+    @staticmethod
+    def unifi_interval():
+        """UniFi Protect check interval in seconds (2-60, default 5)."""
+        try:
+            return max(2, min(60, int(config.plugins.camalert.unifi_interval.value)))
+        except (TypeError, ValueError):
+            return 5
+
     def blocked(self, priority, what):
         """Receiver rules: do not disturb, active hours, recording, media playback. Logs and returns True if blocked."""
         c = config.plugins.camalert
@@ -926,6 +945,13 @@ class Controller(object):
         """Handles a show request and logs it (source, decision and reason) in camalert.log and the event list."""
         self.reason, self.label, self.source = "", (label or "").strip()[:40] or None, source
         cam = stream or config.plugins.camalert.camera.value
+        if mode == "log":  # display mode 'log only' (#70): event list and log, nothing on screen, no chime
+            self.reason = present.reason("log_only")
+            log("request from %s: camera=%s priority=%s mode=log label=%s -> ignore (log only)"
+                % (source, cam, pick_priority(priority), label or "-"))
+            self.record_event(cam, label, source, pick_priority(priority), "ignore", self.reason, event_id)
+            self.label = None
+            return "ignore"
         wait = cooldown_seconds(cam, config.plugins.camalert.cooldown.value)
         on_screen = (self.window.stream if self.window else None) == cam
         try:
@@ -1147,6 +1173,7 @@ class Controller(object):
         if mtime != self.devices_mtime:
             self.devices_mtime = mtime
             self.devices = devices.load_devices()
+            secure_file(devices.DEVICES_FILE)
             if self.devices:
                 log("devices file: %d cameras (%s)" % (len(self.devices), ", ".join(
                     "%s=%s" % (n, d["type"]) for n, d in sorted(self.devices.items()))))
@@ -1179,8 +1206,54 @@ class Controller(object):
                 self.alarms[name] = None
             threads.deferToThread(source.poll, dev).addCallbacks(done, failed)
 
+    def poll_unifi(self):
+        """UniFi Protect consoles (#70): one poll per console in a thread (never on the GUI thread); the first
+        answer after a start, a setting change or an error only sets the baseline (no old events)."""
+        c = config.plugins.camalert
+        if self.unifi_interval() != self.unifi_seconds:  # 'Check every (seconds)' changed
+            self.unifi_seconds = self.unifi_interval()
+            self.unifi_timer.start(self.unifi_seconds * 1000, False)
+        source = UnifiSource(trigger_settings())
+        if not c.enabled.value or not source.enabled():
+            if self.unifi_state:
+                log("UniFi Protect: stopped")
+            self.unifi_state = {}
+            UNIFI_STATUS.reset()
+            return
+        consoles = source.devices(self.load_devices())
+        UNIFI_STATUS.consoles = len(consoles)
+        for name, dev in consoles.items():
+            if self.unifi_state.get(name) == "busy":
+                continue
+            if name not in self.unifi_state:
+                log("UniFi Protect: polling console %s every %d s" % (name, self.unifi_seconds))
+            previous = self.unifi_state.get(name)
+            self.unifi_state[name] = "busy"
+
+            def done(state, name=name, previous=previous):
+                if self.unifi_state.get(name) != "busy":  # switched off meanwhile
+                    return
+                self.unifi_state[name] = state
+                UNIFI_STATUS.ok()
+                trig = source.check(name, previous, state)
+                if trig:
+                    UNIFI_STATUS.event(trig)
+                    self.show(*trig.show_args())
+
+            def failed(err, name=name):
+                if self.unifi_state.get(name) != "busy":
+                    return
+                self.unifi_state[name] = None
+                if UNIFI_STATUS.failed(err.getErrorMessage()):  # log once, not at every poll
+                    log("UniFi Protect %s: %s" % (name, err.getErrorMessage()), level="error")
+            threads.deferToThread(source.poll, dev).addCallbacks(done, failed)
+
+    def ptz_devices(self):
+        """Devices with camera control: UniFi Protect consoles are not cameras (#70)."""
+        return {n: d for n, d in self.load_devices().items() if d.get("type") != "unifi"}
+
     def has_ptz(self, name):
-        return bool(name) and name in self.load_devices()
+        return bool(name) and name in self.ptz_devices()
 
     def camera_on_screen(self):
         """(camera name, True if colour keys should be swallowed) while a camera is shown, else (None, False)."""
@@ -1216,7 +1289,7 @@ class Controller(object):
 
     def ptz_move(self, action, name=None):
         name = name or self.ptz_stream
-        dev = self.load_devices().get(name)
+        dev = self.ptz_devices().get(name)
         if not dev or self.alarms.get(("ptz", name)):
             return False
         self.alarms[("ptz", name)] = True

@@ -31,6 +31,18 @@ def load_devices(path=DEVICES_FILE):
         return {}
 
 
+def secure_file(path=DEVICES_FILE):
+    """The devices file holds passwords: make it readable by its owner only (0600). True if it was changed."""
+    try:
+        mode = os.stat(path).st_mode & 0o777
+        if mode & 0o077:
+            os.chmod(path, mode & 0o700 | 0o600)
+            return True
+    except OSError:
+        pass
+    return False
+
+
 def _get(url):
     try:
         with urllib.request.urlopen(url, timeout=TIMEOUT) as r:

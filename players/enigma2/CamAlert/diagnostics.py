@@ -23,6 +23,7 @@ from .camalert_core import present
 from .camalert_core.events import diag_line
 from .camalert_core.obs.log import redact
 from .camalert_core.triggers.frigate import frigate_clip_url
+from .camalert_core.triggers.unifi import STATUS as UNIFI_STATUS
 from .camalert_core.urls import normalize_server, valid_port
 
 
@@ -86,6 +87,9 @@ def collect():
     devs = devices.load_devices()
     if devs:
         lines.append(diag_line(True, _("Devices file: %s") % ", ".join("%s (%s)" % (n, d["type"]) for n, d in sorted(devs.items()))))
+    if c.unifi_enabled.value:  # UniFi Protect source (#70): last check, last event, last error (redacted)
+        for ok, text in UNIFI_STATUS.lines(_, lambda ts: present.event_time(ts, ui_language())):
+            lines.append(diag_line(ok, text))
     if c.dnd.value:
         lines.append(diag_line(None, _("Do not disturb is on")))
     lines.append(diag_line(LOG.path is not None or c.log_level.value == "off",

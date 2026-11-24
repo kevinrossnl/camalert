@@ -19,7 +19,8 @@ sys.path.insert(0, os.path.join(ROOT, "core"))
 from camalert_core import keymap, present, schema  # noqa: E402
 
 LANGS = ("nl", "de", "fr", "it", "pl")
-PLAYER_NAMES = {"enigma2": "Enigma2", "kodi": "Kodi"}
+PLAYER_NAMES = {"enigma2": "Enigma2", "kodi": "Kodi", "androidtv": "Android TV"}
+KEY_COLUMNS = ("enigma2", "kodi", "androidtv")  # column order of the key table
 CONTEXT_TITLES = {"window": "Photo window and multi-camera window", "ptz": "Camera control (PTZ)", "tour": "Tour",
                   "mosaic": "Mosaic", "live": "Live view"}
 SECTION_TITLES = {"general": "General", "display": "Display", "rules": "Rules", "triggers": "Triggers",
@@ -42,27 +43,31 @@ def _keys(player, context, action):
 
 def keys_block():
     out = []
+    cols = [p for p in KEY_COLUMNS if p in keymap.KEYMAP]
+    empty = ["–"] * len(cols)
     for context in keymap.CONTEXTS:
-        out += ["### " + CONTEXT_TITLES[context], "", "| Action | Enigma2 | Kodi |", "|---|---|---|"]
+        out += ["### " + CONTEXT_TITLES[context], "", "| Action | %s |" % " | ".join(PLAYER_NAMES[p] for p in cols),
+                "|---|" + "---|" * len(cols)]
         for actions, label in present.HINTS[context]:
             row = []
-            for player in keymap.PLAYERS:
+            for player in cols:
                 cell = ", ".join(x for x in (_keys(player, context, a) for a in actions) if x)
-                if actions == ("ptz",) and player in keymap.PLAYERS:
+                if actions == ("ptz",):
                     cell = "PTZ colour key" + (" / " + cell if cell else "")
                 if actions == ("leave",):
                     cell += " / PTZ colour key"
                 row.append(cell or "–")
-            if row != ["–", "–"]:
-                out.append("| %s | %s | %s |" % (label, row[0], row[1]))
+            if row != empty:
+                out.append("| %s | %s |" % (label, " | ".join(row)))
         if context == "live":
-            out.append("| (Enigma2: the camera is a normal channel; zap away or wait) | – | – |")
-        if any(keymap.KEYMAP[p][context].get("pass") for p in keymap.PLAYERS):
-            out.append("| keep working | volume, mute | volume, mute |")
+            out.append("| (Enigma2: the camera is a normal channel; zap away or wait) | %s |" % " | ".join(empty))
+        if any(keymap.KEYMAP[p][context].get("pass") for p in cols):
+            out.append("| keep working | %s |" % " | ".join(["volume, mute"] * len(cols)))
         out.append("")
     out += ["Kodi's skin fonts have no ◀ ▶: its on-screen hints show `< >` and `^ v` instead.",
             "The *PTZ colour key* is the colour key chosen in *Camera control (PTZ) key* (default BLUE); it only",
-            "switches camera control on for cameras with PTZ.", ""]
+            "switches camera control on for cameras with PTZ. Fire TV remotes have no colour keys: there MENU",
+            "switches camera control on, FF/REW zoom and PLAY/PAUSE starts live view in the tour.", ""]
     return "\n".join(out)
 
 

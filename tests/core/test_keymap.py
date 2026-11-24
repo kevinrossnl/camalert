@@ -24,7 +24,8 @@ class TestKeymap(unittest.TestCase):
 
     def test_same_logical_actions_on_every_player(self):
         """The UI guideline (#2): same actions everywhere; documented differences only."""
-        allowed = {("live", "kodi"), ("window", "kodi")}  # Kodi: live bar; MENU/INFO = PTZ in the window
+        # Kodi and Android TV: live bar; MENU(/INFO) = PTZ in the window (Fire TV remotes have no colour keys, #64)
+        allowed = {("live", "kodi"), ("window", "kodi"), ("live", "androidtv"), ("window", "androidtv")}
         for context in keymap.CONTEXTS:
             sets = {p: set(keymap.KEYMAP[p][context]) - {"pass"} for p in keymap.PLAYERS}
             for p in keymap.PLAYERS:
@@ -36,6 +37,8 @@ class TestKeymap(unittest.TestCase):
         self.assertIsNone(keymap.action_for("enigma2", "window", "RED"))
         self.assertIsNone(keymap.action_for("kodi", "ptz", None))
         self.assertEqual(keymap.keys_for("kodi", "tour", "live"), ("GREEN", "PLAY", "UP"))
+        self.assertEqual(keymap.action_for("androidtv", "tour", "PLAY_PAUSE"), "live")
+        self.assertEqual(keymap.action_for("androidtv", "window", "MENU"), "ptz")
 
     def test_tour_live_is_green_or_play_on_every_player(self):
         """UI guideline (#2): tour live = GREEN or PLAY on Enigma2 and Kodi."""

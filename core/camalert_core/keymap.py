@@ -45,6 +45,20 @@ KEYMAP = {
         "live": {"prev": ("LEFT",), "next": ("RIGHT",), "close": ("PREVIOUS_MENU", "BACK", "STOP"),
                  "pause": ("PAUSE", "PLAY"), "ptz": ("CONTEXT_MENU", "SHOW_INFO")},
     },
+    # Android TV / Fire TV (#64): the app maps KeyEvent codes to these names (KeyNames.kt). Fire TV remotes have
+    # no colour or channel keys: MENU = camera control, FAST_FORWARD/REWIND = zoom, PLAY_PAUSE = live in the tour.
+    "androidtv": {
+        "window": {"live": ("OK",), "prev": ("LEFT",), "next": ("RIGHT",), "close": ("BACK",), "ptz": ("MENU",),
+                   "pass": ("VOLUME_UP", "VOLUME_DOWN", "MUTE")},
+        "ptz": {"up": ("UP",), "down": ("DOWN",), "left": ("LEFT",), "right": ("RIGHT",),
+                "zoom_in": ("FAST_FORWARD", "CHANNEL_UP"), "zoom_out": ("REWIND", "CHANNEL_DOWN"), "home": ("OK",),
+                "leave": ("BACK", "MENU"), "pass": ("VOLUME_UP", "VOLUME_DOWN", "MUTE")},
+        "tour": {"prev": ("LEFT",), "next": ("RIGHT",), "hold": ("OK",), "live": ("GREEN", "PLAY", "PLAY_PAUSE"),
+                 "close": ("BACK", "STOP")},
+        "mosaic": {"close": ("OK", "BACK", "STOP")},
+        "live": {"prev": ("LEFT",), "next": ("RIGHT",), "close": ("BACK", "STOP"), "pause": ("PLAY_PAUSE", "PAUSE"),
+                 "ptz": ("MENU",)},
+    },
 }
 PLAYERS = tuple(sorted(KEYMAP))
 CONTEXTS = ("window", "ptz", "tour", "mosaic", "live")

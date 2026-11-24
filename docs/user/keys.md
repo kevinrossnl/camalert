@@ -8,52 +8,53 @@ does its normal job, so you can just keep zapping or navigating.
 <!-- BEGIN generated: keys (tools/docs.py) -->
 ### Photo window and multi-camera window
 
-| Action | Enigma2 | Kodi |
-|---|---|---|
-| live | OK | OK |
-| other camera | ◀, ▶ | ◀, ▶ |
-| camera control | PTZ colour key | PTZ colour key / MENU / INFO |
-| close | EXIT | BACK |
-| keep working | volume, mute | volume, mute |
+| Action | Enigma2 | Kodi | Android TV |
+|---|---|---|---|
+| live | OK | OK | OK |
+| other camera | ◀, ▶ | ◀, ▶ | ◀, ▶ |
+| camera control | PTZ colour key | PTZ colour key / MENU / INFO | PTZ colour key / MENU |
+| close | EXIT | BACK | BACK |
+| keep working | volume, mute | volume, mute | volume, mute |
 
 ### Camera control (PTZ)
 
-| Action | Enigma2 | Kodi |
-|---|---|---|
-| move | ▲, ▼, ◀, ▶ | ▲, ▼, ◀, ▶ |
-| zoom | CH+, CH- | CH+, CH- |
-| home position | OK | OK |
-| end camera control | EXIT / PTZ colour key | BACK / MENU / INFO / PTZ colour key |
-| keep working | volume, mute | volume, mute |
+| Action | Enigma2 | Kodi | Android TV |
+|---|---|---|---|
+| move | ▲, ▼, ◀, ▶ | ▲, ▼, ◀, ▶ | ▲, ▼, ◀, ▶ |
+| zoom | CH+, CH- | CH+, CH- | FF / CH+, REW / CH- |
+| home position | OK | OK | OK |
+| end camera control | EXIT / PTZ colour key | BACK / MENU / INFO / PTZ colour key | BACK / MENU / PTZ colour key |
+| keep working | volume, mute | volume, mute | volume, mute |
 
 ### Tour
 
-| Action | Enigma2 | Kodi |
-|---|---|---|
-| other camera | ◀, ▶ | ◀, ▶ |
-| pause | OK | OK |
-| live | GREEN / PLAY | GREEN / PLAY / ▲ |
-| close | EXIT | BACK / STOP |
+| Action | Enigma2 | Kodi | Android TV |
+|---|---|---|---|
+| other camera | ◀, ▶ | ◀, ▶ | ◀, ▶ |
+| pause | OK | OK | OK |
+| live | GREEN / PLAY | GREEN / PLAY / ▲ | GREEN / PLAY |
+| close | EXIT | BACK / STOP | BACK / STOP |
 
 ### Mosaic
 
-| Action | Enigma2 | Kodi |
-|---|---|---|
-| close | OK / EXIT | OK / BACK / STOP |
+| Action | Enigma2 | Kodi | Android TV |
+|---|---|---|---|
+| close | OK / EXIT | OK / BACK / STOP | OK / BACK / STOP |
 
 ### Live view
 
-| Action | Enigma2 | Kodi |
-|---|---|---|
-| other camera | – | ◀, ▶ |
-| pause | – | PAUSE / PLAY |
-| camera control | PTZ colour key | PTZ colour key / MENU / INFO |
-| close | – | BACK / STOP |
-| (Enigma2: the camera is a normal channel; zap away or wait) | – | – |
+| Action | Enigma2 | Kodi | Android TV |
+|---|---|---|---|
+| other camera | – | ◀, ▶ | ◀, ▶ |
+| pause | – | PAUSE / PLAY | PLAY / PAUSE |
+| camera control | PTZ colour key | PTZ colour key / MENU / INFO | PTZ colour key / MENU |
+| close | – | BACK / STOP | BACK / STOP |
+| (Enigma2: the camera is a normal channel; zap away or wait) | – | – | – |
 
 Kodi's skin fonts have no ◀ ▶: its on-screen hints show `< >` and `^ v` instead.
 The *PTZ colour key* is the colour key chosen in *Camera control (PTZ) key* (default BLUE); it only
-switches camera control on for cameras with PTZ.
+switches camera control on for cameras with PTZ. Fire TV remotes have no colour keys: there MENU
+switches camera control on, FF/REW zoom and PLAY/PAUSE starts live view in the tour.
 <!-- END generated: keys -->
 
 ## Colour keys to Home Assistant

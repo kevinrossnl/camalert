@@ -162,6 +162,9 @@ KEY_NAMES = {
              "RIGHT": "▶", "UP": "▲", "DOWN": "▼", "PAGE_UP": "CH+", "CHANNEL_UP": "CH+", "PAGE_DOWN": "CH-",
              "CHANNEL_DOWN": "CH-", "CONTEXT_MENU": "MENU", "SHOW_INFO": "INFO", "PLAY": "PLAY", "PAUSE": "PAUSE",
              "GREEN": N_("GREEN")},
+    "androidtv": {"OK": "OK", "BACK": "BACK", "STOP": "STOP", "LEFT": "◀", "RIGHT": "▶", "UP": "▲", "DOWN": "▼",
+                  "FAST_FORWARD": "FF", "CHANNEL_UP": "CH+", "REWIND": "REW", "CHANNEL_DOWN": "CH-", "MENU": "MENU",
+                  "PLAY": "PLAY", "PLAY_PAUSE": "PLAY", "PAUSE": "PAUSE", "GREEN": N_("GREEN")},
 }
 COLOUR_NAMES = {"red": N_("RED"), "green": N_("GREEN"), "yellow": N_("YELLOW"), "blue": N_("BLUE")}
 ASCII = {"◀": "<", "▶": ">", "▲": "^", "▼": "v"}

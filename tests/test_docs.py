@@ -146,7 +146,7 @@ class TestDocs(unittest.TestCase):
         names = sorted(rel(p) for p in glob.glob(os.path.join(ROOT, "**", "DEVELOPMENT.md"), recursive=True)
                        if "/dist/" not in p and "/.venv" not in p)
         self.assertEqual(names, ["DEVELOPMENT.md", "core/DEVELOPMENT.md", "custom_components/DEVELOPMENT.md", "docs/DEVELOPMENT.md",
-                                 "players/enigma2/DEVELOPMENT.md", "players/kodi/DEVELOPMENT.md"])
+                                 "players/androidtv/DEVELOPMENT.md", "players/enigma2/DEVELOPMENT.md", "players/kodi/DEVELOPMENT.md"])
         token = re.compile(r"`([\w./-]+\.(?:py|md|json|yaml|yml|xml|po|sh|wav|txt))`")
         import subprocess
         tracked = subprocess.check_output(["git", "ls-files", "-co", "--exclude-standard"], cwd=ROOT).decode().split()

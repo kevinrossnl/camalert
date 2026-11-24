@@ -131,6 +131,15 @@ class TestKeyHints(unittest.TestCase):
         self.assertEqual(p.key_hint("kodi", "mosaic", EN), "OK/BACK = close")  # #58
         self.assertIn("PAUSE/PLAY = pause", p.key_hint("kodi", "live", EN))
 
+    def test_androidtv_hints(self):
+        """#64: Fire TV remote (no colour keys): MENU = camera control, PLAY/PAUSE = live in the tour."""
+        self.assertEqual(p.key_hint("androidtv", "window", EN), "OK = live   ◀ ▶ = other camera   BACK = close")
+        self.assertEqual(p.key_hint("androidtv", "window", EN, ptz_key="off", has_ptz=True),
+                         "OK = live   ◀ ▶ = other camera   MENU = camera control   BACK = close")
+        self.assertEqual(p.key_hint("androidtv", "tour", EN),
+                         "◀ ▶ = other camera   OK = pause   GREEN/PLAY = live   BACK/STOP = close")
+        self.assertEqual(p.key_hint("androidtv", "mosaic", EN), "OK/BACK = close")
+
     def test_tour_status(self):
         self.assertEqual(p.tour_status("Garden", 2, 5, False, EN), "Garden   (2/5, tour)")
         self.assertEqual(p.tour_status("Garden", 2, 5, True, upper), "Garden   (2/5, PAUSED)")

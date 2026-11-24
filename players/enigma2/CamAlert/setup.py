@@ -107,10 +107,10 @@ class CamAlertSetup(ConfigListScreen, Screen):
                       (_("Multi-camera window layout"), c.strip_layout,
                        _("A request with 2-4 cameras shows them together in one multi-camera window."))]
         if c.mode.value in ("photo", "notify"):
-            items += [(_("Pause TV meanwhile"), c.pause_tv,
+            items += [(_("Pause what is playing meanwhile"), c.pause_tv,
                        _("Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift."))]
         if c.mode.value == "live":
-            items += [(_("Return to previous channel"), c.live_return,
+            items += [(_("Return to what was playing"), c.live_return,
                        _("Switch back to what you were watching when the time is up.")),
                       (_("Volume during live view (%)"), c.live_volume,
                        _("Percentage of the current volume while the camera is shown. 100 = unchanged."))]
@@ -128,15 +128,15 @@ class CamAlertSetup(ConfigListScreen, Screen):
                        _("Seconds before the same camera is shown again, e.g. *=30|garden=120 (* = all cameras). Alarm always.")),
                       (_("Live view substreams"), c.substreams,
                        _("For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."))]
-        items += [(_("Do not disturb"), c.dnd, _("Blocks requests with normal priority. Also via the API, MQTT and Home Assistant.")),
+        items += [(_("Do not disturb"), c.dnd, _("Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant.")),
                   (_("Do not disturb blocks"), c.dnd_level, "")]
-        items += [(_("Only between certain times"), c.limit_hours, _("Ignore requests outside the chosen times."))]
+        items += [(_("Only between certain times"), c.limit_hours, _("Ignore normal requests outside the chosen times. High and alarm always come through."))]
         if c.limit_hours.value:
             items += [(_("From"), c.from_time, ""), (_("Until"), c.until_time, _("May pass midnight, e.g. 07:00 to 23:00."))]
-        items += [(_("Not during a recording"), c.skip_recording, _("Ignore requests while the receiver is recording.")),
+        items += [(_("Not during a recording"), c.skip_recording, _("Ignore normal requests while the receiver is recording.")),
                   (_("Not while playing a recording or video"), c.skip_media,
                    _("Ignore normal requests while you watch a recording or a video file.")),
-                  (_("Wake receiver on alarm"), c.alarm_wake,
+                  (_("Wake up on alarm"), c.alarm_wake,
                    _("Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on.")),
                   (_("Tour: seconds per camera"), c.tour_interval, "")]
         items += [
@@ -177,13 +177,13 @@ class CamAlertSetup(ConfigListScreen, Screen):
         items += [
             (_("Colour keys to Home Assistant"), c.ha_buttons,
              _("While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate).")),
-            (_("PTZ key"), c.ptz_key,
+            (_("Camera control (PTZ) key"), c.ptz_key,
              _("For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home).") % DEVICES_FILE),
             (_("Doorbell chime"), c.chime, _("Plays a short ding-dong for requests with priority high or alarm (doorbell).")),
             (_("Picons for the camera channels"), c.picons,
              _("Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced.")),
-            (_("Foscam motion alarms"), c.foscam_poll,
-             _("Asks Foscam cameras from %s every 2 seconds for a motion or sound alarm.") % DEVICES_FILE),
+            (_("Foscam motion and sound alarms"), c.foscam_poll,
+             _("Asks the Foscam cameras in %s for motion and sound alarms.") % DEVICES_FILE),
             (_("Foscam priority"), c.device_priority, ""),
             (_("Event snapshots folder"), c.event_folder, _("Small photos of the last 20 events (default /tmp/camalert_events).")),
             (_("Log level"), c.log_level, _("camalert.log in /home/root/logs (or /tmp). Passwords and tokens are never logged.")),

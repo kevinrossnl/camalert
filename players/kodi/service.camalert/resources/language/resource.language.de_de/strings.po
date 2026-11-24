@@ -162,8 +162,8 @@ msgid "e.g. http://192.168.1.10:5000 - lets you replay Frigate clips from the ev
 msgstr "z. B. http://192.168.1.10:5000 - damit lassen sich Frigate-Clips aus der Ereignisliste abspielen."
 
 msgctxt "#30239"
-msgid "Colour key for camera control"
-msgstr "Farbtaste für Kamerasteuerung"
+msgid "Camera control (PTZ) key"
+msgstr "Taste für Kamerasteuerung (PTZ)"
 
 msgctxt "#30240"
 msgid "On cameras with PTZ this key toggles camera control (MENU works too)."
@@ -194,8 +194,8 @@ msgid "While a camera is shown the colour keys trigger a Home Assistant event (e
 msgstr "Während eine Kamera angezeigt wird, lösen die Farbtasten ein Home-Assistant-Ereignis aus (z. B. Tür öffnen)."
 
 msgctxt "#30247"
-msgid "Log"
-msgstr "Protokoll"
+msgid "Log level"
+msgstr "Log-Stufe"
 
 msgctxt "#30248"
 msgid "camalert.log in the add-on data folder (2 x 1 MB), besides kodi.log. Passwords are never logged."
@@ -226,16 +226,16 @@ msgid "%s - camera not reachable"
 msgstr "%s - Kamera nicht erreichbar"
 
 msgctxt "#30255"
-msgid "Wait before showing a camera again"
-msgstr "Wartezeit, bevor eine Kamera erneut erscheint"
+msgid "Cooldown per camera"
+msgstr "Wartezeit pro Kamera"
 
 msgctxt "#30256"
 msgid "Seconds per camera, e.g. *=30|garden=120 (* = all). An open window is still extended; alarm always passes."
 msgstr "Sekunden pro Kamera, z. B. *=30|garten=120 (* = alle). Ein offenes Fenster wird verlängert; Alarm kommt immer durch."
 
 msgctxt "#30257"
-msgid "Live substreams"
-msgstr "Live-Substreams"
+msgid "Live view substreams"
+msgstr "Substreams für die Live-Ansicht"
 
 msgctxt "#30258"
 msgid "For a camera this Kodi cannot play smoothly (H.265 / 4K): front_door=front_door_sub|... (go2rtc stream names)."
@@ -414,16 +414,16 @@ msgid "Grid (2x2)"
 msgstr "Raster (2x2)"
 
 msgctxt "#30062"
-msgid "Rotate / mirror per camera"
-msgstr "Drehen / spiegeln pro Kamera"
+msgid "Turn or mirror image"
+msgstr "Bild drehen oder spiegeln"
 
 msgctxt "#30063"
 msgid "e.g. front_door=rot180|garden=mirror (rot180, mirror, flip)"
 msgstr "z. B. haustuer=rot180|garten=mirror (rot180, mirror, flip)"
 
 msgctxt "#30064"
-msgid "Refresh interval per camera"
-msgstr "Aktualisierung pro Kamera"
+msgid "Refresh interval"
+msgstr "Aktualisierungsintervall"
 
 msgctxt "#30065"
 msgid "Seconds between pictures, e.g. front_door=0.5|garden=5. Default: as fast as possible."
@@ -494,8 +494,8 @@ msgid "Only between certain times"
 msgstr "Nur zu bestimmten Zeiten"
 
 msgctxt "#30091"
-msgid "Ignore normal requests outside the chosen times."
-msgstr "Normale Anfragen außerhalb der Zeiten ignorieren."
+msgid "Ignore normal requests outside the chosen times. High and alarm always come through."
+msgstr "Normale Anfragen außerhalb der gewählten Zeiten ignorieren. Hoch und Alarm kommen immer durch."
 
 msgctxt "#30092"
 msgid "From"
@@ -530,8 +530,8 @@ msgid "Not during anything (also live TV)"
 msgstr "Bei keiner Wiedergabe (auch Live-TV)"
 
 msgctxt "#30100"
-msgid "Wake screen on alarm"
-msgstr "Bildschirm bei Alarm einschalten"
+msgid "Wake up on alarm"
+msgstr "Bei Alarm aufwecken"
 
 msgctxt "#30101"
 msgid "Requests with priority 'alarm' switch the TV on via HDMI-CEC."
@@ -542,8 +542,8 @@ msgid "Do not disturb"
 msgstr "Nicht stören"
 
 msgctxt "#30103"
-msgid "Ignores requests. Alarm always gets through."
-msgstr "Ignoriert Anfragen. Alarm kommt immer durch."
+msgid "Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant."
+msgstr "Ignoriert Anfragen mit normaler Priorität (mit 'Nicht stören blockiert' auch hohe). Alarm kommt immer durch. Auch über die API, MQTT und Home Assistant."
 
 msgctxt "#30104"
 msgid "Do not disturb blocks"
@@ -658,8 +658,8 @@ msgid "Alarm"
 msgstr "Alarm"
 
 msgctxt "#30143"
-msgid "Foscam motion and sound alarm"
-msgstr "Foscam-Bewegungs- und Geräuschalarm"
+msgid "Foscam motion and sound alarms"
+msgstr "Foscam-Bewegungs- und Geräuschalarme"
 
 msgctxt "#30144"
 msgid "Asks the Foscam cameras in devices.conf for motion and sound alarms."

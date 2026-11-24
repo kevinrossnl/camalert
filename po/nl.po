@@ -324,14 +324,14 @@ msgstr "Indeling van het venster met meerdere camera's"
 msgid "A request with 2-4 cameras shows them together in one multi-camera window."
 msgstr "Een verzoek met 2-4 camera's toont ze samen in één venster met meerdere camera's."
 
-msgid "Pause TV meanwhile"
-msgstr "Tv intussen pauzeren"
+msgid "Pause what is playing meanwhile"
+msgstr "Afspelen intussen pauzeren"
 
 msgid "Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift."
 msgstr "Pauzeert de zender (timeshift) zolang de camera in beeld is. Vereist een harde schijf of USB-stick voor timeshift."
 
-msgid "Return to previous channel"
-msgstr "Terug naar vorige zender"
+msgid "Return to what was playing"
+msgstr "Terug naar wat er speelde"
 
 msgid "Switch back to what you were watching when the time is up."
 msgstr "Schakel terug naar wat je keek als de tijd om is."
@@ -378,8 +378,8 @@ msgstr "Voor camera's die de ontvanger niet kan afspelen (H.265/4K): front_door=
 msgid "Do not disturb"
 msgstr "Niet storen"
 
-msgid "Blocks requests with normal priority. Also via the API, MQTT and Home Assistant."
-msgstr "Blokkeert verzoeken met normale prioriteit. Ook via de API, MQTT en Home Assistant."
+msgid "Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant."
+msgstr "Negeert verzoeken met normale prioriteit (met 'Niet storen blokkeert' ook hoge). Alarm komt altijd door. Ook via de API, MQTT en Home Assistant."
 
 msgid "Do not disturb blocks"
 msgstr "Niet storen blokkeert"
@@ -387,8 +387,8 @@ msgstr "Niet storen blokkeert"
 msgid "Only between certain times"
 msgstr "Alleen tussen bepaalde tijden"
 
-msgid "Ignore requests outside the chosen times."
-msgstr "Negeer verzoeken buiten de gekozen tijden."
+msgid "Ignore normal requests outside the chosen times. High and alarm always come through."
+msgstr "Normale verzoeken negeren buiten de gekozen tijden. Hoog en alarm komen altijd door."
 
 msgid "From"
 msgstr "Van"
@@ -402,8 +402,8 @@ msgstr "Mag over middernacht gaan, bijv. 07:00 tot 23:00."
 msgid "Not during a recording"
 msgstr "Niet tijdens een opname"
 
-msgid "Ignore requests while the receiver is recording."
-msgstr "Negeer verzoeken zolang de ontvanger opneemt."
+msgid "Ignore normal requests while the receiver is recording."
+msgstr "Normale verzoeken negeren terwijl de ontvanger opneemt."
 
 msgid "Not while playing a recording or video"
 msgstr "Niet tijdens afspelen van een opname of video"
@@ -411,8 +411,8 @@ msgstr "Niet tijdens afspelen van een opname of video"
 msgid "Ignore normal requests while you watch a recording or a video file."
 msgstr "Normale verzoeken negeren terwijl je een opname of videobestand kijkt."
 
-msgid "Wake receiver on alarm"
-msgstr "Ontvanger wekken bij alarm"
+msgid "Wake up on alarm"
+msgstr "Wakker worden bij alarm"
 
 msgid "Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on."
 msgstr "Verzoeken met prioriteit 'alarm' zetten de ontvanger (en via HDMI-CEC de tv) aan."
@@ -543,8 +543,8 @@ msgstr "Kleurtoetsen naar Home Assistant"
 msgid "While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate)."
 msgstr "Zolang een camera in beeld is, sturen de kleurtoetsen een gebeurtenis naar Home Assistant (bijv. hek openen)."
 
-msgid "PTZ key"
-msgstr "PTZ-toets"
+msgid "Camera control (PTZ) key"
+msgstr "Toets voor camerabediening (PTZ)"
 
 msgid "For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home)."
 msgstr "Voor camera's met PTZ in %s: deze toets zet de PTZ-stand aan (pijlen, CH+/CH-, OK = beginstand)."
@@ -561,11 +561,11 @@ msgstr "Picons voor de camerazenders"
 msgid "Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced."
 msgstr "Maakt een eenvoudig picon (camera + naam) voor elke camerazender; bestaande picons worden nooit vervangen."
 
-msgid "Foscam motion alarms"
-msgstr "Foscam-bewegingsalarmen"
+msgid "Foscam motion and sound alarms"
+msgstr "Foscam-bewegings- en geluidsalarmen"
 
-msgid "Asks Foscam cameras from %s every 2 seconds for a motion or sound alarm."
-msgstr "Vraagt Foscam-camera's uit %s elke 2 seconden naar een bewegings- of geluidsalarm."
+msgid "Asks the Foscam cameras in %s for motion and sound alarms."
+msgstr "Vraagt de Foscam-camera's in %s om bewegings- en geluidsalarmen."
 
 msgid "Foscam priority"
 msgstr "Foscam-prioriteit"
@@ -644,3 +644,33 @@ msgstr "Zenderlijst '%s' met %d camera's aangemaakt."
 
 msgid "Choose a default camera first."
 msgstr "Kies eerst een standaardcamera."
+
+msgid "Camera file (direct mode)"
+msgstr "Camerabestand (rechtstreeks)"
+
+msgid "Empty = cameras.conf in the add-on data folder. One camera per line: name | rtsp-url | snapshot-url"
+msgstr "Leeg = cameras.conf in de add-on-datamap. Eén camera per regel: naam | rtsp-url | snapshot-url"
+
+msgid "Live stream format"
+msgstr "Formaat van het live beeld"
+
+msgid "MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds."
+msgstr "MP4 via HTTP werkt met elke go2rtc-installatie; RTSP heeft de RTSP-poort van go2rtc nodig; HLS is het stabielst maar loopt een paar seconden achter."
+
+msgid "Not while playing"
+msgstr "Niet tijdens afspelen"
+
+msgid "Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through."
+msgstr "Normale verzoeken negeren terwijl een video of opname speelt (video) of terwijl er iets speelt (alles). Hoog en alarm komen altijd door."
+
+msgid "Check every (seconds)"
+msgstr "Elke (seconden) controleren"
+
+msgid "Camera user (default)"
+msgstr "Cameragebruiker (standaard)"
+
+msgid "Used when devices.conf has no user or password for a camera."
+msgstr "Gebruikt als devices.conf geen gebruiker of wachtwoord voor een camera heeft."
+
+msgid "Camera password (default)"
+msgstr "Camerawachtwoord (standaard)"

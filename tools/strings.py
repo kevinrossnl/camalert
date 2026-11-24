@@ -30,9 +30,22 @@ def core_strings():
     return _scan(paths, "N_")
 
 
+def schema_strings():
+    """Labels and help texts of the settings schema (the players show them with _(setting.label), #38/#39)."""
+    sys.path.insert(0, os.path.dirname(CORE))
+    try:
+        from camalert_core import schema
+    finally:
+        sys.path.pop(0)
+    return [t for s in schema.SETTINGS if s.level != "internal" for t in (s.label, s.help) if t]
+
+
 def strings():
     found = _scan(sorted(glob.glob(os.path.join(ROOT, "*.py"))), "_")
-    return found + [s for s in core_strings() if s not in found]
+    for s in core_strings() + schema_strings():
+        if s not in found:
+            found.append(s)
+    return found
 
 
 def pot():

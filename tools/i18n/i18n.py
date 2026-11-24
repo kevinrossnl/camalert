@@ -248,6 +248,7 @@ def problems():
         known = set()
         for where, msgid in src:
             text = msgid if lang == "en" else lookup(cat, where, msgid)
+            known.add(msgid)
             if text is None:
                 found.append("%s: missing translation for %r (%s)" % (lang, msgid, where))
                 continue

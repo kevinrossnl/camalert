@@ -162,7 +162,7 @@ msgid "e.g. http://192.168.1.10:5000 - lets you replay Frigate clips from the ev
 msgstr ""
 
 msgctxt "#30239"
-msgid "Colour key for camera control"
+msgid "Camera control (PTZ) key"
 msgstr ""
 
 msgctxt "#30240"
@@ -194,7 +194,7 @@ msgid "While a camera is shown the colour keys trigger a Home Assistant event (e
 msgstr ""
 
 msgctxt "#30247"
-msgid "Log"
+msgid "Log level"
 msgstr ""
 
 msgctxt "#30248"
@@ -226,7 +226,7 @@ msgid "%s - camera not reachable"
 msgstr ""
 
 msgctxt "#30255"
-msgid "Wait before showing a camera again"
+msgid "Cooldown per camera"
 msgstr ""
 
 msgctxt "#30256"
@@ -234,7 +234,7 @@ msgid "Seconds per camera, e.g. *=30|garden=120 (* = all). An open window is sti
 msgstr ""
 
 msgctxt "#30257"
-msgid "Live substreams"
+msgid "Live view substreams"
 msgstr ""
 
 msgctxt "#30258"
@@ -414,7 +414,7 @@ msgid "Grid (2x2)"
 msgstr ""
 
 msgctxt "#30062"
-msgid "Rotate / mirror per camera"
+msgid "Turn or mirror image"
 msgstr ""
 
 msgctxt "#30063"
@@ -422,7 +422,7 @@ msgid "e.g. front_door=rot180|garden=mirror (rot180, mirror, flip)"
 msgstr ""
 
 msgctxt "#30064"
-msgid "Refresh interval per camera"
+msgid "Refresh interval"
 msgstr ""
 
 msgctxt "#30065"
@@ -494,7 +494,7 @@ msgid "Only between certain times"
 msgstr ""
 
 msgctxt "#30091"
-msgid "Ignore normal requests outside the chosen times."
+msgid "Ignore normal requests outside the chosen times. High and alarm always come through."
 msgstr ""
 
 msgctxt "#30092"
@@ -530,7 +530,7 @@ msgid "Not during anything (also live TV)"
 msgstr ""
 
 msgctxt "#30100"
-msgid "Wake screen on alarm"
+msgid "Wake up on alarm"
 msgstr ""
 
 msgctxt "#30101"
@@ -542,7 +542,7 @@ msgid "Do not disturb"
 msgstr ""
 
 msgctxt "#30103"
-msgid "Ignores requests. Alarm always gets through."
+msgid "Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant."
 msgstr ""
 
 msgctxt "#30104"
@@ -658,7 +658,7 @@ msgid "Alarm"
 msgstr ""
 
 msgctxt "#30143"
-msgid "Foscam motion and sound alarm"
+msgid "Foscam motion and sound alarms"
 msgstr ""
 
 msgctxt "#30144"

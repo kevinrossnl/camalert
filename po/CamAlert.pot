@@ -323,13 +323,13 @@ msgstr ""
 msgid "A request with 2-4 cameras shows them together in one multi-camera window."
 msgstr ""
 
-msgid "Pause TV meanwhile"
+msgid "Pause what is playing meanwhile"
 msgstr ""
 
 msgid "Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift."
 msgstr ""
 
-msgid "Return to previous channel"
+msgid "Return to what was playing"
 msgstr ""
 
 msgid "Switch back to what you were watching when the time is up."
@@ -377,7 +377,7 @@ msgstr ""
 msgid "Do not disturb"
 msgstr ""
 
-msgid "Blocks requests with normal priority. Also via the API, MQTT and Home Assistant."
+msgid "Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant."
 msgstr ""
 
 msgid "Do not disturb blocks"
@@ -386,7 +386,7 @@ msgstr ""
 msgid "Only between certain times"
 msgstr ""
 
-msgid "Ignore requests outside the chosen times."
+msgid "Ignore normal requests outside the chosen times. High and alarm always come through."
 msgstr ""
 
 msgid "From"
@@ -401,7 +401,7 @@ msgstr ""
 msgid "Not during a recording"
 msgstr ""
 
-msgid "Ignore requests while the receiver is recording."
+msgid "Ignore normal requests while the receiver is recording."
 msgstr ""
 
 msgid "Not while playing a recording or video"
@@ -410,7 +410,7 @@ msgstr ""
 msgid "Ignore normal requests while you watch a recording or a video file."
 msgstr ""
 
-msgid "Wake receiver on alarm"
+msgid "Wake up on alarm"
 msgstr ""
 
 msgid "Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on."
@@ -542,7 +542,7 @@ msgstr ""
 msgid "While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate)."
 msgstr ""
 
-msgid "PTZ key"
+msgid "Camera control (PTZ) key"
 msgstr ""
 
 msgid "For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home)."
@@ -560,10 +560,10 @@ msgstr ""
 msgid "Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced."
 msgstr ""
 
-msgid "Foscam motion alarms"
+msgid "Foscam motion and sound alarms"
 msgstr ""
 
-msgid "Asks Foscam cameras from %s every 2 seconds for a motion or sound alarm."
+msgid "Asks the Foscam cameras in %s for motion and sound alarms."
 msgstr ""
 
 msgid "Foscam priority"
@@ -642,4 +642,34 @@ msgid "Channel list '%s' with %d cameras created."
 msgstr ""
 
 msgid "Choose a default camera first."
+msgstr ""
+
+msgid "Camera file (direct mode)"
+msgstr ""
+
+msgid "Empty = cameras.conf in the add-on data folder. One camera per line: name | rtsp-url | snapshot-url"
+msgstr ""
+
+msgid "Live stream format"
+msgstr ""
+
+msgid "MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds."
+msgstr ""
+
+msgid "Not while playing"
+msgstr ""
+
+msgid "Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through."
+msgstr ""
+
+msgid "Check every (seconds)"
+msgstr ""
+
+msgid "Camera user (default)"
+msgstr ""
+
+msgid "Used when devices.conf has no user or password for a camera."
+msgstr ""
+
+msgid "Camera password (default)"
 msgstr ""

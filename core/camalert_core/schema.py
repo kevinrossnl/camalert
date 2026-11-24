@@ -9,6 +9,11 @@ type), the tests list the difference as KNOWN with issue #39, which aligns the p
 (`_add()` in __init__.py, the setup list) and the Kodi settings.xml / klogic.DEFAULTS are checked against this
 schema by tests/enigma2/test_settings_schema.py and tests/kodi/test_settings_schema.py.
 
+Version 2 (#39) = the target semantics on every player: chime off/high/all, skip_playing off/video/all (also on
+Enigma2, replaces skip_media), trigger priority normal/high/alarm, Frigate/Foscam with own display mode, duration
+(step 5) and Foscam check interval, Foscam alarms off by default, duration step 5, live volume step 10, HTTP port
+1024-65535, certificates checked by default. migrate() turns settings saved by a version-1 player into this.
+
 Validation is done by hand (no jsonschema on the boxes): validate(values) keeps every valid value and falls
 back to the default for anything broken, like `_add()` does on Enigma2 and parse_settings() on Kodi.
 Export/import and migrations (#7) build on SCHEMA_VERSION and validate().
@@ -18,7 +23,7 @@ Export/import and migrations (#7) build on SCHEMA_VERSION and validate().
     keys  {platform: key} where a player stores the setting under another name today (#39)
     level  basic / advanced / expert (shown to more experienced users) / internal (never shown)
 """
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 SECTIONS = ("general", "display", "rules", "triggers", "camera_control", "home_assistant", "api", "channels", "log")
 LEVELS = ("basic", "advanced", "expert", "internal")
 TYPES = ("bool", "int", "choice", "text", "password", "time")
@@ -60,8 +65,8 @@ SETTINGS = [
     S('duration', 'display', 'basic', 'int', 30, min=5, max=300, step=5, unit='s', platforms=('enigma2', 'kodi'), label='Duration (seconds)', help='How long the camera stays on screen.', kodi_label=30045),
     S('position', 'display', 'basic', 'choice', 'top_right', choices=('top_right', 'top_left', 'bottom_right', 'bottom_left'), platforms=('enigma2', 'kodi'), label='Window position', kodi_label=30047),
     S('size', 'display', 'basic', 'choice', 'medium', choices=('small', 'medium', 'large'), platforms=('enigma2', 'kodi'), label='Window size', kodi_label=30052),
-    S('live_return', 'display', 'advanced', 'bool', True, platforms=('enigma2', 'kodi'), keys={'kodi': 'live_resume'}, label='Return to previous channel', help='Switch back to what you were watching when the time is up.', kodi_label=30070),
-    S('pause_tv', 'display', 'advanced', 'bool', False, platforms=('enigma2', 'kodi'), label='Pause TV meanwhile', help='Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift.', kodi_label=30068),
+    S('live_return', 'display', 'advanced', 'bool', True, platforms=('enigma2', 'kodi'), keys={'kodi': 'live_resume'}, label='Return to what was playing', help='Switch back to what you were watching when the time is up.', kodi_label=30070),
+    S('pause_tv', 'display', 'advanced', 'bool', False, platforms=('enigma2', 'kodi'), label='Pause what is playing meanwhile', help='Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift.', kodi_label=30068),
     S('live_volume', 'display', 'advanced', 'int', 100, min=0, max=100, step=10, unit='%', platforms=('enigma2', 'kodi'), label='Volume during live view (%)', help='Percentage of the current volume while the camera is shown. 100 = unchanged.', kodi_label=30072),
     S('window_keys', 'display', 'advanced', 'bool', True, platforms=('enigma2', 'kodi'), label='Remote control in photo window', help='OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too.', kodi_label=30066),
     S('tour_interval', 'display', 'advanced', 'int', 8, min=3, max=60, step=1, unit='s', platforms=('enigma2', 'kodi'), label='Tour: seconds per camera', kodi_label=30078),
@@ -72,30 +77,29 @@ SETTINGS = [
     S('chime', 'display', 'advanced', 'choice', 'off', choices=('off', 'high', 'all'), platforms=('enigma2', 'kodi'), label='Doorbell chime', help='Plays a short ding-dong for requests with priority high or alarm (doorbell).', kodi_label=30232),
     S('picons', 'display', 'advanced', 'bool', False, platforms=('enigma2',), label='Picons for the camera channels', help='Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced.'),
     S('live_format', 'display', 'expert', 'choice', 'mp4', choices=('mp4', 'hls', 'rtsp'), platforms=('kodi',), label='Live stream format', help="MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds.", kodi_label=30074),
-    S('skip_recording', 'rules', 'advanced', 'bool', False, platforms=('enigma2',), label='Not during a recording', help='Ignore requests while the receiver is recording.'),
-    S('limit_hours', 'rules', 'basic', 'bool', False, platforms=('enigma2', 'kodi'), label='Only between certain times', help='Ignore requests outside the chosen times.', kodi_label=30090),
+    S('skip_recording', 'rules', 'advanced', 'bool', False, platforms=('enigma2',), label='Not during a recording', help='Ignore normal requests while the receiver is recording.'),
+    S('limit_hours', 'rules', 'basic', 'bool', False, platforms=('enigma2', 'kodi'), label='Only between certain times', help='Ignore normal requests outside the chosen times. High and alarm always come through.', kodi_label=30090),
     S('from_time', 'rules', 'basic', 'time', '07:00', platforms=('enigma2', 'kodi'), label='From', kodi_label=30092),
     S('until_time', 'rules', 'basic', 'time', '23:00', platforms=('enigma2', 'kodi'), label='Until', help='May pass midnight, e.g. 07:00 to 23:00.', kodi_label=30093),
-    S('alarm_wake', 'rules', 'advanced', 'bool', False, platforms=('enigma2', 'kodi'), label='Wake receiver on alarm', help="Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on.", kodi_label=30100),
-    S('dnd', 'rules', 'basic', 'bool', False, platforms=('enigma2', 'kodi'), label='Do not disturb', help='Blocks requests with normal priority. Also via the API, MQTT and Home Assistant.', kodi_label=30102),
+    S('alarm_wake', 'rules', 'advanced', 'bool', False, platforms=('enigma2', 'kodi'), label='Wake up on alarm', help="Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on.", kodi_label=30100),
+    S('dnd', 'rules', 'basic', 'bool', False, platforms=('enigma2', 'kodi'), label='Do not disturb', help="Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant.", kodi_label=30102),
     S('dnd_level', 'rules', 'advanced', 'choice', 'normal', choices=('normal', 'high'), platforms=('enigma2', 'kodi'), label='Do not disturb blocks', kodi_label=30104),
-    S('skip_media', 'rules', 'advanced', 'bool', False, platforms=('enigma2',), label='Not while playing a recording or video', help='Ignore normal requests while you watch a recording or a video file.'),
     S('cooldown', 'rules', 'expert', 'text', '', platforms=('enigma2', 'kodi'), label='Cooldown per camera', help='Seconds before the same camera is shown again, e.g. *=30|garden=120 (* = all cameras). Alarm always.', kodi_label=30255),
-    S('skip_playing', 'rules', 'advanced', 'choice', 'off', choices=('off', 'video', 'all'), platforms=('kodi',), label='Not while playing', help='Normal-priority requests are ignored while you watch this. High and alarm always pass.', kodi_label=30095),
+    S('skip_playing', 'rules', 'advanced', 'choice', 'off', choices=('off', 'video', 'all'), platforms=('enigma2', 'kodi'), label='Not while playing', help='Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through.', kodi_label=30095),
     S('frigate_enabled', 'triggers', 'advanced', 'bool', False, platforms=('enigma2', 'kodi'), label='Frigate events', help='Shows the camera when Frigate detects something (via MQTT, without Home Assistant).', kodi_label=30130),
     S('frigate_prefix', 'triggers', 'expert', 'text', 'frigate', platforms=('enigma2', 'kodi'), label='Frigate MQTT prefix', help="Usually 'frigate'.", kodi_label=30132),
     S('frigate_labels', 'triggers', 'advanced', 'text', 'person', platforms=('enigma2', 'kodi'), label='Frigate objects', help='Comma separated, e.g. person,car. Empty = all objects.', kodi_label=30134),
     S('frigate_map', 'triggers', 'advanced', 'text', '', platforms=('enigma2', 'kodi'), label='Frigate camera names', help='Only if the names differ from go2rtc: frigate=go2rtc|other=other_stream', kodi_label=30136),
     S('frigate_priority', 'triggers', 'advanced', 'choice', 'normal', choices=('normal', 'high', 'alarm'), platforms=('enigma2', 'kodi'), label='Frigate priority', kodi_label=30139),
-    S('foscam_enabled', 'triggers', 'advanced', 'bool', False, platforms=('enigma2', 'kodi'), keys={'enigma2': 'foscam_poll'}, label='Foscam motion alarms', help='Asks Foscam cameras from %s every 2 seconds for a motion or sound alarm.', kodi_label=30143),
+    S('foscam_enabled', 'triggers', 'advanced', 'bool', False, platforms=('enigma2', 'kodi'), keys={'enigma2': 'foscam_poll'}, label='Foscam motion and sound alarms', help='Asks the Foscam cameras in %s for motion and sound alarms.', kodi_label=30143),
     S('foscam_priority', 'triggers', 'advanced', 'choice', 'normal', choices=('normal', 'high', 'alarm'), platforms=('enigma2', 'kodi'), keys={'enigma2': 'device_priority'}, label='Foscam priority', kodi_label=30139),
     S('frigate_url', 'triggers', 'expert', 'text', '', platforms=('enigma2', 'kodi'), label='Frigate address (for clips)', help='Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an event from the event list.', kodi_label=30237),
-    S('frigate_mode', 'triggers', 'advanced', 'choice', 'photo', choices=('photo', 'live', 'notify'), platforms=('kodi',), label='Display mode', kodi_label=30040),
-    S('frigate_seconds', 'triggers', 'advanced', 'int', 30, min=5, max=300, step=1, unit='s', platforms=('kodi',), label='Duration (seconds)', kodi_label=30045),
-    S('foscam_interval', 'triggers', 'expert', 'int', 2, min=1, max=60, step=1, unit='s', platforms=('kodi',), label='Check every (seconds)', kodi_label=30145),
-    S('foscam_mode', 'triggers', 'advanced', 'choice', 'photo', choices=('photo', 'live', 'notify'), platforms=('kodi',), label='Display mode', kodi_label=30040),
-    S('foscam_seconds', 'triggers', 'advanced', 'int', 30, min=5, max=300, step=1, unit='s', platforms=('kodi',), label='Duration (seconds)', kodi_label=30045),
-    S('ptz_key', 'camera_control', 'advanced', 'choice', 'blue', choices=('blue', 'yellow', 'red', 'green', 'off'), platforms=('enigma2', 'kodi'), label='PTZ key', help='For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home).', kodi_label=30239),
+    S('frigate_mode', 'triggers', 'advanced', 'choice', 'photo', choices=('photo', 'live', 'notify'), platforms=('enigma2', 'kodi'), label='Display mode', kodi_label=30040),
+    S('frigate_seconds', 'triggers', 'advanced', 'int', 30, min=5, max=300, step=5, unit='s', platforms=('enigma2', 'kodi'), label='Duration (seconds)', kodi_label=30045),
+    S('foscam_interval', 'triggers', 'expert', 'int', 2, min=1, max=60, step=1, unit='s', platforms=('enigma2', 'kodi'), label='Check every (seconds)', kodi_label=30145),
+    S('foscam_mode', 'triggers', 'advanced', 'choice', 'photo', choices=('photo', 'live', 'notify'), platforms=('enigma2', 'kodi'), label='Display mode', kodi_label=30040),
+    S('foscam_seconds', 'triggers', 'advanced', 'int', 30, min=5, max=300, step=5, unit='s', platforms=('enigma2', 'kodi'), label='Duration (seconds)', kodi_label=30045),
+    S('ptz_key', 'camera_control', 'advanced', 'choice', 'blue', choices=('blue', 'yellow', 'red', 'green', 'off'), platforms=('enigma2', 'kodi'), label='Camera control (PTZ) key', help='For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home).', kodi_label=30239),
     S('ha_buttons', 'camera_control', 'advanced', 'bool', True, platforms=('enigma2', 'kodi'), label='Colour keys to Home Assistant', help='While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate).', kodi_label=30245),
     S('ptz_user', 'camera_control', 'advanced', 'text', '', platforms=('kodi',), label='Camera user (default)', help='Used when devices.conf has no user or password for a camera.', kodi_label=30152),
     S('ptz_password', 'camera_control', 'advanced', 'password', '', platforms=('kodi',), label='Camera password (default)', help='Used when devices.conf has no user or password for a camera.', kodi_label=30154),
@@ -188,3 +192,32 @@ def validate(values, platform=None):
             clean[k] = s.default
             problems.append(k)
     return clean, problems
+
+
+# Saved settings of a version-1 player -> schema ids (#39). Kept after the players are aligned, so old settings
+# files still load.
+RENAMED_V1 = {
+    "enigma2": {"foscam_poll": "foscam_enabled", "device_priority": "foscam_priority"},
+    "kodi": {"live_resume": "live_return", "refresh_map": "refresh"},
+}
+_TRUE = ("true", "1", "yes", "on")
+
+
+def migrate(values, platform):
+    """Settings as a player saved them (its own keys, version-1 meanings) -> {schema id: value} with version-2
+    meanings; run validate() on the result. Renamed keys move (the new key wins if both are there), the
+    Enigma2 yes/no chime becomes 'high' / 'off' (it rang for high and alarm), skip_media = yes becomes
+    skip_playing = 'video'. Unknown keys stay (validate() drops them)."""
+    out = dict(values)
+    for old, new in RENAMED_V1.get(platform, {}).items():
+        if old in out:
+            value = out.pop(old)
+            out.setdefault(new, value)
+    chime = out.get("chime")
+    if isinstance(chime, bool) or str(chime).strip().lower() in _TRUE + ("false", "0", "no", ""):
+        out["chime"] = "high" if chime is True or str(chime).strip().lower() in _TRUE else "off"
+    if "skip_media" in out:
+        media = out.pop("skip_media")
+        if "skip_playing" not in out:
+            out["skip_playing"] = "video" if media is True or str(media).strip().lower() in _TRUE else "off"
+    return out

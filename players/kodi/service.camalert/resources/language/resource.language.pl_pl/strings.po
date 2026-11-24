@@ -162,8 +162,8 @@ msgid "e.g. http://192.168.1.10:5000 - lets you replay Frigate clips from the ev
 msgstr "np. http://192.168.1.10:5000 - pozwala odtwarzać klipy Frigate z listy zdarzeń."
 
 msgctxt "#30239"
-msgid "Colour key for camera control"
-msgstr "Kolorowy klawisz sterowania"
+msgid "Camera control (PTZ) key"
+msgstr "Przycisk sterowania kamerą (PTZ)"
 
 msgctxt "#30240"
 msgid "On cameras with PTZ this key toggles camera control (MENU works too)."
@@ -194,8 +194,8 @@ msgid "While a camera is shown the colour keys trigger a Home Assistant event (e
 msgstr "Gdy kamera jest widoczna, kolorowe klawisze wysyłają zdarzenie do Home Assistant (np. otwórz drzwi)."
 
 msgctxt "#30247"
-msgid "Log"
-msgstr "Dziennik"
+msgid "Log level"
+msgstr "Poziom logowania"
 
 msgctxt "#30248"
 msgid "camalert.log in the add-on data folder (2 x 1 MB), besides kodi.log. Passwords are never logged."
@@ -226,16 +226,16 @@ msgid "%s - camera not reachable"
 msgstr "%s - kamera nieosiągalna"
 
 msgctxt "#30255"
-msgid "Wait before showing a camera again"
-msgstr "Odstęp przed ponownym pokazaniem kamery"
+msgid "Cooldown per camera"
+msgstr "Przerwa dla kamery"
 
 msgctxt "#30256"
 msgid "Seconds per camera, e.g. *=30|garden=120 (* = all). An open window is still extended; alarm always passes."
 msgstr "Sekundy na kamerę, np. *=30|ogrod=120 (* = wszystkie). Otwarte okno jest przedłużane; alarm zawsze przechodzi."
 
 msgctxt "#30257"
-msgid "Live substreams"
-msgstr "Strumienie podrzędne na żywo"
+msgid "Live view substreams"
+msgstr "Strumienie pomocnicze na żywo"
 
 msgctxt "#30258"
 msgid "For a camera this Kodi cannot play smoothly (H.265 / 4K): front_door=front_door_sub|... (go2rtc stream names)."
@@ -414,16 +414,16 @@ msgid "Grid (2x2)"
 msgstr "Siatka (2x2)"
 
 msgctxt "#30062"
-msgid "Rotate / mirror per camera"
-msgstr "Obrót / odbicie dla kamery"
+msgid "Turn or mirror image"
+msgstr "Obróć lub odbij obraz"
 
 msgctxt "#30063"
 msgid "e.g. front_door=rot180|garden=mirror (rot180, mirror, flip)"
 msgstr "np. drzwi=rot180|ogrod=mirror (rot180, mirror, flip)"
 
 msgctxt "#30064"
-msgid "Refresh interval per camera"
-msgstr "Odświeżanie dla kamery"
+msgid "Refresh interval"
+msgstr "Odstęp odświeżania"
 
 msgctxt "#30065"
 msgid "Seconds between pictures, e.g. front_door=0.5|garden=5. Default: as fast as possible."
@@ -494,8 +494,8 @@ msgid "Only between certain times"
 msgstr "Tylko w określonych godzinach"
 
 msgctxt "#30091"
-msgid "Ignore normal requests outside the chosen times."
-msgstr "Ignoruj zwykłe żądania poza wybranymi godzinami."
+msgid "Ignore normal requests outside the chosen times. High and alarm always come through."
+msgstr "Ignorowanie normalnych żądań poza wybranymi godzinami. Wysoki i alarm zawsze przechodzą."
 
 msgctxt "#30092"
 msgid "From"
@@ -530,8 +530,8 @@ msgid "Not during anything (also live TV)"
 msgstr "Nigdy podczas odtwarzania (także TV)"
 
 msgctxt "#30100"
-msgid "Wake screen on alarm"
-msgstr "Wybudź ekran przy alarmie"
+msgid "Wake up on alarm"
+msgstr "Wybudzanie przy alarmie"
 
 msgctxt "#30101"
 msgid "Requests with priority 'alarm' switch the TV on via HDMI-CEC."
@@ -542,8 +542,8 @@ msgid "Do not disturb"
 msgstr "Nie przeszkadzać"
 
 msgctxt "#30103"
-msgid "Ignores requests. Alarm always gets through."
-msgstr "Ignoruje żądania. Alarm zawsze przechodzi."
+msgid "Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant."
+msgstr "Ignoruje żądania o normalnym priorytecie (z 'Nie przeszkadzać blokuje' także wysokie). Alarm zawsze przechodzi. Także przez API, MQTT i Home Assistant."
 
 msgctxt "#30104"
 msgid "Do not disturb blocks"
@@ -658,8 +658,8 @@ msgid "Alarm"
 msgstr "Alarm"
 
 msgctxt "#30143"
-msgid "Foscam motion and sound alarm"
-msgstr "Alarm ruchu i dźwięku Foscam"
+msgid "Foscam motion and sound alarms"
+msgstr "Alarmy ruchu i dźwięku Foscam"
 
 msgctxt "#30144"
 msgid "Asks the Foscam cameras in devices.conf for motion and sound alarms."

@@ -432,17 +432,17 @@ msgstr "Układ okna z kilkoma kamerami"
 msgid "A request with 2-4 cameras shows them together in one multi-camera window."
 msgstr "Żądanie z 2-4 kamerami pokazuje je razem w oknie z kilkoma kamerami."
 
-#: e2
-msgid "Pause TV meanwhile"
-msgstr "Wstrzymaj w tym czasie TV"
+#: e2 kodi:30068
+msgid "Pause what is playing meanwhile"
+msgstr "Wstrzymaj odtwarzanie w tym czasie"
 
 #: e2
 msgid "Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift."
 msgstr "Wstrzymuje kanał (timeshift), gdy widać kamerę. Wymaga dysku lub pendrive'a do timeshiftu."
 
-#: e2
-msgid "Return to previous channel"
-msgstr "Wróć do poprzedniego kanału"
+#: e2 kodi:30070
+msgid "Return to what was playing"
+msgstr "Wróć do poprzedniego odtwarzania"
 
 #: e2
 msgid "Switch back to what you were watching when the time is up."
@@ -468,7 +468,7 @@ msgstr "normalny"
 msgid "as fast as possible"
 msgstr "jak najszybciej"
 
-#: e2
+#: e2 kodi:30062
 msgid "Turn or mirror image"
 msgstr "Obróć lub odbij obraz"
 
@@ -476,7 +476,7 @@ msgstr "Obróć lub odbij obraz"
 msgid "Press OK to turn a camera that hangs upside down (needs python3-pillow)."
 msgstr "Naciśnij OK, aby obrócić kamerę zamontowaną do góry nogami (wymaga python3-pillow)."
 
-#: e2
+#: e2 kodi:30064
 msgid "Refresh interval"
 msgstr "Odstęp odświeżania"
 
@@ -484,7 +484,7 @@ msgstr "Odstęp odświeżania"
 msgid "Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."
 msgstr "Naciśnij OK, aby rzadziej pobierać zdjęcia z kamery (sekundy), np. z wolnej kamery."
 
-#: e2
+#: e2 kodi:30255
 msgid "Cooldown per camera"
 msgstr "Przerwa dla kamery"
 
@@ -492,7 +492,7 @@ msgstr "Przerwa dla kamery"
 msgid "Seconds before the same camera is shown again, e.g. *=30|garden=120 (* = all cameras). Alarm always."
 msgstr "Sekundy, zanim ta sama kamera zostanie znów pokazana, np. *=30|garden=120 (* = wszystkie). Alarm zawsze."
 
-#: e2
+#: e2 kodi:30257
 msgid "Live view substreams"
 msgstr "Strumienie pomocnicze na żywo"
 
@@ -504,9 +504,9 @@ msgstr "Dla kamer, których odbiornik nie odtworzy (H.265/4K): front_door=front_
 msgid "Do not disturb"
 msgstr "Nie przeszkadzać"
 
-#: e2
-msgid "Blocks requests with normal priority. Also via the API, MQTT and Home Assistant."
-msgstr "Blokuje żądania o normalnym priorytecie. Także przez API, MQTT i Home Assistant."
+#: e2 kodi:30103
+msgid "Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant."
+msgstr "Ignoruje żądania o normalnym priorytecie (z 'Nie przeszkadzać blokuje' także wysokie). Alarm zawsze przechodzi. Także przez API, MQTT i Home Assistant."
 
 #: e2 kodi:30104
 msgid "Do not disturb blocks"
@@ -516,9 +516,9 @@ msgstr "Nie przeszkadzać blokuje"
 msgid "Only between certain times"
 msgstr "Tylko w określonych godzinach"
 
-#: e2
-msgid "Ignore requests outside the chosen times."
-msgstr "Ignoruj żądania poza wybranymi godzinami."
+#: e2 kodi:30091
+msgid "Ignore normal requests outside the chosen times. High and alarm always come through."
+msgstr "Ignorowanie normalnych żądań poza wybranymi godzinami. Wysoki i alarm zawsze przechodzą."
 
 #: e2 kodi:30092
 msgid "From"
@@ -537,8 +537,8 @@ msgid "Not during a recording"
 msgstr "Nie podczas nagrywania"
 
 #: e2
-msgid "Ignore requests while the receiver is recording."
-msgstr "Ignoruj żądania podczas nagrywania."
+msgid "Ignore normal requests while the receiver is recording."
+msgstr "Ignorowanie normalnych żądań podczas nagrywania przez odbiornik."
 
 #: e2
 msgid "Not while playing a recording or video"
@@ -548,9 +548,9 @@ msgstr "Nie podczas odtwarzania nagrania lub wideo"
 msgid "Ignore normal requests while you watch a recording or a video file."
 msgstr "Ignoruj zwykłe żądania podczas oglądania nagrania lub pliku wideo."
 
-#: e2
-msgid "Wake receiver on alarm"
-msgstr "Wybudź odbiornik przy alarmie"
+#: e2 kodi:30100
+msgid "Wake up on alarm"
+msgstr "Wybudzanie przy alarmie"
 
 #: e2
 msgid "Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on."
@@ -724,9 +724,9 @@ msgstr "Kolorowe przyciski do Home Assistant"
 msgid "While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate)."
 msgstr "Gdy kamera jest na ekranie, kolorowe przyciski wysyłają zdarzenie do Home Assistant (np. otwórz bramę)."
 
-#: e2
-msgid "PTZ key"
-msgstr "Przycisk PTZ"
+#: e2 kodi:30239
+msgid "Camera control (PTZ) key"
+msgstr "Przycisk sterowania kamerą (PTZ)"
 
 #: e2
 msgid "For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home)."
@@ -748,13 +748,13 @@ msgstr "Pikony dla kanałów kamer"
 msgid "Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced."
 msgstr "Tworzy prosty pikon (kamera + nazwa) dla każdego kanału kamery; istniejące pikony nie są zastępowane."
 
-#: e2
-msgid "Foscam motion alarms"
-msgstr "Alarmy ruchu Foscam"
+#: e2 kodi:30143
+msgid "Foscam motion and sound alarms"
+msgstr "Alarmy ruchu i dźwięku Foscam"
 
 #: e2
-msgid "Asks Foscam cameras from %s every 2 seconds for a motion or sound alarm."
-msgstr "Co 2 sekundy pyta kamery Foscam z %s o alarm ruchu lub dźwięku."
+msgid "Asks the Foscam cameras in %s for motion and sound alarms."
+msgstr "Odpytuje kamery Foscam z %s o alarmy ruchu i dźwięku."
 
 #: e2
 msgid "Foscam priority"
@@ -768,7 +768,7 @@ msgstr "Folder zdjęć zdarzeń"
 msgid "Small photos of the last 20 events (default /tmp/camalert_events)."
 msgstr "Małe zdjęcia ostatnich 20 zdarzeń (domyślnie /tmp/camalert_events)."
 
-#: e2
+#: e2 kodi:30247
 msgid "Log level"
 msgstr "Poziom logowania"
 
@@ -860,6 +860,46 @@ msgstr "Utworzono listę '%s' z %d kamerami."
 msgid "Choose a default camera first."
 msgstr "Najpierw wybierz domyślną kamerę."
 
+#: e2 kodi:30022
+msgid "Camera file (direct mode)"
+msgstr "Plik kamer (tryb bezpośredni)"
+
+#: e2 kodi:30023
+msgid "Empty = cameras.conf in the add-on data folder. One camera per line: name | rtsp-url | snapshot-url"
+msgstr "Puste = cameras.conf w folderze danych. Jedna kamera w wierszu: nazwa | url-rtsp | url-zdjęcia"
+
+#: e2 kodi:30074
+msgid "Live stream format"
+msgstr "Format obrazu na żywo"
+
+#: e2 kodi:30075
+msgid "MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds."
+msgstr "MP4 przez HTTP działa z każdą instalacją go2rtc; RTSP wymaga portu RTSP go2rtc; HLS jest najbardziej niezawodny, ale ma kilka sekund opóźnienia."
+
+#: e2 kodi:30095
+msgid "Not while playing"
+msgstr "Nie podczas odtwarzania"
+
+#: e2
+msgid "Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through."
+msgstr "Ignorowanie normalnych żądań podczas odtwarzania wideo lub nagrania (wideo) albo czegokolwiek (wszystko). Wysoki i alarm zawsze przechodzą."
+
+#: e2 kodi:30145
+msgid "Check every (seconds)"
+msgstr "Sprawdzaj co (sekundy)"
+
+#: e2 kodi:30152
+msgid "Camera user (default)"
+msgstr "Użytkownik kamery (domyślny)"
+
+#: e2 kodi:30153
+msgid "Used when devices.conf has no user or password for a camera."
+msgstr "Używane, gdy devices.conf nie ma użytkownika lub hasła."
+
+#: e2 kodi:30154
+msgid "Camera password (default)"
+msgstr "Hasło kamery (domyślne)"
+
 #: kodi:30000
 msgid "General"
 msgstr "Ogólne"
@@ -928,10 +968,6 @@ msgstr "Każde żądanie"
 msgid "e.g. http://192.168.1.10:5000 - lets you replay Frigate clips from the event list."
 msgstr "np. http://192.168.1.10:5000 - pozwala odtwarzać klipy Frigate z listy zdarzeń."
 
-#: kodi:30239
-msgid "Colour key for camera control"
-msgstr "Kolorowy klawisz sterowania"
-
 #: kodi:30240
 msgid "On cameras with PTZ this key toggles camera control (MENU works too)."
 msgstr "Dla kamer PTZ ten klawisz włącza sterowanie (MENU też działa)."
@@ -939,10 +975,6 @@ msgstr "Dla kamer PTZ ten klawisz włącza sterowanie (MENU też działa)."
 #: kodi:30246
 msgid "While a camera is shown the colour keys trigger a Home Assistant event (e.g. open the door)."
 msgstr "Gdy kamera jest widoczna, kolorowe klawisze wysyłają zdarzenie do Home Assistant (np. otwórz drzwi)."
-
-#: kodi:30247
-msgid "Log"
-msgstr "Dziennik"
 
 #: kodi:30248
 msgid "camalert.log in the add-on data folder (2 x 1 MB), besides kodi.log. Passwords are never logged."
@@ -956,17 +988,9 @@ msgstr "Opcjonalnie, np. 192.168.1.10:514 (UDP). Puste = wyłączone."
 msgid "Home Assistant webhook"
 msgstr "Webhook Home Assistant"
 
-#: kodi:30255
-msgid "Wait before showing a camera again"
-msgstr "Odstęp przed ponownym pokazaniem kamery"
-
 #: kodi:30256
 msgid "Seconds per camera, e.g. *=30|garden=120 (* = all). An open window is still extended; alarm always passes."
 msgstr "Sekundy na kamerę, np. *=30|ogrod=120 (* = wszystkie). Otwarte okno jest przedłużane; alarm zawsze przechodzi."
-
-#: kodi:30257
-msgid "Live substreams"
-msgstr "Strumienie podrzędne na żywo"
 
 #: kodi:30258
 msgid "For a camera this Kodi cannot play smoothly (H.265 / 4K): front_door=front_door_sub|... (go2rtc stream names)."
@@ -979,14 +1003,6 @@ msgstr "Zalecane jest go2rtc. Bez go2rtc wpisz kamery do cameras.conf."
 #: kodi:30019
 msgid "Usually 8554. Only used with the RTSP live format."
 msgstr "Zwykle 8554. Używany tylko z formatem RTSP."
-
-#: kodi:30022
-msgid "Camera file (direct mode)"
-msgstr "Plik kamer (tryb bezpośredni)"
-
-#: kodi:30023
-msgid "Empty = cameras.conf in the add-on data folder. One camera per line: name | rtsp-url | snapshot-url"
-msgstr "Puste = cameras.conf w folderze danych. Jedna kamera w wierszu: nazwa | url-rtsp | url-zdjęcia"
 
 #: kodi:30025
 msgid "Camera name, e.g. front_door. Use 'Choose camera' to pick it from the list."
@@ -1012,17 +1028,9 @@ msgstr "Układ, gdy żądanie wymienia 2–4 kamery (okno ze zdjęciem)."
 msgid "Grid (2x2)"
 msgstr "Siatka (2x2)"
 
-#: kodi:30062
-msgid "Rotate / mirror per camera"
-msgstr "Obrót / odbicie dla kamery"
-
 #: kodi:30063
 msgid "e.g. front_door=rot180|garden=mirror (rot180, mirror, flip)"
 msgstr "np. drzwi=rot180|ogrod=mirror (rot180, mirror, flip)"
-
-#: kodi:30064
-msgid "Refresh interval per camera"
-msgstr "Odświeżanie dla kamery"
 
 #: kodi:30065
 msgid "Seconds between pictures, e.g. front_door=0.5|garden=5. Default: as fast as possible."
@@ -1032,29 +1040,13 @@ msgstr "Sekundy między obrazami, np. drzwi=0.5|ogrod=5. Domyślnie: jak najszyb
 msgid "OK = live, LEFT/RIGHT = other camera, MENU = PTZ, BACK = close. Any other key closes it too."
 msgstr "OK = na żywo, LEWO/PRAWO = inna kamera, MENU = PTZ, WSTECZ = zamknij. Każdy inny klawisz też zamyka."
 
-#: kodi:30068
-msgid "Pause what is playing meanwhile"
-msgstr "Wstrzymaj odtwarzanie w tym czasie"
-
 #: kodi:30069
 msgid "Pauses a video or live TV while the camera is shown and continues afterwards."
 msgstr "Wstrzymuje wideo lub TV na czas pokazu i potem wznawia."
 
-#: kodi:30070
-msgid "Return to what was playing"
-msgstr "Wróć do poprzedniego odtwarzania"
-
 #: kodi:30071
 msgid "After live view, continue the video at the same position or the same TV channel."
 msgstr "Po podglądzie wznawia wideo w tym samym miejscu lub ten sam kanał."
-
-#: kodi:30074
-msgid "Live stream format"
-msgstr "Format obrazu na żywo"
-
-#: kodi:30075
-msgid "MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds."
-msgstr "MP4 przez HTTP działa z każdą instalacją go2rtc; RTSP wymaga portu RTSP go2rtc; HLS jest najbardziej niezawodny, ale ma kilka sekund opóźnienia."
 
 #: kodi:30076
 msgid "MP4 (HTTP)"
@@ -1072,14 +1064,6 @@ msgstr "HLS (HTTP, kilka sekund opóźnienia)"
 msgid "How long each camera is shown in the tour."
 msgstr "Jak długo każda kamera jest pokazywana."
 
-#: kodi:30091
-msgid "Ignore normal requests outside the chosen times."
-msgstr "Ignoruj zwykłe żądania poza wybranymi godzinami."
-
-#: kodi:30095
-msgid "Not while playing"
-msgstr "Nie podczas odtwarzania"
-
 #: kodi:30096
 msgid "Normal-priority requests are ignored while you watch this. High and alarm always pass."
 msgstr "Zwykłe żądania są wtedy ignorowane. Wysoki i alarm zawsze przechodzą."
@@ -1096,17 +1080,9 @@ msgstr "Nie podczas filmów i nagrań"
 msgid "Not during anything (also live TV)"
 msgstr "Nigdy podczas odtwarzania (także TV)"
 
-#: kodi:30100
-msgid "Wake screen on alarm"
-msgstr "Wybudź ekran przy alarmie"
-
 #: kodi:30101
 msgid "Requests with priority 'alarm' switch the TV on via HDMI-CEC."
 msgstr "Żądania 'alarm' włączają TV przez HDMI-CEC."
-
-#: kodi:30103
-msgid "Ignores requests. Alarm always gets through."
-msgstr "Ignoruje żądania. Alarm zawsze przechodzi."
 
 #: kodi:30105
 msgid "Which priorities are held back while do not disturb is on."
@@ -1152,17 +1128,9 @@ msgstr "Wysoki"
 msgid "Alarm"
 msgstr "Alarm"
 
-#: kodi:30143
-msgid "Foscam motion and sound alarm"
-msgstr "Alarm ruchu i dźwięku Foscam"
-
 #: kodi:30144
 msgid "Asks the Foscam cameras in devices.conf for motion and sound alarms."
 msgstr "Odpytuje kamery Foscam z devices.conf o alarmy."
-
-#: kodi:30145
-msgid "Check every (seconds)"
-msgstr "Sprawdzaj co (sekundy)"
 
 #: kodi:30150
 msgid "Cameras with PTZ or Foscam alarms"
@@ -1171,18 +1139,6 @@ msgstr "Kamery z PTZ lub alarmem Foscam"
 #: kodi:30151
 msgid "Listed in devices.conf in the add-on data folder, one per line: name|onvif|address:80|user|password (or foscam, port 88)"
 msgstr "Wpisane w devices.conf w folderze danych, jedna w wierszu: nazwa|onvif|adres:80|użytkownik|hasło (lub foscam, port 88)"
-
-#: kodi:30152
-msgid "Camera user (default)"
-msgstr "Użytkownik kamery (domyślny)"
-
-#: kodi:30153
-msgid "Used when devices.conf has no user or password for a camera."
-msgstr "Używane, gdy devices.conf nie ma użytkownika lub hasła."
-
-#: kodi:30154
-msgid "Camera password (default)"
-msgstr "Hasło kamery (domyślne)"
 
 #: kodi:30155
 msgid "Create devices.conf (example)"

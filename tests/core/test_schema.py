@@ -63,6 +63,43 @@ class TestSchema(unittest.TestCase):
         self.assertEqual(schema.validate({"enabled": True, "http_port": 80})[1], ["http_port"])
         self.assertEqual(schema.validate({"from_time": "ab:cd"})[1], ["from_time"])
 
+    def test_target_semantics(self):
+        """#39: the same meaning, default, range and step on every player."""
+        b = schema.BY_ID
+        self.assertEqual(schema.SCHEMA_VERSION, 2)
+        self.assertEqual((b["chime"].choices, b["chime"].default), (("off", "high", "all"), "off"))
+        self.assertEqual((b["skip_playing"].choices, b["skip_playing"].platforms), (("off", "video", "all"), schema.PLATFORMS))
+        self.assertNotIn("skip_media", b)
+        for sid in ("frigate_priority", "foscam_priority"):
+            self.assertEqual(b[sid].choices, ("normal", "high", "alarm"))
+        self.assertFalse(b["foscam_enabled"].default)
+        self.assertTrue(b["verify_ssl"].default)
+        for sid in ("duration", "frigate_seconds", "foscam_seconds"):
+            self.assertEqual((b[sid].min, b[sid].max, b[sid].step), (5, 300, 5), sid)
+        self.assertEqual(b["live_volume"].step, 10)
+        self.assertEqual((b["http_port"].min, b["http_port"].max), (1024, 65535))
+        for sid in ("frigate_mode", "frigate_seconds", "foscam_interval", "foscam_mode", "foscam_seconds"):
+            self.assertEqual(b[sid].platforms, schema.PLATFORMS, sid)
+        platform_only = sorted(s.id for s in schema.SETTINGS if s.platforms != schema.PLATFORMS)
+        self.assertEqual(platform_only, ["auto_bouquet", "bouquet_name", "bouquet_position", "camera_file",
+                                         "event_folder", "live_format", "picons", "ptz_password", "ptz_user",
+                                         "skip_recording", "update_check", "update_checked", "update_seen"])
+
+    def test_migrate(self):
+        e2 = schema.migrate({"foscam_poll": "True", "device_priority": "high", "chime": True, "skip_media": "True",
+                             "duration": "30"}, "enigma2")
+        self.assertEqual(e2, {"foscam_enabled": "True", "foscam_priority": "high", "chime": "high",
+                              "skip_playing": "video", "duration": "30"})
+        clean, problems = schema.validate(e2)
+        self.assertEqual((clean["foscam_enabled"], clean["chime"], clean["skip_playing"], problems),
+                         (True, "high", "video", []))
+        self.assertEqual(schema.migrate({"chime": "false", "skip_media": False}, "enigma2"),
+                         {"chime": "off", "skip_playing": "off"})
+        self.assertEqual(schema.migrate({"skip_media": True, "skip_playing": "all"}, "enigma2"), {"skip_playing": "all"})
+        kodi = schema.migrate({"live_resume": "false", "refresh_map": "a=5", "refresh": "b=9", "chime": "all"}, "kodi")
+        self.assertEqual(kodi, {"live_return": "false", "refresh": "b=9", "chime": "all"})
+        self.assertEqual(schema.migrate({"x": 1}, "other"), {"x": 1})
+
     def test_every_id_appears_once_per_platform(self):
         for p in schema.PLATFORMS:
             keys = [s.key(p) for s in schema.for_platform(p)]

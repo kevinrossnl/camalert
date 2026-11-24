@@ -324,14 +324,14 @@ msgstr "Anordnung im Fenster mit mehreren Kameras"
 msgid "A request with 2-4 cameras shows them together in one multi-camera window."
 msgstr "Eine Anfrage mit 2-4 Kameras zeigt sie zusammen in einem Fenster mit mehreren Kameras."
 
-msgid "Pause TV meanwhile"
-msgstr "Fernsehen währenddessen anhalten"
+msgid "Pause what is playing meanwhile"
+msgstr "Wiedergabe währenddessen pausieren"
 
 msgid "Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift."
 msgstr "Hält den Kanal (Timeshift) an, solange die Kamera angezeigt wird. Benötigt Festplatte oder USB-Stick für Timeshift."
 
-msgid "Return to previous channel"
-msgstr "Zurück zum vorherigen Kanal"
+msgid "Return to what was playing"
+msgstr "Zurück zur vorherigen Wiedergabe"
 
 msgid "Switch back to what you were watching when the time is up."
 msgstr "Nach Ablauf zurück zum vorherigen Programm."
@@ -378,8 +378,8 @@ msgstr "Für Kameras, die der Receiver nicht abspielen kann (H.265/4K): front_do
 msgid "Do not disturb"
 msgstr "Nicht stören"
 
-msgid "Blocks requests with normal priority. Also via the API, MQTT and Home Assistant."
-msgstr "Blockiert Anfragen mit normaler Priorität. Auch per API, MQTT und Home Assistant."
+msgid "Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant."
+msgstr "Ignoriert Anfragen mit normaler Priorität (mit 'Nicht stören blockiert' auch hohe). Alarm kommt immer durch. Auch über die API, MQTT und Home Assistant."
 
 msgid "Do not disturb blocks"
 msgstr "Nicht stören blockiert"
@@ -387,8 +387,8 @@ msgstr "Nicht stören blockiert"
 msgid "Only between certain times"
 msgstr "Nur zu bestimmten Zeiten"
 
-msgid "Ignore requests outside the chosen times."
-msgstr "Anfragen außerhalb der gewählten Zeiten ignorieren."
+msgid "Ignore normal requests outside the chosen times. High and alarm always come through."
+msgstr "Normale Anfragen außerhalb der gewählten Zeiten ignorieren. Hoch und Alarm kommen immer durch."
 
 msgid "From"
 msgstr "Von"
@@ -402,8 +402,8 @@ msgstr "Darf über Mitternacht gehen, z. B. 07:00 bis 23:00."
 msgid "Not during a recording"
 msgstr "Nicht während einer Aufnahme"
 
-msgid "Ignore requests while the receiver is recording."
-msgstr "Anfragen ignorieren, während der Receiver aufnimmt."
+msgid "Ignore normal requests while the receiver is recording."
+msgstr "Normale Anfragen ignorieren, während der Receiver aufnimmt."
 
 msgid "Not while playing a recording or video"
 msgstr "Nicht bei Wiedergabe einer Aufnahme oder eines Videos"
@@ -411,8 +411,8 @@ msgstr "Nicht bei Wiedergabe einer Aufnahme oder eines Videos"
 msgid "Ignore normal requests while you watch a recording or a video file."
 msgstr "Normale Anfragen ignorieren, während du eine Aufnahme oder Videodatei ansiehst."
 
-msgid "Wake receiver on alarm"
-msgstr "Receiver bei Alarm wecken"
+msgid "Wake up on alarm"
+msgstr "Bei Alarm aufwecken"
 
 msgid "Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on."
 msgstr "Anfragen mit Priorität 'alarm' schalten den Receiver (und per HDMI-CEC den Fernseher) ein."
@@ -543,8 +543,8 @@ msgstr "Farbtasten an Home Assistant"
 msgid "While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate)."
 msgstr "Solange eine Kamera angezeigt wird, senden die Farbtasten ein Ereignis an Home Assistant (z. B. Tor öffnen)."
 
-msgid "PTZ key"
-msgstr "PTZ-Taste"
+msgid "Camera control (PTZ) key"
+msgstr "Taste für Kamerasteuerung (PTZ)"
 
 msgid "For cameras with PTZ in %s: this key switches PTZ mode on (arrows, CH+/CH-, OK = home)."
 msgstr "Für Kameras mit PTZ in %s: diese Taste schaltet den PTZ-Modus ein (Pfeile, CH+/CH-, OK = Grundstellung)."
@@ -561,11 +561,11 @@ msgstr "Picons für die Kamerakanäle"
 msgid "Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced."
 msgstr "Erstellt ein einfaches Picon (Kamera + Name) für jeden Kamerakanal; vorhandene Picons werden nie ersetzt."
 
-msgid "Foscam motion alarms"
-msgstr "Foscam-Bewegungsalarme"
+msgid "Foscam motion and sound alarms"
+msgstr "Foscam-Bewegungs- und Geräuschalarme"
 
-msgid "Asks Foscam cameras from %s every 2 seconds for a motion or sound alarm."
-msgstr "Fragt Foscam-Kameras aus %s alle 2 Sekunden nach einem Bewegungs- oder Geräuschalarm."
+msgid "Asks the Foscam cameras in %s for motion and sound alarms."
+msgstr "Fragt die Foscam-Kameras in %s nach Bewegungs- und Geräuschalarmen."
 
 msgid "Foscam priority"
 msgstr "Foscam-Priorität"
@@ -644,3 +644,33 @@ msgstr "Kanalliste '%s' mit %d Kameras erstellt."
 
 msgid "Choose a default camera first."
 msgstr "Bitte zuerst eine Standardkamera wählen."
+
+msgid "Camera file (direct mode)"
+msgstr "Kameradatei (direkt)"
+
+msgid "Empty = cameras.conf in the add-on data folder. One camera per line: name | rtsp-url | snapshot-url"
+msgstr "Leer = cameras.conf im Add-on-Datenordner. Eine Kamera pro Zeile: Name | RTSP-URL | Snapshot-URL"
+
+msgid "Live stream format"
+msgstr "Format der Live-Ansicht"
+
+msgid "MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds."
+msgstr "MP4 über HTTP funktioniert mit jeder go2rtc-Installation; RTSP braucht den RTSP-Port von go2rtc; HLS ist am robustesten, hängt aber ein paar Sekunden hinterher."
+
+msgid "Not while playing"
+msgstr "Nicht während der Wiedergabe"
+
+msgid "Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through."
+msgstr "Normale Anfragen ignorieren, während ein Video oder eine Aufnahme läuft (Video) oder während irgendetwas läuft (alles). Hoch und Alarm kommen immer durch."
+
+msgid "Check every (seconds)"
+msgstr "Prüfen alle (Sekunden)"
+
+msgid "Camera user (default)"
+msgstr "Kamerabenutzer (Standard)"
+
+msgid "Used when devices.conf has no user or password for a camera."
+msgstr "Wird benutzt, wenn devices.conf keinen Benutzer oder kein Passwort enthält."
+
+msgid "Camera password (default)"
+msgstr "Kamerapasswort (Standard)"

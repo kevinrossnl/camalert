@@ -1,6 +1,6 @@
 """The Kodi settings (resources/settings.xml and klogic.DEFAULTS/CHOICES/RANGES) against the settings schema (#38).
 
-Differences that #39 will remove are listed in KNOWN; their meaning/defaults are not changed yet."""
+Differences that the Kodi round of #39 removes are listed in KNOWN (a fixed one makes its entry stale)."""
 import os
 import re
 import unittest
@@ -11,19 +11,17 @@ import schemacheck
 
 ACTIONS = {"choose_camera", "devices", "diagnostics", "events", "show_mosaic", "show_tour", "test"}  # buttons
 HIDDEN = {"mqtt_password", "ptz_password", "token"}
-# (schema id, field) -> issue
+# (schema id, field) -> issue. What the Kodi player still has to change for schema version 2 (#39):
 KNOWN = {
     ("duration", "step"): "#39",       # Kodi slider step 1; schema (UI review): 5
+    ("frigate_seconds", "step"): "#39",
+    ("foscam_seconds", "step"): "#39",
     ("live_volume", "step"): "#39",    # Kodi step 1; schema: 10
-    ("live_return", "key"): "#39",     # Kodi key live_resume (also resumes a film)
+    ("live_return", "key"): "#39",     # Kodi key live_resume (schema.migrate)
     ("refresh", "key"): "#39",         # Kodi key refresh_map
-    # labels: Kodi words them differently from the Enigma2 msgids (one wording per concept: #39, glossary #38/#43)
-    ("alarm_wake", "label"): "#39", ("cooldown", "label"): "#39",
-    ("foscam_enabled", "label"): "#39", ("foscam_priority", "label"): "#39",
-    ("frigate_labels", "label"): "#39", ("frigate_priority", "label"): "#39", ("live_return", "label"): "#39",
-    ("log_level", "label"): "#39", ("orientation", "label"): "#39", ("pause_tv", "label"): "#39",
-    ("ptz_key", "label"): "#39", ("refresh", "label"): "#39",
-    ("substreams", "label"): "#39",
+    # one shared Kodi label id per category ("Objects", "Priority"): needs own ids 'Frigate objects' / 'Frigate
+    # priority' / 'Foscam priority' in settings.xml + strings.po
+    ("frigate_labels", "label"): "#39", ("frigate_priority", "label"): "#39", ("foscam_priority", "label"): "#39",
 }
 
 

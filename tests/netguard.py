@@ -1,9 +1,10 @@
 """Network guard for the tests (#73): no test may reach the network.
 
 Every outbound socket (TCP connect/connect_ex, UDP sendto/sendmsg) to an address that is not loopback raises
-NetworkBlocked and is recorded; tests/conftest.py installs the guard for the whole run and fails the test that caused
+NetworkBlocked and is recorded, and so does a DNS lookup of a real host name (getaddrinfo, gethostbyname[_ex]); tests/conftest.py installs the guard for the whole run and fails the test that caused
 an attempt, also when the code under test swallowed the error (a network error is usually caught and logged).
-Host names other than "localhost" are blocked too: they would need DNS. Local fakes (tests/fakes, e.g.
+Names under the reserved TLDs .invalid/.test/.example/.localhost (RFC 2606/6761) never resolve: they fail at once
+with socket.gaierror and are not recorded (tests use them on purpose; tests/fakes/dns.py answers some .example). Local fakes (tests/fakes, e.g.
 FakeGo2rtc().start()) listen on 127.0.0.1 and keep working.
 """
 import contextlib
@@ -18,8 +19,15 @@ _LOCK = threading.Lock()
 _ORIG = {}
 
 
+RESERVED = (".invalid", ".test", ".example", ".localhost")
+
+
 class NetworkBlocked(OSError):
     """An outbound socket to a non-loopback address during tests (#73)."""
+
+
+class NameBlocked(socket.gaierror):
+    """A DNS lookup of a real host name during tests (#73)."""
 
 
 def is_local(address):
@@ -69,15 +77,57 @@ def _guard(name):
     setattr(socket.socket, name, guarded)
 
 
+def _host_text(host):
+    return (host.decode("ascii", "replace") if isinstance(host, bytes) else str(host or "")).lower().rstrip(".")
+
+
+def check_name(host):
+    """Lets IP literals, localhost and None through; reserved names fail at once; real names are blocked."""
+    h = _host_text(host)
+    if is_local((h, 0)):
+        return
+    try:
+        ipaddress.ip_address(h.split("%", 1)[0])
+        return  # an address literal needs no DNS (connect() checks it)
+    except ValueError:
+        pass
+    try:
+        h.encode("idna")
+    except UnicodeError:
+        return  # not a valid host name: the resolver refuses it before any lookup
+    if h.endswith(RESERVED) or h in ("invalid", "test", "example"):
+        raise socket.gaierror(socket.EAI_NONAME, "Name or service not known (reserved name, #73)")
+    with _LOCK:
+        _BLOCKED.append((CURRENT["test"] or "<outside a test>", ("dns", h)))
+    raise NameBlocked(socket.EAI_NONAME, "DNS blocked during tests (#73): %r is a real host name; use 127.0.0.1, "
+                                         "a reserved name (.invalid) or tests/fakes/dns.py" % h)
+
+
+def _guard_resolver(name):
+    orig = getattr(socket, name)
+
+    def guarded(host, *args, **kwargs):
+        check_name(host)
+        return orig(host, *args, **kwargs)
+    guarded.__name__ = name
+    _ORIG["socket." + name] = orig
+    setattr(socket, name, guarded)
+
+
 def install():
     if not _ORIG:
         for name in ("connect", "connect_ex", "sendto", "sendmsg"):
             _guard(name)
+        for name in ("getaddrinfo", "gethostbyname", "gethostbyname_ex"):
+            _guard_resolver(name)
 
 
 def uninstall():
     for name, orig in _ORIG.items():
-        setattr(socket.socket, name, orig)
+        if name.startswith("socket."):
+            setattr(socket, name[len("socket."):], orig)
+        else:
+            setattr(socket.socket, name, orig)
     _ORIG.clear()
 
 

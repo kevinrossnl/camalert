@@ -34,6 +34,29 @@ class TestNetworkGuard(unittest.TestCase):
         self.assertIn(("go2rtc.example.invalid", 1984), seen)
         self.assertEqual(len(seen), 2)
 
+    def test_dns_of_real_names_is_blocked(self):
+        with netguard.expect_blocked() as seen:
+            for fn in (lambda h: socket.getaddrinfo(h, 80), socket.gethostbyname, socket.gethostbyname_ex):
+                with self.assertRaises(netguard.NameBlocked) as cm:
+                    fn("go2rtc.lan")
+                self.assertIsInstance(cm.exception, socket.gaierror)  # code under test sees "name not known"
+        self.assertEqual(seen, [("dns", "go2rtc.lan")] * 3)
+
+    def test_reserved_names_fail_without_dns_and_without_failing_the_test(self):
+        with netguard.expect_blocked() as seen:
+            for host in ("nothing.invalid", "cam.test", b"x.localhost."):
+                with self.assertRaises(socket.gaierror):
+                    socket.getaddrinfo(host, 80)
+            with self.assertRaises(UnicodeError):  # refused by Python itself, no lookup
+                socket.getaddrinfo("\udcff" + "x" * 300, 80)
+        self.assertEqual(seen, [])
+
+    def test_addresses_and_localhost_resolve(self):
+        self.assertEqual(socket.getaddrinfo("192.0.2.10", 80, socket.AF_INET)[0][4], ("192.0.2.10", 80))
+        self.assertTrue(socket.getaddrinfo("localhost", 80))
+        self.assertEqual(socket.gethostbyname("127.0.0.1"), "127.0.0.1")
+        self.assertTrue(socket.getaddrinfo(None, 80))
+
     def test_udp_to_the_lan_is_blocked(self):
         with netguard.expect_blocked() as seen:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:

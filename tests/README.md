@@ -39,7 +39,9 @@ Python 3.8 (Kodi 19) needs `pip install "pytest<8.4"`. Optional: `pyyaml` (bluep
 - `fakes/go2rtc.py`: fake go2rtc with demo cameras (solid-colour frames, `--unreachable`), for tests and screenshots; the Kodi
   module tests run against it (`FakeGo2rtc().start()` on 127.0.0.1).
 - **Network-free (#73):** `netguard.py`, installed by `conftest.py` for every pytest run, blocks outbound sockets (TCP
-  connect, UDP sendto) to anything but loopback with `NetworkBlocked` (an `OSError`) and fails the test that tried,
+  connect, UDP sendto) to anything but loopback with `NetworkBlocked` (an `OSError`) and DNS lookups of real host
+  names with `NameBlocked` (a `socket.gaierror`; reserved `.invalid`/`.test`/`.example` names fail at once and are
+  allowed), and fails the test that tried,
   also when the code under test swallowed the error; the run ends with a list of blocked addresses. Use a fake on
   127.0.0.1 (`tests/fakes`) instead of a real server; `netguard.expect_blocked()` is only for the guard's own tests
   (`test_network_guard.py`).

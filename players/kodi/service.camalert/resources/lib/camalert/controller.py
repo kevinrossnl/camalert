@@ -18,7 +18,7 @@ from .camalert_core.cameras import known_camera, neighbour, parse_cams, slug
 from .camalert_core.api import screen_name
 from .camalert_core.events import TEST_SOURCE, add_event, event_title, is_test
 from .camalert_core.keymap import button_event, colour_action
-from .camalert_core.present import reason as reason_code
+from .camalert_core.present import priority_label, reason as reason_code
 from .camalert_core.rules import (blocked_by_rules, clamp_seconds, clock_tuple, cooldown_seconds, decide, dnd_blocks,
                                   in_cooldown, in_time_window, pick_mode, pick_priority)
 
@@ -57,6 +57,15 @@ def live_item(url, title):
         li.setMimeType(mime)
     li.setContentLookup(False)
     return li
+
+
+
+def notification_text(title, priority):
+    """'Camera: Person · Front door' (+ '  ·  High' / 'Alarm' for a higher priority), like Enigma2 (#49)."""
+    text = kodiapi.tr(30180).replace("%s", title)
+    if priority in ("high", "alarm"):
+        text += "  ·  " + priority_label(priority, kodiapi.core_tr())
+    return text
 
 
 class Controller(object):
@@ -264,7 +273,7 @@ class Controller(object):
                                             s["verify_ssl"])
                 except Exception as e:
                     kodiapi.log("snapshot for notification failed: %s" % e)
-            kodiapi.notify("CamAlert", kodiapi.tr(30180).replace("%s", title), icon, seconds * 1000)
+            kodiapi.notify("CamAlert", notification_text(title, priority), icon, seconds * 1000)
             if icon:
                 threading.Timer(seconds + 5, lambda: os.path.exists(icon) and os.remove(icon)).start()
             if self.paused:

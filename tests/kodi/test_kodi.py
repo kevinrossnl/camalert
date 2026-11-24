@@ -548,6 +548,27 @@ class _KodiModules(object):
             for k in ("cooldown", "camera", "substreams", "server"):
                 Built.store.pop(k, None)
 
+    def test_notification_says_the_priority(self):
+        """#49: the notification has the label and, for high/alarm, the translated priority, like Enigma2."""
+        ctl_mod, kodiapi = Built.module("controller"), Built.module("kodiapi")
+        notified = []
+        self.addCleanup(setattr, kodiapi, "notify", kodiapi.notify)
+        kodiapi.notify = lambda heading, message, *a, **kw: notified.append(message)
+        Built.store.update({"camera": "garden", "server": self.go2rtc.url})
+        try:
+            ctl = ctl_mod.Controller()
+            self.assertEqual(ctl.show("garden", 10, "notify", "high", "api", "Person"), "show")
+            ctl.last_shown.clear()
+            self.assertEqual(ctl.show("garden", 10, "notify", "normal", "api"), "show")
+        finally:
+            for k in ("camera", "server"):
+                Built.store.pop(k, None)
+        self.assertEqual(len(notified), 2, notified)
+        self.assertIn("Person", notified[0])
+        self.assertTrue(notified[0].endswith("  ·  High"), notified[0])
+        self.assertNotIn("·", notified[1])
+        self.assertEqual(ctl_mod.notification_text("Garden", "alarm"), kodiapi.tr(30180).replace("%s", "Garden") + "  ·  Alarm")
+
     def test_status_screen(self):
         """#63: status "screen" on Kodi: mosaic/tour over the window over live view."""
         import types

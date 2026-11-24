@@ -6,6 +6,7 @@ from homeassistant.const import STATE_UNAVAILABLE
 from custom_components.camalert import player_device
 
 from conftest import DOMAIN, setup_player
+from fake_player import FakePlayer
 
 SENSOR = "sensor.living_room_camera_on_screen"
 
@@ -38,6 +39,21 @@ async def test_device_model_from_platform(hass, player, kodi):
     assert (e2.model, e2.manufacturer, e2.sw_version, e2.name) == ("Enigma2 receiver", "CamAlert", "1.0.0",
                                                                   "Living room")
     assert k.model == "Kodi"
+
+
+async def test_android_tv_player(hass, socket_enabled):
+    """#64: a player with platform androidtv (the Android TV / Fire TV app) is a normal CamAlert player."""
+    atv = await FakePlayer(platform="androidtv", name="Fire TV", node_id="node-3").start()
+    try:
+        entry = await setup_player(hass, atv)
+        assert entry.state is ConfigEntryState.LOADED
+        dev = player_device(hass, entry)
+        assert (dev.model, dev.manufacturer) == ("Android TV", "CamAlert")
+        assert hass.states.get("sensor.fire_tv_camera_on_screen").state == "none"
+        await hass.services.async_call(DOMAIN, "hide", {}, blocking=True)
+        assert atv.actions()[-1] == ("POST", "/camalert/hide")
+    finally:
+        await atv.stop()
 
 
 async def test_older_player_without_api_version(hass, player):

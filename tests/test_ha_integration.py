@@ -91,6 +91,7 @@ class TestIntegration(unittest.TestCase):
     def test_models(self):
         self.assertEqual(api.model("enigma2"), "Enigma2 receiver")
         self.assertEqual(api.model("kodi"), "Kodi")
+        self.assertEqual(api.model("androidtv"), "Android TV")  # #64
         self.assertEqual(api.model(None), "Enigma2 receiver")  # older players
         self.assertEqual(api.model("other"), "CamAlert player (other)")
 

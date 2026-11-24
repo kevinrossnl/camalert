@@ -1,7 +1,8 @@
 name: build and release
 # GitHub only (the Forgejo CI is .forgejo/workflows/tests.yml). Every push and pull request: hassfest, the HACS
 # check, the tests and the packages. A tag vX.Y.Z (= __version__) also creates the GitHub release with the packages
-# and publishes GitHub Pages (Settings › Pages › Source: GitHub Actions): the opkg feed and the Kodi repository.
+# and publishes GitHub Pages (Settings › Pages › Source: GitHub Actions): the opkg feed, the Kodi repository and a
+# start page (index.html from .github/pages/index.html).
 # While the repository is private the HACS check and Pages are skipped (not failed).
 # The Pages site only holds the packages of the LATEST release; older versions stay available as release assets.
 # The Android TV app is not released yet: no APK until release signing exists (#65).
@@ -98,15 +99,15 @@ jobs:
             dist/service.camalert-*.zip
             dist/repository.camalert-*.zip
             dist/camalert-homeassistant-*.zip
-      - name: opkg feed (Packages / Packages.gz) and Kodi repository for GitHub Pages
+      - name: opkg feed (Packages / Packages.gz), Kodi repository and start page for GitHub Pages
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          mkdir -p feed
-          cp dist/*.ipk feed/
-          python3 tools/build_feed.py feed
-          printf 'src/gz camalert https://%s.github.io/camalert\n' "${{ github.repository_owner }}" > feed/camalert-feed.conf
           mkdir -p feed/kodi
+          cp dist/*.ipk feed/
           cp -r dist/kodi-repo/. feed/kodi/
+          # start page index.html from .github/pages/index.html (#80): install per player, no external resources
+          python3 tools/build_feed.py feed --index .github/pages/index.html --owner "${{ github.repository_owner }}"
+          printf 'src/gz camalert https://%s.github.io/camalert\n' "${{ github.repository_owner }}" > feed/camalert-feed.conf
       - uses: actions/upload-pages-artifact@v5
         if: startsWith(github.ref, 'refs/tags/v') && !github.event.repository.private
         with:

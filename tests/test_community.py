@@ -125,6 +125,13 @@ class ReleaseWorkflow(unittest.TestCase):
             self.assertIn(name, minimum, name)
             self.assertGreaterEqual(int(major), minimum[name], name)
 
+    def test_pages_start_page(self):
+        """#80: the Pages site has a start page, built after the Kodi repository is in place."""
+        step = next(s for s in self.wf["jobs"]["build"]["steps"] if "build_feed.py" in s.get("run", ""))
+        run = step["run"]
+        self.assertIn('--index .github/pages/index.html --owner "${{ github.repository_owner }}"', run)
+        self.assertLess(run.index("feed/kodi/"), run.index("build_feed.py"))
+
     def test_runs_the_ci_areas(self):
         for area in ("lint", "core", "unit"):
             self.assertIn("sh tools/ci.sh %s" % area, self.text)

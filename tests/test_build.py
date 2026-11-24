@@ -36,6 +36,49 @@ class TestBuild(unittest.TestCase):
             self.assertRegex(text, r"SHA256sum: [0-9a-f]{64}")
             self.assertEqual(gzip.open(os.path.join(d, "Packages.gz")).read().decode(), text)
 
+    def test_pages_index(self):
+        """GitHub Pages start page (#80): filled template, install lines that match the published files, small,
+        no scripts/fonts/styles from other sites, links only to the repository and the site itself."""
+        import re
+        import shutil
+        import build_feed
+        import build_kodi
+        template = os.path.join(_paths.ROOT, ".github", "pages", "index.html")
+        with tempfile.TemporaryDirectory() as d:
+            site = os.path.join(d, "feed")
+            os.makedirs(site)
+            build_ipk.build(site, "someone")
+            build_kodi.build(os.path.join(d, "dist"), "https://someone.github.io/camalert/kodi")
+            shutil.copytree(os.path.join(d, "dist", "kodi-repo"), os.path.join(site, "kodi"))
+            build_feed.build(site)
+            html = open(build_feed.write_index(site, template, "someone"), encoding="utf-8").read()
+            with self.assertRaises(ValueError):
+                build_feed.write_index(site, template, "")
+            # the relative Kodi link points to a file that is published
+            links = re.findall(r'href="([^"]+)"', html)
+            local = [h for h in links if not h.startswith("https://")]
+            self.assertEqual(local, ["kodi/repository.camalert/repository.camalert-%s.zip" % build_kodi.repo_version()])
+            for h in local:
+                self.assertTrue(os.path.isfile(os.path.join(site, h)), h)
+        self.assertNotRegex(html, r"@[A-Z_]+@")
+        self.assertLess(len(html.encode("utf-8")), 8000)
+        self.assertIn('<html lang="en">', html)
+        self.assertIn('name="viewport"', html)
+        self.assertIn("<main>", html)
+        self.assertIn("<title>", html)
+        self.assertIn("src/gz camalert https://someone.github.io/camalert</code>", html)
+        self.assertIn("https://someone.github.io/camalert/camalert-feed.conf", html)
+        self.assertIn("<code>https://github.com/someone/camalert</code>", html)  # HACS custom repository
+        self.assertIn("This site has version <strong>%s</strong>" % build_ipk.version(), html)
+        for bad in ("<script", "<link", "<img", "<iframe", "@import", "url(", "src="):
+            self.assertNotIn(bad, html.lower(), bad)
+        for h in links:
+            if h.startswith("https://"):
+                self.assertTrue(h.startswith(("https://github.com/someone/camalert", "https://someone.github.io/camalert")), h)
+            m = re.match(r"https://github.com/someone/camalert/blob/v[^/]+/([^#]+)", h)
+            if m:  # documentation links: the files exist
+                self.assertTrue(os.path.isfile(os.path.join(_paths.ROOT, m.group(1))), h)
+
     def test_sources_compile(self):
         src = _paths.ENIGMA2
         for f in os.listdir(src):

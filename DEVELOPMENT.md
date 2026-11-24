@@ -88,8 +88,9 @@ file table of that folder: read the root file **and** the one of the folder you 
 2. Tag `vX.Y.Z` and push; GitHub Actions (`.github/workflows/release.yml`) checks tag = `__version__` and a dated
    CHANGELOG section, runs hassfest, the HACS check and the tests, builds the `.ipk`, the Kodi add-on and repository
    zips and the Home Assistant zip, creates the release (notes = that CHANGELOG section) and publishes GitHub Pages
-   (Settings › Pages › Source: GitHub Actions): the Kodi repository and the opkg feed (`Packages.gz`,
-   `camalert-feed.conf`) in one site, **latest release only**. The Kodi add-on version is always `__version__`. No
+   (Settings › Pages › Source: GitHub Actions): the Kodi repository, the opkg feed (`Packages.gz`,
+   `camalert-feed.conf`) and a start page (`index.html` from the template `.github/pages/index.html`, no external
+   resources) in one site, **latest release only**. The Kodi add-on version is always `__version__`. No
    Android TV APK until release signing exists (#65).
 3. Community files for GitHub: `CONTRIBUTING.md`, `SECURITY.md` (private vulnerability reporting),
    `CODE_OF_CONDUCT.md`, `.github/ISSUE_TEMPLATE/`, `.github/PULL_REQUEST_TEMPLATE.md` (`tests/test_community.py`).

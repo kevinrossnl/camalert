@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<title>CamAlert – cameras on your TV</title>
+<!-- Template for the GitHub Pages start page (#80). tools/build_feed.py --index fills in @OWNER@, @VERSION@ and
+     @KODI_REPO_ZIP@. No scripts, fonts, images or anything else from other sites; no cookies, no tracking. -->
+<style>
+body{font-family:system-ui,sans-serif;line-height:1.5;max-width:46rem;margin:0 auto;padding:1rem 1.25rem 3rem}
+h1{margin-bottom:.25rem}h2{margin-top:2rem}
+pre{overflow-x:auto;padding:.75rem;border:1px solid;border-radius:.25rem}
+code,pre{font-family:ui-monospace,monospace;font-size:.95em}
+a:focus-visible{outline:3px solid;outline-offset:2px}
+footer{margin-top:3rem;font-size:.9em}
+</style>
+</head>
+<body>
+<header>
+<h1>CamAlert</h1>
+<p>Shows your IP cameras on the TV: on an Enigma2 receiver or a Kodi player (Kodi 19 or newer), controlled by
+Home Assistant, MQTT or its HTTP API.</p>
+<p>This site has version <strong>@VERSION@</strong>.
+<a href="https://github.com/@OWNER@/camalert/releases/latest">Latest release</a> ·
+<a href="https://github.com/@OWNER@/camalert#readme">Source code and documentation</a> ·
+<a href="https://github.com/@OWNER@/camalert/blob/v@VERSION@/CHANGELOG.md">Changes</a></p>
+</header>
+<main>
+<h2 id="enigma2">Enigma2 receiver</h2>
+<p>Add the CamAlert feed on the receiver (via Telnet/SSH); the receiver's software update then keeps it up to date:</p>
+<pre><code>wget -O /etc/opkg/camalert-feed.conf https://@OWNER@.github.io/camalert/camalert-feed.conf
+opkg update &amp;&amp; opkg install enigma2-plugin-extensions-camalert</code></pre>
+<p>The feed line is <code>src/gz camalert https://@OWNER@.github.io/camalert</code>.
+<a href="https://github.com/@OWNER@/camalert/blob/v@VERSION@/docs/players/enigma2.md#install">Install guide for Enigma2</a></p>
+
+<h2 id="kodi">Kodi</h2>
+<p>Download the <a href="kodi/repository.camalert/@KODI_REPO_ZIP@">CamAlert repository for Kodi
+(@KODI_REPO_ZIP@)</a>, install it with <em>Add-ons › Install from zip file</em>, then
+<em>Install from repository › CamAlert repository › Services › CamAlert</em>. Kodi then updates CamAlert by itself.
+<a href="https://github.com/@OWNER@/camalert/blob/v@VERSION@/docs/players/kodi.md#install">Install guide for Kodi</a></p>
+
+<h2 id="home-assistant">Home Assistant</h2>
+<p>In HACS (<em>Settings › Marketplace</em>) open <em>⋮ › Custom repositories</em> and add
+<code>https://github.com/@OWNER@/camalert</code> with type <strong>Integration</strong>. Then install CamAlert,
+restart Home Assistant and add the integration under <em>Settings › Devices &amp; services</em>.
+<a href="https://github.com/@OWNER@/camalert/blob/v@VERSION@/docs/integrations/home-assistant.md#install">Install guide for Home Assistant</a></p>
+</main>
+<footer>
+<p>CamAlert is free software (GPL-2.0-only). This page sets no cookies and loads nothing from other sites.</p>
+</footer>
+</body>
+</html>

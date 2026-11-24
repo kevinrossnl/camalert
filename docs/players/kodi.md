@@ -124,6 +124,10 @@ Installed from the CamAlert repository, Kodi updates CamAlert by itself (Kodi ch
 every few hours; *Settings › System › Add-ons › Updates* decides whether it installs them automatically or only
 notifies).
 
+The CamAlert repository only holds the **latest** release. To go back to an older version, download its
+`service.camalert-x.y.z.zip` from the [releases page](https://github.com/kevinrossnl/camalert/releases) and use
+*Install from zip file*.
+
 ## Home Assistant and monitoring
 
 Add the Kodi like any player: **Settings › Devices & services › Add integration › CamAlert**, enter the Kodi's host

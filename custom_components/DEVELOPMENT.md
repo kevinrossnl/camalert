@@ -13,6 +13,7 @@ folder (not in it), so HACS does not install it into users' Home Assistant.
 | `camalert/button.py`, `sensor.py`, `switch.py`, `event.py`, `entity.py` | entities, created per player capability |
 | `camalert/__init__.py`, `services.yaml` | actions `show`, `mosaic`, `hide`, `ptz`; webhook for the colour keys |
 | `camalert/diagnostics.py` | redacted diagnostics |
+| `camalert/brand/icon.png`, `icon@2x.png` | brand images for HACS / Home Assistant 2026.3+ (drawn by `tools/make_brand.py`, never edit by hand) |
 | `camalert/strings.json`, `icons.json` | English texts (source) and icons; `translations/*.json` are generated from `core/i18n/` |
 | `../homeassistant/blueprints/` | blueprints; inputs frozen for 1.x ([README](../homeassistant/blueprints/README.md), `tests/test_blueprints.py`) |
 | `../homeassistant/camalert_package.yaml` | REST-command alternative (YAML) |

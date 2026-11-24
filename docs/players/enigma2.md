@@ -30,6 +30,9 @@ or create `/etc/opkg/camalert-feed.conf` yourself with the line `src/gz camalert
 *Check for updates* (on by default) also looks once a day on GitHub for a newer release and shows a message once per
 version.
 
+The feed only holds the **latest** release. To go back to an older version, download its `.ipk` from the
+[releases page](https://github.com/kevinrossnl/camalert/releases) and install it as above.
+
 ## Settings
 
 **Menu › Plugins › CamAlert**. The screen uses your skin's own settings layout, with a help text for the selected

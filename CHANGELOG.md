@@ -72,7 +72,8 @@ device (Kodi 19 or newer), controlled by Home Assistant, MQTT, Frigate, UniFi Pr
 - Ready-made blueprints: doorbell or person, motion when armed or at set times, alarm, remote button (colour keys,
   for example GREEN opens the gate), show a camera, and doorbell on the players plus a notification on an LG webOS
   TV. For the LG TV use *Snapshot URL* for a small picture: the TV refuses pictures over 100 KB.
-- A REST-command package for setups without the integration.
+- A REST-command package for setups without the integration, and a zip of the integration on every release for a
+  manual install without HACS. The integration has its own icon.
 
 ### Triggers, API and other systems
 

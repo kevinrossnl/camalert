@@ -1,9 +1,17 @@
 name: build and release
+# GitHub only (the Forgejo CI is .forgejo/workflows/tests.yml). Every push and pull request: hassfest, the HACS
+# check, the tests and the packages. A tag vX.Y.Z (= __version__) also creates the GitHub release with the packages
+# and publishes GitHub Pages (Settings › Pages › Source: GitHub Actions): the opkg feed and the Kodi repository.
+# The Pages site only holds the packages of the LATEST release; older versions stay available as release assets.
+# The Android TV app is not released yet: no APK until release signing exists (#65).
 on:
   push:
     branches: [main]
     tags: ["v*"]
   pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   hassfest:
     runs-on: ubuntu-latest
@@ -22,16 +30,55 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: tests
+        with:
+          fetch-depth: 0   # full history, like the Forgejo checkout
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: tests (network-free, same areas as the Forgejo CI)
         run: |
-          pip install pyyaml
-          python3 -m unittest discover -s tests -v
-      - name: build ipk
+          python3 -m pip install -q pytest coverage pyyaml pillow
+          sh tools/ci.sh lint
+          sh tools/ci.sh core
+          sh tools/ci.sh unit
+      - name: tag = version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          ver=$(python3 -c "import re;print(re.search(r'__version__ = \"([^\"]+)\"', open('players/enigma2/CamAlert/__init__.py').read()).group(1))")
+          test "${GITHUB_REF_NAME}" = "v$ver" || { echo "tag ${GITHUB_REF_NAME} != v$ver (__version__)"; exit 1; }
+          grep -q "^## \[$ver\] - [0-9]\{4\}-[0-9][0-9]-[0-9][0-9]" CHANGELOG.md || { echo "CHANGELOG.md has no dated section [$ver]"; exit 1; }
+      - name: build Enigma2 ipk
         env:
           CAMALERT_OWNER: ${{ github.repository_owner }}
         run: python3 tools/build_ipk.py dist
-      - name: build Kodi add-on and repository
+      - name: build Kodi add-on and repository add-on
         run: python3 tools/build_kodi.py dist --repo-url "https://${{ github.repository_owner }}.github.io/camalert/kodi"
+      - name: build Home Assistant zip (manual install; HACS installs from the repository)
+        run: |
+          python3 - <<'PY'
+          import json, os, zipfile
+          src = "custom_components/camalert"
+          ver = json.load(open(os.path.join(src, "manifest.json")))["version"]
+          out = "dist/camalert-homeassistant-%s.zip" % ver
+          with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
+              for d, dirs, files in os.walk(src):
+                  dirs[:] = sorted(x for x in dirs if x != "__pycache__")
+                  for f in sorted(files):
+                      p = os.path.join(d, f)
+                      info = zipfile.ZipInfo(os.path.relpath(p, "."), (2026, 1, 1, 0, 0, 0))
+                      info.compress_type = zipfile.ZIP_DEFLATED
+                      z.writestr(info, open(p, "rb").read())
+          print(out)
+          PY
+      - name: release notes from CHANGELOG.md
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          ver="${GITHUB_REF_NAME#v}"
+          awk -v h="## [$ver]" 'index($0, h) == 1 {on=1; next} on && /^## / {exit} on && !/^\[[^]]*\]: / {print}' \
+            CHANGELOG.md \
+            | sed -E "s#\]\(([A-Za-z][^):]*\.md[^)]*)\)#](https://github.com/${GITHUB_REPOSITORY}/blob/${GITHUB_REF_NAME}/\1)#g" \
+            > dist/release-notes.md   # relative links point to the files of the tag
+          test -s dist/release-notes.md
       - uses: actions/upload-artifact@v4
         with:
           name: packages
@@ -42,11 +89,13 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
+          body_path: dist/release-notes.md
           files: |
             dist/*.ipk
-            dist/*.zip
-          generate_release_notes: true
-      - name: opkg feed (Packages / Packages.gz)
+            dist/service.camalert-*.zip
+            dist/repository.camalert-*.zip
+            dist/camalert-homeassistant-*.zip
+      - name: opkg feed (Packages / Packages.gz) and Kodi repository for GitHub Pages
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
           mkdir -p feed
@@ -59,9 +108,9 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         with:
           path: feed
-  feed:
+  pages:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: build
+    needs: [build, hassfest, hacs]
     runs-on: ubuntu-latest
     permissions:
       pages: write

@@ -6,6 +6,12 @@ import unittest
 
 import yaml
 
+try:
+    import PIL  # noqa: F401  (optional: the Forgejo CI has no Pillow)
+    HAVE_PIL = True
+except ImportError:
+    HAVE_PIL = False
+
 import _paths
 
 ROOT = _paths.ROOT
@@ -63,6 +69,89 @@ class CommunityFiles(unittest.TestCase):
             for part in text.split("github.com/")[1:]:
                 self.assertTrue(part.startswith(("kevinrossnl/camalert", "AlexxIT/")), (rel, part[:40]))
 
+
+class ReleaseWorkflow(unittest.TestCase):
+    """#22/#23: the GitHub workflow builds and attaches every package, checks tag = version and dated CHANGELOG,
+    and publishes Pages only after hassfest and the HACS check."""
+
+    def setUp(self):
+        self.text = read(".github/workflows/release.yml")
+        self.wf = yaml.safe_load(self.text)
+
+    def test_jobs(self):
+        jobs = self.wf["jobs"]
+        self.assertEqual(sorted(jobs), ["build", "hacs", "hassfest", "pages"])
+        self.assertEqual(sorted(jobs["pages"]["needs"]), ["build", "hacs", "hassfest"])
+        self.assertEqual(jobs["pages"]["permissions"], {"pages": "write", "id-token": "write"})
+        self.assertEqual(self.wf["permissions"], {"contents": "read"})
+
+    def test_release_assets(self):
+        steps = self.wf["jobs"]["build"]["steps"]
+        release = next(s for s in steps if s.get("uses", "").startswith("softprops/action-gh-release"))
+        files = release["with"]["files"].split()
+        self.assertEqual(files, ["dist/*.ipk", "dist/service.camalert-*.zip", "dist/repository.camalert-*.zip",
+                                 "dist/camalert-homeassistant-*.zip"])
+        self.assertEqual(release["with"]["body_path"], "dist/release-notes.md")
+        self.assertNotIn(".apk", self.text)  # Android TV: no release APK before release signing (#65)
+
+    def test_tag_must_match_version_and_dated_changelog(self):
+        self.assertIn('test "${GITHUB_REF_NAME}" = "v$ver"', self.text)
+        self.assertIn("CHANGELOG.md has no dated section", self.text)
+
+    def test_runs_the_ci_areas(self):
+        for area in ("lint", "core", "unit"):
+            self.assertIn("sh tools/ci.sh %s" % area, self.text)
+
+
+class Changelog(unittest.TestCase):
+    def test_keep_a_changelog_layout(self):
+        import re
+        text = read("CHANGELOG.md")
+        heads = re.findall(r"^## (.*)$", text, re.M)
+        self.assertEqual(heads[0], "[Unreleased]")
+        for h in heads[1:]:
+            self.assertRegex(h, r"^\[\d+\.\d+\.\d+\] - (\d{4}-\d{2}-\d{2}|YYYY-MM-DD)$")
+        version = json_version()
+        self.assertIn("## [%s] - " % version, text)
+        self.assertIn("[%s]: %s/releases/tag/v%s" % (version, GH, version), text)
+        self.assertIn("[Unreleased]: %s/compare/v%s...HEAD" % (GH, version), text)
+
+
+def json_version():
+    import json
+    return json.load(open(os.path.join(ROOT, "custom_components", "camalert", "manifest.json")))["version"]
+
+
+class BrandImages(unittest.TestCase):
+    """HACS accepts custom_components/<domain>/brand/icon.png instead of home-assistant/brands (#23)."""
+
+    def path(self, name):
+        return os.path.join(ROOT, "custom_components", "camalert", "brand", name)
+
+    def test_icons_are_square_rgba_png(self):
+        import struct
+        for name, size in (("icon.png", 256), ("icon@2x.png", 512)):
+            data = open(self.path(name), "rb").read()
+            self.assertEqual(data[:8], b"\x89PNG\r\n\x1a\n", name)
+            w, h, depth, colour = struct.unpack(">IIBB", data[16:26])
+            self.assertEqual((w, h, depth, colour), (size, size, 8, 6), name)  # 8-bit RGBA
+
+    @unittest.skipUnless(HAVE_PIL, "Pillow not installed")
+    def test_transparent_background_and_generator(self):
+        import tempfile
+        from PIL import Image, ImageChops
+        _paths.tools()
+        import make_brand
+        with tempfile.TemporaryDirectory() as tmp:
+            for path in make_brand.build(tmp):
+                name = os.path.basename(path)
+                theirs = Image.open(self.path(name)).convert("RGBA")
+                size = theirs.size[0]
+                self.assertEqual(theirs.getpixel((0, 0))[3], 0, name)                    # transparent corner
+                self.assertEqual(theirs.getpixel((size // 4, size // 2))[3], 255, name)  # the TV is opaque
+                diff = ImageChops.difference(Image.open(path).convert("RGBA"), theirs)
+                # same drawing; small differences from another Pillow version's resampling are fine
+                self.assertLessEqual(max(hi for lo, hi in diff.getextrema()), 16, name)
 
 if __name__ == "__main__":
     unittest.main()

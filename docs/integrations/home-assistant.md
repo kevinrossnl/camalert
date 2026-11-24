@@ -16,6 +16,9 @@ the user interface, no YAML. It works the same for Enigma2 receivers and Kodi: b
 1. Open **Settings › Marketplace** (in older versions: HACS) › menu **⋮ › Custom repositories**.
 2. Add `https://github.com/kevinrossnl/camalert`, type **Integration**.
 3. Search for **CamAlert**, install it and restart Home Assistant.
+   Without HACS: download `camalert-homeassistant-x.y.z.zip` from the
+   [latest release](https://github.com/kevinrossnl/camalert/releases/latest) and unpack it into your Home Assistant
+   `config` folder (it contains `custom_components/camalert/`), then restart.
 4. **Settings › Devices & services › Add integration › CamAlert**. Enter the host name or IP address of the player
    (and the port, HTTPS and token if you changed them in CamAlert). Repeat for every player. *Reconfigure* on the
    entry changes the address, port, HTTPS or token later.
@@ -61,7 +64,7 @@ Import them via **Settings › Automations & scenes › Blueprints › Import bl
 | [Doorbell or person](../../homeassistant/blueprints/camalert_doorbell.yaml) `https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_doorbell.yaml` | Always shows the door camera (priority high) |
 | [Motion when armed or at set times](../../homeassistant/blueprints/camalert_motion.yaml) `https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_motion.yaml` | Motion → camera(s), only when the alarm is armed and/or between two times. Leave *Cameras* empty to show the camera named after the sensor (`binary_sensor.garden_motion` → `garden`) |
 | [Alarm triggered](../../homeassistant/blueprints/camalert_alarm.yaml) `https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_alarm.yaml` | Wakes the players and shows a camera or live mosaic (priority alarm) |
-| [Doorbell on the players and an LG TV](../../homeassistant/blueprints/camalert_doorbell_webos.yaml) `https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_doorbell_webos.yaml` | As *Doorbell or person*, plus a notification with a snapshot on an LG webOS TV (LG webOS TV integration) |
+| [Doorbell on the players and an LG TV](../../homeassistant/blueprints/camalert_doorbell_webos.yaml) `https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_doorbell_webos.yaml` | As *Doorbell or person*, plus a notification with a snapshot on an LG webOS TV (LG webOS TV integration); use *Snapshot URL* for a small picture, the TV refuses pictures over 100 KB ([details](../user/recipes.md)) |
 | [Remote button does something](../../homeassistant/blueprints/camalert_button.yaml) `https://github.com/kevinrossnl/camalert/blob/main/homeassistant/blueprints/camalert_button.yaml` | A colour key on the remote runs an action while a camera is on screen |
 
 Then press **Create automation** on a blueprint and fill in the fields. Every input, its default and the rules for

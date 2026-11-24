@@ -56,7 +56,7 @@ file table of that folder: read the root file **and** the one of the folder you 
 | `players/enigma2/po/` | Enigma2 translations, generated from `core/i18n/` (never edit by hand) |
 | `extras/grafana/` | Grafana dashboard |
 | `docs/` | documentation ([docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)) |
-| `tools/` | `build_ipk.py`, `build_feed.py`, `build_kodi.py` (packages), `ci.sh` + `ci_pick_runner.py` (CI), `check_private.py` + `check_images.py` (privacy), `docs.py` (generated docs), `apk_listing.py` (golden APK listing), `export_contract.py` (contract and core data as JSON for the Android TV player), `i18n/i18n.py` (translations), `strings.py`, `msgfmt.py`, `make_chime.py`, `readme_images.py`, `e2_api_snapshot.py`, `kodi_api_snapshot.py`, `kodi_jsonrpc_snapshot.py`, `e2e/run.py` (end-to-end runner on real players, #35) |
+| `tools/` | `build_ipk.py`, `build_feed.py`, `build_kodi.py` (packages), `ci.sh` + `ci_pick_runner.py` (CI), `check_private.py` + `check_images.py` (privacy), `docs.py` (generated docs), `apk_listing.py` (golden APK listing), `export_contract.py` (contract and core data as JSON for the Android TV player), `i18n/i18n.py` (translations), `strings.py`, `msgfmt.py`, `make_chime.py`, `make_brand.py` (Home Assistant brand icons), `readme_images.py`, `e2_api_snapshot.py`, `kodi_api_snapshot.py`, `kodi_jsonrpc_snapshot.py`, `e2e/run.py` (end-to-end runner on real players, #35) |
 | `tests/` | all tests; `tests/_paths.py` is the only file that knows where things live |
 
 ## CI (Forgejo Actions, `.forgejo/workflows/tests.yml`)
@@ -82,5 +82,14 @@ file table of that folder: read the root file **and** the one of the folder you 
 - No `actions/cache`: the runner cache server is not reachable from the NAS job containers (timeouts).
 
 ## Release
-1. Raise the version in `players/enigma2/CamAlert/__init__.py` and `custom_components/camalert/manifest.json`, update `CHANGELOG.md`.
-2. Tag `vX.Y.Z` and push; GitHub Actions builds the `.ipk` and the Kodi zips, runs hassfest and the HACS check, creates the release and publishes GitHub Pages (Settings › Pages › Source: GitHub Actions): the Kodi repository and the opkg feed (`Packages.gz`, `camalert-feed.conf`) in one site. The Kodi add-on version is always `__version__`.
+1. Raise the version in `players/enigma2/CamAlert/__init__.py` and `custom_components/camalert/manifest.json`; in
+   `CHANGELOG.md` move the *Unreleased* items into `## [X.Y.Z] - YYYY-MM-DD` (real date, user-facing wording, grouped
+   by player/area) and add its compare link at the bottom.
+2. Tag `vX.Y.Z` and push; GitHub Actions (`.github/workflows/release.yml`) checks tag = `__version__` and a dated
+   CHANGELOG section, runs hassfest, the HACS check and the tests, builds the `.ipk`, the Kodi add-on and repository
+   zips and the Home Assistant zip, creates the release (notes = that CHANGELOG section) and publishes GitHub Pages
+   (Settings › Pages › Source: GitHub Actions): the Kodi repository and the opkg feed (`Packages.gz`,
+   `camalert-feed.conf`) in one site, **latest release only**. The Kodi add-on version is always `__version__`. No
+   Android TV APK until release signing exists (#65).
+3. Community files for GitHub: `CONTRIBUTING.md`, `SECURITY.md` (private vulnerability reporting),
+   `CODE_OF_CONDUCT.md`, `.github/ISSUE_TEMPLATE/`, `.github/PULL_REQUEST_TEMPLATE.md` (`tests/test_community.py`).

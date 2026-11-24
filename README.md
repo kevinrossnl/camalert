@@ -1,5 +1,10 @@
 # CamAlert for Enigma2 and Kodi
 
+[![Release](https://img.shields.io/github/v/release/kevinrossnl/camalert)](https://github.com/kevinrossnl/camalert/releases/latest)
+[![Build](https://github.com/kevinrossnl/camalert/actions/workflows/release.yml/badge.svg)](https://github.com/kevinrossnl/camalert/actions/workflows/release.yml)
+[![HACS custom repository](https://img.shields.io/badge/HACS-custom%20repository-41BDF5)](docs/integrations/home-assistant.md#install)
+[![License: GPL-2.0-only](https://img.shields.io/github/license/kevinrossnl/camalert)](LICENSE)
+
 **CamAlert** shows your IP cameras on the TV: on an **Enigma2 receiver** (openATV, OpenPLi, VTi, ... on VU+,
 Dreambox, Zgemma, Octagon and others) or a **Kodi** player (LibreELEC, CoreELEC, OSMC, Windows, Linux, Android;
 **Kodi 19 or newer**). Both players have the same Home Assistant integration, blueprints, MQTT topics and HTTP API.
@@ -38,8 +43,8 @@ server. It can also [connect to the cameras directly](docs/user/without-go2rtc.m
 - Do not disturb, active hours, cooldown per camera, not while a recording or film plays.
 - **Home Assistant integration** (UI only, no YAML) with ready-made blueprints: doorbell, motion when armed / at set
   times, alarm, remote button.
-- **MQTT** with Home Assistant discovery, **Frigate** events without Home Assistant, and an HTTP API for Node-RED,
-  openHAB, scripts, ...
+- **MQTT** with Home Assistant discovery, **Frigate** and **UniFi Protect** events without Home Assistant, and an HTTP
+  API for Node-RED, openHAB, scripts, ...
 - Colour keys of the remote to Home Assistant (open the gate with GREEN), camera control (PTZ) for ONVIF and Foscam.
 - Event list and diagnostics on the TV, Prometheus metrics and a Grafana dashboard.
 - Local network only by default, optional access token.
@@ -76,7 +81,10 @@ All pages: **[docs/index.md](docs/index.md)**. Most used:
 | [Enigma2 receiver](docs/players/enigma2.md) / [Kodi](docs/players/kodi.md) | Install, settings, what is different |
 | [Home Assistant](docs/integrations/home-assistant.md) | Integration, actions, blueprints |
 | [Remote keys](docs/user/keys.md) | Which key does what, on both players |
-| [Troubleshooting](docs/user/troubleshooting.md) | Black picture, slow start, nothing appears, ... |
+| [Troubleshooting (FAQ)](docs/user/troubleshooting.md) | Black picture, slow start, nothing appears, ... |
+
+An **Android TV / Fire TV app** (no Kodi needed) is in development and not part of a release yet:
+[Android TV and Fire TV](docs/players/androidtv.md).
 
 ## Why go2rtc?
 
@@ -92,4 +100,8 @@ makes the snapshots for the photo window. It is free, small and runs almost anyw
 
 ## License
 
-GPL-2.0-only, see [LICENSE](LICENSE). Not affiliated with any camera brand. Contributing: [developer docs](docs/index.md#developers).
+GPL-2.0-only, see [LICENSE](LICENSE). Not affiliated with any camera brand.
+
+Questions, bugs and ideas: [issues](https://github.com/kevinrossnl/camalert/issues). Contributing:
+[CONTRIBUTING.md](CONTRIBUTING.md) and the [developer docs](docs/index.md#developers). Security problems: please
+report them privately, see [SECURITY.md](SECURITY.md). Changes per version: [CHANGELOG.md](CHANGELOG.md).

@@ -12,7 +12,8 @@ schema by tests/enigma2/test_settings_schema.py and tests/kodi/test_settings_sch
 Version 2 (#39) = the target semantics on every player: chime off/high/all, skip_playing off/video/all (also on
 Enigma2, replaces skip_media), trigger priority normal/high/alarm, Frigate/Foscam with own display mode, duration
 (step 5) and Foscam check interval, Foscam alarms off by default, UniFi Protect events (#70, new settings with
-defaults: nothing to migrate; display mode 'log' = only the event list and the log), duration step 5, live volume step 10, HTTP port
+defaults: nothing to migrate; display mode 'log' = only the event list and the log), no default go2rtc address
+(#73: empty = not set, nothing is contacted; a saved address is kept), duration step 5, live volume step 10, HTTP port
 1024-65535, certificates checked by default. migrate() turns settings saved by a version-1 player into this.
 
 Validation is done by hand (no jsonschema on the boxes): validate(values) keeps every valid value and falls
@@ -54,7 +55,7 @@ S = Setting
 SETTINGS = [
     S('enabled', 'general', 'basic', 'bool', True, platforms=('enigma2', 'kodi'), label='Enable CamAlert', help='Turn the HTTP API and the camera display on or off.', kodi_label=30010),
     S('source', 'general', 'basic', 'choice', 'go2rtc', choices=('go2rtc', 'direct'), platforms=('enigma2', 'kodi'), label='Cameras via', help='go2rtc is recommended. Without go2rtc, list your cameras in %s', kodi_label=30012),
-    S('server', 'general', 'basic', 'text', 'http://192.168.1.10:1984', platforms=('enigma2', 'kodi'), label='go2rtc address', help='Address of your go2rtc server, e.g. http://192.168.1.10:1984', kodi_label=30016),
+    S('server', 'general', 'basic', 'text', '', platforms=('enigma2', 'kodi'), label='go2rtc address', help='Address of your go2rtc server, e.g. http://192.168.1.10:1984', kodi_label=30016),
     S('rtsp_port', 'general', 'expert', 'int', 8554, min=1, max=65535, step=1, platforms=('enigma2', 'kodi'), label='go2rtc RTSP port', help='Usually 8554. Used for live view and the camera list.', kodi_label=30018),
     S('camera', 'general', 'basic', 'text', '', platforms=('enigma2', 'kodi'), label='Default camera', help='Press OK to choose from the cameras in go2rtc.', kodi_label=30024),
     S('verify_ssl', 'general', 'expert', 'bool', True, platforms=('enigma2', 'kodi'), label='Check certificates', help='Turn off for a self-signed certificate (only in your own network).', kodi_label=30020),

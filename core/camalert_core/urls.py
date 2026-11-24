@@ -29,6 +29,16 @@ def normalize_server(url):
     return "%s://%s:%d" % (p.scheme, host, port)
 
 
+GO2RTC_STATES = ("not_set", "invalid", "ok")
+
+
+def go2rtc_state(server):
+    """'not_set' (empty: the default since #73, nothing is contacted), 'invalid' (not an address) or 'ok'."""
+    if not (server or "").strip():
+        return "not_set"
+    return "ok" if normalize_server(server) else "invalid"
+
+
 def server_host(server):
     p = urlsplit(server or "")
     return p.hostname

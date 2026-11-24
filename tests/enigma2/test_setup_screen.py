@@ -37,6 +37,27 @@ class TestSetupScreen(unittest.TestCase):
         self.assertTrue(s["footnote"].text.startswith("CamAlert 1."))
         self.assertIn("description", s)
 
+    def test_asks_for_the_go2rtc_address(self):
+        """#73: no default address; the setup starts on the go2rtc address and its help line says it is not set."""
+        self.c.server.value = ""
+        s = self.open()
+        for fn in s.onLayoutFinish:
+            fn()
+        i = s["config"].getCurrentIndex()
+        self.assertIs(s["config"].list[i][1], self.c.server)
+        self.assertTrue(s["description"].text.startswith("go2rtc address not set. Address of your go2rtc server"),
+                        s["description"].text)
+        self.c.server.value = "ftp://x"
+        s = self.open()
+        self.assertTrue(any(t.startswith("No valid go2rtc address. ") for t in s.help_texts))
+
+    def test_configured_address_is_not_asked_for(self):
+        s = self.open()
+        for fn in s.onLayoutFinish:
+            fn()
+        self.assertEqual(s["config"].getCurrentIndex(), 0)
+        self.assertFalse([t for t in s.help_texts if "not set" in t])
+
     def test_sections_in_schema_order(self):
         s = self.open()
         heads = [l.strip("- ") for l in self.labels(s) if l.startswith("-- ")]

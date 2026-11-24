@@ -10,7 +10,8 @@ import xbmc
 from . import __version__, kodiapi, ptz, sources
 from .camalert_core.events import diag_line
 from .camalert_core.obs.log import redact
-from .camalert_core.urls import normalize_server, valid_port
+from .camalert_core.present import go2rtc_problem
+from .camalert_core.urls import go2rtc_state, valid_port
 
 
 def caller_text(at, source):
@@ -37,14 +38,16 @@ def collect(state):
         kodiapi.os_version()))]
     names = []
     if s["source"] == "go2rtc":
+        problem = go2rtc_problem(go2rtc_state(s["server"]), kodiapi.core_tr())
         t = time.time()
-        try:
-            names = sources.all_camera_names(s)
-            lines.append(diag_line(True, tr(30210) % (len(names), (time.time() - t) * 1000)))
-        except Exception as e:
-            lines.append(diag_line(False, tr(30211) % redact(e)))
-        if not normalize_server(s["server"]):
-            lines.append(diag_line(False, tr(30212)))
+        if problem:  # not set or invalid: say so, contact nothing (#73)
+            lines.append(diag_line(False, problem))
+        else:
+            try:
+                names = sources.all_camera_names(s)
+                lines.append(diag_line(True, tr(30210) % (len(names), (time.time() - t) * 1000)))
+            except Exception as e:
+                lines.append(diag_line(False, tr(30211) % redact(e)))
     else:
         try:
             names = sources.all_camera_names(s)

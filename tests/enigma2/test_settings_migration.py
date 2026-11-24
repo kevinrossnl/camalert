@@ -35,6 +35,14 @@ class TestMigration(unittest.TestCase):
         self.assertTrue(c.foscam_enabled.save_forced)  # the marker is always written
         self.assertEqual(env.stored, {})
 
+    def test_no_default_go2rtc_address(self):
+        """#73: a new install has no go2rtc address (nothing is contacted); a saved one is kept as it is."""
+        env, c = self.load({})
+        self.assertEqual(c.server.value, "")
+        self.assertNotIn("server", env.stored)
+        _env, c = self.load({"server": "http://192.168.1.10:1984"})
+        self.assertEqual(c.server.value, "http://192.168.1.10:1984")
+
     def test_version2_settings_are_not_migrated_again(self):
         _env, c = self.load({"foscam_enabled": "false", "chime": "all", "skip_playing": "all"})
         self.assertFalse(c.foscam_enabled.value)

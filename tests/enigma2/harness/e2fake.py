@@ -617,10 +617,13 @@ class _Widget(object):
         self.list = lst
 
     def getCurrent(self):
-        return self.list[0] if self.list else None
+        return self.list[getattr(self, "index", 0)] if self.list else None
 
     def getCurrentIndex(self):
-        return 0
+        return getattr(self, "index", 0)
+
+    def setCurrentIndex(self, i):  # ConfigList / MenuList
+        self.index = i
 
     def pageUp(self):
         pass

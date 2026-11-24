@@ -168,10 +168,6 @@ msgstr "go2rtc erreichbar (%d Kameras, %d ms)"
 msgid "go2rtc not reachable: %s"
 msgstr "go2rtc nicht erreichbar: %s"
 
-#: e2 kodi:30212
-msgid "No valid go2rtc address"
-msgstr "Keine gültige go2rtc-Adresse"
-
 #: e2 kodi:30213
 msgid "%s: no snapshot address (live only)"
 msgstr "%s: keine Foto-Adresse (nur live)"
@@ -591,6 +587,14 @@ msgstr "Unbekannte Kamera"
 #: e2 kodi:30526
 msgid "Unknown camera or no valid go2rtc address"
 msgstr "Unbekannte Kamera oder keine gültige go2rtc-Adresse"
+
+#: e2 kodi:30564
+msgid "go2rtc address not set"
+msgstr "go2rtc-Adresse nicht eingestellt"
+
+#: e2 kodi:30212 kodi:30565
+msgid "No valid go2rtc address"
+msgstr "Keine gültige go2rtc-Adresse"
 
 #: e2 kodi:30528
 msgid "Time"

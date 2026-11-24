@@ -24,7 +24,7 @@ from .camalert_core.events import diag_line
 from .camalert_core.obs.log import redact
 from .camalert_core.triggers.frigate import frigate_clip_url
 from .camalert_core.triggers.unifi import STATUS as UNIFI_STATUS
-from .camalert_core.urls import normalize_server, valid_port
+from .camalert_core.urls import go2rtc_state, valid_port
 
 
 def _skin(name, f, extra):
@@ -43,15 +43,16 @@ def collect():
     lines = [diag_line(True, "CamAlert %s, Python %s, %s" % (__version__, platform.python_version(), _image()))]
     names = []
     if c.source.value == "go2rtc":
-        server = normalize_server(c.server.value)
+        problem = present.go2rtc_problem(go2rtc_state(c.server.value), _)
         t = time.time()
-        try:
-            names = all_camera_names()
-            lines.append(diag_line(True, _("go2rtc reachable (%d cameras, %d ms)") % (len(names), (time.time() - t) * 1000)))
-        except Exception as e:
-            lines.append(diag_line(False, _("go2rtc not reachable: %s") % redact(e)))
-        if not server:
-            lines.append(diag_line(False, _("No valid go2rtc address")))
+        if problem:  # not set or invalid: say so, contact nothing (#73)
+            lines.append(diag_line(False, problem))
+        else:
+            try:
+                names = all_camera_names()
+                lines.append(diag_line(True, _("go2rtc reachable (%d cameras, %d ms)") % (len(names), (time.time() - t) * 1000)))
+            except Exception as e:
+                lines.append(diag_line(False, _("go2rtc not reachable: %s") % redact(e)))
     else:
         try:
             names = all_camera_names()

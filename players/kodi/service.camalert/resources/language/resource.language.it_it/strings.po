@@ -1092,3 +1092,11 @@ msgstr "UniFi Protect: ultimo evento %s, %s"
 msgctxt "#30563"
 msgid "UniFi Protect: no event since the start"
 msgstr "UniFi Protect: nessun evento dall'avvio"
+
+msgctxt "#30564"
+msgid "go2rtc address not set"
+msgstr "Indirizzo go2rtc non impostato"
+
+msgctxt "#30565"
+msgid "No valid go2rtc address"
+msgstr "Nessun indirizzo go2rtc valido"

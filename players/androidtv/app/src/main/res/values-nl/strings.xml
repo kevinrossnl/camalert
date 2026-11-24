@@ -169,6 +169,8 @@
     <string name="t_b2ba445f" formatted="false">Onbekende camera of geen geldig go2rtc-adres</string>
     <string name="t_0b37da62" formatted="false">Camera niet bereikbaar</string>
     <string name="t_7343c86d" formatted="false">Alleen loggen</string>
+    <string name="t_9a27f08a" formatted="false">go2rtc-adres niet ingesteld</string>
+    <string name="t_8516e22b" formatted="false">Geen geldig go2rtc-adres</string>
     <string name="t_cfa6377b" formatted="false">Tijd</string>
     <string name="t_3cb0eb33" formatted="false">Camera</string>
     <string name="t_58267a45" formatted="false">Bron</string>

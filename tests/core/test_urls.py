@@ -15,6 +15,15 @@ class TestUrls(unittest.TestCase):
         self.assertIsNone(urls.normalize_server(""))
         self.assertIsNone(urls.normalize_server("ftp://x"))
 
+    def test_go2rtc_state(self):
+        """#73: no default address; empty = not set (nothing is contacted), garbage = invalid."""
+        for value in ("", "  ", None):
+            self.assertEqual(urls.go2rtc_state(value), "not_set")
+        self.assertEqual(urls.go2rtc_state("ftp://x"), "invalid")
+        self.assertEqual(urls.go2rtc_state("http://:1984"), "invalid")
+        self.assertEqual(urls.go2rtc_state("192.168.1.10"), "ok")
+        self.assertEqual(set(urls.GO2RTC_STATES), {"not_set", "invalid", "ok"})
+
     def test_streams_from_json(self):
         self.assertEqual(urls.streams_from_json('{"garden": {}, "front_door": {}, "bad name": {}}'), ["front_door", "garden"])
         self.assertEqual(urls.streams_from_json("not json"), [])

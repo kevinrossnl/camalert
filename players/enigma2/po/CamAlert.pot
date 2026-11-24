@@ -125,9 +125,6 @@ msgstr ""
 msgid "go2rtc not reachable: %s"
 msgstr ""
 
-msgid "No valid go2rtc address"
-msgstr ""
-
 msgid "%s: no snapshot address (live only)"
 msgstr ""
 
@@ -441,6 +438,12 @@ msgid "Unknown camera"
 msgstr ""
 
 msgid "Unknown camera or no valid go2rtc address"
+msgstr ""
+
+msgid "go2rtc address not set"
+msgstr ""
+
+msgid "No valid go2rtc address"
 msgstr ""
 
 msgid "Time"

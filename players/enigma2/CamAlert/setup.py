@@ -23,7 +23,8 @@ from .display import CAMERA_FILE, Controller, all_camera_names, direct_cameras, 
 from .camalert_core.cameras import (display_name, format_map, format_titles, parse_cams, parse_map,
                                     parse_orientation, parse_refresh, parse_titles, title_for)
 from .camalert_core.devices.config import DEVICES_FILE
-from .camalert_core.urls import normalize_server, streams_from_json, valid_port
+from .camalert_core.present import go2rtc_problem
+from .camalert_core.urls import go2rtc_state, normalize_server, streams_from_json, valid_port
 from .services import add_to_bouquets, BOUQUET_FILE, bouquet_text
 
 E2 = "/etc/enigma2/"
@@ -144,6 +145,7 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
         help_actions(self, "menu_actions", "MenuActions", {
             "menu": (self.menu, _("Diagnostics, event list, all settings"))}, -2)
         self.build()
+        self.onLayoutFinish.append(self.ask_server)
         self.onLayoutFinish.append(self.update_help)
         self["config"].onSelectionChanged.append(self.update_help)
 
@@ -162,6 +164,10 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
         text = _(s.help) if s.help else ""
         if "%s" in text:
             text = text % (CAMERA_FILE if s.id == "source" else DEVICES_FILE)
+        if s.id == "server":
+            problem = go2rtc_problem(go2rtc_state(c.server.value), _)
+            if problem:  # #73: no default address any more; the help line asks for it
+                text = "%s. %s" % (problem, text)
         return _(s.label), el, text
 
     def build(self):
@@ -205,6 +211,17 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
             self.build()
         else:
             self.session.open(DiagnosticsScreen if choice[1] == "diag" else EventsScreen)
+
+    def ask_server(self):
+        """#73: go2rtc mode without an address: start on the go2rtc address (its help line says it is not set)."""
+        c = config.plugins.camalert
+        if c.source.value != "go2rtc" or go2rtc_state(c.server.value) == "ok":
+            return
+        for i, entry in enumerate(self["config"].list):
+            if len(entry) > 1 and entry[1] is c.server:
+                move = getattr(self["config"], "setCurrentIndex", None) or getattr(self["config"], "moveToIndex")
+                move(i)
+                return
 
     def update_help(self):
         i = self["config"].getCurrentIndex()

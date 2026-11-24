@@ -15,6 +15,10 @@ def send(**cmd):
 
 def choose_camera():
     s = kodiapi.settings()
+    problem = sources.go2rtc_problem(s)
+    if problem:  # #73: say why there are no cameras instead of an empty list
+        xbmcgui.Dialog().ok("CamAlert", problem)
+        return
     try:
         names = sources.all_camera_names(s)
     except Exception as e:

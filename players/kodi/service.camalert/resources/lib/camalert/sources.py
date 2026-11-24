@@ -8,7 +8,8 @@ import urllib.request
 from . import kodiapi
 from .klogic import live_url
 from .camalert_core.cameras import display_name, live_stream_name, parse_camera_file, parse_titles, title_for
-from .camalert_core.urls import normalize_server, snapshot_url, split_credentials, streams_from_json
+from .camalert_core.present import go2rtc_problem as _problem_text
+from .camalert_core.urls import go2rtc_state, normalize_server, snapshot_url, split_credentials, streams_from_json
 
 
 def camera_file():
@@ -38,6 +39,14 @@ def open_url(url, timeout=8, verify=True):
         mgr.add_password(None, url, user, password)
         handlers += [urllib.request.HTTPBasicAuthHandler(mgr), urllib.request.HTTPDigestAuthHandler(mgr)]
     return urllib.request.build_opener(*handlers).open(url, timeout=timeout)
+
+
+def go2rtc_problem(s):
+    """#73: no default go2rtc address any more. In go2rtc mode without a (valid) address: the translated text that
+    says so (service start notification, camera choice); None when the address is usable or in direct mode."""
+    if s["source"] != "go2rtc":
+        return None
+    return _problem_text(go2rtc_state(s["server"]), kodiapi.core_tr())
 
 
 def all_camera_names(s=None):

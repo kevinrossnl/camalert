@@ -874,6 +874,55 @@ class _KodiModules(object):
         with self.assertRaises(AttributeError):
             getattr(xbmcgui, "ControlWebBrowser")
 
+    def test_go2rtc_address_not_set(self):
+        """#73: no default address. Not set = no network call, the diagnostics, the service start and the camera
+        choice say so; a usable address or direct mode say nothing."""
+        sources, diag, script, kodiapi = (Built.module(n) for n in ("sources", "diag", "script", "kodiapi"))
+        for value, text in (("", "go2rtc address not set"), ("ftp://x", "No valid go2rtc address")):
+            Built.store["server"] = value
+            s = kodiapi.settings()
+            self.assertEqual(sources.all_camera_names(s), [])
+            self.assertIsNone(sources.camera_urls("garden", s))
+            self.assertEqual(sources.go2rtc_problem(s), text)
+            lines = [l for l in diag.collect({}) if "go2rtc" in l]
+            self.assertEqual(len(lines), 1, lines)
+            self.assertIn(text, lines[0])
+            said = []
+            self.addCleanup(setattr, script.xbmcgui.Dialog, "ok", script.xbmcgui.Dialog.ok)
+            script.xbmcgui.Dialog.ok = lambda self, heading, message: said.append(message)
+            script.choose_camera()
+            self.assertEqual(said, [text])
+        notified = []
+        self.addCleanup(setattr, kodiapi, "notify", kodiapi.notify)
+        kodiapi.notify = lambda heading, message, *a, **kw: notified.append(message)
+        service = Built.module("service")
+        for name in ("server", "mqtt", "ptz"):
+            mod = Built.module(name)
+            self.addCleanup(setattr, mod, "start", mod.start)
+            mod.start = lambda *a: None
+        Built.store["server"] = ""
+        service.Service().start_all()
+        self.assertEqual(notified, ["go2rtc address not set"])
+        Built.store["server"] = self.go2rtc.url
+        service.Service().start_all()
+        self.assertEqual(len(notified), 1)
+        self.assertIsNone(sources.go2rtc_problem(kodiapi.settings()))
+        Built.store.update({"server": "", "source": "direct"})
+        self.addCleanup(Built.store.pop, "source", None)
+        self.assertIsNone(sources.go2rtc_problem(kodiapi.settings()))
+
+    def test_default_go2rtc_address_is_empty(self):
+        """#73: klogic and settings.xml have no default address; a saved one stays."""
+        klogic = Built.module("klogic")
+        self.assertEqual(klogic.DEFAULTS["server"], "")
+        self.assertEqual(klogic.parse_settings({})["server"], "")
+        self.assertEqual(klogic.parse_settings({"server": "http://192.168.1.10:1984"})["server"],
+                         "http://192.168.1.10:1984")
+        root = ET.parse(os.path.join(ADDON, "resources", "settings.xml")).getroot()
+        server = [e for e in root.iter("setting") if e.get("id") == "server"][0]
+        self.assertEqual(server.findtext("default") or "", "")
+        self.assertEqual(server.find("constraints").findtext("allowempty"), "true")
+
     def test_service_loop_runs_until_abort(self):
         service = Built.module("service")
         started = []

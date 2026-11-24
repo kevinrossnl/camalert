@@ -169,6 +169,8 @@
     <string name="t_b2ba445f" formatted="false">Telecamera sconosciuta o nessun indirizzo go2rtc valido</string>
     <string name="t_0b37da62" formatted="false">Telecamera non raggiungibile</string>
     <string name="t_7343c86d" formatted="false">Solo registro</string>
+    <string name="t_9a27f08a" formatted="false">Indirizzo go2rtc non impostato</string>
+    <string name="t_8516e22b" formatted="false">Nessun indirizzo go2rtc valido</string>
     <string name="t_cfa6377b" formatted="false">Ora</string>
     <string name="t_3cb0eb33" formatted="false">Telecamera</string>
     <string name="t_58267a45" formatted="false">Origine</string>

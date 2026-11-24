@@ -126,9 +126,6 @@ msgstr "go2rtc raggiungibile (%d telecamere, %d ms)"
 msgid "go2rtc not reachable: %s"
 msgstr "go2rtc non raggiungibile: %s"
 
-msgid "No valid go2rtc address"
-msgstr "Nessun indirizzo go2rtc valido"
-
 msgid "%s: no snapshot address (live only)"
 msgstr "%s: nessun indirizzo foto (solo live)"
 
@@ -443,6 +440,12 @@ msgstr "Telecamera sconosciuta"
 
 msgid "Unknown camera or no valid go2rtc address"
 msgstr "Telecamera sconosciuta o nessun indirizzo go2rtc valido"
+
+msgid "go2rtc address not set"
+msgstr "Indirizzo go2rtc non impostato"
+
+msgid "No valid go2rtc address"
+msgstr "Nessun indirizzo go2rtc valido"
 
 msgid "Time"
 msgstr "Ora"

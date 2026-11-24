@@ -5,7 +5,7 @@ import json
 
 import xbmc
 
-from . import __version__, kodiapi, mqtt, ptz, server
+from . import __version__, kodiapi, mqtt, ptz, server, sources
 from .controller import Controller
 
 RESTART_KEYS = {
@@ -40,6 +40,10 @@ class Service(object):
 
     def start_all(self):
         self.configure_log(self.settings)
+        problem = sources.go2rtc_problem(self.settings)
+        if problem:  # #73: no default address; say it once, contact nothing
+            kodiapi.log("go2rtc address not set or not valid: no cameras until it is set", "error")
+            kodiapi.notify("CamAlert", problem, ms=10000)
         server.start()
         mqtt.start(self.ctl)
         ptz.start(self.ctl)

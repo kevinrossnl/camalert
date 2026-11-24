@@ -185,8 +185,11 @@ def all_camera_names():
     """Camera names in the current mode (go2rtc mode needs a network call; call from a thread)."""
     if config.plugins.camalert.source.value == "direct":
         return [cam["name"] for cam in direct_cameras()]
+    server = normalize_server(config.plugins.camalert.server.value)
+    if not server:  # no (valid) go2rtc address: nothing to ask, no network call (#73)
+        return []
     from .setup import fetch_streams
-    return fetch_streams(normalize_server(config.plugins.camalert.server.value))
+    return fetch_streams(server)
 
 
 try:  # optional: python3-pillow turns/mirrors snapshots of cameras that hang upside down

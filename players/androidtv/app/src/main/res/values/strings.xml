@@ -170,6 +170,8 @@
     <string name="t_b2ba445f" formatted="false">Unknown camera or no valid go2rtc address</string>
     <string name="t_0b37da62" formatted="false">Camera not reachable</string>
     <string name="t_7343c86d" formatted="false">Log only</string>
+    <string name="t_9a27f08a" formatted="false">go2rtc address not set</string>
+    <string name="t_8516e22b" formatted="false">No valid go2rtc address</string>
     <string name="t_cfa6377b" formatted="false">Time</string>
     <string name="t_3cb0eb33" formatted="false">Camera</string>
     <string name="t_58267a45" formatted="false">Source</string>

@@ -84,6 +84,16 @@ def parse_reason(text):
     return t, None
 
 
+# go2rtc address problems (#73) for diagnostics and setup; urls.go2rtc_state() gives the code
+GO2RTC_LABELS = {"not_set": N_("go2rtc address not set"), "invalid": N_("No valid go2rtc address")}
+
+
+def go2rtc_problem(state, tr):
+    """Text for a go2rtc address that cannot be used (state from urls.go2rtc_state()), None when it is fine."""
+    text = GO2RTC_LABELS.get(state)
+    return tr(text) if text else None
+
+
 def _label(table, code, tr):
     return tr(table[code]) if code in table else (code or "")
 

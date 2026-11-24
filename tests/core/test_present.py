@@ -98,6 +98,16 @@ class TestEventValues(unittest.TestCase):
         self.assertEqual(p.event_details(e2, EN)[1], ("Camera", "garden"))
 
 
+class TestGo2rtcProblem(unittest.TestCase):
+    def test_labels(self):
+        """#73: diagnostics and setup say why there are no cameras; nothing for a usable address."""
+        tr = i18n.no_translation
+        self.assertEqual(p.go2rtc_problem("not_set", tr), "go2rtc address not set")
+        self.assertEqual(p.go2rtc_problem("invalid", tr), "No valid go2rtc address")
+        self.assertIsNone(p.go2rtc_problem("ok", tr))
+        self.assertEqual(p.go2rtc_problem("not_set", lambda t: "<%s>" % t), "<go2rtc address not set>")
+
+
 class TestKeyHints(unittest.TestCase):
     def test_hints_follow_the_key_map(self):
         for player in keymap.PLAYERS:

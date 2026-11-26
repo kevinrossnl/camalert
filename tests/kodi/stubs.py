@@ -202,7 +202,8 @@ def install(settings=None, profile="/tmp/camalert-test-profile", version=DEFAULT
                              self.__dict__.update(label=label, label2=label2, path=path, props={}),
                              "setMimeType": lambda self, m: self.props.__setitem__("mime", m),
                              "setContentLookup": lambda self, v: self.props.__setitem__("lookup", v),
-                             "setProperty": lambda self, k, v: self.props.__setitem__(k, v)},
+                             "setProperty": lambda self, k, v: self.props.__setitem__(k, v),
+                             "getVideoInfoTag": lambda self: sys.modules["xbmc"].InfoTagVideo()},
             },
         },
         "xbmcaddon": {

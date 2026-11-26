@@ -1488,6 +1488,22 @@ msgstr "Einstellungen"
 msgid "Show in the photo window"
 msgstr "Im Fotofenster anzeigen"
 
+#: kodi:30292
+msgid "OK = live view. Context menu: show in the photo window."
+msgstr "OK = Live-Ansicht. Kontextmenü: im Fotofenster zeigen."
+
+#: kodi:30293
+msgid "Up to 9 cameras at once, full screen."
+msgstr "Bis zu 9 Kameras gleichzeitig, im Vollbild."
+
+#: kodi:30294
+msgid "One camera after the other, full screen."
+msgstr "Eine Kamera nach der anderen, im Vollbild."
+
+#: kodi:30295
+msgid "The last camera requests, with the reason when one was not shown."
+msgstr "Die letzten Kameraanfragen, mit dem Grund, wenn eine nicht gezeigt wurde."
+
 #: ha:config.step.user.title
 msgid "Add a CamAlert player"
 msgstr "CamAlert-Wiedergabegerät hinzufügen"

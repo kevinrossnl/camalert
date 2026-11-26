@@ -7,6 +7,11 @@ actions and blueprint inputs stay backwards compatible.
 
 ## [Unreleased]
 
+### Changed
+
+- **Kodi:** the camera list (*Videos › Video add-ons › CamAlert*) keeps its own order – mosaic, tour, cameras,
+  event list, settings – instead of *Sort by: Date*, and every item has a short description in the info panel.
+
 ## [1.1.0] - 2026-11-26
 
 ### Added

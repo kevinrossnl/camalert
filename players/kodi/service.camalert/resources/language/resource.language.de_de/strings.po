@@ -889,6 +889,22 @@ msgctxt "#30291"
 msgid "Show in the photo window"
 msgstr "Im Fotofenster anzeigen"
 
+msgctxt "#30292"
+msgid "OK = live view. Context menu: show in the photo window."
+msgstr "OK = Live-Ansicht. Kontextmenü: im Fotofenster zeigen."
+
+msgctxt "#30293"
+msgid "Up to 9 cameras at once, full screen."
+msgstr "Bis zu 9 Kameras gleichzeitig, im Vollbild."
+
+msgctxt "#30294"
+msgid "One camera after the other, full screen."
+msgstr "Eine Kamera nach der anderen, im Vollbild."
+
+msgctxt "#30295"
+msgid "The last camera requests, with the reason when one was not shown."
+msgstr "Die letzten Kameraanfragen, mit dem Grund, wenn eine nicht gezeigt wurde."
+
 msgctxt "#30500"
 msgid "API"
 msgstr "API"

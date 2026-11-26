@@ -13,6 +13,8 @@ CAMERA_ACTIONS = ("live", "show")
 ACTIONS = ("mosaic", "tour", "events", "settings") + CAMERA_ACTIONS
 THUMB_SECONDS = 30  # thumbnails are refreshed at most every 30 s (Kodi caches images by URL)
 _SECRET_WORDS = ("token", "pass", "pwd", "user", "secret", "auth", "key")
+# #108: a short description per kind of item for the info panel (Kodi string ids)
+PLOT = {"camera": 30292, "mosaic": 30293, "tour": 30294, "events": 30295}
 
 
 def url(base, action, cam=None):
@@ -51,7 +53,7 @@ def safe_thumb(snapshot, stamp):
 
 def _item(kind, label, link, label2=None, thumb=None, camera=None, context=()):
     return {"kind": kind, "label": label, "label2": label2, "url": link, "folder": False, "thumb": thumb,
-            "camera": camera, "context": list(context)}
+            "camera": camera, "context": list(context), "plot": PLOT.get(kind)}
 
 
 def root_items(base, cameras, problem, stamp):

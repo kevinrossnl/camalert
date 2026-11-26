@@ -19,6 +19,15 @@ def text(label):
     return kodiapi.tr(label) if isinstance(label, int) else label
 
 
+def set_plot(li, plot):
+    """#108: InfoTagVideo.setPlot on Kodi 20+ (setInfo is deprecated there), ListItem.setInfo on Kodi 19."""
+    tag = li.getVideoInfoTag()
+    if hasattr(tag, "setPlot"):
+        tag.setPlot(plot)
+    else:
+        li.setInfo("video", {"plot": plot})
+
+
 def cameras():
     """([(name, title, snapshot url or None)], problem text or None)."""
     s = kodiapi.settings()
@@ -48,8 +57,11 @@ def listing(base, handle):
         li.setArt(art)
         if it["context"]:
             li.addContextMenuItems([(text(label), "RunPlugin(%s)" % link) for label, link in it["context"]])
+        if it["plot"]:
+            set_plot(li, text(it["plot"]))
         items.append((it["url"], li, it["folder"]))
     xbmcplugin.setContent(handle, "videos")
+    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_NONE)  # #108: keep our order, no "Sort by: Date"
     xbmcplugin.addDirectoryItems(handle, items, len(items))
     xbmcplugin.endOfDirectory(handle, cacheToDisc=False)
 

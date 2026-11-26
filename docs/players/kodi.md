@@ -57,6 +57,7 @@ passwords only in `devices.conf` (next section). None of them is ever written to
 CamAlert is also a video add-on: **Videos › Video add-ons › CamAlert** lists
 **Show mosaic**, **Start tour**, every camera with a fresh snapshot, the **Event list** and the **Settings**.
 Selecting a camera opens its live view; the context menu (**C** / long press OK) has *Show in the photo window*.
+The list keeps this order, and the info panel describes each item.
 Without a go2rtc address the list says so and opens the settings.
 
 To reach the cameras straight from the home screen: on a camera, the mosaic or the add-on itself choose

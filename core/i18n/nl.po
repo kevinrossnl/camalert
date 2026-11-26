@@ -1488,6 +1488,22 @@ msgstr "Instellingen"
 msgid "Show in the photo window"
 msgstr "In het fotovenster tonen"
 
+#: kodi:30292
+msgid "OK = live view. Context menu: show in the photo window."
+msgstr "OK = live beeld. Contextmenu: in het fotovenster tonen."
+
+#: kodi:30293
+msgid "Up to 9 cameras at once, full screen."
+msgstr "Tot 9 camera's tegelijk, op het hele scherm."
+
+#: kodi:30294
+msgid "One camera after the other, full screen."
+msgstr "De camera's na elkaar, op het hele scherm."
+
+#: kodi:30295
+msgid "The last camera requests, with the reason when one was not shown."
+msgstr "De laatste cameraverzoeken, met de reden als er een niet is getoond."
+
 #: ha:config.step.user.title
 msgid "Add a CamAlert player"
 msgstr "CamAlert-speler toevoegen"

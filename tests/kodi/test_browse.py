@@ -71,6 +71,15 @@ class TestBrowse(unittest.TestCase):
         self.assertEqual([i["kind"] for i in self.b.root_items(BASE, [], None, 1000)],
                          ["mosaic", "tour", "events", "settings"])
 
+    def test_plot_per_item(self):
+        """#108: a short description in the info panel instead of 'No information available'."""
+        items = self.b.root_items(BASE, CAMS, None, 1000)
+        plots = {i["kind"]: i["plot"] for i in items}
+        self.assertEqual(plots, {"mosaic": self.b.PLOT["mosaic"], "tour": self.b.PLOT["tour"],
+                                 "camera": self.b.PLOT["camera"], "events": self.b.PLOT["events"], "settings": None})
+        self.assertTrue(all(isinstance(v, int) and 30292 <= v <= 30329 for v in self.b.PLOT.values()))
+        self.assertEqual([i["plot"] for i in self.b.root_items(BASE, [], "x", 1000)], [None, None])
+
     def test_parse(self):
         p = self.b.parse
         self.assertIsNone(p(""))
@@ -109,6 +118,30 @@ class TestPlugin(unittest.TestCase):
         self.assertTrue(any(m[1][0][0][1].startswith("RunPlugin(%s?" % BASE) for m in menus), menus)
         self.assertEqual(kodi_stubs.calls("xbmcplugin.endOfDirectory")[0][1][0], 7)
         self.assertEqual(self.sent(), [])  # a listing sends nothing to the service
+
+    def test_own_order_and_plot_on_every_kodi(self):
+        """#108: SORT_METHOD_NONE keeps our order (no 'Sort by: Date'); the plot goes through InfoTagVideo.setPlot on
+        Kodi 20+ and ListItem.setInfo on Kodi 19 (no setPlot there)."""
+        for v in kodi_stubs.VERSIONS:
+            plugin = Built.module("plugin", version=v)
+            plugin.cameras = lambda: (CAMS, None)
+            kodi_stubs.CALLS[:] = []
+            plugin.run([BASE, "7", ""])
+            xbmcplugin = sys.modules["xbmcplugin"]
+            sort = kodi_stubs.calls("xbmcplugin.addSortMethod")
+            self.assertEqual([c[1][:2] for c in sort], [(7, xbmcplugin.SORT_METHOD_NONE)], v)
+            names = [c[0] for c in kodi_stubs.CALLS]
+            self.assertLess(names.index("xbmcplugin.addSortMethod"), names.index("xbmcplugin.endOfDirectory"), v)
+            plots = [c[1][0] for c in kodi_stubs.calls("xbmc.InfoTagVideo.setPlot")]
+            infos = [c[1] for c in kodi_stubs.calls("xbmcgui.ListItem.setInfo")]
+            if v >= 20:
+                self.assertEqual((len(plots), infos), (5, []), v)
+            else:
+                self.assertEqual((plots, len(infos)), ([], 5), v)
+                self.assertEqual(infos[0][0], "video")
+                self.assertTrue(infos[0][1]["plot"])
+        Built.get(kodi_stubs.DEFAULT_VERSION)
+        self.plugin = Built.module("plugin")
 
     def test_actions_go_to_the_service(self):
         for q, want in (("?do=live&cam=garden", {"do": "show", "cam": "garden", "mode": "live"}),

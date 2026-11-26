@@ -7,6 +7,11 @@ actions and blueprint inputs stay backwards compatible.
 
 ## [Unreleased]
 
+### Added
+
+- **Kodi:** opening CamAlert from *Add-ons › Program add-ons* (or from a favourite) now shows a choice list – show
+  mosaic, start tour, show a camera, event list, diagnostics, settings – instead of going straight to the settings.
+
 ### Changed
 
 - **Home Assistant:** CamAlert is now in the HACS default list. Install it with *Settings › Marketplace*: search for

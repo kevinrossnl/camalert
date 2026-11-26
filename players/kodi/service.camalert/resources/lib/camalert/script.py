@@ -13,25 +13,52 @@ def send(**cmd):
     xbmcgui.Window(10000).setProperty("camalert.cmd", json.dumps(cmd))
 
 
-def choose_camera():
+def pick_camera():
+    """A camera chosen from the list (None = cancelled or no cameras; then the dialog already said why)."""
     s = kodiapi.settings()
     problem = sources.go2rtc_problem(s)
     if problem:  # #73: say why there are no cameras instead of an empty list
         xbmcgui.Dialog().ok("CamAlert", problem)
-        return
+        return None
     try:
         names = sources.all_camera_names(s)
     except Exception as e:
         xbmcgui.Dialog().ok("CamAlert", kodiapi.tr(30181) % e)
-        return
+        return None
     if not names:
         xbmcgui.Dialog().ok("CamAlert", kodiapi.tr(30182))
-        return
+        return None
     titles = [sources.title(n, s) for n in names]
     pre = names.index(s["camera"]) if s["camera"] in names else -1
     i = xbmcgui.Dialog().select(kodiapi.tr(30026), titles, preselect=pre)
-    if i >= 0:
-        kodiapi.set_setting("camera", names[i])
+    return names[i] if i >= 0 else None
+
+
+def choose_camera():
+    name = pick_camera()
+    if name:
+        kodiapi.set_setting("camera", name)
+
+
+def open_settings():
+    kodiapi.addon().openSettings()
+
+
+# #106: what opening the add-on (Add-ons > Program add-ons, a favourite) offers: (label id, action)
+MENU = ((30171, lambda: send(do="mosaic")), (30172, lambda: send(do="tour")), (30205, lambda: show_camera()),
+        (30204, lambda: events()), (30201, lambda: diagnostics()), (30284, lambda: open_settings()))
+
+
+def show_camera():
+    name = pick_camera()
+    if name:
+        send(do="show", cam=name)
+
+
+def menu():
+    i = xbmcgui.Dialog().select("CamAlert", [kodiapi.tr(label) for label, _action in MENU])
+    if 0 <= i < len(MENU):
+        MENU[i][1]()
 
 
 def service_state():
@@ -113,7 +140,10 @@ def camera_password():
 
 
 def run(args):
-    what = args[0] if args else "settings"
+    if not args:
+        menu()
+        return
+    what = args[0]
     if what == "choose_camera":
         choose_camera()
     elif what == "test":
@@ -135,4 +165,4 @@ def run(args):
     elif what == "devices":
         xbmcgui.Dialog().ok("CamAlert", kodiapi.tr(30185) % ptz.ensure_example())
     else:
-        kodiapi.addon().openSettings()
+        open_settings()

@@ -1103,6 +1103,76 @@ class _KodiModules(object):
         self.assertFalse(Built.module("service").Service.move_secrets())
         self.assertTrue([m for m in kodi_stubs.LOGGED if "not moved: ZeroDivisionError" in m])
 
+    def menu_setup(self):
+        """script.py with recording fakes: select answers, sent commands, called actions."""
+        import types
+        script = Built.module("script")
+        xbmcgui = script.xbmcgui
+        rec = types.SimpleNamespace(seen=[], answers=[], sent=[], calls=[], said=[])
+        for name in ("select", "ok"):
+            self.addCleanup(setattr, xbmcgui.Dialog, name, getattr(xbmcgui.Dialog, name))
+        xbmcgui.Dialog.select = lambda self, heading, items, **kw: (rec.seen.append((heading, list(items))) or
+                                                                   (rec.answers.pop(0) if rec.answers else -1))
+        xbmcgui.Dialog.ok = lambda self, heading, message: rec.said.append(message)
+        fakes = {"send": lambda **cmd: rec.sent.append(cmd), "events": lambda: rec.calls.append("events"),
+                 "diagnostics": lambda: rec.calls.append("diagnostics"),
+                 "open_settings": lambda: rec.calls.append("settings"),
+                 "time": types.SimpleNamespace(sleep=lambda s: None, time=__import__("time").time)}
+        for name, fake in fakes.items():
+            self.addCleanup(setattr, script, name, getattr(script, name))
+            setattr(script, name, fake)
+        return script, rec
+
+    MENU = ["Show mosaic", "Start tour", "Show camera", "Event list", "Diagnostics", "Settings"]
+
+    def test_menu_without_arguments(self):
+        """#106: opening CamAlert from Add-ons > Program add-ons shows a choice list, not the settings."""
+        script, rec = self.menu_setup()
+        Built.store["camera"] = "garden"
+        self.addCleanup(Built.store.pop, "camera", None)
+        cases = [([0], [{"do": "mosaic"}], []), ([1], [{"do": "tour"}], []), ([3], [], ["events"]),
+                 ([4], [], ["diagnostics"]), ([5], [], ["settings"]), ([-1], [], [])]
+        for answers, sent, calls in cases:
+            rec.seen[:], rec.sent[:], rec.calls[:] = [], [], []
+            rec.answers[:] = answers
+            script.run([])
+            self.assertEqual(rec.seen[0], ("CamAlert", self.MENU), answers)
+            self.assertEqual((rec.sent, rec.calls), (sent, calls), answers)
+        # Show camera: a camera picker, the chosen camera is shown; the default camera setting stays as it was
+        rec.seen[:] = []
+        rec.answers[:] = [2, 1]
+        script.run([])
+        heading, titles = rec.seen[1]
+        self.assertEqual(heading, "Choose camera")
+        self.assertEqual(len(titles), 4)
+        names = Built.module("sources").all_camera_names(Built.module("kodiapi").settings())
+        self.assertEqual(rec.sent, [{"do": "show", "cam": names[1]}])
+        self.assertEqual(Built.store["camera"], "garden")
+        rec.sent[:] = []
+        rec.answers[:] = [2, -1]  # picker cancelled: nothing happens
+        script.run([])
+        self.assertEqual(rec.sent, [])
+
+    def test_menu_settings_and_old_arguments(self):
+        """#106: RunScript(service.camalert,settings) still opens the settings; the old buttons still work."""
+        script, rec = self.menu_setup()
+        script.run(["settings"])
+        script.run(["mosaic"])
+        script.run(["tour"])
+        self.assertEqual(rec.calls, ["settings"])
+        self.assertEqual(rec.sent, [{"do": "mosaic"}, {"do": "tour"}])
+        self.assertEqual(rec.seen, [])
+
+    def test_menu_show_camera_without_go2rtc(self):
+        """#106/#73: no go2rtc address: the menu says why instead of an empty camera list."""
+        script, rec = self.menu_setup()
+        Built.store["server"] = ""
+        rec.answers[:] = [2]
+        script.run([])
+        self.assertEqual(rec.said, ["go2rtc address not set"])
+        self.assertEqual(rec.sent, [])
+        self.assertEqual(len(rec.seen), 1)
+
     def test_change_camera_password_button(self):
         """#55: the settings button shows whether a password is stored (never the password) and changes or removes
         it directly in devices.conf; the input dialog hides what is typed."""

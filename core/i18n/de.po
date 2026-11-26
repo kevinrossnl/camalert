@@ -1480,6 +1480,10 @@ msgstr "Kamerapasswort entfernt."
 msgid "Used when devices.conf has no password for a camera. A password typed here is moved to devices.conf and this field is emptied again."
 msgstr "Wird benutzt, wenn devices.conf kein Passwort für eine Kamera enthält. Ein hier eingegebenes Passwort wird nach devices.conf verschoben und dieses Feld wieder geleert."
 
+#: kodi:30284
+msgid "Settings"
+msgstr "Einstellungen"
+
 #: ha:config.step.user.title
 msgid "Add a CamAlert player"
 msgstr "CamAlert-Wiedergabegerät hinzufügen"

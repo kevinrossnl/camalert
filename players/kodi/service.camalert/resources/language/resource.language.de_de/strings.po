@@ -881,6 +881,10 @@ msgctxt "#30283"
 msgid "Used when devices.conf has no password for a camera. A password typed here is moved to devices.conf and this field is emptied again."
 msgstr "Wird benutzt, wenn devices.conf kein Passwort für eine Kamera enthält. Ein hier eingegebenes Passwort wird nach devices.conf verschoben und dieses Feld wieder geleert."
 
+msgctxt "#30284"
+msgid "Settings"
+msgstr "Einstellungen"
+
 msgctxt "#30500"
 msgid "API"
 msgstr "API"

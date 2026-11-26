@@ -21,6 +21,10 @@ Kodi now checks the repository and updates CamAlert by itself.
 
 After installing, open **Add-ons › My add-ons › Services › CamAlert › Configure**.
 
+**Watching the cameras yourself:** open CamAlert from **Add-ons › Program add-ons** (or *My add-ons › Services*). It
+offers a list: *Show mosaic*, *Start tour*, *Show camera* (pick one, it opens in the photo window), *Event list*,
+*Diagnostics* and *Settings*. Use Kodi's context menu › *Add to favourites* to reach it from the home screen.
+
 ## Settings
 
 | Tab | What |

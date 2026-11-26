@@ -84,7 +84,7 @@ async def test_camera_list_is_refreshed(hass, player):
     entry = await setup_player(hass, player)
     assert hass.states.get("button.living_room_show_driveway") is None
     player.cameras.append("driveway")
-    entry.runtime_data._cameras_at = 0  # older than CAMERA_REFRESH_SECONDS
+    entry.runtime_data._cameras_at = float("-inf")  # older than CAMERA_REFRESH_SECONDS, whatever the uptime
     await entry.runtime_data.async_refresh()
     await hass.async_block_till_done()
     assert hass.states.get("button.living_room_show_driveway") is not None

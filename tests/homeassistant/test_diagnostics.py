@@ -16,6 +16,7 @@ except ImportError:  # older pytest-homeassistant-custom-component (HA 2025.1): 
         return (await resp.json())["data"]
 
 from conftest import setup_player
+from custom_components.camalert.api import INTEGRATION_VERSION
 
 GOLDEN = os.path.join(os.path.dirname(__file__), "golden", "diagnostics.json")
 
@@ -28,6 +29,8 @@ async def test_diagnostics_redacted(hass, hass_client, player):
     for secret in ("s3cret-token", "127.0.0.1", "node-1", "/api/webhook/"):
         assert secret not in text, secret
     diag["entry"]["data"]["port"] = "<port>"  # random port of the fake player
+    assert diag["integration_version"] == INTEGRATION_VERSION
+    diag["integration_version"] = "<version>"  # the golden file does not change with every release
     if os.environ.get("UPDATE_GOLDEN"):
         os.makedirs(os.path.dirname(GOLDEN), exist_ok=True)
         with open(GOLDEN, "w") as f:

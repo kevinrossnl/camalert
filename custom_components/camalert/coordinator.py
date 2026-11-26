@@ -19,7 +19,7 @@ class CamAlertCoordinator(DataUpdateCoordinator):
                          update_interval=timedelta(seconds=SCAN_INTERVAL_SECONDS), config_entry=entry)
         self.api = api
         self.cameras: list[dict] = []
-        self._cameras_at = 0.0
+        self._cameras_at = float("-inf")  # monotonic() may be < CAMERA_REFRESH_SECONDS right after a boot
 
     async def _async_update_data(self):
         try:

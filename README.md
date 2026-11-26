@@ -2,7 +2,7 @@
 
 [![Release](https://img.shields.io/github/v/release/kevinrossnl/camalert)](https://github.com/kevinrossnl/camalert/releases/latest)
 [![Build](https://github.com/kevinrossnl/camalert/actions/workflows/release.yml/badge.svg)](https://github.com/kevinrossnl/camalert/actions/workflows/release.yml)
-[![HACS custom repository](https://img.shields.io/badge/HACS-custom%20repository-41BDF5)](docs/integrations/home-assistant.md#install)
+[![HACS default](https://img.shields.io/badge/HACS-default-41BDF5)](docs/integrations/home-assistant.md#install)
 [![License: GPL-2.0-only](https://img.shields.io/github/license/kevinrossnl/camalert)](LICENSE)
 
 **CamAlert** shows your IP cameras on the TV: on an **Enigma2 receiver** (openATV, OpenPLi, VTi, ... on VU+,
@@ -72,7 +72,7 @@ More: [Enigma2 receiver](docs/players/enigma2.md), [illustrated mosaic](docs/ima
 |---|---|
 | **Enigma2 receiver** | `.ipk` from the [latest release](https://github.com/kevinrossnl/camalert/releases/latest) or the opkg feed: [Enigma2 receiver](docs/players/enigma2.md#install) |
 | **Kodi** | the CamAlert repository zip, Kodi then updates CamAlert by itself: [Kodi](docs/players/kodi.md#install) |
-| **Home Assistant** | Marketplace (HACS) › Custom repositories › `https://github.com/kevinrossnl/camalert` (Integration): [Home Assistant](docs/integrations/home-assistant.md) |
+| **Home Assistant** | **Settings › Marketplace** (HACS): search for **CamAlert** and install it. Fallback: add `https://github.com/kevinrossnl/camalert` as a custom repository (Integration): [Home Assistant](docs/integrations/home-assistant.md#install) |
 
 ## Documentation
 

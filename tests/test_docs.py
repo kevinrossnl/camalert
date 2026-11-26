@@ -187,3 +187,36 @@ class TestDocs(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestHacsDefault(unittest.TestCase):
+    """CamAlert is in the HACS default list since 25-11-2026 (#103): every install text starts with "search for
+    CamAlert in HACS" and mentions the custom repository only afterwards, as a fallback."""
+
+    def first(self, text, needles):
+        found = [text.find(n) for n in needles if n in text]
+        return min(found) if found else -1
+
+    def check(self, path, text):
+        search = self.first(text, ("search for **CamAlert**", "search for <strong>CamAlert</strong>",
+                                   "Search for **CamAlert**", "Search for <strong>CamAlert</strong>"))
+        custom = self.first(text, ("Custom repositories", "custom repository"))
+        self.assertGreater(search, -1, "%s: no 'search for CamAlert in HACS' step" % path)
+        if custom > -1:
+            self.assertLess(search, custom, "%s: the custom repository comes before the HACS search" % path)
+
+    def test_readme_install_row(self):
+        text = open(os.path.join(ROOT, "README.md"), encoding="utf-8").read()
+        row = next(line for line in text.splitlines() if line.startswith("| **Home Assistant** |"))
+        self.check("README.md install table", row)
+        self.assertNotIn("HACS-custom%20repository", text, "README badge still says custom repository")
+
+    def test_home_assistant_install_section(self):
+        text = open(os.path.join(ROOT, "docs", "integrations", "home-assistant.md"), encoding="utf-8").read()
+        section = text.split("### Install", 1)[1].split("\n### ", 1)[0]
+        self.check("docs/integrations/home-assistant.md#install", section)
+
+    def test_pages_start_page(self):
+        text = open(os.path.join(ROOT, ".github", "pages", "index.html"), encoding="utf-8").read()
+        section = text.split('id="home-assistant"', 1)[1].split("</p>", 2)
+        self.check(".github/pages/index.html", "</p>".join(section[:2]))

@@ -13,10 +13,11 @@ the user interface, no YAML. It works the same for Enigma2 receivers and Kodi: b
 
 ### Install
 
-1. Open **Settings › Marketplace** (in older versions: HACS) › menu **⋮ › Custom repositories**.
-2. Add `https://github.com/kevinrossnl/camalert`, type **Integration**.
-3. Search for **CamAlert**, install it and restart Home Assistant.
-   Without HACS: download `camalert-homeassistant-x.y.z.zip` from the
+1. Open **Settings › Marketplace** (in older versions: HACS), search for **CamAlert**, install it and restart
+   Home Assistant. CamAlert is in the HACS default list, so no extra repository is needed.
+2. Only if CamAlert does not show up (for example an older HACS): menu **⋮ › Custom repositories**, add
+   `https://github.com/kevinrossnl/camalert` with type **Integration**, then search again.
+3. Without HACS: download `camalert-homeassistant-x.y.z.zip` from the
    [latest release](https://github.com/kevinrossnl/camalert/releases/latest) and unpack it into your Home Assistant
    `config` folder (it contains `custom_components/camalert/`), then restart.
 4. **Settings › Devices & services › Add integration › CamAlert**. Enter the host name or IP address of the player

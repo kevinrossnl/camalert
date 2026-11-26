@@ -7,6 +7,15 @@ actions and blueprint inputs stay backwards compatible.
 
 ## [Unreleased]
 
+### Changed
+
+- **Home Assistant:** CamAlert is now in the HACS default list. Install it with *Settings › Marketplace*: search for
+  **CamAlert**. Adding the custom repository is only needed as a fallback.
+- **Settings:** the help of *Access token* now says to send the token in the `X-CamAlert-Token` header; `?token=`
+  in the address still works in 1.x but is deprecated.
+- **Translations (Dutch):** the same word for the same thing everywhere (for example *Camera kiezen*,
+  *beginstand*, *zelfondertekend certificaat*, *ontvanger*).
+
 ## [1.0.1] - 2026-11-24
 
 ### Fixed

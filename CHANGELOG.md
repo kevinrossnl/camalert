@@ -14,6 +14,9 @@ actions and blueprint inputs stay backwards compatible.
   typing `name=value|...`. **Choose cameras** ticks up to 9 mosaic cameras.
 - **Home Assistant blueprints:** *Only when someone is home* (new optional input `presence`) in the doorbell, LG TV
   and motion blueprints: pick persons, device trackers or `zone.home`, empty = always (as before).
+- **Home Assistant blueprints:** the doorbell and LG TV blueprints can also notify a phone (Companion app, new
+  optional inputs `phone_notify` and `phone_camera`): the picture of the camera, tapping opens it; also when nobody is
+  home.
 
 ### Changed
 

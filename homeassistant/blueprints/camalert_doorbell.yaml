@@ -58,10 +58,38 @@ blueprint:
           multiple: true
           filter:
             - domain: [person, device_tracker, group, zone]
+    phone_notify:
+      name: Also notify a phone (optional)
+      description: >-
+        Notify action of the Home Assistant Companion app, e.g. notify.mobile_app_my_phone (`notify.` may be left
+        out): a notification "Doorbell - camera" also when nobody is home. Empty = no phone notification.
+      default: ""
+      selector:
+        text:
+    phone_camera:
+      name: Camera entity for the phone (optional)
+      description: >-
+        Camera entity (e.g. camera.front_door): the phone notification shows its picture and opens the camera when
+        tapped. Empty = text only.
+      default: ""
+      selector:
+        entity:
+          filter:
+            - domain: camera
 mode: single
 max_exceeded: silent
 variables:
   label_in: !input label
+  camera_in: !input camera
+  phone_notify_in: !input phone_notify
+  phone_camera_in: !input phone_camera
+  phone_action: >-
+    {% set a = phone_notify_in | trim %}{{ a if a.startswith('notify.') else 'notify.' ~ a }}
+  phone_message: "{{ (label_in | trim or 'Doorbell') ~ ' - ' ~ camera_in }}"
+  phone_data: >-
+    {{ {'image': '/api/camera_proxy/' ~ phone_camera_in, 'entity_id': phone_camera_in,
+        'clickAction': 'entityId:' ~ phone_camera_in, 'url': 'entityId:' ~ phone_camera_in}
+       if phone_camera_in else {} }}
   presence_in: !input presence
   someone_home: >-
     {% set ents = presence_in if presence_in is list else ([presence_in] if presence_in else []) %}
@@ -90,4 +118,15 @@ actions:
           mode: !input mode
           priority: high
           label: "{{ label_in | trim }}"
+        continue_on_error: true
+  # #14: also on the phone (Companion app), also when nobody is home; never blocks the TV part
+  - if:
+      - condition: template
+        value_template: "{{ phone_notify_in | trim | length > 0 }}"
+    then:
+      - action: "{{ phone_action }}"
+        data:
+          title: CamAlert
+          message: "{{ phone_message }}"
+          data: "{{ phone_data }}"
         continue_on_error: true

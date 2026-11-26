@@ -15,7 +15,8 @@ import _paths  # noqa: E402
 # remove or reorder before 2.0 (homeassistant/blueprints/README.md).
 FROZEN = {
     "camalert_doorbell.yaml": [("doorbell", None), ("players", None), ("camera", None), ("mode", "photo"),
-                               ("seconds", 30), ("label", ""), ("presence", [])],
+                               ("seconds", 30), ("label", ""), ("presence", []), ("phone_notify", ""),
+                               ("phone_camera", "")],
     "camalert_motion.yaml": [("motion", None), ("players", None), ("cameras", ""), ("mode", "photo"),
                              ("several", "strip"), ("seconds", 30), ("label", ""), ("when", "armed"),
                              ("alarm_panel", ""), ("from_time", "22:00:00"), ("until_time", "07:00:00"),
@@ -26,7 +27,8 @@ FROZEN = {
     "camalert_doorbell_webos.yaml": [("doorbell", None), ("players", None), ("camera", None), ("mode", "photo"),
                                      ("seconds", 30), ("label", ""), ("webos_notify", None), ("message", ""),
                                      ("snapshot_camera", ""), ("snapshot_file", "/media/camalert_webos.jpg"),
-                                     ("tv", ""), ("snapshot_url", ""), ("presence", [])],
+                                     ("tv", ""), ("snapshot_url", ""), ("presence", []), ("phone_notify", ""),
+                                     ("phone_camera", "")],
 }
 # option labels = glossary terms (blueprints cannot be translated)
 MODE_OPTIONS = [{"label": "Photo window", "value": "photo"}, {"label": "Live view", "value": "live"},
@@ -130,4 +132,16 @@ class TestBlueprints(unittest.TestCase):
             self.assertEqual(inputs["presence"]["selector"]["entity"]["filter"],
                              [{"domain": ["person", "device_tracker", "group", "zone"]}], name)
             self.assertIn("ents | count == 0", d["variables"]["someone_home"], name)
+
+    def test_phone_is_not_gated_by_presence(self):
+        """#14: the phone notification is a separate top-level step after the TV part, so it also arrives when
+        nobody is home; empty phone_notify (the default) = nothing."""
+        for name in ("camalert_doorbell.yaml", "camalert_doorbell_webos.yaml"):
+            d = self.load(os.path.join(_paths.BLUEPRINTS, name))
+            last = d["actions"][-1]
+            self.assertEqual(last["if"][0]["value_template"], "{{ phone_notify_in | trim | length > 0 }}", name)
+            self.assertNotIn("someone_home", str(last), name)
+            self.assertIs(last["then"][0]["continue_on_error"], True, name)
+            self.assertEqual(d["blueprint"]["input"]["phone_camera"]["selector"]["entity"]["filter"],
+                             [{"domain": "camera"}], name)
 

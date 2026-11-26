@@ -35,6 +35,8 @@ Order in every blueprint: **trigger → `players` → `camera`/`cameras` → `mo
 | Key | Meaning | Default | Blueprints |
 |---|---|---|---|
 | `presence` | Only when someone is home: persons, device trackers or groups (state `home`) or zones (someone in it, e.g. `zone.home`); empty = always. Only the TV part waits for it (players, LG TV) | empty | doorbell, doorbell webOS, motion |
+| `phone_notify` | Notify action of the Companion app, e.g. `notify.mobile_app_my_phone` (`notify.` may be left out): "Doorbell - camera" on the phone, also when nobody is home; empty = none | empty | doorbell, doorbell webOS |
+| `phone_camera` | Camera entity for that notification: its picture (`/api/camera_proxy/...`) and tapping opens the camera; empty = text only | empty | doorbell, doorbell webOS |
 
 Priorities are fixed per blueprint: doorbell (also webOS) and motion `high`, alarm `alarm`.
 Blueprints cannot be translated: option labels use the English glossary terms (`core/i18n/glossary.json`).

@@ -306,3 +306,42 @@ async def test_presence_webos_tv_part_too(hass, player, blueprints):
     await _ring(hass)
     assert len(_shows(player)) == 1 and len(calls) == 1
 
+
+def _fake_phone(hass):
+    calls = []
+
+    async def record(call):
+        calls.append(dict(call.data))
+    hass.services.async_register("notify", "mobile_app_phone", record)
+    return calls
+
+
+async def test_phone_with_camera_also_when_nobody_home(hass, player, blueprints):
+    """#14: nobody home = no camera on the TV, but the phone gets the doorbell with the picture and a tap target."""
+    entry = await setup_player(hass, player)
+    phone = _fake_phone(hass)
+    hass.states.async_set("binary_sensor.door", "off")
+    hass.states.async_set("person.one", "not_home")
+    await automations(hass, ("door", "camalert_doorbell.yaml", {
+        "doorbell": ["binary_sensor.door"], "players": [player_device(hass, entry).id], "camera": "front_door",
+        "label": "Doorbell", "presence": ["person.one"], "phone_notify": "mobile_app_phone",
+        "phone_camera": "camera.front_door"}))
+    await _ring(hass)
+    assert _shows(player) == []
+    assert phone == [{"title": "CamAlert", "message": "Doorbell - front_door", "data": {
+        "image": "/api/camera_proxy/camera.front_door", "entity_id": "camera.front_door",
+        "clickAction": "entityId:camera.front_door", "url": "entityId:camera.front_door"}}]
+
+
+async def test_phone_text_only_and_webos(hass, player, blueprints):
+    entry = await setup_player(hass, player)
+    phone = _fake_phone(hass)
+    tv = _fake_webos(hass)
+    hass.states.async_set("binary_sensor.door", "off")
+    await automations(hass, ("door", "camalert_doorbell_webos.yaml", {
+        "doorbell": ["binary_sensor.door"], "players": [player_device(hass, entry).id], "camera": "front_door",
+        "webos_notify": "notify.lg_webos_tv_living_room", "phone_notify": "notify.mobile_app_phone"}))
+    await _ring(hass)
+    assert len(_shows(player)) == 1 and len(tv) == 1
+    assert phone == [{"title": "CamAlert", "message": "Doorbell - front_door", "data": {}}]
+

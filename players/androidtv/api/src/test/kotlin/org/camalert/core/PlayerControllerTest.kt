@@ -39,6 +39,20 @@ class PlayerControllerTest {
     }
 
     @Test
+    fun logOnlyModeRecordsButShowsNothing() {
+        // display mode 'log' of the UniFi Protect rules (#72, like Kodi #71): event list and log, no window, no chime
+        env.values["chime"] = "all"
+        assertEquals("ignore", ctl.show("garden", null, "log", "high", "unifi", "Person"))
+        assertEquals(emptyList<String>(), display.calls)
+        assertEquals(0, env.chimes)
+        val e = ctl.events[0]
+        assertEquals(listOf("garden", "unifi", "high", "ignore", "log_only", "Person"),
+            listOf(e["camera"], e["source"], e["priority"], e["action"], e["reason"], e["label"]))
+        assertTrue(env.logs.last().contains("mode=log") && env.logs.last().endsWith("-> ignore (log_only)"))
+        assertEquals("show", show("garden"))  // no cooldown started by a log-only event
+    }
+
+    @Test
     fun sameCameraExtendsOtherCameraReplaces() {
         show("garden")
         assertEquals("extend", show("garden", sec = 20))

@@ -54,5 +54,18 @@
  "choice.log_level.off": "Off",
  "choice.log_level.errors": "Errors only",
  "choice.log_level.normal": "Normal",
- "choice.log_level.verbose": "Verbose"
+ "choice.log_level.verbose": "Verbose",
+ "choice.unifi_mode.photo": "Photo window",
+ "choice.unifi_mode.live": "Live view",
+ "choice.unifi_mode.notify": "Notification",
+ "choice.unifi_mode.log": "Log only",
+ "choice.unifi_priority.normal": "Normal",
+ "choice.unifi_priority.high": "High (doorbell)",
+ "choice.unifi_priority.alarm": "Alarm",
+ "unifi_console": "UniFi Protect console",
+ "unifi_console_address": "Console address (host or host:port)",
+ "unifi_console_user": "Console user (role View Only)",
+ "unifi_console_password": "Console password",
+ "unifi_where": "the settings below",
+ "unifi_no_console": "UniFi Protect: no console address set"
 }

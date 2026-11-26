@@ -29,6 +29,9 @@ import org.camalert.core.PlayerController
 import org.camalert.core.PlayerEnv
 import org.camalert.core.Present
 import org.camalert.core.Tile
+import org.camalert.core.Unifi
+import org.camalert.core.UnifiPoller
+import org.camalert.core.UrlTransport
 import org.camalert.core.Urls
 
 /**
@@ -52,6 +55,10 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
     lateinit var present: Present
     lateinit var overlay: Overlay
     lateinit var controller: PlayerController
+    lateinit var unifiLogin: UnifiLogin
+    /** UniFi Protect consoles (#72), polled in their own thread every unifi_interval seconds. */
+    val unifi = UnifiPoller(UrlTransport(), { m, l -> CamLog.log(m, l) })
+    private var unifiThread: Thread? = null
     private val api = Api()
     private var server: HttpServer? = null
     private var serverPort = -1
@@ -162,11 +169,13 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         present = Present(tr = tr)
         overlay = Overlay(this, host)
         controller = PlayerController(env, overlay)
+        unifiLogin = UnifiLogin(this)
         CamLog.level = settings()["log_level"]?.toString() ?: "normal"
         foreground()
         store.prefs.registerOnSharedPreferenceChangeListener(this)
         CamLog.log("CamAlert $version started (node $node)")
         apply()
+        startUnifi()
     }
 
     private fun foreground() {
@@ -226,8 +235,33 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
 
     override fun onBind(intent: Intent?): IBinder? = null
 
+    /** The UniFi Protect poller thread: the first answer is only the baseline, errors are logged once (#78). */
+    private fun startUnifi() {
+        unifiThread = Thread({
+            while (!Thread.currentThread().isInterrupted) {
+                var wait = 5
+                try {
+                    val s = settings()
+                    val labels = Unifi.KIND_LABELS.mapValues { tr(it.value) }
+                    unifi.once(s + ("unifi_labels" to labels), unifiLogin.consoles()) { t ->
+                        controller.show(t.camera, t.seconds, t.mode, t.priority, t.source, t.label, null)
+                    }
+                    wait = Unifi.interval(s)
+                } catch (e: Exception) {  // never let the poller die silently
+                    CamLog.log("UniFi Protect: $e", "error")
+                }
+                try {
+                    Thread.sleep(wait * 1000L)
+                } catch (e: InterruptedException) {
+                    break
+                }
+            }
+        }, "camalert-unifi").apply { isDaemon = true; start() }
+    }
+
     override fun onDestroy() {
         CamLog.log("CamAlert stopped")
+        unifiThread?.interrupt()
         store.prefs.unregisterOnSharedPreferenceChangeListener(this)
         server?.stop()
         mqtt?.let { m -> Thread { m.shutdown() }.start() }

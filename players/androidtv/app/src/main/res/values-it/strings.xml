@@ -56,6 +56,19 @@
     <string name="choice_log_level_errors" formatted="false">Solo errori</string>
     <string name="choice_log_level_normal" formatted="false">Normale</string>
     <string name="choice_log_level_verbose" formatted="false">Dettagliato</string>
+    <string name="choice_unifi_mode_photo" formatted="false">Finestra foto</string>
+    <string name="choice_unifi_mode_live" formatted="false">Visione live</string>
+    <string name="choice_unifi_mode_notify" formatted="false">Notifica</string>
+    <string name="choice_unifi_mode_log" formatted="false">Solo registro</string>
+    <string name="choice_unifi_priority_normal" formatted="false">Normale</string>
+    <string name="choice_unifi_priority_high" formatted="false">Alta (campanello)</string>
+    <string name="choice_unifi_priority_alarm" formatted="false">Allarme</string>
+    <string name="unifi_console" formatted="false">Console UniFi Protect</string>
+    <string name="unifi_console_address" formatted="false">Indirizzo della console (host o host:porta)</string>
+    <string name="unifi_console_user" formatted="false">Utente della console (ruolo View Only)</string>
+    <string name="unifi_console_password" formatted="false">Password della console</string>
+    <string name="unifi_where" formatted="false">basso</string>
+    <string name="unifi_no_console" formatted="false">UniFi Protect: nessun indirizzo della console impostato</string>
     <string name="t_bfb3a49f" formatted="false">Attiva CamAlert</string>
     <string name="t_61786bb1" formatted="false">Attiva o disattiva l\'API HTTP e la visualizzazione delle telecamere.</string>
     <string name="t_bc6c5ac6" formatted="false">Indirizzo go2rtc</string>
@@ -117,6 +130,19 @@
     <string name="t_52b025e5" formatted="false">Nomi delle telecamere Frigate</string>
     <string name="t_0480ae98" formatted="false">Solo se i nomi differiscono da go2rtc: frigate=go2rtc|other=other_stream</string>
     <string name="t_21325cd6" formatted="false">Priorità Frigate</string>
+    <string name="t_3989819d" formatted="false">Eventi UniFi Protect</string>
+    <string name="t_5c8d390b" formatted="false">Interroga le console UniFi Protect in %s sugli eventi (campanello, persona, veicolo, ...).</string>
+    <string name="t_4f396c23" formatted="false">Tipi di eventi UniFi Protect</string>
+    <string name="t_faa27a4b" formatted="false">Separati da virgole: ring, person, vehicle, animal, package, motion.</string>
+    <string name="t_dbb68f38" formatted="false">Nomi delle telecamere UniFi Protect</string>
+    <string name="t_01b954ba" formatted="false">Solo se i nomi differiscono da go2rtc: protect=go2rtc|other=other_stream</string>
+    <string name="t_c36f9210" formatted="false">Priorità UniFi Protect</string>
+    <string name="t_5196d03a" formatted="false">Una suonata del campanello riceve sempre almeno la priorità Alta.</string>
+    <string name="t_02491587" formatted="false">Controlla ogni (secondi)</string>
+    <string name="t_a09c4f41" formatted="false">Per tipo di evento</string>
+    <string name="t_731133cf" formatted="false">Facoltativo: type=priority/mode/camera, ad es. ring=alarm/live|motion=normal/log</string>
+    <string name="t_e77cca02" formatted="false">Per telecamera</string>
+    <string name="t_4ab02f1e" formatted="false">Facoltativo, prevale sul tipo di evento: camera=priority/mode/seconds, ad es. front_door=high/photo/30|driveway=normal/log</string>
     <string name="t_10c9a4ed" formatted="false">Tasti colorati a Home Assistant</string>
     <string name="t_b8d8287a" formatted="false">Mentre è mostrata una telecamera, i tasti colorati inviano un evento a Home Assistant (ad es. aprire il cancello).</string>
     <string name="t_674df9da" formatted="false">MQTT (Home Assistant senza YAML)</string>

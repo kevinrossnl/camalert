@@ -20123,6 +20123,15 @@
     "titles": "",
     "token": "abc",
     "tour_interval": 8,
+    "unifi_camera_rules": "",
+    "unifi_cameras": "",
+    "unifi_enabled": false,
+    "unifi_interval": 5,
+    "unifi_kinds": "ring,person",
+    "unifi_mode": "photo",
+    "unifi_priority": "normal",
+    "unifi_rules": "",
+    "unifi_seconds": 30,
     "until_time": "23:00",
     "verify_ssl": true,
     "window_keys": true
@@ -20193,6 +20202,15 @@
     "titles": "",
     "token": "",
     "tour_interval": 8,
+    "unifi_camera_rules": "",
+    "unifi_cameras": "",
+    "unifi_enabled": false,
+    "unifi_interval": 5,
+    "unifi_kinds": "ring,person",
+    "unifi_mode": "photo",
+    "unifi_priority": "normal",
+    "unifi_rules": "",
+    "unifi_seconds": 30,
     "until_time": "23:00",
     "verify_ssl": true,
     "window_keys": true
@@ -20257,6 +20275,15 @@
     "titles": "",
     "token": "",
     "tour_interval": 8,
+    "unifi_camera_rules": "",
+    "unifi_cameras": "",
+    "unifi_enabled": false,
+    "unifi_interval": 5,
+    "unifi_kinds": "ring,person",
+    "unifi_mode": "photo",
+    "unifi_priority": "normal",
+    "unifi_rules": "",
+    "unifi_seconds": 30,
     "until_time": "23:00",
     "verify_ssl": true,
     "window_keys": true
@@ -20270,6 +20297,1735 @@
    }
   }
  ],
+ "unifi": {
+  "backoff": [
+   {
+    "failures": 1,
+    "next_in": 30.0,
+    "wait": null
+   },
+   {
+    "failures": 2,
+    "next_in": 60.0,
+    "wait": null
+   },
+   {
+    "failures": 3,
+    "next_in": 200.0,
+    "wait": 200
+   },
+   {
+    "failures": 4,
+    "next_in": 300.0,
+    "wait": null
+   },
+   {
+    "failures": 5,
+    "next_in": 900.0,
+    "wait": null
+   },
+   {
+    "failures": 6,
+    "next_in": 900.0,
+    "wait": null
+   },
+   {
+    "failures": 7,
+    "next_in": 7200.0,
+    "wait": 7200
+   }
+  ],
+  "camera_map": [
+   {
+    "in": "front door=front_door|Garden = garden_sub|broken|=x|y=",
+    "out": {
+     "front_door": "front_door",
+     "garden": "garden_sub"
+    }
+   },
+   {
+    "in": "",
+    "out": {}
+   },
+   {
+    "in": null,
+    "out": {}
+   },
+   {
+    "in": "a=b|a=c",
+    "out": {
+     "a": "c"
+    }
+   }
+  ],
+  "camera_rules": [
+   {
+    "in": "front_door=high/photo/30|driveway=normal/log",
+    "out": {
+     "driveway": [
+      "normal",
+      "log",
+      null
+     ],
+     "front_door": [
+      "high",
+      "photo",
+      30
+     ]
+    }
+   },
+   {
+    "in": "Front Door=alarm//4",
+    "out": {
+     "front_door": [
+      "alarm",
+      null,
+      null
+     ]
+    }
+   },
+   {
+    "in": "x=//301",
+    "out": {}
+   },
+   {
+    "in": "y=//5",
+    "out": {
+     "y": [
+      null,
+      null,
+      5
+     ]
+    }
+   },
+   {
+    "in": "z=normal",
+    "out": {
+     "z": [
+      "normal",
+      null,
+      null
+     ]
+    }
+   },
+   {
+    "in": "=high",
+    "out": {}
+   },
+   {
+    "in": "garden=//abc",
+    "out": {}
+   },
+   {
+    "in": "",
+    "out": {}
+   }
+  ],
+  "check": [
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": {
+     "camera": "front_door",
+     "label": null,
+     "mode": null,
+     "priority": "high",
+     "seconds": null
+    },
+    "previous": {
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      }
+     ]
+    },
+    "settings": {}
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": null,
+    "previous": null,
+    "settings": {}
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": null,
+    "previous": {},
+    "settings": {}
+   },
+   {
+    "now": null,
+    "out": null,
+    "previous": {
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      }
+     ]
+    },
+    "settings": {}
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": []
+    },
+    "out": null,
+    "previous": {
+     "events": []
+    },
+    "settings": {}
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": {
+     "camera": "front_door",
+     "label": null,
+     "mode": null,
+     "priority": "high",
+     "seconds": null
+    },
+    "previous": {
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      }
+     ]
+    },
+    "settings": {
+     "unifi_kinds": "ring,person,motion",
+     "unifi_priority": "normal"
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": null,
+    "previous": null,
+    "settings": {
+     "unifi_kinds": "ring,person,motion",
+     "unifi_priority": "normal"
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": null,
+    "previous": {},
+    "settings": {
+     "unifi_kinds": "ring,person,motion",
+     "unifi_priority": "normal"
+    }
+   },
+   {
+    "now": null,
+    "out": null,
+    "previous": {
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      }
+     ]
+    },
+    "settings": {
+     "unifi_kinds": "ring,person,motion",
+     "unifi_priority": "normal"
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": []
+    },
+    "out": null,
+    "previous": {
+     "events": []
+    },
+    "settings": {
+     "unifi_kinds": "ring,person,motion",
+     "unifi_priority": "normal"
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": {
+     "camera": "garden_sub",
+     "label": "Someone",
+     "mode": "notify",
+     "priority": "normal",
+     "seconds": 20
+    },
+    "previous": {
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      }
+     ]
+    },
+    "settings": {
+     "unifi_cameras": "garden=garden_sub",
+     "unifi_kinds": "person,motion",
+     "unifi_label": "Someone",
+     "unifi_mode": "notify",
+     "unifi_seconds": 20
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": null,
+    "previous": null,
+    "settings": {
+     "unifi_cameras": "garden=garden_sub",
+     "unifi_kinds": "person,motion",
+     "unifi_label": "Someone",
+     "unifi_mode": "notify",
+     "unifi_seconds": 20
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": null,
+    "previous": {},
+    "settings": {
+     "unifi_cameras": "garden=garden_sub",
+     "unifi_kinds": "person,motion",
+     "unifi_label": "Someone",
+     "unifi_mode": "notify",
+     "unifi_seconds": 20
+    }
+   },
+   {
+    "now": null,
+    "out": null,
+    "previous": {
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      }
+     ]
+    },
+    "settings": {
+     "unifi_cameras": "garden=garden_sub",
+     "unifi_kinds": "person,motion",
+     "unifi_label": "Someone",
+     "unifi_mode": "notify",
+     "unifi_seconds": 20
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": []
+    },
+    "out": null,
+    "previous": {
+     "events": []
+    },
+    "settings": {
+     "unifi_cameras": "garden=garden_sub",
+     "unifi_kinds": "person,motion",
+     "unifi_label": "Someone",
+     "unifi_mode": "notify",
+     "unifi_seconds": 20
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": {
+     "camera": "driveway",
+     "label": "Motion",
+     "mode": "live",
+     "priority": "alarm",
+     "seconds": null
+    },
+    "previous": {
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      }
+     ]
+    },
+    "settings": {
+     "unifi_kinds": "motion",
+     "unifi_labels": {
+      "motion": "Motion"
+     },
+     "unifi_rules": "motion=alarm/live/driveway"
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": null,
+    "previous": null,
+    "settings": {
+     "unifi_kinds": "motion",
+     "unifi_labels": {
+      "motion": "Motion"
+     },
+     "unifi_rules": "motion=alarm/live/driveway"
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": null,
+    "previous": {},
+    "settings": {
+     "unifi_kinds": "motion",
+     "unifi_labels": {
+      "motion": "Motion"
+     },
+     "unifi_rules": "motion=alarm/live/driveway"
+    }
+   },
+   {
+    "now": null,
+    "out": null,
+    "previous": {
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      }
+     ]
+    },
+    "settings": {
+     "unifi_kinds": "motion",
+     "unifi_labels": {
+      "motion": "Motion"
+     },
+     "unifi_rules": "motion=alarm/live/driveway"
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": []
+    },
+    "out": null,
+    "previous": {
+     "events": []
+    },
+    "settings": {
+     "unifi_kinds": "motion",
+     "unifi_labels": {
+      "motion": "Motion"
+     },
+     "unifi_rules": "motion=alarm/live/driveway"
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": {
+     "camera": "front_door",
+     "label": null,
+     "mode": "log",
+     "priority": "alarm",
+     "seconds": 45
+    },
+    "previous": {
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      }
+     ]
+    },
+    "settings": {
+     "unifi_camera_rules": "front_door=alarm/log/45",
+     "unifi_kinds": "ring",
+     "unifi_rules": "ring=high/photo",
+     "unifi_seconds": 0
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": null,
+    "previous": null,
+    "settings": {
+     "unifi_camera_rules": "front_door=alarm/log/45",
+     "unifi_kinds": "ring",
+     "unifi_rules": "ring=high/photo",
+     "unifi_seconds": 0
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": null,
+    "previous": {},
+    "settings": {
+     "unifi_camera_rules": "front_door=alarm/log/45",
+     "unifi_kinds": "ring",
+     "unifi_rules": "ring=high/photo",
+     "unifi_seconds": 0
+    }
+   },
+   {
+    "now": null,
+    "out": null,
+    "previous": {
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      }
+     ]
+    },
+    "settings": {
+     "unifi_camera_rules": "front_door=alarm/log/45",
+     "unifi_kinds": "ring",
+     "unifi_rules": "ring=high/photo",
+     "unifi_seconds": 0
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": []
+    },
+    "out": null,
+    "previous": {
+     "events": []
+    },
+    "settings": {
+     "unifi_camera_rules": "front_door=alarm/log/45",
+     "unifi_kinds": "ring",
+     "unifi_rules": "ring=high/photo",
+     "unifi_seconds": 0
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": {
+     "camera": "garden",
+     "label": null,
+     "mode": null,
+     "priority": "normal",
+     "seconds": null
+    },
+    "previous": {
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      }
+     ]
+    },
+    "settings": {
+     "unifi_kinds": "person",
+     "unifi_priority": ""
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": null,
+    "previous": null,
+    "settings": {
+     "unifi_kinds": "person",
+     "unifi_priority": ""
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      },
+      {
+       "camera": "c2",
+       "id": "e1",
+       "type": "motion"
+      },
+      {
+       "camera": "c2",
+       "id": "e2",
+       "smartDetectTypes": [
+        "person"
+       ],
+       "type": "smartDetectZone"
+      },
+      {
+       "camera": "c1",
+       "id": "e3",
+       "type": "ring"
+      }
+     ]
+    },
+    "out": null,
+    "previous": {},
+    "settings": {
+     "unifi_kinds": "person",
+     "unifi_priority": ""
+    }
+   },
+   {
+    "now": null,
+    "out": null,
+    "previous": {
+     "events": [
+      {
+       "camera": "c1",
+       "id": "e0",
+       "type": "ring"
+      }
+     ]
+    },
+    "settings": {
+     "unifi_kinds": "person",
+     "unifi_priority": ""
+    }
+   },
+   {
+    "now": {
+     "cams": {
+      "c1": "front_door",
+      "c2": "garden"
+     },
+     "events": []
+    },
+    "out": null,
+    "previous": {
+     "events": []
+    },
+    "settings": {
+     "unifi_kinds": "person",
+     "unifi_priority": ""
+    }
+   }
+  ],
+  "event_kinds": [
+   {
+    "in": {
+     "type": "ring"
+    },
+    "out": [
+     "ring"
+    ]
+   },
+   {
+    "in": {
+     "type": "motion"
+    },
+    "out": [
+     "motion"
+    ]
+   },
+   {
+    "in": {
+     "smartDetectTypes": [
+      "vehicle",
+      "person"
+     ],
+     "type": "smartDetectZone"
+    },
+    "out": [
+     "person",
+     "vehicle"
+    ]
+   },
+   {
+    "in": {
+     "smartDetectTypes": [
+      "licensePlate"
+     ],
+     "type": "smartDetectLine"
+    },
+    "out": []
+   },
+   {
+    "in": {
+     "type": "other"
+    },
+    "out": []
+   },
+   {
+    "in": {},
+    "out": []
+   },
+   {
+    "in": null,
+    "out": []
+   }
+  ],
+  "events_path": [
+   {
+    "args": [
+     1000,
+     61000,
+     50
+    ],
+    "out": "/proxy/protect/api/events?start=1000&end=61000&limit=50&orderDirection=ASC&types=ring&types=motion&types=smartDetectZone&types=smartDetectLine"
+   }
+  ],
+  "kind_labels": {
+   "animal": "Animal",
+   "motion": "Motion",
+   "package": "Package",
+   "person": "Person",
+   "ring": "Doorbell",
+   "vehicle": "Vehicle"
+  },
+  "kind_rules": [
+   {
+    "in": "ring=alarm/live|motion=normal/log/garden",
+    "out": {
+     "motion": [
+      "normal",
+      "log",
+      "garden"
+     ],
+     "ring": [
+      "alarm",
+      "live",
+      null
+     ]
+    }
+   },
+   {
+    "in": "person=high",
+    "out": {
+     "person": [
+      "high",
+      null,
+      null
+     ]
+    }
+   },
+   {
+    "in": "vehicle=/notify",
+    "out": {
+     "vehicle": [
+      null,
+      "notify",
+      null
+     ]
+    }
+   },
+   {
+    "in": "bad=alarm",
+    "out": {}
+   },
+   {
+    "in": "ring=",
+    "out": {}
+   },
+   {
+    "in": "animal=x/y/z",
+    "out": {
+     "animal": [
+      null,
+      null,
+      "z"
+     ]
+    }
+   },
+   {
+    "in": "package= HIGH / PHOTO / front_door ",
+    "out": {
+     "package": [
+      "high",
+      "photo",
+      "front_door"
+     ]
+    }
+   },
+   {
+    "in": "",
+    "out": {}
+   }
+  ],
+  "match": [
+   {
+    "cams": {
+     "c1": "front_door",
+     "c2": "garden"
+    },
+    "ev": {
+     "camera": "c1",
+     "type": "ring"
+    },
+    "kinds": [
+     "ring",
+     "person"
+    ],
+    "names": {},
+    "out": [
+     "front_door",
+     "ring"
+    ]
+   },
+   {
+    "cams": {
+     "c1": "front_door",
+     "c2": "garden"
+    },
+    "ev": {
+     "camera": "c2",
+     "smartDetectTypes": [
+      "person"
+     ],
+     "type": "smartDetectZone"
+    },
+    "kinds": [
+     "ring",
+     "person"
+    ],
+    "names": {
+     "garden": "garden_sub"
+    },
+    "out": [
+     "garden_sub",
+     "person"
+    ]
+   },
+   {
+    "cams": {
+     "c1": "front_door",
+     "c2": "garden"
+    },
+    "ev": {
+     "camera": "c3",
+     "type": "ring"
+    },
+    "kinds": [
+     "ring"
+    ],
+    "names": {},
+    "out": null
+   },
+   {
+    "cams": {
+     "c1": "front_door",
+     "c2": "garden"
+    },
+    "ev": {
+     "camera": "c1",
+     "type": "motion"
+    },
+    "kinds": [
+     "ring"
+    ],
+    "names": {},
+    "out": null
+   }
+  ],
+  "poll_status": [
+   {
+    "lines": [
+     [
+      false,
+      "UniFi Protect: no console of type unifi in the devices file"
+     ]
+    ],
+    "new": [],
+    "steps": []
+   },
+   {
+    "lines": [
+     [
+      null,
+      "UniFi Protect: not checked yet"
+     ]
+    ],
+    "new": [],
+    "steps": [
+     [
+      "consoles",
+      1
+     ]
+    ]
+   },
+   {
+    "lines": [
+     [
+      true,
+      "UniFi Protect: last check t10"
+     ],
+     [
+      null,
+      "UniFi Protect: no event since the start"
+     ]
+    ],
+    "new": [],
+    "steps": [
+     [
+      "consoles",
+      1
+     ],
+     [
+      "ok",
+      10
+     ]
+    ]
+   },
+   {
+    "lines": [
+     [
+      false,
+      "UniFi Protect: UniFi Protect login refused: HTTP 401 password=***"
+     ],
+     [
+      null,
+      "UniFi Protect: next login attempt t50"
+     ],
+     [
+      null,
+      "UniFi Protect: no event since the start"
+     ]
+    ],
+    "new": [
+     true
+    ],
+    "steps": [
+     [
+      "consoles",
+      2
+     ],
+     [
+      "fail",
+      20,
+      "UniFi Protect login refused: HTTP 401 password=hunter2",
+      50
+     ]
+    ]
+   },
+   {
+    "lines": [
+     [
+      true,
+      "UniFi Protect: last check t10"
+     ],
+     [
+      true,
+      "UniFi Protect: last event t11, front_door (Person)"
+     ]
+    ],
+    "new": [],
+    "steps": [
+     [
+      "consoles",
+      1
+     ],
+     [
+      "ok",
+      10
+     ],
+     [
+      "event",
+      11,
+      "front_door",
+      "Person",
+      "high",
+      null
+     ]
+    ]
+   },
+   {
+    "lines": [
+     [
+      false,
+      "UniFi Protect: boom"
+     ],
+     [
+      true,
+      "UniFi Protect: last check t10"
+     ],
+     [
+      true,
+      "UniFi Protect: last event t12, garden [Log only]"
+     ]
+    ],
+    "new": [
+     true
+    ],
+    "steps": [
+     [
+      "consoles",
+      1
+     ],
+     [
+      "ok",
+      10
+     ],
+     [
+      "event",
+      12,
+      "garden",
+      null,
+      "normal",
+      "log"
+     ],
+     [
+      "fail",
+      30,
+      "boom",
+      null
+     ]
+    ]
+   }
+  ],
+  "protect_cameras": [
+   {
+    "in": {
+     "cameras": [
+      {
+       "displayName": "Front Door",
+       "id": "aa11"
+      },
+      {
+       "id": "bb22",
+       "name": "Garage"
+      },
+      {
+       "displayName": "Old",
+       "id": "cc33",
+       "isAdopted": false
+      },
+      {
+       "id": "",
+       "name": "x"
+      },
+      "junk",
+      {
+       "displayName": "",
+       "id": "dd44",
+       "name": "Back"
+      }
+     ]
+    },
+    "out": {
+     "aa11": "front_door",
+     "bb22": "garage",
+     "dd44": "back"
+    }
+   },
+   {
+    "in": {},
+    "out": {}
+   },
+   {
+    "in": null,
+    "out": {}
+   },
+   {
+    "in": {
+     "cameras": null
+    },
+    "out": {}
+   }
+  ],
+  "retry_after": [
+   {
+    "now": 1000.0,
+    "out": 120,
+    "value": "120"
+   },
+   {
+    "now": 1000.0,
+    "out": 5,
+    "value": " 5 "
+   },
+   {
+    "now": 1000.0,
+    "out": 3600,
+    "value": "99999"
+   },
+   {
+    "now": 1000.0,
+    "out": 0,
+    "value": "0"
+   },
+   {
+    "now": 1000.0,
+    "out": null,
+    "value": ""
+   },
+   {
+    "now": 1000.0,
+    "out": null,
+    "value": null
+   },
+   {
+    "now": 1000.0,
+    "out": null,
+    "value": "soon"
+   },
+   {
+    "now": 1000.0,
+    "out": null,
+    "value": "-3"
+   },
+   {
+    "now": 1000.0,
+    "out": 200,
+    "value": "Thu, 01 Jan 1970 00:20:00 GMT"
+   },
+   {
+    "now": 1000.0,
+    "out": 0,
+    "value": "Thu, 01 Jan 1970 00:10:00 GMT"
+   },
+   {
+    "now": 1000.0,
+    "out": 3600,
+    "value": "Thu, 01 Jan 1970 02:00:00 GMT"
+   }
+  ],
+  "slug": [
+   {
+    "in": "Front Door",
+    "out": "front_door"
+   },
+   {
+    "in": "  Hügel Süd ",
+    "out": "huegel_sued"
+   },
+   {
+    "in": "Café-Bar",
+    "out": "cafe_bar"
+   },
+   {
+    "in": "Straße 2",
+    "out": "strasse_2"
+   },
+   {
+    "in": "",
+    "out": ""
+   },
+   {
+    "in": null,
+    "out": ""
+   },
+   {
+    "in": "__x__",
+    "out": "x"
+   },
+   {
+    "in": "ÀÉ ñ",
+    "out": "ae"
+   }
+  ],
+  "snapshot_path": [
+   {
+    "in": "abcdef12",
+    "out": {
+     "ok": "/proxy/protect/api/cameras/abcdef12/snapshot?w=1280&force=true"
+    }
+   },
+   {
+    "in": "zz",
+    "out": {
+     "error": "bad camera id"
+    }
+   },
+   {
+    "in": "",
+    "out": {
+     "error": "bad camera id"
+    }
+   },
+   {
+    "in": null,
+    "out": {
+     "error": "bad camera id"
+    }
+   },
+   {
+    "in": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "out": {
+     "error": "bad camera id"
+    }
+   }
+  ],
+  "wanted_kinds": [
+   {
+    "in": "ring, person",
+    "out": [
+     "ring",
+     "person"
+    ]
+   },
+   {
+    "in": "",
+    "out": [
+     "ring",
+     "person"
+    ]
+   },
+   {
+    "in": null,
+    "out": [
+     "ring",
+     "person"
+    ]
+   },
+   {
+    "in": "motion,unknown",
+    "out": [
+     "motion"
+    ]
+   },
+   {
+    "in": "PACKAGE , animal",
+    "out": [
+     "animal",
+     "package"
+    ]
+   },
+   {
+    "in": "nothing",
+    "out": [
+     "ring",
+     "person"
+    ]
+   }
+  ]
+ },
  "url_target": [
   {
    "caller": null,

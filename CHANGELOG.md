@@ -12,6 +12,9 @@ actions and blueprint inputs stay backwards compatible.
 - **Kodi:** a **Choose per camera** button below each per-camera setting (camera names, turn or mirror image,
   refresh interval, cooldown per camera, live view substreams): pick a camera, then a value from a list, instead of
   typing `name=value|...`. **Choose cameras** ticks up to 9 mosaic cameras.
+- **Android TV / Fire TV:** UniFi Protect events without Home Assistant, like on Enigma2 and Kodi: the same
+  settings and rules, the console login in its own private storage (*Triggers › UniFi Protect console*), login
+  backoff and diagnostics ([Android TV](docs/players/androidtv.md#settings)).
 - **Home Assistant blueprints:** *Only when someone is home* (new optional input `presence`) in the doorbell, LG TV
   and motion blueprints: pick persons, device trackers or `zone.home`, empty = always (as before).
 - **Home Assistant blueprints:** the doorbell and LG TV blueprints can also notify a phone (Companion app, new

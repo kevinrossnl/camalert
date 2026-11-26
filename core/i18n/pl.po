@@ -4,27 +4,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: pl\n"
 
-#: e2 kodi:30042 ha:entity.sensor.on_screen.state_attributes.mode.state.photo ha:selector.mode.options.photo atv:choice.frigate_mode.photo atv:choice.mode.photo
+#: e2 kodi:30042 ha:entity.sensor.on_screen.state_attributes.mode.state.photo ha:selector.mode.options.photo atv:choice.frigate_mode.photo atv:choice.mode.photo atv:choice.unifi_mode.photo
 msgid "Photo window"
 msgstr "Okno ze zdjęciem"
 
-#: e2 kodi:30043 ha:entity.sensor.on_screen.state_attributes.mode.state.live ha:selector.mode.options.live atv:choice.frigate_mode.live atv:choice.mode.live
+#: e2 kodi:30043 ha:entity.sensor.on_screen.state_attributes.mode.state.live ha:selector.mode.options.live atv:choice.frigate_mode.live atv:choice.mode.live atv:choice.unifi_mode.live
 msgid "Live view"
 msgstr "Podgląd na żywo"
 
-#: e2 kodi:30044 ha:selector.mode.options.notify atv:choice.frigate_mode.notify atv:choice.mode.notify
+#: e2 kodi:30044 ha:selector.mode.options.notify atv:choice.frigate_mode.notify atv:choice.mode.notify atv:choice.unifi_mode.notify
 msgid "Notification"
 msgstr "Powiadomienie"
 
-#: e2 kodi:30140 kodi:30231 kodi:30507 ha:selector.priority.options.normal atv:choice.frigate_priority.normal atv:choice.log_level.normal atv:choice.title_size.normal
+#: e2 kodi:30140 kodi:30231 kodi:30507 ha:selector.priority.options.normal atv:choice.frigate_priority.normal atv:choice.log_level.normal atv:choice.title_size.normal atv:choice.unifi_priority.normal
 msgid "Normal"
 msgstr "Normalny"
 
-#: e2 atv:choice.frigate_priority.high
+#: e2 atv:choice.frigate_priority.high atv:choice.unifi_priority.high
 msgid "High (doorbell)"
 msgstr "Wysoki (dzwonek)"
 
-#: e2 kodi:30142 kodi:30509 ha:selector.priority.options.alarm atv:choice.frigate_priority.alarm
+#: e2 kodi:30142 kodi:30509 ha:selector.priority.options.alarm atv:choice.frigate_priority.alarm atv:choice.unifi_priority.alarm
 msgid "Alarm"
 msgstr "Alarm"
 
@@ -148,7 +148,7 @@ msgstr "CZERWONY"
 msgid "GREEN"
 msgstr "ZIELONY"
 
-#: e2 kodi:30270 kodi:30551
+#: e2 kodi:30270 kodi:30551 atv:choice.unifi_mode.log
 msgid "Log only"
 msgstr "Tylko dziennik"
 
@@ -1791,3 +1791,27 @@ msgstr "CamAlert nie może jeszcze wyświetlać okien nad innymi aplikacjami. Ze
 #: atv:show_expert
 msgid "Show expert settings"
 msgstr "Pokaż ustawienia eksperckie"
+
+#: atv:unifi_console
+msgid "UniFi Protect console"
+msgstr "Konsola UniFi Protect"
+
+#: atv:unifi_console_address
+msgid "Console address (host or host:port)"
+msgstr "Adres konsoli (host lub host:port)"
+
+#: atv:unifi_console_user
+msgid "Console user (role View Only)"
+msgstr "Użytkownik konsoli (rola View Only)"
+
+#: atv:unifi_console_password
+msgid "Console password"
+msgstr "Hasło konsoli"
+
+#: atv:unifi_where
+msgid "the settings below"
+msgstr "ustawień poniżej"
+
+#: atv:unifi_no_console
+msgid "UniFi Protect: no console address set"
+msgstr "UniFi Protect: nie ustawiono adresu konsoli"

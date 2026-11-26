@@ -77,15 +77,15 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Check every (seconds) | `2` s | 1–60 | expert | Enigma2, Kodi |  |
 | Display mode | `photo` | `photo` / `live` / `notify` | advanced | Enigma2, Kodi |  |
 | Duration (seconds) | `30` s | 5–300, step 5 | advanced | Enigma2, Kodi |  |
-| UniFi Protect events | No |  | advanced | Enigma2, Kodi | Asks the UniFi Protect consoles in the camera file for events (doorbell, person, vehicle, ...). |
-| UniFi Protect event types | `ring,person` |  | advanced | Enigma2, Kodi | Comma separated: ring, person, vehicle, animal, package, motion. |
-| UniFi Protect camera names | – |  | advanced | Enigma2, Kodi | Only if the names differ from go2rtc: protect=go2rtc\|other=other_stream |
-| UniFi Protect priority | `normal` | `normal` / `high` / `alarm` | advanced | Enigma2, Kodi | A doorbell ring always gets at least the priority High. |
-| Display mode | `photo` | `photo` / `live` / `notify` / `log` | advanced | Enigma2, Kodi |  |
-| Duration (seconds) | `30` s | 5–300, step 5 | advanced | Enigma2, Kodi |  |
-| Check every (seconds) | `5` s | 2–60 | expert | Enigma2, Kodi |  |
-| Per event type | – |  | expert | Enigma2, Kodi | Optional: type=priority/mode/camera, e.g. ring=alarm/live\|motion=normal/log |
-| Per camera | – |  | expert | Enigma2, Kodi | Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30\|driveway=normal/log |
+| UniFi Protect events | No |  | advanced | all | Asks the UniFi Protect consoles in the camera file for events (doorbell, person, vehicle, ...). |
+| UniFi Protect event types | `ring,person` |  | advanced | all | Comma separated: ring, person, vehicle, animal, package, motion. |
+| UniFi Protect camera names | – |  | advanced | all | Only if the names differ from go2rtc: protect=go2rtc\|other=other_stream |
+| UniFi Protect priority | `normal` | `normal` / `high` / `alarm` | advanced | all | A doorbell ring always gets at least the priority High. |
+| Display mode | `photo` | `photo` / `live` / `notify` / `log` | advanced | all |  |
+| Duration (seconds) | `30` s | 5–300, step 5 | advanced | all |  |
+| Check every (seconds) | `5` s | 2–60 | expert | all |  |
+| Per event type | – |  | expert | all | Optional: type=priority/mode/camera, e.g. ring=alarm/live\|motion=normal/log |
+| Per camera | – |  | expert | all | Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30\|driveway=normal/log |
 
 ### Camera control
 

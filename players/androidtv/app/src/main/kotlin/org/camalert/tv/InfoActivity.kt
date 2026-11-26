@@ -69,6 +69,12 @@ class InfoActivity : Activity() {
         }
         if (s["mqtt_enabled"] == true) line(svc.mqttConnected(), "MQTT ${s["mqtt_host"]}:${s["mqtt_port"]}")
         else line(null, "MQTT off")
+        if (s["unifi_enabled"] == true) {
+            if (svc.unifiLogin.consoles().isEmpty()) line(false, getString(R.string.unifi_no_console))
+            else for ((ok, text) in svc.unifi.status.lines(svc.tr) { ts ->
+                java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.ROOT).format(java.util.Date((ts * 1000).toLong()))
+            }) line(ok, text)
+        }
         val last = svc.controller.lastCaller
         line(null, if (last == null) "no API call yet" else "last API call from ${last.second} (${last.third})")
     }

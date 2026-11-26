@@ -13,6 +13,8 @@ import androidx.leanback.preference.LeanbackSettingsFragmentCompat
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
+import androidx.preference.PreferenceDataStore
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreference
@@ -115,10 +117,47 @@ class SettingsActivity : FragmentActivity() {
                 if (s.level == "internal" || (s.level == "expert" && !expert)) continue
                 screen.addPreference(widget(s, tr))
             }
+            if (section == "triggers") unifiConsole(screen)
             preferenceScreen = screen
         }
 
-        private fun label(s: Setting, tr: Tr) = tr(s.label ?: s.id).replace("%s", "go2rtc")
+        /** UniFi Protect console (#72): kept in its own private file (UnifiLogin), never with the settings. */
+        private fun unifiConsole(screen: PreferenceScreen) {
+            val ctx = preferenceManager.context
+            val login = UnifiLogin(ctx)
+            val store = object : PreferenceDataStore() {
+                override fun getString(key: String?, defValue: String?) = login.prefs.getString(key, defValue)
+                override fun putString(key: String?, value: String?) {
+                    login.prefs.edit().putString(key, value?.let { if (key == "password") it else it.trim() }).apply()
+                }
+            }
+            val cat = PreferenceCategory(ctx).apply { title = getString(R.string.unifi_console); isIconSpaceReserved = false }
+            screen.addPreference(cat)
+            for ((key, res) in listOf("address" to R.string.unifi_console_address, "user" to R.string.unifi_console_user,
+                    "password" to R.string.unifi_console_password)) {
+                cat.addPreference(EditTextPreference(ctx).apply {
+                    preferenceDataStore = store
+                    this.key = key
+                    title = getString(res)
+                    dialogTitle = title
+                    isIconSpaceReserved = false
+                    setOnBindEditTextListener { e ->
+                        e.inputType = if (key == "password") InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                        else InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
+                    }
+                    summaryProvider = Preference.SummaryProvider<EditTextPreference> { p ->
+                        val v = p.text ?: ""
+                        if (v.isEmpty()) "–" else if (key == "password") "••••••" else v
+                    }
+                })
+            }
+        }
+
+        /** %s in a label or help: the place of the cameras (go2rtc) or, for UniFi Protect, the console settings. */
+        private fun fill(s: Setting, text: String) =
+            text.replace("%s", if (s.id.startsWith("unifi_")) getString(R.string.unifi_where) else "go2rtc")
+
+        private fun label(s: Setting, tr: Tr) = fill(s, tr(s.label ?: s.id))
 
         private fun widget(s: Setting, tr: Tr): Preference {
             val ctx = preferenceManager.context
@@ -161,7 +200,7 @@ class SettingsActivity : FragmentActivity() {
             p.title = label(s, tr)
             p.isPersistent = true
             p.isIconSpaceReserved = false
-            if (s.type == "bool" && s.help != null) p.summary = tr(s.help!!).replace("%s", "go2rtc")
+            if (s.type == "bool" && s.help != null) p.summary = fill(s, tr(s.help!!))
             return p
         }
     }

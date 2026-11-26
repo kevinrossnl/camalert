@@ -91,6 +91,12 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
         val wait = Rules.cooldownSeconds(cam, s["cooldown"]?.toString())
         val prio = Rules.pickPriority(priority)
         val lab = label?.trim()?.take(40)?.ifEmpty { null }
+        if (mode == "log") {  // display mode 'log only' (UniFi Protect rules, #72): event list and log, nothing on screen, no chime
+            env.log("request from $source: camera=$cam priority=$prio mode=log label=${label ?: "-"} -> ignore (log_only)", "normal")
+            record(cam, lab, source, prio, "ignore", "log_only", eventId)
+            env.changed()
+            return "ignore"
+        }
         var reason = ""
         val result: String
         synchronized(lock) {

@@ -46,8 +46,17 @@ Open **CamAlert** from the apps row (or *Settings › Apps › CamAlert › Open
 defaults and levels as on the other players ([all settings](../user/settings.md)); expert settings are hidden
 until you turn on *Show expert settings*. The *Players* column of the settings list says which ones Android TV has;
 *Volume during live view* starts at 0 here (the app underneath keeps its own sound). Not yet on Android TV: direct
-mode with a camera file, Foscam alarms, camera control (PTZ), UniFi Protect, HTTPS for the API, remote syslog
-(#66, #72); pausing what is playing is not possible on Android.
+mode with a camera file, Foscam alarms, camera control (PTZ), HTTPS for the API, remote syslog (#66); pausing what
+is playing is not possible on Android.
+
+**UniFi Protect** (#72): *Triggers* has the same UniFi Protect settings as the other players (event types, camera
+names, priority, display mode incl. *Log only*, rules per event type and per camera). The console itself goes in
+**UniFi Protect console** at the bottom of *Triggers*: address (`192.168.1.1` or `host:port`), a local Protect
+user with the role *View Only* and its password. They are kept in the app's own private storage, apart from the
+settings, and never appear in the log or in `/camalert/status`. CamAlert only reads (camera list and events); the
+console's self-signed certificate is accepted, so use it in your own network only. A refused login is not retried
+at every check (30 s, 1 min, 2 min, 5 min, then every 15 min). *Diagnostics* shows the last check, the last
+event and, while it waits, the next login attempt.
 
 ## What you see
 

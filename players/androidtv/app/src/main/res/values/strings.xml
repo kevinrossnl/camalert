@@ -57,6 +57,19 @@
     <string name="choice_log_level_errors" formatted="false">Errors only</string>
     <string name="choice_log_level_normal" formatted="false">Normal</string>
     <string name="choice_log_level_verbose" formatted="false">Verbose</string>
+    <string name="choice_unifi_mode_photo" formatted="false">Photo window</string>
+    <string name="choice_unifi_mode_live" formatted="false">Live view</string>
+    <string name="choice_unifi_mode_notify" formatted="false">Notification</string>
+    <string name="choice_unifi_mode_log" formatted="false">Log only</string>
+    <string name="choice_unifi_priority_normal" formatted="false">Normal</string>
+    <string name="choice_unifi_priority_high" formatted="false">High (doorbell)</string>
+    <string name="choice_unifi_priority_alarm" formatted="false">Alarm</string>
+    <string name="unifi_console" formatted="false">UniFi Protect console</string>
+    <string name="unifi_console_address" formatted="false">Console address (host or host:port)</string>
+    <string name="unifi_console_user" formatted="false">Console user (role View Only)</string>
+    <string name="unifi_console_password" formatted="false">Console password</string>
+    <string name="unifi_where" formatted="false">the settings below</string>
+    <string name="unifi_no_console" formatted="false">UniFi Protect: no console address set</string>
     <string name="t_bfb3a49f" formatted="false">Enable CamAlert</string>
     <string name="t_61786bb1" formatted="false">Turn the HTTP API and the camera display on or off.</string>
     <string name="t_bc6c5ac6" formatted="false">go2rtc address</string>
@@ -118,6 +131,19 @@
     <string name="t_52b025e5" formatted="false">Frigate camera names</string>
     <string name="t_0480ae98" formatted="false">Only if the names differ from go2rtc: frigate=go2rtc|other=other_stream</string>
     <string name="t_21325cd6" formatted="false">Frigate priority</string>
+    <string name="t_3989819d" formatted="false">UniFi Protect events</string>
+    <string name="t_5c8d390b" formatted="false">Asks the UniFi Protect consoles in %s for events (doorbell, person, vehicle, ...).</string>
+    <string name="t_4f396c23" formatted="false">UniFi Protect event types</string>
+    <string name="t_faa27a4b" formatted="false">Comma separated: ring, person, vehicle, animal, package, motion.</string>
+    <string name="t_dbb68f38" formatted="false">UniFi Protect camera names</string>
+    <string name="t_01b954ba" formatted="false">Only if the names differ from go2rtc: protect=go2rtc|other=other_stream</string>
+    <string name="t_c36f9210" formatted="false">UniFi Protect priority</string>
+    <string name="t_5196d03a" formatted="false">A doorbell ring always gets at least the priority High.</string>
+    <string name="t_02491587" formatted="false">Check every (seconds)</string>
+    <string name="t_a09c4f41" formatted="false">Per event type</string>
+    <string name="t_731133cf" formatted="false">Optional: type=priority/mode/camera, e.g. ring=alarm/live|motion=normal/log</string>
+    <string name="t_e77cca02" formatted="false">Per camera</string>
+    <string name="t_4ab02f1e" formatted="false">Optional, wins over the event type: camera=priority/mode/seconds, e.g. front_door=high/photo/30|driveway=normal/log</string>
     <string name="t_10c9a4ed" formatted="false">Colour keys to Home Assistant</string>
     <string name="t_b8d8287a" formatted="false">While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate).</string>
     <string name="t_674df9da" formatted="false">MQTT (Home Assistant without YAML)</string>

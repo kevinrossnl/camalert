@@ -223,7 +223,116 @@ def core_reference():
         "caller_source": [{"ua": ua, "source": __import__("camalert_core.events", fromlist=["x"]).caller_source(ua)}
                           for ua in ("HomeAssistant/2026.11 aiohttp/3.10", "curl/8", "", "Python/3 aiohttp",
                                      "Home Assistant")],
+        "unifi": unifi_reference(),
     }
+
+
+def unifi_reference():
+    """Reference answers of the UniFi Protect source (#72): pure helpers, check(), login backoff, diagnostics."""
+    from camalert_core.devices import unifi as u
+    from camalert_core.devices import client
+    from camalert_core.triggers import unifi as tu
+
+    def tup(d):
+        return {k: list(v) for k, v in d.items()}
+
+    names = ["Front Door", "  Hügel Süd ", "Café-Bar", "Straße 2", "", None, "__x__", "ÀÉ ñ"]
+    texts = ["front door=front_door|Garden = garden_sub|broken|=x|y=", "", None, "a=b|a=c"]
+    kinds = ["ring, person", "", None, "motion,unknown", "PACKAGE , animal", "nothing"]
+    rules_ = ["ring=alarm/live|motion=normal/log/garden", "person=high", "vehicle=/notify", "bad=alarm",
+              "ring=", "animal=x/y/z", "package= HIGH / PHOTO / front_door ", ""]
+    cam_rules = ["front_door=high/photo/30|driveway=normal/log", "Front Door=alarm//4", "x=//301", "y=//5",
+                 "z=normal", "=high", "garden=//abc", ""]
+    events = [{"type": "ring"}, {"type": "motion"}, {"type": "smartDetectZone", "smartDetectTypes": ["vehicle", "person"]},
+              {"type": "smartDetectLine", "smartDetectTypes": ["licensePlate"]}, {"type": "other"}, {}, None]
+    bootstraps = [{"cameras": [{"id": "aa11", "displayName": "Front Door"}, {"id": "bb22", "name": "Garage"},
+                               {"id": "cc33", "displayName": "Old", "isAdopted": False}, {"id": "", "name": "x"},
+                               "junk", {"id": "dd44", "displayName": "", "name": "Back"}]},
+                  {}, None, {"cameras": None}]
+    cams = {"c1": "front_door", "c2": "garden"}
+    match_cases = [({"camera": "c1", "type": "ring"}, ["ring", "person"], {}),
+                   ({"camera": "c2", "type": "smartDetectZone", "smartDetectTypes": ["person"]}, ["ring", "person"],
+                    {"garden": "garden_sub"}),
+                   ({"camera": "c3", "type": "ring"}, ["ring"], {}), ({"camera": "c1", "type": "motion"}, ["ring"], {})]
+    prev = {"events": [{"id": "e0", "camera": "c1", "type": "ring"}]}
+    now = {"cams": cams, "events": [{"id": "e0", "camera": "c1", "type": "ring"},
+                                    {"id": "e1", "camera": "c2", "type": "motion"},
+                                    {"id": "e2", "camera": "c2", "type": "smartDetectZone", "smartDetectTypes": ["person"]},
+                                    {"id": "e3", "camera": "c1", "type": "ring"}]}
+    settings_cases = [
+        {},
+        {"unifi_kinds": "ring,person,motion", "unifi_priority": "normal"},
+        {"unifi_kinds": "person,motion", "unifi_cameras": "garden=garden_sub", "unifi_mode": "notify",
+         "unifi_seconds": 20, "unifi_label": "Someone"},
+        {"unifi_kinds": "motion", "unifi_rules": "motion=alarm/live/driveway", "unifi_labels": {"motion": "Motion"}},
+        {"unifi_kinds": "ring", "unifi_camera_rules": "front_door=alarm/log/45", "unifi_rules": "ring=high/photo",
+         "unifi_seconds": 0},
+        {"unifi_kinds": "person", "unifi_priority": ""},
+    ]
+    check = []
+    for s in settings_cases:
+        for p, n in ((prev, now), (None, now), ({}, now), (prev, None), ({"events": []}, {"cams": cams, "events": []})):
+            t = tu.UnifiSource(s).check("console", p, n)
+            check.append({"settings": s, "previous": p, "now": n,
+                          "out": None if t is None else {"camera": t.camera, "priority": t.priority, "label": t.label,
+                                                         "mode": t.mode, "seconds": t.seconds}})
+    retry = [{"value": v, "now": 1000.0, "out": client.retry_after(v, 1000.0)} for v in
+             ("120", " 5 ", "99999", "0", "", None, "soon", "-3", "Thu, 01 Jan 1970 00:20:00 GMT",
+              "Thu, 01 Jan 1970 00:10:00 GMT", "Thu, 01 Jan 1970 02:00:00 GMT")]
+    b = client.LoginBackoff()
+    backoff = []
+    t = 1000.0
+    for wait in (None, None, 200, None, None, None, 7200):
+        e = b.failed(client.LoginError("x", "auth"), t, wait)
+        backoff.append({"wait": wait, "next_in": e.next_at - t, "failures": b.failures})
+    status_cases = []
+    tr = lambda x: x  # noqa: E731
+    when = lambda ts: "t%d" % ts  # noqa: E731
+    for steps in ([], [("consoles", 1)], [("consoles", 1), ("ok", 10)],
+                  [("consoles", 2), ("fail", 20, "UniFi Protect login refused: HTTP 401 password=hunter2", 50)],
+                  [("consoles", 1), ("ok", 10), ("event", 11, "front_door", "Person", "high", None)],
+                  [("consoles", 1), ("ok", 10), ("event", 12, "garden", None, "normal", "log"), ("fail", 30, "boom", None)]):
+        st = tu.PollStatus()
+        news = []
+        for step in steps:
+            if step[0] == "consoles":
+                st.consoles = step[1]
+            elif step[0] == "ok":
+                st.ok(step[1])
+            elif step[0] == "fail":
+                err = client.LoginError(step[2], "auth", step[3]) if step[3] else client.DeviceError(step[2])
+                news.append(st.failed(err, step[1]))
+            else:
+                trig = __import__("camalert_core.triggers", fromlist=["x"]).Trigger(step[2], step[4], "unifi", step[3],
+                                                                                    None, step[5], None)
+                st.event(trig, step[1])
+        status_cases.append({"steps": [list(x) for x in steps], "new": news,
+                             "lines": [[ok, text] for ok, text in st.lines(tr, when)]})
+    return {
+        "slug": [{"in": n, "out": u.slug(n)} for n in names],
+        "protect_cameras": [{"in": bs, "out": u.protect_cameras(bs)} for bs in bootstraps],
+        "camera_map": [{"in": t_, "out": u.camera_map(t_)} for t_ in texts],
+        "wanted_kinds": [{"in": k, "out": u.wanted_kinds(k)} for k in kinds],
+        "kind_rules": [{"in": r, "out": tup(u.kind_rules(r))} for r in rules_],
+        "camera_rules": [{"in": r, "out": tup(u.camera_rules(r))} for r in cam_rules],
+        "event_kinds": [{"in": e, "out": u.event_kinds(e)} for e in events],
+        "events_path": [{"args": [1000, 61000, 50], "out": u.events_path(1000, 61000, 50)}],
+        "snapshot_path": [{"in": i, "out": _try(lambda i=i: u.snapshot_path(i))} for i in ("abcdef12", "zz", "", None, "a" * 65)],
+        "match": [{"ev": e, "cams": cams, "kinds": k, "names": nm, "out": (lambda m: list(m) if m else None)(u.match(e, cams, k, nm))}
+                  for e, k, nm in match_cases],
+        "check": check,
+        "retry_after": retry,
+        "backoff": backoff,
+        "poll_status": status_cases,
+        "kind_labels": dict(tu.KIND_LABELS),
+    }
+
+
+def _try(fn):
+    try:
+        return {"ok": fn()}
+    except (ValueError, TypeError) as e:
+        return {"error": str(e)}
 
 
 def _cameras_param(v):

@@ -10,6 +10,7 @@ import android.view.KeyEvent
 import org.camalert.core.CoreData
 import org.camalert.core.Obs
 import org.camalert.core.Schema
+import org.camalert.core.UnifiConsole
 import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -68,6 +69,18 @@ class Store(private val ctx: Context) {
         }
         e.apply()
     }
+}
+
+/**
+ * The UniFi Protect console login (#72): address, View Only user and password in their own private preferences
+ * file, never in the settings, the log, /camalert/status or a backup of the settings (like the devices file of the
+ * other players).
+ */
+class UnifiLogin(ctx: Context) {
+    val prefs: SharedPreferences = ctx.getSharedPreferences(ctx.packageName + "_unifi", Context.MODE_PRIVATE)
+
+    fun consoles(): List<UnifiConsole> = listOfNotNull(UnifiConsole.of("protect", prefs.getString("address", null),
+        prefs.getString("user", null), prefs.getString("password", null)))
 }
 
 /** tr(msgid) for core texts and settings labels: generated resource t_<crc32> (tools/i18n/i18n.py). */

@@ -56,6 +56,19 @@
     <string name="choice_log_level_errors" formatted="false">Alleen fouten</string>
     <string name="choice_log_level_normal" formatted="false">Normaal</string>
     <string name="choice_log_level_verbose" formatted="false">Uitgebreid</string>
+    <string name="choice_unifi_mode_photo" formatted="false">Fotovenster</string>
+    <string name="choice_unifi_mode_live" formatted="false">Live beeld</string>
+    <string name="choice_unifi_mode_notify" formatted="false">Melding</string>
+    <string name="choice_unifi_mode_log" formatted="false">Alleen loggen</string>
+    <string name="choice_unifi_priority_normal" formatted="false">Normaal</string>
+    <string name="choice_unifi_priority_high" formatted="false">Hoog (deurbel)</string>
+    <string name="choice_unifi_priority_alarm" formatted="false">Alarm</string>
+    <string name="unifi_console" formatted="false">UniFi Protect-console</string>
+    <string name="unifi_console_address" formatted="false">Adres van de console (host of host:poort)</string>
+    <string name="unifi_console_user" formatted="false">Gebruiker van de console (rol View Only)</string>
+    <string name="unifi_console_password" formatted="false">Wachtwoord van de console</string>
+    <string name="unifi_where" formatted="false">de instellingen hieronder</string>
+    <string name="unifi_no_console" formatted="false">UniFi Protect: geen consoleadres ingesteld</string>
     <string name="t_bfb3a49f" formatted="false">CamAlert inschakelen</string>
     <string name="t_61786bb1" formatted="false">Zet de HTTP-API en de cameraweergave aan of uit.</string>
     <string name="t_bc6c5ac6" formatted="false">go2rtc-adres</string>
@@ -117,6 +130,19 @@
     <string name="t_52b025e5" formatted="false">Frigate-cameranamen</string>
     <string name="t_0480ae98" formatted="false">Alleen als de namen afwijken van go2rtc: frigate=go2rtc|other=other_stream</string>
     <string name="t_21325cd6" formatted="false">Frigate-prioriteit</string>
+    <string name="t_3989819d" formatted="false">UniFi Protect-gebeurtenissen</string>
+    <string name="t_5c8d390b" formatted="false">Vraagt de UniFi Protect-consoles in %s om gebeurtenissen (deurbel, persoon, voertuig, ...).</string>
+    <string name="t_4f396c23" formatted="false">UniFi Protect-gebeurtenistypen</string>
+    <string name="t_faa27a4b" formatted="false">Gescheiden door komma\'s: ring, person, vehicle, animal, package, motion.</string>
+    <string name="t_dbb68f38" formatted="false">UniFi Protect-cameranamen</string>
+    <string name="t_01b954ba" formatted="false">Alleen als de namen afwijken van go2rtc: protect=go2rtc|other=other_stream</string>
+    <string name="t_c36f9210" formatted="false">UniFi Protect-prioriteit</string>
+    <string name="t_5196d03a" formatted="false">Een deurbel krijgt altijd minstens de prioriteit Hoog.</string>
+    <string name="t_02491587" formatted="false">Controle-interval (seconden)</string>
+    <string name="t_a09c4f41" formatted="false">Per gebeurtenistype</string>
+    <string name="t_731133cf" formatted="false">Optioneel: type=priority/mode/camera, bijv. ring=alarm/live|motion=normal/log</string>
+    <string name="t_e77cca02" formatted="false">Per camera</string>
+    <string name="t_4ab02f1e" formatted="false">Optioneel, gaat voor het gebeurtenistype: camera=priority/mode/seconds, bijv. front_door=high/photo/30|driveway=normal/log</string>
     <string name="t_10c9a4ed" formatted="false">Kleurtoetsen naar Home Assistant</string>
     <string name="t_b8d8287a" formatted="false">Zolang een camera in beeld is, sturen de kleurtoetsen een gebeurtenis naar Home Assistant (bijv. hek openen).</string>
     <string name="t_674df9da" formatted="false">MQTT (Home Assistant zonder YAML)</string>

@@ -173,7 +173,7 @@ class Workflow(unittest.TestCase):
     def test_gate_needs_everything_and_stays_light(self):
         gate = self.jobs["gate"]
         self.assertEqual(gate["if"], "always()")
-        self.assertEqual(set(gate["needs"]), set(self.jobs) - {"gate"})
+        self.assertEqual(set(gate["needs"]), set(self.jobs) - {"gate", "mirror"})
         self.assertEqual(gate["runs-on"], "truenas")
         env = gate["steps"][0]["env"]
         for area in AREAS:
@@ -205,11 +205,40 @@ class Workflow(unittest.TestCase):
     def test_secrets_only_where_needed(self):
         with open(WORKFLOW) as f:
             text = f.read()
-        self.assertEqual(sorted(set(re.findall(r"secrets\.(\w+)", text))), ["CAMALERT_DENYLIST", "RUNNER_STATUS_TOKEN"])
+        self.assertEqual(sorted(set(re.findall(r"secrets\.(\w+)", text))),
+                         ["CAMALERT_DENYLIST", "MIRROR_SYNC_TOKEN", "RUNNER_STATUS_TOKEN"])
         self.assertEqual(json.dumps(self.jobs["pick-runner"]).count("secrets.RUNNER_STATUS_TOKEN"), 1)
+        self.assertEqual(json.dumps(self.jobs["mirror"]).count("secrets.MIRROR_SYNC_TOKEN"), 1)
         for name, job in self.jobs.items():
             if name != "pick-runner":
                 self.assertNotIn("RUNNER_STATUS_TOKEN", json.dumps(job), name)
+            if name != "mirror":
+                self.assertNotIn("MIRROR_SYNC_TOKEN", json.dumps(job), name)
+
+    def test_mirror_only_after_a_green_gate(self):
+        """#104: the GitHub push mirror has no sync on commit; it is started here, only after the gate (privacy
+        check included) passed, for main and version tags only (never for other branches or pull requests)."""
+        job = self.jobs["mirror"]
+        self.assertEqual(job["needs"], "gate")
+        cond = job["if"]
+        self.assertNotIn("always()", cond)
+        for part in ("needs.gate.result == 'success'", "github.event_name == 'push'", "refs/heads/main",
+                     "startsWith(github.ref, 'refs/tags/v')"):
+            self.assertIn(part, cond)
+        self.assertEqual(job["runs-on"], "truenas")
+        self.assertLessEqual(job["timeout-minutes"], 2)
+        text = json.dumps(job["steps"])
+        self.assertIn("push_mirrors-sync", text)
+        self.assertNotIn("actions/checkout", text)
+        self.assertNotIn("apt-get", text)
+
+    def test_mirror_without_secret_is_a_note_not_a_failure(self):
+        import subprocess
+        script = self.jobs["mirror"]["steps"][0]["run"]
+        env = dict(os.environ, MIRROR_SYNC_TOKEN="", GITHUB_SERVER_URL="http://invalid.invalid",
+                   GITHUB_REPOSITORY="x/y")
+        out = subprocess.run(["sh", "-ec", script], env=env, stdout=subprocess.PIPE, check=True).stdout.decode()
+        self.assertIn("MIRROR_SYNC_TOKEN not set", out)
 
 
 if __name__ == "__main__":

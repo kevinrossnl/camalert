@@ -17,7 +17,10 @@ file table of that folder: read the root file **and** the one of the folder you 
 - Mirrored to GitHub (`kevinrossnl/camalert`). Never add personal data: no real IP addresses, host names, domains,
   people, camera names, keys or tokens. Use neutral examples (`192.168.1.10`, `front_door`, `garden`).
 - CI runs `tools/check_private.py` with a private denylist (CI secret `CAMALERT_DENYLIST`) and `tools/check_images.py`
-  (no image metadata, #8), and blocks the mirror when anything matches. `PUBLIC` in `check_private.py` lists the only
+  (no image metadata, #8). The push mirror to GitHub has **no sync on commit and no interval**: the CI job `mirror`
+  starts it only after a green `gate` (privacy included), for `main` and `v*` tags (secret `MIRROR_SYNC_TOKEN`,
+  #104). Without that secret, start it by hand after a green run. Never put names in commit messages either: they
+  are public on GitHub and cannot be removed without rewriting history. `PUBLIC` in `check_private.py` lists the only
   allowed exceptions (the GitHub owner name). Images: the checklist in [docs/dev/privacy.md](docs/dev/privacy.md).
 - Commit author: `CamAlert developers <noreply@camalert.invalid>`.
 - Only commit when `check_private.py` **and** the tests pass (do not pipe them through `tail`, that hides the exit code).

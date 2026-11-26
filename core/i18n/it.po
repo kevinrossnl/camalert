@@ -120,7 +120,7 @@ msgstr "Una accanto all'altra"
 msgid "2 x 2"
 msgstr "2 x 2"
 
-#: e2 kodi:30234 atv:choice.chime.off atv:choice.log_level.off
+#: e2 kodi:30234 kodi:30305 atv:choice.chime.off atv:choice.log_level.off
 msgid "Off"
 msgstr "Disattivato"
 
@@ -392,11 +392,11 @@ msgstr "automatico"
 msgid "%d cameras"
 msgstr "%d telecamere"
 
-#: e2
+#: e2 kodi:30298
 msgid "normal"
 msgstr "normale"
 
-#: e2
+#: e2 kodi:30302
 msgid "as fast as possible"
 msgstr "il più veloce possibile"
 
@@ -428,19 +428,19 @@ msgstr "Nessuna telecamera trovata in %s.\nVedi la guida per il formato."
 msgid "Please enter a valid go2rtc address first."
 msgstr "Inserire prima un indirizzo go2rtc valido."
 
-#: e2
+#: e2 kodi:30299
 msgid "mirror (left/right)"
 msgstr "specchia (sinistra/destra)"
 
-#: e2
+#: e2 kodi:30300
 msgid "upside down (flip)"
 msgstr "capovolto"
 
-#: e2
+#: e2 kodi:30301
 msgid "turned 180 degrees"
 msgstr "ruotato di 180 gradi"
 
-#: e2
+#: e2 kodi:30303
 msgid "every %s seconds"
 msgstr "ogni %s secondi"
 
@@ -464,7 +464,7 @@ msgstr "Nessuna telecamera configurata in go2rtc."
 msgid "Camera names"
 msgstr "Nomi delle telecamere"
 
-#: e2
+#: e2 kodi:30307
 msgid "Name for %s (empty = automatic)"
 msgstr "Nome per %s (vuoto = automatico)"
 
@@ -1503,6 +1503,34 @@ msgstr "Una telecamera dopo l'altra, a schermo intero."
 #: kodi:30295
 msgid "The last camera requests, with the reason when one was not shown."
 msgstr "Le ultime richieste di telecamere, con il motivo quando una non è stata mostrata."
+
+#: kodi:30296
+msgid "Choose per camera"
+msgstr "Scegliere per telecamera"
+
+#: kodi:30297
+msgid "Choose cameras"
+msgstr "Scegliere le telecamere"
+
+#: kodi:30304
+msgid "All cameras"
+msgstr "Tutte le telecamere"
+
+#: kodi:30306
+msgid "%s seconds"
+msgstr "%s secondi"
+
+#: kodi:30308
+msgid "Use the automatic name for %s?"
+msgstr "Usare il nome automatico per %s?"
+
+#: kodi:30309
+msgid "the camera itself"
+msgstr "la telecamera stessa"
+
+#: kodi:30310
+msgid "Up to 9 cameras: the first 9 are used."
+msgstr "Al massimo 9 telecamere: vengono usate le prime 9."
 
 #: ha:config.step.user.title
 msgid "Add a CamAlert player"

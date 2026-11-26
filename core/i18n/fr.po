@@ -120,7 +120,7 @@ msgstr "Côte à côte"
 msgid "2 x 2"
 msgstr "2 x 2"
 
-#: e2 kodi:30234 atv:choice.chime.off atv:choice.log_level.off
+#: e2 kodi:30234 kodi:30305 atv:choice.chime.off atv:choice.log_level.off
 msgid "Off"
 msgstr "Désactivé"
 
@@ -392,11 +392,11 @@ msgstr "automatique"
 msgid "%d cameras"
 msgstr "%d caméras"
 
-#: e2
+#: e2 kodi:30298
 msgid "normal"
 msgstr "normale"
 
-#: e2
+#: e2 kodi:30302
 msgid "as fast as possible"
 msgstr "le plus vite possible"
 
@@ -428,19 +428,19 @@ msgstr "Aucune caméra trouvée dans %s.\nVoir le guide pour le format."
 msgid "Please enter a valid go2rtc address first."
 msgstr "Veuillez d'abord saisir une adresse go2rtc valide."
 
-#: e2
+#: e2 kodi:30299
 msgid "mirror (left/right)"
 msgstr "miroir (gauche/droite)"
 
-#: e2
+#: e2 kodi:30300
 msgid "upside down (flip)"
 msgstr "à l'envers (retourner)"
 
-#: e2
+#: e2 kodi:30301
 msgid "turned 180 degrees"
 msgstr "tourné de 180 degrés"
 
-#: e2
+#: e2 kodi:30303
 msgid "every %s seconds"
 msgstr "toutes les %s secondes"
 
@@ -464,7 +464,7 @@ msgstr "Aucune caméra configurée dans go2rtc."
 msgid "Camera names"
 msgstr "Noms des caméras"
 
-#: e2
+#: e2 kodi:30307
 msgid "Name for %s (empty = automatic)"
 msgstr "Nom pour %s (vide = automatique)"
 
@@ -1503,6 +1503,34 @@ msgstr "Une caméra après l'autre, en plein écran."
 #: kodi:30295
 msgid "The last camera requests, with the reason when one was not shown."
 msgstr "Les dernières demandes de caméra, avec la raison quand l'une n'a pas été affichée."
+
+#: kodi:30296
+msgid "Choose per camera"
+msgstr "Choisir par caméra"
+
+#: kodi:30297
+msgid "Choose cameras"
+msgstr "Choisir les caméras"
+
+#: kodi:30304
+msgid "All cameras"
+msgstr "Toutes les caméras"
+
+#: kodi:30306
+msgid "%s seconds"
+msgstr "%s secondes"
+
+#: kodi:30308
+msgid "Use the automatic name for %s?"
+msgstr "Utiliser le nom automatique pour %s ?"
+
+#: kodi:30309
+msgid "the camera itself"
+msgstr "la caméra elle-même"
+
+#: kodi:30310
+msgid "Up to 9 cameras: the first 9 are used."
+msgstr "9 caméras au maximum : les 9 premières sont utilisées."
 
 #: ha:config.step.user.title
 msgid "Add a CamAlert player"

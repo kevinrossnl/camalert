@@ -1154,6 +1154,106 @@ class _KodiModules(object):
         script.run([])
         self.assertEqual(rec.sent, [])
 
+    def picker_setup(self, raw):
+        """#50: script.py with recording dialogs and a fixed camera list; raw = {setting: text}."""
+        script, rec = self.menu_setup()
+        xbmcgui = script.xbmcgui
+        rec.inputs, rec.multi, rec.yes, rec.saved = [], [], [], {}
+        for name in ("input", "multiselect", "yesno"):
+            self.addCleanup(setattr, xbmcgui.Dialog, name, getattr(xbmcgui.Dialog, name))
+        xbmcgui.Dialog.input = lambda self, heading, defaultt="", **kw: (rec.seen.append((heading, defaultt)) or
+                                                                        (rec.inputs.pop(0) if rec.inputs else ""))
+        xbmcgui.Dialog.multiselect = lambda self, heading, options, preselect=None, **kw: (
+            rec.seen.append((heading, list(options), list(preselect or []))) or (rec.multi.pop(0) if rec.multi else None))
+        xbmcgui.Dialog.yesno = lambda self, heading, message, **kw: rec.yes.pop(0) if rec.yes else False
+        fakes = {"camera_names": lambda: ["back_door", "front_door", "garden"],
+                 "raw_setting": lambda key: raw.get(key, ""),
+                 "save_setting": lambda key, value: rec.saved.__setitem__(key, value)}
+        for name, fake in fakes.items():
+            self.addCleanup(setattr, script, name, getattr(script, name))
+            setattr(script, name, fake)
+        return script, rec
+
+    def test_pickers_per_camera(self):
+        """#50: per-camera settings edited with choice lists instead of typing name=value|... by hand."""
+        cases = [  # setting, raw before, select answers, input answers, saved
+            ("orientation", "garden=rot180", [1, 1], [], "front_door=mirror|garden=rot180"),
+            ("orientation", "garden=rot180", [2, 0], [], ""),  # normal = remove
+            ("refresh", "", [0, 3], [], "back_door=5"),
+            ("cooldown", "garden=120", [0, 2], [], "*=30|garden=120"),  # first entry = all cameras
+            ("cooldown", "*=30|garden=120", [3, 0], [], "*=30"),  # off = remove
+            ("substreams", "", [1, 2], [], "front_door=garden"),
+            ("substreams", "front_door=garden", [1, 0], [], ""),  # the camera itself = remove
+            ("titles", "garden=Tuin", [0], ["Achter"], "back_door=Achter|garden=Tuin"),
+        ]
+        for setting, raw, answers, inputs, saved in cases:
+            script, rec = self.picker_setup({setting: raw})
+            rec.answers[:], rec.inputs[:] = answers, inputs
+            script.run(["pick", setting])
+            self.assertEqual(rec.saved, {setting: saved}, (setting, raw, answers))
+        # the camera list shows the current value next to each camera
+        script, rec = self.picker_setup({"orientation": "garden=rot180"})
+        rec.answers[:] = [-1]
+        script.run(["pick", "orientation"])
+        heading, items = rec.seen[0]
+        self.assertEqual(heading, "Choose camera")
+        self.assertEqual(len(items), 3)
+        self.assertIn("turned 180 degrees", items[2])
+        self.assertEqual(rec.saved, {})  # cancelled: nothing saved
+
+    def test_picker_titles_empty_name(self):
+        """#50: Kodi returns '' for a cancelled keyboard too: an existing name is only removed after a yes."""
+        script, rec = self.picker_setup({"titles": "garden=Tuin"})
+        rec.answers[:], rec.inputs[:], rec.yes[:] = [2], [""], [False]
+        script.run(["pick", "titles"])
+        self.assertEqual(rec.saved, {})
+        script, rec = self.picker_setup({"titles": "garden=Tuin"})
+        rec.answers[:], rec.inputs[:], rec.yes[:] = [2], [""], [True]
+        script.run(["pick", "titles"])
+        self.assertEqual(rec.saved, {"titles": ""})
+
+    def test_picker_mosaic(self):
+        """#50: mosaic cameras with a multiselect; at most 9; nothing chosen = all cameras."""
+        script, rec = self.picker_setup({"mosaic": "garden"})
+        rec.multi[:] = [[0, 2]]
+        script.run(["pick", "mosaic"])
+        self.assertEqual(rec.saved, {"mosaic": "back_door,garden"})
+        self.assertEqual(rec.seen[0][2], [2])  # preselected: the current mosaic cameras
+        script, rec = self.picker_setup({"mosaic": "garden"})
+        rec.multi[:] = [[]]
+        script.run(["pick", "mosaic"])
+        self.assertEqual(rec.saved, {"mosaic": ""})
+        script, rec = self.picker_setup({"mosaic": "garden"})
+        rec.multi[:] = [None]  # cancelled
+        script.run(["pick", "mosaic"])
+        self.assertEqual(rec.saved, {})
+
+    def test_picker_limits_and_unknown(self):
+        script, rec = self.picker_setup({})
+        script.camera_names = lambda: ["c%d" % i for i in range(12)]
+        rec.multi[:] = [list(range(12))]
+        script.run(["pick", "mosaic"])
+        self.assertEqual(rec.saved["mosaic"], ",".join("c%d" % i for i in range(9)))
+        self.assertEqual(len(rec.said), 1)  # said that only 9 are used
+        script, rec = self.picker_setup({})
+        script.camera_names = lambda: None  # no go2rtc: camera_names already said why
+        script.run(["pick", "orientation"])
+        self.assertEqual((rec.saved, rec.seen), ({}, []))
+        script.run(["pick", "nonsense"])
+        self.assertEqual(rec.saved, {})
+
+    def test_picker_buttons_in_settings(self):
+        """#50: every per-camera setting has a button right below it that opens its picker."""
+        import xml.etree.ElementTree as ET
+        tree = ET.parse(os.path.join(_paths.KODI_ADDON, "resources", "settings.xml"))
+        for group in tree.iter("group"):
+            ids = [s.get("id") for s in group.findall("setting")]
+            for setting in ("titles", "orientation", "refresh", "cooldown", "substreams", "mosaic"):
+                if setting in ids:
+                    nxt = group.findall("setting")[ids.index(setting) + 1]
+                    self.assertEqual(nxt.get("type"), "action", setting)
+                    self.assertEqual(nxt.find("data").text, "RunScript(service.camalert,pick,%s)" % setting)
+
     def test_menu_settings_and_old_arguments(self):
         """#106: RunScript(service.camalert,settings) still opens the settings; the old buttons still work."""
         script, rec = self.menu_setup()

@@ -9,6 +9,9 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Added
 
+- **Kodi:** a **Choose per camera** button below each per-camera setting (camera names, turn or mirror image,
+  refresh interval, cooldown per camera, live view substreams): pick a camera, then a value from a list, instead of
+  typing `name=value|...`. **Choose cameras** ticks up to 9 mosaic cameras.
 - **Home Assistant blueprints:** *Only when someone is home* (new optional input `presence`) in the doorbell, LG TV
   and motion blueprints: pick persons, device trackers or `zone.home`, empty = always (as before).
 

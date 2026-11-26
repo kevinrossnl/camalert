@@ -120,7 +120,7 @@ msgstr "Obok siebie"
 msgid "2 x 2"
 msgstr "2 x 2"
 
-#: e2 kodi:30234 atv:choice.chime.off atv:choice.log_level.off
+#: e2 kodi:30234 kodi:30305 atv:choice.chime.off atv:choice.log_level.off
 msgid "Off"
 msgstr "Wyłączone"
 
@@ -392,11 +392,11 @@ msgstr "automatycznie"
 msgid "%d cameras"
 msgstr "kamery: %d"
 
-#: e2
+#: e2 kodi:30298
 msgid "normal"
 msgstr "normalny"
 
-#: e2
+#: e2 kodi:30302
 msgid "as fast as possible"
 msgstr "jak najszybciej"
 
@@ -428,19 +428,19 @@ msgstr "Nie znaleziono kamer w %s.\nFormat opisano w instrukcji."
 msgid "Please enter a valid go2rtc address first."
 msgstr "Najpierw wpisz prawidłowy adres go2rtc."
 
-#: e2
+#: e2 kodi:30299
 msgid "mirror (left/right)"
 msgstr "lustro (lewo/prawo)"
 
-#: e2
+#: e2 kodi:30300
 msgid "upside down (flip)"
 msgstr "do góry nogami (przerzuć)"
 
-#: e2
+#: e2 kodi:30301
 msgid "turned 180 degrees"
 msgstr "obrócony o 180 stopni"
 
-#: e2
+#: e2 kodi:30303
 msgid "every %s seconds"
 msgstr "co %s s"
 
@@ -464,7 +464,7 @@ msgstr "W go2rtc nie skonfigurowano kamer."
 msgid "Camera names"
 msgstr "Nazwy kamer"
 
-#: e2
+#: e2 kodi:30307
 msgid "Name for %s (empty = automatic)"
 msgstr "Nazwa dla %s (puste = automatycznie)"
 
@@ -1503,6 +1503,34 @@ msgstr "Kamery jedna po drugiej, na pełnym ekranie."
 #: kodi:30295
 msgid "The last camera requests, with the reason when one was not shown."
 msgstr "Ostatnie żądania kamer, z powodem, gdy któraś nie została pokazana."
+
+#: kodi:30296
+msgid "Choose per camera"
+msgstr "Wybrać dla każdej kamery"
+
+#: kodi:30297
+msgid "Choose cameras"
+msgstr "Wybrać kamery"
+
+#: kodi:30304
+msgid "All cameras"
+msgstr "Wszystkie kamery"
+
+#: kodi:30306
+msgid "%s seconds"
+msgstr "%s s"
+
+#: kodi:30308
+msgid "Use the automatic name for %s?"
+msgstr "Użyć automatycznej nazwy dla %s?"
+
+#: kodi:30309
+msgid "the camera itself"
+msgstr "sama kamera"
+
+#: kodi:30310
+msgid "Up to 9 cameras: the first 9 are used."
+msgstr "Najwyżej 9 kamer: używane jest pierwszych 9."
 
 #: ha:config.step.user.title
 msgid "Add a CamAlert player"

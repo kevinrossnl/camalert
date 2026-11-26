@@ -905,6 +905,66 @@ msgctxt "#30295"
 msgid "The last camera requests, with the reason when one was not shown."
 msgstr "Le ultime richieste di telecamere, con il motivo quando una non è stata mostrata."
 
+msgctxt "#30296"
+msgid "Choose per camera"
+msgstr "Scegliere per telecamera"
+
+msgctxt "#30297"
+msgid "Choose cameras"
+msgstr "Scegliere le telecamere"
+
+msgctxt "#30298"
+msgid "normal"
+msgstr "normale"
+
+msgctxt "#30299"
+msgid "mirror (left/right)"
+msgstr "specchia (sinistra/destra)"
+
+msgctxt "#30300"
+msgid "upside down (flip)"
+msgstr "capovolto"
+
+msgctxt "#30301"
+msgid "turned 180 degrees"
+msgstr "ruotato di 180 gradi"
+
+msgctxt "#30302"
+msgid "as fast as possible"
+msgstr "il più veloce possibile"
+
+msgctxt "#30303"
+msgid "every %s seconds"
+msgstr "ogni %s secondi"
+
+msgctxt "#30304"
+msgid "All cameras"
+msgstr "Tutte le telecamere"
+
+msgctxt "#30305"
+msgid "Off"
+msgstr "Disattivato"
+
+msgctxt "#30306"
+msgid "%s seconds"
+msgstr "%s secondi"
+
+msgctxt "#30307"
+msgid "Name for %s (empty = automatic)"
+msgstr "Nome per %s (vuoto = automatico)"
+
+msgctxt "#30308"
+msgid "Use the automatic name for %s?"
+msgstr "Usare il nome automatico per %s?"
+
+msgctxt "#30309"
+msgid "the camera itself"
+msgstr "la telecamera stessa"
+
+msgctxt "#30310"
+msgid "Up to 9 cameras: the first 9 are used."
+msgstr "Al massimo 9 telecamere: vengono usate le prime 9."
+
 msgctxt "#30500"
 msgid "API"
 msgstr "API"

@@ -905,6 +905,66 @@ msgctxt "#30295"
 msgid "The last camera requests, with the reason when one was not shown."
 msgstr ""
 
+msgctxt "#30296"
+msgid "Choose per camera"
+msgstr ""
+
+msgctxt "#30297"
+msgid "Choose cameras"
+msgstr ""
+
+msgctxt "#30298"
+msgid "normal"
+msgstr ""
+
+msgctxt "#30299"
+msgid "mirror (left/right)"
+msgstr ""
+
+msgctxt "#30300"
+msgid "upside down (flip)"
+msgstr ""
+
+msgctxt "#30301"
+msgid "turned 180 degrees"
+msgstr ""
+
+msgctxt "#30302"
+msgid "as fast as possible"
+msgstr ""
+
+msgctxt "#30303"
+msgid "every %s seconds"
+msgstr ""
+
+msgctxt "#30304"
+msgid "All cameras"
+msgstr ""
+
+msgctxt "#30305"
+msgid "Off"
+msgstr ""
+
+msgctxt "#30306"
+msgid "%s seconds"
+msgstr ""
+
+msgctxt "#30307"
+msgid "Name for %s (empty = automatic)"
+msgstr ""
+
+msgctxt "#30308"
+msgid "Use the automatic name for %s?"
+msgstr ""
+
+msgctxt "#30309"
+msgid "the camera itself"
+msgstr ""
+
+msgctxt "#30310"
+msgid "Up to 9 cameras: the first 9 are used."
+msgstr ""
+
 msgctxt "#30500"
 msgid "API"
 msgstr ""

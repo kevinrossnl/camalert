@@ -120,7 +120,7 @@ msgstr "Naast elkaar"
 msgid "2 x 2"
 msgstr "2 x 2"
 
-#: e2 kodi:30234 atv:choice.chime.off atv:choice.log_level.off
+#: e2 kodi:30234 kodi:30305 atv:choice.chime.off atv:choice.log_level.off
 msgid "Off"
 msgstr "Uit"
 
@@ -392,11 +392,11 @@ msgstr "automatisch"
 msgid "%d cameras"
 msgstr "%d camera's"
 
-#: e2
+#: e2 kodi:30298
 msgid "normal"
 msgstr "normaal"
 
-#: e2
+#: e2 kodi:30302
 msgid "as fast as possible"
 msgstr "zo snel mogelijk"
 
@@ -428,19 +428,19 @@ msgstr "Geen camera's gevonden in %s.\nZie de handleiding voor de opbouw."
 msgid "Please enter a valid go2rtc address first."
 msgstr "Vul eerst een geldig go2rtc-adres in."
 
-#: e2
+#: e2 kodi:30299
 msgid "mirror (left/right)"
 msgstr "spiegelen (links/rechts)"
 
-#: e2
+#: e2 kodi:30300
 msgid "upside down (flip)"
 msgstr "ondersteboven (kantelen)"
 
-#: e2
+#: e2 kodi:30301
 msgid "turned 180 degrees"
 msgstr "180 graden gedraaid"
 
-#: e2
+#: e2 kodi:30303
 msgid "every %s seconds"
 msgstr "elke %s seconden"
 
@@ -464,7 +464,7 @@ msgstr "Er staan geen camera's in go2rtc."
 msgid "Camera names"
 msgstr "Cameranamen"
 
-#: e2
+#: e2 kodi:30307
 msgid "Name for %s (empty = automatic)"
 msgstr "Naam voor %s (leeg = automatisch)"
 
@@ -1503,6 +1503,34 @@ msgstr "De camera's na elkaar, op het hele scherm."
 #: kodi:30295
 msgid "The last camera requests, with the reason when one was not shown."
 msgstr "De laatste cameraverzoeken, met de reden als er een niet is getoond."
+
+#: kodi:30296
+msgid "Choose per camera"
+msgstr "Per camera kiezen"
+
+#: kodi:30297
+msgid "Choose cameras"
+msgstr "Camera's kiezen"
+
+#: kodi:30304
+msgid "All cameras"
+msgstr "Alle camera's"
+
+#: kodi:30306
+msgid "%s seconds"
+msgstr "%s seconden"
+
+#: kodi:30308
+msgid "Use the automatic name for %s?"
+msgstr "De automatische naam gebruiken voor %s?"
+
+#: kodi:30309
+msgid "the camera itself"
+msgstr "de camera zelf"
+
+#: kodi:30310
+msgid "Up to 9 cameras: the first 9 are used."
+msgstr "Maximaal 9 camera's: de eerste 9 worden gebruikt."
 
 #: ha:config.step.user.title
 msgid "Add a CamAlert player"

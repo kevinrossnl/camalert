@@ -13,8 +13,8 @@ def send(**cmd):
     xbmcgui.Window(10000).setProperty("camalert.cmd", json.dumps(cmd))
 
 
-def pick_camera():
-    """A camera chosen from the list (None = cancelled or no cameras; then the dialog already said why)."""
+def camera_names():
+    """All camera names, or None when there are none (the dialog already said why)."""
     s = kodiapi.settings()
     problem = sources.go2rtc_problem(s)
     if problem:  # #73: say why there are no cameras instead of an empty list
@@ -28,10 +28,120 @@ def pick_camera():
     if not names:
         xbmcgui.Dialog().ok("CamAlert", kodiapi.tr(30182))
         return None
+    return names
+
+
+def pick_camera():
+    """A camera chosen from the list (None = cancelled or no cameras; then the dialog already said why)."""
+    names = camera_names()
+    if not names:
+        return None
+    s = kodiapi.settings()
     titles = [sources.title(n, s) for n in names]
     pre = names.index(s["camera"]) if s["camera"] in names else -1
     i = xbmcgui.Dialog().select(kodiapi.tr(30026), titles, preselect=pre)
     return names[i] if i >= 0 else None
+
+
+# ---- #50: per-camera settings edited with choice lists (like the Enigma2 settings screen) ----
+
+ALL = "*"  # cooldown for every camera
+MOSAIC_MAX = 9
+
+
+def raw_setting(key):
+    return kodiapi.addon_setting(key)
+
+
+def save_setting(key, value):
+    kodiapi.set_setting(key, value)
+
+
+def pairs(text):
+    """'cam=value|*=30' -> {'cam': 'value', '*': '30'}; parts without a name or value are dropped."""
+    out = {}
+    for part in (text or "").split("|"):
+        if "=" in part:
+            k, v = (x.strip() for x in part.split("=", 1))
+            if k and v:
+                out[k] = v
+    return out
+
+
+def unpairs(values):
+    keys = sorted(values, key=lambda k: (k != ALL, k))
+    return "|".join("%s=%s" % (k, values[k].replace("|", " ")) for k in keys if values[k])
+
+
+def map_values(setting, cam, names):
+    """[(label, value)] for one camera; value '' removes the camera from the setting (= default)."""
+    tr = kodiapi.tr
+    if setting == "orientation":
+        return [(tr(30298), ""), (tr(30299), "mirror"), (tr(30300), "flip"), (tr(30301), "rot180")]
+    if setting == "refresh":
+        return [(tr(30302), "")] + [(tr(30303) % v, v) for v in ("1", "2", "5", "10", "30", "60")]
+    if setting == "cooldown":
+        return [(tr(30305), "")] + [(tr(30306) % v, v) for v in ("10", "30", "60", "120", "300")]
+    if setting == "substreams":
+        return [(tr(30309), "")] + [(sources.title(n), n) for n in names if n != cam]
+    return []
+
+
+PICKERS = ("titles", "orientation", "refresh", "cooldown", "substreams")
+
+
+def pick_map(setting):
+    names = camera_names()
+    if not names:
+        return
+    current = pairs(raw_setting(setting))
+    cams = ([ALL] if setting == "cooldown" else []) + names
+
+    def shown(cam):
+        title = kodiapi.tr(30304) if cam == ALL else sources.title(cam)
+        value = current.get(cam, "")
+        if setting == "titles":
+            return "%s  ->  %s" % (cam, value or title)
+        labels = dict((v, label) for label, v in map_values(setting, cam, names))
+        return "%s  ->  %s" % (title, labels.get(value, value))
+    i = xbmcgui.Dialog().select(kodiapi.tr(30026), [shown(c) for c in cams])
+    if i < 0:
+        return
+    cam = cams[i]
+    if setting == "titles":
+        name = xbmcgui.Dialog().input(kodiapi.tr(30307) % cam, defaultt=current.get(cam, "")).strip()
+        if not name and (not current.get(cam) or not xbmcgui.Dialog().yesno("CamAlert", kodiapi.tr(30308) % cam)):
+            return  # Kodi also returns "" for a cancelled keyboard: only remove a name after a yes
+        value = name
+    else:
+        values = map_values(setting, cam, names)
+        pre = [v for _label, v in values].index(current.get(cam, "")) if current.get(cam, "") in \
+            [v for _label, v in values] else 0
+        j = xbmcgui.Dialog().select(shown(cam), [label for label, _v in values], preselect=pre)
+        if j < 0:
+            return
+        value = values[j][1]
+    if value:
+        current[cam] = value
+    else:
+        current.pop(cam, None)
+    save_setting(setting, unpairs(current))
+
+
+def pick_mosaic():
+    names = camera_names()
+    if not names:
+        return
+    current = [c.strip() for c in raw_setting("mosaic").split(",") if c.strip()]
+    pre = [i for i, n in enumerate(names) if n in current]
+    chosen = xbmcgui.Dialog().multiselect(kodiapi.tr(30297), [sources.title(n) for n in names], preselect=pre)
+    if chosen is None:
+        return
+    cams = [names[i] for i in chosen]
+    if len(cams) > MOSAIC_MAX:
+        xbmcgui.Dialog().ok("CamAlert", kodiapi.tr(30310))
+        cams = cams[:MOSAIC_MAX]
+    save_setting("mosaic", ",".join(cams))
 
 
 def choose_camera():
@@ -146,6 +256,12 @@ def run(args):
     what = args[0]
     if what == "choose_camera":
         choose_camera()
+    elif what == "pick":
+        setting = args[1] if len(args) > 1 else ""
+        if setting == "mosaic":
+            pick_mosaic()
+        elif setting in PICKERS:
+            pick_map(setting)
     elif what == "test":
         s = kodiapi.settings()
         if not s["camera"]:

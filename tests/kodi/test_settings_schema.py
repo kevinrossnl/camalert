@@ -9,12 +9,14 @@ import xml.etree.ElementTree as ET
 import _paths
 import schemacheck
 
-ACTIONS = {"camera_password", "choose_camera", "devices", "diagnostics", "events", "show_mosaic", "show_tour", "test"}  # buttons
+ACTIONS = {"camera_password", "choose_camera", "devices", "diagnostics", "events", "show_mosaic", "show_tour", "test",
+           "pick_titles", "pick_mosaic", "pick_orientation", "pick_refresh", "pick_cooldown", "pick_substreams"}  # buttons
 HIDDEN = {"mqtt_password", "ptz_password", "token"}
 # schema level -> Kodi <level> (0 basic, 1 standard = Kodi's default view, 2 advanced, 4 internal/hidden), #46
 KODI_LEVELS = {"basic": 0, "advanced": 1, "expert": 2, "internal": 4}
 ACTION_LEVELS = {"choose_camera": 0, "test": 0, "diagnostics": 0, "events": 0, "show_mosaic": 1, "show_tour": 1,
-                 "devices": 1, "camera_password": 1}
+                 "devices": 1, "camera_password": 1, "pick_titles": 1, "pick_mosaic": 1, "pick_orientation": 1,
+                 "pick_refresh": 1, "pick_cooldown": 2, "pick_substreams": 2}
 # (schema id, field) -> issue. Empty since the Kodi round of #39 (settings.xml = schema version 2); a new
 # difference must be fixed or listed here with its issue.
 KNOWN = {}

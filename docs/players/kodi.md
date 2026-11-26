@@ -48,6 +48,11 @@ offers a list: *Show mosaic*, *Start tour*, *Show camera* (pick one, it opens in
 Display also has the **title size** (small / normal / large) and the **doorbell chime** (off / doorbell and alarm / every
 request; it follows Kodi's volume and mute). Every setting with its default: [settings](../user/settings.md).
 
+**Per-camera settings** (camera names, mosaic cameras, turn or mirror image, refresh interval, cooldown per
+camera, live view substreams) can still be typed as `name=value|...`, but the button **Choose per camera** below
+each of them is easier: pick a camera, then a value from a list (names: type the name). For the mosaic,
+**Choose cameras** opens a list to tick up to 9 cameras; none ticked = all cameras.
+
 The API token and the MQTT password are stored by Kodi in the add-on's own `settings.xml` in its data folder; camera
 passwords only in `devices.conf` (next section). None of them is ever written to a log
 ([where passwords are stored](../integrations/api.md#where-passwords-and-tokens-are-stored)).

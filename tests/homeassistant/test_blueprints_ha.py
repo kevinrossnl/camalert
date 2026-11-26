@@ -345,3 +345,93 @@ async def test_phone_text_only_and_webos(hass, player, blueprints):
     assert len(_shows(player)) == 1 and len(tv) == 1
     assert phone == [{"title": "CamAlert", "message": "Doorbell - front_door", "data": {}}]
 
+
+def _record_services(hass, *names):
+    """Fake actions of other integrations (Cast, Notifications for Android TV, LG webOS, scenes): record only."""
+    calls = []
+
+    async def record(call):
+        calls.append((call.domain + "." + call.service, dict(call.data)))
+    for name in names:
+        domain, service = name.split(".")
+        hass.services.async_register(domain, service, record)
+    return calls
+
+
+async def test_screens_chromecast_live_and_back(hass, player, blueprints):
+    """#16/#93: live view on a Chromecast with camera.play_stream, stopped again after the duration."""
+    entry = await setup_player(hass, player)
+    calls = _record_services(hass, "camera.play_stream", "media_player.media_stop")
+    hass.states.async_set("binary_sensor.door", "off")
+    await automations(hass, ("door", "camalert_doorbell_screens.yaml", {
+        "doorbell": ["binary_sensor.door"], "players": [player_device(hass, entry).id], "camera": "front_door",
+        "seconds": 5, "cast_players": ["media_player.kitchen_tv"], "cast_camera": "camera.front_door"}))
+    await _ring(hass)  # the automation runs to its end here, the 5 s delay included
+    assert _shows(player)[-1] == ("show", "front_door", 5, "photo", "high", "ha", None)
+    assert calls == [("camera.play_stream", {"entity_id": ["camera.front_door"],
+                                             "media_player": ["media_player.kitchen_tv"], "format": "hls"}),
+                     ("media_player.media_stop", {"entity_id": ["media_player.kitchen_tv"]})]
+
+
+async def test_screens_android_tv_and_presence(hass, player, blueprints):
+    """#16: the Android TV notification (with a picture the TV downloads); nobody home = nothing at all."""
+    entry = await setup_player(hass, player)
+    calls = _record_services(hass, "notify.android_tv_living_room")
+    hass.states.async_set("binary_sensor.door", "off")
+    hass.states.async_set("person.one", "not_home")
+    await automations(hass, ("door", "camalert_doorbell_screens.yaml", {
+        "doorbell": ["binary_sensor.door"], "players": [player_device(hass, entry).id], "camera": "front_door",
+        "label": "Doorbell", "androidtv_notify": "android_tv_living_room", "androidtv_snapshot_url": SMALL,
+        "presence": ["person.one"]}))
+    await _ring(hass)
+    assert (_shows(player), calls) == ([], [])
+    hass.states.async_set("person.one", "home")
+    await _ring(hass)
+    assert len(_shows(player)) == 1
+    assert calls == [("notify.android_tv_living_room", {"title": "CamAlert", "message": "Doorbell - front_door",
+                                                        "data": {"duration": 30, "image": {"url": SMALL}}})]
+
+
+async def test_screens_nothing_extra_by_default(hass, player, blueprints):
+    entry = await setup_player(hass, player)
+    calls = _record_services(hass, "camera.play_stream", "media_player.media_stop")
+    hass.states.async_set("binary_sensor.door", "off")
+    await automations(hass, ("door", "camalert_doorbell_screens.yaml", {
+        "doorbell": ["binary_sensor.door"], "players": [player_device(hass, entry).id], "camera": "front_door"}))
+    await _ring(hass)
+    assert len(_shows(player)) == 1 and calls == []
+
+
+async def test_webos_live_view_and_back(hass, player, blueprints):
+    """#94: the LG TV opens the stream page in its browser and returns to its scene after the duration."""
+    entry = await setup_player(hass, player)
+    calls = _record_services(hass, "scene.create", "webostv.command", "scene.turn_on",
+                             "notify.lg_webos_tv_living_room")
+    hass.states.async_set("binary_sensor.door", "off")
+    hass.states.async_set("media_player.lg_tv", "on")
+    page = "http://192.168.1.10:1984/stream.html?src=front_door&mode=mse"
+    await automations(hass, ("door", "camalert_doorbell_webos.yaml", {
+        "doorbell": ["binary_sensor.door"], "players": [player_device(hass, entry).id], "camera": "front_door",
+        "seconds": 5, "webos_notify": "notify.lg_webos_tv_living_room", "tv": "media_player.lg_tv",
+        "webos_live_url": page}))
+    await _ring(hass)  # runs to its end, the 5 s delay included
+    names = [c[0] for c in calls]
+    assert names == ["notify.lg_webos_tv_living_room", "scene.create", "webostv.command", "scene.turn_on"]
+    assert calls[1][1] == {"scene_id": "camalert_webos_before", "snapshot_entities": ["media_player.lg_tv"]}
+    assert calls[2][1] == {"entity_id": "media_player.lg_tv", "command": "system.launcher/open",
+                           "payload": {"target": page}}
+    assert calls[3][1] == {"entity_id": ["scene.camalert_webos_before"]}
+
+
+async def test_webos_live_view_not_when_tv_off(hass, player, blueprints):
+    entry = await setup_player(hass, player)
+    calls = _record_services(hass, "scene.create", "webostv.command", "notify.lg_webos_tv_living_room")
+    hass.states.async_set("binary_sensor.door", "off")
+    hass.states.async_set("media_player.lg_tv", "off")
+    await automations(hass, ("door", "camalert_doorbell_webos.yaml", {
+        "doorbell": ["binary_sensor.door"], "players": [player_device(hass, entry).id], "camera": "front_door",
+        "webos_notify": "notify.lg_webos_tv_living_room", "tv": "media_player.lg_tv",
+        "webos_live_url": "http://192.168.1.10:1984/stream.html?src=front_door"}))
+    await _ring(hass)
+    assert calls == [] and len(_shows(player)) == 1
+

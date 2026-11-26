@@ -37,6 +37,21 @@ Order in every blueprint: **trigger → `players` → `camera`/`cameras` → `mo
 | `presence` | Only when someone is home: persons, device trackers or groups (state `home`) or zones (someone in it, e.g. `zone.home`); empty = always. Only the TV part waits for it (players, LG TV) | empty | doorbell, doorbell webOS, motion |
 | `phone_notify` | Notify action of the Companion app, e.g. `notify.mobile_app_my_phone` (`notify.` may be left out): "Doorbell - camera" on the phone, also when nobody is home; empty = none | empty | doorbell, doorbell webOS |
 | `phone_camera` | Camera entity for that notification: its picture (`/api/camera_proxy/...`) and tapping opens the camera; empty = text only | empty | doorbell, doorbell webOS |
+| `webos_live_url` | Live view on the LG TV: page with the stream that the TV opens in its browser for the duration (e.g. go2rtc `http://192.168.1.10:1984/stream.html?src=front_door&mode=mse`); needs `tv`; afterwards the TV goes back to its input or app (scene `scene.camalert_webos_before`); empty = only the notification | empty | doorbell webOS |
+
+**Doorbell on the players and other screens** (`camalert_doorbell_screens.yaml`, new in 1.2; same frozen rules):
+`doorbell`, `players`, `camera`, `mode`, `seconds`, `label` as in the doorbell blueprint, then
+
+| Key | Meaning | Default |
+|---|---|---|
+| `cast_players` | Chromecast / Google TV media players: live view full screen with `camera.play_stream`, stopped after the duration (the Chromecast then shows its home screen, not the app from before) | empty |
+| `cast_camera` | Camera entity that can stream; needed for `cast_players` | empty |
+| `androidtv_notify` | Notify action of the "Notifications for Android TV / Fire TV" integration (`notify.` may be left out): a small window with the text for the duration | empty |
+| `androidtv_snapshot_url` | Picture the Android TV downloads itself (small go2rtc frame, as `snapshot_url`); empty = text only | empty |
+| `presence` | As above (here the whole automation waits for it: all its screens are TVs) | empty |
+
+Samsung Tizen has no overlay for apps of others and no notify with a picture in Home Assistant: use the Chromecast
+input when the TV has Chromecast built in, or the LG/Android TV routes (#100).
 
 Priorities are fixed per blueprint: doorbell (also webOS) and motion `high`, alarm `alarm`.
 Blueprints cannot be translated: option labels use the English glossary terms (`core/i18n/glossary.json`).

@@ -89,15 +89,28 @@ blueprints do not have an input for that yet.
   only the box that is on shows the camera.
 
 ## Other screens
-Home Assistant can show the same camera on other screens next to CamAlert: Android TV / Fire TV ("Notifications for
-Android TV/Fire TV" integration with an image), Chromecast (`media_player.play_media` / cast a camera stream), LG webOS
-and Samsung Tizen (their notify services). Use them in the same automation as `camalert.show`.
+Home Assistant can show the same camera on screens without CamAlert. The blueprint *CamAlert - doorbell on the
+players and other screens* does the CamAlert players plus:
+
+- **Chromecast / Google TV** (*Chromecast / Google TV* + *Camera entity for Chromecast*): live view full screen with
+  `camera.play_stream`, stopped after the duration. The Chromecast then shows its home screen, not the app from
+  before.
+- **Android TV / Fire TV** (*Android TV / Fire TV notification*, the notify action of the "Notifications for Android
+  TV / Fire TV" integration): a small window with the text and, with *Picture for Android TV*, a small go2rtc frame
+  that the TV downloads itself.
+- **Samsung Tizen** has no window over other apps and no notification with a picture in Home Assistant: use the
+  Chromecast input if the TV has Chromecast built in.
 
 For an LG TV there is a ready-made blueprint, *CamAlert - doorbell on the players and an LG webOS TV*
 ([home-assistant.md](../integrations/home-assistant.md#ready-made-blueprints)): the players show the camera and the
 LG TV gets a notification with a snapshot (only while it is on). Find the TV's notify action under
 **Developer tools › Actions** (`notify.lg_webos_tv_...`). The snapshot is saved in `/media` by default; do not
 use `www`, which Home Assistant serves without login.
+
+**Live view on the LG TV** (*Live view on the LG TV*, needs *LG TV media player*): the TV opens a page with the
+stream in its web browser for the duration, for example go2rtc's
+`http://192.168.1.10:1984/stream.html?src=front_door&mode=mse`, and then goes back to the input or app it showed
+before (the blueprint saves a scene of the TV, `scene.camalert_webos_before`). The TV must reach that address.
 
 The LG TV refuses pictures over **100 KB** (102400 bytes); a snapshot of a main stream is usually larger, and then
 the TV shows nothing at all (#74). Use **Snapshot URL** instead: a small go2rtc frame such as

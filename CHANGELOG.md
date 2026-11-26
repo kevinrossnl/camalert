@@ -17,6 +17,10 @@ actions and blueprint inputs stay backwards compatible.
 - **Home Assistant blueprints:** the doorbell and LG TV blueprints can also notify a phone (Companion app, new
   optional inputs `phone_notify` and `phone_camera`): the picture of the camera, tapping opens it; also when nobody is
   home.
+- **Home Assistant blueprints:** new blueprint *CamAlert - doorbell on the players and other screens*: live view on
+  a Chromecast / Google TV (stopped after the duration) and a notification with a picture on an Android TV / Fire TV.
+- **Home Assistant blueprints:** the LG TV blueprint can show live view in the TV's browser and then return to the
+  input or app the TV showed before (new optional input `webos_live_url`).
 
 ### Changed
 

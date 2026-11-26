@@ -28,7 +28,10 @@ FROZEN = {
                                      ("seconds", 30), ("label", ""), ("webos_notify", None), ("message", ""),
                                      ("snapshot_camera", ""), ("snapshot_file", "/media/camalert_webos.jpg"),
                                      ("tv", ""), ("snapshot_url", ""), ("presence", []), ("phone_notify", ""),
-                                     ("phone_camera", "")],
+                                     ("phone_camera", ""), ("webos_live_url", "")],
+    "camalert_doorbell_screens.yaml": [("doorbell", None), ("players", None), ("camera", None), ("mode", "photo"),
+                                       ("seconds", 30), ("label", ""), ("cast_players", []), ("cast_camera", ""),
+                                       ("androidtv_notify", ""), ("androidtv_snapshot_url", ""), ("presence", [])],
 }
 # option labels = glossary terms (blueprints cannot be translated)
 MODE_OPTIONS = [{"label": "Photo window", "value": "photo"}, {"label": "Live view", "value": "live"},
@@ -134,14 +137,35 @@ class TestBlueprints(unittest.TestCase):
             self.assertIn("ents | count == 0", d["variables"]["someone_home"], name)
 
     def test_phone_is_not_gated_by_presence(self):
-        """#14: the phone notification is a separate top-level step after the TV part, so it also arrives when
-        nobody is home; empty phone_notify (the default) = nothing."""
+        """#14: the phone notification is a separate top-level step, not behind the presence gate and not behind a
+        delay (live view, #94), so it also arrives when nobody is home; empty phone_notify (the default) = nothing."""
         for name in ("camalert_doorbell.yaml", "camalert_doorbell_webos.yaml"):
             d = self.load(os.path.join(_paths.BLUEPRINTS, name))
-            last = d["actions"][-1]
-            self.assertEqual(last["if"][0]["value_template"], "{{ phone_notify_in | trim | length > 0 }}", name)
+            phone = [i for i, a in enumerate(d["actions"])
+                     if a.get("if", [{}])[0].get("value_template") == "{{ phone_notify_in | trim | length > 0 }}"]
+            self.assertEqual(len(phone), 1, name)
+            last = d["actions"][phone[0]]
+            # nothing before it waits (a delay would hold the phone notification back)
+            before = str(d["actions"][:phone[0]])
+            self.assertNotIn("delay", before, name)
+            self.assertNotIn("wait_for_trigger", before, name)
             self.assertNotIn("someone_home", str(last), name)
             self.assertIs(last["then"][0]["continue_on_error"], True, name)
             self.assertEqual(d["blueprint"]["input"]["phone_camera"]["selector"]["entity"]["filter"],
                              [{"domain": "camera"}], name)
+
+    def test_other_screens_end_their_live_view(self):
+        """#16/#93/#94: a live view on another screen is ended after the duration (Chromecast: media_stop; LG TV:
+        back to its scene), and every step on another screen continues on error."""
+        d = self.load(os.path.join(_paths.BLUEPRINTS, "camalert_doorbell_screens.yaml"))
+        cast = d["actions"][-1]["then"]
+        self.assertEqual([s.get("action") or "delay" for s in cast],
+                         ["camera.play_stream", "delay", "media_player.media_stop"])
+        w = self.load(os.path.join(_paths.BLUEPRINTS, "camalert_doorbell_webos.yaml"))
+        live = w["actions"][-1]["then"]
+        self.assertEqual([s.get("action") or "delay" for s in live],
+                         ["scene.create", "webostv.command", "delay", "scene.turn_on"])
+        for step in cast + live:
+            if "action" in step:
+                self.assertIs(step.get("continue_on_error"), True, step["action"])
 

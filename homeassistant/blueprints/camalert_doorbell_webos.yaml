@@ -128,6 +128,15 @@ blueprint:
         entity:
           filter:
             - domain: camera
+    webos_live_url:
+      name: Live view on the LG TV (optional)
+      description: >-
+        Page with the live stream that the LG TV opens in its web browser for the duration, e.g. the go2rtc page
+        http://192.168.1.10:1984/stream.html?src=front_door&mode=mse. Needs "LG TV media player" (tv). Afterwards
+        the TV goes back to the input or app it showed before (scene of the TV). Empty = only the notification.
+      default: ""
+      selector:
+        text:
 mode: single
 max_exceeded: silent
 variables:
@@ -148,6 +157,8 @@ variables:
     {{ {'image': '/api/camera_proxy/' ~ phone_camera_in, 'entity_id': phone_camera_in,
         'clickAction': 'entityId:' ~ phone_camera_in, 'url': 'entityId:' ~ phone_camera_in}
        if phone_camera_in else {} }}
+  webos_live_url_in: !input webos_live_url
+  seconds_in: !input seconds
   presence_in: !input presence
   someone_home: >-
     {% set ents = presence_in if presence_in is list else ([presence_in] if presence_in else []) %}
@@ -181,6 +192,17 @@ actions:
           mode: !input mode
           priority: high
           label: "{{ label_in | trim }}"
+        continue_on_error: true
+  # #14: also on the phone (Companion app), also when nobody is home; never blocks the TV part
+  - if:
+      - condition: template
+        value_template: "{{ phone_notify_in | trim | length > 0 }}"
+    then:
+      - action: "{{ phone_action }}"
+        data:
+          title: CamAlert
+          message: "{{ phone_message }}"
+          data: "{{ phone_data }}"
         continue_on_error: true
   - if:
       - condition: template
@@ -255,14 +277,28 @@ actions:
             data:
               message: "{{ webos_message }}"
             continue_on_error: true
-  # #14: also on the phone (Companion app), also when nobody is home; never blocks the TV part
+  # #94: live view in the TV's browser, then back to what it showed (scene snapshot of the TV's media player)
   - if:
       - condition: template
-        value_template: "{{ phone_notify_in | trim | length > 0 }}"
+        value_template: >-
+          {{ someone_home and webos_live_url_in | trim | length > 0 and tv_in
+             and states(tv_in) not in ['off', 'unavailable', 'unknown'] }}
     then:
-      - action: "{{ phone_action }}"
+      - action: scene.create
         data:
-          title: CamAlert
-          message: "{{ phone_message }}"
-          data: "{{ phone_data }}"
+          scene_id: camalert_webos_before
+          snapshot_entities: "{{ [tv_in] }}"
+        continue_on_error: true
+      - action: webostv.command
+        data:
+          entity_id: "{{ tv_in }}"
+          command: system.launcher/open
+          payload:
+            target: "{{ webos_live_url_in | trim }}"
+        continue_on_error: true
+      - delay:
+          seconds: "{{ seconds_in | int(30) }}"
+      - action: scene.turn_on
+        target:
+          entity_id: scene.camalert_webos_before
         continue_on_error: true

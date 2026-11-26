@@ -1484,6 +1484,10 @@ msgstr "Usata se devices.conf non indica una password per una telecamera. Una pa
 msgid "Settings"
 msgstr "Impostazioni"
 
+#: kodi:30291
+msgid "Show in the photo window"
+msgstr "Mostra nella finestra foto"
+
 #: ha:config.step.user.title
 msgid "Add a CamAlert player"
 msgstr "Aggiungere un lettore CamAlert"

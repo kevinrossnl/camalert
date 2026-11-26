@@ -144,7 +144,7 @@ def _jsonrpc(version):
 
 
 def install(settings=None, profile="/tmp/camalert-test-profile", version=DEFAULT_VERSION, addon_path=None):
-    """Puts strict xbmc, xbmcgui, xbmcaddon, xbmcvfs modules of one Kodi version into sys.modules.
+    """Puts strict xbmc, xbmcgui, xbmcaddon, xbmcvfs, xbmcplugin modules of one Kodi version into sys.modules.
     Returns the settings store (dict) behind xbmcaddon.Addon().getSetting/setSetting."""
     api = _load(version)
     store = dict(settings or {})
@@ -216,6 +216,7 @@ def install(settings=None, profile="/tmp/camalert-test-profile", version=DEFAULT
             },
         },
         "xbmcvfs": {"functions": {"translatePath": translate}, "classes": {}},
+        "xbmcplugin": {"functions": {}, "classes": {}},  # #107: every call is only recorded
     }
     for name, m in api.items():
         mod = types.ModuleType(name)

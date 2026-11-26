@@ -7,6 +7,9 @@
   <extension point="xbmc.python.script" library="default.py">
     <provides>executable</provides>
   </extension>
+  <extension point="xbmc.python.pluginsource" library="plugin.py">
+    <provides>video</provides>
+  </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="en_GB">Show IP cameras on your TV when the doorbell rings or motion is detected</summary>
     <summary lang="nl_NL">Toon IP-camera's op je tv als de deurbel gaat of er beweging is</summary>

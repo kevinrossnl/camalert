@@ -1,6 +1,7 @@
 file rw-r--r-- service.camalert/LICENSE.txt
 file rw-r--r-- service.camalert/addon.xml
 file rw-r--r-- service.camalert/default.py
+file rw-r--r-- service.camalert/plugin.py
 file rw-r--r-- service.camalert/resources/fanart.jpg
 file rw-r--r-- service.camalert/resources/icon.png
 file rw-r--r-- service.camalert/resources/language/resource.language.de_de/strings.po
@@ -10,6 +11,7 @@ file rw-r--r-- service.camalert/resources/language/resource.language.it_it/strin
 file rw-r--r-- service.camalert/resources/language/resource.language.nl_nl/strings.po
 file rw-r--r-- service.camalert/resources/language/resource.language.pl_pl/strings.po
 file rw-r--r-- service.camalert/resources/lib/camalert/__init__.py
+file rw-r--r-- service.camalert/resources/lib/camalert/browse.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/__init__.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/access.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/api.py
@@ -46,6 +48,7 @@ file rw-r--r-- service.camalert/resources/lib/camalert/display.py
 file rw-r--r-- service.camalert/resources/lib/camalert/klogic.py
 file rw-r--r-- service.camalert/resources/lib/camalert/kodiapi.py
 file rw-r--r-- service.camalert/resources/lib/camalert/mqtt.py
+file rw-r--r-- service.camalert/resources/lib/camalert/plugin.py
 file rw-r--r-- service.camalert/resources/lib/camalert/ptz.py
 file rw-r--r-- service.camalert/resources/lib/camalert/script.py
 file rw-r--r-- service.camalert/resources/lib/camalert/server.py
@@ -59,6 +62,7 @@ addon id=service.camalert version=@VERSION@ provider=CamAlert developers
 requires xbmc.python 3.0.0
 extension xbmc.service library=service.py start=login
 extension xbmc.python.script library=default.py
+extension xbmc.python.pluginsource library=plugin.py
 extension xbmc.addon.metadata
   platform all
   license GPL-2.0-only

@@ -1484,6 +1484,10 @@ msgstr "Gebruikt als devices.conf geen wachtwoord voor een camera heeft. Een wac
 msgid "Settings"
 msgstr "Instellingen"
 
+#: kodi:30291
+msgid "Show in the photo window"
+msgstr "In het fotovenster tonen"
+
 #: ha:config.step.user.title
 msgid "Add a CamAlert player"
 msgstr "CamAlert-speler toevoegen"

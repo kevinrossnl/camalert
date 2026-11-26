@@ -1484,6 +1484,10 @@ msgstr "Używane, gdy devices.conf nie ma hasła dla kamery. Hasło wpisane tuta
 msgid "Settings"
 msgstr "Ustawienia"
 
+#: kodi:30291
+msgid "Show in the photo window"
+msgstr "Pokaż w oknie ze zdjęciem"
+
 #: ha:config.step.user.title
 msgid "Add a CamAlert player"
 msgstr "Dodaj odtwarzacz CamAlert"

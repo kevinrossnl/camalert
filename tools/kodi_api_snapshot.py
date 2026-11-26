@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Writes a JSON snapshot of the Kodi Python API (xbmc, xbmcgui, xbmcaddon, xbmcvfs) of one Kodi version.
+"""Writes a JSON snapshot of the Kodi Python API (xbmc, xbmcgui, xbmcaddon, xbmcvfs, xbmcplugin) of one Kodi version.
 
     kodi_api_snapshot.py <unpacked Kodistubs dir> <kodi major> > tests/kodi/fixtures/kodi_api/<major>.json
 
@@ -14,7 +14,7 @@ import os
 import sys
 import warnings
 
-MODULES = ("xbmc", "xbmcgui", "xbmcaddon", "xbmcvfs")
+MODULES = ("xbmc", "xbmcgui", "xbmcaddon", "xbmcvfs", "xbmcplugin")
 
 
 def params(fn):

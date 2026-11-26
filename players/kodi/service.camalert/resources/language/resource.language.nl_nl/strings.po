@@ -885,6 +885,10 @@ msgctxt "#30284"
 msgid "Settings"
 msgstr "Instellingen"
 
+msgctxt "#30291"
+msgid "Show in the photo window"
+msgstr "In het fotovenster tonen"
+
 msgctxt "#30500"
 msgid "API"
 msgstr "API"

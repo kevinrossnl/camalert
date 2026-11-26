@@ -45,6 +45,17 @@ The API token and the MQTT password are stored by Kodi in the add-on's own `sett
 passwords only in `devices.conf` (next section). None of them is ever written to a log
 ([where passwords are stored](../integrations/api.md#where-passwords-and-tokens-are-stored)).
 
+## From the home screen
+
+CamAlert is also a video add-on: **Videos › Video add-ons › CamAlert** lists
+**Show mosaic**, **Start tour**, every camera with a fresh snapshot, the **Event list** and the **Settings**.
+Selecting a camera opens its live view; the context menu (**C** / long press OK) has *Show in the photo window*.
+Without a go2rtc address the list says so and opens the settings.
+
+To reach the cameras straight from the home screen: on a camera, the mosaic or the add-on itself choose
+*Add to favourites* (context menu), or in Estuary add *Video add-ons* or *Favourites* to the main menu
+(*Settings › Interface › Skin › Configure skin › Main menu items*).
+
 ## What you see
 
 - **Photo window** – a camera in a corner while the film or TV keeps playing. Remote: **OK** = live,
@@ -108,7 +119,7 @@ arrows pan and tilt, **CH+ / CH−** (or PAGE UP / DOWN) zoom, **OK** = home pos
 - Kodi has no standby: *screen off* (DPMS) counts as standby. An **alarm** request with *Wake up on alarm* switches
   the TV on via HDMI-CEC.
 - *Pause what is playing* pauses a film or live TV (timeshift has to be supported by your PVR add-on).
-- No camera channel list: use the mosaic, the tour, or Kodi favourites.
+- No camera channel list: the cameras are a list in the video add-on instead ([From the home screen](#from-the-home-screen)).
 - Live view plays go2rtc's MP4 stream by default (works with every go2rtc). HLS is the most robust but runs a few
   seconds behind; RTSP needs go2rtc's RTSP port. In *Directly from the cameras* mode Kodi plays the camera's own
   `rtsp://` address (Kodi does not know `rtspt://`).

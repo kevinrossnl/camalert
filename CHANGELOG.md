@@ -11,6 +11,9 @@ actions and blueprint inputs stay backwards compatible.
 
 - **Kodi:** opening CamAlert from *Add-ons › Program add-ons* (or from a favourite) now shows a choice list – show
   mosaic, start tour, show a camera, event list, diagnostics, settings – instead of going straight to the settings.
+- **Kodi:** CamAlert is now also a video add-on, so the cameras can be opened from the home screen:
+  *Videos › Video add-ons › CamAlert* lists the mosaic, the tour, every camera with a fresh snapshot (live view,
+  or the photo window from the context menu), the event list and the settings. Add any of them to your favourites.
 
 ### Changed
 

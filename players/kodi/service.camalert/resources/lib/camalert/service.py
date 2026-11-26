@@ -6,6 +6,7 @@ import json
 import xbmc
 
 from . import __version__, kodiapi, mqtt, ptz, server, sources
+from .camalert_core.rules import MODES
 from .controller import Controller
 
 RESTART_KEYS = {
@@ -89,8 +90,9 @@ class Service(object):
         except ValueError:
             return
         what = c.get("do")
-        if what == "show":
-            self.ctl.show(c.get("cam"), None, None, "high", "menu")
+        if what == "show":  # mode: the video add-on asks for live view or the photo window (#107)
+            mode = c.get("mode") if c.get("mode") in MODES else None
+            self.ctl.show(c.get("cam"), None, mode, "high", "menu")
         elif what == "mosaic":
             self.ctl.mosaic(None, 60)
         elif what == "tour":

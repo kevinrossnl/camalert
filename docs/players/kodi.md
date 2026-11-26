@@ -30,6 +30,8 @@ After installing, open **Add-ons › My add-ons › Services › CamAlert › Co
 offers a list: *Show mosaic*, *Start tour*, *Show camera* (pick one, it opens in the photo window), *Event list*,
 *Diagnostics* and *Settings*. Use Kodi's context menu › *Add to favourites* to reach it from the home screen.
 
+![CamAlert choice list in Kodi](../images/kodi/menu.png)
+
 ## Settings
 
 | Tab | What |
@@ -60,6 +62,8 @@ Without a go2rtc address the list says so and opens the settings.
 To reach the cameras straight from the home screen: on a camera, the mosaic or the add-on itself choose
 *Add to favourites* (context menu), or in Estuary add *Video add-ons* or *Favourites* to the main menu
 (*Settings › Interface › Skin › Configure skin › Main menu items*).
+
+![CamAlert camera list in Videos › Video add-ons, a demo camera selected](../images/kodi/camera-list.png)
 
 ## What you see
 

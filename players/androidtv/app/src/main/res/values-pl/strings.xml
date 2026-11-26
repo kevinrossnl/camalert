@@ -136,7 +136,7 @@
     <string name="t_1a877d59" formatted="false">Dozwoleni wywołujący</string>
     <string name="t_1bfb62c7" formatted="false">Zalecane jest \'Tylko sieć lokalna\'.</string>
     <string name="t_915382dc" formatted="false">Token dostępu (opcjonalnie)</string>
-    <string name="t_4b955605" formatted="false">Jeśli ustawiony, każde żądanie musi zawierać \?token=...</string>
+    <string name="t_5183cd47" formatted="false">Jeśli ustawiony, wywołujący muszą wysyłać go w nagłówku X-CamAlert-Token; \?token=... w adresie nadal działa, ale jest przestarzałe.</string>
     <string name="t_c2111af9" formatted="false">Poziom logowania</string>
     <string name="t_480df9d8" formatted="false">camalert.log w /home/root/logs (lub /tmp). Hasła i tokeny nigdy nie są logowane.</string>
     <string name="t_3ba29a85" formatted="false">API</string>

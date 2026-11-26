@@ -446,7 +446,7 @@ msgstr "elke %s seconden"
 
 #: e2 kodi:30026
 msgid "Choose camera"
-msgstr "Kies camera"
+msgstr "Camera kiezen"
 
 #: e2
 msgid "Install python3-pillow to turn or mirror images:\nopkg install python3-pillow"
@@ -646,7 +646,7 @@ msgstr "zoomen"
 
 #: e2 kodi:30544
 msgid "home position"
-msgstr "beginpositie"
+msgstr "beginstand"
 
 #: e2 kodi:30545
 msgid "end camera control"
@@ -758,7 +758,7 @@ msgstr "Certificaten controleren"
 
 #: e2 kodi:30021
 msgid "Turn off for a self-signed certificate (only in your own network)."
-msgstr "Zet uit bij een zelfgemaakt certificaat (alleen in je eigen netwerk)."
+msgstr "Zet uit bij een zelfondertekend certificaat (alleen in je eigen netwerk)."
 
 #: e2 kodi:30029
 msgid "Mosaic cameras"
@@ -806,11 +806,11 @@ msgstr "Hoe lang de camera in beeld blijft."
 
 #: e2 kodi:30047
 msgid "Window position"
-msgstr "Positie venster"
+msgstr "Vensterpositie"
 
 #: e2 kodi:30052
 msgid "Window size"
-msgstr "Grootte venster"
+msgstr "Venstergrootte"
 
 #: e2 kodi:30070
 msgid "Return to what was playing"
@@ -930,7 +930,7 @@ msgstr "Mag over middernacht gaan, bijv. 07:00 tot 23:00."
 
 #: e2 kodi:30100
 msgid "Wake up on alarm"
-msgstr "Wakker worden bij alarm"
+msgstr "Wekken bij alarm"
 
 #: e2
 msgid "Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on."
@@ -1018,7 +1018,7 @@ msgstr "Optioneel, bijv. http://192.168.1.10:5000 - hiermee speel je de clip van
 
 #: e2 kodi:30145
 msgid "Check every (seconds)"
-msgstr "Elke (seconden) controleren"
+msgstr "Controle-interval (seconden)"
 
 #: e2 kodi:30262
 msgid "UniFi Protect events"
@@ -1150,7 +1150,7 @@ msgstr "HTTPS gebruiken voor de API"
 
 #: e2 kodi:30169
 msgid "Uses a self-signed certificate; callers must turn off certificate checking."
-msgstr "Gebruikt een zelfgemaakt certificaat; aanroepers moeten certificaatcontrole uitzetten."
+msgstr "Gebruikt een zelfondertekend certificaat; aanroepers moeten certificaatcontrole uitzetten."
 
 #: e2 kodi:30160
 msgid "HTTP port"
@@ -1173,8 +1173,8 @@ msgid "Access token (optional)"
 msgstr "Toegangstoken (optioneel)"
 
 #: e2 kodi:30167
-msgid "If set, callers must add ?token=... to every request."
-msgstr "Indien ingevuld moet elk verzoek ?token=... bevatten."
+msgid "If set, callers must send it in the X-CamAlert-Token header; ?token=... in the address still works but is deprecated."
+msgstr "Indien ingevuld moeten aanroepers het meesturen in de header X-CamAlert-Token; ?token=... in het adres werkt nog, maar is verouderd."
 
 #: e2
 msgid "Camera list name"
@@ -1246,7 +1246,7 @@ msgstr "Meestal 8554. Alleen gebruikt met het RTSP-liveformaat."
 
 #: kodi:30025
 msgid "Camera name, e.g. front_door. Use 'Choose camera' to pick it from the list."
-msgstr "Cameranaam, bijv. deur. Kies hem met 'Camera kiezen'."
+msgstr "Cameranaam, bijv. front_door. Kies hem met 'Camera kiezen'."
 
 #: kodi:30028
 msgid "Optional: name=Title|name2=Title 2"
@@ -1270,11 +1270,11 @@ msgstr "Raster (2x2)"
 
 #: kodi:30063
 msgid "e.g. front_door=rot180|garden=mirror (rot180, mirror, flip)"
-msgstr "bijv. deur=rot180|tuin=mirror (rot180, mirror, flip)"
+msgstr "bijv. front_door=rot180|garden=mirror (rot180, mirror, flip)"
 
 #: kodi:30065
 msgid "Seconds between pictures, e.g. front_door=0.5|garden=5. Default: as fast as possible."
-msgstr "Seconden tussen beelden, bijv. deur=0.5|tuin=5. Standaard: zo snel mogelijk."
+msgstr "Seconden tussen beelden, bijv. front_door=0.5|garden=5. Standaard: zo snel mogelijk."
 
 #: kodi:30067
 msgid "OK = live, LEFT/RIGHT = other camera, MENU = PTZ, BACK = close. Any other key closes it too."
@@ -1302,7 +1302,7 @@ msgstr "Hoe lang elke camera in de rondgang te zien is."
 
 #: kodi:30080 atv:choice.live_format.hls
 msgid "HLS (HTTP, a few seconds delay)"
-msgstr "HLS (HTTP, paar seconden vertraging)"
+msgstr "HLS (HTTP, een paar seconden vertraging)"
 
 #: kodi:30096
 msgid "Normal-priority requests are ignored while you watch this. High and alarm always pass."
@@ -1318,7 +1318,7 @@ msgstr "Welke prioriteiten worden tegengehouden bij niet storen."
 
 #: kodi:30111
 msgid "Connects to your MQTT broker; with discovery this Kodi appears in Home Assistant automatically."
-msgstr "Verbindt met je MQTT-broker; met discovery verschijnt deze Kodi vanzelf in Home Assistant."
+msgstr "Maakt verbinding met je MQTT-broker; met discovery verschijnt deze Kodi vanzelf in Home Assistant."
 
 #: kodi:30121
 msgid "Empty = CamAlert + the name of this Kodi."
@@ -1418,7 +1418,7 @@ msgstr "Bij camera's met PTZ schakelt deze toets de camerabediening (MENU werkt 
 
 #: kodi:30246
 msgid "While a camera is shown the colour keys trigger a Home Assistant event (e.g. open the door)."
-msgstr "Terwijl een camera in beeld is sturen de kleurtoetsen een Home Assistant-event (bijv. deur openen)."
+msgstr "Zolang een camera in beeld is, sturen de kleurtoetsen een gebeurtenis naar Home Assistant (bijv. deur openen)."
 
 #: kodi:30248
 msgid "camalert.log in the add-on data folder (2 x 1 MB), besides kodi.log. Passwords are never logged."
@@ -1434,11 +1434,11 @@ msgstr "Home Assistant-webhook"
 
 #: kodi:30256
 msgid "Seconds per camera, e.g. *=30|garden=120 (* = all). An open window is still extended; alarm always passes."
-msgstr "Seconden per camera, bijv. *=30|tuin=120 (* = alle). Een open venster wordt nog verlengd; alarm komt altijd door."
+msgstr "Seconden per camera, bijv. *=30|garden=120 (* = alle). Een open venster wordt nog verlengd; alarm komt altijd door."
 
 #: kodi:30258
 msgid "For a camera this Kodi cannot play smoothly (H.265 / 4K): front_door=front_door_sub|... (go2rtc stream names)."
-msgstr "Voor een camera die deze Kodi niet vloeiend afspeelt (H.265 / 4K): voor=voor_sub|... (go2rtc-streamnamen)."
+msgstr "Voor een camera die deze Kodi niet vloeiend afspeelt (H.265 / 4K): front_door=front_door_sub|... (go2rtc-streamnamen)."
 
 #: kodi:30263
 msgid "Asks the UniFi Protect consoles in devices.conf for events (doorbell, person, vehicle, ...)."
@@ -1486,7 +1486,7 @@ msgstr "CamAlert-speler toevoegen"
 
 #: ha:config.step.user.description
 msgid "A player is an Enigma2 receiver or Kodi with CamAlert. Port, HTTPS and token as set in CamAlert on the player."
-msgstr "Een speler is een Enigma2-receiver of Kodi met CamAlert. Poort, HTTPS en token zoals ingesteld in CamAlert op de speler."
+msgstr "Een speler is een Enigma2-ontvanger of Kodi met CamAlert. Poort, HTTPS en token zoals ingesteld in CamAlert op de speler."
 
 #: ha:config.step.reconfigure.data.host ha:config.step.user.data.host
 msgid "Host name or IP address"
@@ -1506,7 +1506,7 @@ msgstr "Toegangstoken"
 
 #: ha:config.step.reconfigure.data_description.host ha:config.step.user.data_description.host
 msgid "Address of the player (Enigma2 receiver or Kodi) with CamAlert, e.g. 192.168.1.10."
-msgstr "Adres van de speler (Enigma2-receiver of Kodi) met CamAlert, bijv. 192.168.1.10."
+msgstr "Adres van de speler (Enigma2-ontvanger of Kodi) met CamAlert, bijv. 192.168.1.10."
 
 #: ha:config.step.reconfigure.data_description.port ha:config.step.user.data_description.port
 msgid "Port of the CamAlert API, as set in CamAlert on the player. Default: 8099."
@@ -1562,7 +1562,7 @@ msgstr "Dit adres hoort bij een andere speler. Voeg hem toe als nieuwe speler."
 
 #: ha:entity.button.show.name
 msgid "Show {camera}"
-msgstr "Toon {camera}"
+msgstr "{camera} tonen"
 
 #: ha:entity.button.mosaic.name
 msgid "Mosaic"
@@ -1586,7 +1586,7 @@ msgstr "Gepauzeerd"
 
 #: ha:entity.event.remote_button.name
 msgid "Remote button"
-msgstr "Afstandsbedieningsknop"
+msgstr "Toets op de afstandsbediening"
 
 #: ha:entity.event.remote_button.state_attributes.event_type.state.red
 msgid "Red"
@@ -1662,7 +1662,7 @@ msgstr "Fotovenster, live beeld, melding, of het venster met meerdere camera's (
 
 #: ha:services.show.fields.priority.description
 msgid "Normal follows the rules of the player (do not disturb, time window, not while playing). High always comes through (doorbell). Alarm always comes through and also wakes an Enigma2 receiver from standby."
-msgstr "Normaal volgt de regels van de speler (niet storen, tijdvenster, niet tijdens afspelen). Hoog komt altijd door (deurbel). Alarm komt altijd door en wekt ook een Enigma2-receiver uit stand-by."
+msgstr "Normaal volgt de regels van de speler (niet storen, tijdvenster, niet tijdens afspelen). Hoog komt altijd door (deurbel). Alarm komt altijd door en wekt ook een Enigma2-ontvanger uit stand-by."
 
 #: ha:services.show.fields.label.name
 msgid "Who/what"

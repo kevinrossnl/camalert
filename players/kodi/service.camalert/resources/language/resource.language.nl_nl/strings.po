@@ -83,7 +83,7 @@ msgstr "Certificaten controleren"
 
 msgctxt "#30021"
 msgid "Turn off for a self-signed certificate (only in your own network)."
-msgstr "Zet uit bij een zelfgemaakt certificaat (alleen in je eigen netwerk)."
+msgstr "Zet uit bij een zelfondertekend certificaat (alleen in je eigen netwerk)."
 
 msgctxt "#30022"
 msgid "Camera file (direct mode)"
@@ -99,11 +99,11 @@ msgstr "Standaardcamera"
 
 msgctxt "#30025"
 msgid "Camera name, e.g. front_door. Use 'Choose camera' to pick it from the list."
-msgstr "Cameranaam, bijv. deur. Kies hem met 'Camera kiezen'."
+msgstr "Cameranaam, bijv. front_door. Kies hem met 'Camera kiezen'."
 
 msgctxt "#30026"
 msgid "Choose camera"
-msgstr "Kies camera"
+msgstr "Camera kiezen"
 
 msgctxt "#30027"
 msgid "Camera names"
@@ -151,7 +151,7 @@ msgstr "Hoe lang de camera in beeld blijft."
 
 msgctxt "#30047"
 msgid "Window position"
-msgstr "Positie venster"
+msgstr "Vensterpositie"
 
 msgctxt "#30048"
 msgid "Top right"
@@ -171,7 +171,7 @@ msgstr "Linksonder"
 
 msgctxt "#30052"
 msgid "Window size"
-msgstr "Grootte venster"
+msgstr "Venstergrootte"
 
 msgctxt "#30053"
 msgid "Small"
@@ -215,7 +215,7 @@ msgstr "Beeld draaien of spiegelen"
 
 msgctxt "#30063"
 msgid "e.g. front_door=rot180|garden=mirror (rot180, mirror, flip)"
-msgstr "bijv. deur=rot180|tuin=mirror (rot180, mirror, flip)"
+msgstr "bijv. front_door=rot180|garden=mirror (rot180, mirror, flip)"
 
 msgctxt "#30064"
 msgid "Refresh interval"
@@ -223,7 +223,7 @@ msgstr "Verversinterval"
 
 msgctxt "#30065"
 msgid "Seconds between pictures, e.g. front_door=0.5|garden=5. Default: as fast as possible."
-msgstr "Seconden tussen beelden, bijv. deur=0.5|tuin=5. Standaard: zo snel mogelijk."
+msgstr "Seconden tussen beelden, bijv. front_door=0.5|garden=5. Standaard: zo snel mogelijk."
 
 msgctxt "#30066"
 msgid "Remote control in photo window"
@@ -283,7 +283,7 @@ msgstr "Hoe lang elke camera in de rondgang te zien is."
 
 msgctxt "#30080"
 msgid "HLS (HTTP, a few seconds delay)"
-msgstr "HLS (HTTP, paar seconden vertraging)"
+msgstr "HLS (HTTP, een paar seconden vertraging)"
 
 msgctxt "#30090"
 msgid "Only between certain times"
@@ -327,7 +327,7 @@ msgstr "Nooit tijdens afspelen (ook live-tv)"
 
 msgctxt "#30100"
 msgid "Wake up on alarm"
-msgstr "Wakker worden bij alarm"
+msgstr "Wekken bij alarm"
 
 msgctxt "#30101"
 msgid "Requests with priority 'alarm' switch the TV on via HDMI-CEC."
@@ -363,7 +363,7 @@ msgstr "MQTT (Home Assistant zonder YAML)"
 
 msgctxt "#30111"
 msgid "Connects to your MQTT broker; with discovery this Kodi appears in Home Assistant automatically."
-msgstr "Verbindt met je MQTT-broker; met discovery verschijnt deze Kodi vanzelf in Home Assistant."
+msgstr "Maakt verbinding met je MQTT-broker; met discovery verschijnt deze Kodi vanzelf in Home Assistant."
 
 msgctxt "#30112"
 msgid "MQTT broker address"
@@ -463,7 +463,7 @@ msgstr "Vraagt de Foscam-camera's in devices.conf om bewegings- en geluidsalarme
 
 msgctxt "#30145"
 msgid "Check every (seconds)"
-msgstr "Elke (seconden) controleren"
+msgstr "Controle-interval (seconden)"
 
 msgctxt "#30150"
 msgid "Cameras with PTZ or Foscam alarms"
@@ -518,8 +518,8 @@ msgid "Access token (optional)"
 msgstr "Toegangstoken (optioneel)"
 
 msgctxt "#30167"
-msgid "If set, callers must add ?token=... to every request."
-msgstr "Indien ingevuld moet elk verzoek ?token=... bevatten."
+msgid "If set, callers must send it in the X-CamAlert-Token header; ?token=... in the address still works but is deprecated."
+msgstr "Indien ingevuld moeten aanroepers het meesturen in de header X-CamAlert-Token; ?token=... in het adres werkt nog, maar is verouderd."
 
 msgctxt "#30168"
 msgid "Use HTTPS for the API"
@@ -527,7 +527,7 @@ msgstr "HTTPS gebruiken voor de API"
 
 msgctxt "#30169"
 msgid "Uses a self-signed certificate; callers must turn off certificate checking."
-msgstr "Gebruikt een zelfgemaakt certificaat; aanroepers moeten certificaatcontrole uitzetten."
+msgstr "Gebruikt een zelfondertekend certificaat; aanroepers moeten certificaatcontrole uitzetten."
 
 msgctxt "#30170"
 msgid "Test: show the default camera"
@@ -731,7 +731,7 @@ msgstr "Kleurtoetsen naar Home Assistant"
 
 msgctxt "#30246"
 msgid "While a camera is shown the colour keys trigger a Home Assistant event (e.g. open the door)."
-msgstr "Terwijl een camera in beeld is sturen de kleurtoetsen een Home Assistant-event (bijv. deur openen)."
+msgstr "Zolang een camera in beeld is, sturen de kleurtoetsen een gebeurtenis naar Home Assistant (bijv. deur openen)."
 
 msgctxt "#30247"
 msgid "Log level"
@@ -771,7 +771,7 @@ msgstr "Wachttijd per camera"
 
 msgctxt "#30256"
 msgid "Seconds per camera, e.g. *=30|garden=120 (* = all). An open window is still extended; alarm always passes."
-msgstr "Seconden per camera, bijv. *=30|tuin=120 (* = alle). Een open venster wordt nog verlengd; alarm komt altijd door."
+msgstr "Seconden per camera, bijv. *=30|garden=120 (* = alle). Een open venster wordt nog verlengd; alarm komt altijd door."
 
 msgctxt "#30257"
 msgid "Live view substreams"
@@ -779,7 +779,7 @@ msgstr "Substreams voor live beeld"
 
 msgctxt "#30258"
 msgid "For a camera this Kodi cannot play smoothly (H.265 / 4K): front_door=front_door_sub|... (go2rtc stream names)."
-msgstr "Voor een camera die deze Kodi niet vloeiend afspeelt (H.265 / 4K): voor=voor_sub|... (go2rtc-streamnamen)."
+msgstr "Voor een camera die deze Kodi niet vloeiend afspeelt (H.265 / 4K): front_door=front_door_sub|... (go2rtc-streamnamen)."
 
 msgctxt "#30259"
 msgid "Frigate objects"
@@ -1059,7 +1059,7 @@ msgstr "zoomen"
 
 msgctxt "#30544"
 msgid "home position"
-msgstr "beginpositie"
+msgstr "beginstand"
 
 msgctxt "#30545"
 msgid "end camera control"

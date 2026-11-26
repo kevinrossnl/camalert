@@ -136,7 +136,7 @@
     <string name="t_1a877d59" formatted="false">Appelants autorisés</string>
     <string name="t_1bfb62c7" formatted="false">« Réseau local uniquement » est recommandé.</string>
     <string name="t_915382dc" formatted="false">Jeton d\'accès (facultatif)</string>
-    <string name="t_4b955605" formatted="false">Si défini, chaque requête doit contenir \?token=...</string>
+    <string name="t_5183cd47" formatted="false">Si défini, les appelants doivent l\'envoyer dans l\'en-tête X-CamAlert-Token ; \?token=... dans l\'adresse fonctionne encore mais est obsolète.</string>
     <string name="t_c2111af9" formatted="false">Niveau du journal</string>
     <string name="t_480df9d8" formatted="false">camalert.log dans /home/root/logs (ou /tmp). Les mots de passe et jetons ne sont jamais journalisés.</string>
     <string name="t_3ba29a85" formatted="false">API</string>

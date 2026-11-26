@@ -136,7 +136,7 @@
     <string name="t_1a877d59" formatted="false">Chiamanti consentiti</string>
     <string name="t_1bfb62c7" formatted="false">Si consiglia \'Solo rete locale\'.</string>
     <string name="t_915382dc" formatted="false">Token di accesso (facoltativo)</string>
-    <string name="t_4b955605" formatted="false">Se impostato, ogni richiesta deve contenere \?token=...</string>
+    <string name="t_5183cd47" formatted="false">Se impostato, chi chiama deve inviarlo nell\'intestazione X-CamAlert-Token; \?token=... nell\'indirizzo funziona ancora ma è deprecato.</string>
     <string name="t_c2111af9" formatted="false">Livello di log</string>
     <string name="t_480df9d8" formatted="false">camalert.log in /home/root/logs (o /tmp). Password e token non vengono mai registrati.</string>
     <string name="t_3ba29a85" formatted="false">API</string>

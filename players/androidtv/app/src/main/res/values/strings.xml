@@ -137,7 +137,7 @@
     <string name="t_1a877d59" formatted="false">Allowed callers</string>
     <string name="t_1bfb62c7" formatted="false">\'Local network only\' is recommended.</string>
     <string name="t_915382dc" formatted="false">Access token (optional)</string>
-    <string name="t_4b955605" formatted="false">If set, callers must add \?token=... to every request.</string>
+    <string name="t_5183cd47" formatted="false">If set, callers must send it in the X-CamAlert-Token header; \?token=... in the address still works but is deprecated.</string>
     <string name="t_c2111af9" formatted="false">Log level</string>
     <string name="t_480df9d8" formatted="false">camalert.log in /home/root/logs (or /tmp). Passwords and tokens are never logged.</string>
     <string name="t_3ba29a85" formatted="false">API</string>

@@ -126,7 +126,7 @@ SETTINGS = [
     S('api_https', 'api', 'expert', 'bool', False, platforms=('enigma2', 'kodi'), label='Use HTTPS for the API', help='Uses a self-signed certificate; callers must turn off certificate checking.', kodi_label=30168),
     S('http_port', 'api', 'expert', 'int', 8099, min=1024, max=65535, step=1, platforms=('enigma2', 'kodi'), label='HTTP port', help='Port of the CamAlert API on this receiver (default 8099).', kodi_label=30160),
     S('allow', 'api', 'advanced', 'choice', 'lan', choices=('lan', 'any'), platforms=('enigma2', 'kodi'), label='Allowed callers', help="'Local network only' is recommended.", kodi_label=30162),
-    S('token', 'api', 'advanced', 'text', '', platforms=('enigma2', 'kodi'), label='Access token (optional)', help='If set, callers must add ?token=... to every request.', kodi_label=30166),
+    S('token', 'api', 'advanced', 'text', '', platforms=('enigma2', 'kodi'), label='Access token (optional)', help='If set, callers must send it in the X-CamAlert-Token header; ?token=... in the address still works but is deprecated.', kodi_label=30166),
     S('bouquet_name', 'channels', 'advanced', 'text', 'Cameras', platforms=('enigma2',), label='Camera list name', help='Name of the channel list created with the yellow button.'),
     S('auto_bouquet', 'channels', 'advanced', 'bool', True, platforms=('enigma2',), label='Update camera list automatically', help='Checks every 30 minutes for new or removed cameras and updates the channel list.'),
     S('bouquet_position', 'channels', 'expert', 'choice', 'keep', choices=('keep', 'bottom', 'top'), platforms=('enigma2',), label='Camera list position', help='Where the camera list appears among your channel lists.'),

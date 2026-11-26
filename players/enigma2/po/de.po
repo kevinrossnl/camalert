@@ -879,8 +879,8 @@ msgstr "'Nur lokales Netzwerk' wird empfohlen."
 msgid "Access token (optional)"
 msgstr "Zugriffstoken (optional)"
 
-msgid "If set, callers must add ?token=... to every request."
-msgstr "Wenn gesetzt, muss jede Anfrage ?token=... enthalten."
+msgid "If set, callers must send it in the X-CamAlert-Token header; ?token=... in the address still works but is deprecated."
+msgstr "Wenn gesetzt, müssen Aufrufer es im Header X-CamAlert-Token mitsenden; ?token=... in der Adresse funktioniert noch, ist aber veraltet."
 
 msgid "Camera list name"
 msgstr "Name der Kameraliste"

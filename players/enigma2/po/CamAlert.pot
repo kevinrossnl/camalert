@@ -878,7 +878,7 @@ msgstr ""
 msgid "Access token (optional)"
 msgstr ""
 
-msgid "If set, callers must add ?token=... to every request."
+msgid "If set, callers must send it in the X-CamAlert-Token header; ?token=... in the address still works but is deprecated."
 msgstr ""
 
 msgid "Camera list name"

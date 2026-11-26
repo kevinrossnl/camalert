@@ -136,7 +136,7 @@
     <string name="t_1a877d59" formatted="false">Erlaubte Aufrufer</string>
     <string name="t_1bfb62c7" formatted="false">\'Nur lokales Netzwerk\' wird empfohlen.</string>
     <string name="t_915382dc" formatted="false">Zugriffstoken (optional)</string>
-    <string name="t_4b955605" formatted="false">Wenn gesetzt, muss jede Anfrage \?token=... enthalten.</string>
+    <string name="t_5183cd47" formatted="false">Wenn gesetzt, müssen Aufrufer es im Header X-CamAlert-Token mitsenden; \?token=... in der Adresse funktioniert noch, ist aber veraltet.</string>
     <string name="t_c2111af9" formatted="false">Log-Stufe</string>
     <string name="t_480df9d8" formatted="false">camalert.log in /home/root/logs (oder /tmp). Passwörter und Tokens werden nie protokolliert.</string>
     <string name="t_3ba29a85" formatted="false">API</string>

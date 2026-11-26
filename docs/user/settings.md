@@ -113,7 +113,7 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Use HTTPS for the API | No |  | expert | both | Uses a self-signed certificate; callers must turn off certificate checking. |
 | HTTP port | `8099` | 1024–65535 | expert | both | Port of the CamAlert API on this receiver (default 8099). |
 | Allowed callers | `lan` | `lan` / `any` | advanced | both | 'Local network only' is recommended. |
-| Access token (optional) | – |  | advanced | both | If set, callers must add ?token=... to every request. |
+| Access token (optional) | – |  | advanced | both | If set, callers must send it in the X-CamAlert-Token header; ?token=... in the address still works but is deprecated. |
 
 ### Channel list (Enigma2)
 

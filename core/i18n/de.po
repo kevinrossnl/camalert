@@ -1173,8 +1173,8 @@ msgid "Access token (optional)"
 msgstr "Zugriffstoken (optional)"
 
 #: e2 kodi:30167
-msgid "If set, callers must add ?token=... to every request."
-msgstr "Wenn gesetzt, muss jede Anfrage ?token=... enthalten."
+msgid "If set, callers must send it in the X-CamAlert-Token header; ?token=... in the address still works but is deprecated."
+msgstr "Wenn gesetzt, müssen Aufrufer es im Header X-CamAlert-Token mitsenden; ?token=... in der Adresse funktioniert noch, ist aber veraltet."
 
 #: e2
 msgid "Camera list name"

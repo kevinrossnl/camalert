@@ -334,7 +334,7 @@ msgid "every %s seconds"
 msgstr "elke %s seconden"
 
 msgid "Choose camera"
-msgstr "Kies camera"
+msgstr "Camera kiezen"
 
 msgid "Install python3-pillow to turn or mirror images:\nopkg install python3-pillow"
 msgstr "Installeer python3-pillow om beelden te draaien of spiegelen:\nopkg install python3-pillow"
@@ -484,7 +484,7 @@ msgid "zoom"
 msgstr "zoomen"
 
 msgid "home position"
-msgstr "beginpositie"
+msgstr "beginstand"
 
 msgid "end camera control"
 msgstr "camerabediening stoppen"
@@ -568,7 +568,7 @@ msgid "Check certificates"
 msgstr "Certificaten controleren"
 
 msgid "Turn off for a self-signed certificate (only in your own network)."
-msgstr "Zet uit bij een zelfgemaakt certificaat (alleen in je eigen netwerk)."
+msgstr "Zet uit bij een zelfondertekend certificaat (alleen in je eigen netwerk)."
 
 msgid "Mosaic cameras"
 msgstr "Camera's in mozaïek"
@@ -604,10 +604,10 @@ msgid "How long the camera stays on screen."
 msgstr "Hoe lang de camera in beeld blijft."
 
 msgid "Window position"
-msgstr "Positie venster"
+msgstr "Vensterpositie"
 
 msgid "Window size"
-msgstr "Grootte venster"
+msgstr "Venstergrootte"
 
 msgid "Return to what was playing"
 msgstr "Terug naar wat er speelde"
@@ -697,7 +697,7 @@ msgid "May pass midnight, e.g. 07:00 to 23:00."
 msgstr "Mag over middernacht gaan, bijv. 07:00 tot 23:00."
 
 msgid "Wake up on alarm"
-msgstr "Wakker worden bij alarm"
+msgstr "Wekken bij alarm"
 
 msgid "Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on."
 msgstr "Verzoeken met prioriteit 'alarm' zetten de ontvanger (en via HDMI-CEC de tv) aan."
@@ -763,7 +763,7 @@ msgid "Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an ev
 msgstr "Optioneel, bijv. http://192.168.1.10:5000 - hiermee speel je de clip van een gebeurtenis af vanuit de lijst met gebeurtenissen."
 
 msgid "Check every (seconds)"
-msgstr "Elke (seconden) controleren"
+msgstr "Controle-interval (seconden)"
 
 msgid "UniFi Protect events"
 msgstr "UniFi Protect-gebeurtenissen"
@@ -862,7 +862,7 @@ msgid "Use HTTPS for the API"
 msgstr "HTTPS gebruiken voor de API"
 
 msgid "Uses a self-signed certificate; callers must turn off certificate checking."
-msgstr "Gebruikt een zelfgemaakt certificaat; aanroepers moeten certificaatcontrole uitzetten."
+msgstr "Gebruikt een zelfondertekend certificaat; aanroepers moeten certificaatcontrole uitzetten."
 
 msgid "HTTP port"
 msgstr "HTTP-poort"
@@ -879,8 +879,8 @@ msgstr "'Alleen lokaal netwerk' wordt aangeraden."
 msgid "Access token (optional)"
 msgstr "Toegangstoken (optioneel)"
 
-msgid "If set, callers must add ?token=... to every request."
-msgstr "Indien ingevuld moet elk verzoek ?token=... bevatten."
+msgid "If set, callers must send it in the X-CamAlert-Token header; ?token=... in the address still works but is deprecated."
+msgstr "Indien ingevuld moeten aanroepers het meesturen in de header X-CamAlert-Token; ?token=... in het adres werkt nog, maar is verouderd."
 
 msgid "Camera list name"
 msgstr "Naam cameralijst"

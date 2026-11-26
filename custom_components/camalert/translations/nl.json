@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "CamAlert-speler toevoegen",
-        "description": "Een speler is een Enigma2-receiver of Kodi met CamAlert. Poort, HTTPS en token zoals ingesteld in CamAlert op de speler.",
+        "description": "Een speler is een Enigma2-ontvanger of Kodi met CamAlert. Poort, HTTPS en token zoals ingesteld in CamAlert op de speler.",
         "data": {
           "host": "Hostnaam of IP-adres",
           "port": "Poort",
@@ -12,7 +12,7 @@
           "token": "Toegangstoken"
         },
         "data_description": {
-          "host": "Adres van de speler (Enigma2-receiver of Kodi) met CamAlert, bijv. 192.168.1.10.",
+          "host": "Adres van de speler (Enigma2-ontvanger of Kodi) met CamAlert, bijv. 192.168.1.10.",
           "port": "Poort van de CamAlert-API, zoals ingesteld in CamAlert op de speler. Standaard: 8099.",
           "https": "Zet aan als HTTPS voor de API aan staat in CamAlert op de speler.",
           "verify_ssl": "Zet uit voor het eigen (zelfondertekende) certificaat van de speler. Alleen bij HTTPS.",
@@ -30,7 +30,7 @@
           "token": "Toegangstoken"
         },
         "data_description": {
-          "host": "Adres van de speler (Enigma2-receiver of Kodi) met CamAlert, bijv. 192.168.1.10.",
+          "host": "Adres van de speler (Enigma2-ontvanger of Kodi) met CamAlert, bijv. 192.168.1.10.",
           "port": "Poort van de CamAlert-API, zoals ingesteld in CamAlert op de speler. Standaard: 8099.",
           "https": "Zet aan als HTTPS voor de API aan staat in CamAlert op de speler.",
           "verify_ssl": "Zet uit voor het eigen (zelfondertekende) certificaat van de speler. Alleen bij HTTPS.",
@@ -53,7 +53,7 @@
   "entity": {
     "button": {
       "show": {
-        "name": "Toon {camera}"
+        "name": "{camera} tonen"
       },
       "mosaic": {
         "name": "Mozaïek"
@@ -92,7 +92,7 @@
     },
     "event": {
       "remote_button": {
-        "name": "Afstandsbedieningsknop",
+        "name": "Toets op de afstandsbediening",
         "state_attributes": {
           "event_type": {
             "state": {
@@ -154,7 +154,7 @@
         },
         "priority": {
           "name": "Prioriteit",
-          "description": "Normaal volgt de regels van de speler (niet storen, tijdvenster, niet tijdens afspelen). Hoog komt altijd door (deurbel). Alarm komt altijd door en wekt ook een Enigma2-receiver uit stand-by."
+          "description": "Normaal volgt de regels van de speler (niet storen, tijdvenster, niet tijdens afspelen). Hoog komt altijd door (deurbel). Alarm komt altijd door en wekt ook een Enigma2-ontvanger uit stand-by."
         },
         "label": {
           "name": "Wie/wat",

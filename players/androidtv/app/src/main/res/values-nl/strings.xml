@@ -40,7 +40,7 @@
     <string name="choice_chime_high" formatted="false">Deurbel en alarm</string>
     <string name="choice_chime_all" formatted="false">Elk verzoek</string>
     <string name="choice_live_format_mp4" formatted="false">MP4 (HTTP)</string>
-    <string name="choice_live_format_hls" formatted="false">HLS (HTTP, paar seconden vertraging)</string>
+    <string name="choice_live_format_hls" formatted="false">HLS (HTTP, een paar seconden vertraging)</string>
     <string name="choice_live_format_rtsp" formatted="false">RTSP</string>
     <string name="choice_dnd_level_normal" formatted="false">Normale prioriteit</string>
     <string name="choice_dnd_level_high" formatted="false">Normale en hoge prioriteit</string>
@@ -65,7 +65,7 @@
     <string name="t_0b093d4c" formatted="false">Standaardcamera</string>
     <string name="t_141d4a26" formatted="false">Druk op OK om een camera uit go2rtc te kiezen.</string>
     <string name="t_34d6c7d5" formatted="false">Certificaten controleren</string>
-    <string name="t_26eda1b2" formatted="false">Zet uit bij een zelfgemaakt certificaat (alleen in je eigen netwerk).</string>
+    <string name="t_26eda1b2" formatted="false">Zet uit bij een zelfondertekend certificaat (alleen in je eigen netwerk).</string>
     <string name="t_8bace363" formatted="false">Camera\'s in mozaïek</string>
     <string name="t_670ce6e6" formatted="false">Druk op OK om tot 9 camera\'s voor het mozaïek te kiezen. Leeg = alle.</string>
     <string name="t_6f96cb6b" formatted="false">Cameranamen</string>
@@ -76,8 +76,8 @@
     <string name="t_37083c0d" formatted="false">Fotovenster: tv kijken gaat door. Live: zender schakelt naar de camera.</string>
     <string name="t_0d46faad" formatted="false">Duur (seconden)</string>
     <string name="t_7c44754d" formatted="false">Hoe lang de camera in beeld blijft.</string>
-    <string name="t_49c75c1f" formatted="false">Positie venster</string>
-    <string name="t_ab6c7781" formatted="false">Grootte venster</string>
+    <string name="t_49c75c1f" formatted="false">Vensterpositie</string>
+    <string name="t_ab6c7781" formatted="false">Venstergrootte</string>
     <string name="t_20f80d36" formatted="false">Volume tijdens live beeld (%)</string>
     <string name="t_47d81470" formatted="false">Percentage van het huidige volume zolang de camera in beeld is. 100 = ongewijzigd.</string>
     <string name="t_f674ddb7" formatted="false">Afstandsbediening in fotovenster</string>
@@ -99,7 +99,7 @@
     <string name="t_19280e4e" formatted="false">Van</string>
     <string name="t_4eeb0a87" formatted="false">Tot</string>
     <string name="t_ca5095a5" formatted="false">Mag over middernacht gaan, bijv. 07:00 tot 23:00.</string>
-    <string name="t_76482bed" formatted="false">Wakker worden bij alarm</string>
+    <string name="t_76482bed" formatted="false">Wekken bij alarm</string>
     <string name="t_5be62243" formatted="false">Verzoeken met prioriteit \'alarm\' zetten de ontvanger (en via HDMI-CEC de tv) aan.</string>
     <string name="t_28c9edf9" formatted="false">Niet storen</string>
     <string name="t_c5b1831e" formatted="false">Negeert verzoeken met normale prioriteit (met \'Niet storen blokkeert\' ook hoge). Alarm komt altijd door. Ook via de API, MQTT en Home Assistant.</string>
@@ -136,7 +136,7 @@
     <string name="t_1a877d59" formatted="false">Toegestane aanroepers</string>
     <string name="t_1bfb62c7" formatted="false">\'Alleen lokaal netwerk\' wordt aangeraden.</string>
     <string name="t_915382dc" formatted="false">Toegangstoken (optioneel)</string>
-    <string name="t_4b955605" formatted="false">Indien ingevuld moet elk verzoek \?token=... bevatten.</string>
+    <string name="t_5183cd47" formatted="false">Indien ingevuld moeten aanroepers het meesturen in de header X-CamAlert-Token; \?token=... in het adres werkt nog, maar is verouderd.</string>
     <string name="t_c2111af9" formatted="false">Logniveau</string>
     <string name="t_480df9d8" formatted="false">camalert.log in /home/root/logs (of /tmp). Wachtwoorden en tokens worden nooit gelogd.</string>
     <string name="t_3ba29a85" formatted="false">API</string>
@@ -187,7 +187,7 @@
     <string name="t_130181c4" formatted="false">sluiten</string>
     <string name="t_ef3e3778" formatted="false">bewegen</string>
     <string name="t_b72b7974" formatted="false">zoomen</string>
-    <string name="t_0c3311fc" formatted="false">beginpositie</string>
+    <string name="t_0c3311fc" formatted="false">beginstand</string>
     <string name="t_b79c9968" formatted="false">camerabediening stoppen</string>
     <string name="t_d79a92ed" formatted="false">pauze</string>
     <string name="t_46b14e9b" formatted="false">gepauzeerd</string>

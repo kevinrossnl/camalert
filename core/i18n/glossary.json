@@ -317,6 +317,30 @@
       {
         "pattern": "\\bmozaiek",
         "use": "mozaïek"
+      },
+      {
+        "pattern": "zelfgemaakte? certificaat",
+        "use": "zelfondertekend certificaat"
+      },
+      {
+        "pattern": "beginpositie",
+        "use": "beginstand"
+      },
+      {
+        "pattern": "\\breceiver",
+        "use": "ontvanger"
+      },
+      {
+        "pattern": "Home Assistant-event",
+        "use": "gebeurtenis naar Home Assistant"
+      },
+      {
+        "pattern": "afstandsbedieningsknop",
+        "use": "toets op de afstandsbediening"
+      },
+      {
+        "pattern": "\\bVerbindt met\\b",
+        "use": "maakt verbinding met"
       }
     ],
     "de": [

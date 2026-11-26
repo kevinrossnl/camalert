@@ -1098,7 +1098,7 @@
   {
    "choices": null,
    "default": "",
-   "help": "If set, callers must add ?token=... to every request.",
+   "help": "If set, callers must send it in the X-CamAlert-Token header; ?token=... in the address still works but is deprecated.",
    "id": "token",
    "label": "Access token (optional)",
    "level": "advanced",

@@ -518,8 +518,8 @@ msgid "Access token (optional)"
 msgstr "Token di accesso (facoltativo)"
 
 msgctxt "#30167"
-msgid "If set, callers must add ?token=... to every request."
-msgstr "Se impostato, ogni richiesta deve contenere ?token=..."
+msgid "If set, callers must send it in the X-CamAlert-Token header; ?token=... in the address still works but is deprecated."
+msgstr "Se impostato, chi chiama deve inviarlo nell'intestazione X-CamAlert-Token; ?token=... nell'indirizzo funziona ancora ma è deprecato."
 
 msgctxt "#30168"
 msgid "Use HTTPS for the API"

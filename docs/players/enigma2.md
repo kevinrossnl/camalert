@@ -11,7 +11,7 @@ On the receiver (via Telnet/SSH), replace the version with the
 
 ```sh
 cd /tmp
-wget -O camalert.ipk https://github.com/kevinrossnl/camalert/releases/download/v1.0.1/enigma2-plugin-extensions-camalert_1.0.1_all.ipk
+wget -O camalert.ipk https://github.com/kevinrossnl/camalert/releases/download/v1.1.0/enigma2-plugin-extensions-camalert_1.1.0_all.ipk
 opkg install /tmp/camalert.ipk
 ```
 

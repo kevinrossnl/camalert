@@ -153,38 +153,6 @@ class Enigma2(object):
         return {"service": s["service"], "volume": s["volume"], "muted": s["muted"], "standby": s["standby"],
                 "dnd": bool(status.get("dnd")), "settings": self.saved_settings()}
 
-    def mute(self, state, save):
-        """Mute and verify. set=mute toggles, so it is only sent when not muted and the result is read back; if the
-        receiver does not report muted, the volume goes to 0 instead. SafetyError if neither can be verified."""
-        ch = state["changes"]
-        if self.vol()["muted"]:
-            ch["mute"] = "already"
-            save()
-            return "already muted"
-        ch["mute"] = "pending"
-        save()
-        if self.vol("mute")["muted"] or self._reads_muted():
-            ch["mute"] = "mute"
-            save()
-            return "muted"
-        ch["mute"] = "volume0"
-        save()
-        if self.vol("set0")["volume"] == 0:
-            return "volume 0 (mute not confirmed)"
-        raise SafetyError("could not mute or set the volume to 0")
-
-    def _reads_muted(self):
-        """Read again after a moment (never send set=mute twice: it toggles)."""
-        for wait in (0.5, 1.0):
-            self.sleep(wait)
-            if self.vol()["muted"]:
-                return True
-        return False
-
-    def verify_quiet(self):
-        v = self.vol()
-        return v["muted"] or v["volume"] == 0
-
     def wake(self, state, save):
         state["changes"]["woken"] = True
         save()

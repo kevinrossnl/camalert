@@ -67,39 +67,6 @@ class Kodi(object):
         return {"volume": int(a["volume"]), "muted": bool(a["muted"]), "window": self.window(),
                 "dnd": bool(status.get("dnd")), "settings": {}}
 
-    def mute(self, state, save):
-        """Application.SetMute takes a boolean (no toggle); read back. Volume 0 if mute is not confirmed."""
-        ch = state["changes"]
-        if self.app()["muted"]:
-            ch["mute"] = "already"
-            save()
-            return "already muted"
-        ch["mute"] = "pending"
-        save()
-        self.rpc.call("Application.SetMute", {"mute": True})
-        if self._reads_muted():
-            ch["mute"] = "mute"
-            save()
-            return "muted"
-        ch["mute"] = "volume0"
-        save()
-        self.rpc.call("Application.SetVolume", {"volume": 0})
-        if int(self.app()["volume"]) == 0:
-            return "volume 0 (mute not confirmed)"
-        raise SafetyError("could not mute or set the volume to 0")
-
-    def _reads_muted(self):
-        """Kodi may report the new mute state a moment later (seen once on a real player): read a few times."""
-        for wait in (0, 0.5, 1.0):
-            self.sleep(wait)
-            if self.app()["muted"]:
-                return True
-        return False
-
-    def verify_quiet(self):
-        a = self.app()
-        return bool(a["muted"]) or int(a["volume"]) == 0
-
     def wake(self, state, save):
         raise Skip("Kodi has no standby wake-up in the runner")
 
@@ -131,8 +98,13 @@ class Kodi(object):
         attempt("hide", self.camalert.hide)
         if "dnd" in before:
             attempt("dnd", lambda: self._restore_dnd(before["dnd"]))
-        attempt("volume", lambda: self.rpc.call("Application.SetVolume", {"volume": before["volume"]}))
-        attempt("mute", lambda: self.rpc.call("Application.SetMute", {"mute": before["muted"]}))
+        # only put back what differs: the runner never mutes (#102), so normally nothing is sent here
+        now = {}
+        attempt("volume read", lambda: now.update(self.app()))
+        if int(now.get("volume", before["volume"])) != before["volume"]:
+            attempt("volume", lambda: self.rpc.call("Application.SetVolume", {"volume": before["volume"]}))
+        if bool(now.get("muted", before["muted"])) != before["muted"]:
+            attempt("mute", lambda: self.rpc.call("Application.SetMute", {"mute": before["muted"]}))
 
         def check():
             a = self.app()

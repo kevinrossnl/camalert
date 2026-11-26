@@ -1,4 +1,4 @@
-"""The run per device: preconditions -> snapshot (on disk) -> mute (verified) -> wake -> prepare -> scenarios,
+"""The run per device: preconditions -> snapshot (on disk) -> wake -> prepare -> scenarios,
 and in `finally` always restore. Also `--restore last` and `--dry-run`."""
 import datetime
 import os
@@ -94,18 +94,13 @@ class Runner(object):
         save = self.store.save
         self._alarm(profile["timeout"])
         try:
-            res["mute"] = dev.mute(state, save)
-            if not dev.verify_quiet():
-                raise SafetyError("device does not report muted / volume 0")
+            # never mute (#102): mute caused too many problems; silence comes from test=1 and chime off (prepare)
+            res["mute"] = "not used"
             if info.get("standby"):
                 dev.wake(state, save)
-                if not dev.verify_quiet():
-                    raise SafetyError("not muted after waking up")
             dev.prepare(state, save, fake)
             if dev.camalert.status().get("dnd"):
                 dev.camalert.set_dnd(False)
-            if not dev.verify_quiet():
-                raise SafetyError("not muted after preparing")
             res["test_flag"] = dev.camalert.supports_test_flag()
             cams, colours = self.cameras(dev, profile, fake)
             ctx = sc.Context(dev, state, cams, colours, dev.geometry_settings(state), self._shooter(dev, name),

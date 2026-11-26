@@ -7,8 +7,8 @@
 Devices come from tools/e2e/devices.local.yaml (never in git; example: devices.example.yaml). Every precondition
 must pass or the device is skipped: allowed hours, quiet devices only with --allow-quiet and never in their sleep
 hours, not recording and no timer within 30 minutes, nobody watching (standby + --wake, Home Assistant, an
-interactive confirmation or --nobody-watching <device>), for Kodi nothing playing. The runner mutes first and
-verifies it, writes a state snapshot to reports/state/ before the first change, and restores in `finally`.
+interactive confirmation or --nobody-watching <device>), for Kodi nothing playing. The runner never mutes (#102),
+writes a state snapshot to reports/state/ before the first change, and restores in `finally`.
 Reports: reports/<run>/ (git-ignored). Never on GitHub. Copyright (C) 2026 CamAlert developers, GPL v2.
 """
 import argparse

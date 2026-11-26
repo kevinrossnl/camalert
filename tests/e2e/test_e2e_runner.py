@@ -1,4 +1,4 @@
-"""The e2e runner (#35) against fake devices: safety (mute toggle, fallback, preconditions), snapshot + restore in
+"""The e2e runner (#35) against fake devices: safety (never mute #102, preconditions), snapshot + restore in
 finally and --restore last, scenarios with OSD geometry checks. No real device is touched."""
 import json
 import os
@@ -81,10 +81,10 @@ class TestEnigma2Run(Base):
         self.assertEqual({n: s["status"] for n, s in by.items()},
                          dict(show="passed", strip="passed", mosaic="passed", tour="passed", dnd="passed",
                               ptz="passed", ha="skipped"), json.dumps(res["scenarios"], indent=1))
-        self.assertEqual((res["status"], res["mute"], res["restore"]), ("passed", "muted", []))
+        self.assertEqual((res["status"], res["mute"], res["restore"]), ("passed", "not used", []))
         self.assertIn("ptzMoveLeft", rx.box.ptz)
         self.assert_restored(rx)
-        # the receiver was muted and quiet settings were set before the first show
+        # quiet settings were set before the first show (no mute, #102)
         first_show = next(i for i, c in enumerate(rx.ctl.calls) if c[0] == "show")
         self.assertGreater(first_show, -1)
         self.assertIn(("chime", "off"), rx.saveconfig_calls)
@@ -176,40 +176,38 @@ class TestEnigma2Run(Base):
         self.assertIn("no menu or dialog", res["reason"])
         self.assertEqual((rx.saveconfig_calls, rx.keys), ([], []))
 
-    def test_already_muted_is_not_toggled(self):
-        rx = self.receiver(muted=True)
-        res, _ = self.run_on(rx, scenarios=["show"])
-        self.assertEqual(res["mute"], "already muted")
-        self.assert_restored(rx, muted=True)
-
-    def test_mute_toggle_not_confirmed_falls_back_to_volume_0(self):
-        rx = self.receiver(mute_works=False)
-        res, _ = self.run_on(rx, scenarios=["show"])
-        self.assertEqual((res["status"], res["mute"]), ("passed", "volume 0 (mute not confirmed)"))
-        self.assert_restored(rx)
-
-    def test_late_mute_state_is_read_again_not_toggled_again(self):
-        rx = self.receiver()
-        real = rx.route
-        state = {"n": 0}
+    def never_mute(self, rx):
+        """Record every OpenWebif volume command."""
+        sent, real = [], rx.route
 
         def route(path, q):
-            if path == "/api/vol" and not q.get("set") and rx.muted and state["n"] < 1:
-                state["n"] += 1  # the first read after the toggle still says "not muted"
-                return ({"result": True, "current": rx.volume, "ismute": False},)
+            if path == "/api/vol" and q.get("set"):
+                sent.append(q["set"])
             return real(path, q)
         rx.route = route
-        res, _ = self.run_on(rx, scenarios=["show"])
-        self.assertEqual(res["mute"], "muted")
+        return sent
+
+    def test_never_mutes_or_changes_the_volume(self):
+        rx = self.receiver()
+        sent = self.never_mute(rx)
+        res, _ = self.run_on(rx)
+        self.assertEqual(res["status"], "passed", res)
+        self.assertNotIn("mute", sent)
+        self.assertNotIn("set0", sent)
         self.assert_restored(rx)
 
-    def test_no_scenario_when_it_cannot_be_made_quiet(self):
+    def test_already_muted_stays_muted_and_is_not_toggled(self):
+        rx = self.receiver(muted=True)
+        sent = self.never_mute(rx)
+        res, _ = self.run_on(rx, scenarios=["show"])
+        self.assertEqual(res["status"], "passed", res)
+        self.assertNotIn("mute", sent)
+        self.assert_restored(rx, muted=True)
+
+    def test_runs_when_the_receiver_cannot_be_muted(self):
         rx = self.receiver(mute_works=False, set0_works=False)
-        res, _ = self.run_on(rx)
-        self.assertEqual(res["status"], "error")
-        self.assertIn("mute", res["reason"])
-        self.assertEqual([c for c in rx.ctl.calls if c[0] != "hide"], [])
-        self.assertEqual(rx.saveconfig_calls, [])
+        res, _ = self.run_on(rx, scenarios=["show"])
+        self.assertEqual(res["status"], "passed", res)
         self.assert_restored(rx)
 
     def test_scenario_crash_still_restores(self):
@@ -250,11 +248,9 @@ class TestEnigma2Run(Base):
         st = store.device("boven", "enigma2")
         st["before"] = dev.snapshot()
         store.save()
-        dev.mute(st, store.save)
         dev.prepare(st, store.save, True)
         dev.camalert.action("show", cam="garden")
         # the process dies here: nothing restored
-        self.assertTrue(rx.muted)
         self.assertEqual(rx.saved["chime"] if "chime" in rx.saved else "off", "off")
         problems = restore_last({"boven": prof}, self.tmp, factory=self.factory_for(rx), log=lambda *a: None)
         self.assertEqual(problems, [])
@@ -352,7 +348,8 @@ class TestKodiRun(Base):
         self.assertEqual(by, dict(show="passed", strip="passed", mosaic="passed", tour="passed", dnd="passed",
                                   ptz="skipped", ha="skipped"), res)
         self.assertEqual((k.volume, k.muted, k.win), (60, False, 10000))
-        self.assertIn("Application.SetMute", k.requests)
+        self.assertNotIn("Application.SetMute", k.requests)  # never mute (#102)
+        self.assertNotIn("Application.SetVolume", k.requests)
 
     def test_nothing_may_play(self):
         k = self.kodi(playing=1)
@@ -361,25 +358,21 @@ class TestKodiRun(Base):
         self.assertIn("nothing playing", res["reason"])
         self.assertNotIn("Application.SetMute", k.requests)
 
-    def test_late_mute_state(self):
+    def test_restore_still_undoes_a_changed_volume_or_mute(self):
         k = self.kodi()
-        real = k.answer
-        seen = {"n": 0}
+        real = sc.show
 
-        def answer(req):
-            if req["method"] == "Application.GetProperties" and k.muted and seen["n"] < 1:
-                seen["n"] += 1
-                return {"jsonrpc": "2.0", "id": req["id"], "result": {"volume": k.volume, "muted": False}}
-            return real(req)
-        k.answer = answer
-        res, _ = self.run_on(k, name="kodi", scenarios=["show"])
-        self.assertEqual(res["mute"], "muted")
-
-    def test_mute_fallback(self):
-        k = self.kodi(mute_works=False)
-        res, _ = self.run_on(k, name="kodi", scenarios=["show"])
-        self.assertEqual(res["mute"], "volume 0 (mute not confirmed)")
+        def changes_sound(ctx, r):
+            k.muted, k.volume = True, 5  # e.g. someone pressed MUTE during the run
+            return real(ctx, r)
+        sc.SCENARIOS["show"] = changes_sound
+        try:
+            self.run_on(k, name="kodi", scenarios=["show"])
+        finally:
+            sc.SCENARIOS["show"] = real
         self.assertEqual((k.volume, k.muted), (60, False))
+        self.assertIn("Application.SetMute", k.requests)
+        self.assertIn("Application.SetVolume", k.requests)
 
     def test_chime_all_is_skipped(self):
         k = self.kodi()

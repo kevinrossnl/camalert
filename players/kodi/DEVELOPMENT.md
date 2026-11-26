@@ -32,4 +32,4 @@ The build (`python3 tools/build_kodi.py dist`) copies `core/camalert_core/` in a
 - Every snapshot gets a new file name (Kodi caches images by path).
 - Colour keys arrive as one action (`ACTION_COLOUR`); the button code says which (`klogic.colour_name`).
 - Estuary has no ◀ ▶ and no `font30`: hints use `< >` (`glyphs=False`), fonts come from the skin's Font.xml.
-- Real Kodi tests: only when nothing plays, muted, settings file restored afterwards.
+- Real Kodi tests: only when nothing plays, never muted (root DEVELOPMENT.md), settings file restored afterwards.

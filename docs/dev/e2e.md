@@ -47,7 +47,7 @@ Scenarios: `show` (photo window), `strip` (multi-camera window), `mosaic`, `tour
    `--nobody-watching <name>`); Kodi: nothing playing.
 2. **Snapshot** of channel, volume, mute, standby, do not disturb and the saved CamAlert settings (Kodi: volume, mute,
    window) to `reports/state/` before the first change; every later change is written there first.
-3. **Mute and verify.** OpenWebif `/api/vol?set=mute` *toggles*: the runner only sends it when the receiver is not
+3. **Mute and verify** (to be removed: players are no longer muted for tests, see the root DEVELOPMENT.md and #102). OpenWebif `/api/vol?set=mute` *toggles*: the runner only sends it when the receiver is not
    muted and reads the state back; if it is not muted then, the volume goes to 0. No verified silence, no scenario.
 4. **Nothing that rings or reaches other systems.** On Enigma2 the runner sets (through OpenWebif `saveconfig`)
    chime off, no Home Assistant webhook, no cooldown/time/playing rules, Frigate and Foscam triggers off. It does

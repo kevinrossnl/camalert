@@ -41,6 +41,6 @@ Tests: `tests/enigma2/` (fake Enigma2 from API snapshots of real images, `harnes
   (photo window, -0x7FFFFFFE).
 - The skin fonts of openATV have no ◀ ▶; they are drawn with `/usr/share/fonts/fallback.font` when it exists,
   otherwise `< >`.
-- Real receiver tests: mute first (OpenWebif `/api/vol`: `set=mute` *toggles*, check `ismute`), never during a
-  recording, restore settings, volume and channel afterwards; screenshots only of the OSD
+- Real receiver tests: **never mute** (see the root DEVELOPMENT.md; OpenWebif `set=mute` *toggles* and was left behind too
+  often), use `test=1` and chime off instead; never during a recording, restore settings, volume and channel afterwards; screenshots only of the OSD
   ([docs/dev/screenshots.md](../../docs/dev/screenshots.md)).

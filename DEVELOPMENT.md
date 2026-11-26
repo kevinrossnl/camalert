@@ -38,7 +38,9 @@ file table of that folder: read the root file **and** the one of the folder you 
 - Code, comments and docs in English; user-facing texts translated (en, nl, de, fr, it, pl) in the master catalogue
   `core/i18n/` ([core/DEVELOPMENT.md](core/DEVELOPMENT.md)).
 - New shared logic goes into `core/camalert_core/` with a unit test. Player and Home Assistant specific code is
-  tested on a real receiver / Kodi / Home Assistant before a release; muted, nothing playing, settings restored.
+  tested on a real receiver / Kodi / Home Assistant before a release; nothing playing, settings restored. **Never mute
+  the player** for a test (mute caused too many problems: a mute left behind, toggles that went the wrong way, chime
+  and volume checks that tested nothing); keep the sound quiet with `test=1` (no chime) and the chime setting instead.
 - API, MQTT topics, HA actions and blueprints must stay backwards compatible within a major version.
 - Tests: `python3 -m pytest` (see `tests/README.md`). Packages: `python3 tools/build_ipk.py dist`,
   `python3 tools/build_kodi.py dist`.

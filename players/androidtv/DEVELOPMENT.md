@@ -38,7 +38,7 @@ Golden APK listing: `tests/build/golden/androidtv_apk.txt` (`python3 tools/apk_l
 - Debug-signed APK only. No keystore in git (`*.jks`, `*.keystore` are ignored); release signing: see
   [docs/players/androidtv.md](../../docs/players/androidtv.md).
 - Real device tests (Fire TV Stick): fake go2rtc only (`testing/fake_go2rtc_on_device.py start`, go2rtc address
-  `http://127.0.0.1:11984`), requests with `test=1`, live view muted, nothing else installed or changed on the
+  `http://127.0.0.1:11984`), requests with `test=1`, live view with `live_volume` 0 (never mute the device), nothing else installed or changed on the
   device, `stop` + `am force-stop org.camalert.tv` afterwards; screenshots only with fake cameras and
   `tools/check_images.py --strip` (Fire TV launcher content in the background is not ours: crop it).
 - Fire OS 6 lessons: `adb reverse` fails over the network ("more than one device"); the overlay permission can

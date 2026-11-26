@@ -118,14 +118,9 @@ def atv_runtime_texts():
         from camalert_core import schema
     finally:
         sys.path.pop(0)
-    sys.path.insert(0, os.path.join(ROOT, "tools"))
-    try:
-        import export_contract
-    finally:
-        sys.path.pop(0)
     out = []
-    for s in schema.for_platform("kodi"):
-        if s.id not in export_contract.NOT_ON_ANDROIDTV and s.level != "internal":
+    for s in schema.for_platform("androidtv"):
+        if s.level != "internal":
             out += [x for x in (s.label, s.help) if x and x not in out]
     out += [x for x in core_texts() if x not in out]
     return out

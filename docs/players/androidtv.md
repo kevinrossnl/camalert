@@ -44,8 +44,10 @@ apps that may start automatically (Settings › Apps › Special app access › 
 
 Open **CamAlert** from the apps row (or *Settings › Apps › CamAlert › Open*). The settings use the same names,
 defaults and levels as on the other players ([all settings](../user/settings.md)); expert settings are hidden
-until you turn on *Show expert settings*. Not yet on Android TV (#64): direct mode with a camera file, Foscam
-alarms, camera control (PTZ), HTTPS for the API, remote syslog, pausing what is playing.
+until you turn on *Show expert settings*. The *Players* column of the settings list says which ones Android TV has;
+*Volume during live view* starts at 0 here (the app underneath keeps its own sound). Not yet on Android TV: direct
+mode with a camera file, Foscam alarms, camera control (PTZ), UniFi Protect, HTTPS for the API, remote syslog
+(#66, #72); pausing what is playing is not possible on Android.
 
 ## What you see
 

@@ -78,12 +78,39 @@ class TestSchema(unittest.TestCase):
             self.assertEqual((b[sid].min, b[sid].max, b[sid].step), (5, 300, 5), sid)
         self.assertEqual(b["live_volume"].step, 10)
         self.assertEqual((b["http_port"].min, b["http_port"].max), (1024, 65535))
-        for sid in ("frigate_mode", "frigate_seconds", "foscam_interval", "foscam_mode", "foscam_seconds"):
+        for sid in ("frigate_mode", "frigate_seconds"):
             self.assertEqual(b[sid].platforms, schema.PLATFORMS, sid)
-        platform_only = sorted(s.id for s in schema.SETTINGS if s.platforms != schema.PLATFORMS)
+        for sid in ("foscam_interval", "foscam_mode", "foscam_seconds"):
+            self.assertEqual(b[sid].platforms, ("enigma2", "kodi"), sid)
+        e2_kodi = set(schema.for_platform("enigma2")) | set(schema.for_platform("kodi"))
+        platform_only = sorted(s.id for s in e2_kodi if not {"enigma2", "kodi"} <= set(s.platforms))
         self.assertEqual(platform_only, ["auto_bouquet", "bouquet_name", "bouquet_position", "camera_file",
                                          "event_folder", "live_format", "picons", "ptz_password", "ptz_user",
                                          "skip_recording", "update_check", "update_checked", "update_seen"])
+
+    def test_android_tv_platform(self):
+        """#67: Android TV is a platform of the schema; every Kodi setting it lacks has a reason in MISSING, its own
+        defaults are in Setting.defaults (with a reason) and are used by defaults() and validate()."""
+        self.assertIn("androidtv", schema.PLATFORMS)
+        kodi = {s.id for s in schema.for_platform("kodi")}
+        atv = {s.id for s in schema.for_platform("androidtv")}
+        self.assertTrue(atv <= kodi | {s.id for s in schema.SETTINGS if s.platforms == ("androidtv",)})
+        self.assertEqual(set(schema.MISSING["androidtv"]), kodi - atv)
+        self.assertEqual(set(schema.MISSING), {"androidtv"})
+        own = {(p, s.id) for s in schema.SETTINGS for p in s.defaults}
+        self.assertEqual(own, {(p, sid) for p, d in schema.DEFAULT_REASONS.items() for sid in d})
+        for p, sid in own:
+            self.assertIn(p, schema.BY_ID[sid].platforms, sid)
+            s = schema.BY_ID[sid]
+            self.assertEqual(schema.coerce(s, s.default_for(p)), s.default_for(p))
+        lv = schema.BY_ID["live_volume"]
+        self.assertEqual((lv.default, lv.default_for("androidtv"), lv.default_for("kodi"), lv.default_for()),
+                         (100, 0, 100, 100))
+        self.assertEqual(schema.defaults("androidtv")["live_volume"], 0)
+        self.assertEqual(schema.defaults("kodi")["live_volume"], 100)
+        self.assertEqual(schema.validate({}, "androidtv")[0]["live_volume"], 0)
+        self.assertEqual(schema.validate({"live_volume": "x"}, "androidtv")[0]["live_volume"], 0)
+        self.assertEqual(schema.validate({})[0]["live_volume"], 100)
 
     def test_migrate(self):
         e2 = schema.migrate({"foscam_poll": "True", "device_priority": "high", "chime": True, "skip_media": "True",

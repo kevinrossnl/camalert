@@ -9,7 +9,10 @@ Read the root [DEVELOPMENT.md](../DEVELOPMENT.md) first (privacy, how we work, C
 - Every module has a unit test in `tests/core/test_<module>.py`; branch coverage of `core/camalert_core` by
   `tests/core` alone stays **>= 90 %** (`sh tools/ci.sh core`).
 - A new or changed setting goes into `schema.py` first (same id on every player); then the players follow
-  (Enigma2 `_add()`, Kodi `settings.xml`) and `python3 tools/docs.py update` refreshes the settings page.
+  (Enigma2 `_add()`, Kodi `settings.xml`, Android TV via `python3 tools/export_contract.py update`) and
+  `python3 tools/docs.py update` refreshes the settings page. A Kodi setting that Android TV lacks needs a reason in
+  `schema.MISSING`; a player with its own default sets `defaults={platform: value}` plus a reason in
+  `schema.DEFAULT_REASONS` (#67).
 - Which key does what is defined once in `keymap.py`; players translate their key codes only. On-screen key hints
   come from `present.key_hint()`; after a change run `python3 tools/docs.py update` (docs key table).
 - Events store codes (`present.reason('cooldown', 30)`), never English; screens translate with

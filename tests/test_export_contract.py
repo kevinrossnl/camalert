@@ -35,14 +35,12 @@ class TestExport(unittest.TestCase):
         from camalert_core import schema
         data = X.runtime()
         ids = [s["id"] for s in data["settings"]]
-        kodi = [s.id for s in schema.for_platform("kodi")]
-        self.assertEqual(ids, [i for i in kodi if i not in X.NOT_ON_ANDROIDTV], "schema order, Kodi set")
-        self.assertTrue(set(X.NOT_ON_ANDROIDTV) <= set(kodi), "only settings that exist")
+        self.assertEqual(ids, [s.id for s in schema.for_platform("androidtv")], "the schema's androidtv set (#67)")
         for s in data["settings"]:
-            want = X.ANDROIDTV_DEFAULTS[s["id"]][0] if s["id"] in X.ANDROIDTV_DEFAULTS else schema.BY_ID[s["id"]].default
-            self.assertEqual(s["default"], want, s["id"])
+            self.assertEqual(s["default"], schema.BY_ID[s["id"]].default_for("androidtv"), s["id"])
             self.assertEqual(schema.coerce(schema.BY_ID[s["id"]], s["default"]), s["default"], "valid default")
-        self.assertEqual(sorted(X.ANDROIDTV_DEFAULTS), ["live_volume"], "a new difference needs a reason in #64")
+        self.assertEqual(data["not_on_androidtv"], schema.MISSING["androidtv"])
+        self.assertEqual(data["androidtv_defaults"], schema.DEFAULT_REASONS["androidtv"])
         self.assertEqual(json.loads(json.dumps(data["keymap"])), json.loads(json.dumps(
             __import__("camalert_core.keymap", fromlist=["x"]).KEYMAP["androidtv"])))
 

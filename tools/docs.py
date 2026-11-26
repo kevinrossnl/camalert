@@ -96,7 +96,10 @@ def _default(s):
         return "–"
     if s.type == "password":
         return "–"
-    return "`%s`%s" % (s.default, (" " + s.unit) if s.unit and s.unit != "%" else (s.unit or ""))
+    text = "`%s`%s" % (s.default, (" " + s.unit) if s.unit and s.unit != "%" else (s.unit or ""))
+    # a player with its own default (#67), e.g. live volume 0 on Android TV
+    own = ["%s: `%s`" % (PLAYER_NAMES[p], v) for p, v in sorted(s.defaults.items()) if p in s.platforms]
+    return text + ("".join(" (%s)" % o for o in own))
 
 
 def _values(s):
@@ -117,7 +120,7 @@ def settings_block():
         out += ["### " + SECTION_TITLES[section], "", "| Setting | Default | Values | Level | Players | What it does |",
                 "|---|---|---|---|---|---|"]
         for s in rows:
-            players = "both" if set(s.platforms) == set(schema.PLATFORMS) else " ".join(PLAYER_NAMES[p] for p in s.platforms)
+            players = "all" if set(s.platforms) == set(schema.PLATFORMS) else ", ".join(PLAYER_NAMES[p] for p in s.platforms)
             help_text = (s.help or "").replace("|", "\\|").replace("%s", "the camera file")
             out.append("| %s | %s | %s | %s | %s | %s |" % (s.label, _default(s), _values(s), s.level, players, help_text))
         out.append("")

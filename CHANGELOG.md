@@ -11,6 +11,8 @@ actions and blueprint inputs stay backwards compatible.
 
 - **Kodi:** the camera list (*Videos › Video add-ons › CamAlert*) keeps its own order – mosaic, tour, cameras,
   event list, settings – instead of *Sort by: Date*, and every item has a short description in the info panel.
+- **Docs:** the [settings list](docs/user/settings.md) now also shows which settings the Android TV / Fire TV
+  player has, and its own defaults (live volume 0).
 
 ## [1.1.0] - 2026-11-26
 

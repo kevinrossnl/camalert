@@ -17,6 +17,11 @@ device.
 
 Kodi now checks the repository and updates CamAlert by itself.
 
+**Already installed from a zip?** Kodi 20 and newer only update an add-on from the repository it was installed from.
+After adding the repository (steps 1–3), update CamAlert **once** through **Add-ons › Install from repository ›
+CamAlert repository › Services › CamAlert › Update** (pick the version from the CamAlert repository if Kodi asks).
+From then on Kodi updates it by itself; your settings are kept.
+
 **Just the add-on:** install `service.camalert-x.y.z.zip` with *Install from zip file* (no automatic updates).
 
 After installing, open **Add-ons › My add-ons › Services › CamAlert › Configure**.
@@ -145,6 +150,10 @@ be IPv6 literals (`http://[fd00::10]:1984`).
 Installed from the CamAlert repository, Kodi updates CamAlert by itself (Kodi checks repositories at start and
 every few hours; *Settings › System › Add-ons › Updates* decides whether it installs them automatically or only
 notifies).
+
+**Already installed from a zip?** Then Kodi offers no update, not even after adding the repository: update once
+through *Install from repository › CamAlert repository › Services › CamAlert › Update*
+(see [Install](#install)).
 
 The CamAlert repository only holds the **latest** release. To go back to an older version, download its
 `service.camalert-x.y.z.zip` from the [releases page](https://github.com/kevinrossnl/camalert/releases) and use

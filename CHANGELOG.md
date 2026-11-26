@@ -17,6 +17,8 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Changed
 
+- **Kodi:** the install guide explains that an add-on installed from a zip is updated once through *Install from
+  repository*; after that Kodi updates it by itself (Kodi 20 and newer only update from the repository an add-on came from).
 - **Home Assistant:** CamAlert is now in the HACS default list. Install it with *Settings › Marketplace*: search for
   **CamAlert**. Adding the custom repository is only needed as a fallback.
 - **Settings:** the help of *Access token* now says to send the token in the `X-CamAlert-Token` header; `?token=`

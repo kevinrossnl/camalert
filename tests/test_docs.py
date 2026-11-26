@@ -220,3 +220,23 @@ class TestHacsDefault(unittest.TestCase):
         text = open(os.path.join(ROOT, ".github", "pages", "index.html"), encoding="utf-8").read()
         section = text.split('id="home-assistant"', 1)[1].split("</p>", 2)
         self.check(".github/pages/index.html", "</p>".join(section[:2]))
+
+
+class TestKodiZipToRepository(unittest.TestCase):
+    """#105: Kodi 20+ only updates an add-on from the repository it came from. Someone who installed the add-on zip
+    must update once through 'Install from repository'; the install guide, the updates section and the start page
+    say so."""
+
+    STEP = "Install from repository"
+
+    def test_install_and_updates_sections(self):
+        text = open(os.path.join(ROOT, "docs", "players", "kodi.md"), encoding="utf-8").read()
+        for heading in ("## Install", "## Updates"):
+            section = text.split(heading, 1)[1].split("\n## ", 1)[0]
+            self.assertIn("Already installed from a zip", section, heading)
+            self.assertIn(self.STEP, section.split("Already installed from a zip", 1)[1], heading)
+
+    def test_pages_start_page(self):
+        text = open(os.path.join(ROOT, ".github", "pages", "index.html"), encoding="utf-8").read()
+        kodi = text.split('id="kodi"', 1)[1].split("<h2", 1)[0]
+        self.assertIn("Already installed from a zip", kodi)

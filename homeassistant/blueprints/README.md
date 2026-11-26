@@ -30,6 +30,12 @@ Order in every blueprint: **trigger → `players` → `camera`/`cameras` → `mo
 | `tv` | The LG TV's media player: notify only while it is on; empty = always try | empty | doorbell webOS |
 | `snapshot_url` | Small picture for the LG TV notification (#74), e.g. `http://192.168.1.10:1984/api/frame.jpeg?src=front_door&width=640`; downloaded with the Downloader integration (download folder = folder of `snapshot_file`), used instead of `snapshot_camera`; download failed or no answer within 15 s = text only | empty | doorbell webOS |
 
+**Added in 1.2** (optional, at the end, the default changes nothing):
+
+| Key | Meaning | Default | Blueprints |
+|---|---|---|---|
+| `presence` | Only when someone is home: persons, device trackers or groups (state `home`) or zones (someone in it, e.g. `zone.home`); empty = always. Only the TV part waits for it (players, LG TV) | empty | doorbell, doorbell webOS, motion |
+
 Priorities are fixed per blueprint: doorbell (also webOS) and motion `high`, alarm `alarm`.
 Blueprints cannot be translated: option labels use the English glossary terms (`core/i18n/glossary.json`).
 

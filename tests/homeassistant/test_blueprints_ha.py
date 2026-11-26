@@ -231,3 +231,78 @@ async def test_doorbell_webos_snapshot_url_timeout(hass, player, blueprints):
     async_fire_time_changed(hass, dt_util.utcnow() + timedelta(seconds=16))
     await hass.async_block_till_done()
     assert calls == [("notify", "lg_webos_tv_living_room", {"message": "Doorbell - front_door"})]
+
+
+async def _door_with_presence(hass, player, presence):
+    entry = await setup_player(hass, player)
+    hass.states.async_set("binary_sensor.door", "off")
+    await automations(hass, ("door", "camalert_doorbell.yaml", {
+        "doorbell": ["binary_sensor.door"], "players": [player_device(hass, entry).id], "camera": "front_door",
+        "presence": presence}))
+
+
+async def _ring(hass):
+    hass.states.async_set("binary_sensor.door", "off")
+    hass.states.async_set("binary_sensor.door", "on")
+    await hass.async_block_till_done()
+
+
+def _shows(player):
+    return [c for c in player.ctl.calls if c[0] == "show"]
+
+
+async def test_presence_person(hass, player, blueprints):
+    """#75: with persons, the camera only appears when one of them is home."""
+    hass.states.async_set("person.one", "not_home")
+    hass.states.async_set("person.two", "not_home")
+    await _door_with_presence(hass, player, ["person.one", "person.two"])
+    await _ring(hass)
+    assert _shows(player) == []
+    hass.states.async_set("person.two", "home")
+    await _ring(hass)
+    assert len(_shows(player)) == 1
+
+
+async def test_presence_zone(hass, player, blueprints):
+    """#75: a zone counts as 'someone home' when its state (persons in it) is above 0."""
+    hass.states.async_set("zone.home", "0")
+    await _door_with_presence(hass, player, ["zone.home"])
+    await _ring(hass)
+    assert _shows(player) == []
+    hass.states.async_set("zone.home", "2")
+    await _ring(hass)
+    assert len(_shows(player)) == 1
+
+
+async def test_presence_motion(hass, player, blueprints):
+    entry = await setup_player(hass, player)
+    hass.states.async_set("binary_sensor.garden_motion", "off")
+    hass.states.async_set("person.one", "not_home")
+    await automations(hass, ("motion", "camalert_motion.yaml", {
+        "motion": ["binary_sensor.garden_motion"], "players": [player_device(hass, entry).id], "when": "always",
+        "presence": ["person.one"]}))
+    hass.states.async_set("binary_sensor.garden_motion", "on")
+    await hass.async_block_till_done()
+    assert _shows(player) == []
+    hass.states.async_set("binary_sensor.garden_motion", "off")
+    hass.states.async_set("person.one", "home")
+    hass.states.async_set("binary_sensor.garden_motion", "on")
+    await hass.async_block_till_done()
+    assert len(_shows(player)) == 1
+
+
+async def test_presence_webos_tv_part_too(hass, player, blueprints):
+    """#75: nobody home = neither the players nor the LG TV notification."""
+    entry = await setup_player(hass, player)
+    calls = _fake_webos(hass)
+    hass.states.async_set("binary_sensor.door", "off")
+    hass.states.async_set("person.one", "not_home")
+    await automations(hass, ("door", "camalert_doorbell_webos.yaml", {
+        "doorbell": ["binary_sensor.door"], "players": [player_device(hass, entry).id], "camera": "front_door",
+        "webos_notify": "notify.lg_webos_tv_living_room", "presence": ["person.one"]}))
+    await _ring(hass)
+    assert (_shows(player), calls) == ([], [])
+    hass.states.async_set("person.one", "home")
+    await _ring(hass)
+    assert len(_shows(player)) == 1 and len(calls) == 1
+

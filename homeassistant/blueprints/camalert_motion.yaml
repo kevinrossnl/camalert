@@ -85,6 +85,17 @@ blueprint:
       default: "07:00:00"
       selector:
         time:
+    presence:
+      name: Only when someone is home (optional)
+      description: >-
+        Show on the TV only when at least one of these is home: a person or device tracker (state home), a group of
+        them, or a zone with someone in it (e.g. zone.home). Empty = always.
+      default: []
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - domain: [person, device_tracker, group, zone]
 mode: single
 max_exceeded: silent
 variables:
@@ -96,6 +107,12 @@ variables:
   cams_in: !input cameras
   several: !input several
   label_in: !input label
+  presence_in: !input presence
+  someone_home: >-
+    {% set ents = presence_in if presence_in is list else ([presence_in] if presence_in else []) %}
+    {{ ents | count == 0
+       or ents | select('is_state', 'home') | list | count > 0
+       or ents | select('match', 'zone\\.') | map('states') | map('int', 0) | select('gt', 0) | list | count > 0 }}
   label: >-
     {% set s = trigger.entity_id.split('.')[1] %}{{ label_in | trim if label_in | trim != ''
        else ('Person' if 'person' in s else 'Motion') }}
@@ -121,6 +138,8 @@ conditions:
          or (when == 'time' and in_time)
          or (when == 'armed_or_time' and (armed or in_time))
          or (when == 'armed_and_time' and armed and in_time) }}
+  - condition: template
+    value_template: "{{ someone_home }}"
 actions:
   - if:
       - condition: template

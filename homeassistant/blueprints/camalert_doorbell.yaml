@@ -47,10 +47,27 @@ blueprint:
       default: ""
       selector:
         text:
+    presence:
+      name: Only when someone is home (optional)
+      description: >-
+        Show on the TV only when at least one of these is home: a person or device tracker (state home), a group of
+        them, or a zone with someone in it (e.g. zone.home). Empty = always.
+      default: []
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - domain: [person, device_tracker, group, zone]
 mode: single
 max_exceeded: silent
 variables:
   label_in: !input label
+  presence_in: !input presence
+  someone_home: >-
+    {% set ents = presence_in if presence_in is list else ([presence_in] if presence_in else []) %}
+    {{ ents | count == 0
+       or ents | select('is_state', 'home') | list | count > 0
+       or ents | select('match', 'zone\\.') | map('states') | map('int', 0) | select('gt', 0) | list | count > 0 }}
 triggers:
   - trigger: state
     entity_id: !input doorbell
@@ -60,13 +77,17 @@ conditions:
       {{ trigger.to_state is not none and trigger.to_state.state not in ['unavailable', 'unknown', 'off']
          and (trigger.to_state.domain == 'event' or trigger.to_state.state == 'on') }}
 actions:
-  - action: camalert.show
-    target:
-      device_id: !input players
-    data:
-      camera: !input camera
-      seconds: !input seconds
-      mode: !input mode
-      priority: high
-      label: "{{ label_in | trim }}"
-    continue_on_error: true
+  - if:
+      - condition: template
+        value_template: "{{ someone_home }}"
+    then:
+      - action: camalert.show
+        target:
+          device_id: !input players
+        data:
+          camera: !input camera
+          seconds: !input seconds
+          mode: !input mode
+          priority: high
+          label: "{{ label_in | trim }}"
+        continue_on_error: true

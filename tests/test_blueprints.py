@@ -15,17 +15,18 @@ import _paths  # noqa: E402
 # remove or reorder before 2.0 (homeassistant/blueprints/README.md).
 FROZEN = {
     "camalert_doorbell.yaml": [("doorbell", None), ("players", None), ("camera", None), ("mode", "photo"),
-                               ("seconds", 30), ("label", "")],
+                               ("seconds", 30), ("label", ""), ("presence", [])],
     "camalert_motion.yaml": [("motion", None), ("players", None), ("cameras", ""), ("mode", "photo"),
                              ("several", "strip"), ("seconds", 30), ("label", ""), ("when", "armed"),
-                             ("alarm_panel", ""), ("from_time", "22:00:00"), ("until_time", "07:00:00")],
+                             ("alarm_panel", ""), ("from_time", "22:00:00"), ("until_time", "07:00:00"),
+                             ("presence", [])],
     "camalert_alarm.yaml": [("alarm_panel", None), ("players", None), ("camera", None), ("mode", "live"),
                             ("seconds", 300), ("label", "Alarm")],
     "camalert_button.yaml": [("button", "green"), ("players", None), ("camera", ""), ("action", None)],
     "camalert_doorbell_webos.yaml": [("doorbell", None), ("players", None), ("camera", None), ("mode", "photo"),
                                      ("seconds", 30), ("label", ""), ("webos_notify", None), ("message", ""),
                                      ("snapshot_camera", ""), ("snapshot_file", "/media/camalert_webos.jpg"),
-                                     ("tv", ""), ("snapshot_url", "")],
+                                     ("tv", ""), ("snapshot_url", ""), ("presence", [])],
 }
 # option labels = glossary terms (blueprints cannot be translated)
 MODE_OPTIONS = [{"label": "Photo window", "value": "photo"}, {"label": "Live view", "value": "live"},
@@ -119,3 +120,14 @@ class TestBlueprints(unittest.TestCase):
         self.assertTrue(steps)
         for step in steps:
             self.assertIs(step.get("continue_on_error"), True, step["action"])
+
+    def test_presence_is_optional_and_never_blocks_by_default(self):
+        """#75: 'only when someone is home' is a new optional input at the end; empty (the default) = always."""
+        for name in ("camalert_doorbell.yaml", "camalert_doorbell_webos.yaml", "camalert_motion.yaml"):
+            d = self.load(os.path.join(_paths.BLUEPRINTS, name))
+            inputs = d["blueprint"]["input"]
+            self.assertEqual(inputs["presence"]["default"], [], name)
+            self.assertEqual(inputs["presence"]["selector"]["entity"]["filter"],
+                             [{"domain": ["person", "device_tracker", "group", "zone"]}], name)
+            self.assertIn("ents | count == 0", d["variables"]["someone_home"], name)
+

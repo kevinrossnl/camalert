@@ -73,9 +73,10 @@ blueprints do not have an input for that yet.
 | Jeedom | Scenario "HTTP request" with the URL |
 
 ## Presence, quiet hours, several players
-- *Only when someone is home / only when away*: the blueprints have no presence input yet. Use a plain automation
-  with a `state` condition on a person/zone entity before `camalert.show`, or *Take control* of the blueprint
-  automation in Home Assistant and add the condition there. *Do not disturb* with *Do not disturb blocks* = normal and doorbell: everything is logged in the event
+- *Only when someone is home*: the doorbell, LG TV and motion blueprints have *Only when someone is home*
+  (`presence`): pick persons, device trackers or `zone.home`; empty = always. *Only when away* (for example a
+  notification on the phone instead): use a plain automation with a `state` condition, or *Take control* of the
+  blueprint automation in Home Assistant. *Do not disturb* with *Do not disturb blocks* = normal and doorbell: everything is logged in the event
   list, only alarms are shown.
 - *Cooldown per camera*: `*=30` avoids showing the same camera again and again; a camera that is still on screen is
   extended instead.

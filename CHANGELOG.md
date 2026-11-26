@@ -7,6 +7,11 @@ actions and blueprint inputs stay backwards compatible.
 
 ## [Unreleased]
 
+### Added
+
+- **Home Assistant blueprints:** *Only when someone is home* (new optional input `presence`) in the doorbell, LG TV
+  and motion blueprints: pick persons, device trackers or `zone.home`, empty = always (as before).
+
 ### Changed
 
 - **Kodi:** the camera list (*Videos › Video add-ons › CamAlert*) keeps its own order – mosaic, tour, cameras,

@@ -7,6 +7,12 @@ actions and blueprint inputs stay backwards compatible.
 
 ## [Unreleased]
 
+### Added
+
+- **Home Assistant:** the player's device is shown under the device of the TV or Enigma2 receiver it runs on, found
+  automatically by address from the Enigma2, Kodi or Android TV integration. **Configure** on the CamAlert entry
+  (*Show under device*) chooses another device or turns this off.
+
 ### Fixed
 
 - **All players:** a helper stream that only transcodes another camera of the same go2rtc

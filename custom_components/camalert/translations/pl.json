@@ -50,6 +50,20 @@
       "wrong_player": "Ten adres należy do innego odtwarzacza. Dodać go jako nowy odtwarzacz."
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opcje odtwarzacza CamAlert",
+        "description": "Odtwarzacz jest pokazywany w Home Assistant pod urządzeniem telewizora lub odbiornika Enigma2, na którym działa.",
+        "data": {
+          "parent_device": "Pokaż pod urządzeniem"
+        },
+        "data_description": {
+          "parent_device": "Automatycznie: urządzenie integracji Enigma2, Kodi lub Android TV o tym samym adresie co odtwarzacz. Można też wybrać urządzenie samodzielnie albo żadne."
+        }
+      }
+    }
+  },
   "entity": {
     "button": {
       "show": {
@@ -132,6 +146,12 @@
         "zoom_out": "Oddal",
         "home": "Pozycja domowa",
         "stop": "Stop"
+      }
+    },
+    "parent_device": {
+      "options": {
+        "auto": "Automatycznie",
+        "none": "Brak"
       }
     }
   },

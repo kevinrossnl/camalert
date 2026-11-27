@@ -50,6 +50,20 @@
       "wrong_player": "This address belongs to another player. Add it as a new player instead."
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "CamAlert player options",
+        "description": "The player is shown in Home Assistant under the device of the TV or Enigma2 receiver it runs on.",
+        "data": {
+          "parent_device": "Show under device"
+        },
+        "data_description": {
+          "parent_device": "Automatic: the device of the Enigma2, Kodi or Android TV integration with the same address as the player. Or choose a device yourself, or none."
+        }
+      }
+    }
+  },
   "entity": {
     "button": {
       "show": {
@@ -132,6 +146,12 @@
         "zoom_out": "Zoom out",
         "home": "Home position",
         "stop": "Stop"
+      }
+    },
+    "parent_device": {
+      "options": {
+        "auto": "Automatic",
+        "none": "None"
       }
     }
   },

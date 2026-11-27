@@ -50,6 +50,20 @@
       "wrong_player": "Diese Adresse gehört zu einem anderen Wiedergabegerät. Füge es als neues Wiedergabegerät hinzu."
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Optionen des CamAlert-Wiedergabegeräts",
+        "description": "Das Wiedergabegerät wird in Home Assistant unter dem Gerät des Fernsehers oder Enigma2-Receivers angezeigt, auf dem es läuft.",
+        "data": {
+          "parent_device": "Unter Gerät anzeigen"
+        },
+        "data_description": {
+          "parent_device": "Automatisch: das Gerät der Enigma2-, Kodi- oder Android-TV-Integration mit derselben Adresse wie das Wiedergabegerät. Oder wähle selbst ein Gerät oder keines."
+        }
+      }
+    }
+  },
   "entity": {
     "button": {
       "show": {
@@ -132,6 +146,12 @@
         "zoom_out": "Herauszoomen",
         "home": "Grundstellung",
         "stop": "Stopp"
+      }
+    },
+    "parent_device": {
+      "options": {
+        "auto": "Automatisch",
+        "none": "Keines"
       }
     }
   },

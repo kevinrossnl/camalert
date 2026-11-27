@@ -50,6 +50,20 @@
       "wrong_player": "Dit adres hoort bij een andere speler. Voeg hem toe als nieuwe speler."
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opties van de CamAlert-speler",
+        "description": "De speler staat in Home Assistant onder het apparaat van de tv of Enigma2-ontvanger waarop hij draait.",
+        "data": {
+          "parent_device": "Tonen onder apparaat"
+        },
+        "data_description": {
+          "parent_device": "Automatisch: het apparaat van de Enigma2-, Kodi- of Android TV-integratie met hetzelfde adres als de speler. Of kies zelf een apparaat, of geen."
+        }
+      }
+    }
+  },
   "entity": {
     "button": {
       "show": {
@@ -132,6 +146,12 @@
         "zoom_out": "Uitzoomen",
         "home": "Beginstand",
         "stop": "Stop"
+      }
+    },
+    "parent_device": {
+      "options": {
+        "auto": "Automatisch",
+        "none": "Geen"
       }
     }
   },

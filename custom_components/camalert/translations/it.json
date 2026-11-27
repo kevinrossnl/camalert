@@ -50,6 +50,20 @@
       "wrong_player": "Questo indirizzo appartiene a un altro lettore. Aggiungerlo come nuovo lettore."
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opzioni del lettore CamAlert",
+        "description": "Il lettore viene mostrato in Home Assistant sotto il dispositivo del televisore o del ricevitore Enigma2 su cui è in esecuzione.",
+        "data": {
+          "parent_device": "Mostra sotto il dispositivo"
+        },
+        "data_description": {
+          "parent_device": "Automatico: il dispositivo dell'integrazione Enigma2, Kodi o Android TV con lo stesso indirizzo del lettore. Oppure scegliere un dispositivo, o nessuno."
+        }
+      }
+    }
+  },
   "entity": {
     "button": {
       "show": {
@@ -132,6 +146,12 @@
         "zoom_out": "Zoom indietro",
         "home": "Posizione iniziale",
         "stop": "Stop"
+      }
+    },
+    "parent_device": {
+      "options": {
+        "auto": "Automatico",
+        "none": "Nessuno"
       }
     }
   },

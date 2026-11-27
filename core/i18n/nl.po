@@ -104,7 +104,7 @@ msgstr "Niet tijdens films en opnames"
 msgid "Not during anything (also live TV)"
 msgstr "Nooit tijdens afspelen (ook live-tv)"
 
-#: e2 kodi:30058 atv:choice.strip_layout.auto
+#: e2 kodi:30058 ha:selector.parent_device.options.auto atv:choice.strip_layout.auto
 msgid "Automatic"
 msgstr "Automatisch"
 
@@ -1644,6 +1644,22 @@ msgstr "De speler is gewijzigd."
 msgid "This address belongs to another player. Add it as a new player instead."
 msgstr "Dit adres hoort bij een andere speler. Voeg hem toe als nieuwe speler."
 
+#: ha:options.step.init.title
+msgid "CamAlert player options"
+msgstr "Opties van de CamAlert-speler"
+
+#: ha:options.step.init.description
+msgid "The player is shown in Home Assistant under the device of the TV or Enigma2 receiver it runs on."
+msgstr "De speler staat in Home Assistant onder het apparaat van de tv of Enigma2-ontvanger waarop hij draait."
+
+#: ha:options.step.init.data.parent_device
+msgid "Show under device"
+msgstr "Tonen onder apparaat"
+
+#: ha:options.step.init.data_description.parent_device
+msgid "Automatic: the device of the Enigma2, Kodi or Android TV integration with the same address as the player. Or choose a device yourself, or none."
+msgstr "Automatisch: het apparaat van de Enigma2-, Kodi- of Android TV-integratie met hetzelfde adres als de speler. Of kies zelf een apparaat, of geen."
+
 #: ha:entity.button.show.name
 msgid "Show {camera}"
 msgstr "{camera} tonen"
@@ -1723,6 +1739,10 @@ msgstr "Beginstand"
 #: ha:selector.move.options.stop
 msgid "Stop"
 msgstr "Stop"
+
+#: ha:selector.parent_device.options.none
+msgid "None"
+msgstr "Geen"
 
 #: ha:services.show.description
 msgid "Shows one or more cameras on the TV of one or more players. Without a target: every player."

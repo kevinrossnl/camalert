@@ -7,9 +7,12 @@ import logging
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PORT
+from homeassistant.core import callback
+from homeassistant.helpers.selector import SelectSelector, SelectSelectorConfig, SelectSelectorMode
 
 from .api import CamAlertCertificateError, CamAlertError, CamAlertForbidden
 from .const import CONF_HTTPS, CONF_TOKEN, CONF_VERIFY_SSL, DEFAULT_PORT, DEFAULT_VERIFY_SSL, DOMAIN
+from .parent import CONF_PARENT, PARENT_AUTO, PARENT_NONE, parent_choices
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -49,6 +52,11 @@ def _clean(user_input: dict) -> dict:
 class CamAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry):
+        return CamAlertOptionsFlow()
+
     async def async_step_user(self, user_input=None):
         errors = {}
         if user_input is not None:
@@ -74,3 +82,21 @@ class CamAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_update_reload_and_abort(entry, data=user_input)
         return self.async_show_form(step_id="reconfigure", data_schema=_schema(user_input or dict(entry.data)),
                                     errors=errors)
+
+
+class CamAlertOptionsFlow(config_entries.OptionsFlow):
+    """Options: the device the player hangs under (#86): automatic (TV/receiver with the same address), none, or a
+    chosen device."""
+
+    async def async_step_init(self, user_input=None):
+        if user_input is not None:
+            return self.async_create_entry(data=dict(self.config_entry.options, **user_input))
+        current = self.config_entry.options.get(CONF_PARENT, PARENT_AUTO)
+        options = [{"value": PARENT_AUTO, "label": PARENT_AUTO}, {"value": PARENT_NONE, "label": PARENT_NONE}]
+        options += parent_choices(self.hass)
+        if current not in [o["value"] for o in options]:  # chosen device removed since
+            current = PARENT_AUTO
+        return self.async_show_form(step_id="init", data_schema=vol.Schema({
+            vol.Required(CONF_PARENT, default=current): SelectSelector(SelectSelectorConfig(
+                options=options, mode=SelectSelectorMode.DROPDOWN, translation_key=CONF_PARENT)),
+        }))

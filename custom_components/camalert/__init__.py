@@ -16,6 +16,7 @@ from .api import CamAlertApi, CamAlertError, CamAlertNotSupported
 from .const import (BUTTONS, CONF_HTTPS, CONF_TOKEN, CONF_VERIFY_SSL, DEFAULT_PORT, DOMAIN, EVENT_BUTTON, MODES,
                     PRIORITIES, PTZ_MOVES, SIGNAL_BUTTON)
 from .coordinator import CamAlertCoordinator
+from .parent import link_parent
 
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS = [Platform.BUTTON, Platform.SENSOR, Platform.SWITCH, Platform.EVENT]
@@ -140,8 +141,15 @@ async def async_setup_entry(hass: HomeAssistant, entry) -> bool:
     if api.integration_too_old():
         _LOGGER.warning("%s needs CamAlert integration %s or newer; please update it", entry.title, api.min_ha_version)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    link_parent(hass, entry)
+    entry.async_on_unload(entry.add_update_listener(_options_changed))
     await _register_webhook(hass, entry, api)
     return True
+
+
+async def _options_changed(hass: HomeAssistant, entry) -> None:
+    """New parent device chosen in the options: link it right away (no reload needed)."""
+    link_parent(hass, entry)
 
 
 def player_device(hass: HomeAssistant, entry):

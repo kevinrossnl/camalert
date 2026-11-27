@@ -104,7 +104,7 @@ msgstr "Pas pendant les films et enregistrements"
 msgid "Not during anything (also live TV)"
 msgstr "Jamais pendant une lecture (TV comprise)"
 
-#: e2 kodi:30058 atv:choice.strip_layout.auto
+#: e2 kodi:30058 ha:selector.parent_device.options.auto atv:choice.strip_layout.auto
 msgid "Automatic"
 msgstr "Automatique"
 
@@ -1644,6 +1644,22 @@ msgstr "Le lecteur a été modifié."
 msgid "This address belongs to another player. Add it as a new player instead."
 msgstr "Cette adresse appartient à un autre lecteur. Ajoutez-le plutôt comme nouveau lecteur."
 
+#: ha:options.step.init.title
+msgid "CamAlert player options"
+msgstr "Options du lecteur CamAlert"
+
+#: ha:options.step.init.description
+msgid "The player is shown in Home Assistant under the device of the TV or Enigma2 receiver it runs on."
+msgstr "Le lecteur est affiché dans Home Assistant sous l'appareil du téléviseur ou du récepteur Enigma2 sur lequel il fonctionne."
+
+#: ha:options.step.init.data.parent_device
+msgid "Show under device"
+msgstr "Afficher sous l'appareil"
+
+#: ha:options.step.init.data_description.parent_device
+msgid "Automatic: the device of the Enigma2, Kodi or Android TV integration with the same address as the player. Or choose a device yourself, or none."
+msgstr "Automatique : l'appareil de l'intégration Enigma2, Kodi ou Android TV ayant la même adresse que le lecteur. Ou choisissez vous-même un appareil, ou aucun."
+
 #: ha:entity.button.show.name
 msgid "Show {camera}"
 msgstr "Afficher {camera}"
@@ -1723,6 +1739,10 @@ msgstr "Position d'origine"
 #: ha:selector.move.options.stop
 msgid "Stop"
 msgstr "Arrêt"
+
+#: ha:selector.parent_device.options.none
+msgid "None"
+msgstr "Aucun"
 
 #: ha:services.show.description
 msgid "Shows one or more cameras on the TV of one or more players. Without a target: every player."

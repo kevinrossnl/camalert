@@ -23,6 +23,9 @@ the user interface, no YAML. It works the same for Enigma2 receivers, Kodi and t
 4. **Settings › Devices & services › Add integration › CamAlert**. Enter the host name or IP address of the player
    (and the port, HTTPS and token if you changed them in CamAlert). Repeat for every player. *Reconfigure* on the
    entry changes the address, port, HTTPS or token later.
+5. The player's device is shown under the device of the TV or Enigma2 receiver it runs on: automatically when the
+   Enigma2, Kodi or Android TV integration has a device with the same address. **Configure** on the entry
+   (*Show under device*) chooses another device, or none.
 
 The device model shows *Enigma2 receiver* or *Kodi*. Certificates are checked by default; turn *Check certificates*
 off only for the player's own self-signed certificate.

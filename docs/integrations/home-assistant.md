@@ -27,7 +27,11 @@ the user interface, no YAML. It works the same for Enigma2 receivers and Kodi: b
 The device model shows *Enigma2 receiver* or *Kodi*. Certificates are checked by default; turn *Check certificates*
 off only for the player's own self-signed certificate.
 
+![Add a CamAlert player: host, port, HTTPS, certificates and token](../images/homeassistant/config-flow.png)
+
 ### What you get per player
+
+![A CamAlert player in Home Assistant: buttons per camera, Mosaic, Hide camera, Do not disturb, Camera on screen and the remote button event](../images/homeassistant/device.png)
 
 - A **button per camera** ("Show Front door"), a **Mosaic** button and **Hide camera** (only what the player supports).
 - A sensor **Camera on screen** (*Nothing* when no camera is shown).
@@ -52,6 +56,8 @@ off only for the player's own self-signed certificate.
 Target (*players*): one or more CamAlert players (devices), their entities or their areas; no target = every
 player. Existing automations with `target: device_id:` keep working.
 
+![The action camalert.show in Developer tools › Actions](../images/homeassistant/action-show.png)
+
 An action that fails (player not reachable, unknown camera, not supported) raises a translated error in the
 automation trace; with several players all are tried first.
 
@@ -62,6 +68,8 @@ What `normal`, `high` and `alarm` do on the player: [features › priorities](..
 ### Ready-made blueprints
 
 Import them via **Settings › Automations & scenes › Blueprints › Import blueprint** and paste the address:
+
+![An automation from the doorbell blueprint: doorbell sensor, players, camera, display mode and duration](../images/homeassistant/blueprint-doorbell.png)
 
 | Blueprint | What it does |
 |---|---|

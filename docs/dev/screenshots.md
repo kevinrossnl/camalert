@@ -20,6 +20,10 @@ Screenshots in the docs show **only CamAlert's own screens**, never a camera pic
 | `images/kodi/settings.png`, `event-list.png`, `diagnostics.png` | Kodi settings, event list (an ignored request) and diagnostics, cropped to the dialog |
 | `images/kodi/menu.png` | Kodi choice list when CamAlert is opened from *Program add-ons* (#106), cropped to the dialog |
 | `images/kodi/camera-list.png` | Kodi video add-on: the camera list with a demo camera selected (#107), full screen |
+| `images/homeassistant/config-flow.png` | Home Assistant: *Add a CamAlert player* dialog (host shown as `192.168.1.10`) |
+| `images/homeassistant/device.png` | Home Assistant: a CamAlert player device with its buttons, switch, sensor and event entity |
+| `images/homeassistant/action-show.png` | Home Assistant: the action `camalert.show` in *Developer tools › Actions* |
+| `images/homeassistant/blueprint-doorbell.png` | Home Assistant: an automation from the doorbell blueprint |
 
 The Enigma2 screenshots were taken on openATV 8.0.1 with its default skin (MetrixHD; last refresh 27-11-2026 on a
 VU+ Solo 4K with CamAlert 1.1.0+). MetrixHD draws its OSD at 1280x720 even with a 2160p video mode (framebuffer
@@ -71,3 +75,23 @@ The Kodi screenshots were taken on Kodi 21 (LibreELEC) with Estuary at 1920x1080
    shell itself and kills the rest of the restore. Use one JSON-RPC connection at a time: many short connections
    in a row crashed Kodi 21 once.
 6. Review, crop, `python3 tools/check_images.py --strip <files>` as for Enigma2.
+
+## How to take them (Home Assistant)
+
+Never in a real Home Assistant: use a throw-away one with only the fake player, so no device, address or name of
+your own appears.
+
+1. **Throw-away Home Assistant**: a venv with `tests/homeassistant/requirements-latest.txt` (Python 3.14, as
+   `tools/ci.sh ha`) plus the `home-assistant-frontend` version from Home Assistant's `frontend` manifest. A config
+   folder with `frontend:`, `config:`, `automation: !include automations.yaml`, `blueprint:`, language `en`,
+   `custom_components/camalert` and the blueprints copied to `blueprints/automation/camalert/`, and a template
+   `binary_sensor` *Front door doorbell* for the blueprint. Start `hass -c <folder>` and finish onboarding through
+   its API (`/api/onboarding/users` with a neutral user, then `core_config`, `analytics`, `integration`).
+2. **Fake player**: run `tests/homeassistant/fake_player.py`'s `FakePlayer` on `127.0.0.1:8099` (name *Living
+   room*, cameras `front_door`, `garden`, `driveway`, `back_door`).
+3. **Screenshots with Playwright** (Chromium, 1280 px wide, `color_scheme='light'`, locale `en-US`): log in, open
+   `/config/integrations/dashboard/add?domain=camalert`, type `192.168.1.10` as host for the picture, then
+   `127.0.0.1` to finish; the device page `/config/devices/device/<id>`; *Developer tools › Actions* with
+   `camalert.show`; an automation created from the doorbell blueprint (REST `config/automation/config/<id>` with
+   `use_blueprint`). `homeassistant.restart` stops a Home Assistant without Supervisor: start it again yourself.
+4. Crop away the sidebar (user name), check the privacy list and run `python3 tools/check_images.py --strip <files>`.

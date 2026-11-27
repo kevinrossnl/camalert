@@ -73,6 +73,28 @@ class WarmTest {
     }
 
     @Test
+    fun compositeStreams() {  // #125: an own mosaic stream in go2rtc
+        val mix = "exec:ffmpeg -hide_banner -rtsp_transport tcp -i rtsp://127.0.0.1:8554/front_door -rtsp_transport tcp " +
+            "-i rtsp://127.0.0.1:8554/garden -i rtsp://127.0.0.1:8554/garage -i rtsp://127.0.0.1:8554/side " +
+            "-filter_complex [0:v]fps=10[v0];[v0][v1]xstack=inputs=4 -c:v libx264 -f rtsp {output}"
+        fun p(url: String) = mapOf("producers" to listOf(mapOf("url" to url)))
+        val cam = p("rtsp://192.168.1.10:7447/abc")
+        val streams = mapOf(
+            "front_door" to cam, "garden" to cam, "garage" to cam, "side" to cam,
+            "all_cameras" to p(mix),
+            "one_input" to p("exec:ffmpeg -i rtsp://127.0.0.1:8554/garden -c:v copy -f rtsp {output}"),
+            "lan_mix" to p("exec:ffmpeg -i rtsp://192.168.1.10/a -i rtsp://192.168.1.11/b -filter_complex hstack {output}"),
+            "half_known" to p("exec:ffmpeg -i rtsp://127.0.0.1:8554/garden -i rtsp://127.0.0.1:8554/gone -filter_complex hstack {output}"),
+        )
+        assertEquals(setOf("all_cameras"), Urls.compositeStreams(streams))
+        val json = Json.write(streams)
+        val (names, comp) = Urls.streamInfoFromJson(json)
+        assertTrue("all_cameras" in names)
+        assertEquals(setOf("all_cameras"), comp)
+        assertFalse("all_cameras" in Urls.overviewCameras(names, comp))
+    }
+
+    @Test
     fun parserInChunksAndWithoutLength() {
         val all = part("one") + part("two", false) + part("three")
         val p = MjpegParser()

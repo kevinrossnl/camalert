@@ -84,6 +84,54 @@ def derived_streams(data):
     return out
 
 
+def _inputs(url):
+    """The -i arguments of an ``exec:ffmpeg ...`` or ``ffmpeg:...`` producer url (#125)."""
+    if not isinstance(url, str) or not (url.startswith("exec:") or url.startswith("ffmpeg:")):
+        return []
+    parts = url.split()
+    return [parts[i + 1].strip("'\"") for i, p in enumerate(parts[:-1]) if p == "-i"]
+
+
+def composite_streams(data):
+    """Names of streams in a go2rtc /api/streams answer that put two or more other streams of the same go2rtc
+    together (an own mosaic: ``exec:ffmpeg -i rtsp://127.0.0.1:8554/<a> -i rtsp://127.0.0.1:8554/<b> ...
+    -filter_complex ...``), #125. They stay cameras (show, default camera), but a mosaic, tour or camera overview
+    without an explicit list leaves them out: a mosaic in a mosaic."""
+    if not isinstance(data, dict):
+        return set()
+    out = set()
+    for name, info in data.items():
+        producers = info.get("producers") if isinstance(info, dict) else None
+        if not isinstance(producers, list) or not producers:
+            continue
+        bases = []
+        for p in producers:
+            inputs = _inputs(p.get("url") if isinstance(p, dict) else None)
+            if not inputs:
+                bases = None
+                break
+            bases.extend(_source_stream(i) for i in inputs)
+        if bases and all(b is not None and b != name and b in data for b in bases) and len(set(bases)) >= 2:
+            out.add(name)
+    return out
+
+
+def stream_info_from_json(text):
+    """(camera names as streams_from_json, set of composite streams among them) from one /api/streams answer."""
+    try:
+        data = json.loads(text)
+    except (ValueError, TypeError):
+        return [], set()
+    names = streams_from_json(text)
+    return names, composite_streams(data) & set(names) if isinstance(data, dict) else set()
+
+
+def overview_cameras(names, composites):
+    """The default list for a mosaic, tour or camera overview: every camera except composite streams (#125)."""
+    skip = set(composites or ())
+    return [n for n in names if n not in skip]
+
+
 def streams_from_json(text, all_streams=False):
     """Camera names from the go2rtc /api/streams answer, sorted; helper streams (#117) are left out unless
     all_streams is set."""

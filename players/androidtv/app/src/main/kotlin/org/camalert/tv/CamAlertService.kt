@@ -89,10 +89,13 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
 
     fun nodeName(s: Map<String, Any?> = settings()) = s["mqtt_name"]?.toString()?.trim()?.ifEmpty { null } ?: "CamAlert ${deviceName(this)}"
 
+    @Volatile var composites: Set<String> = emptySet()  // own mosaic streams of the last camera list (#125)
+
     fun cameraNames(): List<String> {
         val s = settings()
         val server = Urls.normalizeServer(s["server"]?.toString()) ?: return emptyList()
-        val names = Urls.streamsFromJson(String(Net.fetch("$server/api/streams", s["verify_ssl"] != false, 5000), Charsets.UTF_8))
+        val (names, comp) = Urls.streamInfoFromJson(String(Net.fetch("$server/api/streams", s["verify_ssl"] != false, 5000), Charsets.UTF_8))
+        composites = comp
         return Warm.visibleCameras(names, s["ready_cameras"]?.toString())  // #113: helper streams are not cameras
     }
 
@@ -104,6 +107,7 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         override fun settings() = this@CamAlertService.settings()
         override fun setSetting(id: String, value: Any?) = store.set(id, value)
         override fun cameraNames() = this@CamAlertService.cameraNames()
+        override fun compositeStreams() = this@CamAlertService.composites
         override fun screenOn() = (getSystemService(Context.POWER_SERVICE) as PowerManager).isInteractive
         override fun wake() {
             @Suppress("DEPRECATION")

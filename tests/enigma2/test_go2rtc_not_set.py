@@ -48,6 +48,29 @@ class TestGo2rtcNotSet(Base):
         self.assertNotIn("front_door_jpeg", self.d.all_camera_names())
         self.assertEqual(len(self.d.all_camera_names()), len(CAMERAS))
 
+    def test_composite_stream_is_a_camera_but_not_in_the_default_mosaic(self):
+        """#125: an own mosaic stream in go2rtc stays a camera, but a mosaic or tour without a list leaves it out."""
+        from fakes.go2rtc import CAMERAS
+        mix = ("exec:ffmpeg -i rtsp://127.0.0.1:8554/front_door -i rtsp://127.0.0.1:8554/garden "
+               "-i rtsp://127.0.0.1:8554/driveway -filter_complex xstack=inputs=3 -c:v libx264 -f rtsp {output}")
+        fake = FakeGo2rtc(cameras=dict(CAMERAS, all_cameras=(0, 0, 0)), sources={"all_cameras": mix}).start()
+        self.addCleanup(fake.server_close)
+        self.addCleanup(fake.shutdown)
+        self.c.server.value = fake.url
+        self.c.ready_cameras.value = ""
+        self.c.mosaic.value = ""
+        names = self.d.all_camera_names()
+        self.assertIn("all_cameras", names)
+        self.assertEqual(self.d.overview_names(names), [n for n in names if n != "all_cameras"])
+        ctl = self.d.Controller.instance
+        ctl._names = names
+        got = []
+        ctl._streams(None, got.append)
+        self.assertEqual(got, [[n for n in names if n != "all_cameras"]])
+        got = []
+        ctl._streams("all_cameras,garden", got.append)  # an explicit list keeps it
+        self.assertEqual(got, [["all_cameras", "garden"]])
+
     def test_derived_stream_is_hidden_without_own_setting(self):
         """#117: a helper stream another player uses (ffmpeg:<camera>#...) is not a camera here either."""
         from fakes.go2rtc import CAMERAS

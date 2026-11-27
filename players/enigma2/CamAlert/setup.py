@@ -33,8 +33,14 @@ E2 = "/etc/enigma2/"
 
 
 def fetch_streams(srv):
+    return fetch_stream_info(srv)[0]
+
+
+def fetch_stream_info(srv):
+    """(camera names, composite streams among them) from go2rtc's /api/streams (#125)."""
+    from .camalert_core.urls import stream_info_from_json
     with open_url(srv + "/api/streams", timeout=5) as r:
-        return streams_from_json(r.read().decode("utf-8", "replace"))
+        return stream_info_from_json(r.read().decode("utf-8", "replace"))
 
 
 LEVELS = {"basic": 0, "advanced": 1, "expert": 2}  # config.usage.setup_level: simple / intermediate / expert

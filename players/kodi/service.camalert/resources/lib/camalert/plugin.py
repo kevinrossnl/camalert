@@ -35,7 +35,7 @@ def cameras():
     if problem:
         return [], problem.replace("\n", " ")
     try:
-        names = sources.all_camera_names(s)
+        names = sources.overview_names(sources.all_camera_names(s))  # #125: no own mosaic stream in the list
     except Exception as e:
         return [], redact(kodiapi.tr(30181) % e).replace("\n", " ")
     out = []

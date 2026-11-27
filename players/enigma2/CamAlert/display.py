@@ -240,16 +240,27 @@ def chime_wanted(setting, priority):
     return setting == "all" or (setting == "high" and priority in ("high", "alarm"))
 
 
+COMPOSITES = set()  # composite streams (an own mosaic in go2rtc) of the last camera list (#125)
+
+
 def all_camera_names():
     """Camera names in the current mode (go2rtc mode needs a network call; call from a thread)."""
+    global COMPOSITES
     if config.plugins.camalert.source.value == "direct":
         return [cam["name"] for cam in direct_cameras()]
     server = normalize_server(config.plugins.camalert.server.value)
     if not server:  # no (valid) go2rtc address: nothing to ask, no network call (#73)
         return []
-    from .setup import fetch_streams
+    from .setup import fetch_stream_info
     from .camalert_core.warm import visible_cameras
-    return visible_cameras(fetch_streams(server), config.plugins.camalert.ready_cameras.value)  # #113
+    names, COMPOSITES = fetch_stream_info(server)
+    return visible_cameras(names, config.plugins.camalert.ready_cameras.value)  # #113
+
+
+def overview_names(names):
+    """Default cameras of a mosaic or tour: all cameras except composite streams (#125)."""
+    from .camalert_core.urls import overview_cameras
+    return overview_cameras(names, COMPOSITES)
 
 
 try:  # optional: python3-pillow turns/mirrors snapshots of cameras that hang upside down
@@ -1312,12 +1323,12 @@ class Controller(object):
         if streams:
             return then(streams)
         if self._names:
-            return then(self._names[:9])
+            return then(overview_names(self._names)[:9])
 
         def fetched(names):
             self._names = names
             self._names_at = time.time()
-            then(names[:9])
+            then(overview_names(names)[:9])
         threads.deferToThread(all_camera_names).addCallbacks(fetched, lambda e: log("no cameras:", e.getErrorMessage()))
         return "show"
 

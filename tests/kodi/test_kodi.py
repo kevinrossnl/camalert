@@ -1244,6 +1244,25 @@ class _KodiModules(object):
         self.assertNotIn("front_door_jpeg", names)
         self.assertEqual(len(names), len(CAMERAS))
 
+    def test_composite_stream_is_left_out_of_overviews(self):
+        """#125: an own mosaic stream in go2rtc stays a camera, but the default mosaic, tour, screensaver and the
+        camera list of the video add-on leave it out."""
+        from fakes.go2rtc import CAMERAS
+        mix = ("exec:ffmpeg -i rtsp://127.0.0.1:8554/front_door -i rtsp://127.0.0.1:8554/garden "
+               "-i rtsp://127.0.0.1:8554/driveway -filter_complex xstack=inputs=3 -c:v libx264 -f rtsp {output}")
+        fake = FakeGo2rtc(cameras=dict(CAMERAS, all_cameras=(0, 0, 0)), sources={"all_cameras": mix}).start()
+        self.addCleanup(fake.server_close)
+        self.addCleanup(fake.shutdown)
+        sources, kodiapi = Built.module("sources"), Built.module("kodiapi")
+        old = (Built.store.get("server"), Built.store.get("ready_cameras"))
+        self.addCleanup(Built.store.update, {"server": old[0], "ready_cameras": old[1] or ""})
+        Built.store["server"] = fake.url
+        Built.store["ready_cameras"] = ""
+        names = sources.all_camera_names(kodiapi.settings())
+        self.assertIn("all_cameras", names)
+        self.assertEqual(sources.COMPOSITES, {"all_cameras"})
+        self.assertEqual(sources.overview_names(names), [n for n in names if n != "all_cameras"])
+
     def test_derived_stream_is_hidden_without_own_setting(self):
         """#117: a helper stream another player uses (ffmpeg:<camera>#...) is not a camera here either."""
         from fakes.go2rtc import CAMERAS

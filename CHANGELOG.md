@@ -70,6 +70,9 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Fixed
 
+- **All players:** a live mosaic stream of your own in go2rtc (one stream that combines other streams of the same
+  go2rtc) no longer shows up as a tile in the photo mosaic, the tour, the Kodi screensaver and the camera list of the
+  Kodi video add-on: no more mosaic inside the mosaic. It stays a camera you can show or choose (#125).
 - **Kodi:** a CamAlert window (photo window, live view, notification; every priority) first ends a running
   screensaver, CamAlert's own or another one, so it no longer opens hidden behind it (#119).
 - **All players:** a helper stream that only transcodes another camera of the same go2rtc

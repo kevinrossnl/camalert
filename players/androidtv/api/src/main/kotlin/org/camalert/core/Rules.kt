@@ -224,6 +224,46 @@ object Urls {
         return out
     }
 
+    /** The -i arguments of an exec:ffmpeg ... or ffmpeg:... producer url (#125). */
+    private fun inputs(url: String?): List<String> {
+        if (url == null || !(url.startsWith("exec:") || url.startsWith("ffmpeg:"))) return emptyList()
+        val parts = url.split(Regex("\\s+")).filter { it.isNotEmpty() }
+        return parts.indices.filter { it < parts.size - 1 && parts[it] == "-i" }.map { parts[it + 1].trim('\'', '"') }
+    }
+
+    /** Streams that put two or more other streams of the same go2rtc together (an own mosaic, #125): cameras, but
+     *  left out of a mosaic, tour or overview without an explicit list. */
+    fun compositeStreams(data: Map<*, *>): Set<String> {
+        val names = data.keys.map { it.toString() }.toSet()
+        val out = mutableSetOf<String>()
+        for ((k, info) in data) {
+            val name = k.toString()
+            val producers = (info as? Map<*, *>)?.get("producers") as? List<*> ?: continue
+            if (producers.isEmpty()) continue
+            val bases = mutableListOf<String?>()
+            var ok = true
+            for (p in producers) {
+                val ins = inputs((p as? Map<*, *>)?.get("url") as? String)
+                if (ins.isEmpty()) { ok = false; break }
+                ins.mapTo(bases) { sourceStream(it) }
+            }
+            if (ok && bases.isNotEmpty() && bases.all { it != null && it != name && it in names } && bases.toSet().size >= 2) out.add(name)
+        }
+        return out
+    }
+
+    /** (camera names as streamsFromJson, composite streams among them) from one /api/streams answer (#125). */
+    fun streamInfoFromJson(text: String?): Pair<List<String>, Set<String>> {
+        val d = try { Json.parse(text ?: "") } catch (e: Exception) { return Pair(emptyList(), emptySet()) }
+        if (d !is Map<*, *>) return Pair(emptyList(), emptySet())
+        val names = streamsFromJson(text)
+        return Pair(names, compositeStreams(d).intersect(names.toSet()))
+    }
+
+    /** Default cameras of a mosaic, tour or overview: all except composite streams (#125). */
+    fun overviewCameras(names: List<String>, composites: Set<String>?): List<String> =
+        names.filter { composites == null || it !in composites }
+
     fun streamsFromJson(text: String?, allStreams: Boolean = false): List<String> {
         val d = try { Json.parse(text ?: "") } catch (e: Exception) { return emptyList() }
         if (d !is Map<*, *>) return emptyList()

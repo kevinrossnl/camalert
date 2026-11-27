@@ -18,7 +18,7 @@ MAX_CAMS = 9
 
 def cameras(s):
     """[(name, title, snapshot url)] of the mosaic cameras (setting 'mosaic', otherwise all), at most nine."""
-    names = parse_cams(s.get("mosaic", "")) or sources.all_camera_names(s)
+    names = parse_cams(s.get("mosaic", "")) or sources.overview_names(sources.all_camera_names(s))
     out = []
     for name in names:
         u = sources.camera_urls(name, s)

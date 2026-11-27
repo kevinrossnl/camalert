@@ -133,6 +133,8 @@ def pick_mosaic():
     if not names:
         return
     current = [c.strip() for c in raw_setting("mosaic").split(",") if c.strip()]
+    shown = sources.overview_names(names)  # #125: an own mosaic stream only when it is already chosen
+    names = shown + [n for n in names if n in current and n not in shown]
     pre = [i for i, n in enumerate(names) if n in current]
     chosen = xbmcgui.Dialog().multiselect(kodiapi.tr(30297), [sources.title(n) for n in names], preselect=pre)
     if chosen is None:

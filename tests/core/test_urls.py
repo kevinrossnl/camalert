@@ -44,6 +44,34 @@ class TestUrls(unittest.TestCase):
                          ["empty", "front_door", "front_door_jpeg", "garden", "garden_sub", "mixed", "orphan"])
         self.assertEqual(urls.derived_streams({"a": {"producers": "x"}, "b": None}), set())
 
+    def test_composite_streams(self):
+        """#125: a stream that puts other streams of the same go2rtc together (an own mosaic) stays a camera, but is
+        left out of the default mosaic, tour and overview lists."""
+        mix = ("exec:ffmpeg -hide_banner -loglevel error -rtsp_transport tcp -i rtsp://127.0.0.1:8554/front_door "
+               "-rtsp_transport tcp -i rtsp://127.0.0.1:8554/garden -rtsp_transport tcp -i rtsp://127.0.0.1:8554/garage "
+               "-rtsp_transport tcp -i rtsp://127.0.0.1:8554/side -filter_complex [0:v]fps=10,scale=960:540[v0];"
+               "[1:v]fps=10[v1];[v0][v1]xstack=inputs=2 -c:v libx264 -f rtsp {output}")
+        cam = {"producers": [{"url": "rtsp://192.168.1.10:7447/abc"}]}
+        streams = {
+            "front_door": cam, "garden": cam, "garage": cam, "side": cam,
+            "all_cameras": {"producers": [{"url": mix}]},
+            "one_input": {"producers": [{"url": "exec:ffmpeg -i rtsp://127.0.0.1:8554/garden -c:v copy -f rtsp {output}"}]},
+            "lan_mix": {"producers": [{"url": "exec:ffmpeg -i rtsp://192.168.1.10/a -i rtsp://192.168.1.11/b "
+                                              "-filter_complex hstack -f rtsp {output}"}]},
+            "half_known": {"producers": [{"url": "exec:ffmpeg -i rtsp://127.0.0.1:8554/garden "
+                                                 "-i rtsp://127.0.0.1:8554/gone -filter_complex hstack {output}"}]},
+            "two_producers": {"producers": [{"url": "ffmpeg:garden#video=h264"}, {"url": "ffmpeg:side#video=h264"}]},
+        }
+        self.assertEqual(urls.composite_streams(streams), {"all_cameras"})
+        self.assertEqual(urls.composite_streams(None), set())
+        import json
+        names, composites = urls.stream_info_from_json(json.dumps(streams))
+        self.assertIn("all_cameras", names)  # still a camera: show, default camera
+        self.assertEqual(composites, {"all_cameras"})
+        self.assertNotIn("all_cameras", urls.overview_cameras(names, composites))
+        self.assertEqual(urls.overview_cameras(["a", "b"], None), ["a", "b"])
+        self.assertEqual(urls.stream_info_from_json("not json"), ([], set()))
+
     def test_derived_stream_while_running(self):
         """#117 seen on a real go2rtc 1.9.15: while a derived stream runs, its producer url is go2rtc's own RTSP
         server with the original source in the query, not ``ffmpeg:<stream>#...``."""

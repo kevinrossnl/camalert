@@ -23,3 +23,7 @@ Replace the four camera names with your own (the names of your other streams). R
 - The server decodes 4 streams and encodes 1 new one: roughly 1–2 CPU cores on a typical NAS, **only while someone watches** the mosaic.
 - With a graphics card or Intel Quick Sync you can use hardware encoding; see the [go2rtc ffmpeg documentation](https://github.com/AlexxIT/go2rtc#source-ffmpeg).
 - The first picture takes a few seconds (ffmpeg has to connect to all cameras).
+- CamAlert recognises such a combined stream (every input is another stream of the same go2rtc). It stays a camera
+  you can show, choose as default camera or put on a channel, but the photo mosaic, the tour, the screensaver and the
+  camera list of the Kodi video add-on leave it out unless you choose it yourself (**Mosaic cameras**): otherwise you
+  would see a mosaic inside the mosaic.

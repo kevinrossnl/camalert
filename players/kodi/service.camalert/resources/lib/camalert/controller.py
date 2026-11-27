@@ -538,7 +538,7 @@ class Controller(object):
         s = kodiapi.settings()
         if self.screen_off():
             return "ignore"
-        streams = parse_cams(stream) or parse_cams(s["mosaic"]) or self.refresh_names(s)
+        streams = parse_cams(stream) or parse_cams(s["mosaic"]) or sources.overview_names(self.refresh_names(s))
         cams = self._cams_with_snapshots(streams, s)
         if not cams:
             return "error"

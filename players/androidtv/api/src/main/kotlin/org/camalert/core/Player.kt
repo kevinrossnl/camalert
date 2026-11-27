@@ -27,6 +27,8 @@ interface PlayerEnv {
     fun setSetting(id: String, value: Any?)
     /** Camera names of go2rtc (may block; [] when unknown). */
     fun cameraNames(): List<String>
+    /** Composite streams (an own mosaic in go2rtc) of the last camera list (#125). */
+    fun compositeStreams(): Set<String> = emptySet()
     fun screenOn(): Boolean = true
     fun wake() {}
     /** "none" | "video" | "audio": what another app plays (for skip_playing). */
@@ -194,7 +196,7 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
     }
 
     private fun tilesOf(stream: String?, s: Map<String, Any?>): List<Tile> {
-        val streams = Cameras.parseCams(stream).ifEmpty { Cameras.parseCams(s["mosaic"]?.toString()) }.ifEmpty { refreshNames() }
+        val streams = Cameras.parseCams(stream).ifEmpty { Cameras.parseCams(s["mosaic"]?.toString()) }.ifEmpty { Urls.overviewCameras(refreshNames(), env.compositeStreams()) }
         return streams.take(9).mapNotNull { tile(it, s) }.filter { it.snapshot != null }
     }
 

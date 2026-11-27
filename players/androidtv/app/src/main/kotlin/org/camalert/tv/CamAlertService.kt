@@ -25,6 +25,7 @@ import org.camalert.core.Controller
 import org.camalert.core.HttpServer
 import org.camalert.core.MqttClient
 import org.camalert.core.MqttTopics
+import org.camalert.core.Obs
 import org.camalert.core.PlayerController
 import org.camalert.core.PlayerEnv
 import org.camalert.core.Present
@@ -62,6 +63,7 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
     private val api = Api()
     private var server: HttpServer? = null
     private var serverPort = -1
+    private var serverHttps = false
     private var mqtt: MqttClient? = null
     private var mqttKey = ""
     private val main = Handler(Looper.getMainLooper())
@@ -199,15 +201,25 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         val s = settings()
         CamLog.level = s["log_level"]?.toString() ?: "normal"
         val port = Urls.validPort(s["http_port"], 8099)
-        if (server == null || port != serverPort) {
+        CamLog.syslog = Obs.parseHostPort(s["log_syslog"]?.toString())
+        CamLog.hostname = deviceName(this)
+        val wantHttps = s["api_https"] == true
+        if (server == null || port != serverPort || wantHttps != serverHttps) {
             server?.stop()
+            // api_https (#66): self-signed certificate in the Android KeyStore; without one the API stays on HTTP
+            val ssl = if (wantHttps) try { TlsCert.context() } catch (e: Exception) {
+                CamLog.log("could not create certificate: $e", "error")
+                null
+            } else null
             server = try {
-                HttpServer(api, backend, port).also { it.start() }.also { CamLog.log("listening on port $port") }
+                HttpServer(api, backend, port, null, ssl).also { it.start() }
+                    .also { CamLog.log("listening on port $port${if (it.https) " (https)" else ""}") }
             } catch (e: Exception) {
                 CamLog.log("could not start HTTP API on port $port: $e", "error")
                 null
             }
             serverPort = port
+            serverHttps = wantHttps
         }
         val key = listOf("mqtt_enabled", "mqtt_host", "mqtt_port", "mqtt_user", "mqtt_password", "mqtt_discovery", "mqtt_name",
             "frigate_enabled", "frigate_prefix").joinToString("|") { "${s[it]}" }

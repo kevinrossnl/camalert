@@ -10,6 +10,7 @@ import android.util.TypedValue
 import android.widget.ScrollView
 import android.widget.TextView
 import org.camalert.core.Events
+import org.camalert.core.Obs
 import org.camalert.core.Urls
 
 /** Diagnostics (checks go2rtc, every camera's snapshot, API, MQTT, overlay permission) and the event list. */
@@ -52,7 +53,7 @@ class InfoActivity : Activity() {
         val s = svc.settings()
         line(null, "CamAlert ${svc.version}, node ${svc.node}")
         line(Settings.canDrawOverlays(this), "draw over other apps (SYSTEM_ALERT_WINDOW)")
-        line(true, "API on port ${Urls.validPort(s["http_port"], 8099)}, allowed callers: ${s["allow"]}")
+        line(true, "API on port ${Urls.validPort(s["http_port"], 8099)}${if (s["api_https"] == true) " (https)" else ""}, allowed callers: ${s["allow"]}")
         val server = Urls.normalizeServer(s["server"]?.toString())
         if (server == null) {
             line(false, "go2rtc address missing or invalid: ${s["server"]}")
@@ -67,6 +68,7 @@ class InfoActivity : Activity() {
                 }
             }
         }
+        Obs.parseHostPort(s["log_syslog"]?.toString())?.let { line(null, "syslog ${it.first}:${it.second} (UDP)") }
         if (s["mqtt_enabled"] == true) line(svc.mqttConnected(), "MQTT ${s["mqtt_host"]}:${s["mqtt_port"]}")
         else line(null, "MQTT off")
         if (s["unifi_enabled"] == true) {

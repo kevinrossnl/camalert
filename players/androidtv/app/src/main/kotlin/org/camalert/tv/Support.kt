@@ -24,14 +24,21 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
-/** The log: logcat (tag CamAlert) plus the last lines in memory for /camalert/log; everything redacted. */
+/** The log: logcat (tag CamAlert) plus the last lines in memory for /camalert/log, and optionally a remote syslog
+ *  (log_syslog, RFC 5424 over UDP, #66); everything redacted. */
 object CamLog {
     private val lines = ArrayDeque<String>()
     @Volatile var level = "normal"
+    @Volatile var syslog: Pair<String, Int>? = null
+    @Volatile var hostname = "-"
+    // UDP is sent from its own thread: log() is also called on the main thread (no network there on Android)
+    private val sender by lazy { java.util.concurrent.Executors.newSingleThreadExecutor { r -> Thread(r, "camalert-syslog").apply { isDaemon = true } } }
+    private var socket: java.net.DatagramSocket? = null
 
     fun log(message: String, lvl: String = "normal") {
         if (!Obs.logAllowed(level, lvl)) return
         val text = Obs.redact(message)
+        syslog?.let { target -> send(target, Obs.syslogLine(text, lvl, hostname, System.currentTimeMillis() / 1000.0)) }
         val stamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT).format(Date())
         synchronized(lines) {
             lines.addLast("$stamp [$lvl] $text")
@@ -41,6 +48,55 @@ object CamLog {
     }
 
     fun tail(n: Int): List<String> = synchronized(lines) { lines.toList().takeLast(n) }
+
+    private fun send(target: Pair<String, Int>, line: String) {
+        try {
+            sender.execute {
+                try {
+                    val s = socket ?: java.net.DatagramSocket().also { socket = it }
+                    val data = line.toByteArray(Charsets.UTF_8)
+                    s.send(java.net.DatagramPacket(data, data.size, java.net.InetAddress.getByName(target.first), target.second))
+                } catch (e: Exception) {
+                    // like the other players: a syslog that is not reachable never stops CamAlert
+                }
+            }
+        } catch (e: java.util.concurrent.RejectedExecutionException) {
+        }
+    }
+}
+
+/**
+ * api_https (#66): a self-signed certificate (CN=CamAlert, 10 years) of this device in the Android KeyStore; the
+ * private key never leaves the KeyStore. Callers must turn off certificate checking (as on the other players).
+ */
+object TlsCert {
+    private const val ALIAS = "camalert-api"
+
+    fun context(): javax.net.ssl.SSLContext {
+        val ks = java.security.KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
+        if (!ks.containsAlias(ALIAS)) {
+            val start = Date()
+            val end = Date(start.time + 3650L * 24 * 3600 * 1000)
+            val spec = android.security.keystore.KeyGenParameterSpec.Builder(ALIAS,
+                android.security.keystore.KeyProperties.PURPOSE_SIGN or android.security.keystore.KeyProperties.PURPOSE_DECRYPT)
+                .setCertificateSubject(javax.security.auth.x500.X500Principal("CN=CamAlert"))
+                .setCertificateSerialNumber(java.math.BigInteger.valueOf(start.time))
+                .setCertificateNotBefore(start)
+                .setCertificateNotAfter(end)
+                .setKeySize(2048)
+                .setDigests(android.security.keystore.KeyProperties.DIGEST_NONE, android.security.keystore.KeyProperties.DIGEST_SHA256,
+                    android.security.keystore.KeyProperties.DIGEST_SHA384, android.security.keystore.KeyProperties.DIGEST_SHA512)
+                .setSignaturePaddings(android.security.keystore.KeyProperties.SIGNATURE_PADDING_RSA_PKCS1,
+                    android.security.keystore.KeyProperties.SIGNATURE_PADDING_RSA_PSS)
+                .setEncryptionPaddings(android.security.keystore.KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
+                .build()
+            java.security.KeyPairGenerator.getInstance(android.security.keystore.KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore")
+                .apply { initialize(spec) }.generateKeyPair()
+        }
+        val kmf = javax.net.ssl.KeyManagerFactory.getInstance(javax.net.ssl.KeyManagerFactory.getDefaultAlgorithm())
+        kmf.init(ks, null)
+        return javax.net.ssl.SSLContext.getInstance("TLS").apply { init(kmf.keyManagers, null, null) }
+    }
 }
 
 /** The settings (schema ids), stored in the default SharedPreferences; always read through Schema.validate. */

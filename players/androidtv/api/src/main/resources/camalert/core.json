@@ -299,7 +299,6 @@
   "notify"
  ],
  "not_on_androidtv": {
-  "api_https": "no HTTPS for the API yet (#66)",
   "camera_file": "go2rtc only for now (#64)",
   "foscam_enabled": "no Foscam polling yet (#66)",
   "foscam_interval": "no Foscam polling yet (#66)",
@@ -308,7 +307,6 @@
   "foscam_seconds": "no Foscam polling yet (#66)",
   "frigate_url": "no clip playback from the event list yet (#64)",
   "live_return": "live view is an overlay: what was playing keeps playing underneath",
-  "log_syslog": "no remote syslog yet (#66)",
   "pause_tv": "Android cannot pause another app",
   "ptz_key": "no camera control (PTZ) yet (#66)",
   "ptz_password": "no camera control (PTZ) yet (#66)",
@@ -1192,6 +1190,20 @@
   },
   {
    "choices": null,
+   "default": false,
+   "help": "Uses a self-signed certificate; callers must turn off certificate checking.",
+   "id": "api_https",
+   "label": "Use HTTPS for the API",
+   "level": "expert",
+   "max": null,
+   "min": null,
+   "section": "api",
+   "step": null,
+   "type": "bool",
+   "unit": null
+  },
+  {
+   "choices": null,
    "default": 8099,
    "help": "Port of the CamAlert API on this receiver (default 8099).",
    "id": "http_port",
@@ -1252,6 +1264,20 @@
    "section": "log",
    "step": null,
    "type": "choice",
+   "unit": null
+  },
+  {
+   "choices": null,
+   "default": "",
+   "help": "Optional: also send the log via UDP (RFC 5424), e.g. to Loki/Alloy.",
+   "id": "log_syslog",
+   "label": "Remote syslog (host:port)",
+   "level": "expert",
+   "max": null,
+   "min": null,
+   "section": "log",
+   "step": null,
+   "type": "text",
    "unit": null
   }
  ],

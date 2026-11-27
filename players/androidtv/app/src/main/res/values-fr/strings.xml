@@ -157,6 +157,8 @@
     <string name="t_0cddbc3c" formatted="false">Crée dans Home Assistant un appareil avec un bouton par caméra.</string>
     <string name="t_6247924b" formatted="false">Nom dans Home Assistant</string>
     <string name="t_06eda72d" formatted="false">Vide = CamAlert + nom d\'hôte du récepteur.</string>
+    <string name="t_458527ed" formatted="false">Utiliser HTTPS pour l\'API</string>
+    <string name="t_342172ca" formatted="false">Utilise un certificat auto-signé ; les appelants doivent désactiver la vérification.</string>
     <string name="t_2a2f200a" formatted="false">Port HTTP</string>
     <string name="t_7224e686" formatted="false">Port de l\'API CamAlert sur ce récepteur (8099 par défaut).</string>
     <string name="t_1a877d59" formatted="false">Appelants autorisés</string>
@@ -165,6 +167,8 @@
     <string name="t_5183cd47" formatted="false">Si défini, les appelants doivent l\'envoyer dans l\'en-tête X-CamAlert-Token ; \?token=... dans l\'adresse fonctionne encore mais est obsolète.</string>
     <string name="t_c2111af9" formatted="false">Niveau du journal</string>
     <string name="t_480df9d8" formatted="false">camalert.log dans /home/root/logs (ou /tmp). Les mots de passe et jetons ne sont jamais journalisés.</string>
+    <string name="t_f0a89e87" formatted="false">Syslog distant (hôte:port)</string>
+    <string name="t_6b173c7e" formatted="false">Facultatif : envoyer aussi le journal en UDP (RFC 5424), p. ex. vers Loki/Alloy.</string>
     <string name="t_3ba29a85" formatted="false">API</string>
     <string name="t_f49a21fb" formatted="false">Home Assistant</string>
     <string name="t_979516c6" formatted="false">MQTT</string>

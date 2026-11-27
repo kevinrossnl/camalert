@@ -20,9 +20,10 @@ import java.util.concurrent.ArrayBlockingQueue
 /**
  * A small HTTP/1.1 server for the CamAlert API (one request per connection, like Python's http.server): request
  * line, headers and at most [MAX_BODY] bytes of body go to [Api.handle]. Never logs requests (they can contain the
- * token). Plain JVM, so the JVM tests run it on a real socket.
+ * token). Plain JVM, so the JVM tests run it on a real socket. With an SSLContext it serves HTTPS (api_https, #66).
  */
-class HttpServer(private val api: Api, private val backend: Backend, val port: Int, private val bind: InetAddress? = null) {
+class HttpServer(private val api: Api, private val backend: Backend, val port: Int, private val bind: InetAddress? = null,
+                 private val ssl: javax.net.ssl.SSLContext? = null) {
     companion object {
         const val MAX_BODY = 65536
         const val MAX_HEAD = 16384
@@ -32,10 +33,12 @@ class HttpServer(private val api: Api, private val backend: Backend, val port: I
     private var pool: ExecutorService? = null
     private var acceptor: Thread? = null
     val localPort get() = server?.localPort ?: -1
+    val https get() = ssl != null
 
     @Throws(IOException::class)
     fun start() {
-        val ss = ServerSocket()
+        // api_https (#66): the same server on a TLS socket (self-signed certificate of the player)
+        val ss = ssl?.serverSocketFactory?.createServerSocket() ?: ServerSocket()
         ss.reuseAddress = true
         ss.bind(InetSocketAddress(bind, port), 32)
         server = ss

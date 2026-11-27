@@ -15,6 +15,8 @@ actions and blueprint inputs stay backwards compatible.
 - **Android TV / Fire TV:** UniFi Protect events without Home Assistant, like on Enigma2 and Kodi: the same
   settings and rules, the console login in its own private storage (*Triggers › UniFi Protect console*), login
   backoff and diagnostics ([Android TV](docs/players/androidtv.md#settings)).
+- **Android TV / Fire TV:** *Use HTTPS for the API* (self-signed certificate in the Android KeyStore) and
+  *Remote syslog* (RFC 5424 over UDP), like on Enigma2 and Kodi.
 - **Home Assistant blueprints:** *Only when someone is home* (new optional input `presence`) in the doorbell, LG TV
   and motion blueprints: pick persons, device trackers or `zone.home`, empty = always (as before).
 - **Home Assistant blueprints:** the doorbell and LG TV blueprints can also notify a phone (Companion app, new

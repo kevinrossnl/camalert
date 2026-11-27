@@ -30,6 +30,29 @@ object Obs {
         return t
     }
 
+    private val SYSLOG_SEVERITY = mapOf("error" to 3, "normal" to 6, "verbose" to 7)
+    private val SYSLOG_HOST = Regex("[^\\x21-\\x7e]")
+
+    /** RFC 5424 line (local0 by default) for a remote syslog (core obs/log.syslog_line, #66). */
+    fun syslogLine(message: String, level: String, hostname: String?, timestamp: Double, app: String = "camalert", facility: Int = 16): String {
+        val pri = facility * 8 + (SYSLOG_SEVERITY[level] ?: 6)
+        val ms = Math.floor(timestamp * 1000).toLong()
+        val fmt = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.ROOT).apply { timeZone = java.util.TimeZone.getTimeZone("UTC") }
+        val ts = fmt.format(java.util.Date(Math.floor(timestamp).toLong() * 1000)) + ".%03dZ".format(java.util.Locale.ROOT, ms % 1000)
+        val host = SYSLOG_HOST.replace(hostname?.ifEmpty { null } ?: "-", "_").take(255).ifEmpty { "-" }
+        return "<$pri>1 $ts $host $app - - - ${redact(message).replace("\n", " ")}"
+    }
+
+    /** 'host:port' or 'host' -> (host, port) or null (core urls.parse_hostport). */
+    fun parseHostPort(text: String?, defaultPort: Int = 514): Pair<String, Int>? {
+        val t = (text ?: "").trim()
+        if (t.isEmpty()) return null
+        val i = t.lastIndexOf(':')
+        val port = if (i >= 0) t.substring(i + 1) else ""
+        if (i < 0 || port.isEmpty() || !port.all { it in '0'..'9' }) return Pair(t, defaultPort)
+        return Pair(t.substring(0, i), Urls.validPort(port, defaultPort))
+    }
+
     /** One metric: Prometheus type, help text and a number (or {label value: number}). */
     class Metric(val kind: String, val help: String, val value: Any)
 

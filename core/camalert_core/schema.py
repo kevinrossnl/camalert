@@ -128,7 +128,7 @@ SETTINGS = [
     S('mqtt_discovery', 'home_assistant', 'advanced', 'bool', True, platforms=('enigma2', 'kodi', 'androidtv'), label='Home Assistant discovery', help='Creates a device with a button per camera in Home Assistant.', kodi_label=30118),
     S('mqtt_name', 'home_assistant', 'advanced', 'text', '', platforms=('enigma2', 'kodi', 'androidtv'), label='Name in Home Assistant', help="Empty = CamAlert + the receiver's host name.", kodi_label=30120),
     S('ha_webhook', 'home_assistant', 'internal', 'text', '', platforms=('enigma2', 'kodi', 'androidtv'), label='Home Assistant webhook', kodi_label=30253),
-    S('api_https', 'api', 'expert', 'bool', False, platforms=('enigma2', 'kodi'), label='Use HTTPS for the API', help='Uses a self-signed certificate; callers must turn off certificate checking.', kodi_label=30168),
+    S('api_https', 'api', 'expert', 'bool', False, platforms=('enigma2', 'kodi', 'androidtv'), label='Use HTTPS for the API', help='Uses a self-signed certificate; callers must turn off certificate checking.', kodi_label=30168),
     S('http_port', 'api', 'expert', 'int', 8099, min=1024, max=65535, step=1, platforms=('enigma2', 'kodi', 'androidtv'), label='HTTP port', help='Port of the CamAlert API on this receiver (default 8099).', kodi_label=30160),
     S('allow', 'api', 'advanced', 'choice', 'lan', choices=('lan', 'any'), platforms=('enigma2', 'kodi', 'androidtv'), label='Allowed callers', help="'Local network only' is recommended.", kodi_label=30162),
     S('token', 'api', 'advanced', 'text', '', platforms=('enigma2', 'kodi', 'androidtv'), label='Access token (optional)', help='If set, callers must send it in the X-CamAlert-Token header; ?token=... in the address still works but is deprecated.', kodi_label=30166),
@@ -136,7 +136,7 @@ SETTINGS = [
     S('auto_bouquet', 'channels', 'advanced', 'bool', True, platforms=('enigma2',), label='Update camera list automatically', help='Checks every 30 minutes for new or removed cameras and updates the channel list.'),
     S('bouquet_position', 'channels', 'expert', 'choice', 'keep', choices=('keep', 'bottom', 'top'), platforms=('enigma2',), label='Camera list position', help='Where the camera list appears among your channel lists.'),
     S('log_level', 'log', 'advanced', 'choice', 'normal', choices=('off', 'errors', 'normal', 'verbose'), platforms=('enigma2', 'kodi', 'androidtv'), label='Log level', help='camalert.log in /home/root/logs (or /tmp). Passwords and tokens are never logged.', kodi_label=30247),
-    S('log_syslog', 'log', 'expert', 'text', '', platforms=('enigma2', 'kodi'), label='Remote syslog (host:port)', help='Optional: also send the log via UDP (RFC 5424), e.g. to Loki/Alloy.', kodi_label=30251),
+    S('log_syslog', 'log', 'expert', 'text', '', platforms=('enigma2', 'kodi', 'androidtv'), label='Remote syslog (host:port)', help='Optional: also send the log via UDP (RFC 5424), e.g. to Loki/Alloy.', kodi_label=30251),
     S('event_folder', 'log', 'expert', 'text', '/tmp/camalert_events', platforms=('enigma2',), label='Event snapshots folder', help='Small photos of the last 20 events (default /tmp/camalert_events).'),
     S('update_check', 'log', 'advanced', 'bool', True, platforms=('enigma2',), label='Check for updates', help='Looks once a day on GitHub for a new version and shows a message.'),
     S('update_checked', 'log', 'internal', 'text', '0', platforms=('enigma2',), label=None),
@@ -161,8 +161,6 @@ MISSING = {
         "ptz_key": "no camera control (PTZ) yet (#66)",
         "ptz_user": "no camera control (PTZ) yet (#66)",
         "ptz_password": "no camera control (PTZ) yet (#66)",
-        "api_https": "no HTTPS for the API yet (#66)",
-        "log_syslog": "no remote syslog yet (#66)",
     },
 }
 DEFAULT_REASONS = {

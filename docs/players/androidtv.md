@@ -46,8 +46,13 @@ Open **CamAlert** from the apps row (or *Settings › Apps › CamAlert › Open
 defaults and levels as on the other players ([all settings](../user/settings.md)); expert settings are hidden
 until you turn on *Show expert settings*. The *Players* column of the settings list says which ones Android TV has;
 *Volume during live view* starts at 0 here (the app underneath keeps its own sound). Not yet on Android TV: direct
-mode with a camera file, Foscam alarms, camera control (PTZ), HTTPS for the API, remote syslog (#66); pausing what
-is playing is not possible on Android.
+mode with a camera file, Foscam alarms and camera control (PTZ) (#66); pausing what is playing is not possible on
+Android.
+
+**HTTPS and remote syslog** (#66, expert settings): *Use HTTPS for the API* serves the API with a self-signed
+certificate (`CN=CamAlert`) that the app creates once in the Android KeyStore; in Home Assistant turn on *Use HTTPS*
+and turn off *Check certificates* for this player. *Remote syslog (host:port)* also sends every log line (redacted)
+as RFC 5424 over UDP, e.g. to Loki/Alloy or rsyslog; default port 514.
 
 **UniFi Protect** (#72): *Triggers* has the same UniFi Protect settings as the other players (event types, camera
 names, priority, display mode incl. *Log only*, rules per event type and per camera). The console itself goes in

@@ -157,6 +157,8 @@
     <string name="t_0cddbc3c" formatted="false">Tworzy w Home Assistant urządzenie z przyciskiem dla każdej kamery.</string>
     <string name="t_6247924b" formatted="false">Nazwa w Home Assistant</string>
     <string name="t_06eda72d" formatted="false">Puste = CamAlert + nazwa hosta odbiornika.</string>
+    <string name="t_458527ed" formatted="false">Używaj HTTPS dla API</string>
+    <string name="t_342172ca" formatted="false">Używa certyfikatu z własnym podpisem; wywołujący muszą wyłączyć sprawdzanie certyfikatu.</string>
     <string name="t_2a2f200a" formatted="false">Port HTTP</string>
     <string name="t_7224e686" formatted="false">Port API CamAlert na tym odbiorniku (domyślnie 8099).</string>
     <string name="t_1a877d59" formatted="false">Dozwoleni wywołujący</string>
@@ -165,6 +167,8 @@
     <string name="t_5183cd47" formatted="false">Jeśli ustawiony, wywołujący muszą wysyłać go w nagłówku X-CamAlert-Token; \?token=... w adresie nadal działa, ale jest przestarzałe.</string>
     <string name="t_c2111af9" formatted="false">Poziom logowania</string>
     <string name="t_480df9d8" formatted="false">camalert.log w /home/root/logs (lub /tmp). Hasła i tokeny nigdy nie są logowane.</string>
+    <string name="t_f0a89e87" formatted="false">Zdalny syslog (host:port)</string>
+    <string name="t_6b173c7e" formatted="false">Opcjonalnie: wysyłaj log także przez UDP (RFC 5424), np. do Loki/Alloy.</string>
     <string name="t_3ba29a85" formatted="false">API</string>
     <string name="t_f49a21fb" formatted="false">Home Assistant</string>
     <string name="t_979516c6" formatted="false">MQTT</string>

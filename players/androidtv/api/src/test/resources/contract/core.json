@@ -20024,6 +20024,79 @@
    }
   }
  ],
+ "parse_hostport": [
+  {
+   "in": "192.168.1.10:514",
+   "out": [
+    "192.168.1.10",
+    514
+   ]
+  },
+  {
+   "in": "loki.local",
+   "out": [
+    "loki.local",
+    514
+   ]
+  },
+  {
+   "in": " 10.0.0.1:1514 ",
+   "out": [
+    "10.0.0.1",
+    1514
+   ]
+  },
+  {
+   "in": "",
+   "out": null
+  },
+  {
+   "in": null,
+   "out": null
+  },
+  {
+   "in": "host:",
+   "out": [
+    "host:",
+    514
+   ]
+  },
+  {
+   "in": "host:99999",
+   "out": [
+    "host",
+    514
+   ]
+  },
+  {
+   "in": "host:abc",
+   "out": [
+    "host:abc",
+    514
+   ]
+  },
+  {
+   "in": "[::1]:514",
+   "out": [
+    "[::1]",
+    514
+   ]
+  },
+  {
+   "in": "::1",
+   "out": [
+    ":",
+    1
+   ]
+  },
+  {
+   "in": ":514",
+   "out": [
+    "",
+    514
+   ]
+  }
+ ],
  "redact": [
   {
    "in": "rtsp://admin:pw1@192.168.1.20:554/x",
@@ -20079,6 +20152,7 @@
    "clean": {
     "alarm_wake": false,
     "allow": "lan",
+    "api_https": false,
     "camera": "",
     "chime": "high",
     "cooldown": "",
@@ -20101,6 +20175,7 @@
     "live_format": "mp4",
     "live_volume": 0,
     "log_level": "normal",
+    "log_syslog": "",
     "mode": "photo",
     "mosaic": "",
     "mqtt_discovery": true,
@@ -20158,6 +20233,7 @@
    "clean": {
     "alarm_wake": false,
     "allow": "lan",
+    "api_https": false,
     "camera": "",
     "chime": "off",
     "cooldown": "",
@@ -20180,6 +20256,7 @@
     "live_format": "mp4",
     "live_volume": 55,
     "log_level": "normal",
+    "log_syslog": "",
     "mode": "photo",
     "mosaic": "",
     "mqtt_discovery": true,
@@ -20231,6 +20308,7 @@
    "clean": {
     "alarm_wake": false,
     "allow": "any",
+    "api_https": false,
     "camera": "",
     "chime": "off",
     "cooldown": "",
@@ -20253,6 +20331,7 @@
     "live_format": "mp4",
     "live_volume": 0,
     "log_level": "normal",
+    "log_syslog": "",
     "mode": "photo",
     "mosaic": "",
     "mqtt_discovery": true,
@@ -20295,6 +20374,53 @@
     "duration": "20.0",
     "frigate_seconds": " 60 "
    }
+  }
+ ],
+ "syslog_line": [
+  {
+   "args": [
+    "CamAlert started",
+    "normal",
+    "living-room",
+    1795000000.5
+   ],
+   "out": "<134>1 2026-11-18T11:06:40.500Z living-room camalert - - - CamAlert started"
+  },
+  {
+   "args": [
+    "show failed\nsecond line password=hunter2",
+    "error",
+    "tv box",
+    0.0
+   ],
+   "out": "<131>1 1970-01-01T00:00:00.000Z tv_box camalert - - - show failed second line password=***"
+  },
+  {
+   "args": [
+    "x",
+    "verbose",
+    "",
+    1795000000.999
+   ],
+   "out": "<135>1 2026-11-18T11:06:40.999Z - camalert - - - x"
+  },
+  {
+   "args": [
+    "y",
+    "other",
+    null,
+    1795000000.0004
+   ],
+   "out": "<134>1 2026-11-18T11:06:40.000Z - camalert - - - y"
+  },
+  {
+   "args": [
+    "z",
+    "normal",
+    "höstxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    86399.9996
+   ],
+   "out": "<134>1 1970-01-01T23:59:59.999Z h_stxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx camalert - - - z"
   }
  ],
  "unifi": {

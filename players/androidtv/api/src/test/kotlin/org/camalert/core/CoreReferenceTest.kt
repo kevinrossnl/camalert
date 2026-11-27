@@ -47,6 +47,17 @@ class CoreReferenceTest {
     }
 
     @Test
+    fun syslogLinesAndTargets() {
+        for (c in cases("syslog_line")) {
+            val a = c["args"] as List<Any?>
+            assertEquals(c["out"], Obs.syslogLine(a[0] as String, a[1] as String, a[2] as String?, (a[3] as Number).toDouble()))
+        }
+        for (c in cases("parse_hostport")) {
+            assertEquals("parse_hostport(${c["in"]})", Json.write(c["out"]), Json.write(Obs.parseHostPort(c["in"] as String?)?.toList()))
+        }
+    }
+
+    @Test
     fun keyHintsComeFromTheCoreKeyMap() {
         val p = Present()
         for (c in cases("key_hints")) {

@@ -157,6 +157,8 @@
     <string name="t_0cddbc3c" formatted="false">Maakt in Home Assistant een apparaat met een knop per camera.</string>
     <string name="t_6247924b" formatted="false">Naam in Home Assistant</string>
     <string name="t_06eda72d" formatted="false">Leeg = CamAlert + de hostnaam van de ontvanger.</string>
+    <string name="t_458527ed" formatted="false">HTTPS gebruiken voor de API</string>
+    <string name="t_342172ca" formatted="false">Gebruikt een zelfondertekend certificaat; aanroepers moeten certificaatcontrole uitzetten.</string>
     <string name="t_2a2f200a" formatted="false">HTTP-poort</string>
     <string name="t_7224e686" formatted="false">Poort van de CamAlert-API op deze ontvanger (standaard 8099).</string>
     <string name="t_1a877d59" formatted="false">Toegestane aanroepers</string>
@@ -165,6 +167,8 @@
     <string name="t_5183cd47" formatted="false">Indien ingevuld moeten aanroepers het meesturen in de header X-CamAlert-Token; \?token=... in het adres werkt nog, maar is verouderd.</string>
     <string name="t_c2111af9" formatted="false">Logniveau</string>
     <string name="t_480df9d8" formatted="false">camalert.log in /home/root/logs (of /tmp). Wachtwoorden en tokens worden nooit gelogd.</string>
+    <string name="t_f0a89e87" formatted="false">Syslog op afstand (host:poort)</string>
+    <string name="t_6b173c7e" formatted="false">Optioneel: stuur de log ook via UDP (RFC 5424), bijv. naar Loki/Alloy.</string>
     <string name="t_3ba29a85" formatted="false">API</string>
     <string name="t_f49a21fb" formatted="false">Home Assistant</string>
     <string name="t_979516c6" formatted="false">MQTT</string>

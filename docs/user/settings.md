@@ -112,7 +112,7 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 
 | Setting | Default | Values | Level | Players | What it does |
 |---|---|---|---|---|---|
-| Use HTTPS for the API | No |  | expert | Enigma2, Kodi | Uses a self-signed certificate; callers must turn off certificate checking. |
+| Use HTTPS for the API | No |  | expert | all | Uses a self-signed certificate; callers must turn off certificate checking. |
 | HTTP port | `8099` | 1024–65535 | expert | all | Port of the CamAlert API on this receiver (default 8099). |
 | Allowed callers | `lan` | `lan` / `any` | advanced | all | 'Local network only' is recommended. |
 | Access token (optional) | – |  | advanced | all | If set, callers must send it in the X-CamAlert-Token header; ?token=... in the address still works but is deprecated. |
@@ -130,7 +130,7 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Setting | Default | Values | Level | Players | What it does |
 |---|---|---|---|---|---|
 | Log level | `normal` | `off` / `errors` / `normal` / `verbose` | advanced | all | camalert.log in /home/root/logs (or /tmp). Passwords and tokens are never logged. |
-| Remote syslog (host:port) | – |  | expert | Enigma2, Kodi | Optional: also send the log via UDP (RFC 5424), e.g. to Loki/Alloy. |
+| Remote syslog (host:port) | – |  | expert | all | Optional: also send the log via UDP (RFC 5424), e.g. to Loki/Alloy. |
 | Event snapshots folder | `/tmp/camalert_events` |  | expert | Enigma2 | Small photos of the last 20 events (default /tmp/camalert_events). |
 | Check for updates | Yes |  | advanced | Enigma2 | Looks once a day on GitHub for a new version and shows a message. |
 <!-- END generated: settings -->

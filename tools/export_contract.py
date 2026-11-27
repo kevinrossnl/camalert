@@ -224,6 +224,14 @@ def core_reference():
                           for ua in ("HomeAssistant/2026.11 aiohttp/3.10", "curl/8", "", "Python/3 aiohttp",
                                      "Home Assistant")],
         "unifi": unifi_reference(),
+        "syslog_line": [{"args": [m, lvl, h, t], "out": obslog.syslog_line(m, lvl, h, t)} for m, lvl, h, t in
+                        (("CamAlert started", "normal", "living-room", 1795000000.5),
+                         ("show failed\nsecond line password=hunter2", "error", "tv box", 0.0),
+                         ("x", "verbose", "", 1795000000.999), ("y", "other", None, 1795000000.0004),
+                         ("z", "normal", "h\u00f6st" + "x" * 300, 86399.9996))],
+        "parse_hostport": [{"in": t, "out": (lambda r: list(r) if r else None)(__import__("camalert_core.urls", fromlist=["x"]).parse_hostport(t))}
+                           for t in ("192.168.1.10:514", "loki.local", " 10.0.0.1:1514 ", "", None, "host:", "host:99999",
+                                     "host:abc", "[::1]:514", "::1", ":514")],
     }
 
 

@@ -16,7 +16,7 @@ from .camalert_core.keymap import button_event
 from .camalert_core.mqtt.codec import (mqtt_connect, MQTT_DISCONNECT, mqtt_parse_publish, MQTT_PING, mqtt_publish,
                                        mqtt_split, mqtt_subscribe)
 from .camalert_core.mqtt.topics import discovery, discovery_filter, DiscoveryCleaner, mqtt_command
-from .camalert_core.rules import clamp_seconds
+from .camalert_core.rules import has_seconds, show_seconds
 from .camalert_core.triggers import dispatch, enabled_sources, mqtt_topics
 from .camalert_core.urls import valid_port
 from .server import node_id, node_name
@@ -179,7 +179,7 @@ class Client(threading.Thread):
                 self.ctl.mosaic(payload.decode("utf-8", "replace").strip() or None, 60)
             elif action == "show":
                 cmd = mqtt_command(payload)
-                sec = clamp_seconds(cmd.get("sec")) if cmd.get("sec") else None
+                sec = show_seconds(cmd.get("sec")) if has_seconds(cmd.get("sec")) else None  # 0: until hide (#81)
                 self.ctl.show(cmd.get("cam"), sec, cmd.get("mode"), cmd.get("priority"), "mqtt", cmd.get("label"))
             elif action == "dnd/set":
                 self.ctl.set_dnd(payload.decode("utf-8", "replace").strip().upper() in ("ON", "1", "TRUE"))

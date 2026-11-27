@@ -407,8 +407,8 @@ class MqttClient(
                 "mosaic" -> ctl.mosaic(String(payload, Charsets.UTF_8).trim().ifEmpty { null }, 60)
                 "show" -> {
                     val c = MqttTopics.command(payload)
-                    val raw = c["sec"]?.takeIf { it != false && it.toString().isNotEmpty() && !(it is Number && it.toDouble() == 0.0) }
-                    val sec = raw?.let { Rules.clampSeconds(if (it is Double) it.toInt() else it) }
+                    val raw = c["sec"]?.takeIf { Rules.hasSeconds(it) }  // 0: until hide (#81)
+                    val sec = raw?.let { Rules.showSeconds(if (it is Double) it.toInt() else it) }
                     ctl.show(c["cam"]?.toString(), sec, c["mode"]?.toString(), c["priority"]?.toString(), "mqtt", c["label"]?.toString())
                 }
                 "dnd/set" -> ctl.setDnd(String(payload, Charsets.UTF_8).trim().uppercase() in listOf("ON", "1", "TRUE"))

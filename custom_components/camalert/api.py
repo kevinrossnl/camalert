@@ -45,7 +45,7 @@ def version_tuple(v) -> tuple:
 def plan_request(action: str, params: dict | None, capabilities) -> tuple[str, dict, dict | None]:
     """(method, query params, JSON body or None) for an action on a player with these capabilities
     (None = unknown/older player: GET with query parameters)."""
-    params = {k: v for k, v in (params or {}).items() if v not in (None, "")}
+    params = {k: v for k, v in (params or {}).items() if v is not None and v != ""}  # sec=0 stays (#81)
     is_action = action in ACTIONS or (action == "dnd" and "on" in params) or \
         (action == "settings" and bool(params))
     if capabilities is not None and "post" in capabilities and is_action:
@@ -149,6 +149,8 @@ class CamAlertApi:
     async def show(self, cam: str | list | None = None, seconds: int | None = None, mode: str | None = None,
                    priority: str | None = None, label: str | None = None) -> dict:
         cam, mode = show_params(cam, mode)
+        if seconds == 0 and self.capabilities is not None and "hold" not in self.capabilities:
+            seconds = 300  # #81: a player without "until hide" gets the longest fixed duration instead
         return await self._get("show", {"cam": cam, "sec": seconds, "mode": mode, "priority": priority, "label": label})
 
     async def dnd(self, on: bool | None = None) -> dict:

@@ -31,13 +31,13 @@ from .cameras import parse_cams
 from .devices.config import PTZ_ACTIONS
 from .events import TEST_SOURCE, caller_source
 from .obs.log import redact
-from .rules import MODES, PRIORITIES, clamp_seconds
+from .rules import MODES, PRIORITIES, clamp_seconds, has_seconds, show_seconds
 from .schema import BY_ID as _SCHEMA
 from .urls import go2rtc_state, normalize_server
 
 API_VERSION = 1
 MIN_HA_VERSION = "1.0.0"  # oldest Home Assistant integration that understands this API version
-CAPABILITIES = ("cameras", "dnd", "events", "header_token", "hide", "log", "metrics", "mosaic", "post", "ptz",
+CAPABILITIES = ("cameras", "dnd", "events", "header_token", "hide", "hold", "log", "metrics", "mosaic", "post", "ptz",
                 "screen", "settings", "setup", "show", "status", "strip", "test", "tour", "webhook")
 # Settings a caller may change through /camalert/settings (#84), with their choices from the settings schema.
 DISPLAY_SETTINGS = {k: tuple(_SCHEMA[k].choices) for k in ("position", "size")}
@@ -194,7 +194,7 @@ def _show(b, ctl, a, s, source):
     cam = cameras_param(a.get("cam"))
     mode = choice_param(a, "mode", MODES + ("strip",))
     priority = choice_param(a, "priority", PRIORITIES)
-    sec = clamp_seconds(a.get("sec"), s["duration"]) if a.get("sec") else None
+    sec = show_seconds(a.get("sec"), s["duration"]) if has_seconds(a.get("sec")) else None  # 0: until hide (#81)
     label = a.get("label")
     res = ctl.show(cam, sec, mode, priority, source, label)
     return {"result": res in ("show", "extend", "wake"), "action": res, "cam": cam or s["camera"]}

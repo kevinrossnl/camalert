@@ -676,6 +676,89 @@
   },
   {
    "args": {
+    "cam": "garden",
+    "sec": "0"
+   },
+   "body": null,
+   "calls": [
+    [
+     "show",
+     "garden",
+     600,
+     null,
+     null,
+     "api",
+     null
+    ]
+   ],
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": null,
+   "method": "POST",
+   "name": "show_until_hide",
+   "path": "/camalert/show",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {},
+   "body": "{\"cam\": \"garden\", \"sec\": 0}",
+   "calls": [
+    [
+     "show",
+     "garden",
+     600,
+     null,
+     null,
+     "api",
+     null
+    ]
+   ],
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": null,
+   "method": "POST",
+   "name": "show_until_hide_json",
+   "path": "/camalert/show",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
     "cam": "garden, front_door",
     "mode": "strip"
    },

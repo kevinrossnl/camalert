@@ -210,6 +210,9 @@ def core_reference():
         "clamp_seconds": [{"value": v, "default": d, "out": rules.clamp_seconds(v, d)} for v, d in
                           (("20", 30), ("999", 30), ("1", 30), ("abc", 30), (" 15 ", 30), ("20.5", 7), ("", 30),
                            ("-5", 30))],
+        "show_seconds": [{"value": v, "default": d, "out": rules.show_seconds(v, d), "has": rules.has_seconds(v)}
+                         for v, d in (("0", 30), (" 0 ", 30), (0, 30), ("20", 30), ("999", 30), ("abc", 30), ("", 30),
+                                      (" ", 30), (None, 30), (False, 30), ("-5", 30))],
         "cameras_param": [{"value": v, "out": _cameras_param(v)} for v in
                           ("garden", "garden, front_door", "a,,b", " ", "../etc/passwd", "a b", "x/y", "a.b-c_d")],
         "parse_body": [{"content_type": ct, "body": b, "out": _parse_body(ct, b)} for ct, b in

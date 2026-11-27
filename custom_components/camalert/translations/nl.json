@@ -234,7 +234,7 @@
         },
         "seconds": {
           "name": "Duur",
-          "description": "Hoe lang de camera in beeld blijft. Leeg = instelling van de speler."
+          "description": "Hoe lang de camera in beeld blijft. Leeg = instelling van de speler, 0 = tot Camera verbergen (hooguit 10 minuten)."
         },
         "mode": {
           "name": "Weergavemodus",

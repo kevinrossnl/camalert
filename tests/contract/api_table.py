@@ -82,6 +82,10 @@ TABLE = [
         calls=[("show", "garden", None, None, None, "ha", "Person")]),
     row("show_seconds_clamped", "/camalert/show", {"cam": "garden", "sec": "999"},
         calls=[("show", "garden", 300, None, None, "api", None)]),
+    row("show_until_hide", "/camalert/show", {"cam": "garden", "sec": "0"},  # #81: until hide, at most HOLD_SECONDS
+        calls=[("show", "garden", 600, None, None, "api", None)]),
+    row("show_until_hide_json", "/camalert/show", body=b'{"cam": "garden", "sec": 0}',
+        calls=[("show", "garden", 600, None, None, "api", None)]),
     row("show_several_cameras", "/camalert/show", {"cam": "garden, front_door", "mode": "strip"},
         calls=[("show", "garden,front_door", None, "strip", None, "api", None)]),
     row("show_alias", "/camalert/camalert", json={"result": True, "action": "show"}),

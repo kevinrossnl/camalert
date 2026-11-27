@@ -234,7 +234,7 @@
         },
         "seconds": {
           "name": "Dauer",
-          "description": "Wie lange die Kamera im Bild bleibt. Leer = Einstellung des Wiedergabegeräts."
+          "description": "Wie lange die Kamera im Bild bleibt. Leer = Einstellung des Wiedergabegeräts, 0 = bis Kamera ausblenden (höchstens 10 Minuten)."
         },
         "mode": {
           "name": "Anzeigemodus",

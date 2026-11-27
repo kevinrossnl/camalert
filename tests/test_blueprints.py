@@ -20,7 +20,7 @@ FROZEN = {
     "camalert_motion.yaml": [("motion", None), ("players", None), ("cameras", ""), ("mode", "photo"),
                              ("several", "strip"), ("seconds", 30), ("label", ""), ("when", "armed"),
                              ("alarm_panel", ""), ("from_time", "22:00:00"), ("until_time", "07:00:00"),
-                             ("presence", [])],
+                             ("presence", []), ("until_motion_ends", False)],
     "camalert_alarm.yaml": [("alarm_panel", None), ("players", None), ("camera", None), ("mode", "live"),
                             ("seconds", 300), ("label", "Alarm")],
     "camalert_button.yaml": [("button", "green"), ("players", None), ("camera", ""), ("action", None)],

@@ -33,6 +33,24 @@ async def test_show_sends_exactly_this(hass, player):
     assert player.ctl.calls[-1] == ("show", "garden,front_door", 20, "strip", "high", "ha", "Person")
 
 
+async def test_show_until_hide(hass, player):
+    """#81: seconds 0 = until hide; the player keeps it at most 600 s. A player without the capability "hold"
+    gets the longest fixed duration instead (it would read 0 as the shortest)."""
+    await setup_player(hass, player)
+    await call(hass, "show", {"camera": "garden", "seconds": 0})
+    assert last(player, "/camalert/show")[1]["sec"] == 0
+    assert player.ctl.calls[-1][:3] == ("show", "garden", 600)
+    with pytest.raises(vol.Invalid):
+        await call(hass, "show", {"camera": "garden", "seconds": 3})
+
+
+async def test_show_until_hide_on_an_older_player(hass, player):
+    player.capabilities = ["cameras", "header_token", "hide", "post", "show", "status"]
+    await setup_player(hass, player)
+    await call(hass, "show", {"camera": "garden", "seconds": 0})
+    assert last(player, "/camalert/show")[1]["sec"] == 300
+
+
 async def test_mosaic_hide_ptz(hass, player):
     await setup_player(hass, player)
     await call(hass, "mosaic", {"cameras": "front_door, garden", "seconds": 60})

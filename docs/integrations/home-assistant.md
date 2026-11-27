@@ -81,7 +81,7 @@ the Android TV app uses Android's network service discovery.
 
 | Action | Fields |
 |---|---|
-| `camalert.show` | players (target), cameras (one or more: 2–4 are shown together in one multi-camera window), seconds, mode (photo / live / notify / strip), priority (normal / high / alarm), label (who/what, e.g. Person) |
+| `camalert.show` | players (target), cameras (one or more: 2–4 are shown together in one multi-camera window), seconds (0 = until `camalert.hide`, at most 10 minutes; older players get 300 s), mode (photo / live / notify / strip), priority (normal / high / alarm), label (who/what, e.g. Person) |
 | `camalert.ptz` | players, camera, move (up / down / left / right / zoom_in / zoom_out / home / stop) |
 | `camalert.mosaic` | players, cameras (list), seconds |
 | `camalert.hide` | players |

@@ -234,7 +234,7 @@
         },
         "seconds": {
           "name": "Durata",
-          "description": "Per quanto tempo la telecamera resta sullo schermo. Vuoto = impostazione del lettore."
+          "description": "Per quanto tempo la telecamera resta sullo schermo. Vuoto = impostazione del lettore, 0 = fino a Nascondi telecamera (al massimo 10 minuti)."
         },
         "mode": {
           "name": "Modalità di visualizzazione",

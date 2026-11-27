@@ -6,6 +6,9 @@
 
 MODES = ("photo", "live", "notify")
 MIN_SECONDS, MAX_SECONDS = 5, 300
+# sec=0 on show (#81): the window stays until hide or a new show, e.g. as long as there is motion; at most this long,
+# so a missed hide never leaves it on screen for good.
+HOLD_SECONDS = 600
 
 
 def clamp_seconds(value, default=30):
@@ -14,6 +17,21 @@ def clamp_seconds(value, default=30):
     except (TypeError, ValueError, OverflowError):  # OverflowError: float('inf') (#34)
         return default
     return max(MIN_SECONDS, min(MAX_SECONDS, s))
+
+
+def show_seconds(value, default=30):
+    """Duration of a show request: 0 = until hide (#81), at most HOLD_SECONDS; otherwise clamp_seconds."""
+    try:
+        if int(value) == 0:
+            return HOLD_SECONDS
+    except (TypeError, ValueError):
+        pass
+    return clamp_seconds(value, default)
+
+
+def has_seconds(value):
+    """True when a request gives a duration (0 counts: until hide, #81); False for missing, empty or false."""
+    return value is not None and value is not False and str(value).strip() != ""
 
 
 def pick_mode(value, default="photo"):

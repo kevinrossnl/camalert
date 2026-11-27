@@ -21318,6 +21318,74 @@
    }
   }
  ],
+ "show_seconds": [
+  {
+   "default": 30,
+   "has": true,
+   "out": 600,
+   "value": "0"
+  },
+  {
+   "default": 30,
+   "has": true,
+   "out": 600,
+   "value": " 0 "
+  },
+  {
+   "default": 30,
+   "has": true,
+   "out": 600,
+   "value": 0
+  },
+  {
+   "default": 30,
+   "has": true,
+   "out": 20,
+   "value": "20"
+  },
+  {
+   "default": 30,
+   "has": true,
+   "out": 300,
+   "value": "999"
+  },
+  {
+   "default": 30,
+   "has": true,
+   "out": 30,
+   "value": "abc"
+  },
+  {
+   "default": 30,
+   "has": false,
+   "out": 30,
+   "value": ""
+  },
+  {
+   "default": 30,
+   "has": false,
+   "out": 30,
+   "value": " "
+  },
+  {
+   "default": 30,
+   "has": false,
+   "out": 30,
+   "value": null
+  },
+  {
+   "default": 30,
+   "has": false,
+   "out": 600,
+   "value": false
+  },
+  {
+   "default": 30,
+   "has": true,
+   "out": 5,
+   "value": "-5"
+  }
+ ],
  "syslog_line": [
   {
    "args": [

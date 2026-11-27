@@ -234,7 +234,7 @@
         },
         "seconds": {
           "name": "Durée",
-          "description": "Durée d'affichage de la caméra. Vide = réglage du lecteur."
+          "description": "Durée d'affichage de la caméra. Vide = réglage du lecteur, 0 = jusqu'à Masquer la caméra (10 minutes au plus)."
         },
         "mode": {
           "name": "Mode d'affichage",

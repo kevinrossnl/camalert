@@ -42,6 +42,20 @@
   },
   {
    "call": [
+    "show",
+    "garden",
+    600,
+    null,
+    null,
+    "mqtt",
+    null
+   ],
+   "name": "show_until_hide",
+   "payload": "{\"cam\": \"garden\", \"sec\": 0}",
+   "topic": "camalert/{node}/show"
+  },
+  {
+   "call": [
     "mosaic",
     "a,b",
     60

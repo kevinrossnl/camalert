@@ -96,6 +96,14 @@ blueprint:
           multiple: true
           filter:
             - domain: [person, device_tracker, group, zone]
+    until_motion_ends:
+      name: Until the motion ends
+      description: >-
+        Keep the camera on the TV as long as one of the motion sensors is on (at most 10 minutes), then hide it.
+        The duration above is then not used. Hide closes whatever CamAlert shows on these players at that moment.
+      default: false
+      selector:
+        boolean:
 mode: single
 max_exceeded: silent
 variables:
@@ -108,6 +116,9 @@ variables:
   several: !input several
   label_in: !input label
   presence_in: !input presence
+  hold: !input until_motion_ends
+  seconds_in: !input seconds
+  motion_in: !input motion
   someone_home: >-
     {% set ents = presence_in if presence_in is list else ([presence_in] if presence_in else []) %}
     {{ ents | count == 0
@@ -150,7 +161,7 @@ actions:
           device_id: !input players
         data:
           cameras: "{{ cams }}"
-          seconds: !input seconds
+          seconds: "{{ 300 if hold else seconds_in }}"
         continue_on_error: true
     else:
       - action: camalert.show
@@ -158,8 +169,20 @@ actions:
           device_id: !input players
         data:
           camera: "{{ cams if cams | length > 1 else cams[0] }}"
-          seconds: !input seconds
+          seconds: "{{ 0 if hold else seconds_in }}"
           mode: "{{ 'strip' if cams | length > 1 else mode_single }}"
           priority: high
           label: "{{ label }}"
+        continue_on_error: true
+  - if:
+      - condition: template
+        value_template: "{{ hold }}"
+    then:
+      # #81: wait until every motion sensor is off again (the player's limit is 10 minutes), then hide
+      - wait_template: >-
+          {{ (motion_in if motion_in is list else [motion_in]) | select('is_state', 'on') | list | count == 0 }}
+        timeout: "00:10:00"
+      - action: camalert.hide
+        target:
+          device_id: !input players
         continue_on_error: true

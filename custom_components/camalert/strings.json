@@ -234,7 +234,7 @@
         },
         "seconds": {
           "name": "Duration",
-          "description": "How long the camera stays on screen. Empty = setting of the player."
+          "description": "How long the camera stays on screen. Empty = setting of the player, 0 = until Hide camera (at most 10 minutes)."
         },
         "mode": {
           "name": "Display mode",

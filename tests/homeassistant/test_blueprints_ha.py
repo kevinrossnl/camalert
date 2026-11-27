@@ -79,6 +79,34 @@ async def test_motion_with_label(hass, player, blueprints):
     assert ("show", "front_door,garden", 60, "strip", "high", "ha", "Visitor") in shows
 
 
+async def test_motion_until_it_ends(hass, player, blueprints):
+    """#81: until_motion_ends shows with seconds 0 (the player keeps it, at most 600 s) and hides when every
+    sensor is off again."""
+    import asyncio
+
+    async def settle():  # the automation waits (wait_template): async_block_till_done would wait for it
+        for _ in range(50):
+            await asyncio.sleep(0.01)
+
+    entry = await setup_player(hass, player)
+    hass.states.async_set("binary_sensor.garden_motion", "off")
+    hass.states.async_set("binary_sensor.garden_person", "off")
+    await automations(hass, ("motion", "camalert_motion.yaml", {
+        "motion": ["binary_sensor.garden_motion", "binary_sensor.garden_person"],
+        "players": [player_device(hass, entry).id], "when": "always", "cameras": "garden",
+        "until_motion_ends": True}))
+    hass.states.async_set("binary_sensor.garden_motion", "on")
+    await settle()
+    assert player.ctl.calls[-1] == ("show", "garden", 600, "photo", "high", "ha", "Motion")
+    hass.states.async_set("binary_sensor.garden_person", "on")
+    hass.states.async_set("binary_sensor.garden_motion", "off")
+    await settle()
+    assert ("hide",) not in player.ctl.calls  # one sensor still on
+    hass.states.async_set("binary_sensor.garden_person", "off")
+    await settle()
+    assert player.ctl.calls[-1] == ("hide",)
+
+
 async def test_motion_only_when_armed(hass, player, blueprints):
     entry = await setup_player(hass, player)
     hass.states.async_set("binary_sensor.garden_motion", "off")

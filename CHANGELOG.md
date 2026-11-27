@@ -19,6 +19,10 @@ actions and blueprint inputs stay backwards compatible.
 - **Android TV:** camera control (PTZ via ONVIF or Foscam) and Foscam motion and sound alarms, with a list of
   camera devices in the app's own private storage (same lines as `devices.conf`); `/camalert/ptz` works on Android
   TV too (#66).
+- **All players:** a window can stay as long as there is motion: `sec` 0 on `show` (API, MQTT, Home Assistant
+  `seconds: 0`) keeps it until `hide` or a new `show`, at most 10 minutes, so a missed `hide` never leaves it on
+  screen. The motion blueprint has a new option **Until the motion ends** (`until_motion_ends`) that hides the camera
+  when every sensor is off again. Capability `hold`; older players get the longest fixed duration (#81).
 - **Home Assistant:** sets up a new player. Right after adding a player that has no go2rtc address yet, Home
   Assistant offers to send its go2rtc address (and a default camera); **Configure** on the entry sends one later. A
   player that was never set up takes any address, a player that is set up only one in the local network. New API
@@ -52,6 +56,8 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Fixed
 
+- **Kodi:** a CamAlert window (photo window, live view, notification; every priority) first ends a running
+  screensaver, CamAlert's own or another one, so it no longer opens hidden behind it (#119).
 - **All players:** a helper stream that only transcodes another camera of the same go2rtc
   (`ffmpeg:<camera>#...`, as *Keep cameras ready* and the live substreams make) is no longer listed as a camera,
   also on players where that setting is off. The Home Assistant button for it disappears at the next reconnect

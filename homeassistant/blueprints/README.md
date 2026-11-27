@@ -39,6 +39,12 @@ Order in every blueprint: **trigger → `players` → `camera`/`cameras` → `mo
 | `phone_camera` | Camera entity for that notification: its picture (`/api/camera_proxy/...`) and tapping opens the camera; empty = text only | empty | doorbell, doorbell webOS |
 | `webos_live_url` | Live view on the LG TV: page with the stream that the TV opens in its browser for the duration (e.g. go2rtc `http://192.168.1.10:1984/stream.html?src=front_door&mode=mse`); needs `tv`; afterwards the TV goes back to its input or app (scene `scene.camalert_webos_before`); empty = only the notification | empty | doorbell webOS |
 
+**Added in 1.3** (optional, at the end, the default changes nothing):
+
+| Key | Meaning | Default | Blueprints |
+|---|---|---|---|
+| `until_motion_ends` | Keep the camera on the TV as long as one of the motion sensors is on (`seconds: 0`, at most 10 minutes), then `camalert.hide` (#81); `seconds` is then not used (a mosaic gets 300 s). Hide closes whatever CamAlert shows on these players at that moment | `false` | motion |
+
 **Doorbell on the players and other screens** (`camalert_doorbell_screens.yaml`, new in 1.2; same frozen rules):
 `doorbell`, `players`, `camera`, `mode`, `seconds`, `label` as in the doorbell blueprint, then
 

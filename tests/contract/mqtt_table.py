@@ -46,6 +46,8 @@ COMMANDS = [
     ("show_json", "camalert/{node}/show",
      json.dumps({"cam": "garden", "sec": 20, "mode": "live", "priority": "alarm", "label": "Person"}),
      ("show", "garden", 20, "live", "alarm", "mqtt", "Person")),
+    ("show_until_hide", "camalert/{node}/show", json.dumps({"cam": "garden", "sec": 0}),  # #81
+     ("show", "garden", 600, None, None, "mqtt", None)),
     ("mosaic_cameras", "camalert/{node}/mosaic", "a,b", ("mosaic", "a,b", 60)),
     ("mosaic_all", "camalert/{node}/mosaic", "", ("mosaic", None, 60)),
     ("hide", "camalert/{node}/hide", "", ("hide",)),

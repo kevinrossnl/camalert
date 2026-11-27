@@ -19,7 +19,7 @@ Topics (`<id>` = player id, see the device in Home Assistant or `/camalert/statu
 
 | Topic | Payload |
 |---|---|
-| `camalert/<id>/show` | camera name, or JSON `{"cam": "garden", "sec": 20, "mode": "live", "priority": "high", "label": "Person"}` |
+| `camalert/<id>/show` | camera name, or JSON `{"cam": "garden", "sec": 20, "mode": "live", "priority": "high", "label": "Person"}` (`"sec": 0` = until `hide`, at most 600 s) |
 | `camalert/<id>/mosaic` | empty, or `cam1,cam2,...` |
 | `camalert/<id>/hide` | empty |
 | `camalert/<id>/state` | (published) camera on screen or `none` |

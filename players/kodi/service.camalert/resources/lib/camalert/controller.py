@@ -142,6 +142,19 @@ class Controller(object):
         kodiapi.builtin("CECActivateSource")
         kodiapi.builtin("Action(noop)")
 
+    def end_screensaver(self):
+        """#119: a CamAlert window must not open behind a screensaver (CamAlert's own, #99, or another one): for
+        every priority the screensaver is ended first (any action ends it), waiting at most 1.5 s for Kodi."""
+        if not kodiapi.cond("System.ScreenSaverActive"):
+            return False
+        kodiapi.log("screensaver active: ending it before showing", "verbose")
+        kodiapi.jsonrpc("Input.ExecuteAction", {"action": "noop"})
+        for _ in range(15):
+            if not kodiapi.cond("System.ScreenSaverActive"):
+                break
+            time.sleep(0.1)
+        return True
+
     # --- public ----------------------------------------------------------------------------------------------
     def show(self, stream=None, seconds=None, mode=None, priority=None, source="api", label=None, event_id=None):
         """Handles a show request; logs it (source, decision, reason) and keeps it in the event list."""
@@ -229,6 +242,7 @@ class Controller(object):
                 return "wake"
             self.reason = reason_code("screen_off")
             return "ignore"
+        self.end_screensaver()
         cams = parse_cams(stream)
         seconds = seconds or s["duration"]
         if len(cams) > 1:

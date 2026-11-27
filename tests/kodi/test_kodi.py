@@ -681,6 +681,39 @@ class _KodiModules(object):
             for k in ("cooldown", "camera", "substreams", "server"):
                 Built.store.pop(k, None)
 
+    def test_window_ends_the_screensaver_first(self):
+        """#119: a CamAlert window (every priority) first ends a running screensaver, CamAlert's own (#99) or
+        another one, so it is not hidden behind it; without a screensaver nothing is sent."""
+        ctl_mod, kodiapi = Built.module("controller"), Built.module("kodiapi")
+        state = {"saver": True}
+        sent = []
+        for name in ("cond", "jsonrpc", "notify"):
+            self.addCleanup(setattr, kodiapi, name, getattr(kodiapi, name))
+
+        def cond(expr):
+            return state["saver"] if expr == "System.ScreenSaverActive" else False
+
+        def jsonrpc(method, params=None):
+            sent.append((method, params))
+            if method == "Input.ExecuteAction":
+                state["saver"] = False  # Kodi ends the screensaver on any action
+            return "OK"
+
+        kodiapi.cond, kodiapi.jsonrpc = cond, jsonrpc
+        kodiapi.notify = lambda *a, **kw: None
+        Built.store.update({"camera": "garden", "server": self.go2rtc.url})
+        try:
+            ctl = ctl_mod.Controller()
+            self.assertEqual(ctl.show("garden", 10, "notify", "normal", "api"), "show")
+            self.assertIn(("Input.ExecuteAction", {"action": "noop"}), sent)
+            del sent[:]
+            ctl.last_shown.clear()
+            self.assertEqual(ctl.show("garden", 10, "notify", "normal", "api"), "show")
+            self.assertNotIn("Input.ExecuteAction", [m for m, _p in sent])  # no screensaver: nothing sent
+        finally:
+            for k in ("camera", "server"):
+                Built.store.pop(k, None)
+
     def test_notification_says_the_priority(self):
         """#49: the notification has the label and, for high/alarm, the translated priority, like Enigma2."""
         ctl_mod, kodiapi = Built.module("controller"), Built.module("kodiapi")

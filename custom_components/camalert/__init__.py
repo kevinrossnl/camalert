@@ -34,7 +34,8 @@ SHOW_SCHEMA = vol.Schema({
     **TARGET,
     # a list first: cv.string would turn a template's list result back into its text "['a', 'b']"
     vol.Optional("camera"): vol.Any(vol.All(list, [cv.string]), cv.string),
-    vol.Optional("seconds"): vol.All(vol.Coerce(int), vol.Range(min=5, max=300)),
+    # 0 = until hide (#81): the player keeps the window until camalert.hide, at most 10 minutes
+    vol.Optional("seconds"): vol.All(vol.Coerce(int), vol.Any(0, vol.Range(min=5, max=300))),
     vol.Optional("mode"): vol.In(MODES),
     vol.Optional("priority"): vol.In(PRIORITIES),
     vol.Optional("label"): cv.string,

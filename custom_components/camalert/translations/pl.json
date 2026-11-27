@@ -234,7 +234,7 @@
         },
         "seconds": {
           "name": "Czas",
-          "description": "Jak długo kamera pozostaje na ekranie. Puste = ustawienie odtwarzacza."
+          "description": "Jak długo kamera pozostaje na ekranie. Puste = ustawienie odtwarzacza, 0 = do Ukryj kamerę (najwyżej 10 minut)."
         },
         "mode": {
           "name": "Tryb wyświetlania",

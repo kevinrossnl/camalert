@@ -1985,8 +1985,8 @@ msgid "Duration"
 msgstr "Dauer"
 
 #: ha:services.show.fields.seconds.description
-msgid "How long the camera stays on screen. Empty = setting of the player."
-msgstr "Wie lange die Kamera im Bild bleibt. Leer = Einstellung des Wiedergabegeräts."
+msgid "How long the camera stays on screen. Empty = setting of the player, 0 = until Hide camera (at most 10 minutes)."
+msgstr "Wie lange die Kamera im Bild bleibt. Leer = Einstellung des Wiedergabegeräts, 0 = bis Kamera ausblenden (höchstens 10 Minuten)."
 
 #: ha:services.show.fields.mode.description
 msgid "Photo window, live view, notification, or the multi-camera window (2-4 cameras, the TV stays visible). Empty = setting of the player."

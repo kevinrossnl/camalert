@@ -33,7 +33,7 @@ against it by the contract tests). Answers are JSON (`metrics`: Prometheus text)
 | `GET /camalert/log?lines=200` | The end of `camalert.log` (passwords and tokens are always removed) |
 
 Parameters: `cam` (go2rtc stream name, or several separated by commas; only letters, digits, `_`, `.`, `-`),
-`sec` (5–300), `mode` (`photo`, `live`, `notify`, `strip` = multi-camera window), `label` (optional
+`sec` (5–300; `0` = until `hide` or a new `show`, at most 600 s, capability `hold`, #81), `mode` (`photo`, `live`, `notify`, `strip` = multi-camera window), `label` (optional
 who/what shown before the camera name in the title, e.g. `Person`), `priority` (`normal` follows the player's
 active hours and rules, `high` always, `alarm` always and may wake the player / screen), `test` (`1` on any
 request: a test, e.g. of the [end-to-end runner](../dev/e2e.md): never plays the doorbell chime and is shown with

@@ -48,6 +48,10 @@ class CoreReferenceTest {
         for (c in cases("clamp_seconds")) {
             assertEquals("clamp_seconds(${c["value"]})", (c["out"] as Number).toInt(), Rules.clampSeconds(c["value"], (c["default"] as Number).toInt()))
         }
+        for (c in cases("show_seconds")) {  // #81: 0 = until hide
+            assertEquals("show_seconds(${c["value"]})", (c["out"] as Number).toInt(), Rules.showSeconds(c["value"], (c["default"] as Number).toInt()))
+            assertEquals("has_seconds(${c["value"]})", c["has"], Rules.hasSeconds(c["value"]))
+        }
         for (c in cases("cameras_param")) {
             val got = try { mapOf("ok" to Api.camerasParam(c["value"] as String)) } catch (e: Invalid) { mapOf("error" to e.message) }
             assertEquals("cameras_param(${c["value"]})", Json.write(c["out"]), Json.write(got))

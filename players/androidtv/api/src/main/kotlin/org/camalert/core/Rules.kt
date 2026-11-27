@@ -8,6 +8,8 @@ object Rules {
     val PRIORITIES = listOf("normal", "high", "alarm")
     const val MIN_SECONDS = 5
     const val MAX_SECONDS = 300
+    /** sec=0 on show (#81): until hide or a new show, at most this long. */
+    const val HOLD_SECONDS = 600
 
     /** int(value) like Python (surrounding blanks allowed), clamped to 5..300; the default if it is no number. */
     fun clampSeconds(value: Any?, default: Int = 30): Int {
@@ -18,6 +20,19 @@ object Rules {
         }
         return n.coerceIn(MIN_SECONDS, MAX_SECONDS)
     }
+
+    /** Duration of a show request: 0 = until hide (#81), at most HOLD_SECONDS; otherwise clampSeconds. */
+    fun showSeconds(value: Any?, default: Int = 30): Int {
+        val n = when (value) {
+            is Number -> value.toInt()
+            null -> null
+            else -> value.toString().trim().toIntOrNull()
+        }
+        return if (n == 0) HOLD_SECONDS else clampSeconds(value, default)
+    }
+
+    /** True when a request gives a duration (0 counts, #81); false for missing, blank or false. */
+    fun hasSeconds(value: Any?): Boolean = value != null && value != false && value.toString().isNotBlank()
 
     fun pickMode(value: String?, default: String = "photo") = if (value in MODES) value!! else default
     fun pickPriority(value: String?) = if (value in PRIORITIES) value!! else "normal"

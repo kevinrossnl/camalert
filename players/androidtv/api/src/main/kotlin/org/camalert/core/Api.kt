@@ -164,7 +164,7 @@ class Api(val data: CoreData = CoreData.load()) {
         val cam = camerasParam(a["cam"])
         val mode = choiceParam(a, "mode", Rules.MODES + "strip")
         val priority = choiceParam(a, "priority", Rules.PRIORITIES)
-        val sec = if (!a["sec"].isNullOrEmpty()) Rules.clampSeconds(a["sec"], (s["duration"] as? Number)?.toInt() ?: 30) else null
+        val sec = if (Rules.hasSeconds(a["sec"])) Rules.showSeconds(a["sec"], (s["duration"] as? Number)?.toInt() ?: 30) else null  // 0: until hide (#81)
         val res = ctl.show(cam, sec, mode, priority, source, a["label"])
         return mapOf("result" to (res in listOf("show", "extend", "wake")), "action" to res, "cam" to (cam ?: s["camera"]))
     }

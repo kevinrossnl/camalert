@@ -14,7 +14,7 @@ show:
       example: 30
       selector:
         number:
-          min: 5
+          min: 0
           max: 300
           step: 5
           unit_of_measurement: s

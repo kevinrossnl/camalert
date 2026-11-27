@@ -68,6 +68,13 @@
     <string name="unifi_console_user" formatted="false">Gebruiker van de console (rol View Only)</string>
     <string name="unifi_console_password" formatted="false">Wachtwoord van de console</string>
     <string name="unifi_where" formatted="false">de instellingen hieronder</string>
+    <string name="devices_title" formatted="false">Cameraapparaten (camerabediening, Foscam)</string>
+    <string name="devices_list" formatted="false">Camera\'s</string>
+    <string name="devices_help" formatted="false">Eén camera per regel: naam|onvif|adres:poort|gebruiker|wachtwoord of naam|foscam|adres:88|gebruiker|wachtwoord. De naam is de cameranaam in CamAlert. Gebruiker en wachtwoord leeg = de standaardlogin hieronder.</string>
+    <string name="devices_user" formatted="false">Cameragebruiker (standaard)</string>
+    <string name="devices_password" formatted="false">Camerawachtwoord (standaard)</string>
+    <string name="devices_none" formatted="false">geen geldige regel</string>
+    <string name="devices_where" formatted="false">de cameraapparaten</string>
     <string name="unifi_no_console" formatted="false">UniFi Protect: geen consoleadres ingesteld</string>
     <string name="wizard_title" formatted="false">CamAlert-wizard</string>
     <string name="wizard_searching" formatted="false">go2rtc zoeken in je netwerk...</string>
@@ -151,6 +158,10 @@
     <string name="t_52b025e5" formatted="false">Frigate-cameranamen</string>
     <string name="t_0480ae98" formatted="false">Alleen als de namen afwijken van go2rtc: frigate=go2rtc|other=other_stream</string>
     <string name="t_21325cd6" formatted="false">Frigate-prioriteit</string>
+    <string name="t_7db549fa" formatted="false">Foscam-bewegings- en geluidsalarmen</string>
+    <string name="t_a3c5d81f" formatted="false">Vraagt de Foscam-camera\'s in %s om bewegings- en geluidsalarmen.</string>
+    <string name="t_8d5f7ed0" formatted="false">Foscam-prioriteit</string>
+    <string name="t_02491587" formatted="false">Controle-interval (seconden)</string>
     <string name="t_3989819d" formatted="false">UniFi Protect-gebeurtenissen</string>
     <string name="t_5c8d390b" formatted="false">Vraagt de UniFi Protect-consoles in %s om gebeurtenissen (deurbel, persoon, voertuig, ...).</string>
     <string name="t_4f396c23" formatted="false">UniFi Protect-gebeurtenistypen</string>
@@ -159,11 +170,12 @@
     <string name="t_01b954ba" formatted="false">Alleen als de namen afwijken van go2rtc: protect=go2rtc|other=other_stream</string>
     <string name="t_c36f9210" formatted="false">UniFi Protect-prioriteit</string>
     <string name="t_5196d03a" formatted="false">Een deurbel krijgt altijd minstens de prioriteit Hoog.</string>
-    <string name="t_02491587" formatted="false">Controle-interval (seconden)</string>
     <string name="t_a09c4f41" formatted="false">Per gebeurtenistype</string>
     <string name="t_731133cf" formatted="false">Optioneel: type=priority/mode/camera, bijv. ring=alarm/live|motion=normal/log</string>
     <string name="t_e77cca02" formatted="false">Per camera</string>
     <string name="t_4ab02f1e" formatted="false">Optioneel, gaat voor het gebeurtenistype: camera=priority/mode/seconds, bijv. front_door=high/photo/30|driveway=normal/log</string>
+    <string name="t_aa7f7937" formatted="false">Toets voor camerabediening (PTZ)</string>
+    <string name="t_4c3561cc" formatted="false">Voor camera\'s met PTZ in %s: deze toets zet de PTZ-stand aan (pijlen, CH+/CH-, OK = beginstand).</string>
     <string name="t_10c9a4ed" formatted="false">Kleurtoetsen naar Home Assistant</string>
     <string name="t_b8d8287a" formatted="false">Zolang een camera in beeld is, sturen de kleurtoetsen een gebeurtenis naar Home Assistant (bijv. hek openen).</string>
     <string name="t_674df9da" formatted="false">MQTT (Home Assistant zonder YAML)</string>
@@ -237,12 +249,18 @@
     <string name="t_530f2caf" formatted="false">live</string>
     <string name="t_103a74df" formatted="false">andere camera</string>
     <string name="t_5579d653" formatted="false">camerabediening</string>
+    <string name="t_0548f1ef" formatted="false">acties</string>
     <string name="t_130181c4" formatted="false">sluiten</string>
     <string name="t_ef3e3778" formatted="false">bewegen</string>
     <string name="t_b72b7974" formatted="false">zoomen</string>
     <string name="t_0c3311fc" formatted="false">beginstand</string>
     <string name="t_b79c9968" formatted="false">camerabediening stoppen</string>
     <string name="t_d79a92ed" formatted="false">pauze</string>
+    <string name="t_8fe43471" formatted="false">kiezen</string>
+    <string name="t_8fd3a344" formatted="false">uitvoeren</string>
+    <string name="t_6dcec137" formatted="false">terug</string>
+    <string name="t_981dae8b" formatted="false">Camerabediening</string>
+    <string name="t_b58ee195" formatted="false">%s naar Home Assistant</string>
     <string name="t_46b14e9b" formatted="false">gepauzeerd</string>
     <string name="t_6ad1f969" formatted="false">rondgang</string>
     <string name="t_9ee51c54" formatted="false">geen instellingenbestand</string>

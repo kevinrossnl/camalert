@@ -12,7 +12,8 @@ does its normal job, so you can just keep zapping or navigating.
 |---|---|---|---|
 | live | OK | OK | OK |
 | other camera | ◀, ▶ | ◀, ▶ | ◀, ▶ |
-| camera control | PTZ colour key | PTZ colour key / MENU / INFO | PTZ colour key / MENU |
+| camera control | PTZ colour key | PTZ colour key / MENU / INFO | PTZ colour key |
+| actions | – | – | MENU |
 | close | EXIT | BACK | BACK |
 | keep working | volume, mute | volume, mute | volume, mute |
 
@@ -47,9 +48,18 @@ does its normal job, so you can just keep zapping or navigating.
 |---|---|---|---|
 | other camera | – | ◀, ▶ | ◀, ▶ |
 | pause | – | PAUSE / PLAY | PLAY / PAUSE |
-| camera control | PTZ colour key | PTZ colour key / MENU / INFO | PTZ colour key / MENU |
+| camera control | PTZ colour key | PTZ colour key / MENU / INFO | PTZ colour key |
+| actions | – | – | MENU |
 | close | – | BACK / STOP | BACK / STOP |
 | (Enigma2: the camera is a normal channel; zap away or wait) | – | – | – |
+
+### Action menu (Android TV: MENU)
+
+| Action | Enigma2 | Kodi | Android TV |
+|---|---|---|---|
+| choose | – | – | ▲, ▼ |
+| confirm | – | – | OK |
+| back | – | – | BACK / MENU |
 
 Kodi's skin fonts have no ◀ ▶: its on-screen hints show `< >` and `^ v` instead.
 The *PTZ colour key* is the colour key chosen in *Camera control (PTZ) key* (default BLUE); it only

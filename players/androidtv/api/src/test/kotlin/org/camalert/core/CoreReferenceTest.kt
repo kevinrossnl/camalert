@@ -74,6 +74,17 @@ class CoreReferenceTest {
     }
 
     @Test
+    fun actionMenuLikeTheCore() {  // #118
+        val p = Present()
+        for (c in cases("action_menu")) {
+            val got = p.actionMenu(c["has_ptz"] as Boolean, c["ptz_key"] as String?, c["ha_buttons"] as Boolean)
+            val what = "has_ptz=${c["has_ptz"]} ptz_key=${c["ptz_key"]} ha_buttons=${c["ha_buttons"]}"
+            assertEquals(what, Json.write(c["out"]), Json.write(got.map { listOf(it.first, it.second) }))
+            assertEquals(what, c["labels"], got.map { p.actionLabel(it.first, it.second) })
+        }
+    }
+
+    @Test
     fun keyHintsComeFromTheCoreKeyMap() {
         val p = Present()
         for (c in cases("key_hints")) {

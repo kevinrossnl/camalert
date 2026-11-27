@@ -68,6 +68,13 @@
     <string name="unifi_console_user" formatted="false">Utilisateur de la console (rôle View Only)</string>
     <string name="unifi_console_password" formatted="false">Mot de passe de la console</string>
     <string name="unifi_where" formatted="false">la configuration ci-dessous</string>
+    <string name="devices_title" formatted="false">Appareils caméra (contrôle caméra, Foscam)</string>
+    <string name="devices_list" formatted="false">Caméras</string>
+    <string name="devices_help" formatted="false">Une caméra par ligne : nom|onvif|adresse:port|utilisateur|mot de passe ou nom|foscam|adresse:88|utilisateur|mot de passe. Le nom est le nom de la caméra dans CamAlert. Utilisateur et mot de passe vides = l\'identifiant par défaut ci-dessous.</string>
+    <string name="devices_user" formatted="false">Utilisateur caméra (défaut)</string>
+    <string name="devices_password" formatted="false">Mot de passe caméra (défaut)</string>
+    <string name="devices_none" formatted="false">aucune ligne valide</string>
+    <string name="devices_where" formatted="false">les appareils caméra</string>
     <string name="unifi_no_console" formatted="false">UniFi Protect : aucune adresse de console définie</string>
     <string name="wizard_title" formatted="false">Assistant CamAlert</string>
     <string name="wizard_searching" formatted="false">Recherche de go2rtc sur votre réseau...</string>
@@ -151,6 +158,10 @@
     <string name="t_52b025e5" formatted="false">Noms des caméras Frigate</string>
     <string name="t_0480ae98" formatted="false">Seulement si les noms diffèrent de go2rtc : frigate=go2rtc|other=other_stream</string>
     <string name="t_21325cd6" formatted="false">Priorité Frigate</string>
+    <string name="t_7db549fa" formatted="false">Alarmes de mouvement et de son Foscam</string>
+    <string name="t_a3c5d81f" formatted="false">Interroge les caméras Foscam de %s sur les alarmes de mouvement et de son.</string>
+    <string name="t_8d5f7ed0" formatted="false">Priorité Foscam</string>
+    <string name="t_02491587" formatted="false">Vérifier toutes les (secondes)</string>
     <string name="t_3989819d" formatted="false">Événements UniFi Protect</string>
     <string name="t_5c8d390b" formatted="false">Interroge les consoles UniFi Protect de %s sur les événements (sonnette, personne, véhicule, ...).</string>
     <string name="t_4f396c23" formatted="false">Types d\'événements UniFi Protect</string>
@@ -159,11 +170,12 @@
     <string name="t_01b954ba" formatted="false">Seulement si les noms diffèrent de go2rtc : protect=go2rtc|other=other_stream</string>
     <string name="t_c36f9210" formatted="false">Priorité UniFi Protect</string>
     <string name="t_5196d03a" formatted="false">Un coup de sonnette reçoit toujours au moins la priorité Haute.</string>
-    <string name="t_02491587" formatted="false">Vérifier toutes les (secondes)</string>
     <string name="t_a09c4f41" formatted="false">Par type d\'événement</string>
     <string name="t_731133cf" formatted="false">Facultatif : type=priority/mode/camera, p. ex. ring=alarm/live|motion=normal/log</string>
     <string name="t_e77cca02" formatted="false">Par caméra</string>
     <string name="t_4ab02f1e" formatted="false">Facultatif, prioritaire sur le type d\'événement : camera=priority/mode/seconds, p. ex. front_door=high/photo/30|driveway=normal/log</string>
+    <string name="t_aa7f7937" formatted="false">Touche de contrôle de la caméra (PTZ)</string>
+    <string name="t_4c3561cc" formatted="false">Pour les caméras PTZ dans %s : cette touche active le mode PTZ (flèches, CH+/CH-, OK = origine).</string>
     <string name="t_10c9a4ed" formatted="false">Touches de couleur vers Home Assistant</string>
     <string name="t_b8d8287a" formatted="false">Tant qu\'une caméra est affichée, les touches de couleur envoient un événement à Home Assistant (p. ex. ouvrir le portail).</string>
     <string name="t_674df9da" formatted="false">MQTT (Home Assistant sans YAML)</string>
@@ -237,12 +249,18 @@
     <string name="t_530f2caf" formatted="false">direct</string>
     <string name="t_103a74df" formatted="false">autre caméra</string>
     <string name="t_5579d653" formatted="false">contrôle de la caméra</string>
+    <string name="t_0548f1ef" formatted="false">actions</string>
     <string name="t_130181c4" formatted="false">fermer</string>
     <string name="t_ef3e3778" formatted="false">déplacer</string>
     <string name="t_b72b7974" formatted="false">zoom</string>
     <string name="t_0c3311fc" formatted="false">position initiale</string>
     <string name="t_b79c9968" formatted="false">quitter le contrôle de la caméra</string>
     <string name="t_d79a92ed" formatted="false">pause</string>
+    <string name="t_8fe43471" formatted="false">choisir</string>
+    <string name="t_8fd3a344" formatted="false">exécuter</string>
+    <string name="t_6dcec137" formatted="false">retour</string>
+    <string name="t_981dae8b" formatted="false">Contrôle caméra</string>
+    <string name="t_b58ee195" formatted="false">%s vers Home Assistant</string>
     <string name="t_46b14e9b" formatted="false">en pause</string>
     <string name="t_6ad1f969" formatted="false">ronde</string>
     <string name="t_9ee51c54" formatted="false">pas un fichier de paramètres</string>

@@ -42,6 +42,20 @@ class Present(val data: CoreData = CoreData.load(), val tr: (String) -> String =
         return parts.joinToString(data.hintSeparator)
     }
 
+    /** Entries of the on-screen action menu (#118, core keymap.action_menu): ("ptz", null) for camera control on a
+     *  camera with PTZ, then ("button", colour) for every colour key that goes to Home Assistant. */
+    fun actionMenu(hasPtz: Boolean = false, ptzKey: String? = "blue", haButtons: Boolean = true): List<Pair<String, String?>> {
+        val out = ArrayList<Pair<String, String?>>()
+        if (hasPtz) out.add(Pair("ptz", null))
+        if (haButtons) for (c in listOf("red", "green", "yellow", "blue")) if (!(hasPtz && c == ptzKey)) out.add(Pair("button", c))
+        return out
+    }
+
+    /** 'Camera control' / 'GREEN to Home Assistant' (translated). */
+    fun actionLabel(kind: String, colour: String?): String =
+        if (kind == "button") tr(data.actionLabels.getValue("button")).replace("%s", tr(data.colourNames.getValue(colour!!)))
+        else tr(data.actionLabels.getValue(kind))
+
     fun tourStatus(title: String, index: Int, total: Int, paused: Boolean) =
         "$title   ($index/$total, ${if (paused) tr("paused") else tr("tour")})"
 

@@ -28,6 +28,7 @@ class CoreData(val raw: Map<String, Any?>) {
         items.map { Pair(it[0] as List<String>, it[1] as String) }
     }
     val hintSeparator = raw["hint_separator"] as String
+    val actionLabels = raw["action_labels"] as Map<String, String>
     val reasonLabels = raw["reason_labels"] as Map<String, String>
     val sourceLabels = raw["source_labels"] as Map<String, String>
     val priorityLabels = raw["priority_labels"] as Map<String, String>

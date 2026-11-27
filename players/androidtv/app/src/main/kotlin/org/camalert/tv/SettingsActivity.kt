@@ -125,6 +125,7 @@ class SettingsActivity : FragmentActivity() {
                 screen.addPreference(widget(s, tr))
             }
             if (section == "triggers") unifiConsole(screen)
+            if (section == "camera_control") cameraDevices(screen)
             preferenceScreen = screen
         }
 
@@ -160,9 +161,55 @@ class SettingsActivity : FragmentActivity() {
             }
         }
 
-        /** %s in a label or help: the place of the cameras (go2rtc) or, for UniFi Protect, the console settings. */
+        /** Camera devices (#66): their own private file (CameraDevices), never with the settings. */
+        private fun cameraDevices(screen: PreferenceScreen) {
+            val ctx = preferenceManager.context
+            val devices = CameraDevices(ctx)
+            val store = object : PreferenceDataStore() {
+                override fun getString(key: String?, defValue: String?) = devices.prefs.getString(key, defValue)
+                override fun putString(key: String?, value: String?) {
+                    devices.prefs.edit().putString(key, value?.let { if (key == "password") it else it.trim() }).apply()
+                }
+            }
+            val cat = PreferenceCategory(ctx).apply { title = getString(R.string.devices_title); isIconSpaceReserved = false }
+            screen.addPreference(cat)
+            for ((key, res) in listOf("devices" to R.string.devices_list, "user" to R.string.devices_user,
+                    "password" to R.string.devices_password)) {
+                cat.addPreference(EditTextPreference(ctx).apply {
+                    preferenceDataStore = store
+                    this.key = key
+                    title = getString(res)
+                    dialogTitle = title
+                    if (key == "devices") dialogMessage = getString(R.string.devices_help)
+                    isIconSpaceReserved = false
+                    setOnBindEditTextListener { e ->
+                        e.inputType = when (key) {
+                            "password" -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                            "devices" -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+                            else -> InputType.TYPE_CLASS_TEXT
+                        }
+                    }
+                    summaryProvider = Preference.SummaryProvider<EditTextPreference> { p ->
+                        val v = p.text ?: ""
+                        when {
+                            v.isEmpty() -> "–"
+                            key == "password" -> "••••••"
+                            key == "devices" -> devices.cameras().keys.joinToString(", ").ifEmpty { getString(R.string.devices_none) }
+                            else -> v
+                        }
+                    }
+                })
+            }
+        }
+
+        /** %s in a label or help: the place of the cameras (go2rtc), the camera devices (Foscam, PTZ) or, for UniFi
+         *  Protect, the console settings. */
         private fun fill(s: Setting, text: String) =
-            text.replace("%s", if (s.id.startsWith("unifi_")) getString(R.string.unifi_where) else "go2rtc")
+            text.replace("%s", when {
+                s.id.startsWith("unifi_") -> getString(R.string.unifi_where)
+                s.id.startsWith("foscam_") || s.id.startsWith("ptz_") -> getString(R.string.devices_where)
+                else -> "go2rtc"
+            })
 
         private fun label(s: Setting, tr: Tr) = fill(s, tr(s.label ?: s.id))
 

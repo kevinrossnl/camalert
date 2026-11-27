@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
@@ -59,6 +60,9 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
         fun show(stream: String, mode: String, priority: String, source: String)
         fun neighbour(current: String?, step: Int): Tile?
         fun colourKey(camera: String?, colour: String)
+        /** Camera control (#66): does the camera have PTZ, and move it (blocking: call it from a thread). */
+        fun hasPtz(camera: String?): Boolean = false
+        fun ptz(camera: String, action: String): Boolean = false
         fun unreachable()
         fun changed()
         /** #111: the last picture of a ready camera when it is fresh, or null. */
@@ -204,17 +208,121 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
 
         fun passKey(name: String) = host.present.actionFor(context, name) == "pass"
 
+        /** "actions" while the action menu is open (#118), "ptz" during camera control (#66), else null. */
+        var mode: String? = null
+        var hintView: TextView? = null
+        private var menuView: LinearLayout? = null
+        private var entries: List<Pair<String, String?>> = emptyList()
+        private var selected = 0
+        private val ptzQueue = java.util.concurrent.LinkedBlockingQueue<String>()
+        private var ptzWorker: Thread? = null
+
+        fun ptzKey() = host.settings()["ptz_key"]?.toString() ?: "blue"
+        fun hasPtz() = host.hasPtz(state.stream)
+        fun hintText() = host.present.keyHint(mode ?: context, ptzKey(), hasPtz())
+        /** Shows the key hint of the current mode; the live view puts it in its bar. */
+        open fun showHint(text: String) { hintView?.text = text }
+
         fun onKey(name: String?, code: Int): Boolean {
             if (name != null && passKey(name)) return false
+            if (mode == "actions") {
+                menuKey(host.present.actionFor("actions", name))
+                return true
+            }
+            if (mode == "ptz") {
+                ptzAction(host.present.actionFor("ptz", name), name)
+                return true
+            }
             if (name != null && name in KeyNames.COLOURS) {
-                host.colourKey(state.stream, KeyNames.COLOURS.getValue(name))
+                val colour = KeyNames.COLOURS.getValue(name)
+                if (colour == ptzKey() && hasPtz()) startPtz() else if (host.settings()["ha_buttons"] != false) host.colourKey(state.stream, colour)
                 return true
             }
             val action = host.present.actionFor(context, name)
+            if (action == "menu") {
+                openMenu()
+                return true
+            }
             if (key(action, name)) return true
             if (code == KeyEvent.KEYCODE_HOME) return false
             closed(this)  // a key that is not ours closes the window (like on the other players)
             return true
+        }
+
+        // --- action menu (#118): Fire TV remotes have no colour keys -----------------------------------------------
+        fun openMenu() {
+            val s = host.settings()
+            entries = host.present.actionMenu(hasPtz(), ptzKey(), s["ha_buttons"] != false)
+            if (entries.isEmpty()) return
+            val m = metrics()
+            val font = Layout.titleFont("small", m.widthPixels).toFloat()
+            val box = LinearLayout(ctx).apply {
+                orientation = LinearLayout.VERTICAL
+                setBackgroundColor(0xE0181818.toInt())
+                setPadding((font / 2).toInt(), (font / 3).toInt(), (font / 2).toInt(), (font / 3).toInt())
+            }
+            for ((kind, colour) in entries) box.addView(text(font).apply { text = host.present.actionLabel(kind, colour) })
+            root.addView(box, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER))
+            menuView = box
+            selected = 0
+            mode = "actions"
+            markSelected()
+            showHint(hintText())
+            extend(host.settings()["duration"] as? Int ?: 30)
+        }
+
+        private fun markSelected() {
+            val box = menuView ?: return
+            for (i in 0 until box.childCount) box.getChildAt(i).setBackgroundColor(if (i == selected) 0xFF2D6CDF.toInt() else Color.TRANSPARENT)
+        }
+
+        fun closeMenu() {
+            menuView?.let { root.removeView(it) }
+            menuView = null
+            if (mode == "actions") mode = null
+            showHint(hintText())
+        }
+
+        private fun menuKey(action: String?) {
+            when (action) {
+                "up" -> { selected = (selected + entries.size - 1) % entries.size; markSelected() }
+                "down" -> { selected = (selected + 1) % entries.size; markSelected() }
+                "close" -> closeMenu()
+                "choose" -> {
+                    val (kind, colour) = entries[selected]
+                    closeMenu()
+                    if (kind == "ptz") startPtz() else host.colourKey(state.stream, colour!!)
+                }
+            }
+        }
+
+        // --- camera control (#66): arrows move, FF/REW zoom, OK = home position; moves run one after the other -------
+        fun startPtz() {
+            if (!hasPtz()) return
+            mode = "ptz"
+            showHint(hintText())
+            extend(host.settings()["duration"] as? Int ?: 30)
+        }
+
+        private fun ptzAction(action: String?, name: String?) {
+            when (action) {
+                "leave" -> { mode = null; showHint(hintText()); return }
+                null -> {
+                    if (name != null && KeyNames.COLOURS[name] == ptzKey()) { mode = null; showHint(hintText()) }  // the PTZ key ends it too
+                    return
+                }
+            }
+            val cam = state.stream ?: return
+            extend(host.settings()["duration"] as? Int ?: 30)
+            if (ptzQueue.size < 3) ptzQueue.offer(action)
+            if (ptzWorker?.isAlive != true) {
+                ptzWorker = Thread({
+                    while (!stop.get()) {
+                        val a = ptzQueue.poll(1, java.util.concurrent.TimeUnit.SECONDS) ?: break
+                        host.ptz(cam, a)
+                    }
+                }, "camalert-ptz").apply { isDaemon = true; start() }
+            }
         }
 
         fun params(x: Int, y: Int, w: Int, h: Int): WindowManager.LayoutParams {
@@ -231,11 +339,12 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
             }
         }
 
-        fun hintBar(m: DisplayMetrics, parent: ViewGroup, x: Int, y: Int, w: Int, h: Int, ptz: Boolean = false): TextView {
+        fun hintBar(m: DisplayMetrics, parent: ViewGroup, x: Int, y: Int, w: Int, h: Int): TextView {
             val tv = text(Layout.titleFont("small", m.widthPixels).toFloat())
             tv.setBackgroundColor(0x99000000.toInt())
-            tv.text = host.present.keyHint(context, null, ptz)
+            tv.text = host.present.keyHint(context, ptzKey(), hasPtz())
             parent.addView(tv, FrameLayout.LayoutParams(w, h).apply { leftMargin = x; topMargin = y })
+            hintView = tv
             return tv
         }
 
@@ -373,10 +482,11 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
                     val err = errorView ?: return true
                     restartLoader(t, iv, err)
                     extend(host.settings()["duration"] as? Int ?: 30)
+                    showHint(hintText())  // the new camera may (not) have camera control
                     host.changed()
                     return true
                 }
-                "ptz" -> return true  // camera control: not on Android TV yet (#64)
+                "ptz" -> { startPtz(); return true }
             }
             return false
         }
@@ -454,7 +564,7 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
             p.prepare()
             p.playWhenReady = true
             showStill(t)
-            bar.text = t.title + "     " + host.present.keyHint(context)
+            showHint(hintText())
             CamLog.log("live view ${t.name} (volume ${(p.volume * 100).toInt()} %)", "verbose")
         }
 
@@ -492,6 +602,8 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
             th.start()
         }
 
+        override fun showHint(text: String) { bar.text = tile.title + "     " + text }
+
         override fun key(action: String?, name: String?): Boolean {
             when (action) {
                 "close" -> closed(this)
@@ -504,7 +616,7 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
                     extend(seconds)
                     host.changed()
                 }
-                "ptz" -> {}
+                "ptz" -> startPtz()
                 else -> return false
             }
             return true

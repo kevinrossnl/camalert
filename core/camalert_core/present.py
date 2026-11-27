@@ -191,15 +191,25 @@ ASCII = {"◀": "<", "▶": ">", "▲": "^", "▼": "v"}
 # per context: (actions shown together, label) in the order of the hint
 HINTS = {
     "window": ((("live",), N_("live")), (("prev", "next"), N_("other camera")), (("ptz",), N_("camera control")),
-               (("close",), N_("close"))),
+               (("menu",), N_("actions")), (("close",), N_("close"))),
     "ptz": ((("up", "down", "left", "right"), N_("move")), (("zoom_in", "zoom_out"), N_("zoom")),
             (("home",), N_("home position")), (("leave",), N_("end camera control"))),
     "tour": ((("prev", "next"), N_("other camera")), (("hold",), N_("pause")), (("live",), N_("live")),
              (("close",), N_("close"))),
     "mosaic": ((("close",), N_("close")),),
     "live": ((("prev", "next"), N_("other camera")), (("pause",), N_("pause")), (("ptz",), N_("camera control")),
-             (("close",), N_("close"))),
+             (("menu",), N_("actions")), (("close",), N_("close"))),
+    "actions": ((("up", "down"), N_("choose")), (("choose",), N_("confirm")), (("close",), N_("back"))),
 }
+# action menu entries (#118, keymap.action_menu): camera control, and a colour key sent to Home Assistant
+ACTION_LABELS = {"ptz": N_("Camera control"), "button": N_("%s to Home Assistant")}
+
+
+def action_label(kind, colour, tr):
+    """'Camera control' / 'GREEN to Home Assistant' (translated) for an action menu entry."""
+    if kind == "button":
+        return tr(ACTION_LABELS["button"]) % tr(COLOUR_NAMES[colour])
+    return tr(ACTION_LABELS[kind])
 SEPARATOR = "   "
 
 

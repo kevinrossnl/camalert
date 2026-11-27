@@ -13,7 +13,12 @@ actions and blueprint inputs stay backwards compatible.
   another player. Passwords and the access token only when you choose so; the file is checked against the settings
   schema, an older file is updated, a newer one refused. Before every import (and before an update changes the
   settings) the current settings are saved, and *Undo the last import* brings them back (#7).
-
+- **Android TV:** the action menu. Fire TV remotes have no colour keys: **MENU** (≡) in the photo window or the live
+  view opens a list with the colour-key actions for Home Assistant (e.g. open the gate) and camera control; ▲ ▼
+  chooses, OK does it, BACK or MENU closes it. Remotes with colour keys keep working as before (#118).
+- **Android TV:** camera control (PTZ via ONVIF or Foscam) and Foscam motion and sound alarms, with a list of
+  camera devices in the app's own private storage (same lines as `devices.conf`); `/camalert/ptz` works on Android
+  TV too (#66).
 - **Home Assistant:** sets up a new player. Right after adding a player that has no go2rtc address yet, Home
   Assistant offers to send its go2rtc address (and a default camera); **Configure** on the entry sends one later. A
   player that was never set up takes any address, a player that is set up only one in the local network. New API

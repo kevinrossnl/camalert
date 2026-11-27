@@ -567,6 +567,9 @@ msgstr "altra telecamera"
 msgid "camera control"
 msgstr "controllo telecamera"
 
+msgid "actions"
+msgstr "azioni"
+
 msgid "close"
 msgstr "chiudere"
 
@@ -584,6 +587,18 @@ msgstr "terminare il controllo telecamera"
 
 msgid "pause"
 msgstr "pausa"
+
+msgid "choose"
+msgstr "scegliere"
+
+msgid "confirm"
+msgstr "eseguire"
+
+msgid "back"
+msgstr "indietro"
+
+msgid "%s to Home Assistant"
+msgstr "%s a Home Assistant"
 
 msgid "paused"
 msgstr "in pausa"

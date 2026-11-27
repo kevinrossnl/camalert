@@ -71,14 +71,14 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Frigate objects | `person` |  | advanced | all | Comma separated, e.g. person,car. Empty = all objects. |
 | Frigate camera names | – |  | advanced | all | Only if the names differ from go2rtc: frigate=go2rtc\|other=other_stream |
 | Frigate priority | `normal` | `normal` / `high` / `alarm` | advanced | all |  |
-| Foscam motion and sound alarms | No |  | advanced | Enigma2, Kodi | Asks the Foscam cameras in the camera file for motion and sound alarms. |
-| Foscam priority | `normal` | `normal` / `high` / `alarm` | advanced | Enigma2, Kodi |  |
+| Foscam motion and sound alarms | No |  | advanced | all | Asks the Foscam cameras in the camera file for motion and sound alarms. |
+| Foscam priority | `normal` | `normal` / `high` / `alarm` | advanced | all |  |
 | Frigate address (for clips) | – |  | expert | Enigma2, Kodi | Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an event from the event list. |
 | Display mode | `photo` | `photo` / `live` / `notify` | advanced | all |  |
 | Duration (seconds) | `30` s | 5–300, step 5 | advanced | all |  |
-| Check every (seconds) | `2` s | 1–60 | expert | Enigma2, Kodi |  |
-| Display mode | `photo` | `photo` / `live` / `notify` | advanced | Enigma2, Kodi |  |
-| Duration (seconds) | `30` s | 5–300, step 5 | advanced | Enigma2, Kodi |  |
+| Check every (seconds) | `2` s | 1–60 | expert | all |  |
+| Display mode | `photo` | `photo` / `live` / `notify` | advanced | all |  |
+| Duration (seconds) | `30` s | 5–300, step 5 | advanced | all |  |
 | UniFi Protect events | No |  | advanced | all | Asks the UniFi Protect consoles in the camera file for events (doorbell, person, vehicle, ...). |
 | UniFi Protect event types | `ring,person` |  | advanced | all | Comma separated: ring, person, vehicle, animal, package, motion. |
 | UniFi Protect camera names | – |  | advanced | all | Only if the names differ from go2rtc: protect=go2rtc\|other=other_stream |
@@ -93,7 +93,7 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 
 | Setting | Default | Values | Level | Players | What it does |
 |---|---|---|---|---|---|
-| Camera control (PTZ) key | `blue` | `blue` / `yellow` / `red` / `green` / `off` | advanced | Enigma2, Kodi | For cameras with PTZ in the camera file: this key switches PTZ mode on (arrows, CH+/CH-, OK = home). |
+| Camera control (PTZ) key | `blue` | `blue` / `yellow` / `red` / `green` / `off` | advanced | all | For cameras with PTZ in the camera file: this key switches PTZ mode on (arrows, CH+/CH-, OK = home). |
 | Colour keys to Home Assistant | Yes |  | advanced | all | While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate). |
 | Camera user (default) | – |  | advanced | Kodi | Used when devices.conf has no user or password for a camera. |
 | Camera password (default) | – |  | advanced | Kodi | Used when devices.conf has no user or password for a camera. |

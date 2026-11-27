@@ -228,11 +228,18 @@ def core_reference():
                           ("x1", "é" * 40, "androidtv", "1.3.0-dev", 1, 8099, False),
                           ("", "no id", "androidtv", "1", 1, 8099, False))],
         "metrics": metrics,
+        "action_menu": [{"has_ptz": p, "ptz_key": k, "ha_buttons": b,
+                         "out": [[kind, colour] for kind, colour in keymap.action_menu(p, k, b)],
+                         "labels": [present.action_label(kind, colour, lambda t: t)
+                                    for kind, colour in keymap.action_menu(p, k, b)]}
+                        for p, k, b in ((False, "blue", True), (True, "blue", True), (True, "off", True),
+                                        (True, "red", False), (False, "green", False), (True, "yellow", True))],
         "settings": settings,
         "caller_source": [{"ua": ua, "source": __import__("camalert_core.events", fromlist=["x"]).caller_source(ua)}
                           for ua in ("HomeAssistant/2026.11 aiohttp/3.10", "curl/8", "", "Python/3 aiohttp",
                                      "Home Assistant")],
         "unifi": unifi_reference(),
+        "devices": devices_reference(),
         "syslog_line": [{"args": [m, lvl, h, t], "out": obslog.syslog_line(m, lvl, h, t)} for m, lvl, h, t in
                         (("CamAlert started", "normal", "living-room", 1795000000.5),
                          ("show failed\nsecond line password=hunter2", "error", "tv box", 0.0),
@@ -246,6 +253,81 @@ def core_reference():
         "parse_hostport": [{"in": t, "out": (lambda r: list(r) if r else None)(__import__("camalert_core.urls", fromlist=["x"]).parse_hostport(t))}
                            for t in ("192.168.1.10:514", "loki.local", " 10.0.0.1:1514 ", "", None, "host:", "host:99999",
                                      "host:abc", "[::1]:514", "::1", ":514")],
+    }
+
+
+DEV_XML = {
+    "time": ('<?xml version="1.0"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://www.w3.org/2003/05/soap-envelope" '
+             'xmlns:tds="http://www.onvif.org/ver10/device/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema"><SOAP-ENV:Body>'
+             '<tds:GetSystemDateAndTimeResponse><tds:SystemDateAndTime><tt:DateTimeType>NTP</tt:DateTimeType>'
+             '<tt:UTCDateTime><tt:Time><tt:Hour>20</tt:Hour><tt:Minute>15</tt:Minute><tt:Second>0</tt:Second></tt:Time>'
+             '<tt:Date><tt:Year>2026</tt:Year><tt:Month>11</tt:Month><tt:Day>23</tt:Day></tt:Date></tt:UTCDateTime>'
+             '</tds:SystemDateAndTime></tds:GetSystemDateAndTimeResponse></SOAP-ENV:Body></SOAP-ENV:Envelope>'),
+    "caps": ('<?xml version="1.0"?><env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" '
+             'xmlns:tds="http://www.onvif.org/ver10/device/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema"><env:Body>'
+             '<tds:GetCapabilitiesResponse><tds:Capabilities><tt:Device><tt:XAddr>http://192.168.1.30/onvif/device_service'
+             '</tt:XAddr></tt:Device><tt:Media><tt:XAddr>http://192.168.1.30/onvif/Media</tt:XAddr></tt:Media><tt:PTZ>'
+             '<tt:XAddr>http://192.168.1.30/onvif/PTZ </tt:XAddr></tt:PTZ></tds:Capabilities></tds:GetCapabilitiesResponse>'
+             '</env:Body></env:Envelope>'),
+    "caps_no_ptz": ('<?xml version="1.0"?><e:Envelope xmlns:e="http://www.w3.org/2003/05/soap-envelope" '
+                    'xmlns:tt="http://www.onvif.org/ver10/schema"><e:Body><tt:Media><tt:XAddr>http://h/m</tt:XAddr>'
+                    '</tt:Media></e:Body></e:Envelope>'),
+    "profiles": ('<?xml version="1.0"?><env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" '
+                 'xmlns:trt="http://www.onvif.org/ver10/media/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema"><env:Body>'
+                 '<trt:GetProfilesResponse><trt:Profiles fixed="true" token="Profile_1"><tt:Name>main</tt:Name></trt:Profiles>'
+                 '<trt:Profiles fixed="true" token="Profile_2"><tt:Name>sub</tt:Name><tt:PTZConfiguration token="ptz0">'
+                 '<tt:Name>ptz</tt:Name></tt:PTZConfiguration></trt:Profiles></trt:GetProfilesResponse></env:Body></env:Envelope>'),
+    "profiles_plain": ('<?xml version="1.0"?><e:Envelope xmlns:e="http://www.w3.org/2003/05/soap-envelope" '
+                       'xmlns:trt="http://www.onvif.org/ver10/media/wsdl"><e:Body><trt:Profiles token="A"/>'
+                       '<trt:Profiles token="B"/></e:Body></e:Envelope>'),
+    "fault": ('<?xml version="1.0"?><env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"><env:Body><env:Fault>'
+              '<env:Code><env:Value>env:Sender</env:Value></env:Code><env:Reason><env:Text xml:lang="en">Sender not '
+              'Authorized</env:Text></env:Reason></env:Fault></env:Body></env:Envelope>'),
+    "fault_bare": '<x:Fault></x:Fault>',
+    "ok": ('<?xml version="1.0"?><env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"><env:Body>'
+           '<tptz:StopResponse xmlns:tptz="http://www.onvif.org/ver20/ptz/wsdl"/></env:Body></env:Envelope>'),
+}
+
+
+def devices_reference():
+    """#66: devices list, Foscam CGI and ONVIF of the core, for the Android TV port (Devices.kt)."""
+    from camalert_core.devices import config as dconfig, foscam, onvif
+    texts = ["# comment\nfront_door|onvif|192.168.1.30:8080|admin|pa|ss\ngarden|FOSCAM|192.168.1.31|u|p\n"
+             "protect|unifi|192.168.1.1||\nbad|other|h|u|p\nshort|onvif\n|onvif|h\nx|onvif|\n"
+             "v6|onvif|[fe80::1]:80|a|b\nport|foscam|h:99999|a|b\nnoport|onvif|h:|a|b\n*|default|*|u|pw",
+             "", "a | onvif | h:81 |  user  | pw with space  "]
+    parsed = [{"text": t, "out": dconfig.parse_devices(t)} for t in texts]
+    dev = {"type": "foscam", "host": "192.168.1.31", "port": 88, "user": "ad min", "password": "p&w=d/é"}
+    states = ["<CGI_Result><result>0</result><motionDetectAlarm>%s</motionDetectAlarm><soundAlarm>%s</soundAlarm>"
+              "</CGI_Result>" % (m, a) for m, a in (("1", "1"), ("2", "1"), ("1", "2"), ("0", "0"))]
+    states += ["<CGI_Result><result>-2</result><motionDetectAlarm>2</motionDetectAlarm></CGI_Result>",
+               "<CGI_Result><result>0</result><humanDetectAlarmState>2</humanDetectAlarmState></CGI_Result>", "", None]
+    nonce = bytes(range(16))
+    return {
+        "parse": parsed,
+        "foscam_url": [{"dev": dev, "cmd": c, "params": p, "out": foscam.foscam_url(dev, c, **p)}
+                       for c, p in (("getDevState", {}), ("ptzMoveUp", {}), ("setX", {"b": "2", "a": "x y"}))],
+        "foscam_alarm": [{"xml": x, "out": foscam.foscam_alarm(x)} for x in states],
+        "foscam_ptz": [{"action": a, "out": list(foscam.foscam_ptz(a))} for a in dconfig.PTZ_ACTIONS],
+        "alarm_edge": [{"previous": p, "now": n, "out": foscam.alarm_edge(p, n)}
+                       for p in (None, False, True) for n in (False, True)],
+        "created": [{"ts": t, "out": onvif.onvif_created(t)} for t in (0, 1795000000.9, 1764000000)],
+        "digest": [{"password": pw, "nonce": list(nonce), "created": "2026-11-23T20:15:00Z",
+                    "out": onvif.wsse_digest(pw, nonce, "2026-11-23T20:15:00Z")} for pw in ("", "pa|ss", "é<&>")],
+        "envelope": [{"body": "<x/>", "user": u, "password": "p<w", "nonce": list(nonce), "created": "2026-11-23T20:15:00Z",
+                      "out": onvif.onvif_envelope("<x/>", u, "p<w", nonce, "2026-11-23T20:15:00Z")}
+                     for u in (None, "", "ad<min")],
+        "body": [{"action": a, "token": t, "vector": list(v) if v else None,
+                  "out": onvif.onvif_body(a, token=t, vector=v)}
+                 for a, t, v in (("GetSystemDateAndTime", None, None), ("GetCapabilities", None, None),
+                                 ("GetProfiles", None, None), ("Stop", "P<1>", None), ("GotoHomePosition", "P1", None))
+                 + tuple(("ContinuousMove", "P1", dconfig.PTZ_VECTORS[k]) for k in sorted(dconfig.PTZ_VECTORS))],
+        "xaddrs": [{"xml": DEV_XML[k], "out": onvif.onvif_xaddrs(DEV_XML[k])} for k in ("caps", "caps_no_ptz", "ok")],
+        "profile": [{"xml": DEV_XML[k], "out": onvif.onvif_profile_token(DEV_XML[k])}
+                    for k in ("profiles", "profiles_plain", "ok")],
+        "time": [{"xml": DEV_XML[k], "out": onvif.onvif_time(DEV_XML[k])} for k in ("time", "ok")],
+        "fault": [{"xml": x, "out": onvif.onvif_fault(x)} for x in (DEV_XML["fault"], DEV_XML["fault_bare"],
+                                                                     DEV_XML["ok"], "", None)],
     }
 
 
@@ -396,6 +478,7 @@ def runtime():
         "ascii": present.ASCII,
         "hints": {c: [[list(a), label] for a, label in items] for c, items in present.HINTS.items()},
         "hint_separator": present.SEPARATOR,
+        "action_labels": present.ACTION_LABELS,
         "reason_labels": present.REASON_LABELS,
         "source_labels": present.SOURCE_LABELS,
         "priority_labels": present.PRIORITY_LABELS,

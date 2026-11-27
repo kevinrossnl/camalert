@@ -264,7 +264,7 @@ msgstr "Mostra questa telecamera"
 msgid "Motion"
 msgstr "Movimento"
 
-#: e2 kodi:30192 ha:entity.sensor.on_screen.state_attributes.cameras.name ha:services.mosaic.fields.cameras.name ha:services.show.fields.camera.name
+#: e2 kodi:30192 ha:entity.sensor.on_screen.state_attributes.cameras.name ha:services.mosaic.fields.cameras.name ha:services.show.fields.camera.name atv:devices_list
 msgid "Cameras"
 msgstr "Telecamere"
 
@@ -324,7 +324,7 @@ msgstr "Regole"
 msgid "Triggers"
 msgstr "Attivatori"
 
-#: e2 kodi:30005 atv:section.camera_control
+#: e2 kodi:30005 kodi:30578 atv:section.camera_control
 msgid "Camera control"
 msgstr "Controllo telecamera"
 
@@ -756,6 +756,10 @@ msgstr "altra telecamera"
 msgid "camera control"
 msgstr "controllo telecamera"
 
+#: e2 kodi:30574
+msgid "actions"
+msgstr "azioni"
+
 #: e2 kodi:30541
 msgid "close"
 msgstr "chiudere"
@@ -779,6 +783,22 @@ msgstr "terminare il controllo telecamera"
 #: e2 kodi:30546
 msgid "pause"
 msgstr "pausa"
+
+#: e2 kodi:30575
+msgid "choose"
+msgstr "scegliere"
+
+#: e2 kodi:30576
+msgid "confirm"
+msgstr "eseguire"
+
+#: e2 kodi:30577
+msgid "back"
+msgstr "indietro"
+
+#: e2 kodi:30579
+msgid "%s to Home Assistant"
+msgstr "%s a Home Assistant"
 
 #: e2 kodi:30190 kodi:30547
 msgid "paused"
@@ -1240,7 +1260,7 @@ msgstr "Tasti colorati a Home Assistant"
 msgid "While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate)."
 msgstr "Mentre è mostrata una telecamera, i tasti colorati inviano un evento a Home Assistant (ad es. aprire il cancello)."
 
-#: e2 kodi:30152
+#: e2 kodi:30152 atv:devices_user
 msgid "Camera user (default)"
 msgstr "Utente telecamera (predefinito)"
 
@@ -1248,7 +1268,7 @@ msgstr "Utente telecamera (predefinito)"
 msgid "Used when devices.conf has no user or password for a camera."
 msgstr "Usato se devices.conf non indica utente o password."
 
-#: e2 kodi:30154
+#: e2 kodi:30154 atv:devices_password
 msgid "Camera password (default)"
 msgstr "Password telecamera (predefinita)"
 
@@ -2071,6 +2091,22 @@ msgstr "Password della console"
 #: atv:unifi_where
 msgid "the settings below"
 msgstr "basso"
+
+#: atv:devices_title
+msgid "Camera devices (camera control, Foscam)"
+msgstr "Dispositivi telecamera (controllo telecamera, Foscam)"
+
+#: atv:devices_help
+msgid "One camera per line: name|onvif|address:port|user|password or name|foscam|address:88|user|password. The name is the CamAlert camera name. Empty user and password = the default login below."
+msgstr "Una telecamera per riga: nome|onvif|indirizzo:porta|utente|password oppure nome|foscam|indirizzo:88|utente|password. Il nome è il nome della telecamera in CamAlert. Utente e password vuoti = l'accesso predefinito qui sotto."
+
+#: atv:devices_none
+msgid "no valid line"
+msgstr "nessuna riga valida"
+
+#: atv:devices_where
+msgid "the camera devices"
+msgstr "i dispositivi telecamera"
 
 #: atv:unifi_no_console
 msgid "UniFi Protect: no console address set"

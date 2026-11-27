@@ -1345,6 +1345,30 @@ msgctxt "#30573"
 msgid "made by a newer CamAlert"
 msgstr "creato da una versione più recente di CamAlert"
 
+msgctxt "#30574"
+msgid "actions"
+msgstr "azioni"
+
+msgctxt "#30575"
+msgid "choose"
+msgstr "scegliere"
+
+msgctxt "#30576"
+msgid "confirm"
+msgstr "eseguire"
+
+msgctxt "#30577"
+msgid "back"
+msgstr "indietro"
+
+msgctxt "#30578"
+msgid "Camera control"
+msgstr "Controllo telecamera"
+
+msgctxt "#30579"
+msgid "%s to Home Assistant"
+msgstr "%s a Home Assistant"
+
 msgctxt "#30780"
 msgid "Export settings"
 msgstr "Esporta impostazioni"

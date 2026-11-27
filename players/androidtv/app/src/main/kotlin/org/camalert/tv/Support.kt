@@ -139,6 +139,20 @@ class UnifiLogin(ctx: Context) {
         prefs.getString("user", null), prefs.getString("password", null)))
 }
 
+/**
+ * Camera devices for camera control and Foscam alarms (#66): the devices.conf lines of the other players
+ * (name|onvif|host:port|user|password) and a default camera login, in their own private file, never with the
+ * settings (which can be exported and read over the API).
+ */
+class CameraDevices(ctx: Context) {
+    val prefs: SharedPreferences = ctx.getSharedPreferences(ctx.packageName + "_devices", Context.MODE_PRIVATE)
+
+    /** Every camera of the list with the default login filled in; UniFi lines are skipped (the console has its own screen). */
+    fun cameras(): Map<String, org.camalert.core.Device> =
+        org.camalert.core.Devices.withDefaultLogin(org.camalert.core.Devices.parse(prefs.getString("devices", "")),
+            prefs.getString("user", "") ?: "", prefs.getString("password", "") ?: "").filterValues { it.type != "unifi" }
+}
+
 /** tr(msgid) for core texts and settings labels: generated resource t_<crc32> (tools/i18n/i18n.py). */
 class Tr(private val ctx: Context) : (String) -> String {
     private val cache = HashMap<String, String>()

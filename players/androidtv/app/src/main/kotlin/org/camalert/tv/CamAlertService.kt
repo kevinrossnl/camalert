@@ -61,6 +61,11 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
     lateinit var overlay: Overlay
     lateinit var controller: PlayerController
     lateinit var unifiLogin: UnifiLogin
+    /** Camera devices (#66): camera control (ONVIF, Foscam) and Foscam alarms, own private file. */
+    lateinit var cameraDevices: CameraDevices
+    private val deviceClient = org.camalert.core.DeviceClient(UrlTransport(4000))
+    private val foscam = org.camalert.core.FoscamPoller(deviceClient) { m, l -> CamLog.log(m, l) }
+    private var foscamThread: Thread? = null
     /** UniFi Protect consoles (#72), polled in their own thread every unifi_interval seconds. */
     val unifi = UnifiPoller(UrlTransport(), { m, l -> CamLog.log(m, l) })
     private var unifiThread: Thread? = null
@@ -116,6 +121,17 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         }
         override fun log(message: String, level: String) = CamLog.log(message, level)
         override fun changed() { mqtt?.let { m -> Thread { m.publishState() }.start() } }
+        override fun hasPtz(name: String) = name in cameraDevices.cameras()
+        override fun ptzMove(move: String, name: String): Boolean {
+            val dev = cameraDevices.cameras()[name] ?: return false
+            return try {
+                deviceClient.ptz(dev, move)
+                true
+            } catch (e: org.camalert.core.DeviceError) {
+                CamLog.log("camera control $name: ${e.message}", "error")
+                false
+            }
+        }
     }
 
     private val backend = object : Backend {
@@ -153,6 +169,8 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
             Thread { controller.show(stream, null, mode, priority, source, null) }.start()
         }
         override fun neighbour(current: String?, step: Int): Tile? = controller.neighbour(current, step)
+        override fun hasPtz(camera: String?) = camera != null && env.hasPtz(camera)
+        override fun ptz(camera: String, action: String) = env.ptzMove(action, camera)
         override fun colourKey(camera: String?, colour: String) = sendButton(camera, colour)
         override fun unreachable() { synchronized(controller.stats) { controller.stats.unreachable++ } }
         override fun changed() = env.changed()
@@ -221,12 +239,14 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         overlay = Overlay(this, host)
         controller = PlayerController(env, overlay)
         unifiLogin = UnifiLogin(this)
+        cameraDevices = CameraDevices(this)
         CamLog.level = settings()["log_level"]?.toString() ?: "normal"
         foreground()
         store.prefs.registerOnSharedPreferenceChangeListener(this)
         CamLog.log("CamAlert $version started (node $node)")
         apply()
         startUnifi()
+        startFoscam()
         startWarm()
     }
 
@@ -344,6 +364,31 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
 
     override fun onBind(intent: Intent?): IBinder? = null
 
+    /** Foscam motion and sound alarms (#66): every foscam_interval seconds while foscam_enabled is on. */
+    private fun startFoscam() {
+        foscamThread = Thread({
+            while (!Thread.currentThread().isInterrupted) {
+                var wait = 5
+                try {
+                    val s = settings()
+                    if (s["foscam_enabled"] == true) {
+                        foscam.once(s + ("foscam_label" to tr("Motion")), cameraDevices.cameras()) { t ->
+                            controller.show(t.camera, t.seconds, t.mode, t.priority, "foscam", t.label, null)
+                        }
+                        wait = ((s["foscam_interval"] as? Number)?.toInt() ?: 2).coerceIn(1, 60)
+                    }
+                } catch (e: Exception) {  // never let the poller die silently
+                    CamLog.log("Foscam: $e", "error")
+                }
+                try {
+                    Thread.sleep(wait * 1000L)
+                } catch (e: InterruptedException) {
+                    break
+                }
+            }
+        }, "camalert-foscam").apply { isDaemon = true; start() }
+    }
+
     /** The UniFi Protect poller thread: the first answer is only the baseline, errors are logged once (#78). */
     private fun startUnifi() {
         unifiThread = Thread({
@@ -371,6 +416,7 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
     override fun onDestroy() {
         CamLog.log("CamAlert stopped")
         unifiThread?.interrupt()
+        foscamThread?.interrupt()
         warmThread?.interrupt()
         warm.stop()
         store.prefs.unregisterOnSharedPreferenceChangeListener(this)

@@ -33,6 +33,9 @@ interface PlayerEnv {
     fun chime() {}
     fun log(message: String, level: String = "normal") {}
     fun changed() {}
+    /** Camera control (#66): does this camera have PTZ (a line in the devices list), and move it (blocking). */
+    fun hasPtz(name: String): Boolean = false
+    fun ptzMove(move: String, name: String): Boolean = false
     fun now(): Double = System.currentTimeMillis() / 1000.0
     fun localTime(): Pair<Int, Int> = java.util.Calendar.getInstance().let { Pair(it.get(java.util.Calendar.HOUR_OF_DAY), it.get(java.util.Calendar.MINUTE)) }
 }
@@ -223,8 +226,11 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
         return tile(target)
     }
 
-    override fun hasPtz(name: String) = false  // camera control on Android TV: follow-up (#64)
-    override fun ptzMove(move: String, name: String?) = false
+    override fun hasPtz(name: String) = name.isNotEmpty() && env.hasPtz(name)  // #66
+    override fun ptzMove(move: String, name: String?): Boolean {
+        val cam = name?.ifEmpty { null } ?: display.screen().stream ?: return false
+        return env.hasPtz(cam) && env.ptzMove(move, cam)
+    }
 
     override fun setDnd(on: Boolean) {
         env.setSetting("dnd", on)

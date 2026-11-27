@@ -566,6 +566,9 @@ msgstr ""
 msgid "camera control"
 msgstr ""
 
+msgid "actions"
+msgstr ""
+
 msgid "close"
 msgstr ""
 
@@ -582,6 +585,18 @@ msgid "end camera control"
 msgstr ""
 
 msgid "pause"
+msgstr ""
+
+msgid "choose"
+msgstr ""
+
+msgid "confirm"
+msgstr ""
+
+msgid "back"
+msgstr ""
+
+msgid "%s to Home Assistant"
 msgstr ""
 
 msgid "paused"

@@ -24,8 +24,10 @@ class TestKeymap(unittest.TestCase):
 
     def test_same_logical_actions_on_every_player(self):
         """The UI guideline (#2): same actions everywhere; documented differences only."""
-        # Kodi and Android TV: live bar; MENU(/INFO) = PTZ in the window (Fire TV remotes have no colour keys, #64)
-        allowed = {("live", "kodi"), ("window", "kodi"), ("live", "androidtv"), ("window", "androidtv")}
+        # Kodi and Android TV: live bar; MENU(/INFO) = PTZ in the window on Kodi; on Android TV MENU opens the
+        # action menu, a screen only Android TV has (Fire TV remotes have no colour keys, #64, #118)
+        allowed = {("live", "kodi"), ("window", "kodi"), ("live", "androidtv"), ("window", "androidtv"),
+                   ("actions", "androidtv")}
         for context in keymap.CONTEXTS:
             sets = {p: set(keymap.KEYMAP[p][context]) - {"pass"} for p in keymap.PLAYERS}
             for p in keymap.PLAYERS:
@@ -38,7 +40,10 @@ class TestKeymap(unittest.TestCase):
         self.assertIsNone(keymap.action_for("kodi", "ptz", None))
         self.assertEqual(keymap.keys_for("kodi", "tour", "live"), ("GREEN", "PLAY", "UP"))
         self.assertEqual(keymap.action_for("androidtv", "tour", "PLAY_PAUSE"), "live")
-        self.assertEqual(keymap.action_for("androidtv", "window", "MENU"), "ptz")
+        self.assertEqual(keymap.action_for("androidtv", "window", "MENU"), "menu")
+        self.assertEqual(keymap.action_for("androidtv", "live", "MENU"), "menu")
+        self.assertEqual(keymap.action_for("androidtv", "actions", "MENU"), "close")
+        self.assertEqual(keymap.action_for("androidtv", "actions", "OK"), "choose")
 
     def test_tour_live_is_green_or_play_on_every_player(self):
         """UI guideline (#2): tour live = GREEN or PLAY on Enigma2 and Kodi."""
@@ -59,6 +64,20 @@ class TestKeymap(unittest.TestCase):
         self.assertIsNone(keymap.colour_action("red", "blue", enabled=False))
         self.assertIsNone(keymap.colour_action(None))
         self.assertEqual(keymap.colour_action("blue", "off", has_ptz=True), "blue")
+
+    def test_action_menu(self):
+        """#118: the action menu offers exactly what the colour keys would do (colour_action), plus camera control."""
+        self.assertEqual(keymap.action_menu(), [("button", c) for c in keymap.COLOURS])
+        self.assertEqual(keymap.action_menu(True, "blue"),
+                         [("ptz", None), ("button", "red"), ("button", "green"), ("button", "yellow")])
+        self.assertEqual(keymap.action_menu(True, "off"), [("ptz", None)] + [("button", c) for c in keymap.COLOURS])
+        self.assertEqual(keymap.action_menu(True, "blue", ha_buttons=False), [("ptz", None)])
+        self.assertEqual(keymap.action_menu(False, ha_buttons=False), [])
+        for has_ptz in (False, True):
+            for key in keymap.PTZ_TOGGLE_KEYS:
+                for on in (False, True):
+                    sent = [c for kind, c in keymap.action_menu(has_ptz, key, on) if kind == "button"]
+                    self.assertEqual(sent, [c for c in keymap.COLOURS if keymap.colour_action(c, key, has_ptz, on) == c])
 
     def test_button_event(self):
         d = json.loads(keymap.button_event("node1", "garden", "red"))

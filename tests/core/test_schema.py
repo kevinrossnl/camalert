@@ -80,8 +80,8 @@ class TestSchema(unittest.TestCase):
         self.assertEqual((b["http_port"].min, b["http_port"].max), (1024, 65535))
         for sid in ("frigate_mode", "frigate_seconds"):
             self.assertEqual(b[sid].platforms, schema.PLATFORMS, sid)
-        for sid in ("foscam_interval", "foscam_mode", "foscam_seconds"):
-            self.assertEqual(b[sid].platforms, ("enigma2", "kodi"), sid)
+        for sid in ("foscam_enabled", "foscam_interval", "foscam_mode", "foscam_seconds", "ptz_key"):
+            self.assertEqual(b[sid].platforms, schema.PLATFORMS, sid)  # Android TV too since #66
         e2_kodi = set(schema.for_platform("enigma2")) | set(schema.for_platform("kodi"))
         platform_only = sorted(s.id for s in e2_kodi if not {"enigma2", "kodi"} <= set(s.platforms))
         self.assertEqual(platform_only, ["auto_bouquet", "bouquet_name", "bouquet_position", "camera_file",

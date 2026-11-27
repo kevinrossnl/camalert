@@ -142,13 +142,23 @@ class TestKeyHints(unittest.TestCase):
         self.assertIn("PAUSE/PLAY = pause", p.key_hint("kodi", "live", EN))
 
     def test_androidtv_hints(self):
-        """#64: Fire TV remote (no colour keys): MENU = camera control, PLAY/PAUSE = live in the tour."""
-        self.assertEqual(p.key_hint("androidtv", "window", EN), "OK = live   ◀ ▶ = other camera   BACK = close")
+        """#64, #118: Fire TV remote (no colour keys): MENU opens the action menu (colour-key actions, camera
+        control), PLAY/PAUSE = live in the tour."""
+        self.assertEqual(p.key_hint("androidtv", "window", EN),
+                         "OK = live   ◀ ▶ = other camera   MENU = actions   BACK = close")
         self.assertEqual(p.key_hint("androidtv", "window", EN, ptz_key="off", has_ptz=True),
-                         "OK = live   ◀ ▶ = other camera   MENU = camera control   BACK = close")
+                         "OK = live   ◀ ▶ = other camera   MENU = actions   BACK = close")
+        self.assertEqual(p.key_hint("androidtv", "window", EN, ptz_key="blue", has_ptz=True),
+                         "OK = live   ◀ ▶ = other camera   BLUE = camera control   MENU = actions   BACK = close")
+        self.assertEqual(p.key_hint("androidtv", "actions", EN), "▲ ▼ = choose   OK = confirm   BACK/MENU = back")
         self.assertEqual(p.key_hint("androidtv", "tour", EN),
                          "◀ ▶ = other camera   OK = pause   GREEN/PLAY = live   BACK/STOP = close")
         self.assertEqual(p.key_hint("androidtv", "mosaic", EN), "OK/BACK = close")
+        self.assertEqual(p.key_hint("enigma2", "actions", EN), "")  # Android TV only
+
+    def test_action_labels(self):
+        self.assertEqual(p.action_label("ptz", None, EN), "Camera control")
+        self.assertEqual(p.action_label("button", "green", EN), "GREEN to Home Assistant")
 
     def test_tour_status(self):
         self.assertEqual(p.tour_status("Garden", 2, 5, False, EN), "Garden   (2/5, tour)")

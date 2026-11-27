@@ -22,7 +22,8 @@ LANGS = ("nl", "de", "fr", "it", "pl")
 PLAYER_NAMES = {"enigma2": "Enigma2", "kodi": "Kodi", "androidtv": "Android TV"}
 KEY_COLUMNS = ("enigma2", "kodi", "androidtv")  # column order of the key table
 CONTEXT_TITLES = {"window": "Photo window and multi-camera window", "ptz": "Camera control (PTZ)", "tour": "Tour",
-                  "mosaic": "Mosaic", "live": "Live view"}
+                  "mosaic": "Mosaic", "live": "Live view",
+                  "actions": "Action menu (Android TV: MENU)"}
 SECTION_TITLES = {"general": "General", "display": "Display", "rules": "Rules", "triggers": "Triggers",
                   "camera_control": "Camera control", "home_assistant": "Home Assistant / MQTT", "api": "API",
                   "channels": "Channel list (Enigma2)", "log": "Log and diagnostics"}

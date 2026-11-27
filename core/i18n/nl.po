@@ -264,7 +264,7 @@ msgstr "Deze camera tonen"
 msgid "Motion"
 msgstr "Beweging"
 
-#: e2 kodi:30192 ha:entity.sensor.on_screen.state_attributes.cameras.name ha:services.mosaic.fields.cameras.name ha:services.show.fields.camera.name
+#: e2 kodi:30192 ha:entity.sensor.on_screen.state_attributes.cameras.name ha:services.mosaic.fields.cameras.name ha:services.show.fields.camera.name atv:devices_list
 msgid "Cameras"
 msgstr "Camera's"
 
@@ -324,7 +324,7 @@ msgstr "Regels"
 msgid "Triggers"
 msgstr "Triggers"
 
-#: e2 kodi:30005 atv:section.camera_control
+#: e2 kodi:30005 kodi:30578 atv:section.camera_control
 msgid "Camera control"
 msgstr "Camerabediening"
 
@@ -756,6 +756,10 @@ msgstr "andere camera"
 msgid "camera control"
 msgstr "camerabediening"
 
+#: e2 kodi:30574
+msgid "actions"
+msgstr "acties"
+
 #: e2 kodi:30541
 msgid "close"
 msgstr "sluiten"
@@ -779,6 +783,22 @@ msgstr "camerabediening stoppen"
 #: e2 kodi:30546
 msgid "pause"
 msgstr "pauze"
+
+#: e2 kodi:30575
+msgid "choose"
+msgstr "kiezen"
+
+#: e2 kodi:30576
+msgid "confirm"
+msgstr "uitvoeren"
+
+#: e2 kodi:30577
+msgid "back"
+msgstr "terug"
+
+#: e2 kodi:30579
+msgid "%s to Home Assistant"
+msgstr "%s naar Home Assistant"
 
 #: e2 kodi:30190 kodi:30547
 msgid "paused"
@@ -1240,7 +1260,7 @@ msgstr "Kleurtoetsen naar Home Assistant"
 msgid "While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate)."
 msgstr "Zolang een camera in beeld is, sturen de kleurtoetsen een gebeurtenis naar Home Assistant (bijv. hek openen)."
 
-#: e2 kodi:30152
+#: e2 kodi:30152 atv:devices_user
 msgid "Camera user (default)"
 msgstr "Cameragebruiker (standaard)"
 
@@ -1248,7 +1268,7 @@ msgstr "Cameragebruiker (standaard)"
 msgid "Used when devices.conf has no user or password for a camera."
 msgstr "Gebruikt als devices.conf geen gebruiker of wachtwoord voor een camera heeft."
 
-#: e2 kodi:30154
+#: e2 kodi:30154 atv:devices_password
 msgid "Camera password (default)"
 msgstr "Camerawachtwoord (standaard)"
 
@@ -2071,6 +2091,22 @@ msgstr "Wachtwoord van de console"
 #: atv:unifi_where
 msgid "the settings below"
 msgstr "de instellingen hieronder"
+
+#: atv:devices_title
+msgid "Camera devices (camera control, Foscam)"
+msgstr "Cameraapparaten (camerabediening, Foscam)"
+
+#: atv:devices_help
+msgid "One camera per line: name|onvif|address:port|user|password or name|foscam|address:88|user|password. The name is the CamAlert camera name. Empty user and password = the default login below."
+msgstr "Eén camera per regel: naam|onvif|adres:poort|gebruiker|wachtwoord of naam|foscam|adres:88|gebruiker|wachtwoord. De naam is de cameranaam in CamAlert. Gebruiker en wachtwoord leeg = de standaardlogin hieronder."
+
+#: atv:devices_none
+msgid "no valid line"
+msgstr "geen geldige regel"
+
+#: atv:devices_where
+msgid "the camera devices"
+msgstr "de cameraapparaten"
 
 #: atv:unifi_no_console
 msgid "UniFi Protect: no console address set"

@@ -567,6 +567,9 @@ msgstr "andere camera"
 msgid "camera control"
 msgstr "camerabediening"
 
+msgid "actions"
+msgstr "acties"
+
 msgid "close"
 msgstr "sluiten"
 
@@ -584,6 +587,18 @@ msgstr "camerabediening stoppen"
 
 msgid "pause"
 msgstr "pauze"
+
+msgid "choose"
+msgstr "kiezen"
+
+msgid "confirm"
+msgstr "uitvoeren"
+
+msgid "back"
+msgstr "terug"
+
+msgid "%s to Home Assistant"
+msgstr "%s naar Home Assistant"
 
 msgid "paused"
 msgstr "gepauzeerd"

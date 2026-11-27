@@ -68,6 +68,13 @@
     <string name="unifi_console_user" formatted="false">Utente della console (ruolo View Only)</string>
     <string name="unifi_console_password" formatted="false">Password della console</string>
     <string name="unifi_where" formatted="false">basso</string>
+    <string name="devices_title" formatted="false">Dispositivi telecamera (controllo telecamera, Foscam)</string>
+    <string name="devices_list" formatted="false">Telecamere</string>
+    <string name="devices_help" formatted="false">Una telecamera per riga: nome|onvif|indirizzo:porta|utente|password oppure nome|foscam|indirizzo:88|utente|password. Il nome è il nome della telecamera in CamAlert. Utente e password vuoti = l\'accesso predefinito qui sotto.</string>
+    <string name="devices_user" formatted="false">Utente telecamera (predefinito)</string>
+    <string name="devices_password" formatted="false">Password telecamera (predefinita)</string>
+    <string name="devices_none" formatted="false">nessuna riga valida</string>
+    <string name="devices_where" formatted="false">i dispositivi telecamera</string>
     <string name="unifi_no_console" formatted="false">UniFi Protect: nessun indirizzo della console impostato</string>
     <string name="wizard_title" formatted="false">Procedura guidata CamAlert</string>
     <string name="wizard_searching" formatted="false">Ricerca di go2rtc nella rete...</string>
@@ -151,6 +158,10 @@
     <string name="t_52b025e5" formatted="false">Nomi delle telecamere Frigate</string>
     <string name="t_0480ae98" formatted="false">Solo se i nomi differiscono da go2rtc: frigate=go2rtc|other=other_stream</string>
     <string name="t_21325cd6" formatted="false">Priorità Frigate</string>
+    <string name="t_7db549fa" formatted="false">Allarmi di movimento e audio Foscam</string>
+    <string name="t_a3c5d81f" formatted="false">Interroga le telecamere Foscam in %s sugli allarmi di movimento e audio.</string>
+    <string name="t_8d5f7ed0" formatted="false">Priorità Foscam</string>
+    <string name="t_02491587" formatted="false">Controlla ogni (secondi)</string>
     <string name="t_3989819d" formatted="false">Eventi UniFi Protect</string>
     <string name="t_5c8d390b" formatted="false">Interroga le console UniFi Protect in %s sugli eventi (campanello, persona, veicolo, ...).</string>
     <string name="t_4f396c23" formatted="false">Tipi di eventi UniFi Protect</string>
@@ -159,11 +170,12 @@
     <string name="t_01b954ba" formatted="false">Solo se i nomi differiscono da go2rtc: protect=go2rtc|other=other_stream</string>
     <string name="t_c36f9210" formatted="false">Priorità UniFi Protect</string>
     <string name="t_5196d03a" formatted="false">Una suonata del campanello riceve sempre almeno la priorità Alta.</string>
-    <string name="t_02491587" formatted="false">Controlla ogni (secondi)</string>
     <string name="t_a09c4f41" formatted="false">Per tipo di evento</string>
     <string name="t_731133cf" formatted="false">Facoltativo: type=priority/mode/camera, ad es. ring=alarm/live|motion=normal/log</string>
     <string name="t_e77cca02" formatted="false">Per telecamera</string>
     <string name="t_4ab02f1e" formatted="false">Facoltativo, prevale sul tipo di evento: camera=priority/mode/seconds, ad es. front_door=high/photo/30|driveway=normal/log</string>
+    <string name="t_aa7f7937" formatted="false">Tasto per il controllo telecamera (PTZ)</string>
+    <string name="t_4c3561cc" formatted="false">Per le telecamere PTZ in %s: questo tasto attiva la modalità PTZ (frecce, CH+/CH-, OK = posizione iniziale).</string>
     <string name="t_10c9a4ed" formatted="false">Tasti colorati a Home Assistant</string>
     <string name="t_b8d8287a" formatted="false">Mentre è mostrata una telecamera, i tasti colorati inviano un evento a Home Assistant (ad es. aprire il cancello).</string>
     <string name="t_674df9da" formatted="false">MQTT (Home Assistant senza YAML)</string>
@@ -237,12 +249,18 @@
     <string name="t_530f2caf" formatted="false">live</string>
     <string name="t_103a74df" formatted="false">altra telecamera</string>
     <string name="t_5579d653" formatted="false">controllo telecamera</string>
+    <string name="t_0548f1ef" formatted="false">azioni</string>
     <string name="t_130181c4" formatted="false">chiudere</string>
     <string name="t_ef3e3778" formatted="false">spostare</string>
     <string name="t_b72b7974" formatted="false">zoom</string>
     <string name="t_0c3311fc" formatted="false">posizione iniziale</string>
     <string name="t_b79c9968" formatted="false">terminare il controllo telecamera</string>
     <string name="t_d79a92ed" formatted="false">pausa</string>
+    <string name="t_8fe43471" formatted="false">scegliere</string>
+    <string name="t_8fd3a344" formatted="false">eseguire</string>
+    <string name="t_6dcec137" formatted="false">indietro</string>
+    <string name="t_981dae8b" formatted="false">Controllo telecamera</string>
+    <string name="t_b58ee195" formatted="false">%s a Home Assistant</string>
     <string name="t_46b14e9b" formatted="false">in pausa</string>
     <string name="t_6ad1f969" formatted="false">giro</string>
     <string name="t_9ee51c54" formatted="false">non è un file di impostazioni</string>

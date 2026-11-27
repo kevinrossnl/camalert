@@ -49,9 +49,17 @@ removes the app's settings. **Remove:** `adb uninstall org.camalert.tv`.
 Open **CamAlert** from the apps row (or *Settings › Apps › CamAlert › Open*). The settings use the same names,
 defaults and levels as on the other players ([all settings](../user/settings.md)); expert settings are hidden
 until you turn on *Show expert settings*. The *Players* column of the settings list says which ones Android TV has;
-*Volume during live view* starts at 0 here (the app underneath keeps its own sound). Not yet on Android TV: direct
-mode with a camera file, Foscam alarms and camera control (PTZ) (#66); pausing what is playing is not possible on
-Android.
+*Volume during live view* starts at 0 here (the app underneath keeps its own sound). Not on Android TV: direct
+mode with a camera file and clip playback from Frigate (#124); pausing what is playing is not possible on Android.
+
+**Camera control (PTZ) and Foscam alarms** (#66): *Camera control* has **Camera devices** at the bottom, with the
+same lines as `devices.conf` on the other players, one camera per line: `front_door|onvif|192.168.1.30:80|user|password`
+or `garden|foscam|192.168.1.31:88|user|password` (the name is the CamAlert camera name; empty user and password =
+the default camera login below the list). They are kept in the app's own private storage, apart from the settings,
+and never appear in the log. A camera in the list gets camera control: **MENU › Camera control** (or its colour key,
+*Camera control (PTZ) key*), then **▲ ▼ ◀ ▶** = move, **FF / REW** (or CH+ / CH-) = zoom, **OK** = home position,
+**BACK** or **MENU** = end. *Triggers › Foscam motion and sound alarms* asks the Foscam cameras of the list every few
+seconds and shows the camera when an alarm starts.
 
 **HTTPS and remote syslog** (#66, expert settings): *Use HTTPS for the API* serves the API with a self-signed
 certificate (`CN=CamAlert`) that the app creates once in the Android KeyStore; in Home Assistant turn on *Use HTTPS*
@@ -70,8 +78,10 @@ event and, while it waits, the next login attempt.
 ## What you see
 
 - **Photo window** – a camera in a corner over any app. Remote: **OK** = live, **◀ ▶** = other camera,
-  **BACK** = close. Fire TV remotes have no colour keys; other Android TV remotes send RED / GREEN / YELLOW /
-  BLUE to Home Assistant while a camera is shown. All keys: [remote keys](../user/keys.md).
+  **MENU** = actions, **BACK** = close. Fire TV remotes have no colour keys, so **MENU** (≡) opens a small list in the
+  window: *RED / GREEN / YELLOW / BLUE to Home Assistant* (the same event as the colour key, e.g. to open the gate)
+  and *Camera control* for a camera with PTZ; ▲ ▼ chooses, OK does it, BACK or MENU closes the list (#118).
+  Remotes with colour keys can still use them. All keys: [remote keys](../user/keys.md).
 - **Multi-camera window** (2–4 cameras), **mosaic** (up to 9; OK or BACK closes) and **tour** (◀ ▶, OK =
   pause, PLAY/PAUSE = live view, BACK). A camera that does not answer shows a *Camera not reachable* tile.
 - **Live view** – the camera full screen over the app (Media3/ExoPlayer: MP4 or HLS from go2rtc, or RTSP over

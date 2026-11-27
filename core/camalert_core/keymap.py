@@ -13,6 +13,8 @@ Contexts:
     tour     full-screen tour
     mosaic   full-screen mosaic
     live     live view (Kodi shows a bar; on Enigma2 the camera is a normal channel)
+    actions  on-screen action menu (Android TV, #118): Fire TV remotes have no colour keys, so MENU opens a list
+             with the colour-key actions and camera control
 Tour live is GREEN or PLAY on both players (UI guideline #2); Kodi reports GREEN as its colour action, klogic.tour_key
 turns that into the key name GREEN. The mosaic closes with OK or EXIT/BACK on both players (#58).
 Colour keys (red/green/yellow/blue) go to Home Assistant while a camera is on screen, except the configured
@@ -30,6 +32,7 @@ KEYMAP = {
         "tour": {"prev": ("LEFT",), "next": ("RIGHT",), "hold": ("OK",), "live": ("GREEN", "PLAY"), "close": ("EXIT",)},
         "mosaic": {"close": ("OK", "EXIT")},
         "live": {},
+        "actions": {},
     },
     "kodi": {
         "window": {"live": ("SELECT", "ENTER"), "prev": ("LEFT",), "next": ("RIGHT",),
@@ -44,11 +47,13 @@ KEYMAP = {
         "mosaic": {"close": ("SELECT", "ENTER", "PREVIOUS_MENU", "BACK", "STOP")},
         "live": {"prev": ("LEFT",), "next": ("RIGHT",), "close": ("PREVIOUS_MENU", "BACK", "STOP"),
                  "pause": ("PAUSE", "PLAY"), "ptz": ("CONTEXT_MENU", "SHOW_INFO")},
+        "actions": {},
     },
     # Android TV / Fire TV (#64): the app maps KeyEvent codes to these names (KeyNames.kt). Fire TV remotes have
-    # no colour or channel keys: MENU = camera control, FAST_FORWARD/REWIND = zoom, PLAY_PAUSE = live in the tour.
+    # no colour or channel keys (#118): MENU opens the action menu (colour-key actions, camera control),
+    # FAST_FORWARD/REWIND = zoom, PLAY_PAUSE = live in the tour. Real colour keys still work where the remote has them.
     "androidtv": {
-        "window": {"live": ("OK",), "prev": ("LEFT",), "next": ("RIGHT",), "close": ("BACK",), "ptz": ("MENU",),
+        "window": {"live": ("OK",), "prev": ("LEFT",), "next": ("RIGHT",), "close": ("BACK",), "menu": ("MENU",),
                    "pass": ("VOLUME_UP", "VOLUME_DOWN", "MUTE")},
         "ptz": {"up": ("UP",), "down": ("DOWN",), "left": ("LEFT",), "right": ("RIGHT",),
                 "zoom_in": ("FAST_FORWARD", "CHANNEL_UP"), "zoom_out": ("REWIND", "CHANNEL_DOWN"), "home": ("OK",),
@@ -57,11 +62,12 @@ KEYMAP = {
                  "close": ("BACK", "STOP")},
         "mosaic": {"close": ("OK", "BACK", "STOP")},
         "live": {"prev": ("LEFT",), "next": ("RIGHT",), "close": ("BACK", "STOP"), "pause": ("PLAY_PAUSE", "PAUSE"),
-                 "ptz": ("MENU",)},
+                 "menu": ("MENU",)},
+        "actions": {"up": ("UP",), "down": ("DOWN",), "choose": ("OK",), "close": ("BACK", "MENU")},
     },
 }
 PLAYERS = tuple(sorted(KEYMAP))
-CONTEXTS = ("window", "ptz", "tour", "mosaic", "live")
+CONTEXTS = ("window", "ptz", "tour", "mosaic", "live", "actions")
 
 
 def action_for(player, context, key):
@@ -89,6 +95,17 @@ def colour_action(colour, ptz_toggle="blue", has_ptz=False, enabled=True):
     if has_ptz and colour == ptz_toggle:
         return "ptz"
     return colour if enabled else None
+
+
+def action_menu(has_ptz=False, ptz_key="blue", ha_buttons=True):
+    """The entries of the on-screen action menu (#118), in order: ("ptz", None) for camera control on a camera
+    with PTZ, then ("button", colour) for every colour key that goes to Home Assistant (the same colours
+    colour_action() sends: not the PTZ key of a PTZ camera, none when ha_buttons is off)."""
+    out = [("ptz", None)] if has_ptz else []
+    for colour in COLOURS:
+        if colour_action(colour, ptz_key, has_ptz, ha_buttons) == colour:
+            out.append(("button", colour))
+    return out
 
 
 def button_event(node, camera, button):

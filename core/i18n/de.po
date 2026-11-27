@@ -264,7 +264,7 @@ msgstr "Diese Kamera zeigen"
 msgid "Motion"
 msgstr "Bewegung"
 
-#: e2 kodi:30192 ha:entity.sensor.on_screen.state_attributes.cameras.name ha:services.mosaic.fields.cameras.name ha:services.show.fields.camera.name
+#: e2 kodi:30192 ha:entity.sensor.on_screen.state_attributes.cameras.name ha:services.mosaic.fields.cameras.name ha:services.show.fields.camera.name atv:devices_list
 msgid "Cameras"
 msgstr "Kameras"
 
@@ -324,7 +324,7 @@ msgstr "Regeln"
 msgid "Triggers"
 msgstr "Auslöser"
 
-#: e2 kodi:30005 atv:section.camera_control
+#: e2 kodi:30005 kodi:30578 atv:section.camera_control
 msgid "Camera control"
 msgstr "Kamerasteuerung"
 
@@ -756,6 +756,10 @@ msgstr "andere Kamera"
 msgid "camera control"
 msgstr "Kamerasteuerung"
 
+#: e2 kodi:30574
+msgid "actions"
+msgstr "Aktionen"
+
 #: e2 kodi:30541
 msgid "close"
 msgstr "schließen"
@@ -779,6 +783,22 @@ msgstr "Kamerasteuerung beenden"
 #: e2 kodi:30546
 msgid "pause"
 msgstr "Pause"
+
+#: e2 kodi:30575
+msgid "choose"
+msgstr "auswählen"
+
+#: e2 kodi:30576
+msgid "confirm"
+msgstr "ausführen"
+
+#: e2 kodi:30577
+msgid "back"
+msgstr "zurück"
+
+#: e2 kodi:30579
+msgid "%s to Home Assistant"
+msgstr "%s an Home Assistant"
 
 #: e2 kodi:30190 kodi:30547
 msgid "paused"
@@ -1240,7 +1260,7 @@ msgstr "Farbtasten an Home Assistant"
 msgid "While a camera is on screen the colour keys send an event to Home Assistant (e.g. open the gate)."
 msgstr "Solange eine Kamera angezeigt wird, senden die Farbtasten ein Ereignis an Home Assistant (z. B. Tor öffnen)."
 
-#: e2 kodi:30152
+#: e2 kodi:30152 atv:devices_user
 msgid "Camera user (default)"
 msgstr "Kamerabenutzer (Standard)"
 
@@ -1248,7 +1268,7 @@ msgstr "Kamerabenutzer (Standard)"
 msgid "Used when devices.conf has no user or password for a camera."
 msgstr "Wird benutzt, wenn devices.conf keinen Benutzer oder kein Passwort enthält."
 
-#: e2 kodi:30154
+#: e2 kodi:30154 atv:devices_password
 msgid "Camera password (default)"
 msgstr "Kamerapasswort (Standard)"
 
@@ -2071,6 +2091,22 @@ msgstr "Passwort der Konsole"
 #: atv:unifi_where
 msgid "the settings below"
 msgstr "den Einstellungen unten"
+
+#: atv:devices_title
+msgid "Camera devices (camera control, Foscam)"
+msgstr "Kamerageräte (Kamerasteuerung, Foscam)"
+
+#: atv:devices_help
+msgid "One camera per line: name|onvif|address:port|user|password or name|foscam|address:88|user|password. The name is the CamAlert camera name. Empty user and password = the default login below."
+msgstr "Eine Kamera pro Zeile: name|onvif|adresse:port|benutzer|passwort oder name|foscam|adresse:88|benutzer|passwort. Der Name ist der Kameraname in CamAlert. Benutzer und Passwort leer = die Standard-Anmeldung unten."
+
+#: atv:devices_none
+msgid "no valid line"
+msgstr "keine gültige Zeile"
+
+#: atv:devices_where
+msgid "the camera devices"
+msgstr "den Kamerageräten"
 
 #: atv:unifi_no_console
 msgid "UniFi Protect: no console address set"

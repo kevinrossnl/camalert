@@ -12,6 +12,8 @@ actions and blueprint inputs stay backwards compatible.
 - **Home Assistant:** the player's device is shown under the device of the TV or Enigma2 receiver it runs on, found
   automatically by address from the Enigma2, Kodi or Android TV integration. **Configure** on the CamAlert entry
   (*Show under device*) chooses another device or turns this off.
+- **Home Assistant:** a notify entity *Notification* per player: `notify.send_message` shows the message as a
+  notification on the TV, with the picture of the camera named in the title (otherwise the default camera).
 - **Kodi:** CamAlert can be Kodi's screensaver: while Kodi is idle it shows the mosaic cameras (or all cameras,
   up to 9); any key closes it. Choose it under *Settings › Interface › Screensaver › Screensaver mode*
   ([Kodi](docs/players/kodi.md#as-screensaver)).

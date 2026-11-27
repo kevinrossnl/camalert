@@ -45,6 +45,9 @@ off only for the player's own self-signed certificate.
   `camalert_button` (`device_id`, `player`, `camera`, `button`; `receiver` is kept for older automations). Use the
   blueprint *CamAlert - remote button does something* to, for example, open the gate with GREEN when the doorbell
   camera shows who is there ([remote keys](../user/keys.md#colour-keys-to-home-assistant)).
+- A notify entity **Notification**: the action `notify.send_message` shows the message (at most 40 characters) as
+  a notification on the TV, with the picture of a camera. A *title* that is the name of a camera picks that camera;
+  any other title goes before the message, and the player's default camera is shown.
 - **Download diagnostics** on the integration entry: version, platform, capabilities, status, last events and the
   player's log (redacted).
 - Actions for automations and scripts:

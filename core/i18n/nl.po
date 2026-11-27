@@ -12,7 +12,7 @@ msgstr "Fotovenster"
 msgid "Live view"
 msgstr "Live beeld"
 
-#: e2 kodi:30044 ha:selector.mode.options.notify atv:choice.frigate_mode.notify atv:choice.mode.notify atv:choice.unifi_mode.notify
+#: e2 kodi:30044 ha:entity.notify.notification.name ha:selector.mode.options.notify atv:choice.frigate_mode.notify atv:choice.mode.notify atv:choice.unifi_mode.notify
 msgid "Notification"
 msgstr "Melding"
 

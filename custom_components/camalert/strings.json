@@ -118,6 +118,11 @@
           }
         }
       }
+    },
+    "notify": {
+      "notification": {
+        "name": "Notification"
+      }
     }
   },
   "selector": {

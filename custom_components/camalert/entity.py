@@ -25,8 +25,9 @@ class CamAlertEntity(CoordinatorEntity):
         """Run an API call for a button or switch; errors are shown in the UI (never silent)."""
         from . import _error
         try:
-            await coro
+            answer = await coro
         except CamAlertError as err:
             raise _error("request_failed", name=self._entry.title, error=err) from err
         if refresh:
             await self.coordinator.async_request_refresh()
+        return answer

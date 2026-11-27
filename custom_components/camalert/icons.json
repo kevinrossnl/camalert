@@ -13,6 +13,9 @@
     },
     "event": {
       "remote_button": {"default": "mdi:remote"}
+    },
+    "notify": {
+      "notification": {"default": "mdi:message-image-outline"}
     }
   },
   "services": {

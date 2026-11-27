@@ -28,7 +28,7 @@ async def test_entities_of_a_player(hass, player):
         er.async_get(hass), hass.config_entries.async_entries("camalert")[0].entry_id))
     assert ids == ["button.living_room_hide_camera", "button.living_room_mosaic", "button.living_room_show_front_door",
                    "button.living_room_show_garden", "event.living_room_remote_button",
-                   "notify.living_room_notification", SENSOR, SWITCH]
+                   "notify.living_room_notification", SENSOR, SWITCH, "update.living_room_camalert"]
     assert hass.states.get("button.living_room_show_front_door").attributes["friendly_name"] == \
         "Living room Show Front door"
     for e in ids:  # icons come from icons.json, not from the entities
@@ -99,5 +99,6 @@ async def test_entities_follow_capabilities(hass, player):
     entry = await setup_player(hass, player)
     ids = sorted(e.entity_id for e in er.async_entries_for_config_entry(er.async_get(hass), entry.entry_id))
     assert ids == ["button.living_room_hide_camera", "button.living_room_show_front_door",
-                   "button.living_room_show_garden", "notify.living_room_notification", SENSOR]
+                   "button.living_room_show_garden", "notify.living_room_notification", SENSOR,
+                   "update.living_room_camalert"]
     assert player.webhooks == []  # no webhook capability: colour keys only via MQTT

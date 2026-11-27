@@ -38,6 +38,12 @@ if HAVE_HA:
         from custom_components.camalert import api
         monkeypatch.setattr(api, "TIMEOUT", 0.5)
 
+    @pytest.fixture(autouse=True)
+    def no_github(monkeypatch):
+        """Never GitHub in tests (#83): the release check gets a refused local port unless a test sets a fake."""
+        from custom_components.camalert import update
+        monkeypatch.setattr(update, "RELEASE_URL", "http://127.0.0.1:9/releases/latest")
+
     @pytest.fixture
     async def player(socket_enabled):
         p = await FakePlayer().start()

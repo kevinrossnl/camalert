@@ -16,6 +16,9 @@
     },
     "notify": {
       "notification": {"default": "mdi:message-image-outline"}
+    },
+    "update": {
+      "camalert": {"default": "mdi:cctv"}
     }
   },
   "services": {

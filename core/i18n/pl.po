@@ -1704,6 +1704,10 @@ msgstr "Żółty"
 msgid "Blue"
 msgstr "Niebieski"
 
+#: ha:entity.update.camalert.name
+msgid "CamAlert"
+msgstr "CamAlert"
+
 #: ha:selector.mode.options.strip
 msgid "Multi-camera window"
 msgstr "Okno z kilkoma kamerami"

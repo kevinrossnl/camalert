@@ -14,6 +14,9 @@ actions and blueprint inputs stay backwards compatible.
   (*Show under device*) chooses another device or turns this off.
 - **Home Assistant:** a notify entity *Notification* per player: `notify.send_message` shows the message as a
   notification on the TV, with the picture of the camera named in the title (otherwise the default camera).
+- **Home Assistant:** an update entity *CamAlert* per player shows when a newer CamAlert release is out, with a
+  link to the release notes. GitHub is checked at most every 6 hours, without a token; installing stays on the
+  player.
 - **Kodi:** CamAlert can be Kodi's screensaver: while Kodi is idle it shows the mosaic cameras (or all cameras,
   up to 9); any key closes it. Choose it under *Settings › Interface › Screensaver › Screensaver mode*
   ([Kodi](docs/players/kodi.md#as-screensaver)).

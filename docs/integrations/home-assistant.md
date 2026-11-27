@@ -48,6 +48,10 @@ off only for the player's own self-signed certificate.
 - A notify entity **Notification**: the action `notify.send_message` shows the message (at most 40 characters) as
   a notification on the TV, with the picture of a camera. A *title* that is the name of a camera picks that camera;
   any other title goes before the message, and the player's default camera is shown.
+- An update entity **CamAlert**: the CamAlert version on the player against the
+  [latest release](https://github.com/kevinrossnl/camalert/releases/latest), with the release notes. Home Assistant
+  checks GitHub at most once every 6 hours for all players (no account or token). It only tells you there is an
+  update: install it on the player as before.
 - **Download diagnostics** on the integration entry: version, platform, capabilities, status, last events and the
   player's log (redacted).
 - Actions for automations and scripts:

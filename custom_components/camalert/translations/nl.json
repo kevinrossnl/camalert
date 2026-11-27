@@ -123,6 +123,11 @@
       "notification": {
         "name": "Melding"
       }
+    },
+    "update": {
+      "camalert": {
+        "name": "CamAlert"
+      }
     }
   },
   "selector": {

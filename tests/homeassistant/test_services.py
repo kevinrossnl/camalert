@@ -86,9 +86,11 @@ async def test_services_yaml_valid_for_home_assistant(hass, player):
         for field in service.get("fields", {}).values():
             selector.validate_selector(field["selector"])
     await setup_player(hass, player)
-    # only CamAlert's actions: the notify actions (#85) pull in conversation (hassil), not installed in these tests
-    for name in list(hass.services.async_services().get("notify", {})):
-        hass.services.async_remove("notify", name)
+    # only CamAlert's actions: the notify (#85) and update (#83) actions pull in conversation (hassil), not
+    # installed in these tests
+    for domain in ("notify", "update"):
+        for name in list(hass.services.async_services().get(domain, {})):
+            hass.services.async_remove(domain, name)
     descriptions = (await async_get_all_descriptions(hass))[DOMAIN]
     assert sorted(descriptions) == ["hide", "mosaic", "ptz", "show"]
     assert descriptions["show"]["target"] == {"entity": [{"integration": DOMAIN}]}

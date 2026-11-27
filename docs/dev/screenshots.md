@@ -21,8 +21,10 @@ Screenshots in the docs show **only CamAlert's own screens**, never a camera pic
 | `images/kodi/menu.png` | Kodi choice list when CamAlert is opened from *Program add-ons* (#106), cropped to the dialog |
 | `images/kodi/camera-list.png` | Kodi video add-on: the camera list with a demo camera selected (#107), full screen |
 
-The Enigma2 screenshots were taken on openATV 8.0.1 with its default skin (MetrixHD, 1280x720 OSD); the Kodi
-screenshots on Kodi 21 (LibreELEC) with Estuary at 1920x1080, cropped and scaled to 2/3.
+The Enigma2 screenshots were taken on openATV 8.0.1 with its default skin (MetrixHD; last refresh 27-11-2026 on a
+VU+ Solo 4K with CamAlert 1.1.0+). MetrixHD draws its OSD at 1280x720 even with a 2160p video mode (framebuffer
+1280x720), so the grabs are 1280x720; 1920x1080 grabs need an FHD skin, which we do not switch to for screenshots.
+The Kodi screenshots were taken on Kodi 21 (LibreELEC) with Estuary at 1920x1080, cropped and scaled to 2/3.
 
 ## How to take them (Enigma2)
 
@@ -41,8 +43,10 @@ screenshots on Kodi 21 (LibreELEC) with Estuary at 1920x1080, cropped and scaled
 4. **Grab the OSD only:** `http://<receiver>/grab?format=png&mode=osd` (no video layer, so no TV picture). The OSD
    is transparent where the TV would be: flatten it on a neutral dark grey (`#282c34`). Navigate with
    `/api/remotecontrol?command=<key code>`.
-5. **Restore everything:** `init 4`, put back the settings file and `camalert.log`, stop the fake go2rtc, `init 3`,
-   then restore the channel. Check that the CamAlert channel list did not change.
+5. **Restore everything:** `init 4`, put back the settings file and `camalert.log`, stop the fake go2rtc (by its
+   pid), `init 3`, then restore the channel. Check that the CamAlert channel list did not change. A setting changed
+   through OpenWebif `/api/saveconfig` is only in memory until Enigma2 saves its settings (at `init 4`): a backup
+   taken before that misses it, so check such settings after the restore.
 6. Look at every picture at full size (privacy checklist), crop away other plugins or vendor pictures, then
    `python3 tools/check_images.py --strip <files>` and `python3 tools/check_images.py .`.
 

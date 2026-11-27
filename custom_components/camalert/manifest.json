@@ -11,6 +11,6 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/kevinrossnl/camalert/issues",
   "requirements": [],
-  "version": "1.3.0",
+  "version": "1.3.1",
   "zeroconf": ["_camalert._tcp.local."]
 }

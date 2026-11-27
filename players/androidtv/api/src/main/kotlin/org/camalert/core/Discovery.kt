@@ -12,9 +12,21 @@ object Discovery {
     val TXT_KEYS = listOf("id", "name", "platform", "version", "api_version", "https")
 
     private val CONTROL = Regex("[\\x00-\\x1f\\x7f]")
-    private val SPACES = Regex("(?U)\\s+")
 
-    private fun clean(text: Any?): String = SPACES.replace(CONTROL.replace(text?.toString() ?: "", " "), " ").trim()
+    /** Runs of whitespace (Unicode, like Python's \\s) become one space. No regex with the Unicode flag: Android's ICU regex
+     *  rejects that flag and the app crashed at start on Fire OS 6 (1.3.0). */
+    private fun clean(text: Any?): String {
+        val s = CONTROL.replace(text?.toString() ?: "", " ")
+        val out = StringBuilder(s.length)
+        var space = false
+        for (c in s) {
+            if (c.isWhitespace()) { space = true; continue }
+            if (space && out.isNotEmpty()) out.append(' ')
+            space = false
+            out.append(c)
+        }
+        return out.toString()
+    }
 
     /** text shortened to at most limit UTF-8 bytes, never in the middle of a character. */
     private fun cut(text: String, limit: Int): String {

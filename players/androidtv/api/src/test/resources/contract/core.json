@@ -20379,6 +20379,36 @@
    "out": 76
   }
  ],
+ "has_seconds": [
+  {
+   "has": false,
+   "value": false
+  },
+  {
+   "has": true,
+   "value": 0
+  },
+  {
+   "has": true,
+   "value": "0"
+  },
+  {
+   "has": false,
+   "value": ""
+  },
+  {
+   "has": false,
+   "value": " "
+  },
+  {
+   "has": false,
+   "value": null
+  },
+  {
+   "has": true,
+   "value": "20"
+  }
+ ],
  "key_hints": [
   {
    "context": "window",
@@ -21372,12 +21402,6 @@
    "has": false,
    "out": 30,
    "value": null
-  },
-  {
-   "default": 30,
-   "has": false,
-   "out": 600,
-   "value": false
   },
   {
    "default": 30,

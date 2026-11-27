@@ -212,7 +212,8 @@ def core_reference():
                            ("-5", 30))],
         "show_seconds": [{"value": v, "default": d, "out": rules.show_seconds(v, d), "has": rules.has_seconds(v)}
                          for v, d in (("0", 30), (" 0 ", 30), (0, 30), ("20", 30), ("999", 30), ("abc", 30), ("", 30),
-                                      (" ", 30), (None, 30), (False, 30), ("-5", 30))],
+                                      (" ", 30), (None, 30), ("-5", 30))],  # False: has_seconds only (below)
+        "has_seconds": [{"value": v, "has": rules.has_seconds(v)} for v in (False, 0, "0", "", " ", None, "20")],
         "cameras_param": [{"value": v, "out": _cameras_param(v)} for v in
                           ("garden", "garden, front_door", "a,,b", " ", "../etc/passwd", "a b", "x/y", "a.b-c_d")],
         "parse_body": [{"content_type": ct, "body": b, "out": _parse_body(ct, b)} for ct, b in

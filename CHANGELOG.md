@@ -7,6 +7,8 @@ actions and blueprint inputs stay backwards compatible.
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-11-27
+
 ### Added
 
 - **Enigma2 and Kodi:** export and import the settings as one file (`camalert-settings.json`), to copy them to
@@ -271,7 +273,8 @@ device (Kodi 19 or newer), controlled by Home Assistant, MQTT, Frigate, UniFi Pr
 - Every player and the Home Assistant integration in English, Dutch, German, French, Italian and Polish, from one
   master catalogue with a shared glossary ([Translating](docs/dev/translating.md)).
 
-[Unreleased]: https://github.com/kevinrossnl/camalert/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/kevinrossnl/camalert/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/kevinrossnl/camalert/releases/tag/v1.3.0
 [1.2.0]: https://github.com/kevinrossnl/camalert/releases/tag/v1.2.0
 [1.1.0]: https://github.com/kevinrossnl/camalert/releases/tag/v1.1.0
 [1.0.1]: https://github.com/kevinrossnl/camalert/releases/tag/v1.0.1

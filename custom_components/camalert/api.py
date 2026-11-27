@@ -9,7 +9,7 @@ from __future__ import annotations
 from typing import Any
 from urllib.parse import urlencode
 
-INTEGRATION_VERSION = "1.2.0"  # = manifest.json version
+INTEGRATION_VERSION = "1.3.0"  # = manifest.json version
 ACTIONS = ("show", "mosaic", "tour", "hide", "ptz", "webhook", "setup")  # change something on the player: POST
 TIMEOUT = 10  # seconds per request
 MODELS = {"enigma2": "Enigma2 receiver", "kodi": "Kodi", "androidtv": "Android TV"}  # device model per /status platform (#44, #64)

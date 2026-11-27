@@ -99,6 +99,8 @@
     <string name="t_b0271f5b" formatted="false">Tour: seconds per camera</string>
     <string name="t_52cb38ea" formatted="false">Turn or mirror image</string>
     <string name="t_5de5bce0" formatted="false">Press OK to turn a camera that hangs upside down (needs python3-pillow).</string>
+    <string name="t_2bd7c5d1" formatted="false">Pictures from UniFi Protect</string>
+    <string name="t_e77479eb" formatted="false">UniFi cameras get their pictures from the UniFi Protect console in the devices file: faster than go2rtc.</string>
     <string name="t_97588905" formatted="false">Refresh interval</string>
     <string name="t_591884e5" formatted="false">Press OK to fetch a camera\'s photos less often (seconds), e.g. for a slow camera.</string>
     <string name="t_40405b3f" formatted="false">Multi-camera window layout</string>

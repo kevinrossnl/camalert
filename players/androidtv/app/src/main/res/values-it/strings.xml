@@ -98,6 +98,8 @@
     <string name="t_b0271f5b" formatted="false">Giro: secondi per telecamera</string>
     <string name="t_52cb38ea" formatted="false">Ruota o specchia l\'immagine</string>
     <string name="t_5de5bce0" formatted="false">Premere OK per ruotare una telecamera montata capovolta (richiede python3-pillow).</string>
+    <string name="t_2bd7c5d1" formatted="false">Immagini da UniFi Protect</string>
+    <string name="t_e77479eb" formatted="false">Le telecamere UniFi ricevono le immagini dalla console UniFi Protect del file dispositivi: più veloce di go2rtc.</string>
     <string name="t_97588905" formatted="false">Intervallo di aggiornamento</string>
     <string name="t_591884e5" formatted="false">Premere OK per scaricare meno spesso le foto di una telecamera (secondi), ad es. per una telecamera lenta.</string>
     <string name="t_40405b3f" formatted="false">Disposizione della finestra con più telecamere</string>

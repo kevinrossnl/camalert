@@ -375,6 +375,9 @@ class _KodiModules(object):
         kodi_stubs.CALLS[:] = []
         Built.store["server"] = self.go2rtc.url
         self.addCleanup(Built.store.pop, "server", None)
+        sources = Built.module("sources")  # never a real UniFi console from a devices.conf of a test (#109)
+        self.addCleanup(setattr, sources.PROTECT, "fetch", sources.PROTECT.fetch)
+        sources.PROTECT.fetch = lambda dev, cam, names, width: None
 
     def tearDown(self):
         self.assertEqual(kodi_stubs.JSONRPC_PROBLEMS, [], "JSON-RPC requests this Kodi version refuses")
@@ -426,6 +429,41 @@ class _KodiModules(object):
         self.assertEqual(service.changed_parts({"http_port": 1}, {"http_port": 2}), {"server"})
         self.assertEqual(service.changed_parts({"mqtt_host": "a"}, {"mqtt_host": "b"}), {"mqtt"})
         self.assertEqual(service.changed_parts({"duration": 1}, {"duration": 2}), set())
+
+    def test_protect_camera_pictures_come_from_protect(self):
+        """#109: a camera of the UniFi console in devices.conf gets its picture from Protect; other cameras, and every
+        camera with the setting off, from go2rtc (the first picture cached, #110)."""
+        ptz, sources = Built.module("ptz"), Built.module("sources")
+        path = ptz.device_file()
+        with open(path, "w", encoding="utf-8") as f:
+            f.write("protect|unifi|192.168.1.1:443|viewer|secret\ndoor|onvif|192.168.1.11:80||\n")
+        self.addCleanup(os.remove, path)
+        asked, protect = [], []
+
+        def download(url, p, verify=True):
+            asked.append(url)
+            with open(p, "wb") as f:
+                f.write(b"go2rtc")
+            return p
+        self.addCleanup(setattr, sources, "download", sources.download)
+        sources.download = download
+        self.addCleanup(setattr, sources.PROTECT, "fetch", None)
+        sources.PROTECT.fetch = lambda dev, cam, names, width: (
+            protect.append((dev["type"], cam, dict(names), width)) or (b"protect" if cam == "front_door" else None))
+        sources._PROTECT_KEY[0] = None
+        out = os.path.join(Built.tmp, "pic.jpg")
+        s = self.settings(unifi_cameras="Haustuer=front_door")
+        url = "http://192.168.1.10:1984/api/frame.jpeg?src=%s&width=640"
+        self.assertEqual(sources.picture("front_door", url % "front_door", out, True, True, s), "protect")
+        with open(out, "rb") as f:
+            self.assertEqual(f.read(), b"protect")
+        self.assertEqual(sources.picture("garden", url % "garden", out, True, True, s), "cache")
+        self.assertEqual(protect, [("unifi", "front_door", {"haustuer": "front_door"}, 640),
+                                   ("unifi", "garden", {"haustuer": "front_door"}, 640)])
+        self.assertEqual(asked, [url % "garden" + "&cache=10s"])
+        off = self.settings(protect_snapshots=False)
+        self.assertEqual(sources.picture("front_door", url % "front_door", out, True, False, off), "go2rtc")
+        self.assertEqual(len(protect), 2)
 
     def unifi_setup(self, enabled="true"):
         """#71: devices.conf with a UniFi console and an ONVIF camera, the source on, polls answered by a fake."""
@@ -834,16 +872,18 @@ class _KodiModules(object):
             return path
         self.addCleanup(setattr, sources, "download", sources.download)
         sources.download = download
-        win = display.PhotoWindow(FakeController(), self.CAMS[:1], self.settings(), keys=False)
-        hidden = []
+        url = "http://192.168.1.10:1984/api/frame.jpeg?src=cache_test&width=640"  # feeders of other tests may
+        win = display.PhotoWindow(FakeController(), [("cache_test", "Cache test", url)], self.settings(), keys=False)
+        hidden = []  # still be finishing a download: only this camera's requests count
         win.tiles[0]["error"][0].setVisible = hidden.append
         win.feeder.start()
+        mine = lambda: [u for u in asked if "src=cache_test&" in u]  # noqa: E731
         try:
-            self.assertTrue(self.wait_for(lambda: len(asked) >= 2, 10), asked)
+            self.assertTrue(self.wait_for(lambda: len(mine()) >= 2, 10), asked)
         finally:
             win.feeder.stop()
-        self.assertTrue(asked[0].endswith("&cache=10s"))
-        self.assertFalse(asked[1].endswith("&cache=10s"))
+        self.assertTrue(mine()[0].endswith("&cache=10s"), mine())
+        self.assertFalse(mine()[1].endswith("&cache=10s"), mine())
         self.assertEqual(hidden[:1], [False])  # 'Loading picture...' hidden by the first picture
 
     def test_diagnostics_caller_uses_region_date_and_translated_source(self):

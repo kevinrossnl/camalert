@@ -72,6 +72,17 @@ Where to turn it on: Enigma2 *Settings › Triggers › UniFi Protect* (setup le
 settings*); Kodi 19 or newer *Add-ons › My add-ons › Services › CamAlert › Configure › Triggers* (settings level
 *Advanced*).
 
+## Pictures from UniFi Protect
+
+A console of type `unifi` in the devices file also makes the **photo window, the multi-camera window, the mosaic and
+the tour faster** (all players): pictures of a Protect camera come straight from Protect, which always has a fresh
+picture, instead of from go2rtc's `frame.jpeg`, which waits for the camera's next key frame (2–5 seconds with many
+UniFi cameras). This needs no other setting and also works with *UniFi Protect events* off. A camera is a Protect
+camera when its Protect name (as a camera name, `Front Door` → `front_door`) or its name in *UniFi Protect camera
+names* is the go2rtc name. When the console does not answer, that camera's pictures come from go2rtc again for a
+minute. Turn it off with *Display › Pictures from UniFi Protect*. On Android TV / Fire TV the console is the one under
+*Triggers › UniFi Protect console*.
+
 ## PTZ from the remote
 In the photo window or in live view of a camera that is listed in the devices file, press the *PTZ key* (default BLUE):
 

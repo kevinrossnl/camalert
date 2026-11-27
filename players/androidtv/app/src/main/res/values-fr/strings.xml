@@ -98,6 +98,8 @@
     <string name="t_b0271f5b" formatted="false">Ronde : secondes par caméra</string>
     <string name="t_52cb38ea" formatted="false">Tourner ou inverser l\'image</string>
     <string name="t_5de5bce0" formatted="false">Appuyez sur OK pour tourner une caméra montée à l\'envers (nécessite python3-pillow).</string>
+    <string name="t_2bd7c5d1" formatted="false">Images de UniFi Protect</string>
+    <string name="t_e77479eb" formatted="false">Les caméras UniFi reçoivent leurs images de la console UniFi Protect du fichier des appareils : plus rapide que go2rtc.</string>
     <string name="t_97588905" formatted="false">Intervalle d\'actualisation</string>
     <string name="t_591884e5" formatted="false">Appuyez sur OK pour récupérer moins souvent les photos d\'une caméra (secondes), p. ex. une caméra lente.</string>
     <string name="t_40405b3f" formatted="false">Disposition de la fenêtre multi-caméras</string>

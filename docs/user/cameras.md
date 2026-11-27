@@ -23,3 +23,8 @@ Use **H.264** where possible. Most Enigma2 receivers also play H.265 (HEVC), but
 ## Faster start
 
 The picture appears at the next *key frame* (I-frame). Many cameras send one every 2–4 seconds. If your camera lets you set the *I-frame interval* / *GOP*, set it to about 1–2 seconds (for example GOP 25 at 25 fps).
+
+The same holds for go2rtc's snapshots (`frame.jpeg`): go2rtc waits for the next key frame, so the first picture of
+the photo window can take 2–5 seconds. CamAlert asks for the first picture with `cache=10s` (go2rtc 1.9.14 or newer)
+and shows *Loading picture...* meanwhile; UniFi Protect cameras get their pictures from Protect
+([devices](devices.md#pictures-from-unifi-protect)).

@@ -79,7 +79,7 @@ def live_key(action_id):
 DEFAULTS = {
     "enabled": True, "source": "go2rtc", "server": "", "rtsp_port": 8554,
     "verify_ssl": True, "camera_file": "", "camera": "", "titles": "", "mosaic": "",
-    "orientation": "", "refresh": "", "strip_layout": "auto",
+    "orientation": "", "refresh": "", "strip_layout": "auto", "protect_snapshots": True,
     "mode": "photo", "duration": 30, "position": "top_right", "size": "medium",
     "pause_tv": False, "live_return": True, "live_volume": 100, "live_format": "mp4",
     "limit_hours": False, "from_time": "07:00", "until_time": "23:00", "skip_playing": "off",

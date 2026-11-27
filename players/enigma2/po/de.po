@@ -645,6 +645,12 @@ msgstr "Bild drehen oder spiegeln"
 msgid "Press OK to turn a camera that hangs upside down (needs python3-pillow)."
 msgstr "OK drücken, um eine kopfüber hängende Kamera zu drehen (benötigt python3-pillow)."
 
+msgid "Pictures from UniFi Protect"
+msgstr "Bilder von UniFi Protect"
+
+msgid "UniFi cameras get their pictures from the UniFi Protect console in the devices file: faster than go2rtc."
+msgstr "UniFi-Kameras bekommen ihre Bilder von der UniFi-Protect-Konsole aus der Gerätedatei: schneller als go2rtc."
+
 msgid "Refresh interval"
 msgstr "Aktualisierungsintervall"
 

@@ -98,6 +98,8 @@
     <string name="t_b0271f5b" formatted="false">Rundgang: Sekunden pro Kamera</string>
     <string name="t_52cb38ea" formatted="false">Bild drehen oder spiegeln</string>
     <string name="t_5de5bce0" formatted="false">OK drücken, um eine kopfüber hängende Kamera zu drehen (benötigt python3-pillow).</string>
+    <string name="t_2bd7c5d1" formatted="false">Bilder von UniFi Protect</string>
+    <string name="t_e77479eb" formatted="false">UniFi-Kameras bekommen ihre Bilder von der UniFi-Protect-Konsole aus der Gerätedatei: schneller als go2rtc.</string>
     <string name="t_97588905" formatted="false">Aktualisierungsintervall</string>
     <string name="t_591884e5" formatted="false">OK drücken, um Fotos einer Kamera seltener zu holen (Sekunden), z. B. bei einer langsamen Kamera.</string>
     <string name="t_40405b3f" formatted="false">Anordnung im Fenster mit mehreren Kameras</string>

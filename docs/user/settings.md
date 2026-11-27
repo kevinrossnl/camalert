@@ -39,6 +39,7 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Remote control in photo window | Yes |  | advanced | all | OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too. |
 | Tour: seconds per camera | `8` s | 3–60 | advanced | all |  |
 | Turn or mirror image | – |  | advanced | all | Press OK to turn a camera that hangs upside down (needs python3-pillow). |
+| Pictures from UniFi Protect | Yes |  | advanced | all | UniFi cameras get their pictures from the UniFi Protect console in the devices file: faster than go2rtc. |
 | Refresh interval | – |  | advanced | all | Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera. |
 | Multi-camera window layout | `auto` | `auto` / `vertical` / `horizontal` / `grid` | advanced | all | A request with 2-4 cameras shows them together in one multi-camera window. |
 | Title size | `normal` | `small` / `normal` / `large` | advanced | all |  |

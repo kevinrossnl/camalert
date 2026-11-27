@@ -8,6 +8,8 @@ import urllib.request
 from . import kodiapi
 from .klogic import live_url
 from .camalert_core.cameras import display_name, live_stream_name, parse_camera_file, parse_titles, title_for
+from .camalert_core.devices.client import load_devices
+from .camalert_core.frames import ProtectSnapshots, snapshot_request, url_width
 from .camalert_core.present import go2rtc_problem as _problem_text
 from .camalert_core.urls import go2rtc_state, normalize_server, snapshot_url, split_credentials, streams_from_json
 
@@ -83,6 +85,42 @@ def download(url, path, verify=True, timeout=8):
         f.write(data)
     os.replace(tmp, path)
     return path
+
+
+PROTECT = ProtectSnapshots()
+_PROTECT_KEY = [None]
+
+
+def protect_snapshots(s):
+    """PROTECT with the UniFi Protect consoles of devices.conf (#109); configured again only when the file or the
+    settings change, so a camera that failed stays with go2rtc for a while."""
+    from .ptz import device_file
+    path = device_file()
+    try:
+        mtime = os.path.getmtime(path)
+    except OSError:
+        mtime = None
+    key = (path, mtime, s.get("protect_snapshots", True), s.get("unifi_cameras", ""))
+    if key != _PROTECT_KEY[0]:
+        _PROTECT_KEY[0] = key
+        PROTECT.configure(list(load_devices(path).values()) if mtime is not None else [], s.get("unifi_cameras", ""),
+                          s.get("protect_snapshots", True))
+    return PROTECT
+
+
+def picture(name, url, path, verify=True, first=False, s=None):
+    """One picture of a camera into path (in a Feeder thread), from the fastest source: UniFi Protect for a Protect
+    camera (#109), else go2rtc - the first picture of a window from go2rtc's cache (#110). Returns the source."""
+    data = protect_snapshots(s or kodiapi.settings())(name, url_width(url)) if name else None
+    if data:
+        tmp = path + ".tmp"
+        with open(tmp, "wb") as f:
+            f.write(data)
+        os.replace(tmp, path)
+        return "protect"
+    asked = snapshot_request(url, first)
+    download(asked, path, verify)
+    return "cache" if asked != url else "go2rtc"
 
 
 def title(name, s=None):

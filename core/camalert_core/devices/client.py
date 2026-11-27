@@ -5,6 +5,7 @@ import http.cookiejar
 import json
 import os
 import ssl
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -238,6 +239,7 @@ class Protect(object):
         self.cams_at = 0
         self.backoff = backoff or LoginBackoff()
         self.clock = clock or time.time
+        self.lock = threading.RLock()  # the poller and the snapshot fetchers (#109) share one session
         self.jar = http.cookiejar.CookieJar()
         if opener is None:
             ctx = ssl.create_default_context()
@@ -292,6 +294,10 @@ class Protect(object):
     def get(self, path, raw=False):
         """GET with one new login when the session ran out (401), at most once per backoff window. JSON, or bytes
         with raw=True."""
+        with self.lock:
+            return self._get(path, raw)
+
+    def _get(self, path, raw):
         self.backoff.check(self.clock())
         for attempt in (0, 1):
             if not self.logged_in:
@@ -337,6 +343,7 @@ class Protect(object):
 
 
 _protect = {}  # (host, port, user, password) -> Protect; the session (cookie) is kept across polls and errors
+_protect_lock = threading.Lock()
 _backoff = {}  # (host, port) -> LoginBackoff: one per console, whatever the login
 
 
@@ -351,13 +358,27 @@ def reset_logins():
         b.reset()
 
 
+def protect_client(dev):
+    """The kept session of one Protect console (one per console and login, shared by the poller and #109)."""
+    key = (dev["host"], dev["port"], dev.get("user"), dev.get("password"))
+    with _protect_lock:
+        client = _protect.get(key)
+        if client is None:
+            for old in [k for k in _protect if k[:2] == key[:2]]:  # other credentials of the same console
+                _protect.pop(old)
+            client = _protect[key] = Protect(dev, backoff=backoff_for(dev))
+        return client
+
+
 def protect_state(dev):
     """Events of the last minute on one Protect console (blocking; run it in a thread). Raises DeviceError
     (LoginError with next_at while a login is refused or postponed)."""
-    key = (dev["host"], dev["port"], dev.get("user"), dev.get("password"))
-    client = _protect.get(key)
-    if client is None:
-        for old in [k for k in _protect if k[:2] == key[:2]]:  # other credentials of the same console
-            _protect.pop(old)
-        client = _protect[key] = Protect(dev, backoff=backoff_for(dev))
-    return client.state()
+    return protect_client(dev).state()
+
+
+def protect_snapshot(dev, camera, names=None, width=640):
+    """A fresh JPEG of a CamAlert camera from Protect (#109; blocking), or None when the camera is not a camera of
+    this console. Raises DeviceError like protect_state; never the cookie or the password in a message."""
+    client = protect_client(dev)
+    cid = unifi.camera_id(client.cameras(), camera, names)
+    return client.snapshot(cid, width) if cid else None

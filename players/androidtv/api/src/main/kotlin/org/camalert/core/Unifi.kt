@@ -58,6 +58,17 @@ object Unifi {
     }
 
     /** 'protect_name=go2rtc_name|...' (same format as the Frigate map) -> map; broken parts are skipped. */
+    /** Protect camera id of a CamAlert camera name (#109, core unifi.camera_id): the Protect name mapped through
+     *  [names] (unifi_cameras) or, when not mapped, the Protect name itself. Null for a camera Protect does not know. */
+    fun cameraId(cams: Map<String, String>, camera: String?, names: Map<String, String>?): String? {
+        if (camera.isNullOrEmpty()) return null
+        for (cid in cams.keys.sorted()) {
+            val n = cams.getValue(cid)
+            if ((names?.get(n) ?: n) == camera) return cid
+        }
+        return null
+    }
+
     fun cameraMap(text: String?): Map<String, String> {
         val out = LinkedHashMap<String, String>()
         for (part in (text ?: "").split("|")) {
@@ -355,6 +366,21 @@ class Protect(val console: UnifiConsole, private val transport: Transport, val b
 
     /** GET with one new login when the session ran out (401). JSON value. */
     fun get(path: String): Any? {
+        val data = getBytes(path)
+        return try {
+            Json.parse(String(data, Charsets.UTF_8))
+        } catch (e: Exception) {
+            throw ProtectError("UniFi Protect: unexpected answer")
+        }
+    }
+
+    /** A fresh JPEG of one Protect camera (#109): Protect has a picture at once, go2rtc waits for a keyframe. */
+    fun snapshot(cameraId: String, width: Int = 640): ByteArray = getBytes(Unifi.snapshotPath(cameraId, width))
+
+    /** GET as bytes, with one new login when the session ran out (401). The poller and the snapshot loaders
+     *  (#109) share one session, so one request at a time. */
+    @Synchronized
+    fun getBytes(path: String): ByteArray {
         backoff.check(clock())
         var data: ByteArray? = null
         for (attempt in 0..1) {
@@ -372,13 +398,10 @@ class Protect(val console: UnifiConsole, private val transport: Transport, val b
                 throw e
             }
         }
-        return try {
-            Json.parse(String(data ?: ByteArray(0), Charsets.UTF_8))
-        } catch (e: Exception) {
-            throw ProtectError("UniFi Protect: unexpected answer")
-        }
+        return data ?: ByteArray(0)
     }
 
+    @Synchronized
     fun cameras(now: Double): Map<String, String> {
         if (cams.isEmpty() || now - camsAt > BOOTSTRAP_MAX_AGE) {
             cams = Unifi.protectCameras(get(Unifi.BOOTSTRAP_PATH))
@@ -473,6 +496,27 @@ class UnifiPoller(private val transport: Transport, private val log: (String, St
     private val backoffs = HashMap<Pair<String, Int>, LoginBackoff>()
     private var consolesKey: List<UnifiConsole>? = null
 
+    @Synchronized
+    private fun newConsoles(consoles: List<UnifiConsole>) {
+        if (consoles != consolesKey) {  // new credentials: fresh sessions, no login backoff (#78)
+            consolesKey = consoles
+            sessions.clear()
+            backoffs.values.forEach { it.reset() }
+        }
+    }
+
+    /** The kept session of one console, shared by the poller and the snapshot loaders (#109). */
+    @Synchronized
+    fun session(c: UnifiConsole): Protect =
+        sessions.getOrPut(c) { Protect(c, transport, backoffs.getOrPut(Pair(c.host, c.port)) { LoginBackoff() }, clock) }
+
+    /** A fresh JPEG of a CamAlert camera from one console (#109), or null when Protect does not know the camera. */
+    fun snapshot(c: UnifiConsole, camera: String, names: Map<String, String>, width: Int): ByteArray? {
+        val p = session(c)
+        val id = Unifi.cameraId(p.cameras(clock()), camera, names) ?: return null
+        return p.snapshot(id, width)
+    }
+
     /** settings: the player settings (+ unifi_labels); consoles: the configured consoles; show: the controller. */
     fun once(settings: Map<String, Any?>, consoles: List<UnifiConsole>, show: (Unifi.Trigger) -> Unit) {
         if (settings["enabled"] == false || settings["unifi_enabled"] != true) {
@@ -480,16 +524,12 @@ class UnifiPoller(private val transport: Transport, private val log: (String, St
             status.reset()
             return
         }
-        if (consoles != consolesKey) {  // new credentials: fresh sessions, no login backoff (#78)
-            consolesKey = consoles
-            sessions.clear()
-            backoffs.values.forEach { it.reset() }
-        }
+        newConsoles(consoles)
         status.consoles = consoles.size
         for (c in consoles.sortedBy { it.name }) {
             if (c.name !in state) log("UniFi Protect: polling console ${c.name} every ${Unifi.interval(settings)} s", "normal")
             val previous = state[c.name]
-            val session = sessions.getOrPut(c) { Protect(c, transport, backoffs.getOrPut(Pair(c.host, c.port)) { LoginBackoff() }, clock) }
+            val session = session(c)
             val now = try {
                 session.state(clock())
             } catch (e: Exception) {
@@ -544,5 +584,64 @@ class UrlTransport(private val timeoutMs: Int = 8000) : Transport {
         }
         c.disconnect()
         return HttpAnswer(code, hdrs, cookies, data)
+    }
+}
+
+/**
+ * Pictures of UniFi Protect cameras for the photo window, multi-camera window, mosaic and tour (#109, core
+ * frames.ProtectSnapshots): Protect hands out a fresh picture at once instead of go2rtc's frame.jpeg, which waits
+ * for the camera's next keyframe. After an error a camera's pictures come from go2rtc for [ERROR_SKIP] seconds;
+ * a camera Protect does not know is not asked again for [UNKNOWN_SKIP] seconds.
+ */
+class ProtectSnapshots(private val fetch: (UnifiConsole, String, Map<String, String>, Int) -> ByteArray?,
+                       private val clock: () -> Double = { System.currentTimeMillis() / 1000.0 }) {
+    private var consoles: List<UnifiConsole> = emptyList()
+    private var names: Map<String, String> = emptyMap()
+    private var enabled = true
+    private var key: Any? = null
+    private val skip = HashMap<String, Double>()
+
+    /** Configures again only when something changed, so a skipped camera stays skipped. */
+    @Synchronized
+    fun configure(consoles: List<UnifiConsole>, namesText: String?, enabled: Boolean) {
+        val k = Triple(consoles, namesText ?: "", enabled)
+        if (k == key) return
+        key = k
+        this.consoles = consoles
+        names = Unifi.cameraMap(namesText)
+        this.enabled = enabled
+        skip.clear()
+    }
+
+    fun active(): Boolean = enabled && consoles.isNotEmpty()
+
+    /** JPEG bytes of the camera, or null (not a Protect camera, turned off, an error: use go2rtc). */
+    operator fun invoke(camera: String?, width: Int): ByteArray? {
+        if (camera.isNullOrEmpty()) return null
+        val cam: String = camera
+        val now = clock()
+        val list: List<UnifiConsole>
+        val map: Map<String, String>
+        synchronized(this) {
+            if (!active() || (skip[cam] ?: 0.0) > now) return null
+            list = consoles
+            map = names
+        }
+        for (c in list) {
+            val data = try {
+                fetch(c, cam, map, width)
+            } catch (e: Exception) {  // login refused, console down, rate limited: go2rtc for a while
+                synchronized(this) { skip[cam] = now + ERROR_SKIP }
+                return null
+            }
+            if (data != null && data.isNotEmpty()) return data
+        }
+        synchronized(this) { skip[cam] = now + UNKNOWN_SKIP }
+        return null
+    }
+
+    companion object {
+        const val ERROR_SKIP = 60.0
+        const val UNKNOWN_SKIP = 600.0
     }
 }

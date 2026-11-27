@@ -140,7 +140,15 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         override fun colourKey(camera: String?, colour: String) = sendButton(camera, colour)
         override fun unreachable() { synchronized(controller.stats) { controller.stats.unreachable++ } }
         override fun changed() = env.changed()
+        override fun protectPicture(camera: String, width: Int): ByteArray? {
+            val s = settings()
+            protectPictures.configure(unifiLogin.consoles(), s["unifi_cameras"]?.toString(), s["protect_snapshots"] != false)
+            return protectPictures(camera, width)
+        }
     }
+
+    /** #109: pictures of UniFi Protect cameras through the poller's Protect session (no keyframe wait). */
+    private val protectPictures = org.camalert.core.ProtectSnapshots({ c, cam, names, w -> unifi.snapshot(c, cam, names, w) })
 
     /** A colour key while a camera is on screen -> Home Assistant (MQTT event entity and webhook). */
     fun sendButton(camera: String?, colour: String) {

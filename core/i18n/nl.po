@@ -860,6 +860,14 @@ msgstr "Beeld draaien of spiegelen"
 msgid "Press OK to turn a camera that hangs upside down (needs python3-pillow)."
 msgstr "Druk op OK om een camera die ondersteboven hangt te draaien (vereist python3-pillow)."
 
+#: e2 kodi:30350
+msgid "Pictures from UniFi Protect"
+msgstr "Beelden van UniFi Protect"
+
+#: e2 kodi:30351
+msgid "UniFi cameras get their pictures from the UniFi Protect console in the devices file: faster than go2rtc."
+msgstr "UniFi-camera's krijgen hun beelden van de UniFi Protect-console uit het apparatenbestand: sneller dan go2rtc."
+
 #: e2 kodi:30064
 msgid "Refresh interval"
 msgstr "Verversinterval"

@@ -121,7 +121,8 @@ class UnifiTest {
             }
             if (getCode != 200) return HttpAnswer(getCode, ra, emptyList(), ByteArray(0))
             if (headers["Cookie"] != "TOKEN=abc" || headers["X-CSRF-Token"] != "csrf1") return HttpAnswer(401, ra, emptyList(), ByteArray(0))
-            val data: Any = if (url.contains("bootstrap")) mapOf("cameras" to listOf(mapOf("id" to "c1", "displayName" to "Front Door")))
+            if (url.contains("/snapshot")) return HttpAnswer(200, emptyMap(), emptyList(), JPEG)
+            val data: Any = if (url.contains("bootstrap")) mapOf("cameras" to listOf(mapOf("id" to "c1c1c1", "displayName" to "Front Door")))
             else events
             return HttpAnswer(200, emptyMap(), emptyList(), Json.write(data).toByteArray())
         }
@@ -129,13 +130,71 @@ class UnifiTest {
 
     private val console = UnifiConsole("protect", "192.0.2.1", 443, "viewer", "s3cret")
 
+    // --- #109: pictures from Protect --------------------------------------------------------------------------
+
+    @Test
+    fun cameraIdWithAndWithoutNameMap() {
+        val cams = mapOf("c2" to "garage", "c1" to "front_door")
+        assertEquals("c1", Unifi.cameraId(cams, "front_door", null))
+        assertEquals("c1", Unifi.cameraId(cams, "porch", mapOf("front_door" to "porch")))
+        assertNull(Unifi.cameraId(cams, "front_door", mapOf("front_door" to "porch")))  // mapped away
+        assertNull(Unifi.cameraId(cams, "driveway", null))
+        assertNull(Unifi.cameraId(cams, null, null))
+    }
+
+    @Test
+    fun snapshotSharesThePollerSession() {
+        val fake = FakeConsole()
+        val poller = UnifiPoller(fake, { _, _ -> }) { 1000.0 }
+        val jpeg = poller.snapshot(console, "front_door", emptyMap(), 640)
+        assertTrue(jpeg!!.contentEquals(JPEG))
+        assertNull(poller.snapshot(console, "garden", emptyMap(), 640))  // not a Protect camera
+        val urls = fake.calls.map { it.second }
+        assertEquals(1, fake.calls.count { it.first == "POST" })  // one login for both
+        assertTrue(urls.any { it == "/proxy/protect/api/cameras/c1c1c1/snapshot?w=640&force=true" })
+        assertTrue(fake.lastHeaders.values.none { it.contains("s3cret") })
+        assertTrue(urls.none { it.contains("s3cret") || it.contains("abc") })  // no password or cookie in a URL
+    }
+
+    @Test
+    fun protectSnapshotsOrderSkipAndOff() {
+        var t = 1000.0
+        val asked = ArrayList<String>()
+        var fail = false
+        val ps = ProtectSnapshots({ c, cam, names, w ->
+            asked.add("${c.name} $cam $w ${names}")
+            if (fail) throw ProtectError("UniFi Protect request: not reachable")
+            if ((names[cam] ?: cam) == "front_door" || cam == "porch") JPEG else null
+        }) { t }
+        assertNull(ps("front_door", 640))  // no console configured: off
+        ps.configure(listOf(console), "front_door=porch", true)
+        assertTrue(ps("porch", 640)!!.contentEquals(JPEG))
+        assertEquals("protect porch 640 {front_door=porch}", asked.last())
+        assertNull(ps("garden", 640))  // unknown: not asked again for 10 minutes
+        val n = asked.size
+        assertNull(ps("garden", 640)); assertEquals(n, asked.size)
+        t += ProtectSnapshots.UNKNOWN_SKIP + 1
+        assertNull(ps("garden", 640)); assertEquals(n + 1, asked.size)
+        fail = true
+        assertNull(ps("porch", 640))  // error: go2rtc for a minute
+        fail = false
+        assertNull(ps("porch", 640))
+        t += ProtectSnapshots.ERROR_SKIP + 1
+        assertTrue(ps("porch", 640)!!.contentEquals(JPEG))
+        ps.configure(listOf(console), "front_door=porch", false)
+        assertFalse(ps.active())
+        assertNull(ps("porch", 640))
+        ps.configure(emptyList(), "", true)
+        assertFalse(ps.active())
+    }
+
     @Test
     fun sessionLogsInOnceAndOnlyReads() {
         val fake = FakeConsole()
         var t = 1000.0
         val p = Protect(console, fake, LoginBackoff()) { t }
         val st = p.state()
-        assertEquals(mapOf("c1" to "front_door"), st["cams"])
+        assertEquals(mapOf("c1c1c1" to "front_door"), st["cams"])
         assertEquals(listOf("POST", "GET", "GET"), fake.calls.map { it.first })
         assertTrue(fake.calls[2].second.startsWith("/proxy/protect/api/events?start=940000&end=1000000"))
         t += 5
@@ -201,10 +260,10 @@ class UnifiTest {
         val shown = ArrayList<Unifi.Trigger>()
         val s = mapOf<String, Any?>("enabled" to true, "unifi_enabled" to true, "unifi_kinds" to "ring,person",
             "unifi_labels" to mapOf("ring" to "Doorbell"))
-        fake.events = listOf(mapOf("id" to "old", "camera" to "c1", "type" to "ring"))
+        fake.events = listOf(mapOf("id" to "old", "camera" to "c1c1c1", "type" to "ring"))
         poller.once(s, listOf(console)) { shown.add(it) }
         assertEquals(emptyList<Unifi.Trigger>(), shown)  // no old events on screen after a start
-        fake.events = fake.events + mapOf("id" to "new", "camera" to "c1", "type" to "ring")
+        fake.events = fake.events + mapOf("id" to "new", "camera" to "c1c1c1", "type" to "ring")
         t += 5
         poller.once(s, listOf(console)) { shown.add(it) }
         assertEquals(listOf(Unifi.Trigger("front_door", "high", "Doorbell", null, null)), shown)
@@ -219,7 +278,7 @@ class UnifiTest {
         assertEquals(1, logs.count { it.second == "error" })
         fake.down = false
         t = 2000.0
-        fake.events = fake.events + mapOf("id" to "newer", "camera" to "c1", "type" to "ring")
+        fake.events = fake.events + mapOf("id" to "newer", "camera" to "c1c1c1", "type" to "ring")
         poller.once(s, listOf(console)) { shown.add(it) }
         assertEquals(1, shown.size)
         // switched off: nothing is asked, status cleared
@@ -243,3 +302,5 @@ class UnifiTest {
         assertEquals(10, Unifi.interval(mapOf("unifi_interval" to "10")))
     }
 }
+
+private val JPEG = byteArrayOf(0xFF.toByte(), 0xD8.toByte(), 0xFF.toByte(), 0xD9.toByte())

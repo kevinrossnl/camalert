@@ -132,6 +132,7 @@ _add("skip_playing", lambda: ConfigSelection(default="off", choices=[
     ("off", _("Always show")), ("video", _("Not during movies and recordings")),
     ("all", _("Not during anything (also live TV)"))]))
 _add("orientation", lambda: ConfigText(default="", fixed_size=False))
+_add("protect_snapshots", lambda: ConfigYesNo(default=True))
 _add("refresh", lambda: ConfigText(default="", fixed_size=False))
 _add("strip_layout", lambda: ConfigSelection(default="auto", choices=[
     ("auto", _("Automatic")), ("vertical", _("Below each other")), ("horizontal", _("Next to each other")),

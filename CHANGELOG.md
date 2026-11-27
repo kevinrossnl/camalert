@@ -9,6 +9,10 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Added
 
+- **All players:** UniFi Protect cameras get the pictures of the photo window, the multi-camera window, the mosaic
+  and the tour straight from the UniFi Protect console in the devices file: a fresh picture at once instead of
+  waiting 2–5 seconds for the camera's next key frame in go2rtc. New setting *Pictures from UniFi Protect* (on);
+  other cameras and a console that does not answer use go2rtc ([devices](docs/user/devices.md#pictures-from-unifi-protect)).
 - **Kodi:** a **Choose per camera** button below each per-camera setting (camera names, turn or mirror image,
   refresh interval, cooldown per camera, live view substreams): pick a camera, then a value from a list, instead of
   typing `name=value|...`. **Choose cameras** ticks up to 9 mosaic cameras.

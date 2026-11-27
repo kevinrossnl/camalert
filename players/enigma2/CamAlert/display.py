@@ -27,7 +27,7 @@ from .camalert_core.cameras import (display_name, known_camera, live_stream_name
                                     parse_cams, parse_orientation, parse_refresh, parse_titles, refresh_delay, slug,
                                     title_for)
 from .camalert_core import present
-from .camalert_core.frames import snapshot_request
+from .camalert_core.frames import ProtectSnapshots, Snapshots
 from .camalert_core.events import TEST_SOURCE, add_event, event_title, is_test
 from .camalert_core.api import screen_name
 from .camalert_core.keymap import button_event
@@ -212,10 +212,32 @@ def delay_for(name, minimum=0.2):
     return refresh_delay(name, parse_refresh(config.plugins.camalert.refresh.value), minimum)
 
 
-def _download(url, path=PHOTO, orientation=None, first=False):
-    """Fetches one snapshot into path; the first picture of a window asks go2rtc for a cached frame (#110)."""
-    with open_url(snapshot_request(url, first)) as r:
-        data = r.read()
+def _read(url):
+    with open_url(url) as r:
+        return r.read()
+
+
+SNAPSHOTS = Snapshots(lambda url: _read(url), ProtectSnapshots())
+_SNAPSHOT_KEY = [None]
+
+
+def snapshot_sources():
+    """SNAPSHOTS with the UniFi Protect consoles of the devices file (#109); configured again only when the devices
+    file or the settings change, so a skipped camera stays skipped."""
+    c = config.plugins.camalert
+    ctl = Controller.instance
+    devs = ctl.load_devices() if ctl is not None else {}
+    key = (getattr(ctl, "devices_mtime", None), c.protect_snapshots.value, c.unifi_cameras.value)
+    if key != _SNAPSHOT_KEY[0]:
+        _SNAPSHOT_KEY[0] = key
+        SNAPSHOTS.protect.configure(list(devs.values()), c.unifi_cameras.value, c.protect_snapshots.value)
+    return SNAPSHOTS
+
+
+def _download(url, path=PHOTO, orientation=None, first=False, camera=None):
+    """Fetches one picture into path (in a thread): from UniFi Protect for a Protect camera (#109), else from go2rtc,
+    the first picture of a window from go2rtc's cache (#110)."""
+    data, _source = snapshot_sources().fetch(camera, url, first)
     with open(path + ".tmp", "wb") as f:
         f.write(data)
     if orientation and Image is not None:
@@ -246,8 +268,8 @@ class Tile(object):
         if not getattr(self.screen, "active", False) or self.busy or not self.url:
             return
         self.busy = True
-        threads.deferToThread(_download, self.url, self.path, orientation_for(self.stream), self.first).addCallbacks(
-            self.loaded, self.failed)
+        threads.deferToThread(_download, self.url, self.path, orientation_for(self.stream), self.first,
+                              self.stream).addCallbacks(self.loaded, self.failed)
 
     def loaded(self, _path):
         self.busy = False
@@ -406,8 +428,8 @@ class PhotoWindow(Screen):
         if not getattr(self, "active", False) or self.busy:
             return
         self.busy = True
-        threads.deferToThread(_download, self.url, PHOTO, orientation_for(self.stream), self.first).addCallbacks(
-            self.loaded, self.failed)
+        threads.deferToThread(_download, self.url, PHOTO, orientation_for(self.stream), self.first,
+                              self.stream).addCallbacks(self.loaded, self.failed)
 
     def loaded(self, _result):
         self.busy = False
@@ -541,8 +563,8 @@ class NotifyWindow(Screen):
         self.show()
         self.close_timer.start(seconds * 1000, True)
         if self.url:
-            threads.deferToThread(_download, self.url, self.path, orientation_for(self.stream), True).addCallbacks(
-                self.loaded, self.failed)
+            threads.deferToThread(_download, self.url, self.path, orientation_for(self.stream), True,
+                                  self.stream).addCallbacks(self.loaded, self.failed)
 
     def loaded(self, _path):
         if not getattr(self, "active", False):

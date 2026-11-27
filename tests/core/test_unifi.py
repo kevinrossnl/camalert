@@ -189,6 +189,33 @@ class TestClient(unittest.TestCase):
         client.reset_logins()
 
 
+class TestProtectSnapshot(unittest.TestCase):
+    """#109: a fresh picture of a CamAlert camera from Protect, through the kept session."""
+
+    def test_camera_id_with_and_without_name_map(self):
+        cams = {CAM_A: "front_door", CAM_B: "ueber_garten"}
+        self.assertEqual(unifi.camera_id(cams, "front_door"), CAM_A)
+        self.assertEqual(unifi.camera_id(cams, "garden", {"ueber_garten": "garden"}), CAM_B)
+        self.assertIsNone(unifi.camera_id(cams, "ueber_garten", {"ueber_garten": "garden"}))  # mapped away
+        self.assertIsNone(unifi.camera_id(cams, "driveway"))
+        self.assertIsNone(unifi.camera_id({}, "front_door"))
+
+    def test_protect_snapshot_uses_the_kept_session(self):
+        dev = dict(DEV, host="192.168.1.98")
+        key = (dev["host"], dev["port"], dev["user"], dev["password"])
+        fake = FakeConsole()
+        client._protect[key] = client.Protect(dev, opener=fake)
+        try:
+            self.assertEqual(client.protect_snapshot(dev, "garden", {"ueber_garten": "garden"}, 640), b"\xff\xd8jpeg")
+            self.assertIsNone(client.protect_snapshot(dev, "driveway"))
+            client.protect_state(dev)  # the poller shares the session: still one login
+            self.assertEqual(fake.logins(), 1)
+            snaps = [c for c in fake.calls if "/snapshot" in c[1]]
+            self.assertEqual(snaps, [("GET", "/proxy/protect/api/cameras/%s/snapshot" % CAM_B, "tok")])
+        finally:
+            client.reset_logins()
+
+
 class Clock(object):
     def __init__(self, t=1000.0):
         self.t = t

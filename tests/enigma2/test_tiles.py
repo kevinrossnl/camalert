@@ -74,6 +74,44 @@ class TestTiles(unittest.TestCase):
         with open(path, "rb") as f:
             self.assertEqual(f.read(), b"jpeg")
 
+    def test_protect_camera_pictures_come_from_protect(self):
+        """#109: a UniFi Protect camera gets its picture from the console in the devices file, other cameras and the
+        setting off from go2rtc."""
+        import tempfile
+        import os
+        asked, protect = [], []
+
+        class R(object):
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+            def read(self):
+                return b"go2rtc"
+        self.d.open_url = lambda url, timeout=8: asked.append(url) or R()
+        console = {"type": "unifi", "host": "192.168.1.1", "port": 443, "user": "viewer", "password": "pw"}
+        self.ctl.load_devices = lambda: {"nvr": console}
+        self.ctl.devices_mtime = 1.0
+        self.addCleanup(setattr, self.d.SNAPSHOTS.protect, "fetch", None)
+        self.d.SNAPSHOTS.protect.fetch = lambda dev, cam, names, width: (
+            protect.append((dev["host"], cam, width)) or (b"protect" if cam == "front_door" else None))
+        self.d._SNAPSHOT_KEY[0] = None
+        path = os.path.join(tempfile.mkdtemp(), "p.jpg")
+        self.d._download(SNAP % "front_door", path, None, True, "front_door")
+        with open(path, "rb") as f:
+            self.assertEqual(f.read(), b"protect")
+        self.d._download(SNAP % "garden", path, None, True, "garden")
+        with open(path, "rb") as f:
+            self.assertEqual(f.read(), b"go2rtc")
+        self.assertEqual(protect, [("192.168.1.1", "front_door", 640), ("192.168.1.1", "garden", 640)])
+        self.assertEqual(asked, [SNAP % "garden" + "&cache=10s"])
+        self.env.config.plugins.camalert.protect_snapshots.value = False
+        self.d._download(SNAP % "front_door", path, None, False, "front_door")
+        self.assertEqual(len(protect), 2)  # turned off: go2rtc
+        self.assertEqual(asked[-1], SNAP % "front_door")
+
     def test_mosaic_strip_and_tour_tiles(self):
         m = self.session.open(self.d.MosaicScreen, CAMS, 10)
         self.check_tile(m, m.tiles[1], "error1", "tile1")

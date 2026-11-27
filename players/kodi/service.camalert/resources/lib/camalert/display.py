@@ -12,7 +12,6 @@ from .klogic import (PTZ_TOGGLE as TOGGLE_IDS, SCREEN_H, SCREEN_W, colour_name, 
                      live_key, mosaic_key, ptz_action, title_font_name, tour_key)
 from .camalert_core.cameras import parse_orientation, parse_refresh, refresh_delay
 from .camalert_core.events import event_title
-from .camalert_core.frames import snapshot_request
 from .camalert_core.present import key_hint, tile_label, tour_status
 from .camalert_core.layout import grid, strip_geometry, window_geometry
 
@@ -150,6 +149,7 @@ class Feeder(object):
     def __init__(self, tiles, s):
         self.tiles = list(tiles)  # dicts: name, url, control
         self.verify = s["verify_ssl"]
+        self.settings = s
         self.refresh = parse_refresh(s.get("refresh", ""))
         self.active = True
         self.on_unreachable = None  # callback(tile, unreachable)
@@ -173,7 +173,7 @@ class Feeder(object):
             path, stale = frame_name(os.path.join(tmp, "f%d_%x" % (i, id(self) & 0xffff)), n)
             start = time.time()
             try:
-                sources.download(snapshot_request(t["url"], first), path, self.verify)  # first: cached (#110)
+                sources.picture(t["name"], t["url"], path, self.verify, first, self.settings)  # #109, #110
             except Exception as e:  # camera or go2rtc not reachable: try again a bit later
                 fails[i] = fails.get(i, 0) + 1
                 if fails[i] == 1:

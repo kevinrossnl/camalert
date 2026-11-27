@@ -644,6 +644,12 @@ msgstr ""
 msgid "Press OK to turn a camera that hangs upside down (needs python3-pillow)."
 msgstr ""
 
+msgid "Pictures from UniFi Protect"
+msgstr ""
+
+msgid "UniFi cameras get their pictures from the UniFi Protect console in the devices file: faster than go2rtc."
+msgstr ""
+
 msgid "Refresh interval"
 msgstr ""
 

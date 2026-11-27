@@ -120,6 +120,15 @@ def snapshot_path(camera_id, width=1280):
     return "/proxy/protect/api/cameras/%s/snapshot?w=%d&force=true" % (camera_id, int(width))
 
 
+def camera_id(cams, camera, names=None):
+    """Protect camera id of a CamAlert camera name (#109): the Protect name mapped through `names` (camera_map,
+    unifi_cameras) or, when not mapped, the Protect name itself. None for a camera that is not in Protect."""
+    for cid in sorted(cams):
+        if (names or {}).get(cams[cid], cams[cid]) == camera:
+            return cid
+    return None
+
+
 def match(ev, cams, kinds, names=None):
     """(camera name, kind) if the event is one of `kinds` on a known camera, else None. `names` maps Protect names
     to go2rtc names (camera_map); cameras not in it keep their Protect name."""

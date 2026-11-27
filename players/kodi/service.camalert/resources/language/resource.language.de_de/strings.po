@@ -965,6 +965,14 @@ msgctxt "#30310"
 msgid "Up to 9 cameras: the first 9 are used."
 msgstr "Höchstens 9 Kameras: die ersten 9 werden verwendet."
 
+msgctxt "#30350"
+msgid "Pictures from UniFi Protect"
+msgstr "Bilder von UniFi Protect"
+
+msgctxt "#30351"
+msgid "UniFi cameras get their pictures from the UniFi Protect console in the devices file: faster than go2rtc."
+msgstr "UniFi-Kameras bekommen ihre Bilder von der UniFi-Protect-Konsole aus der Gerätedatei: schneller als go2rtc."
+
 msgctxt "#30500"
 msgid "API"
 msgstr "API"

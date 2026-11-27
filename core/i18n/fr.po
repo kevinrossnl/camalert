@@ -860,6 +860,14 @@ msgstr "Tourner ou inverser l'image"
 msgid "Press OK to turn a camera that hangs upside down (needs python3-pillow)."
 msgstr "Appuyez sur OK pour tourner une caméra montée à l'envers (nécessite python3-pillow)."
 
+#: e2 kodi:30350
+msgid "Pictures from UniFi Protect"
+msgstr "Images de UniFi Protect"
+
+#: e2 kodi:30351
+msgid "UniFi cameras get their pictures from the UniFi Protect console in the devices file: faster than go2rtc."
+msgstr "Les caméras UniFi reçoivent leurs images de la console UniFi Protect du fichier des appareils : plus rapide que go2rtc."
+
 #: e2 kodi:30064
 msgid "Refresh interval"
 msgstr "Intervalle d'actualisation"

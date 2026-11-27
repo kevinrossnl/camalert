@@ -645,6 +645,12 @@ msgstr "Obróć lub odbij obraz"
 msgid "Press OK to turn a camera that hangs upside down (needs python3-pillow)."
 msgstr "Naciśnij OK, aby obrócić kamerę zamontowaną do góry nogami (wymaga python3-pillow)."
 
+msgid "Pictures from UniFi Protect"
+msgstr "Obrazy z UniFi Protect"
+
+msgid "UniFi cameras get their pictures from the UniFi Protect console in the devices file: faster than go2rtc."
+msgstr "Kamery UniFi otrzymują obrazy z konsoli UniFi Protect z pliku urządzeń: szybciej niż go2rtc."
+
 msgid "Refresh interval"
 msgstr "Odstęp odświeżania"
 

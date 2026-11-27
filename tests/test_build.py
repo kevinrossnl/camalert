@@ -36,6 +36,23 @@ class TestBuild(unittest.TestCase):
             self.assertRegex(text, r"SHA256sum: [0-9a-f]{64}")
             self.assertEqual(gzip.open(os.path.join(d, "Packages.gz")).read().decode(), text)
 
+    def test_kodi_repo_has_every_asset(self):
+        """#123: Kodi 19+ fetches the icon and fanart of each add-on in the repository from
+        <datadir>/<addon id>/<path in <assets>>; every such file is in the repository tree."""
+        import xml.etree.ElementTree as ET
+        import build_kodi
+        with tempfile.TemporaryDirectory() as d:
+            _a, _r, tree = build_kodi.build(d, "https://someone.github.io/camalert/kodi")
+            addons = ET.parse(os.path.join(tree, "addons.xml")).getroot()
+            seen = 0
+            for addon in addons.findall("addon"):
+                for assets in addon.iter("assets"):
+                    for item in assets:
+                        path = os.path.join(tree, addon.get("id"), *(item.text or "").strip().split("/"))
+                        self.assertTrue(os.path.isfile(path), "%s: %s" % (addon.get("id"), item.text))
+                        seen += 1
+            self.assertGreaterEqual(seen, 3)  # service: icon + fanart, repository: icon
+
     def test_pages_index(self):
         """GitHub Pages start page (#80): filled template, install lines that match the published files, small,
         no scripts/fonts/styles from other sites, links only to the repository and the site itself."""

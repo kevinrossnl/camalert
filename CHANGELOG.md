@@ -76,6 +76,8 @@ actions and blueprint inputs stay backwards compatible.
   (`ffmpeg:<camera>#...`, as *Keep cameras ready* and the live substreams make) is no longer listed as a camera,
   also on players where that setting is off. The Home Assistant button for it disappears at the next reconnect
   (#116, #117).
+- **Kodi repository:** the icon and fanart of the add-ons are published next to the zips, so the add-on browser
+  shows them instead of an empty box (#123).
 
 ## [1.2.0] - 2026-11-27
 

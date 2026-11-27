@@ -12,7 +12,10 @@ extension xbmc.addon.metadata
 file addons.xml
 file addons.xml.md5
 file index.html
+file repository.camalert/icon.png
 file repository.camalert/repository.camalert-1.0.0.zip
+file service.camalert/resources/fanart.jpg
+file service.camalert/resources/icon.png
 file service.camalert/service.camalert-@VERSION@.zip
 addons.xml service.camalert @VERSION@
 addons.xml repository.camalert 1.0.0

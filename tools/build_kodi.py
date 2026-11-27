@@ -6,7 +6,8 @@
 Writes to outdir (default dist/):
     service.camalert-<version>.zip         the add-on (version = players/enigma2/CamAlert/__init__.py)
     repository.camalert-<rversion>.zip     repository add-on: install once, Kodi then updates CamAlert itself
-    kodi-repo/                             tree to host (GitHub Pages): addons.xml, addons.xml.md5, zips
+    kodi-repo/                             tree to host (GitHub Pages): addons.xml, addons.xml.md5, zips and the
+                                           <assets> of each add-on (icon, fanart: Kodi fetches them from there)
 
 The shared core (core/camalert_core/, the whole package) is copied into resources/lib/camalert/camalert_core/ and the
 doorbell chime (players/enigma2/CamAlert/chime.wav) into resources/media/ at build time.
@@ -81,6 +82,12 @@ def addon_entries(ver):
     return sorted(entries)
 
 
+def asset_paths(xml_text):
+    """The files named in <assets> (icon, fanart, screenshots) of an addon.xml text (#123)."""
+    root = ET.fromstring(xml_text.encode("utf-8"))
+    return sorted({(e.text or "").strip() for a in root.iter("assets") for e in a if (e.text or "").strip()})
+
+
 def repo_version():
     return ET.fromstring(open(os.path.join(REPO_ADDON, "addon.xml"), "rb").read()).get("version")
 
@@ -105,11 +112,19 @@ def build(outdir, repo_url=DEFAULT_REPO_URL):
     if os.path.isdir(tree):
         shutil.rmtree(tree)
     parts = []
-    for aid, z, xml in (("service.camalert", addon_zip, addon_xml_text(os.path.join(ADDON, "addon.xml"), ver)),
-                        ("repository.camalert", repo_zip,
-                         addon_xml_text(os.path.join(REPO_ADDON, "addon.xml"), None, repo_url))):
+    for aid, src, z, xml in (("service.camalert", ADDON, addon_zip,
+                              addon_xml_text(os.path.join(ADDON, "addon.xml"), ver)),
+                             ("repository.camalert", REPO_ADDON, repo_zip,
+                              addon_xml_text(os.path.join(REPO_ADDON, "addon.xml"), None, repo_url))):
         os.makedirs(os.path.join(tree, aid), exist_ok=True)
         shutil.copy(z, os.path.join(tree, aid, os.path.basename(z)))
+        for rel in asset_paths(xml):  # Kodi 19+ reads <datadir>/<id>/<asset path> (#123)
+            segs = rel.split("/")
+            if rel.startswith("/") or ".." in segs:
+                raise ValueError("%s: asset outside the add-on: %s" % (aid, rel))
+            dest = os.path.join(tree, aid, *segs)
+            os.makedirs(os.path.dirname(dest), exist_ok=True)
+            shutil.copy(os.path.join(src, *segs), dest)
         parts.append(re.sub(r"^<\?xml[^>]*\?>\s*", "", xml.strip()))
     addons = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<addons>\n%s\n</addons>\n' % "\n".join(parts)
     ET.fromstring(addons.encode("utf-8"))

@@ -184,6 +184,18 @@ object Urls {
 
     /** Helper streams in a go2rtc /api/streams answer (#117): every source transcodes another stream of the same
      *  go2rtc (`ffmpeg:<stream>#...`), as Keep cameras ready and the live substreams do. Not a camera. */
+    /** The go2rtc stream a producer url reads from (#117): ffmpeg:<stream>#... or go2rtc's own RTSP server. */
+    fun sourceStream(url: String?): String? {
+        if (url == null) return null
+        if (url.startsWith("ffmpeg:")) return url.removePrefix("ffmpeg:").substringBefore("#")
+        val uri = try { java.net.URI(url) } catch (e: Exception) { return null }
+        if (uri.scheme !in setOf("rtsp", "rtsps") || uri.host?.trim('[', ']') !in setOf("127.0.0.1", "localhost", "::1")) return null
+        val source = (uri.rawQuery ?: "").split("&").firstOrNull { it.startsWith("source=") }
+            ?.removePrefix("source=")?.let { java.net.URLDecoder.decode(it, "UTF-8") }
+        if (source != null && source.startsWith("ffmpeg:")) return source.removePrefix("ffmpeg:").substringBefore("#")
+        return (uri.path ?: "").trimStart('/').ifEmpty { null }
+    }
+
     fun derivedStreams(data: Map<*, *>): Set<String> {
         val names = data.keys.map { it.toString() }.toSet()
         val out = mutableSetOf<String>()
@@ -191,10 +203,7 @@ object Urls {
             val name = k.toString()
             val producers = (info as? Map<*, *>)?.get("producers") as? List<*> ?: continue
             if (producers.isEmpty()) continue
-            val bases = producers.map { p ->
-                val url = (p as? Map<*, *>)?.get("url") as? String
-                if (url == null || !url.startsWith("ffmpeg:")) null else url.removePrefix("ffmpeg:").substringBefore("#")
-            }
+            val bases = producers.map { p -> sourceStream((p as? Map<*, *>)?.get("url") as? String) }
             if (bases.all { it != null && it != name && it in names }) out.add(name)
         }
         return out

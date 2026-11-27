@@ -5,7 +5,7 @@
 
 import json
 import re
-from urllib.parse import quote, unquote, urlsplit
+from urllib.parse import parse_qs, quote, unquote, urlsplit
 
 
 def normalize_server(url):
@@ -44,10 +44,33 @@ def server_host(server):
     return p.hostname
 
 
+LOOPBACK = ("127.0.0.1", "localhost", "::1")
+
+
+def _source_stream(url):
+    """The go2rtc stream a producer url reads from, or None when it reads from somewhere else (#117):
+    ``ffmpeg:<stream>#...`` (configured, idle) or ``rtsp://127.0.0.1:8554/<stream>?...`` (go2rtc's own RTSP server,
+    what go2rtc 1.9 shows while the derived stream runs; ``source=ffmpeg:<stream>#...`` in the query)."""
+    if not isinstance(url, str):
+        return None
+    if url.startswith("ffmpeg:"):
+        return url[len("ffmpeg:"):].split("#", 1)[0]
+    try:
+        p = urlsplit(url)
+    except ValueError:
+        return None
+    if p.scheme not in ("rtsp", "rtsps") or p.hostname not in LOOPBACK:
+        return None
+    source = (parse_qs(p.query).get("source") or [""])[0]
+    if source.startswith("ffmpeg:"):
+        return source[len("ffmpeg:"):].split("#", 1)[0]
+    return unquote(p.path.lstrip("/")) or None
+
+
 def derived_streams(data):
     """Names of helper streams in a go2rtc /api/streams answer (#117): every source of the stream transcodes
-    another stream of the same go2rtc (``ffmpeg:<stream>#...``), as Keep cameras ready and the live substreams do.
-    Such a stream is not a camera, whichever player made it."""
+    another stream of the same go2rtc, as Keep cameras ready and the live substreams do. Such a stream is not a
+    camera, whichever player made it."""
     if not isinstance(data, dict):
         return set()
     out = set()
@@ -55,15 +78,9 @@ def derived_streams(data):
         producers = info.get("producers") if isinstance(info, dict) else None
         if not isinstance(producers, list) or not producers:
             continue
-        bases = []
-        for p in producers:
-            url = p.get("url") if isinstance(p, dict) else None
-            if not isinstance(url, str) or not url.startswith("ffmpeg:"):
-                break
-            bases.append(url[len("ffmpeg:"):].split("#", 1)[0])
-        else:
-            if all(b != name and b in data for b in bases):
-                out.add(name)
+        bases = [_source_stream(p.get("url") if isinstance(p, dict) else None) for p in producers]
+        if all(b is not None and b != name and b in data for b in bases):
+            out.add(name)
     return out
 
 

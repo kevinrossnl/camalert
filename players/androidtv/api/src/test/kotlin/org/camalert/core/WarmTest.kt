@@ -59,6 +59,20 @@ class WarmTest {
     }
 
     @Test
+    fun derivedStreamWhileRunning() {  // #117 on a real go2rtc 1.9.15: producer url = own RTSP server + source
+        val running = "rtsp://127.0.0.1:8554/front_door?video&source=ffmpeg:front_door%23video%3Dmjpeg%23width%3D640"
+        fun p(url: String) = mapOf("producers" to listOf(mapOf("url" to url)))
+        val streams = mapOf(
+            "front_door" to p("rtsp://192.168.1.10:7447/abc"),
+            "front_door_jpeg" to p(running),
+            "loop_sub" to p("rtsp://localhost:8554/front_door?video"),
+            "elsewhere" to p("rtsp://127.0.0.1:8554/not_here?video"),
+            "lan" to p("rtsp://192.168.1.10:8554/front_door"),
+        )
+        assertEquals(setOf("front_door_jpeg", "loop_sub"), Urls.derivedStreams(streams))
+    }
+
+    @Test
     fun parserInChunksAndWithoutLength() {
         val all = part("one") + part("two", false) + part("three")
         val p = MjpegParser()

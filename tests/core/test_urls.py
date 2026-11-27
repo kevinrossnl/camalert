@@ -44,6 +44,19 @@ class TestUrls(unittest.TestCase):
                          ["empty", "front_door", "front_door_jpeg", "garden", "garden_sub", "mixed", "orphan"])
         self.assertEqual(urls.derived_streams({"a": {"producers": "x"}, "b": None}), set())
 
+    def test_derived_stream_while_running(self):
+        """#117 seen on a real go2rtc 1.9.15: while a derived stream runs, its producer url is go2rtc's own RTSP
+        server with the original source in the query, not ``ffmpeg:<stream>#...``."""
+        running = "rtsp://127.0.0.1:8554/front_door?video&source=ffmpeg:front_door%23video%3Dmjpeg%23width%3D640"
+        streams = {
+            "front_door": {"producers": [{"url": "rtsp://192.168.1.10:7447/abc", "format_name": "rtsp"}]},
+            "front_door_jpeg": {"producers": [{"url": running, "format_name": "mjpeg", "protocol": "pipe"}]},
+            "loop_sub": {"producers": [{"url": "rtsp://localhost:8554/front_door?video"}]},
+            "elsewhere": {"producers": [{"url": "rtsp://127.0.0.1:8554/not_here?video"}]},  # no such stream here
+            "lan": {"producers": [{"url": "rtsp://192.168.1.10:8554/front_door"}]},  # another host: a camera
+        }
+        self.assertEqual(urls.derived_streams(streams), {"front_door_jpeg", "loop_sub"})
+
     def test_streams_from_json(self):
         self.assertEqual(urls.streams_from_json('{"garden": {}, "front_door": {}, "bad name": {}}'), ["front_door", "garden"])
         self.assertEqual(urls.streams_from_json("not json"), [])

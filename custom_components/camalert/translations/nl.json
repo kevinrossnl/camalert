@@ -47,13 +47,28 @@
           "verify_ssl": "Zet uit voor het eigen (zelfondertekende) certificaat van de speler. Alleen bij HTTPS.",
           "token": "Alleen als er een toegangstoken is ingesteld in CamAlert op de speler. Het wordt in een header verstuurd, nooit in het adres."
         }
+      },
+      "setup": {
+        "title": "{name} instellen",
+        "description": "{name} is nog niet ingesteld. Home Assistant kan het adres van go2rtc naar deze speler sturen, zodat hij je camera's meteen kan tonen. Laat het adres leeg om dit over te slaan; je kunt het later ook doen in de opties van de speler.",
+        "data": {
+          "go2rtc_server": "go2rtc-adres",
+          "camera": "Standaardcamera"
+        },
+        "data_description": {
+          "go2rtc_server": "Adres van je go2rtc-server, bijv. http://192.168.1.10:1984. Al ingevuld als Home Assistant een go2rtc kent die bereikbaar is.",
+          "camera": "Optioneel: de go2rtc-naam van de camera die de speler toont als er geen camera is opgegeven, bijv. front_door."
+        }
       }
     },
     "error": {
       "cannot_connect": "De speler is niet bereikbaar. Staat hij aan, is CamAlert geïnstalleerd en klopt de poort?",
       "forbidden": "De speler weigerde het verzoek: controleer het token, of 'Toegestane aanroepers' in CamAlert.",
       "certificate": "Het certificaat van de speler wordt niet vertrouwd. Zet voor het eigen certificaat van CamAlert 'Certificaten controleren' uit.",
-      "unknown": "Onverwachte fout. Details staan in het Home Assistant-logboek."
+      "unknown": "Onverwachte fout. Details staan in het Home Assistant-logboek.",
+      "invalid_server": "Dit is geen geldig adres. Gebruik bijv. http://192.168.1.10:1984.",
+      "already_set_up": "De speler is al ingesteld en neemt alleen een go2rtc-adres in je eigen netwerk aan.",
+      "invalid_camera": "Ongeldige cameranaam: één go2rtc-naam, bijv. front_door."
     },
     "abort": {
       "already_configured": "Deze speler is al toegevoegd.",
@@ -68,12 +83,24 @@
         "title": "Opties van de CamAlert-speler",
         "description": "De speler staat in Home Assistant onder het apparaat van de tv of Enigma2-ontvanger waarop hij draait.",
         "data": {
-          "parent_device": "Tonen onder apparaat"
+          "parent_device": "Tonen onder apparaat",
+          "go2rtc_server": "go2rtc-adres sturen",
+          "camera": "Standaardcamera"
         },
         "data_description": {
-          "parent_device": "Automatisch: het apparaat van de Enigma2-, Kodi- of Android TV-integratie met hetzelfde adres als de speler. Of kies zelf een apparaat, of geen."
+          "parent_device": "Automatisch: het apparaat van de Enigma2-, Kodi- of Android TV-integratie met hetzelfde adres als de speler. Of kies zelf een apparaat, of geen.",
+          "go2rtc_server": "Optioneel: stuurt dit go2rtc-adres naar de speler. Een speler die al is ingesteld, neemt alleen een adres in je eigen netwerk aan. Leeg: de speler houdt zijn eigen instelling.",
+          "camera": "Optioneel, samen met het go2rtc-adres: de go2rtc-naam van de standaardcamera, bijv. front_door."
         }
       }
+    },
+    "error": {
+      "invalid_server": "Dit is geen geldig adres. Gebruik bijv. http://192.168.1.10:1984.",
+      "already_set_up": "De speler is al ingesteld en neemt alleen een go2rtc-adres in je eigen netwerk aan.",
+      "invalid_camera": "Ongeldige cameranaam: één go2rtc-naam, bijv. front_door.",
+      "cannot_connect": "De speler is niet bereikbaar. Staat hij aan, is CamAlert geïnstalleerd en klopt de poort?",
+      "forbidden": "De speler weigerde het verzoek: controleer het token, of 'Toegestane aanroepers' in CamAlert.",
+      "unknown": "Onverwachte fout. Details staan in het Home Assistant-logboek."
     }
   },
   "entity": {

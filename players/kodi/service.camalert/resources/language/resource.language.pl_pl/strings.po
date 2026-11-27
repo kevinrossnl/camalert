@@ -981,6 +981,74 @@ msgctxt "#30353"
 msgid "Only while this player is on: keeps the MJPEG stream of these cameras open so the photo window shows them at once, e.g. front_door=front_door_jpeg. Empty = off."
 msgstr "Tylko gdy ten odtwarzacz jest włączony: utrzymuje otwarty strumień MJPEG tych kamer, aby okno ze zdjęciem pokazało je od razu, np. front_door=front_door_jpeg. Puste = wyłączone."
 
+msgctxt "#30440"
+msgid "First-start wizard done"
+msgstr "Kreator pierwszego uruchomienia zakończony"
+
+msgctxt "#30441"
+msgid "CamAlert wizard"
+msgstr "Kreator CamAlert"
+
+msgctxt "#30442"
+msgid "Searching for go2rtc in your network..."
+msgstr "Wyszukiwanie go2rtc w sieci..."
+
+msgctxt "#30443"
+msgid "%d cameras"
+msgstr "kamery: %d"
+
+msgctxt "#30444"
+msgid "Enter the address yourself"
+msgstr "Wpisanie adresu ręcznie"
+
+msgctxt "#30445"
+msgid "Without go2rtc (camera file)"
+msgstr "Bez go2rtc (plik kamer)"
+
+msgctxt "#30446"
+msgid "No go2rtc found in your network. Enter its address yourself, or set up go2rtc first (see the guide)."
+msgstr "Nie znaleziono go2rtc w sieci. Należy wpisać adres ręcznie albo najpierw zainstalować go2rtc (zob. instrukcję)."
+
+msgctxt "#30447"
+msgid "go2rtc does not answer at %s."
+msgstr "go2rtc nie odpowiada pod adresem %s."
+
+msgctxt "#30449"
+msgid "Which camera should CamAlert show by default?"
+msgstr "Którą kamerę CamAlert ma pokazywać domyślnie?"
+
+msgctxt "#30450"
+msgid "Is this the right camera?"
+msgstr "Czy to właściwa kamera?"
+
+msgctxt "#30451"
+msgid "go2rtc has no cameras yet. Add your cameras in go2rtc and start the wizard again from the menu."
+msgstr "go2rtc nie ma jeszcze kamer. Należy dodać kamery w go2rtc, a potem ponownie uruchomić kreator z menu."
+
+msgctxt "#30452"
+msgid "Show a test notification now? It plays no doorbell chime."
+msgstr "Pokazać teraz powiadomienie testowe? Dźwięk dzwonka nie zostanie odtworzony."
+
+msgctxt "#30453"
+msgid "Ready! Add this player in Home Assistant: Settings > Devices & services > Add integration > CamAlert."
+msgstr "Gotowe. Ten odtwarzacz można dodać w Home Assistant: Ustawienia > Urządzenia oraz usługi > Dodaj integrację > CamAlert."
+
+msgctxt "#30454"
+msgid "Name: %s"
+msgstr "Nazwa: %s"
+
+msgctxt "#30455"
+msgid "Address: %s"
+msgstr "Adres: %s"
+
+msgctxt "#30456"
+msgid "Start the wizard again"
+msgstr "Ponowne uruchomienie kreatora"
+
+msgctxt "#30457"
+msgid "Without go2rtc, list your cameras in %s, then open CamAlert again."
+msgstr "Bez go2rtc należy wpisać kamery do %s, a potem ponownie otworzyć CamAlert."
+
 msgctxt "#30500"
 msgid "API"
 msgstr "API"
@@ -1265,70 +1333,6 @@ msgctxt "#30570"
 msgid "Ready: %s not connected"
 msgstr "Gotowa: %s nie połączona"
 
-msgctxt "#30440"
-msgid "First-start wizard done"
-msgstr "Kreator pierwszego uruchomienia zakończony"
-
-msgctxt "#30441"
-msgid "CamAlert wizard"
-msgstr "Kreator CamAlert"
-
-msgctxt "#30442"
-msgid "Searching for go2rtc in your network..."
-msgstr "Wyszukiwanie go2rtc w sieci..."
-
-msgctxt "#30443"
-msgid "%d cameras"
-msgstr "kamery: %d"
-
-msgctxt "#30444"
-msgid "Enter the address yourself"
-msgstr "Wpisanie adresu ręcznie"
-
-msgctxt "#30445"
-msgid "Without go2rtc (camera file)"
-msgstr "Bez go2rtc (plik kamer)"
-
-msgctxt "#30446"
-msgid "No go2rtc found in your network. Enter its address yourself, or set up go2rtc first (see the guide)."
-msgstr "Nie znaleziono go2rtc w sieci. Należy wpisać adres ręcznie albo najpierw zainstalować go2rtc (zob. instrukcję)."
-
-msgctxt "#30447"
-msgid "go2rtc does not answer at %s."
-msgstr "go2rtc nie odpowiada pod adresem %s."
-
-msgctxt "#30449"
-msgid "Which camera should CamAlert show by default?"
-msgstr "Którą kamerę CamAlert ma pokazywać domyślnie?"
-
-msgctxt "#30450"
-msgid "Is this the right camera?"
-msgstr "Czy to właściwa kamera?"
-
-msgctxt "#30451"
-msgid "go2rtc has no cameras yet. Add your cameras in go2rtc and start the wizard again from the menu."
-msgstr "go2rtc nie ma jeszcze kamer. Należy dodać kamery w go2rtc, a potem ponownie uruchomić kreator z menu."
-
-msgctxt "#30452"
-msgid "Show a test notification now? It plays no doorbell chime."
-msgstr "Pokazać teraz powiadomienie testowe? Dźwięk dzwonka nie zostanie odtworzony."
-
-msgctxt "#30453"
-msgid "Ready! Add this player in Home Assistant: Settings > Devices & services > Add integration > CamAlert."
-msgstr "Gotowe. Ten odtwarzacz można dodać w Home Assistant: Ustawienia > Urządzenia oraz usługi > Dodaj integrację > CamAlert."
-
-msgctxt "#30454"
-msgid "Name: %s"
-msgstr "Nazwa: %s"
-
-msgctxt "#30455"
-msgid "Address: %s"
-msgstr "Adres: %s"
-
-msgctxt "#30456"
-msgid "Start the wizard again"
-msgstr "Ponowne uruchomienie kreatora"
-
-msgctxt "#30457"
-msgid "Without go2rtc, list your cameras in %s, then open CamAlert again."
-msgstr "Bez go2rtc należy wpisać kamery do %s, a potem ponownie otworzyć CamAlert."
+msgctxt "#30571"
+msgid "Settings received from Home Assistant"
+msgstr "Otrzymano ustawienia z Home Assistant"

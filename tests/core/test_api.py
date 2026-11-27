@@ -40,6 +40,11 @@ class FakeBackend(api.Backend):
     def set_display(self, key, value):
         self.values[key] = value
 
+    def set_setup(self, server, camera):
+        self.values["server"] = server
+        if camera:
+            self.values["camera"] = camera
+
     def log_tail(self, lines):
         return ["a", "token=secret"][-lines:]
 
@@ -207,6 +212,8 @@ class TestApiDetails(unittest.TestCase):
             b.set_webhook("")
         with self.assertRaises(NotImplementedError):
             b.set_display("size", "small")
+        with self.assertRaises(NotImplementedError):
+            b.set_setup("http://192.168.1.10:1984", None)
         self.assertEqual(b.status_extra(), {})
         self.assertIsNone(b.log("x"))
 
@@ -226,6 +233,31 @@ class TestApiDetails(unittest.TestCase):
         self.assertIn("settings", st["capabilities"])
         self.assertEqual(self.call("/camalert/settings", "POST", {"position": "centre"}).code, 400)
         self.assertEqual(self.b.values["position"], "top_right")
+
+    def test_setup(self):
+        """#122: Home Assistant may set the go2rtc address of a player that was never set up (any address), or
+        send a local-network address to one that was; status says whether the player is set up."""
+        self.assertFalse(api.configured({"server": "", "source": "go2rtc"}))
+        self.assertFalse(api.configured({}))  # a player without source / wizard_done: go2rtc, wizard not done
+        self.assertTrue(api.configured({"server": "http://192.168.1.10:1984"}))
+        self.assertTrue(api.configured({"server": "", "source": "direct"}))
+        self.assertTrue(api.configured({"server": "", "wizard_done": True}))
+        self.assertTrue(api.configured({"server": "not an address"}))  # set, even if wrong: only the LAN may fix it
+        self.assertFalse(self.call("/camalert/status").body["configured"])
+        self.assertIn("setup", self.call("/camalert/status").body["capabilities"])
+        r = self.call("/camalert/setup", "POST", {"server": "https://ha.public.example:1984", "camera": "garden"})
+        self.assertEqual((r.code, r.body["server"], r.body["camera"]), (200, "https://ha.public.example:1984", "garden"))
+        self.assertEqual((self.b.values["server"], self.b.values["camera"]), ("https://ha.public.example:1984", "garden"))
+        self.assertTrue(any("set up by 192.168.1.5" in m for _, m in self.b.logged))
+        self.assertTrue(self.call("/camalert/status").body["configured"])
+        r = self.call("/camalert/setup", "POST", {"server": "http://8.8.8.8:1984"})  # now set up: internet refused
+        self.assertEqual((r.code, r.body), (409, {"result": False, "error": "already set up"}))
+        self.assertEqual(self.b.values["server"], "https://ha.public.example:1984")
+        r = self.call("/camalert/setup", "POST", {"server": "192.168.1.30"})  # LAN: allowed, default port
+        self.assertEqual((r.code, self.b.values["server"]), (200, "http://192.168.1.30:1984"))
+        self.b.values.update(server="", wizard_done=True)  # the wizard ran and chose direct / no go2rtc yet
+        self.assertEqual(self.call("/camalert/setup", "POST", {"server": "http://8.8.8.8:1984"}).code, 409)
+        self.assertEqual(self.call("/camalert/setup", "POST", {"server": "ftp://192.168.1.10"}).code, 400)
 
     def test_payload(self):
         self.assertEqual(json.loads(api.Response(200, {"a": 1}).payload()), {"a": 1})

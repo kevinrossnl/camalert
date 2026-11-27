@@ -131,6 +131,14 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         }
         override fun setWebhook(url: String) = store.set("ha_webhook", url)
         override fun setDisplay(key: String, value: String) = store.set(key, value)  // window position / size (#84)
+        override fun setSetup(server: String, camera: String?) {  // go2rtc address from Home Assistant (#122)
+            store.set("server", server)
+            if (camera != null) store.set("camera", camera)
+            val text = tr(present.data.setupReceived)
+            Handler(Looper.getMainLooper()).post {
+                android.widget.Toast.makeText(this@CamAlertService, text, android.widget.Toast.LENGTH_LONG).show()
+            }
+        }
         override fun logTail(lines: Int) = CamLog.tail(lines)
         override fun metrics() = controller.metrics(version, PLATFORM)
         override fun statusExtra() = mapOf("mqtt" to mqttConnected())

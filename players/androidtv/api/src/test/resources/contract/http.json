@@ -37,7 +37,9 @@
   "enabled": true,
   "ha_webhook": "",
   "position": "top_right",
+  "server": "",
   "size": "medium",
+  "source": "go2rtc",
   "token": ""
  },
  "dns": {
@@ -92,7 +94,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -123,7 +127,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -151,7 +157,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -183,7 +191,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -215,7 +225,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -245,7 +257,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": "secret"
    },
    "user_agent": ""
@@ -273,7 +287,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": "secret"
    },
    "user_agent": ""
@@ -305,7 +321,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": "secret"
    },
    "user_agent": ""
@@ -337,7 +355,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": "secret"
    },
    "user_agent": ""
@@ -368,7 +388,9 @@
     "enabled": false,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -399,7 +421,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -427,7 +451,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -460,7 +486,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -509,7 +537,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -551,7 +581,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -592,7 +624,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": "HomeAssistant/2026.11 aiohttp/3.10"
@@ -633,7 +667,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -674,7 +710,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -705,7 +743,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -742,7 +782,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -775,7 +817,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -805,7 +849,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -836,7 +882,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -867,7 +915,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -905,7 +955,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -933,7 +985,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -977,7 +1031,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1018,7 +1074,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": "HomeAssistant/2026.11 aiohttp/3.10"
@@ -1059,7 +1117,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1093,7 +1153,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1129,7 +1191,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1173,7 +1237,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1212,7 +1278,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1248,7 +1316,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1278,7 +1348,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1314,7 +1386,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1350,7 +1424,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1385,7 +1461,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1423,7 +1501,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1461,7 +1541,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1494,7 +1576,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1524,7 +1608,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1558,7 +1644,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "bottom_left",
+    "server": "",
     "size": "large",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1592,7 +1680,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1627,7 +1717,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1659,7 +1751,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1691,7 +1785,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1723,7 +1819,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1758,7 +1856,456 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "camera": "garden",
+    "server": "http://192.168.1.10:1984"
+   },
+   "body": null,
+   "calls": [],
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "camera": "garden",
+    "configured": true,
+    "result": true,
+    "server": "http://192.168.1.10:1984"
+   },
+   "method": "POST",
+   "name": "setup_new_player",
+   "path": "/camalert/setup",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "server": "192.168.1.10:1984"
+   },
+   "body": null,
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "camera": "front_door",
+    "result": true,
+    "server": "http://192.168.1.10:1984"
+   },
+   "method": "POST",
+   "name": "setup_bare_address_keeps_camera",
+   "path": "/camalert/setup",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "server": "https://ha.public.example:1984"
+   },
+   "body": null,
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "result": true,
+    "server": "https://ha.public.example:1984"
+   },
+   "method": "POST",
+   "name": "setup_new_player_any_address",
+   "path": "/camalert/setup",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "server": "http://192.168.1.20:1984"
+   },
+   "body": null,
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "result": true,
+    "server": "http://192.168.1.20:1984"
+   },
+   "method": "POST",
+   "name": "setup_configured_lan",
+   "path": "/camalert/setup",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "server": "http://192.168.1.10:1984",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "server": "http://homeassistant.local:1984"
+   },
+   "body": null,
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "result": true
+   },
+   "method": "POST",
+   "name": "setup_configured_local_name",
+   "path": "/camalert/setup",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "server": "http://192.168.1.10:1984",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "server": "http://8.8.8.8:1984"
+   },
+   "body": null,
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 409,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "error": "already set up",
+    "result": false
+   },
+   "method": "POST",
+   "name": "setup_configured_internet_refused",
+   "path": "/camalert/setup",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "server": "http://192.168.1.10:1984",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "server": "https://ha.public.example:1984"
+   },
+   "body": null,
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 409,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "error": "already set up"
+   },
+   "method": "POST",
+   "name": "setup_configured_public_name_refused",
+   "path": "/camalert/setup",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "server": "http://192.168.1.10:1984",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "server": "http://8.8.8.8:1984"
+   },
+   "body": null,
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 409,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "error": "already set up"
+   },
+   "method": "POST",
+   "name": "setup_direct_mode_counts_as_set_up",
+   "path": "/camalert/setup",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "direct",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "server": "ftp://192.168.1.10/x"
+   },
+   "body": null,
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 400,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "error": "invalid server",
+    "result": false
+   },
+   "method": "POST",
+   "name": "setup_invalid_server",
+   "path": "/camalert/setup",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {},
+   "body": null,
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 400,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "error": "invalid server"
+   },
+   "method": "POST",
+   "name": "setup_missing_server",
+   "path": "/camalert/setup",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "camera": "a,b",
+    "server": "http://192.168.1.10:1984"
+   },
+   "body": null,
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 400,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "result": false
+   },
+   "method": "POST",
+   "name": "setup_invalid_camera",
+   "path": "/camalert/setup",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "server": "http://192.168.1.10:1984"
+   },
+   "body": null,
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 403,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": null,
+   "method": "POST",
+   "name": "setup_needs_the_token",
+   "path": "/camalert/setup",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": "secret"
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "server": "http://192.168.1.10:1984"
+   },
+   "body": null,
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 403,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "8.8.8.8",
+   "json": null,
+   "method": "POST",
+   "name": "setup_from_wan_refused",
+   "path": "/camalert/setup",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1799,7 +2346,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1832,7 +2381,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1863,7 +2414,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1895,7 +2448,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1928,7 +2483,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1961,7 +2518,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -1993,7 +2552,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -2023,7 +2584,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -2053,7 +2616,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -2083,7 +2648,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -2116,7 +2683,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -2146,7 +2715,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -2179,7 +2750,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -2207,7 +2780,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -2252,7 +2827,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -2282,7 +2859,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -2314,7 +2893,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -2342,7 +2923,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -2370,7 +2953,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -2398,7 +2983,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -2426,7 +3013,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": ""
    },
    "user_agent": ""
@@ -2456,7 +3045,9 @@
     "enabled": true,
     "ha_webhook": "",
     "position": "top_right",
+    "server": "",
     "size": "medium",
+    "source": "go2rtc",
     "token": "secret"
    },
    "user_agent": ""
@@ -2487,6 +3078,7 @@
   "mqtt",
   "screen",
   "position",
-  "size"
+  "size",
+  "configured"
  ]
 }

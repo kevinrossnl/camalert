@@ -432,6 +432,9 @@ msgstr "Żądanie testowe"
 msgid "High"
 msgstr "Wysoki"
 
+msgid "Settings received from Home Assistant"
+msgstr "Otrzymano ustawienia z Home Assistant"
+
 msgid "Shown"
 msgstr "Pokazano"
 

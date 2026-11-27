@@ -12,6 +12,7 @@ from urllib.parse import parse_qs, urlparse
 
 from . import __version__, kodiapi, sources
 from .camalert_core import api, discovery
+from .camalert_core.present import SETUP_RECEIVED
 from .camalert_core.urls import valid_port
 from .klogic import node_from_mac
 
@@ -83,6 +84,16 @@ class Backend(api.Backend):
 
     def set_display(self, key, value):
         kodiapi.set_setting(key, value)  # window position or size from the API (#84)
+
+    def set_setup(self, server, camera):
+        """go2rtc address (and default camera) from Home Assistant (#122); the camera list follows at once."""
+        kodiapi.set_setting("server", server)
+        if camera:
+            kodiapi.set_setting("camera", camera)
+        ctl = self.controller()
+        if ctl is not None:
+            ctl.names_at = 0.0  # refresh the camera list at the next request
+        kodiapi.notify("CamAlert", kodiapi.core_tr()(SETUP_RECEIVED), sound=False)
 
     def log_tail(self, lines):
         return kodiapi.camlog().tail(lines)

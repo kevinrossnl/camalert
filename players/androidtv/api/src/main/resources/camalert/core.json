@@ -23,6 +23,7 @@
   "ptz",
   "screen",
   "settings",
+  "setup",
   "show",
   "status",
   "strip",
@@ -1325,6 +1326,7 @@
    "unit": null
   }
  ],
+ "setup_received": "Settings received from Home Assistant",
  "source_labels": {
   "api": "API",
   "foscam": "Foscam",

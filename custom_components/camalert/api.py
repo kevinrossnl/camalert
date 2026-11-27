@@ -10,7 +10,7 @@ from typing import Any
 from urllib.parse import urlencode
 
 INTEGRATION_VERSION = "1.2.0"  # = manifest.json version
-ACTIONS = ("show", "mosaic", "tour", "hide", "ptz", "webhook")  # change something on the player: POST
+ACTIONS = ("show", "mosaic", "tour", "hide", "ptz", "webhook", "setup")  # change something on the player: POST
 TIMEOUT = 10  # seconds per request
 MODELS = {"enigma2": "Enigma2 receiver", "kodi": "Kodi", "androidtv": "Android TV"}  # device model per /status platform (#44, #64)
 
@@ -74,6 +74,10 @@ class CamAlertCertificateError(CamAlertError):
 
 class CamAlertNotSupported(CamAlertError):
     """The player does not know this action (older plugin or not available on this platform)."""
+
+
+class CamAlertAlreadySetUp(CamAlertError):
+    """The player is already set up and the go2rtc address is outside the local network (#122)."""
 
 
 class CamAlertApi:
@@ -153,6 +157,14 @@ class CamAlertApi:
     async def settings(self, **values) -> dict:
         """Window position and/or size of the player (#84); without values: read them."""
         return await self._get("settings", values)
+
+    async def setup(self, server: str, camera: str | None = None) -> dict:
+        """Sends the go2rtc address (and default camera) to the player (#122). CamAlertAlreadySetUp when the
+        player is set up and the address is not in the local network; CamAlertError for an invalid address."""
+        data = await self._get("setup", {"server": server, "camera": camera})
+        if not data.get("result"):
+            raise CamAlertAlreadySetUp(data.get("error") or "refused")
+        return data
 
     async def webhook(self, url: str) -> dict:
         return await self._get("webhook", {"url": url} if url else {"url": ""})

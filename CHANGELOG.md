@@ -9,6 +9,10 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Added
 
+- **Home Assistant:** sets up a new player. Right after adding a player that has no go2rtc address yet, Home
+  Assistant offers to send its go2rtc address (and a default camera); **Configure** on the entry sends one later. A
+  player that was never set up takes any address, a player that is set up only one in the local network. New API
+  route `/camalert/setup` (capability `setup`); `/camalert/status` reports `configured` (#122).
 - **Home Assistant:** selects **Window position** and **Window size** per player, to change where the photo window
   appears and how big it is from Home Assistant or an automation. New API route `/camalert/settings` (capability
   `settings`); `/camalert/status` also reports `position` and `size` (#84).

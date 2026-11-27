@@ -66,6 +66,18 @@ class TestEnigma2Server(unittest.TestCase):
         self.assertEqual(self.a.c.ha_webhook.value, "http://192.168.1.20:8123/api/webhook/x")
         self.assertIn("configfile.save", self.a.env.rec.names())
 
+    def test_setup_from_home_assistant(self):
+        """#122: the go2rtc address and camera are saved, the camera list refreshed and a message shown."""
+        ans = self.a.call(Request("/camalert/setup", {"server": "http://192.168.1.10:1984", "camera": "garden"},
+                                  method="POST", settings={"server": "", "camera": ""}))
+        self.assertEqual((ans.code, ans.body["configured"]), (200, True))
+        self.assertEqual((self.a.c.server.value, self.a.c.camera.value), ("http://192.168.1.10:1984", "garden"))
+        self.assertIn("configfile.save", self.a.env.rec.names())
+        popups = [c for c in self.a.env.rec.calls if c[0] == "AddPopup"]
+        self.assertEqual(popups[-1][1][0], "Settings received from Home Assistant")
+        st = self.a.call(Request("/camalert/status", settings={"server": "http://192.168.1.10:1984"})).body
+        self.assertTrue(st["configured"])
+
 
 if __name__ == "__main__":
     unittest.main()

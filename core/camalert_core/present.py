@@ -24,6 +24,8 @@ SOURCE_LABELS = {
 SOURCES = tuple(SOURCE_LABELS)
 PRIORITY_LABELS = {"normal": N_("Normal"), "high": N_("High"), "alarm": N_("Alarm")}  # glossary (#2)
 PRIORITIES = ("normal", "high", "alarm")
+# Shown on the screen when Home Assistant sent the go2rtc address through /camalert/setup (#122).
+SETUP_RECEIVED = N_("Settings received from Home Assistant")
 RESULT_LABELS = {"show": N_("Shown"), "extend": N_("Extended"), "ignore": N_("Ignored"), "error": N_("Error"),
                  "wake": N_("Woken up")}
 RESULTS = tuple(RESULT_LABELS)

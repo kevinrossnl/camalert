@@ -431,6 +431,9 @@ msgstr ""
 msgid "High"
 msgstr ""
 
+msgid "Settings received from Home Assistant"
+msgstr ""
+
 msgid "Shown"
 msgstr ""
 

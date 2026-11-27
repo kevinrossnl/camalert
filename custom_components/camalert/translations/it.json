@@ -47,13 +47,28 @@
           "verify_ssl": "Da disattivare per il certificato proprio (autofirmato) del lettore. Solo con HTTPS.",
           "token": "Solo se in CamAlert sul lettore è impostato un token di accesso. Viene inviato in un header, mai nell'indirizzo."
         }
+      },
+      "setup": {
+        "title": "Configura {name}",
+        "description": "{name} non è ancora configurato. Home Assistant può inviare a questo lettore l'indirizzo di go2rtc, così può mostrare subito le telecamere. Lasciare l'indirizzo vuoto per saltare; si può fare anche più tardi nelle opzioni del lettore.",
+        "data": {
+          "go2rtc_server": "Indirizzo go2rtc",
+          "camera": "Telecamera predefinita"
+        },
+        "data_description": {
+          "go2rtc_server": "Indirizzo del server go2rtc, ad es. http://192.168.1.10:1984. Già compilato se Home Assistant conosce un go2rtc raggiungibile.",
+          "camera": "Facoltativo: il nome go2rtc della telecamera che il lettore mostra se non è indicata una telecamera, ad es. front_door."
+        }
       }
     },
     "error": {
       "cannot_connect": "Il lettore non è raggiungibile. È acceso, CamAlert è installato e la porta è corretta?",
       "forbidden": "Il lettore ha rifiutato la richiesta: verificare il token o 'Chiamanti consentiti' in CamAlert.",
       "certificate": "Il certificato del lettore non è attendibile. Per il certificato proprio di CamAlert, disattivare 'Verifica certificati'.",
-      "unknown": "Errore imprevisto. I dettagli sono nel log di Home Assistant."
+      "unknown": "Errore imprevisto. I dettagli sono nel log di Home Assistant.",
+      "invalid_server": "Indirizzo non valido. Usare ad es. http://192.168.1.10:1984.",
+      "already_set_up": "Il lettore è già configurato e accetta solo un indirizzo go2rtc della rete locale.",
+      "invalid_camera": "Nome della telecamera non valido: un solo nome go2rtc, ad es. front_door."
     },
     "abort": {
       "already_configured": "Questo lettore è già stato aggiunto.",
@@ -68,12 +83,24 @@
         "title": "Opzioni del lettore CamAlert",
         "description": "Il lettore viene mostrato in Home Assistant sotto il dispositivo del televisore o del ricevitore Enigma2 su cui è in esecuzione.",
         "data": {
-          "parent_device": "Mostra sotto il dispositivo"
+          "parent_device": "Mostra sotto il dispositivo",
+          "go2rtc_server": "Invia indirizzo go2rtc",
+          "camera": "Telecamera predefinita"
         },
         "data_description": {
-          "parent_device": "Automatico: il dispositivo dell'integrazione Enigma2, Kodi o Android TV con lo stesso indirizzo del lettore. Oppure scegliere un dispositivo, o nessuno."
+          "parent_device": "Automatico: il dispositivo dell'integrazione Enigma2, Kodi o Android TV con lo stesso indirizzo del lettore. Oppure scegliere un dispositivo, o nessuno.",
+          "go2rtc_server": "Facoltativo: invia questo indirizzo go2rtc al lettore. Un lettore già configurato accetta solo un indirizzo della rete locale. Vuoto: il lettore mantiene la propria impostazione.",
+          "camera": "Facoltativo, insieme all'indirizzo go2rtc: il nome go2rtc della telecamera predefinita, ad es. front_door."
         }
       }
+    },
+    "error": {
+      "invalid_server": "Indirizzo non valido. Usare ad es. http://192.168.1.10:1984.",
+      "already_set_up": "Il lettore è già configurato e accetta solo un indirizzo go2rtc della rete locale.",
+      "invalid_camera": "Nome della telecamera non valido: un solo nome go2rtc, ad es. front_door.",
+      "cannot_connect": "Il lettore non è raggiungibile. È acceso, CamAlert è installato e la porta è corretta?",
+      "forbidden": "Il lettore ha rifiutato la richiesta: verificare il token o 'Chiamanti consentiti' in CamAlert.",
+      "unknown": "Errore imprevisto. I dettagli sono nel log di Home Assistant."
     }
   },
   "entity": {

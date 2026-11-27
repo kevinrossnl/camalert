@@ -47,13 +47,28 @@
           "verify_ssl": "Wyłączyć dla własnego (samopodpisanego) certyfikatu odtwarzacza. Tylko z HTTPS.",
           "token": "Tylko jeśli w CamAlert na odtwarzaczu ustawiono token dostępu. Jest wysyłany w nagłówku, nigdy w adresie."
         }
+      },
+      "setup": {
+        "title": "Skonfiguruj {name}",
+        "description": "{name} nie jest jeszcze skonfigurowany. Home Assistant może wysłać do tego odtwarzacza adres go2rtc, aby od razu pokazywał kamery. Pozostaw adres pusty, aby pominąć ten krok; można to też zrobić później w opcjach odtwarzacza.",
+        "data": {
+          "go2rtc_server": "Adres go2rtc",
+          "camera": "Domyślna kamera"
+        },
+        "data_description": {
+          "go2rtc_server": "Adres serwera go2rtc, np. http://192.168.1.10:1984. Wypełniony, jeśli Home Assistant zna osiągalny go2rtc.",
+          "camera": "Opcjonalnie: nazwa go2rtc kamery, którą odtwarzacz pokazuje, gdy nie podano kamery, np. front_door."
+        }
       }
     },
     "error": {
       "cannot_connect": "Odtwarzacz jest nieosiągalny. Czy jest włączony, czy CamAlert jest zainstalowany i czy port jest poprawny?",
       "forbidden": "Odtwarzacz odrzucił żądanie: sprawdzić token lub 'Dozwoleni wywołujący' w CamAlert.",
       "certificate": "Certyfikat odtwarzacza nie jest zaufany. Dla własnego certyfikatu CamAlert wyłączyć 'Sprawdzaj certyfikaty'.",
-      "unknown": "Nieoczekiwany błąd. Szczegóły są w dzienniku Home Assistant."
+      "unknown": "Nieoczekiwany błąd. Szczegóły są w dzienniku Home Assistant.",
+      "invalid_server": "To nie jest prawidłowy adres. Użyj np. http://192.168.1.10:1984.",
+      "already_set_up": "Odtwarzacz jest już skonfigurowany i przyjmuje tylko adres go2rtc z sieci lokalnej.",
+      "invalid_camera": "Nieprawidłowa nazwa kamery: jedna nazwa go2rtc, np. front_door."
     },
     "abort": {
       "already_configured": "Ten odtwarzacz jest już dodany.",
@@ -68,12 +83,24 @@
         "title": "Opcje odtwarzacza CamAlert",
         "description": "Odtwarzacz jest pokazywany w Home Assistant pod urządzeniem telewizora lub odbiornika Enigma2, na którym działa.",
         "data": {
-          "parent_device": "Pokaż pod urządzeniem"
+          "parent_device": "Pokaż pod urządzeniem",
+          "go2rtc_server": "Wyślij adres go2rtc",
+          "camera": "Domyślna kamera"
         },
         "data_description": {
-          "parent_device": "Automatycznie: urządzenie integracji Enigma2, Kodi lub Android TV o tym samym adresie co odtwarzacz. Można też wybrać urządzenie samodzielnie albo żadne."
+          "parent_device": "Automatycznie: urządzenie integracji Enigma2, Kodi lub Android TV o tym samym adresie co odtwarzacz. Można też wybrać urządzenie samodzielnie albo żadne.",
+          "go2rtc_server": "Opcjonalnie: wysyła ten adres go2rtc do odtwarzacza. Odtwarzacz, który jest już skonfigurowany, przyjmuje tylko adres z sieci lokalnej. Puste: odtwarzacz zachowuje własne ustawienie.",
+          "camera": "Opcjonalnie, razem z adresem go2rtc: nazwa go2rtc domyślnej kamery, np. front_door."
         }
       }
+    },
+    "error": {
+      "invalid_server": "To nie jest prawidłowy adres. Użyj np. http://192.168.1.10:1984.",
+      "already_set_up": "Odtwarzacz jest już skonfigurowany i przyjmuje tylko adres go2rtc z sieci lokalnej.",
+      "invalid_camera": "Nieprawidłowa nazwa kamery: jedna nazwa go2rtc, np. front_door.",
+      "cannot_connect": "Odtwarzacz jest nieosiągalny. Czy jest włączony, czy CamAlert jest zainstalowany i czy port jest poprawny?",
+      "forbidden": "Odtwarzacz odrzucił żądanie: sprawdzić token lub 'Dozwoleni wywołujący' w CamAlert.",
+      "unknown": "Nieoczekiwany błąd. Szczegóły są w dzienniku Home Assistant."
     }
   },
   "entity": {

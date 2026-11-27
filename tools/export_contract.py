@@ -403,6 +403,7 @@ def runtime():
         "tile_labels": present.TILE_LABELS,
         "frame_cache_seconds": frames.CACHE_SECONDS,
         "still_max_seconds": frames.STILL_MAX_SECONDS,
+        "setup_received": present.SETUP_RECEIVED,
     }
 
 

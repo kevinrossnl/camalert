@@ -508,7 +508,7 @@ msgstr "CamAlert-Assistent"
 msgid "No go2rtc found in your network. Enter its address yourself, or set up go2rtc first (see the guide)."
 msgstr "Kein go2rtc in deinem Netzwerk gefunden. Gib die Adresse selbst ein oder richte zuerst go2rtc ein (siehe Anleitung)."
 
-#: e2 kodi:30016 atv:wizard_address
+#: e2 kodi:30016 ha:config.step.setup.data.go2rtc_server atv:wizard_address
 msgid "go2rtc address"
 msgstr "go2rtc-Adresse"
 
@@ -575,6 +575,10 @@ msgstr "Testanfrage"
 #: e2 kodi:30141 kodi:30508 ha:selector.priority.options.high
 msgid "High"
 msgstr "Hoch"
+
+#: e2 kodi:30571
+msgid "Settings received from Home Assistant"
+msgstr "Einstellungen von Home Assistant erhalten"
 
 #: e2 kodi:30510
 msgid "Shown"
@@ -816,7 +820,7 @@ msgstr "go2rtc-RTSP-Port"
 msgid "Usually 8554. Used for live view and the camera list."
 msgstr "Meist 8554. Für Live-Ansicht und Kameraliste."
 
-#: e2 kodi:30024
+#: e2 kodi:30024 ha:config.step.setup.data.camera ha:options.step.init.data.camera
 msgid "Default camera"
 msgstr "Standardkamera"
 
@@ -1696,11 +1700,27 @@ msgstr "CamAlert-Wiedergabegerät ändern"
 msgid "New address, port, HTTPS or token of the same player."
 msgstr "Neue Adresse, neuer Port, HTTPS oder Token desselben Wiedergabegeräts."
 
-#: ha:config.error.cannot_connect
+#: ha:config.step.setup.title
+msgid "Set up {name}"
+msgstr "{name} einrichten"
+
+#: ha:config.step.setup.description
+msgid "{name} has not been set up yet. Home Assistant can send it the address of go2rtc, so the player can show your cameras straight away. Leave the address empty to skip; you can also do this later in the options of the player."
+msgstr "{name} ist noch nicht eingerichtet. Home Assistant kann diesem Wiedergabegerät die Adresse von go2rtc schicken, damit es deine Kameras sofort zeigen kann. Lass die Adresse leer, um das zu überspringen; du kannst es auch später in den Optionen des Wiedergabegeräts tun."
+
+#: ha:config.step.setup.data_description.go2rtc_server
+msgid "Address of your go2rtc server, e.g. http://192.168.1.10:1984. Filled in when Home Assistant knows a go2rtc it can reach."
+msgstr "Adresse deines go2rtc-Servers, z. B. http://192.168.1.10:1984. Schon ausgefüllt, wenn Home Assistant ein erreichbares go2rtc kennt."
+
+#: ha:config.step.setup.data_description.camera
+msgid "Optional: the go2rtc name of the camera the player shows when no camera is given, e.g. front_door."
+msgstr "Optional: der go2rtc-Name der Kamera, die das Wiedergabegerät zeigt, wenn keine Kamera angegeben ist, z. B. front_door."
+
+#: ha:config.error.cannot_connect ha:options.error.cannot_connect
 msgid "Cannot reach the player. Is it on, is CamAlert installed and is the port correct?"
 msgstr "Das Wiedergabegerät ist nicht erreichbar. Ist es an, ist CamAlert installiert und stimmt der Port?"
 
-#: ha:config.error.forbidden
+#: ha:config.error.forbidden ha:options.error.forbidden
 msgid "The player refused the request: check the token, or 'Allowed callers' in CamAlert."
 msgstr "Das Wiedergabegerät hat die Anfrage abgelehnt: prüfe das Token oder 'Erlaubte Aufrufer' in CamAlert."
 
@@ -1708,9 +1728,21 @@ msgstr "Das Wiedergabegerät hat die Anfrage abgelehnt: prüfe das Token oder 'E
 msgid "The player's certificate is not trusted. For CamAlert's own certificate, turn off Check certificates."
 msgstr "Dem Zertifikat des Wiedergabegeräts wird nicht vertraut. Schalte für das eigene Zertifikat von CamAlert 'Zertifikate prüfen' aus."
 
-#: ha:config.error.unknown
+#: ha:config.error.unknown ha:options.error.unknown
 msgid "Unexpected error. Details are in the Home Assistant log."
 msgstr "Unerwarteter Fehler. Details stehen im Home-Assistant-Protokoll."
+
+#: ha:config.error.invalid_server ha:options.error.invalid_server
+msgid "This is not a valid address. Use e.g. http://192.168.1.10:1984."
+msgstr "Das ist keine gültige Adresse. Verwende z. B. http://192.168.1.10:1984."
+
+#: ha:config.error.already_set_up ha:options.error.already_set_up
+msgid "The player is already set up and only accepts a go2rtc address in your local network."
+msgstr "Das Wiedergabegerät ist schon eingerichtet und nimmt nur eine go2rtc-Adresse in deinem lokalen Netzwerk an."
+
+#: ha:config.error.invalid_camera ha:options.error.invalid_camera
+msgid "Invalid camera name: one go2rtc name, e.g. front_door."
+msgstr "Ungültiger Kameraname: ein go2rtc-Name, z. B. front_door."
 
 #: ha:config.abort.already_configured
 msgid "This player is already added."
@@ -1740,9 +1772,21 @@ msgstr "Das Wiedergabegerät wird in Home Assistant unter dem Gerät des Fernseh
 msgid "Show under device"
 msgstr "Unter Gerät anzeigen"
 
+#: ha:options.step.init.data.go2rtc_server
+msgid "Send go2rtc address"
+msgstr "go2rtc-Adresse senden"
+
 #: ha:options.step.init.data_description.parent_device
 msgid "Automatic: the device of the Enigma2, Kodi or Android TV integration with the same address as the player. Or choose a device yourself, or none."
 msgstr "Automatisch: das Gerät der Enigma2-, Kodi- oder Android-TV-Integration mit derselben Adresse wie das Wiedergabegerät. Oder wähle selbst ein Gerät oder keines."
+
+#: ha:options.step.init.data_description.go2rtc_server
+msgid "Optional: sends this go2rtc address to the player. A player that is already set up only accepts an address in your local network. Empty: the player keeps its own setting."
+msgstr "Optional: schickt diese go2rtc-Adresse an das Wiedergabegerät. Ein schon eingerichtetes Wiedergabegerät nimmt nur eine Adresse in deinem lokalen Netzwerk an. Leer: das Wiedergabegerät behält seine eigene Einstellung."
+
+#: ha:options.step.init.data_description.camera
+msgid "Optional, with the go2rtc address: the go2rtc name of the default camera, e.g. front_door."
+msgstr "Optional, zusammen mit der go2rtc-Adresse: der go2rtc-Name der Standardkamera, z. B. front_door."
 
 #: ha:entity.button.show.name
 msgid "Show {camera}"

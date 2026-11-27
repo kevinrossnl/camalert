@@ -28,7 +28,14 @@ the user interface, no YAML. It works the same for Enigma2 receivers, Kodi and t
    repeater): **Settings › Devices & services › Add integration › CamAlert**. Enter the host name or IP address of
    the player (and the port, HTTPS and token if you changed them in CamAlert). Repeat for every player.
    *Reconfigure* on the entry changes the address, port, HTTPS or token later.
-6. The player's device is shown under the device of the TV or Enigma2 receiver it runs on: automatically when the
+6. **A new player is set up from Home Assistant:** when the player has no go2rtc address yet, Home Assistant offers
+   to send one right after adding it. The address is filled in when Home Assistant knows a go2rtc the player can
+   reach (the go2rtc integration with an address, or the go2rtc app); you can change it, add a default camera, or
+   leave it empty to skip. The player shows *Settings received from Home Assistant* and uses the address at once.
+   Later, **Configure** on the entry (*Send go2rtc address*) sends another address; a player that is set up only
+   accepts an address in your local network. The built-in go2rtc of Home Assistant only listens on Home Assistant
+   itself, so it is not offered.
+7. The player's device is shown under the device of the TV or Enigma2 receiver it runs on: automatically when the
    Enigma2, Kodi or Android TV integration has a device with the same address. **Configure** on the entry
    (*Show under device*) chooses another device, or none.
 

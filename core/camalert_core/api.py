@@ -9,6 +9,7 @@ camera list, log, metrics); everything else happens here, so Enigma2 and Kodi an
     POST /camalert/<action>   actions: show, mosaic, tour, hide, dnd (with on=...), ptz, webhook
     GET  /camalert/<action>   reads: status, cameras, dnd (state), settings, events, log, metrics
     POST /camalert/settings   position=... and/or size=...: the photo window of this player (#84)
+    POST /camalert/setup      server=<go2rtc address> [camera=...]: Home Assistant sets the player up (#122)
                               (GET of an action still works, but is deprecated and logged once per caller)
     Parameters: query string, form body or JSON object body.
     test=1 on any request (#62): the caller source becomes "test": no chime, the event is tagged "test".
@@ -32,11 +33,12 @@ from .events import TEST_SOURCE, caller_source
 from .obs.log import redact
 from .rules import MODES, PRIORITIES, clamp_seconds
 from .schema import BY_ID as _SCHEMA
+from .urls import go2rtc_state, normalize_server
 
 API_VERSION = 1
 MIN_HA_VERSION = "1.0.0"  # oldest Home Assistant integration that understands this API version
 CAPABILITIES = ("cameras", "dnd", "events", "header_token", "hide", "log", "metrics", "mosaic", "post", "ptz",
-                "screen", "settings", "show", "status", "strip", "test", "tour", "webhook")
+                "screen", "settings", "setup", "show", "status", "strip", "test", "tour", "webhook")
 # Settings a caller may change through /camalert/settings (#84), with their choices from the settings schema.
 DISPLAY_SETTINGS = {k: tuple(_SCHEMA[k].choices) for k in ("position", "size")}
 # What /camalert/status reports as "screen" (#63): the top-most CamAlert screen, "none" when nothing is shown.
@@ -92,6 +94,11 @@ class Backend(object):
 
     def set_display(self, key, value):
         """Saves position or size (#84); value is one of DISPLAY_SETTINGS[key]."""
+        raise NotImplementedError
+
+    def set_setup(self, server, camera):
+        """Saves the go2rtc address (and the default camera, None = keep) sent by Home Assistant, and shows
+        SETUP_RECEIVED on the screen (#122). May be called from a thread."""
         raise NotImplementedError
 
     def log_tail(self, lines):
@@ -251,6 +258,27 @@ def _settings(b, ctl, a, s, source):
     return out
 
 
+def configured(s):
+    """False while the player has never been set up (#122): no go2rtc address, not in direct mode, first-start
+    wizard not finished. settings() without source / wizard_done: go2rtc, not finished."""
+    return not (go2rtc_state(s.get("server")) == "not_set" and s.get("source", "go2rtc") != "direct"
+                and not s.get("wizard_done"))
+
+
+def _setup(b, ctl, a, s, source):
+    """Home Assistant sends its go2rtc address (#122). Allowed when the player was never set up, or when the
+    address is in the local network (the webhook rule, #53); otherwise 409. An invalid address is always 400."""
+    server = normalize_server(a.get("server"))
+    if not server:
+        raise Invalid("invalid server")
+    camera = cameras_param(a.get("camera"), many=False)
+    if configured(s) and url_target(server, a.get("_ip")):
+        return Response(409, {"result": False, "error": "already set up"})
+    b.set_setup(server, camera)
+    b.log("set up by %s: go2rtc %s%s" % (a.get("_ip"), server, ", camera %s" % camera if camera else ""))
+    return {"result": True, "configured": True, "server": server, "camera": camera or s.get("camera") or ""}
+
+
 def _cameras(b, ctl, a, s, source):
     try:
         cams = b.cameras()
@@ -265,6 +293,7 @@ def _status(b, ctl, a, s, source):
     out = dict(ctl.status(), result=True, version=b.version, id=node, name=name, platform=b.platform,
                api_version=API_VERSION, capabilities=list(CAPABILITIES), min_ha_version=MIN_HA_VERSION)
     out.update({k: s.get(k) for k in DISPLAY_SETTINGS})  # #84
+    out["configured"] = configured(s)  # #122
     out.update(b.status_extra())
     if out.get("screen") not in SCREENS:  # a player that does not know it yet (#63)
         out["screen"] = screen_name(window="photo" if out.get("window") else None, live=bool(out.get("live")))
@@ -287,7 +316,7 @@ def _metrics(b, ctl, a, s, source):
 ROUTES = {r.name: r for r in (
     Route("show", _show, action=True), Route("camalert", _show, action=True), Route("hide", _hide, action=True),
     Route("mosaic", _mosaic, action=True), Route("tour", _tour, action=True), Route("ptz", _ptz, action=True),
-    Route("webhook", _webhook, action=True, blocking=True), Route("dnd", _dnd, writes=("on",)),
+    Route("webhook", _webhook, action=True, blocking=True), Route("setup", _setup, action=True, blocking=True), Route("dnd", _dnd, writes=("on",)),
     Route("status", _status), Route("settings", _settings, writes=tuple(DISPLAY_SETTINGS)),
     Route("cameras", _cameras, blocking=True), Route("log", _log, sensitive=True),
     Route("events", _events, sensitive=True), Route("metrics", _metrics, sensitive=True),

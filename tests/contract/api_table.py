@@ -42,13 +42,14 @@ def prometheus(body):
 
 
 STATUS_KEYS = ("result", "version", "id", "name", "window", "live", "paused", "dnd", "platform", "api_version",
-               "capabilities", "min_ha_version", "mqtt", "screen", "position", "size")
+               "capabilities", "min_ha_version", "mqtt", "screen", "position", "size",
+               "configured")
 SCREENS = ("none", "photo", "strip", "notification", "live", "mosaic", "tour")  # status "screen" (#63)
 
 
 def status_keys(body):
     return all(k in body for k in STATUS_KEYS) and body["result"] is True and body["api_version"] == 1 and \
-        {"post", "header_token", "show", "ptz", "screen", "settings", "test"} <= set(body["capabilities"]) and \
+        {"post", "header_token", "show", "ptz", "screen", "settings", "setup", "test"} <= set(body["capabilities"]) and \
         body["screen"] in SCREENS
 
 
@@ -133,6 +134,32 @@ TABLE = [
     row("settings_invalid_size", "/camalert/settings", {"size": "huge"}, code=400, json={"result": False}),
     get("settings_get_with_value_deprecated", "/camalert/settings", {"size": "small"},
         json={"result": True, "size": "small"}, headers={"Deprecation": "true"}),
+    # --- Home Assistant sets the player up (#122): never set up = any address, else only the local network ------
+    row("setup_new_player", "/camalert/setup", {"server": "http://192.168.1.10:1984", "camera": "garden"},
+        json={"result": True, "configured": True, "server": "http://192.168.1.10:1984", "camera": "garden"}, calls=[]),
+    row("setup_bare_address_keeps_camera", "/camalert/setup", {"server": "192.168.1.10:1984"},
+        json={"result": True, "server": "http://192.168.1.10:1984", "camera": "front_door"}),
+    row("setup_new_player_any_address", "/camalert/setup", {"server": "https://ha.public.example:1984"},
+        json={"result": True, "server": "https://ha.public.example:1984"}),
+    row("setup_configured_lan", "/camalert/setup", {"server": "http://192.168.1.20:1984"},
+        settings={"server": "http://192.168.1.10:1984"}, json={"result": True, "server": "http://192.168.1.20:1984"}),
+    row("setup_configured_local_name", "/camalert/setup", {"server": "http://homeassistant.local:1984"},
+        settings={"server": "http://192.168.1.10:1984"}, json={"result": True}),
+    row("setup_configured_internet_refused", "/camalert/setup", {"server": "http://" + WAN + ":1984"},
+        settings={"server": "http://192.168.1.10:1984"}, code=409,
+        json={"result": False, "error": "already set up"}),
+    row("setup_configured_public_name_refused", "/camalert/setup", {"server": "https://ha.public.example:1984"},
+        settings={"server": "http://192.168.1.10:1984"}, code=409, json={"error": "already set up"}),
+    row("setup_direct_mode_counts_as_set_up", "/camalert/setup", {"server": "http://" + WAN + ":1984"},
+        settings={"source": "direct"}, code=409, json={"error": "already set up"}),
+    row("setup_invalid_server", "/camalert/setup", {"server": "ftp://192.168.1.10/x"}, code=400,
+        json={"result": False, "error": "invalid server"}),
+    row("setup_missing_server", "/camalert/setup", code=400, json={"error": "invalid server"}),
+    row("setup_invalid_camera", "/camalert/setup", {"server": "http://192.168.1.10:1984", "camera": "a,b"},
+        code=400, json={"result": False}),
+    row("setup_needs_the_token", "/camalert/setup", {"server": "http://192.168.1.10:1984"},
+        settings={"token": "secret"}, code=403),
+    row("setup_from_wan_refused", "/camalert/setup", {"server": "http://192.168.1.10:1984"}, ip=WAN, code=403),
     # --- camera control, webhook -------------------------------------------------------------------------------
     row("ptz", "/camalert/ptz", {"cam": "garden", "move": "left"}, json={"result": True, "cam": "garden", "move": "left"},
         calls=[("ptz", "left", "garden")]),

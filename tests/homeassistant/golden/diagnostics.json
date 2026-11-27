@@ -54,6 +54,7 @@
       "ptz",
       "screen",
       "settings",
+      "setup",
       "show",
       "status",
       "strip",
@@ -82,6 +83,7 @@
       "ptz",
       "screen",
       "settings",
+      "setup",
       "show",
       "status",
       "strip",
@@ -89,6 +91,7 @@
       "tour",
       "webhook"
     ],
+    "configured": true,
     "dnd": false,
     "id": "**REDACTED**",
     "live": null,

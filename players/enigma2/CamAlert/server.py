@@ -12,9 +12,10 @@ from twisted.web import resource, server
 from twisted.internet import reactor, threads
 from Components.config import config, configfile
 
-from . import __version__
+from . import _, __version__
 from .display import Controller, all_camera_names, camera_urls, log
 from .camalert_core import api, discovery
+from .camalert_core.present import SETUP_RECEIVED
 from .camalert_core.obs.camlog import LOG
 from .camalert_core.urls import valid_port
 
@@ -41,6 +42,14 @@ def ensure_certificate():
         return False
 
 
+def _wizard_done(c):
+    """The first-start wizard was finished (setting from #120; False on a plugin without it)."""
+    try:
+        return bool(c.wizard_done.value)
+    except AttributeError:
+        return False
+
+
 class Backend(api.Backend):
     """What camalert_core.api needs from the Enigma2 plugin."""
     platform = "enigma2"
@@ -50,7 +59,8 @@ class Backend(api.Backend):
         c = config.plugins.camalert
         return {"enabled": c.enabled.value, "allow": c.allow.value, "token": c.token.value,
                 "duration": int(c.duration.value), "camera": c.camera.value, "dnd": bool(c.dnd.value),
-                "ha_webhook": c.ha_webhook.value, "position": c.position.value, "size": c.size.value}
+                "ha_webhook": c.ha_webhook.value, "position": c.position.value, "size": c.size.value,
+                "server": c.server.value, "source": c.source.value, "wizard_done": _wizard_done(c)}
 
     def controller(self):
         return Controller.instance
@@ -86,6 +96,25 @@ class Backend(api.Backend):
             item.value = value
             item.save()
             configfile.save()
+        reactor.callFromThread(save)
+
+    def set_setup(self, server, camera):
+        """go2rtc address (and default camera) from Home Assistant (#122): saved on the main thread, then the
+        camera list is refreshed and a short message is shown."""
+        def save():
+            c = config.plugins.camalert
+            c.server.value = server
+            c.server.save()
+            if camera:
+                c.camera.value = camera
+                c.camera.save()
+            configfile.save()
+            refresh = getattr(Controller.instance, "refresh_names", None)
+            if refresh is not None:
+                refresh()  # the camera list of the new go2rtc
+            from Screens.MessageBox import MessageBox
+            from Tools import Notifications
+            Notifications.AddPopup(_(SETUP_RECEIVED), MessageBox.TYPE_INFO, 5, id="CamAlertSetup")
         reactor.callFromThread(save)
 
     def log_tail(self, lines):

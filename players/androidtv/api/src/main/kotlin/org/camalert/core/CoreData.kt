@@ -35,6 +35,7 @@ class CoreData(val raw: Map<String, Any?>) {
     val tileLabels = raw["tile_labels"] as Map<String, String>
     val frameCacheSeconds = (raw["frame_cache_seconds"] as Number).toInt()
     val stillMaxSeconds = (raw["still_max_seconds"] as Number).toDouble()
+    val setupReceived = raw["setup_received"] as String
 
     companion object {
         @Volatile private var cached: CoreData? = null

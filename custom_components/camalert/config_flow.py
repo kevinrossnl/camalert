@@ -14,6 +14,7 @@ from homeassistant.helpers.selector import SelectSelector, SelectSelectorConfig,
 
 from .api import CamAlertCertificateError, CamAlertError, CamAlertForbidden
 from .const import CONF_HTTPS, CONF_TOKEN, CONF_VERIFY_SSL, DEFAULT_PORT, DEFAULT_VERIFY_SSL, DOMAIN
+from .go2rtc_setup import CONF_CAMERA, CONF_GO2RTC, offer_setup, send, suggested_go2rtc
 from .parent import CONF_PARENT, PARENT_AUTO, PARENT_NONE, parent_choices
 
 _LOGGER = logging.getLogger(__name__)
@@ -68,8 +69,8 @@ class CamAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if status is not None:
                 await self.async_set_unique_id(status.get("id") or user_input[CONF_HOST])
                 self._abort_if_unique_id_configured(updates={CONF_HOST: user_input[CONF_HOST]})
-                return self.async_create_entry(title=status.get("name") or "CamAlert %s" % user_input[CONF_HOST],
-                                               data=user_input)
+                return await self._create(status.get("name") or "CamAlert %s" % user_input[CONF_HOST], user_input,
+                                          status)
         return self.async_show_form(step_id="user", data_schema=_schema(user_input or {}), errors=errors)
 
     async def async_step_zeroconf(self, discovery_info):
@@ -98,7 +99,7 @@ class CamAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if status is not None:
                 if status.get("id") and status["id"] != self.unique_id:
                     return self.async_abort(reason="wrong_player")
-                return self.async_create_entry(title=status.get("name") or self._name, data=data)
+                return await self._create(status.get("name") or self._name, data, status)
             if errors.get("base") == "forbidden" and not self._need_token:
                 self._need_token = True  # the player has a token: ask for it (no error the first time)
                 errors = {}
@@ -106,6 +107,33 @@ class CamAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(step_id="zeroconf_confirm", data_schema=schema, errors=errors,
                                     description_placeholders={"name": self._name,
                                                               "host": self._discovered[CONF_HOST]})
+
+    async def _create(self, title: str, data: dict, status: dict):
+        """Adds the player; first offers to send the go2rtc address when it was never set up (#122)."""
+        if not offer_setup(status):
+            return self.async_create_entry(title=title, data=data)
+        self._pending = (title, data, list(status.get("capabilities") or []))
+        return await self.async_step_setup()
+
+    async def async_step_setup(self, user_input=None):
+        """#122: send Home Assistant's go2rtc address (and a default camera) to the new player; empty = skip."""
+        title, data, capabilities = self._pending
+        errors = {}
+        if user_input is not None:
+            server = (user_input.get(CONF_GO2RTC) or "").strip()
+            if not server:
+                return self.async_create_entry(title=title, data=data)
+            from . import make_api
+            api = make_api(self.hass, dict({CONF_VERIFY_SSL: DEFAULT_VERIFY_SSL}, **data))
+            api.capabilities = capabilities
+            errors = await send(api, server, user_input.get(CONF_CAMERA))
+            if not errors:
+                return self.async_create_entry(title=title, data=data)
+        suggested = user_input if user_input is not None else {CONF_GO2RTC: await suggested_go2rtc(self.hass)}
+        schema = self.add_suggested_values_to_schema(vol.Schema({
+            vol.Optional(CONF_GO2RTC): str, vol.Optional(CONF_CAMERA): str}), suggested)
+        return self.async_show_form(step_id="setup", data_schema=schema, errors=errors,
+                                    description_placeholders={"name": title})
 
     async def async_step_reconfigure(self, user_input=None):
         """New address, port, HTTPS or token for a player that is already added (same player only)."""
@@ -127,14 +155,25 @@ class CamAlertOptionsFlow(config_entries.OptionsFlow):
     chosen device."""
 
     async def async_step_init(self, user_input=None):
+        errors = {}
+        api = getattr(getattr(self.config_entry, "runtime_data", None), "api", None)
+        can_setup = api is not None and "setup" in (api.capabilities or [])
         if user_input is not None:
-            return self.async_create_entry(data=dict(self.config_entry.options, **user_input))
-        current = self.config_entry.options.get(CONF_PARENT, PARENT_AUTO)
+            user_input = dict(user_input)
+            server = (user_input.pop(CONF_GO2RTC, "") or "").strip()
+            camera = user_input.pop(CONF_CAMERA, "")
+            if server and can_setup:  # #122: a player that is set up only takes a local-network address
+                errors = await send(api, server, camera)
+            if not errors:
+                return self.async_create_entry(data=dict(self.config_entry.options, **user_input))
+        current = (user_input or {}).get(CONF_PARENT) or self.config_entry.options.get(CONF_PARENT, PARENT_AUTO)
         options = [{"value": PARENT_AUTO, "label": PARENT_AUTO}, {"value": PARENT_NONE, "label": PARENT_NONE}]
         options += parent_choices(self.hass)
         if current not in [o["value"] for o in options]:  # chosen device removed since
             current = PARENT_AUTO
-        return self.async_show_form(step_id="init", data_schema=vol.Schema({
-            vol.Required(CONF_PARENT, default=current): SelectSelector(SelectSelectorConfig(
-                options=options, mode=SelectSelectorMode.DROPDOWN, translation_key=CONF_PARENT)),
-        }))
+        fields = {vol.Required(CONF_PARENT, default=current): SelectSelector(SelectSelectorConfig(
+            options=options, mode=SelectSelectorMode.DROPDOWN, translation_key=CONF_PARENT))}
+        if can_setup:  # #122: send Home Assistant's go2rtc address to the player (empty = leave it alone)
+            fields[vol.Optional(CONF_GO2RTC)] = str
+            fields[vol.Optional(CONF_CAMERA)] = str
+        return self.async_show_form(step_id="init", data_schema=vol.Schema(fields), errors=errors)

@@ -61,6 +61,8 @@ interface Backend {
     fun setWebhook(url: String)
     /** Saves position or size (#84); value is one of Api.displaySettings[key]. */
     fun setDisplay(key: String, value: String)
+    /** go2rtc address (and default camera, null = keep) sent by Home Assistant; shows the setup message (#122). */
+    fun setSetup(server: String, camera: String?)
     fun logTail(lines: Int): List<String>
     fun metrics(): String
     fun statusExtra(): Map<String, Any?> = emptyMap()
@@ -80,7 +82,8 @@ class Api(val data: CoreData = CoreData.load()) {
         Route("show", action = true, handler = ::show), Route("camalert", action = true, handler = ::show),
         Route("hide", action = true, handler = ::hide), Route("mosaic", action = true, handler = ::mosaic),
         Route("tour", action = true, handler = ::tour), Route("ptz", action = true, handler = ::ptz),
-        Route("webhook", action = true, handler = ::webhook), Route("dnd", handler = ::dnd),
+        Route("webhook", action = true, handler = ::webhook), Route("setup", action = true, handler = ::setup),
+        Route("dnd", handler = ::dnd),
         Route("status", handler = ::status), Route("settings", handler = ::settings), Route("cameras", handler = ::cameras),
         Route("log", sensitive = true, handler = ::log), Route("events", sensitive = true, handler = ::events),
         Route("metrics", sensitive = true, handler = ::metrics),
@@ -221,6 +224,23 @@ class Api(val data: CoreData = CoreData.load()) {
         return mapOf("result" to true, "cameras" to cams)
     }
 
+    /** False while the player was never set up (#122): no go2rtc address, not direct, wizard not finished. */
+    fun configured(s: Map<String, Any?>): Boolean =
+        !((s["server"]?.toString() ?: "").isBlank() && (s["source"]?.toString() ?: "go2rtc") != "direct" &&
+            s["wizard_done"] != true)
+
+    private fun setup(b: Backend, ctl: Controller, a: MutableMap<String, String>, s: Map<String, Any?>, source: String): Any {
+        val server = Urls.normalizeServer(a["server"]) ?: throw Invalid("invalid server")
+        val camera = camerasParam(a["camera"], many = false)
+        if (configured(s) && Access.urlTarget(server, a["_ip"]) { b.resolve(it) } != null) {
+            return Response(409, mapOf("result" to false, "error" to "already set up"))
+        }
+        b.setSetup(server, camera)
+        b.log("set up by ${a["_ip"]}: go2rtc $server${if (camera != null) ", camera $camera" else ""}")
+        return mapOf("result" to true, "configured" to true, "server" to server,
+            "camera" to (camera ?: s["camera"]?.toString() ?: ""))
+    }
+
     private fun settings(b: Backend, ctl: Controller, a: MutableMap<String, String>, s: Map<String, Any?>, source: String): Any {
         val new = displaySettings.mapValues { (k, allowed) -> choiceParam(a, k, allowed) }
         val out = LinkedHashMap<String, Any?>()
@@ -243,6 +263,7 @@ class Api(val data: CoreData = CoreData.load()) {
         out["platform"] = b.platform; out["api_version"] = data.apiVersion; out["capabilities"] = data.capabilities
         out["min_ha_version"] = data.minHaVersion
         for (k in displaySettings.keys) out[k] = s[k]  // #84
+        out["configured"] = configured(s)  // #122
         out.putAll(b.statusExtra())
         if (out["screen"] !in data.screens) {  // a controller that does not know it (#63)
             out["screen"] = if (out["window"] != null) "photo" else if (out["live"] != null) "live" else "none"

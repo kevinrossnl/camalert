@@ -11,8 +11,21 @@ android {
         applicationId = "org.camalert.tv"
         minSdk = 25          // Android 7.1 = Fire OS 6 (Fire TV Stick 4K, 1st generation)
         targetSdk = 37
-        versionCode = 1
+        versionCode = providers.gradleProperty("camalertVersionCode").map { it.toInt() }.getOrElse(1)  // #65
         versionName = providers.gradleProperty("camalertVersion").getOrElse("0.0.0-dev")
+    }
+
+    // Release signing (#65): only from the environment (CI secrets on GitHub at tag time), never from git.
+    val releaseKeystore = System.getenv("CAMALERT_KEYSTORE")
+    signingConfigs {
+        if (releaseKeystore != null) {
+            create("release") {
+                storeFile = file(releaseKeystore)
+                storePassword = System.getenv("CAMALERT_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("CAMALERT_KEY_ALIAS")
+                keyPassword = System.getenv("CAMALERT_KEY_PASSWORD")
+            }
+        }
     }
 
     buildTypes {
@@ -20,7 +33,8 @@ android {
             isMinifyEnabled = false
         }
         release {
-            // no signing config in git: see docs/players/androidtv.md (release key = separate issue)
+            // signed only when CAMALERT_KEYSTORE is set (see docs/players/androidtv.md); otherwise unsigned
+            if (releaseKeystore != null) signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
         }
     }

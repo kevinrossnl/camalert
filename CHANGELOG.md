@@ -9,6 +9,8 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Added
 
+- **Android TV / Fire TV:** every release now has a signed app (`camalert-androidtv-X.Y.Z.apk`) to install with
+  a downloader app; updates install over it. A test build installed earlier has to be uninstalled once.
 - **All players:** *Keep cameras ready* – for the cameras you choose, the player keeps a small MJPEG stream from
   go2rtc open while it is on, so the photo window shows the camera at once. Closed in standby, with the screen off
   or with CamAlert off; go2rtc then stops transcoding by itself. Off by default ([cameras](docs/user/cameras.md#keep-cameras-ready)).

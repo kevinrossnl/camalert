@@ -5,7 +5,7 @@ name: build and release
 # start page (index.html from .github/pages/index.html).
 # While the repository is private the HACS check and Pages are skipped (not failed).
 # The Pages site only holds the packages of the LATEST release; older versions stay available as release assets.
-# The Android TV app is not released yet: no APK until release signing exists (#65).
+# A tag also adds the release-signed Android TV APK (job android, #65) when the signing secrets exist.
 on:
   push:
     branches: [main]
@@ -112,6 +112,52 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v') && !github.event.repository.private
         with:
           path: feed
+  android:
+    # Android TV / Fire TV app (#65): a release-signed APK on the GitHub release. The key only comes from the secrets
+    # ANDROID_KEYSTORE_B64 / _PASSWORD / ANDROID_KEY_ALIAS / ANDROID_KEY_PASSWORD; without them this job says so and
+    # adds nothing (the release of the other players goes on).
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: release-signed APK
+        id: apk
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          CAMALERT_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          CAMALERT_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          CAMALERT_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_B64" ]; then echo "no ANDROID_KEYSTORE_B64 secret: no APK in this release (#65)"; exit 0; fi
+          ver="${GITHUB_REF_NAME#v}"
+          code=$(python3 tools/android_version.py "$ver")
+          export CAMALERT_KEYSTORE="$RUNNER_TEMP/release.jks"
+          printf '%s' "$KEYSTORE_B64" | base64 -d > "$CAMALERT_KEYSTORE"
+          mkdir -p "$ANDROID_HOME/licenses"
+          printf '\n24333f8a63b6825ea9c5514f83c2829b004d1fee' > "$ANDROID_HOME/licenses/android-sdk-license"
+          # bash -e: catch the result so the decoded keystore is removed before a failed build stops the job
+          if (cd players/androidtv && ./gradlew --no-daemon --console=plain :app:assembleRelease \
+            -PcamalertVersion="$ver" -PcamalertVersionCode="$code"); then rc=0; else rc=$?; fi
+          rm -f "$CAMALERT_KEYSTORE"
+          test $rc -eq 0
+          mkdir -p dist
+          cp players/androidtv/app/build/outputs/apk/release/app-release.apk "dist/camalert-androidtv-$ver.apk"
+          "$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)/apksigner" verify --print-certs \
+            "dist/camalert-androidtv-$ver.apk"
+          echo "file=dist/camalert-androidtv-$ver.apk" >> "$GITHUB_OUTPUT"
+      - name: add the APK to the release
+        if: steps.apk.outputs.file != ''
+        uses: softprops/action-gh-release@v3
+        with:
+          files: ${{ steps.apk.outputs.file }}
+
   pages:
     # GitHub Pages only for a public repository (GitHub Free has no Pages for private ones); the release itself
     # is created either way

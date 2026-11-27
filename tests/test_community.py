@@ -1,5 +1,6 @@
 """Community and publication files for GitHub (#23): contributing guide, security policy, code of conduct, issue
 forms and pull request template exist, parse, and ask for what a bug report needs (player, versions, redacted logs)."""
+import json
 import glob
 import os
 import unittest
@@ -80,7 +81,7 @@ class ReleaseWorkflow(unittest.TestCase):
 
     def test_jobs(self):
         jobs = self.wf["jobs"]
-        self.assertEqual(sorted(jobs), ["build", "hacs", "hassfest", "pages"])
+        self.assertEqual(sorted(jobs), ["android", "build", "hacs", "hassfest", "pages"])
         self.assertEqual(sorted(jobs["pages"]["needs"]), ["build", "hacs", "hassfest"])
         self.assertEqual(jobs["pages"]["permissions"], {"pages": "write", "id-token": "write"})
         self.assertEqual(self.wf["permissions"], {"contents": "read"})
@@ -92,7 +93,35 @@ class ReleaseWorkflow(unittest.TestCase):
         self.assertEqual(files, ["dist/*.ipk", "dist/service.camalert-*.zip", "dist/repository.camalert-*.zip",
                                  "dist/camalert-homeassistant-*.zip"])
         self.assertEqual(release["with"]["body_path"], "dist/release-notes.md")
-        self.assertNotIn(".apk", self.text)  # Android TV: no release APK before release signing (#65)
+
+    def test_android_release_apk(self):
+        """#65: on a tag a release-signed APK is added to the release. The key only comes from secrets (never from git);
+        without them the job says so and the release of the other players goes on."""
+        job = self.wf["jobs"]["android"]
+        self.assertEqual(job["needs"], "build")
+        self.assertEqual(job["if"], "startsWith(github.ref, 'refs/tags/v')")
+        self.assertEqual(job["permissions"], {"contents": "write"})
+        text = json.dumps(job)
+        for secret in ("ANDROID_KEYSTORE_B64", "ANDROID_KEYSTORE_PASSWORD", "ANDROID_KEY_ALIAS", "ANDROID_KEY_PASSWORD"):
+            self.assertIn("secrets.%s" % secret, text)
+        for name, other in self.wf["jobs"].items():
+            if name != "android":
+                self.assertNotIn("ANDROID_KEY", json.dumps(other), name)
+        build = next(s for s in job["steps"] if "assembleRelease" in s.get("run", ""))["run"]
+        self.assertIn("no ANDROID_KEYSTORE_B64 secret", build)
+        self.assertIn("tools/android_version.py", build)
+        self.assertIn('rm -f "$CAMALERT_KEYSTORE"', build)  # the decoded keystore does not stay on the runner
+        self.assertIn("apksigner", build)
+        self.assertIn("camalert-androidtv-$ver.apk", build)
+        release = next(s for s in job["steps"] if s.get("uses", "").startswith("softprops/action-gh-release"))
+        self.assertIn("steps.apk.outputs.file", release["if"])
+        gradle = read("players/androidtv/app/build.gradle.kts")
+        for var in ("CAMALERT_KEYSTORE", "CAMALERT_KEYSTORE_PASSWORD", "CAMALERT_KEY_ALIAS", "CAMALERT_KEY_PASSWORD"):
+            self.assertIn('System.getenv("%s")' % var, gradle)
+        self.assertIn('gradleProperty("camalertVersionCode")', gradle)
+        ignore = read(".gitignore")
+        self.assertIn("*.jks", ignore)
+        self.assertIn("*.keystore", ignore)
 
     def test_tag_must_match_version_and_dated_changelog(self):
         self.assertIn('test "${GITHUB_REF_NAME}" = "v$ver"', self.text)
@@ -116,7 +145,7 @@ class ReleaseWorkflow(unittest.TestCase):
     def test_actions_on_node24_majors(self):
         """Node.js 20 actions are deprecated on GitHub: at least these majors (all node24)."""
         import re
-        minimum = {"actions/checkout": 7, "actions/setup-python": 7, "actions/upload-artifact": 7,
+        minimum = {"actions/checkout": 7, "actions/setup-python": 7, "actions/setup-java": 5, "actions/upload-artifact": 7,
                    "actions/download-artifact": 8, "actions/upload-pages-artifact": 5, "actions/deploy-pages": 5,
                    "softprops/action-gh-release": 3}
         used = re.findall(r"uses: ([\w.-]+/[\w.-]+)@v(\d+)", self.text)

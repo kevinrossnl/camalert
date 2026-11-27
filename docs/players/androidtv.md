@@ -114,5 +114,12 @@ key, which is never stored in the repository:
 keytool -genkeypair -v -keystore ~/camalert-release.jks -alias camalert -keyalg RSA -keysize 4096 -validity 10000
 ```
 
-Keep the keystore and its password safe (a later update must be signed with the same key). Release signing in CI
-is a separate issue.
+Keep the keystore and its password safe (a later update must be signed with the same key).
+
+**Release APK (#65):** a tag `vX.Y.Z` builds `camalert-androidtv-X.Y.Z.apk` on GitHub, signed with the project key from
+the repository secrets `ANDROID_KEYSTORE_B64` (the keystore in base64), `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`
+and `ANDROID_KEY_PASSWORD`, and adds it to the release. Its versionCode follows the version (`tools/android_version.py`:
+1.2.0 → 10200). Without the secrets the release has no APK. A debug build and a release build have different
+signatures: switching from one to the other needs one uninstall (the app's settings are lost), later releases update
+normally. Local release build: set `CAMALERT_KEYSTORE`, `CAMALERT_KEYSTORE_PASSWORD`, `CAMALERT_KEY_ALIAS`,
+`CAMALERT_KEY_PASSWORD` and run `./gradlew :app:assembleRelease -PcamalertVersion=X.Y.Z -PcamalertVersionCode=…`.

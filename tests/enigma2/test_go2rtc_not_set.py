@@ -48,6 +48,18 @@ class TestGo2rtcNotSet(Base):
         self.assertNotIn("front_door_jpeg", self.d.all_camera_names())
         self.assertEqual(len(self.d.all_camera_names()), len(CAMERAS))
 
+    def test_derived_stream_is_hidden_without_own_setting(self):
+        """#117: a helper stream another player uses (ffmpeg:<camera>#...) is not a camera here either."""
+        from fakes.go2rtc import CAMERAS
+        fake = FakeGo2rtc(cameras=dict(CAMERAS, front_door_jpeg=(0, 0, 0)),
+                          sources={"front_door_jpeg": "ffmpeg:front_door#video=mjpeg#width=640"}).start()
+        self.addCleanup(fake.server_close)
+        self.addCleanup(fake.shutdown)
+        self.c.server.value = fake.url
+        self.c.ready_cameras.value = ""
+        self.assertNotIn("front_door_jpeg", self.d.all_camera_names())
+        self.assertEqual(len(self.d.all_camera_names()), len(CAMERAS))
+
     def test_direct_mode_needs_no_address(self):
         self.c.server.value = ""
         self.c.source.value = "direct"

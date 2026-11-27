@@ -1102,6 +1102,22 @@ class _KodiModules(object):
         self.assertNotIn("front_door_jpeg", names)
         self.assertEqual(len(names), len(CAMERAS))
 
+    def test_derived_stream_is_hidden_without_own_setting(self):
+        """#117: a helper stream another player uses (ffmpeg:<camera>#...) is not a camera here either."""
+        from fakes.go2rtc import CAMERAS
+        fake = FakeGo2rtc(cameras=dict(CAMERAS, front_door_jpeg=(0, 0, 0)),
+                          sources={"front_door_jpeg": "ffmpeg:front_door#video=mjpeg#width=640"}).start()
+        self.addCleanup(fake.server_close)
+        self.addCleanup(fake.shutdown)
+        sources, kodiapi = Built.module("sources"), Built.module("kodiapi")
+        old = (Built.store.get("server"), Built.store.get("ready_cameras"))
+        self.addCleanup(Built.store.update, {"server": old[0], "ready_cameras": old[1] or ""})
+        Built.store["server"] = fake.url
+        Built.store["ready_cameras"] = ""
+        names = sources.all_camera_names(kodiapi.settings())
+        self.assertNotIn("front_door_jpeg", names)
+        self.assertEqual(len(names), len(CAMERAS))
+
     def test_go2rtc_address_not_set(self):
         """#73: no default address. Not set = no network call, the diagnostics, the service start and the camera
         choice say so; a usable address or direct mode say nothing."""

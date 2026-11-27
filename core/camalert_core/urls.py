@@ -44,15 +44,40 @@ def server_host(server):
     return p.hostname
 
 
-def streams_from_json(text):
-    """Stream names from the go2rtc /api/streams answer, sorted."""
+def derived_streams(data):
+    """Names of helper streams in a go2rtc /api/streams answer (#117): every source of the stream transcodes
+    another stream of the same go2rtc (``ffmpeg:<stream>#...``), as Keep cameras ready and the live substreams do.
+    Such a stream is not a camera, whichever player made it."""
+    if not isinstance(data, dict):
+        return set()
+    out = set()
+    for name, info in data.items():
+        producers = info.get("producers") if isinstance(info, dict) else None
+        if not isinstance(producers, list) or not producers:
+            continue
+        bases = []
+        for p in producers:
+            url = p.get("url") if isinstance(p, dict) else None
+            if not isinstance(url, str) or not url.startswith("ffmpeg:"):
+                break
+            bases.append(url[len("ffmpeg:"):].split("#", 1)[0])
+        else:
+            if all(b != name and b in data for b in bases):
+                out.add(name)
+    return out
+
+
+def streams_from_json(text, all_streams=False):
+    """Camera names from the go2rtc /api/streams answer, sorted; helper streams (#117) are left out unless
+    all_streams is set."""
     try:
         data = json.loads(text)
     except (ValueError, TypeError):
         return []
     if not isinstance(data, dict):
         return []
-    return sorted(k for k in data.keys() if re.match(r"^[A-Za-z0-9_.-]+$", k))
+    skip = set() if all_streams else derived_streams(data)
+    return sorted(k for k in data.keys() if re.match(r"^[A-Za-z0-9_.-]+$", k) and k not in skip)
 
 
 def rtsp_url(server, stream, port=8554):

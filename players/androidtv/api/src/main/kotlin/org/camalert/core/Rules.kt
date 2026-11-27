@@ -182,10 +182,29 @@ object Urls {
         return sb.toString()
     }
 
-    fun streamsFromJson(text: String?): List<String> {
+    /** Helper streams in a go2rtc /api/streams answer (#117): every source transcodes another stream of the same
+     *  go2rtc (`ffmpeg:<stream>#...`), as Keep cameras ready and the live substreams do. Not a camera. */
+    fun derivedStreams(data: Map<*, *>): Set<String> {
+        val names = data.keys.map { it.toString() }.toSet()
+        val out = mutableSetOf<String>()
+        for ((k, info) in data) {
+            val name = k.toString()
+            val producers = (info as? Map<*, *>)?.get("producers") as? List<*> ?: continue
+            if (producers.isEmpty()) continue
+            val bases = producers.map { p ->
+                val url = (p as? Map<*, *>)?.get("url") as? String
+                if (url == null || !url.startsWith("ffmpeg:")) null else url.removePrefix("ffmpeg:").substringBefore("#")
+            }
+            if (bases.all { it != null && it != name && it in names }) out.add(name)
+        }
+        return out
+    }
+
+    fun streamsFromJson(text: String?, allStreams: Boolean = false): List<String> {
         val d = try { Json.parse(text ?: "") } catch (e: Exception) { return emptyList() }
         if (d !is Map<*, *>) return emptyList()
-        return d.keys.map { it.toString() }.filter { Cameras.valid(it) }.sorted()
+        val skip = if (allStreams) emptySet() else derivedStreams(d)
+        return d.keys.map { it.toString() }.filter { Cameras.valid(it) && it !in skip }.sorted()
     }
 
     fun snapshotUrl(server: String?, stream: String?, width: Int = 640): String? =

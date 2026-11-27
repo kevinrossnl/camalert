@@ -199,6 +199,14 @@ class PlayerControllerTest {
         assertEquals("https://h:443", Urls.normalizeServer("https://h"))
         assertNull(Urls.normalizeServer("ftp://x"))
         assertEquals(listOf("a", "b"), Urls.streamsFromJson("{\"b\": {}, \"a\": {}, \"../x\": {}}"))
+        // #117: a stream that only transcodes another stream of the same go2rtc is a helper, not a camera
+        val streams = """{"front_door": {"producers": [{"url": "rtsp://192.168.1.10/x"}]},
+            "front_door_jpeg": {"producers": [{"url": "ffmpeg:front_door#video=mjpeg#width=640"}]},
+            "garden": {"producers": [{"url": "ffmpeg:rtsp://192.168.1.11/s#video=h264"}]},
+            "mixed": {"producers": [{"url": "ffmpeg:front_door#video=mjpeg"}, {"url": "rtsp://192.168.1.12/x"}]},
+            "orphan": {"producers": [{"url": "ffmpeg:gone#video=mjpeg"}]}}"""
+        assertEquals(listOf("front_door", "garden", "mixed", "orphan"), Urls.streamsFromJson(streams))
+        assertEquals(setOf("front_door_jpeg"), Urls.derivedStreams(Json.parse(streams) as Map<*, *>))
         assertEquals(Pair(22, 30), Rules.clockTuple("22:30"))
         assertTrue(Rules.inTimeWindow(Pair(23, 0), Pair(22, 0), Pair(6, 0)))
         assertEquals(mapOf("garden" to 0.5), Cameras.parseRefresh("garden=0.1|x=abc"))

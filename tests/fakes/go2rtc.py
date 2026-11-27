@@ -82,7 +82,8 @@ class Handler(BaseHTTPRequestHandler):
         q = parse_qs(url.query)
         cams = self.server.cameras
         if url.path == "/api/streams":
-            body = {n: {"producers": [{"url": "fake://%s" % n}], "consumers": []} for n in cams}
+            body = {n: {"producers": [{"url": self.server.sources.get(n, "fake://%s" % n)}], "consumers": []}
+                    for n in cams}
             return self._send(200, "application/json", json.dumps(body).encode())
         if url.path == "/api/frame.jpeg":
             name = (q.get("src") or [""])[0]
@@ -126,9 +127,10 @@ class FakeGo2rtc(ThreadingHTTPServer):
     daemon_threads = True
     block_on_close = False
 
-    def __init__(self, host="127.0.0.1", port=0, cameras=None, unreachable=(), mjpeg_fps=10):
+    def __init__(self, host="127.0.0.1", port=0, cameras=None, unreachable=(), mjpeg_fps=10, sources=None):
         ThreadingHTTPServer.__init__(self, (host, port), Handler)
         self.cameras = dict(cameras or CAMERAS)
+        self.sources = dict(sources or {})  # name -> producer url in /api/streams (default fake://<name>, #117)
         self.unreachable = set(unreachable)
         self.mjpeg_fps = mjpeg_fps
         self.mjpeg_clients = 0  # open stream.mjpeg connections now (#111)

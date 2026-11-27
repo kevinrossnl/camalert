@@ -7,6 +7,13 @@ actions and blueprint inputs stay backwards compatible.
 
 ## [Unreleased]
 
+### Fixed
+
+- **All players:** a helper stream that only transcodes another camera of the same go2rtc
+  (`ffmpeg:<camera>#...`, as *Keep cameras ready* and the live substreams make) is no longer listed as a camera,
+  also on players where that setting is off. The Home Assistant button for it disappears at the next reconnect
+  (#116, #117).
+
 ## [1.2.0] - 2026-11-27
 
 ### Added

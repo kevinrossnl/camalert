@@ -24,6 +24,26 @@ class TestUrls(unittest.TestCase):
         self.assertEqual(urls.go2rtc_state("192.168.1.10"), "ok")
         self.assertEqual(set(urls.GO2RTC_STATES), {"not_set", "invalid", "ok"})
 
+    def test_derived_streams_are_not_cameras(self):
+        """#117: a stream whose only source transcodes another stream of the same go2rtc (ffmpeg:<stream>#...) is a
+        helper (Keep cameras ready, live substream), not a camera, on every player whatever its own settings."""
+        streams = {
+            "front_door": {"producers": [{"url": "rtsp://192.168.1.10:7447/abc"}]},
+            "front_door_jpeg": {"producers": [{"url": "ffmpeg:front_door#video=mjpeg#width=640#raw=-r 2"}]},
+            "garden": {"producers": [{"url": "ffmpeg:rtsp://192.168.1.11/stream1#video=h264"}]},  # own source
+            "garden_sub": {"producers": [{"url": "ffmpeg:garden#video=h264#width=640"}]},
+            "mixed": {"producers": [{"url": "ffmpeg:front_door#video=mjpeg"}, {"url": "rtsp://192.168.1.12/x"}]},
+            "orphan": {"producers": [{"url": "ffmpeg:gone#video=mjpeg"}]},  # source is not a stream here
+            "empty": {},
+        }
+        import json
+        text = json.dumps(streams)
+        self.assertEqual(urls.derived_streams(streams), {"front_door_jpeg", "garden_sub"})
+        self.assertEqual(urls.streams_from_json(text), ["empty", "front_door", "garden", "mixed", "orphan"])
+        self.assertEqual(urls.streams_from_json(text, all_streams=True),
+                         ["empty", "front_door", "front_door_jpeg", "garden", "garden_sub", "mixed", "orphan"])
+        self.assertEqual(urls.derived_streams({"a": {"producers": "x"}, "b": None}), set())
+
     def test_streams_from_json(self):
         self.assertEqual(urls.streams_from_json('{"garden": {}, "front_door": {}, "bad name": {}}'), ["front_door", "garden"])
         self.assertEqual(urls.streams_from_json("not json"), [])

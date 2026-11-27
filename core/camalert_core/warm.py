@@ -40,6 +40,17 @@ def parse_ready(text):
     return out
 
 
+def helper_streams(ready_text):
+    """Streams that only feed 'Keep cameras ready' (camera=other_stream): helpers, not cameras of their own (#113)."""
+    return {stream for cam, stream in parse_ready(ready_text).items() if stream != cam}
+
+
+def visible_cameras(names, ready_text):
+    """The camera list without the helper streams of 'Keep cameras ready' (mosaic, tour, channel list, API, MQTT)."""
+    hide = helper_streams(ready_text)
+    return [n for n in names if n not in hide]
+
+
 def mjpeg_url(server, stream):
     """go2rtc's MJPEG stream of a stream name, or None without a valid server."""
     base = normalize_server(server or "")

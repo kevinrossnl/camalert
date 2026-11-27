@@ -34,6 +34,7 @@ import org.camalert.core.Unifi
 import org.camalert.core.UnifiPoller
 import org.camalert.core.UrlTransport
 import org.camalert.core.Urls
+import org.camalert.core.Warm
 
 /**
  * The CamAlert service: started at boot and by the app, runs in the foreground (a TV device kills background
@@ -79,7 +80,8 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
     fun cameraNames(): List<String> {
         val s = settings()
         val server = Urls.normalizeServer(s["server"]?.toString()) ?: return emptyList()
-        return Urls.streamsFromJson(String(Net.fetch("$server/api/streams", s["verify_ssl"] != false, 5000), Charsets.UTF_8))
+        val names = Urls.streamsFromJson(String(Net.fetch("$server/api/streams", s["verify_ssl"] != false, 5000), Charsets.UTF_8))
+        return Warm.visibleCameras(names, s["ready_cameras"]?.toString())  // #113: helper streams are not cameras
     }
 
     fun tile(name: String) = controller.tile(name)

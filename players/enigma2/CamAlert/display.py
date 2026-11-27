@@ -192,7 +192,8 @@ def all_camera_names():
     if not server:  # no (valid) go2rtc address: nothing to ask, no network call (#73)
         return []
     from .setup import fetch_streams
-    return fetch_streams(server)
+    from .camalert_core.warm import visible_cameras
+    return visible_cameras(fetch_streams(server), config.plugins.camalert.ready_cameras.value)  # #113
 
 
 try:  # optional: python3-pillow turns/mirrors snapshots of cameras that hang upside down

@@ -35,6 +35,19 @@ class TestGo2rtcNotSet(Base):
         self.assertTrue("OK" in lines[0][:6] and "go2rtc reachable (4 cameras" in lines[0], lines)
         self.assertFalse([l for l in lines if "not set" in l or "No valid" in l])
 
+    def test_helper_stream_is_not_a_camera(self):
+        """#113: the stream behind 'Keep cameras ready' stays out of the camera list (mosaic, channel list, API)."""
+        from fakes.go2rtc import CAMERAS
+        cams = dict(CAMERAS, front_door_jpeg=(0, 0, 0))
+        fake = FakeGo2rtc(cameras=cams).start()
+        self.addCleanup(fake.server_close)
+        self.addCleanup(fake.shutdown)
+        self.c.server.value = fake.url
+        self.assertIn("front_door_jpeg", self.d.all_camera_names())
+        self.c.ready_cameras.value = "front_door=front_door_jpeg"
+        self.assertNotIn("front_door_jpeg", self.d.all_camera_names())
+        self.assertEqual(len(self.d.all_camera_names()), len(CAMERAS))
+
     def test_direct_mode_needs_no_address(self):
         self.c.server.value = ""
         self.c.source.value = "direct"

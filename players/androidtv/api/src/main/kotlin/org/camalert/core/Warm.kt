@@ -26,6 +26,15 @@ object Warm {
         return out
     }
 
+    /** Streams that only feed 'Keep cameras ready' (camera=other_stream): helpers, not cameras (#113). */
+    fun helperStreams(text: String?): Set<String> = parseReady(text).filter { (cam, stream) -> stream != cam }.values.toSet()
+
+    /** The camera list without the helper streams of 'Keep cameras ready'. */
+    fun visibleCameras(names: List<String>, text: String?): List<String> {
+        val hide = helperStreams(text)
+        return names.filter { it !in hide }
+    }
+
     fun mjpegUrl(server: String?, stream: String?): String? {
         val base = Urls.normalizeServer(server) ?: return null
         if (stream.isNullOrEmpty()) return null

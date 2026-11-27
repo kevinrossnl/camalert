@@ -10,7 +10,7 @@ from .klogic import live_url
 from .camalert_core.cameras import display_name, live_stream_name, parse_camera_file, parse_titles, title_for
 from .camalert_core.devices.client import load_devices
 from .camalert_core.frames import ProtectSnapshots, snapshot_request, url_width
-from .camalert_core.warm import WarmFeeds
+from .camalert_core.warm import WarmFeeds, visible_cameras
 from .camalert_core.present import go2rtc_problem as _problem_text
 from .camalert_core.urls import go2rtc_state, normalize_server, snapshot_url, split_credentials, streams_from_json
 
@@ -60,7 +60,8 @@ def all_camera_names(s=None):
     if not srv:
         return []
     with open_url(srv + "/api/streams", 5, s["verify_ssl"]) as r:
-        return streams_from_json(r.read().decode("utf-8", "replace"))
+        names = streams_from_json(r.read().decode("utf-8", "replace"))
+    return visible_cameras(names, s.get("ready_cameras", ""))  # #113: helper streams are not cameras
 
 
 def camera_urls(name, s=None):

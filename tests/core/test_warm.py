@@ -27,6 +27,16 @@ def wait(cond, timeout=5.0):
 
 
 class TestParse(unittest.TestCase):
+    def test_helper_streams_are_not_cameras(self):
+        """#113: a stream that only feeds 'Keep cameras ready' (camera=other_stream) is not a camera of its own."""
+        names = ["back_door", "front_door", "front_door_jpeg", "garden"]
+        self.assertEqual(warm.helper_streams("front_door=front_door_jpeg|garden"), {"front_door_jpeg"})
+        self.assertEqual(warm.visible_cameras(names, "front_door=front_door_jpeg"),
+                         ["back_door", "front_door", "garden"])
+        self.assertEqual(warm.visible_cameras(names, ""), names)
+        self.assertEqual(warm.visible_cameras(names, "garden"), names)  # camera=itself hides nothing
+        self.assertEqual(warm.visible_cameras(names, None), names)
+
     def test_parse_ready(self):
         self.assertEqual(warm.parse_ready(""), {})
         self.assertEqual(warm.parse_ready(None), {})

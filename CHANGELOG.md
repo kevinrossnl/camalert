@@ -48,6 +48,12 @@ actions and blueprint inputs stay backwards compatible.
 - **Docs:** the [settings list](docs/user/settings.md) now also shows which settings the Android TV / Fire TV
   player has, and its own defaults (live volume 0).
 
+### Fixed
+
+- **Keep cameras ready:** the helper stream (for example `front_door_jpeg`) is no longer shown as a camera of its own
+  in the mosaic, the tour, the channel list, the camera choice or Home Assistant.
+
+
 ## [1.1.0] - 2026-11-26
 
 ### Added

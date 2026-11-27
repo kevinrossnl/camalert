@@ -49,6 +49,16 @@ class WarmTest {
     }
 
     @Test
+    fun helperStreamsAreNotCameras() {  // #113
+        val names = listOf("back_door", "front_door", "front_door_jpeg", "garden")
+        assertEquals(setOf("front_door_jpeg"), Warm.helperStreams("front_door=front_door_jpeg|garden"))
+        assertEquals(listOf("back_door", "front_door", "garden"), Warm.visibleCameras(names, "front_door=front_door_jpeg"))
+        assertEquals(names, Warm.visibleCameras(names, ""))
+        assertEquals(names, Warm.visibleCameras(names, "garden"))
+        assertEquals(names, Warm.visibleCameras(names, null))
+    }
+
+    @Test
     fun parserInChunksAndWithoutLength() {
         val all = part("one") + part("two", false) + part("three")
         val p = MjpegParser()

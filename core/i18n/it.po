@@ -384,7 +384,7 @@ msgstr "%d nomi personalizzati"
 msgid "automatic"
 msgstr "automatico"
 
-#: e2
+#: e2 kodi:30443 atv:wizard_cameras
 msgid "%d cameras"
 msgstr "%d telecamere"
 
@@ -407,6 +407,10 @@ msgstr "Diagnostica"
 #: e2 kodi:30204 atv:events
 msgid "Event list"
 msgstr "Elenco eventi"
+
+#: e2 kodi:30456 atv:wizard_again
+msgid "Start the wizard again"
+msgstr "Riavviare la procedura guidata"
 
 #: e2
 msgid "Show all settings"
@@ -483,6 +487,62 @@ msgstr "Scegliere prima una telecamera predefinita."
 #: e2
 msgid "Save the settings and show the default camera now?"
 msgstr "Salvare le impostazioni e mostrare ora la telecamera predefinita?"
+
+#: e2 kodi:30442 atv:wizard_searching
+msgid "Searching for go2rtc in your network..."
+msgstr "Ricerca di go2rtc nella rete..."
+
+#: e2 kodi:30444 atv:wizard_manual
+msgid "Enter the address yourself"
+msgstr "Inserire l'indirizzo manualmente"
+
+#: e2 kodi:30445
+msgid "Without go2rtc (camera file)"
+msgstr "Senza go2rtc (file delle telecamere)"
+
+#: e2 kodi:30441 atv:wizard_title
+msgid "CamAlert wizard"
+msgstr "Procedura guidata CamAlert"
+
+#: e2 kodi:30446 atv:wizard_none
+msgid "No go2rtc found in your network. Enter its address yourself, or set up go2rtc first (see the guide)."
+msgstr "Nessun go2rtc trovato nella rete. Inserire l'indirizzo manualmente oppure installare prima go2rtc (vedere la guida)."
+
+#: e2 kodi:30016 atv:wizard_address
+msgid "go2rtc address"
+msgstr "Indirizzo go2rtc"
+
+#: e2 kodi:30457
+msgid "Without go2rtc, list your cameras in %s, then open CamAlert again."
+msgstr "Senza go2rtc, elencare le telecamere in %s e poi riaprire CamAlert."
+
+#: e2 kodi:30447 atv:wizard_no_answer
+msgid "go2rtc does not answer at %s."
+msgstr "go2rtc non risponde a %s."
+
+#: e2 kodi:30449 atv:wizard_which
+msgid "Which camera should CamAlert show by default?"
+msgstr "Quale telecamera deve mostrare CamAlert per impostazione predefinita?"
+
+#: e2 kodi:30450 atv:wizard_right
+msgid "Is this the right camera?"
+msgstr "È la telecamera giusta?"
+
+#: e2 kodi:30452 atv:wizard_test
+msgid "Show a test notification now? It plays no doorbell chime."
+msgstr "Mostrare ora una notifica di prova? Non viene riprodotto il suono del campanello."
+
+#: e2 kodi:30453 atv:wizard_ready
+msgid "Ready! Add this player in Home Assistant: Settings > Devices & services > Add integration > CamAlert."
+msgstr "Fatto. Questo lettore si collega a Home Assistant da Impostazioni > Dispositivi e servizi > nuova integrazione > CamAlert."
+
+#: e2 kodi:30454 atv:wizard_name
+msgid "Name: %s"
+msgstr "Nome: %s"
+
+#: e2 kodi:30455 atv:wizard_addr
+msgid "Address: %s"
+msgstr "Indirizzo: %s"
 
 #: e2 kodi:30502
 msgid "MQTT"
@@ -743,10 +803,6 @@ msgstr "Telecamere tramite"
 #: e2
 msgid "go2rtc is recommended. Without go2rtc, list your cameras in %s"
 msgstr "Si consiglia go2rtc. Senza go2rtc, elenca le telecamere in %s"
-
-#: e2 kodi:30016
-msgid "go2rtc address"
-msgstr "Indirizzo go2rtc"
 
 #: e2 kodi:30017
 msgid "Address of your go2rtc server, e.g. http://192.168.1.10:1984"
@@ -1564,6 +1620,14 @@ msgstr "la telecamera stessa"
 msgid "Up to 9 cameras: the first 9 are used."
 msgstr "Al massimo 9 telecamere: vengono usate le prime 9."
 
+#: kodi:30440
+msgid "First-start wizard done"
+msgstr "Procedura guidata iniziale completata"
+
+#: kodi:30451 atv:wizard_no_cameras
+msgid "go2rtc has no cameras yet. Add your cameras in go2rtc and start the wizard again from the menu."
+msgstr "go2rtc non ha ancora telecamere. Configurare le telecamere in go2rtc e poi riavviare la procedura guidata dal menu."
+
 #: ha:config.flow_title
 msgid "{name}"
 msgstr "{name}"
@@ -1891,3 +1955,11 @@ msgstr "basso"
 #: atv:unifi_no_console
 msgid "UniFi Protect: no console address set"
 msgstr "UniFi Protect: nessun indirizzo della console impostato"
+
+#: atv:wizard_yes
+msgid "Yes"
+msgstr "Sì"
+
+#: atv:wizard_no
+msgid "No"
+msgstr "No"

@@ -67,5 +67,22 @@
  "unifi_console_user": "Console user (role View Only)",
  "unifi_console_password": "Console password",
  "unifi_where": "the settings below",
- "unifi_no_console": "UniFi Protect: no console address set"
+ "unifi_no_console": "UniFi Protect: no console address set",
+ "wizard_title": "CamAlert wizard",
+ "wizard_searching": "Searching for go2rtc in your network...",
+ "wizard_cameras": "%d cameras",
+ "wizard_manual": "Enter the address yourself",
+ "wizard_none": "No go2rtc found in your network. Enter its address yourself, or set up go2rtc first (see the guide).",
+ "wizard_no_answer": "go2rtc does not answer at %s.",
+ "wizard_address": "go2rtc address",
+ "wizard_which": "Which camera should CamAlert show by default?",
+ "wizard_right": "Is this the right camera?",
+ "wizard_no_cameras": "go2rtc has no cameras yet. Add your cameras in go2rtc and start the wizard again from the menu.",
+ "wizard_test": "Show a test notification now? It plays no doorbell chime.",
+ "wizard_ready": "Ready! Add this player in Home Assistant: Settings > Devices & services > Add integration > CamAlert.",
+ "wizard_name": "Name: %s",
+ "wizard_addr": "Address: %s",
+ "wizard_again": "Start the wizard again",
+ "wizard_yes": "Yes",
+ "wizard_no": "No"
 }

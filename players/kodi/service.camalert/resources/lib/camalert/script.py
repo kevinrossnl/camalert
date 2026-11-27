@@ -156,7 +156,14 @@ def open_settings():
 
 # #106: what opening the add-on (Add-ons > Program add-ons, a favourite) offers: (label id, action)
 MENU = ((30171, lambda: send(do="mosaic")), (30172, lambda: send(do="tour")), (30205, lambda: show_camera()),
-        (30204, lambda: events()), (30201, lambda: diagnostics()), (30284, lambda: open_settings()))
+        (30204, lambda: events()), (30201, lambda: diagnostics()), (30284, lambda: open_settings()),
+        (30456, lambda: wizard()))
+
+
+def wizard():
+    """#120: the first-start wizard (also from the menu: Start the wizard again)."""
+    from . import kwizard
+    kwizard.run()
 
 
 def show_camera():
@@ -251,7 +258,11 @@ def camera_password():
 
 def run(args):
     if not args:
-        menu()
+        from . import kwizard
+        if kwizard.should_start():  # first start without go2rtc address (#120)
+            wizard()
+        else:
+            menu()
         return
     what = args[0]
     if what == "choose_camera":
@@ -276,6 +287,8 @@ def run(args):
         diagnostics()
     elif what == "events":
         events()
+    elif what == "wizard":
+        wizard()
     elif what == "camera_password":
         camera_password()
     elif what == "devices":

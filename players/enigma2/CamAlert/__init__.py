@@ -152,6 +152,7 @@ _add("ptz_key", lambda: ConfigSelection(default="blue", choices=[
     ("blue", _("BLUE")), ("yellow", _("YELLOW")), ("red", _("RED")), ("green", _("GREEN")), ("off", _("Off"))]))
 _add("ha_buttons", lambda: ConfigYesNo(default=True))
 _add("ha_webhook", lambda: ConfigText(default="", fixed_size=False))
+_add("wizard_done", lambda: ConfigYesNo(default=False))  # first-start wizard (#120)
 _add("foscam_enabled", lambda: ConfigYesNo(default=False))
 c.foscam_enabled.save_forced = True  # V2_MARKER
 _add("foscam_priority", lambda: ConfigSelection(default="normal", choices=PRIORITIES()))

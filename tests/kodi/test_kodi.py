@@ -1339,7 +1339,7 @@ class _KodiModules(object):
             setattr(script, name, fake)
         return script, rec
 
-    MENU = ["Show mosaic", "Start tour", "Show camera", "Event list", "Diagnostics", "Settings"]
+    MENU = ["Show mosaic", "Start tour", "Show camera", "Event list", "Diagnostics", "Settings", "Start the wizard again"]
 
     def test_menu_without_arguments(self):
         """#106: opening CamAlert from Add-ons > Program add-ons shows a choice list, not the settings."""
@@ -1483,11 +1483,88 @@ class _KodiModules(object):
         """#106/#73: no go2rtc address: the menu says why instead of an empty camera list."""
         script, rec = self.menu_setup()
         Built.store["server"] = ""
+        Built.store["wizard_done"] = "true"  # the wizard was left (#120): the menu opens
+        self.addCleanup(Built.store.pop, "wizard_done", None)
         rec.answers[:] = [2]
         script.run([])
         self.assertEqual(rec.said, ["go2rtc address not set"])
         self.assertEqual(rec.sent, [])
         self.assertEqual(len(rec.seen), 1)
+
+    def test_wizard_on_first_start(self):
+        """#120: without go2rtc address and before the wizard ran, opening the add-on starts the wizard: the search
+        result, a camera with a preview (a test request: no chime), the test notification and the HA hint."""
+        import types
+        script = Built.module("script")
+        kw = Built.module("kwizard")
+        saved = {k: Built.store.get(k) for k in ("server", "camera", "wizard_done", "source")}
+        for k, v in saved.items():
+            self.addCleanup(lambda k=k, v=v: Built.store.__setitem__(k, v) if v is not None else Built.store.pop(k, None))
+        Built.store["server"], Built.store["source"] = "", "go2rtc"
+        Built.store.pop("wizard_done", None)
+        sent, said = [], []
+
+        class Dialog(object):
+            def __init__(self, selects, yesnos):
+                self.selects, self.yesnos, self.seen = list(selects), list(yesnos), []
+
+            def select(self, heading, items, preselect=-1):
+                self.seen.append((heading, list(items)))
+                return self.selects.pop(0)
+
+            def yesno(self, heading, message):
+                said.append(message)
+                return self.yesnos.pop(0)
+
+            def ok(self, heading, message):
+                said.append(message)
+
+            def input(self, heading, defaultt=""):
+                return ""
+
+        for name, fake in (("search", lambda progress=None: [("http://192.168.1.10:1984", ["front_door", "garden"])]),
+                           ("send", lambda **cmd: sent.append(cmd))):
+            self.addCleanup(setattr, kw, name, getattr(kw, name))
+            setattr(kw, name, fake)
+        core = kw.core
+        self.addCleanup(setattr, core, "own_ip", core.own_ip)
+        core.own_ip = lambda *a: "192.168.1.40"
+        self.assertTrue(kw.should_start())
+        d = Dialog([0, 0, 1], [False, True, True])  # go2rtc, front_door (not right), garden (right), test: yes
+        saved_values = kw.run(dialog=d, wait=lambda s: None)
+        self.assertEqual(d.seen[0][1][0], "http://192.168.1.10:1984 (2 cameras)")
+        self.assertEqual(d.seen[1], ("Which camera should CamAlert show by default?", ["front_door", "garden"]))
+        self.assertEqual([c for c in sent if c["do"] == "show"],
+                         [{"do": "show", "cam": "front_door", "mode": "photo", "seconds": 15, "test": True},
+                          {"do": "show", "cam": "garden", "mode": "photo", "seconds": 15, "test": True},
+                          {"do": "show", "cam": "garden", "mode": "notify", "seconds": 10, "test": True}])
+        self.assertEqual(saved_values, {"wizard_done": True, "source": "go2rtc", "server": "http://192.168.1.10:1984",
+                                        "camera": "garden"})
+        self.assertEqual((Built.store["server"], Built.store["camera"], Built.store["wizard_done"]),
+                         ("http://192.168.1.10:1984", "garden", "true"))
+        self.assertIn("Address: 192.168.1.40:8099", said[-1])
+        self.assertFalse(kw.should_start())
+        # leaving early (BACK in the first list) also ends it for good
+        Built.store["server"] = ""
+        Built.store.pop("wizard_done", None)
+        self.assertEqual(kw.run(dialog=Dialog([-1], [])), {"wizard_done": True})
+        self.assertEqual(Built.store["server"], "")
+
+    def test_wizard_service_command_is_a_test(self):
+        """#120: the wizard's preview/test command reaches the controller as a test request with its seconds."""
+        import json
+        import types
+        svc = Built.module("service")
+        seen = []
+        fake = types.SimpleNamespace(ctl=types.SimpleNamespace(show=lambda *a: seen.append(a)))
+        win = sys.modules["xbmcgui"].Window
+        cmd = json.dumps({"do": "show", "cam": "garden", "mode": "notify", "seconds": 10, "test": True})
+        for name, fn in (("getProperty", lambda self, key: cmd if key == "camalert.cmd" else ""),
+                         ("clearProperty", lambda self, key: None)):
+            self.addCleanup(setattr, win, name, getattr(win, name, None))
+            setattr(win, name, fn)
+        svc.Service.script_commands(fake)
+        self.assertEqual(seen, [("garden", 10, "notify", "high", "test")])
 
     def test_change_camera_password_button(self):
         """#55: the settings button shows whether a password is stored (never the password) and changes or removes

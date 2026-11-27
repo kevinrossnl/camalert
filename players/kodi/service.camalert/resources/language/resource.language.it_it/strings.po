@@ -1264,3 +1264,71 @@ msgstr "Pronta: %s (ultima immagine %d s fa)"
 msgctxt "#30570"
 msgid "Ready: %s not connected"
 msgstr "Pronta: %s non collegata"
+
+msgctxt "#30440"
+msgid "First-start wizard done"
+msgstr "Procedura guidata iniziale completata"
+
+msgctxt "#30441"
+msgid "CamAlert wizard"
+msgstr "Procedura guidata CamAlert"
+
+msgctxt "#30442"
+msgid "Searching for go2rtc in your network..."
+msgstr "Ricerca di go2rtc nella rete..."
+
+msgctxt "#30443"
+msgid "%d cameras"
+msgstr "%d telecamere"
+
+msgctxt "#30444"
+msgid "Enter the address yourself"
+msgstr "Inserire l'indirizzo manualmente"
+
+msgctxt "#30445"
+msgid "Without go2rtc (camera file)"
+msgstr "Senza go2rtc (file delle telecamere)"
+
+msgctxt "#30446"
+msgid "No go2rtc found in your network. Enter its address yourself, or set up go2rtc first (see the guide)."
+msgstr "Nessun go2rtc trovato nella rete. Inserire l'indirizzo manualmente oppure installare prima go2rtc (vedere la guida)."
+
+msgctxt "#30447"
+msgid "go2rtc does not answer at %s."
+msgstr "go2rtc non risponde a %s."
+
+msgctxt "#30449"
+msgid "Which camera should CamAlert show by default?"
+msgstr "Quale telecamera deve mostrare CamAlert per impostazione predefinita?"
+
+msgctxt "#30450"
+msgid "Is this the right camera?"
+msgstr "È la telecamera giusta?"
+
+msgctxt "#30451"
+msgid "go2rtc has no cameras yet. Add your cameras in go2rtc and start the wizard again from the menu."
+msgstr "go2rtc non ha ancora telecamere. Configurare le telecamere in go2rtc e poi riavviare la procedura guidata dal menu."
+
+msgctxt "#30452"
+msgid "Show a test notification now? It plays no doorbell chime."
+msgstr "Mostrare ora una notifica di prova? Non viene riprodotto il suono del campanello."
+
+msgctxt "#30453"
+msgid "Ready! Add this player in Home Assistant: Settings > Devices & services > Add integration > CamAlert."
+msgstr "Fatto. Questo lettore si collega a Home Assistant da Impostazioni > Dispositivi e servizi > nuova integrazione > CamAlert."
+
+msgctxt "#30454"
+msgid "Name: %s"
+msgstr "Nome: %s"
+
+msgctxt "#30455"
+msgid "Address: %s"
+msgstr "Indirizzo: %s"
+
+msgctxt "#30456"
+msgid "Start the wizard again"
+msgstr "Riavviare la procedura guidata"
+
+msgctxt "#30457"
+msgid "Without go2rtc, list your cameras in %s, then open CamAlert again."
+msgstr "Senza go2rtc, elencare le telecamere in %s e poi riaprire CamAlert."

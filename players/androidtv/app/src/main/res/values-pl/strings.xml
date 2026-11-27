@@ -69,6 +69,23 @@
     <string name="unifi_console_password" formatted="false">Hasło konsoli</string>
     <string name="unifi_where" formatted="false">ustawień poniżej</string>
     <string name="unifi_no_console" formatted="false">UniFi Protect: nie ustawiono adresu konsoli</string>
+    <string name="wizard_title" formatted="false">Kreator CamAlert</string>
+    <string name="wizard_searching" formatted="false">Wyszukiwanie go2rtc w sieci...</string>
+    <string name="wizard_cameras">kamery: %d</string>
+    <string name="wizard_manual" formatted="false">Wpisanie adresu ręcznie</string>
+    <string name="wizard_none" formatted="false">Nie znaleziono go2rtc w sieci. Należy wpisać adres ręcznie albo najpierw zainstalować go2rtc (zob. instrukcję).</string>
+    <string name="wizard_no_answer">go2rtc nie odpowiada pod adresem %s.</string>
+    <string name="wizard_address" formatted="false">Adres go2rtc</string>
+    <string name="wizard_which" formatted="false">Którą kamerę CamAlert ma pokazywać domyślnie\?</string>
+    <string name="wizard_right" formatted="false">Czy to właściwa kamera\?</string>
+    <string name="wizard_no_cameras" formatted="false">go2rtc nie ma jeszcze kamer. Należy dodać kamery w go2rtc, a potem ponownie uruchomić kreator z menu.</string>
+    <string name="wizard_test" formatted="false">Pokazać teraz powiadomienie testowe\? Dźwięk dzwonka nie zostanie odtworzony.</string>
+    <string name="wizard_ready" formatted="false">Gotowe. Ten odtwarzacz można dodać w Home Assistant: Ustawienia &gt; Urządzenia oraz usługi &gt; Dodaj integrację &gt; CamAlert.</string>
+    <string name="wizard_name">Nazwa: %s</string>
+    <string name="wizard_addr">Adres: %s</string>
+    <string name="wizard_again" formatted="false">Ponowne uruchomienie kreatora</string>
+    <string name="wizard_yes" formatted="false">Tak</string>
+    <string name="wizard_no" formatted="false">Nie</string>
     <string name="t_bfb3a49f" formatted="false">Włącz CamAlert</string>
     <string name="t_61786bb1" formatted="false">Włącza lub wyłącza API HTTP i wyświetlanie kamer.</string>
     <string name="t_bc6c5ac6" formatted="false">Adres go2rtc</string>

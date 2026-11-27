@@ -15,6 +15,10 @@ actions and blueprint inputs stay backwards compatible.
 - **Home Assistant:** players are found automatically. Every player announces itself on the local network
   (`_camalert._tcp`, without a token), Home Assistant shows it as *Discovered* and adds it with one click; it asks for
   the access token only when the player has one, and takes over a new IP address of a player it knows (#121).
+- **All players:** a wizard on the first start (no go2rtc address yet): it looks for go2rtc in your network
+  (`homeassistant.local`, your Home Assistant, the own network on port 1984), lets you choose the default camera
+  with a preview, shows a test notification without chime and tells you how to add the player in Home Assistant.
+  It never opens again by itself; *Start the wizard again* is in the menu (#120).
 - **Home Assistant:** the player's device is shown under the device of the TV or Enigma2 receiver it runs on, found
   automatically by address from the Enigma2, Kodi or Android TV integration. **Configure** on the CamAlert entry
   (*Show under device*) chooses another device or turns this off.

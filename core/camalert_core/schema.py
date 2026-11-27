@@ -68,6 +68,7 @@ SETTINGS = [
     S('mosaic', 'general', 'advanced', 'text', '', platforms=('enigma2', 'kodi', 'androidtv'), label='Mosaic cameras', help='Press OK to choose up to 9 cameras for the mosaic. Empty = all.', kodi_label=30029),
     S('titles', 'general', 'advanced', 'text', '', platforms=('enigma2', 'kodi', 'androidtv'), label='Camera names', help='Press OK to give a camera its own name (empty = automatic).', kodi_label=30027),
     S('substreams', 'general', 'expert', 'text', '', platforms=('enigma2', 'kodi', 'androidtv'), label='Live view substreams', help='For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view.', kodi_label=30257),
+    S('wizard_done', 'general', 'internal', 'bool', False, platforms=('enigma2', 'kodi', 'androidtv'), label='First-start wizard done', kodi_label=30440),
     S('camera_file', 'general', 'expert', 'text', '', platforms=('kodi',), label='Camera file (direct mode)', help='Empty = cameras.conf in the add-on data folder. One camera per line: name | rtsp-url | snapshot-url', kodi_label=30022),
     S('mode', 'display', 'basic', 'choice', 'photo', choices=('photo', 'live', 'notify'), platforms=('enigma2', 'kodi', 'androidtv'), label='Display mode', help='Photo window keeps watching TV; live switches the channel to the camera.', kodi_label=30040),
     S('duration', 'display', 'basic', 'int', 30, min=5, max=300, step=5, unit='s', platforms=('enigma2', 'kodi', 'androidtv'), label='Duration (seconds)', help='How long the camera stays on screen.', kodi_label=30045),

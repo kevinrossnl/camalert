@@ -6,6 +6,7 @@ import json
 import xbmc
 
 from . import __version__, kodiapi, mqtt, ptz, server, sources
+from .camalert_core.events import TEST_SOURCE
 from .camalert_core.rules import MODES
 from .controller import Controller
 
@@ -95,7 +96,9 @@ class Service(object):
         what = c.get("do")
         if what == "show":  # mode: the video add-on asks for live view or the photo window (#107)
             mode = c.get("mode") if c.get("mode") in MODES else None
-            self.ctl.show(c.get("cam"), None, mode, "high", "menu")
+            seconds = c.get("seconds") if isinstance(c.get("seconds"), int) else None
+            source = TEST_SOURCE if c.get("test") else "menu"  # the wizard's preview and test (#120): no chime
+            self.ctl.show(c.get("cam"), seconds, mode, "high", source)
         elif what == "mosaic":
             self.ctl.mosaic(None, 60)
         elif what == "tour":

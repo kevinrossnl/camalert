@@ -306,6 +306,9 @@ msgstr "Diagnostica"
 msgid "Event list"
 msgstr "Elenco eventi"
 
+msgid "Start the wizard again"
+msgstr "Riavviare la procedura guidata"
+
 msgid "Show all settings"
 msgstr "Mostra tutte le impostazioni"
 
@@ -362,6 +365,48 @@ msgstr "Scegliere prima una telecamera predefinita."
 
 msgid "Save the settings and show the default camera now?"
 msgstr "Salvare le impostazioni e mostrare ora la telecamera predefinita?"
+
+msgid "Searching for go2rtc in your network..."
+msgstr "Ricerca di go2rtc nella rete..."
+
+msgid "Enter the address yourself"
+msgstr "Inserire l'indirizzo manualmente"
+
+msgid "Without go2rtc (camera file)"
+msgstr "Senza go2rtc (file delle telecamere)"
+
+msgid "CamAlert wizard"
+msgstr "Procedura guidata CamAlert"
+
+msgid "No go2rtc found in your network. Enter its address yourself, or set up go2rtc first (see the guide)."
+msgstr "Nessun go2rtc trovato nella rete. Inserire l'indirizzo manualmente oppure installare prima go2rtc (vedere la guida)."
+
+msgid "go2rtc address"
+msgstr "Indirizzo go2rtc"
+
+msgid "Without go2rtc, list your cameras in %s, then open CamAlert again."
+msgstr "Senza go2rtc, elencare le telecamere in %s e poi riaprire CamAlert."
+
+msgid "go2rtc does not answer at %s."
+msgstr "go2rtc non risponde a %s."
+
+msgid "Which camera should CamAlert show by default?"
+msgstr "Quale telecamera deve mostrare CamAlert per impostazione predefinita?"
+
+msgid "Is this the right camera?"
+msgstr "È la telecamera giusta?"
+
+msgid "Show a test notification now? It plays no doorbell chime."
+msgstr "Mostrare ora una notifica di prova? Non viene riprodotto il suono del campanello."
+
+msgid "Ready! Add this player in Home Assistant: Settings > Devices & services > Add integration > CamAlert."
+msgstr "Fatto. Questo lettore si collega a Home Assistant da Impostazioni > Dispositivi e servizi > nuova integrazione > CamAlert."
+
+msgid "Name: %s"
+msgstr "Nome: %s"
+
+msgid "Address: %s"
+msgstr "Indirizzo: %s"
 
 msgid "MQTT"
 msgstr "MQTT"
@@ -557,9 +602,6 @@ msgstr "Telecamere tramite"
 
 msgid "go2rtc is recommended. Without go2rtc, list your cameras in %s"
 msgstr "Si consiglia go2rtc. Senza go2rtc, elenca le telecamere in %s"
-
-msgid "go2rtc address"
-msgstr "Indirizzo go2rtc"
 
 msgid "Address of your go2rtc server, e.g. http://192.168.1.10:1984"
 msgstr "Indirizzo del server go2rtc, ad es. http://192.168.1.10:1984"

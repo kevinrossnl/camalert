@@ -30,6 +30,9 @@ class SettingsActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         CamAlertService.start(this)
+        if (savedInstanceState == null && org.camalert.core.Wizard.shouldStart(Store(this).values())) {
+            startActivity(Intent(this, WizardActivity::class.java))  // first start without go2rtc address (#120)
+        }
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().replace(android.R.id.content, Root()).commit()
         }
@@ -90,6 +93,10 @@ class SettingsActivity : FragmentActivity() {
                     Thread { svc?.controller?.show(null, null, null, null, "menu", null) }.start()
                     true
                 }
+            })
+            screen.addPreference(Preference(ctx).apply {
+                title = getString(R.string.wizard_again)
+                intent = Intent(ctx, WizardActivity::class.java)
             })
             screen.addPreference(Preference(ctx).apply {
                 title = getString(R.string.diagnostics)

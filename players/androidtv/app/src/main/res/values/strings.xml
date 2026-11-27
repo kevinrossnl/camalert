@@ -70,6 +70,23 @@
     <string name="unifi_console_password" formatted="false">Console password</string>
     <string name="unifi_where" formatted="false">the settings below</string>
     <string name="unifi_no_console" formatted="false">UniFi Protect: no console address set</string>
+    <string name="wizard_title" formatted="false">CamAlert wizard</string>
+    <string name="wizard_searching" formatted="false">Searching for go2rtc in your network...</string>
+    <string name="wizard_cameras">%d cameras</string>
+    <string name="wizard_manual" formatted="false">Enter the address yourself</string>
+    <string name="wizard_none" formatted="false">No go2rtc found in your network. Enter its address yourself, or set up go2rtc first (see the guide).</string>
+    <string name="wizard_no_answer">go2rtc does not answer at %s.</string>
+    <string name="wizard_address" formatted="false">go2rtc address</string>
+    <string name="wizard_which" formatted="false">Which camera should CamAlert show by default\?</string>
+    <string name="wizard_right" formatted="false">Is this the right camera\?</string>
+    <string name="wizard_no_cameras" formatted="false">go2rtc has no cameras yet. Add your cameras in go2rtc and start the wizard again from the menu.</string>
+    <string name="wizard_test" formatted="false">Show a test notification now\? It plays no doorbell chime.</string>
+    <string name="wizard_ready" formatted="false">Ready! Add this player in Home Assistant: Settings &gt; Devices &amp; services &gt; Add integration &gt; CamAlert.</string>
+    <string name="wizard_name">Name: %s</string>
+    <string name="wizard_addr">Address: %s</string>
+    <string name="wizard_again" formatted="false">Start the wizard again</string>
+    <string name="wizard_yes" formatted="false">Yes</string>
+    <string name="wizard_no" formatted="false">No</string>
     <string name="t_bfb3a49f" formatted="false">Enable CamAlert</string>
     <string name="t_61786bb1" formatted="false">Turn the HTTP API and the camera display on or off.</string>
     <string name="t_bc6c5ac6" formatted="false">go2rtc address</string>

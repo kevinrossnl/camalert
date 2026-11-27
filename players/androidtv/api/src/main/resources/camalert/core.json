@@ -493,6 +493,20 @@
    "unit": null
   },
   {
+   "choices": null,
+   "default": false,
+   "help": null,
+   "id": "wizard_done",
+   "label": "First-start wizard done",
+   "level": "internal",
+   "max": null,
+   "min": null,
+   "section": "general",
+   "step": null,
+   "type": "bool",
+   "unit": null
+  },
+  {
    "choices": [
     "photo",
     "live",

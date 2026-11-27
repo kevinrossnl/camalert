@@ -69,6 +69,23 @@
     <string name="unifi_console_password" formatted="false">Passwort der Konsole</string>
     <string name="unifi_where" formatted="false">den Einstellungen unten</string>
     <string name="unifi_no_console" formatted="false">UniFi Protect: keine Konsolenadresse eingestellt</string>
+    <string name="wizard_title" formatted="false">CamAlert-Assistent</string>
+    <string name="wizard_searching" formatted="false">go2rtc wird in deinem Netzwerk gesucht...</string>
+    <string name="wizard_cameras">%d Kameras</string>
+    <string name="wizard_manual" formatted="false">Adresse selbst eingeben</string>
+    <string name="wizard_none" formatted="false">Kein go2rtc in deinem Netzwerk gefunden. Gib die Adresse selbst ein oder richte zuerst go2rtc ein (siehe Anleitung).</string>
+    <string name="wizard_no_answer">go2rtc antwortet nicht unter %s.</string>
+    <string name="wizard_address" formatted="false">go2rtc-Adresse</string>
+    <string name="wizard_which" formatted="false">Welche Kamera soll CamAlert standardmäßig zeigen\?</string>
+    <string name="wizard_right" formatted="false">Ist das die richtige Kamera\?</string>
+    <string name="wizard_no_cameras" formatted="false">go2rtc hat noch keine Kameras. Füge deine Kameras in go2rtc hinzu und starte den Assistenten dann erneut über das Menü.</string>
+    <string name="wizard_test" formatted="false">Jetzt eine Testbenachrichtigung zeigen\? Es ertönt kein Türklingelton.</string>
+    <string name="wizard_ready" formatted="false">Fertig! Füge dieses Wiedergabegerät in Home Assistant hinzu: Einstellungen &gt; Geräte &amp; Dienste &gt; Integration hinzufügen &gt; CamAlert.</string>
+    <string name="wizard_name">Name: %s</string>
+    <string name="wizard_addr">Adresse: %s</string>
+    <string name="wizard_again" formatted="false">Assistenten erneut starten</string>
+    <string name="wizard_yes" formatted="false">Ja</string>
+    <string name="wizard_no" formatted="false">Nein</string>
     <string name="t_bfb3a49f" formatted="false">CamAlert aktivieren</string>
     <string name="t_61786bb1" formatted="false">Schaltet die HTTP-API und die Kameraanzeige ein oder aus.</string>
     <string name="t_bc6c5ac6" formatted="false">go2rtc-Adresse</string>

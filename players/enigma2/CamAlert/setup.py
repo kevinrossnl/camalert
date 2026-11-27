@@ -195,7 +195,7 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
             "   " + (_("%d more settings via MENU") % self.hidden) if self.hidden else ""))
 
     def menu(self):
-        choices = [(_("Diagnostics"), "diag"), (_("Event list"), "events")]
+        choices = [(_("Diagnostics"), "diag"), (_("Event list"), "events"), (_("Start the wizard again"), "wizard")]
         if self.level < 2:
             choices.append((_("Show all settings"), "all"))
         elif image_level() < 2:
@@ -206,7 +206,10 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
         from .diagnostics import DiagnosticsScreen, EventsScreen
         if not choice:
             return
-        if choice[1] in ("all", "fewer"):
+        if choice[1] == "wizard":  # #120
+            from .wizard import Wizard
+            Wizard(self.session, on_close=self.build).start()
+        elif choice[1] in ("all", "fewer"):
             self.level = 2 if choice[1] == "all" else image_level()
             self.build()
         else:

@@ -1264,3 +1264,71 @@ msgstr "Prête : %s (dernière image il y a %d s)"
 msgctxt "#30570"
 msgid "Ready: %s not connected"
 msgstr "Prête : %s non connectée"
+
+msgctxt "#30440"
+msgid "First-start wizard done"
+msgstr "Assistant de premier démarrage terminé"
+
+msgctxt "#30441"
+msgid "CamAlert wizard"
+msgstr "Assistant CamAlert"
+
+msgctxt "#30442"
+msgid "Searching for go2rtc in your network..."
+msgstr "Recherche de go2rtc sur votre réseau..."
+
+msgctxt "#30443"
+msgid "%d cameras"
+msgstr "%d caméras"
+
+msgctxt "#30444"
+msgid "Enter the address yourself"
+msgstr "Saisir l'adresse vous-même"
+
+msgctxt "#30445"
+msgid "Without go2rtc (camera file)"
+msgstr "Sans go2rtc (fichier de caméras)"
+
+msgctxt "#30446"
+msgid "No go2rtc found in your network. Enter its address yourself, or set up go2rtc first (see the guide)."
+msgstr "Aucun go2rtc trouvé sur votre réseau. Saisissez son adresse vous-même ou installez d'abord go2rtc (voir le guide)."
+
+msgctxt "#30447"
+msgid "go2rtc does not answer at %s."
+msgstr "go2rtc ne répond pas à %s."
+
+msgctxt "#30449"
+msgid "Which camera should CamAlert show by default?"
+msgstr "Quelle caméra CamAlert doit-il afficher par défaut ?"
+
+msgctxt "#30450"
+msgid "Is this the right camera?"
+msgstr "Est-ce la bonne caméra ?"
+
+msgctxt "#30451"
+msgid "go2rtc has no cameras yet. Add your cameras in go2rtc and start the wizard again from the menu."
+msgstr "go2rtc n'a encore aucune caméra. Ajoutez vos caméras dans go2rtc, puis relancez l'assistant depuis le menu."
+
+msgctxt "#30452"
+msgid "Show a test notification now? It plays no doorbell chime."
+msgstr "Afficher une notification de test maintenant ? Aucun son de sonnette ne sera joué."
+
+msgctxt "#30453"
+msgid "Ready! Add this player in Home Assistant: Settings > Devices & services > Add integration > CamAlert."
+msgstr "Terminé ! Ajoutez ce lecteur dans Home Assistant : Paramètres > Appareils et services > Ajouter une intégration > CamAlert."
+
+msgctxt "#30454"
+msgid "Name: %s"
+msgstr "Nom : %s"
+
+msgctxt "#30455"
+msgid "Address: %s"
+msgstr "Adresse : %s"
+
+msgctxt "#30456"
+msgid "Start the wizard again"
+msgstr "Relancer l'assistant"
+
+msgctxt "#30457"
+msgid "Without go2rtc, list your cameras in %s, then open CamAlert again."
+msgstr "Sans go2rtc, indiquez vos caméras dans %s, puis rouvrez CamAlert."

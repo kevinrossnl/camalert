@@ -874,6 +874,6 @@ def install(profile_name, stored=None):
     _paths.attach_core("CamAlert")
     spec.loader.exec_module(package)
     env.camalert = package
-    for sub in ("services", "keys", "display", "setup", "plugin", "bouquet", "server", "mqtt", "diagnostics"):
+    for sub in ("services", "keys", "display", "setup", "plugin", "bouquet", "server", "mqtt", "diagnostics", "wizard"):
         setattr(env.camalert, sub, importlib.import_module("CamAlert." + sub))
     return env

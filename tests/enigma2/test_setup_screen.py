@@ -40,6 +40,7 @@ class TestSetupScreen(unittest.TestCase):
     def test_asks_for_the_go2rtc_address(self):
         """#73: no default address; the setup starts on the go2rtc address and its help line says it is not set."""
         self.c.server.value = ""
+        self.c.wizard_done.value = True  # wizard skipped (#120): the settings open
         s = self.open()
         for fn in s.onLayoutFinish:
             fn()

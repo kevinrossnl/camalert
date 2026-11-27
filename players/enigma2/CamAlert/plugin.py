@@ -20,6 +20,10 @@ def sessionstart(reason, session=None, **kwargs):
 
 def main(session, **kwargs):
     from .setup import CamAlertSetup
+    from . import wizard
+    if wizard.should_start():  # first start without go2rtc address (#120)
+        wizard.Wizard(session, on_close=lambda: session.open(CamAlertSetup)).start()
+        return
     session.open(CamAlertSetup)
 
 

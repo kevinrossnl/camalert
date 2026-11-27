@@ -38,6 +38,11 @@
         </activity>
 
         <activity
+            android:name=".WizardActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CamAlert" />
+
+        <activity
             android:name=".InfoActivity"
             android:exported="false"
             android:theme="@style/Theme.CamAlert" />

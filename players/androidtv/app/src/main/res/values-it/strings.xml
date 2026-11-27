@@ -69,6 +69,23 @@
     <string name="unifi_console_password" formatted="false">Password della console</string>
     <string name="unifi_where" formatted="false">basso</string>
     <string name="unifi_no_console" formatted="false">UniFi Protect: nessun indirizzo della console impostato</string>
+    <string name="wizard_title" formatted="false">Procedura guidata CamAlert</string>
+    <string name="wizard_searching" formatted="false">Ricerca di go2rtc nella rete...</string>
+    <string name="wizard_cameras">%d telecamere</string>
+    <string name="wizard_manual" formatted="false">Inserire l\'indirizzo manualmente</string>
+    <string name="wizard_none" formatted="false">Nessun go2rtc trovato nella rete. Inserire l\'indirizzo manualmente oppure installare prima go2rtc (vedere la guida).</string>
+    <string name="wizard_no_answer">go2rtc non risponde a %s.</string>
+    <string name="wizard_address" formatted="false">Indirizzo go2rtc</string>
+    <string name="wizard_which" formatted="false">Quale telecamera deve mostrare CamAlert per impostazione predefinita\?</string>
+    <string name="wizard_right" formatted="false">È la telecamera giusta\?</string>
+    <string name="wizard_no_cameras" formatted="false">go2rtc non ha ancora telecamere. Configurare le telecamere in go2rtc e poi riavviare la procedura guidata dal menu.</string>
+    <string name="wizard_test" formatted="false">Mostrare ora una notifica di prova\? Non viene riprodotto il suono del campanello.</string>
+    <string name="wizard_ready" formatted="false">Fatto. Questo lettore si collega a Home Assistant da Impostazioni &gt; Dispositivi e servizi &gt; nuova integrazione &gt; CamAlert.</string>
+    <string name="wizard_name">Nome: %s</string>
+    <string name="wizard_addr">Indirizzo: %s</string>
+    <string name="wizard_again" formatted="false">Riavviare la procedura guidata</string>
+    <string name="wizard_yes" formatted="false">Sì</string>
+    <string name="wizard_no" formatted="false">No</string>
     <string name="t_bfb3a49f" formatted="false">Attiva CamAlert</string>
     <string name="t_61786bb1" formatted="false">Attiva o disattiva l\'API HTTP e la visualizzazione delle telecamere.</string>
     <string name="t_bc6c5ac6" formatted="false">Indirizzo go2rtc</string>

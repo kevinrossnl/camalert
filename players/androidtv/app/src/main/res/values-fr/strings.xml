@@ -69,6 +69,23 @@
     <string name="unifi_console_password" formatted="false">Mot de passe de la console</string>
     <string name="unifi_where" formatted="false">la configuration ci-dessous</string>
     <string name="unifi_no_console" formatted="false">UniFi Protect : aucune adresse de console définie</string>
+    <string name="wizard_title" formatted="false">Assistant CamAlert</string>
+    <string name="wizard_searching" formatted="false">Recherche de go2rtc sur votre réseau...</string>
+    <string name="wizard_cameras">%d caméras</string>
+    <string name="wizard_manual" formatted="false">Saisir l\'adresse vous-même</string>
+    <string name="wizard_none" formatted="false">Aucun go2rtc trouvé sur votre réseau. Saisissez son adresse vous-même ou installez d\'abord go2rtc (voir le guide).</string>
+    <string name="wizard_no_answer">go2rtc ne répond pas à %s.</string>
+    <string name="wizard_address" formatted="false">Adresse go2rtc</string>
+    <string name="wizard_which" formatted="false">Quelle caméra CamAlert doit-il afficher par défaut \?</string>
+    <string name="wizard_right" formatted="false">Est-ce la bonne caméra \?</string>
+    <string name="wizard_no_cameras" formatted="false">go2rtc n\'a encore aucune caméra. Ajoutez vos caméras dans go2rtc, puis relancez l\'assistant depuis le menu.</string>
+    <string name="wizard_test" formatted="false">Afficher une notification de test maintenant \? Aucun son de sonnette ne sera joué.</string>
+    <string name="wizard_ready" formatted="false">Terminé ! Ajoutez ce lecteur dans Home Assistant : Paramètres &gt; Appareils et services &gt; Ajouter une intégration &gt; CamAlert.</string>
+    <string name="wizard_name">Nom : %s</string>
+    <string name="wizard_addr">Adresse : %s</string>
+    <string name="wizard_again" formatted="false">Relancer l\'assistant</string>
+    <string name="wizard_yes" formatted="false">Oui</string>
+    <string name="wizard_no" formatted="false">Non</string>
     <string name="t_bfb3a49f" formatted="false">Activer CamAlert</string>
     <string name="t_61786bb1" formatted="false">Active ou désactive l\'API HTTP et l\'affichage des caméras.</string>
     <string name="t_bc6c5ac6" formatted="false">Adresse go2rtc</string>

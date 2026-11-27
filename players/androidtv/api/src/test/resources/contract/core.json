@@ -20375,7 +20375,8 @@
     "unifi_seconds": 30,
     "until_time": "23:00",
     "verify_ssl": true,
-    "window_keys": true
+    "window_keys": true,
+    "wizard_done": false
    },
    "problems": [
     "mode",
@@ -20458,7 +20459,8 @@
     "unifi_seconds": 30,
     "until_time": "23:00",
     "verify_ssl": true,
-    "window_keys": true
+    "window_keys": true,
+    "wizard_done": false
    },
    "problems": [
     "duration",
@@ -20535,7 +20537,8 @@
     "unifi_seconds": 30,
     "until_time": "23:00",
     "verify_ssl": true,
-    "window_keys": true
+    "window_keys": true,
+    "wizard_done": false
    },
    "problems": [],
    "values": {

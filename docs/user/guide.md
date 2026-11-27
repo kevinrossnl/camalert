@@ -49,6 +49,26 @@ Open `http://<go2rtc-address>:1984` in your browser: you should see your cameras
 
 ## Step 4 – Set up CamAlert
 
+### The wizard (first start)
+
+The first time you open CamAlert on a new player (Enigma2: **Menu › Plugins › CamAlert**; Kodi: **Add-ons ›
+Program add-ons › CamAlert**; Android TV: the CamAlert app) and no go2rtc address is set yet, a short wizard opens:
+
+1. **go2rtc**: CamAlert looks for go2rtc in your network for up to about 10 seconds: at `homeassistant.local:1984`,
+   at your Home Assistant if the player already knows it, and at every address of your own network on port 1984.
+   Choose the go2rtc it found, *Enter the address yourself*, or (Enigma2 and Kodi) *Without go2rtc (camera file)*.
+2. **Default camera**: choose a camera; it appears on screen as a preview. Answer *Is this the right camera?*.
+3. **Test**: if you like, a test notification appears. A test never plays the doorbell chime.
+4. **Ready**: the wizard shows the name and address of the player. In Home Assistant, go to **Settings › Devices &
+   services › Add integration › CamAlert** and enter that address.
+
+Leaving the wizard (EXIT/BACK) at any point is fine: it does not open by itself again and you continue in the
+settings. Start it again from the settings menu with **Start the wizard again** (Enigma2: MENU in the settings;
+Kodi: the CamAlert menu; Android TV: the first settings screen). A player that already has a go2rtc address never
+sees the wizard.
+
+### The settings
+
 Open **Menu › Plugins › CamAlert** (Kodi: **Add-ons › My add-ons › Services › CamAlert › Configure**; the settings
 have the same names, Enigma2-only steps are marked):
 

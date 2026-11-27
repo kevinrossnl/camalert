@@ -1264,3 +1264,71 @@ msgstr ""
 msgctxt "#30570"
 msgid "Ready: %s not connected"
 msgstr ""
+
+msgctxt "#30440"
+msgid "First-start wizard done"
+msgstr ""
+
+msgctxt "#30441"
+msgid "CamAlert wizard"
+msgstr ""
+
+msgctxt "#30442"
+msgid "Searching for go2rtc in your network..."
+msgstr ""
+
+msgctxt "#30443"
+msgid "%d cameras"
+msgstr ""
+
+msgctxt "#30444"
+msgid "Enter the address yourself"
+msgstr ""
+
+msgctxt "#30445"
+msgid "Without go2rtc (camera file)"
+msgstr ""
+
+msgctxt "#30446"
+msgid "No go2rtc found in your network. Enter its address yourself, or set up go2rtc first (see the guide)."
+msgstr ""
+
+msgctxt "#30447"
+msgid "go2rtc does not answer at %s."
+msgstr ""
+
+msgctxt "#30449"
+msgid "Which camera should CamAlert show by default?"
+msgstr ""
+
+msgctxt "#30450"
+msgid "Is this the right camera?"
+msgstr ""
+
+msgctxt "#30451"
+msgid "go2rtc has no cameras yet. Add your cameras in go2rtc and start the wizard again from the menu."
+msgstr ""
+
+msgctxt "#30452"
+msgid "Show a test notification now? It plays no doorbell chime."
+msgstr ""
+
+msgctxt "#30453"
+msgid "Ready! Add this player in Home Assistant: Settings > Devices & services > Add integration > CamAlert."
+msgstr ""
+
+msgctxt "#30454"
+msgid "Name: %s"
+msgstr ""
+
+msgctxt "#30455"
+msgid "Address: %s"
+msgstr ""
+
+msgctxt "#30456"
+msgid "Start the wizard again"
+msgstr ""
+
+msgctxt "#30457"
+msgid "Without go2rtc, list your cameras in %s, then open CamAlert again."
+msgstr ""

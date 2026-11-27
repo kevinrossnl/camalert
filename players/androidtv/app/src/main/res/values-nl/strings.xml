@@ -69,6 +69,23 @@
     <string name="unifi_console_password" formatted="false">Wachtwoord van de console</string>
     <string name="unifi_where" formatted="false">de instellingen hieronder</string>
     <string name="unifi_no_console" formatted="false">UniFi Protect: geen consoleadres ingesteld</string>
+    <string name="wizard_title" formatted="false">CamAlert-wizard</string>
+    <string name="wizard_searching" formatted="false">go2rtc zoeken in je netwerk...</string>
+    <string name="wizard_cameras">%d camera\'s</string>
+    <string name="wizard_manual" formatted="false">Zelf het adres invullen</string>
+    <string name="wizard_none" formatted="false">Geen go2rtc gevonden in je netwerk. Vul het adres zelf in, of installeer eerst go2rtc (zie de handleiding).</string>
+    <string name="wizard_no_answer">go2rtc antwoordt niet op %s.</string>
+    <string name="wizard_address" formatted="false">go2rtc-adres</string>
+    <string name="wizard_which" formatted="false">Welke camera moet CamAlert standaard tonen\?</string>
+    <string name="wizard_right" formatted="false">Is dit de juiste camera\?</string>
+    <string name="wizard_no_cameras" formatted="false">go2rtc heeft nog geen camera\'s. Voeg je camera\'s toe in go2rtc en start de wizard daarna opnieuw vanuit het menu.</string>
+    <string name="wizard_test" formatted="false">Nu een testmelding tonen\? Er klinkt geen deurbelgeluid.</string>
+    <string name="wizard_ready" formatted="false">Klaar! Voeg deze speler toe in Home Assistant: Instellingen &gt; Apparaten &amp; diensten &gt; Integratie toevoegen &gt; CamAlert.</string>
+    <string name="wizard_name">Naam: %s</string>
+    <string name="wizard_addr">Adres: %s</string>
+    <string name="wizard_again" formatted="false">Wizard opnieuw starten</string>
+    <string name="wizard_yes" formatted="false">Ja</string>
+    <string name="wizard_no" formatted="false">Nee</string>
     <string name="t_bfb3a49f" formatted="false">CamAlert inschakelen</string>
     <string name="t_61786bb1" formatted="false">Zet de HTTP-API en de cameraweergave aan of uit.</string>
     <string name="t_bc6c5ac6" formatted="false">go2rtc-adres</string>

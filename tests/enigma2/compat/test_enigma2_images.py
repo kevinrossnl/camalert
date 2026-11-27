@@ -121,6 +121,7 @@ class ImageCase(object):
         ctrl = self.start()
         ctrl._names, ctrl._names_at = ["front_door"], time.time()
         self.assertIn(ctrl.show("front_door", 10, "live", "high"), ("show", "live"))
+        ctrl.play_pending()  # #91: the stream starts after the still picture (or STILL_WAIT_SECONDS)
         self.assertIn("playService", self.env.rec.names())
 
     def test_pause_tv_uses_timeshift_api(self):

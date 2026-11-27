@@ -47,6 +47,10 @@ from .services import chime_command, github_repo, is_media_ref, service_ref, str
 
 PHOTO = "/tmp/camalert.jpg"
 STILL = "/tmp/camalert-still.jpg"  # still picture of a live view that is opening (#91)
+# Opening a stream holds Enigma2 (and the Python threads) for about 2.5 s, so the live view first shows its still
+# picture and starts the stream after it, or after STILL_WAIT_SECONDS without a picture (#91).
+STILL_WAIT_SECONDS = 1.5
+STILL_DRAW_MS = 100  # time to draw the still before the stream takes the box
 # ◀ ▶ ▲ ▼ in key hints: skin fonts rarely have them, Enigma2 draws them with its fallback font (openATV, OpenPLi:
 # /usr/share/fonts/fallback.font). Without that font the hints use < > ^ v.
 GLYPHS = os.path.exists("/usr/share/fonts/fallback.font")
@@ -910,6 +914,9 @@ class Controller(object):
         self.still_screen = None
         self.still_timer = eTimer()
         self.still_timer.callback.append(self.hide_still)
+        self.pending_play = None  # (token, service reference) of a live stream waiting for its still (#91)
+        self.play_timer = eTimer()
+        self.play_timer.callback.append(self.play_pending)
         self.first_frame = first_frame_events()
         events = getattr(session.nav, "event", None)
         if isinstance(events, list):
@@ -1181,9 +1188,8 @@ class Controller(object):
                 if self.live_stream is None:
                     cur = self.session.nav.getCurrentlyPlayingServiceOrGroup()
                     self.previous_ref = cur.toString() if cur else None
-                self.session.nav.playService(eServiceReference(service_ref(live_url, title)))
                 self.live_stream = stream
-                self.start_still(stream, snap_url)
+                self.start_live(stream, snap_url, eServiceReference(service_ref(live_url, title)))
                 if priority != "alarm":
                     self.lower_volume(int(c.live_volume.value))
             self.live_timer.start(seconds * 1000, True)
@@ -1641,15 +1647,39 @@ class Controller(object):
             log("volume restore failed:", e)
         self.saved_volume = None
 
-    def start_still(self, stream, snap_url):
-        """#91: fetch a picture (warm feed, Protect, go2rtc cache, frame.jpeg) in a thread while the stream opens."""
+    def start_live(self, stream, snap_url, ref):
+        """#91: fetch a picture (warm feed, Protect, go2rtc cache, frame.jpeg) in a thread, show it, then start the
+        stream (at the latest after STILL_WAIT_SECONDS). Without a picture address the stream starts at once."""
         self.hide_still()
+        self.play_timer.stop()
         if not snap_url:
+            self.pending_play = None
+            self.session.nav.playService(ref)
             return
         token = self.still.start(stream)
+        self.pending_play = (token, ref)
+        self.play_timer.start(int(STILL_WAIT_SECONDS * 1000), True)
         threads.deferToThread(_download, snap_url, STILL, orientation_for(stream), True, stream).addCallbacks(
-            lambda _r: self.still_ready(token), lambda err: log("still picture failed:", err.getErrorMessage(),
-                                                                 level="verbose"))
+            lambda _r: self.still_ready(token), lambda err: self.still_failed(token, err))
+
+    def play_pending(self):
+        self.play_timer.stop()
+        pending, self.pending_play = self.pending_play, None
+        if pending is not None and pending[0] == self.still.token and self.live_stream is not None:
+            self.session.nav.playService(pending[1])
+
+    def play_soon(self, token, ms):
+        """Start the waiting stream of token after ms (a moment to draw the still, or at once)."""
+        if self.pending_play is not None and self.pending_play[0] == token:
+            self.play_timer.stop()
+            if ms:
+                self.play_timer.start(ms, True)
+            else:
+                self.play_pending()
+
+    def still_failed(self, token, err):
+        log("still picture failed:", err.getErrorMessage(), level="verbose")
+        self.play_soon(token, 0)
 
     def still_ready(self, token):
         if self.live_stream is None or not self.still.picture(token):
@@ -1659,12 +1689,16 @@ class Controller(object):
         if not self.still_screen.load(STILL):
             self.still.playing(token)
             self.hide_still()
+            self.play_soon(token, 0)
             return
         self.still_screen.show()
         self.still_timer.start(int(STILL_MAX_SECONDS * 1000), True)
         log("live view", self.live_stream, "still picture shown", level="verbose")
+        self.play_soon(token, STILL_DRAW_MS)
 
     def service_event(self, ev):
+        if self.pending_play is not None:
+            return  # still the TV channel: the camera stream has not started yet
         if ev in self.first_frame and self.still.playing():
             self.hide_still()
 
@@ -1678,6 +1712,8 @@ class Controller(object):
     def end_live(self):
         reactor.callLater(0.1, _notify)
         self.live_timer.stop()
+        self.play_timer.stop()
+        self.pending_play = None
         self.still.stop()
         self.hide_still()
         self.restore_volume()

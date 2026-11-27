@@ -22,7 +22,9 @@ actions and blueprint inputs stay backwards compatible.
   ([Kodi](docs/players/kodi.md#as-screensaver)).
 - **All players:** live view shows a still picture of the camera at once and switches to the moving picture as
   soon as the stream runs, instead of a black screen while it opens. The picture comes from the fastest source
-  there is: the warm feed of a ready camera, UniFi Protect, go2rtc's cache, else a new frame (#91).
+  there is: the warm feed of a ready camera, UniFi Protect, go2rtc's cache, else a new frame (#91). On an
+  Enigma2 receiver the stream starts right after the picture is on screen (at most 1.5 s later), because opening a
+  stream holds the receiver for a moment.
 
 ### Fixed
 

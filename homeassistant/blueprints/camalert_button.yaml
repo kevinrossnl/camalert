@@ -19,7 +19,7 @@ blueprint:
             - {label: Yellow, value: yellow}
             - {label: Blue, value: blue}
     players:
-      name: Players (receivers / Kodi)
+      name: Players (receivers / Kodi / Android TV)
       selector:
         device:
           integration: camalert

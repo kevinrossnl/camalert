@@ -1,7 +1,7 @@
 # MQTT
 
 With MQTT the player appears in Home Assistant without the integration (MQTT discovery), and any MQTT client can
-control it. The same topics on Enigma2 and Kodi.
+control it. The same topics on Enigma2, Kodi and Android TV.
 
 1. In CamAlert on the player: **MQTT** on, enter the broker address, user and password, keep **Home Assistant
    discovery** on, save.

@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "CamAlert-speler toevoegen",
-        "description": "Een speler is een Enigma2-ontvanger of Kodi met CamAlert. Poort, HTTPS en token zoals ingesteld in CamAlert op de speler.",
+        "description": "Een speler is een Enigma2-ontvanger, Kodi of een Android TV-/Fire TV-apparaat met CamAlert. Poort, HTTPS en token zoals ingesteld in CamAlert op de speler.",
         "data": {
           "host": "Hostnaam of IP-adres",
           "port": "Poort",
@@ -12,7 +12,7 @@
           "token": "Toegangstoken"
         },
         "data_description": {
-          "host": "Adres van de speler (Enigma2-ontvanger of Kodi) met CamAlert, bijv. 192.168.1.10.",
+          "host": "Adres van de speler (Enigma2-ontvanger, Kodi of Android TV/Fire TV) met CamAlert, bijv. 192.168.1.10.",
           "port": "Poort van de CamAlert-API, zoals ingesteld in CamAlert op de speler. Standaard: 8099.",
           "https": "Zet aan als HTTPS voor de API aan staat in CamAlert op de speler.",
           "verify_ssl": "Zet uit voor het eigen (zelfondertekende) certificaat van de speler. Alleen bij HTTPS.",
@@ -30,7 +30,7 @@
           "token": "Toegangstoken"
         },
         "data_description": {
-          "host": "Adres van de speler (Enigma2-ontvanger of Kodi) met CamAlert, bijv. 192.168.1.10.",
+          "host": "Adres van de speler (Enigma2-ontvanger, Kodi of Android TV/Fire TV) met CamAlert, bijv. 192.168.1.10.",
           "port": "Poort van de CamAlert-API, zoals ingesteld in CamAlert op de speler. Standaard: 8099.",
           "https": "Zet aan als HTTPS voor de API aan staat in CamAlert op de speler.",
           "verify_ssl": "Zet uit voor het eigen (zelfondertekende) certificaat van de speler. Alleen bij HTTPS.",

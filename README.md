@@ -1,4 +1,4 @@
-# CamAlert for Enigma2 and Kodi
+# CamAlert for Enigma2, Kodi and Android TV
 
 [![Release](https://img.shields.io/github/v/release/kevinrossnl/camalert)](https://github.com/kevinrossnl/camalert/releases/latest)
 [![Build](https://github.com/kevinrossnl/camalert/actions/workflows/release.yml/badge.svg)](https://github.com/kevinrossnl/camalert/actions/workflows/release.yml)
@@ -7,7 +7,7 @@
 
 **CamAlert** shows your IP cameras on the TV: on an **Enigma2 receiver** (openATV, OpenPLi, VTi, ... on VU+,
 Dreambox, Zgemma, Octagon and others) or a **Kodi** player (LibreELEC, CoreELEC, OSMC, Windows, Linux, Android;
-**Kodi 19 or newer**). Both players have the same Home Assistant integration, blueprints, MQTT topics and HTTP API.
+**Kodi 19 or newer**). All players have the same Home Assistant integration, blueprints, MQTT topics and HTTP API.
 An **Android TV / Google TV / Fire TV app** (no Kodi needed) with the same API is available as a preview, not yet
 part of a release: see [Android TV and Fire TV](docs/players/androidtv.md).
 

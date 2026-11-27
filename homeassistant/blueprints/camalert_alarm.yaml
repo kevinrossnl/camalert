@@ -14,7 +14,7 @@ blueprint:
           filter:
             - domain: alarm_control_panel
     players:
-      name: Players (receivers / Kodi)
+      name: Players (receivers / Kodi / Android TV)
       description: CamAlert players that show the camera.
       selector:
         device:

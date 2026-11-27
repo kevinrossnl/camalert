@@ -6,7 +6,7 @@
 # Actions are sent with POST; the access token (if you set one) goes in the X-CamAlert-Token header.
 rest_command:
   camalert_show:
-    # host: IP address of the receiver or Kodi box; cam: go2rtc stream name; sec: seconds; mode: photo | live | notify
+    # host: IP address of the player (receiver, Kodi or Android TV); cam: go2rtc stream name; sec: seconds; mode: photo | live | notify
     # https: true if "Use HTTPS for the API" is on in CamAlert (self-signed certificate, so verify_ssl is off).
     url: "{{ 'https' if https | default(false) else 'http' }}://{{ host }}:{{ port | default(8099) }}/camalert/show"
     method: post

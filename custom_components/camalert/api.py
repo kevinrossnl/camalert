@@ -1,4 +1,4 @@
-"""Small client for the CamAlert HTTP API on a player (Enigma2 receiver or Kodi).
+"""Small client for the CamAlert HTTP API on a player (Enigma2 receiver, Kodi or Android TV).
 
 API version 1 (status has api_version/capabilities): actions are sent with POST and a JSON body, reads with GET;
 the token always goes in the X-CamAlert-Token header. Older players (no api_version in /status) get GET requests

@@ -1,7 +1,8 @@
 # HTTP API
 
-CamAlert listens on port **8099** (configurable) on every player (Enigma2 receiver and Kodi); both answer exactly
-the same (one implementation in `core/camalert_core/api.py`). Answers are JSON (`metrics`: Prometheus text).
+CamAlert listens on port **8099** (configurable) on every player (Enigma2 receiver, Kodi and Android TV); all answer
+exactly the same (one implementation in `core/camalert_core/api.py`, ported to Kotlin for Android TV and checked
+against it by the contract tests). Answers are JSON (`metrics`: Prometheus text).
 
 **API version 1:**
 - Actions (they change something) use **`POST`**: `show`, `mosaic`, `tour`, `hide`, `dnd` with `on`, `ptz`,

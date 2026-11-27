@@ -229,7 +229,7 @@
       "fr": "Lecteur",
       "it": "Lettore",
       "pl": "Odtwarzacz",
-      "definition": "An Enigma2 receiver or a Kodi device with CamAlert."
+      "definition": "An Enigma2 receiver, a Kodi device or an Android TV / Fire TV device with CamAlert."
     }
   ],
   "forbidden": {

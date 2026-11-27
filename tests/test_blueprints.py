@@ -36,7 +36,7 @@ FROZEN = {
 # option labels = glossary terms (blueprints cannot be translated)
 MODE_OPTIONS = [{"label": "Photo window", "value": "photo"}, {"label": "Live view", "value": "live"},
                 {"label": "Notification", "value": "notify"}]
-PLAYERS_NAME = "Players (receivers / Kodi)"
+PLAYERS_NAME = "Players (receivers / Kodi / Android TV)"  # label only; the key stays frozen (#114)
 
 
 @unittest.skipIf(yaml is None, "PyYAML not installed")

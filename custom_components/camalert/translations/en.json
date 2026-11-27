@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Add a CamAlert player",
-        "description": "A player is an Enigma2 receiver or Kodi with CamAlert. Port, HTTPS and token as set in CamAlert on the player.",
+        "description": "A player is an Enigma2 receiver, Kodi or an Android TV / Fire TV device with CamAlert. Port, HTTPS and token as set in CamAlert on the player.",
         "data": {
           "host": "Host name or IP address",
           "port": "Port",
@@ -12,7 +12,7 @@
           "token": "Access token"
         },
         "data_description": {
-          "host": "Address of the player (Enigma2 receiver or Kodi) with CamAlert, e.g. 192.168.1.10.",
+          "host": "Address of the player (Enigma2 receiver, Kodi or Android TV / Fire TV) with CamAlert, e.g. 192.168.1.10.",
           "port": "Port of the CamAlert API, as set in CamAlert on the player. Default: 8099.",
           "https": "Turn on if HTTPS is on for the API in CamAlert on the player.",
           "verify_ssl": "Turn off for the player's own (self-signed) certificate. Only used with HTTPS.",
@@ -30,7 +30,7 @@
           "token": "Access token"
         },
         "data_description": {
-          "host": "Address of the player (Enigma2 receiver or Kodi) with CamAlert, e.g. 192.168.1.10.",
+          "host": "Address of the player (Enigma2 receiver, Kodi or Android TV / Fire TV) with CamAlert, e.g. 192.168.1.10.",
           "port": "Port of the CamAlert API, as set in CamAlert on the player. Default: 8099.",
           "https": "Turn on if HTTPS is on for the API in CamAlert on the player.",
           "verify_ssl": "Turn off for the player's own (self-signed) certificate. Only used with HTTPS.",

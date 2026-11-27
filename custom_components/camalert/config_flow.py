@@ -1,4 +1,4 @@
-"""Add a player (Enigma2 receiver or Kodi with CamAlert) from the Home Assistant UI; change its address later
+"""Add a player (Enigma2 receiver, Kodi or Android TV with CamAlert) from the Home Assistant UI; change its address later
 with "Reconfigure"."""
 from __future__ import annotations
 

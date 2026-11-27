@@ -17,7 +17,7 @@ blueprint:
           filter:
             - domain: [binary_sensor, event]
     players:
-      name: Players (receivers / Kodi)
+      name: Players (receivers / Kodi / Android TV)
       description: CamAlert players that show the camera (Enigma2 receivers in standby ignore it).
       selector:
         device:

@@ -1,7 +1,7 @@
 # Home Assistant
 
 There are three ways to connect CamAlert to Home Assistant. **The integration is recommended**: everything is done in
-the user interface, no YAML. It works the same for Enigma2 receivers and Kodi: both are a CamAlert **player**.
+the user interface, no YAML. It works the same for Enigma2 receivers, Kodi and the Android TV / Fire TV app: all are a CamAlert **player**.
 
 | | Integration (recommended) | [MQTT](mqtt.md) | REST command |
 |---|---|---|---|

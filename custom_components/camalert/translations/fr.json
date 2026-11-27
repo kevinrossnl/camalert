@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Ajouter un lecteur CamAlert",
-        "description": "Un lecteur est un récepteur Enigma2 ou Kodi avec CamAlert. Port, HTTPS et jeton tels que réglés dans CamAlert sur le lecteur.",
+        "description": "Un lecteur est un récepteur Enigma2, Kodi ou un appareil Android TV / Fire TV avec CamAlert. Port, HTTPS et jeton tels que réglés dans CamAlert sur le lecteur.",
         "data": {
           "host": "Nom d'hôte ou adresse IP",
           "port": "Port",
@@ -12,7 +12,7 @@
           "token": "Jeton d'accès"
         },
         "data_description": {
-          "host": "Adresse du lecteur (récepteur Enigma2 ou Kodi) avec CamAlert, par ex. 192.168.1.10.",
+          "host": "Adresse du lecteur (récepteur Enigma2, Kodi ou Android TV / Fire TV) avec CamAlert, par ex. 192.168.1.10.",
           "port": "Port de l'API CamAlert, tel que réglé dans CamAlert sur le lecteur. Par défaut : 8099.",
           "https": "Activez si HTTPS est activé pour l'API dans CamAlert sur le lecteur.",
           "verify_ssl": "Désactivez pour le certificat propre (auto-signé) du lecteur. Uniquement avec HTTPS.",
@@ -30,7 +30,7 @@
           "token": "Jeton d'accès"
         },
         "data_description": {
-          "host": "Adresse du lecteur (récepteur Enigma2 ou Kodi) avec CamAlert, par ex. 192.168.1.10.",
+          "host": "Adresse du lecteur (récepteur Enigma2, Kodi ou Android TV / Fire TV) avec CamAlert, par ex. 192.168.1.10.",
           "port": "Port de l'API CamAlert, tel que réglé dans CamAlert sur le lecteur. Par défaut : 8099.",
           "https": "Activez si HTTPS est activé pour l'API dans CamAlert sur le lecteur.",
           "verify_ssl": "Désactivez pour le certificat propre (auto-signé) du lecteur. Uniquement avec HTTPS.",

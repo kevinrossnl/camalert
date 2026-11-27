@@ -16,7 +16,7 @@ blueprint:
           filter:
             - domain: binary_sensor
     players:
-      name: Players (receivers / Kodi)
+      name: Players (receivers / Kodi / Android TV)
       selector:
         device:
           integration: camalert

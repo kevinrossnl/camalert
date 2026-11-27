@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "CamAlert-Wiedergabegerät hinzufügen",
-        "description": "Ein Wiedergabegerät ist ein Enigma2-Receiver oder Kodi mit CamAlert. Port, HTTPS und Token wie in CamAlert auf dem Wiedergabegerät eingestellt.",
+        "description": "Ein Wiedergabegerät ist ein Enigma2-Receiver, Kodi oder ein Android-TV-/Fire-TV-Gerät mit CamAlert. Port, HTTPS und Token wie in CamAlert auf dem Wiedergabegerät eingestellt.",
         "data": {
           "host": "Hostname oder IP-Adresse",
           "port": "Port",
@@ -12,7 +12,7 @@
           "token": "Zugriffstoken"
         },
         "data_description": {
-          "host": "Adresse des Wiedergabegeräts (Enigma2-Receiver oder Kodi) mit CamAlert, z. B. 192.168.1.10.",
+          "host": "Adresse des Wiedergabegeräts (Enigma2-Receiver, Kodi oder Android TV/Fire TV) mit CamAlert, z. B. 192.168.1.10.",
           "port": "Port der CamAlert-API, wie in CamAlert auf dem Wiedergabegerät eingestellt. Standard: 8099.",
           "https": "Einschalten, wenn HTTPS für die API in CamAlert auf dem Wiedergabegerät an ist.",
           "verify_ssl": "Für das eigene (selbst signierte) Zertifikat des Wiedergabegeräts ausschalten. Nur bei HTTPS.",
@@ -30,7 +30,7 @@
           "token": "Zugriffstoken"
         },
         "data_description": {
-          "host": "Adresse des Wiedergabegeräts (Enigma2-Receiver oder Kodi) mit CamAlert, z. B. 192.168.1.10.",
+          "host": "Adresse des Wiedergabegeräts (Enigma2-Receiver, Kodi oder Android TV/Fire TV) mit CamAlert, z. B. 192.168.1.10.",
           "port": "Port der CamAlert-API, wie in CamAlert auf dem Wiedergabegerät eingestellt. Standard: 8099.",
           "https": "Einschalten, wenn HTTPS für die API in CamAlert auf dem Wiedergabegerät an ist.",
           "verify_ssl": "Für das eigene (selbst signierte) Zertifikat des Wiedergabegeräts ausschalten. Nur bei HTTPS.",

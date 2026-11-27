@@ -38,6 +38,8 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Changed
 
+- **Home Assistant:** the integration, its translations and the blueprints now name the Android TV / Fire TV app
+  as a player next to Enigma2 receivers and Kodi (the blueprint inputs themselves are unchanged).
 - **Enigma2:** the install guide installs through the opkg feed first, so the receiver's software update keeps
   CamAlert up to date; receivers installed from an `.ipk` add the feed once (the `.ipk` stays as a fallback).
 - **Photo window, multi-camera window, mosaic and tour:** a tile shows *Loading picture...* at once instead of a

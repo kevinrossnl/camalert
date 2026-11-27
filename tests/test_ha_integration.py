@@ -233,3 +233,21 @@ class TestApiClient(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestPlayersNamed(unittest.TestCase):
+    """#114: wherever Home Assistant says what a player is, the Android TV / Fire TV player is named too."""
+
+    def test_config_flow_texts(self):
+        s = json.load(open(os.path.join(ROOT, "custom_components", "camalert", "strings.json"), encoding="utf-8"))
+        texts = [s["config"]["step"]["user"]["description"], s["config"]["step"]["user"]["data_description"]["host"],
+                 s["config"]["step"]["reconfigure"]["data_description"]["host"]]
+        for t in texts:
+            self.assertIn("Android TV", t)
+            self.assertIn("Kodi", t)
+            self.assertIn("Enigma2", t)
+
+    def test_model_for_every_platform(self):
+        self.assertEqual(api.model("androidtv"), "Android TV")
+        self.assertEqual(api.model("kodi"), "Kodi")
+        self.assertEqual(api.model("enigma2"), "Enigma2 receiver")

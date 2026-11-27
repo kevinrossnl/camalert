@@ -19,7 +19,7 @@ folder (not in it), so HACS does not install it into users' Home Assistant.
 | `../homeassistant/camalert_package.yaml` | REST-command alternative (YAML) |
 
 ## Rules
-- Texts are player-neutral: "player (Enigma2 receiver or Kodi)"; "receiver" only next to "Enigma2".
+- Texts are player-neutral: "player (Enigma2 receiver, Kodi or Android TV)"; "receiver" only next to "Enigma2".
 - Never edit `translations/*.json` by hand: change `strings.json`, then `python3 tools/i18n/i18n.py update/build`.
 - Actions, entities and blueprints stay backwards compatible within a major version; blueprint input keys, order and
   defaults are frozen (`FROZEN` in `tests/test_blueprints.py`).

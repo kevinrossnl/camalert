@@ -28,7 +28,7 @@ master catalogue (`core/i18n/glossary.json`) and are used verbatim in every lang
 | **Event list** | The last 20 requests with what CamAlert did and why. | Gebeurtenissen | Ereignisliste | Liste des événements | Elenco eventi | Lista zdarzeń |
 | **Diagnostics** | Checks of go2rtc, every camera, the API, MQTT and the log, on the TV. | Diagnose | Diagnose | Diagnostic | Diagnostica | Diagnostyka |
 | **Camera not reachable** | Shown in a tile when a camera did not deliver a picture twice in a row. | Camera niet bereikbaar | Kamera nicht erreichbar | Caméra injoignable | Telecamera non raggiungibile | Kamera nieosiągalna |
-| **Player** | An Enigma2 receiver or a Kodi device with CamAlert. | Speler | Wiedergabegerät | Lecteur | Lettore | Odtwarzacz |
+| **Player** | An Enigma2 receiver, a Kodi device or an Android TV / Fire TV device with CamAlert. | Speler | Wiedergabegerät | Lecteur | Lettore | Odtwarzacz |
 
 Do not use (the docs test and the translation check refuse them):
 

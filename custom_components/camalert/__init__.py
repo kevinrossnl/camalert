@@ -1,4 +1,4 @@
-"""CamAlert: show IP cameras on the TV of players (Enigma2 receivers and Kodi) that run CamAlert."""
+"""CamAlert: show IP cameras on the TV of players (Enigma2 receivers, Kodi and Android TV) that run CamAlert."""
 from __future__ import annotations
 
 import logging

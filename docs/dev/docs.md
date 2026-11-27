@@ -16,7 +16,7 @@ rest is written for "the player".
 
 ## Words
 
-Use the terms of the [glossary](../user/glossary.md) verbatim. **Player** = Enigma2 receiver or Kodi; write
+Use the terms of the [glossary](../user/glossary.md) verbatim. **Player** = Enigma2 receiver, Kodi or Android TV; write
 *receiver* only for Enigma2 ("Enigma2 receiver", or on the Enigma2 page). Kodi: **Kodi 19 or newer** everywhere
 (the add-on needs `xbmc.python` 3.0.0 = Kodi 19 Matrix).
 

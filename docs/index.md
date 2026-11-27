@@ -1,6 +1,7 @@
 # CamAlert documentation
 
-CamAlert shows IP cameras on the TV of a **player**: an Enigma2 receiver or a Kodi device (Kodi 19 or newer). The
+CamAlert shows IP cameras on the TV of a **player**: an Enigma2 receiver, a Kodi device (Kodi 19 or newer) or an
+Android TV / Fire TV device with the CamAlert app. The
 words used on screen and in these pages are listed in the [glossary](user/glossary.md).
 
 ## Users

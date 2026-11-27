@@ -1569,8 +1569,8 @@ msgid "Add a CamAlert player"
 msgstr "CamAlert-speler toevoegen"
 
 #: ha:config.step.user.description
-msgid "A player is an Enigma2 receiver or Kodi with CamAlert. Port, HTTPS and token as set in CamAlert on the player."
-msgstr "Een speler is een Enigma2-ontvanger of Kodi met CamAlert. Poort, HTTPS en token zoals ingesteld in CamAlert op de speler."
+msgid "A player is an Enigma2 receiver, Kodi or an Android TV / Fire TV device with CamAlert. Port, HTTPS and token as set in CamAlert on the player."
+msgstr "Een speler is een Enigma2-ontvanger, Kodi of een Android TV-/Fire TV-apparaat met CamAlert. Poort, HTTPS en token zoals ingesteld in CamAlert op de speler."
 
 #: ha:config.step.reconfigure.data.host ha:config.step.user.data.host
 msgid "Host name or IP address"
@@ -1589,8 +1589,8 @@ msgid "Access token"
 msgstr "Toegangstoken"
 
 #: ha:config.step.reconfigure.data_description.host ha:config.step.user.data_description.host
-msgid "Address of the player (Enigma2 receiver or Kodi) with CamAlert, e.g. 192.168.1.10."
-msgstr "Adres van de speler (Enigma2-ontvanger of Kodi) met CamAlert, bijv. 192.168.1.10."
+msgid "Address of the player (Enigma2 receiver, Kodi or Android TV / Fire TV) with CamAlert, e.g. 192.168.1.10."
+msgstr "Adres van de speler (Enigma2-ontvanger, Kodi of Android TV/Fire TV) met CamAlert, bijv. 192.168.1.10."
 
 #: ha:config.step.reconfigure.data_description.port ha:config.step.user.data_description.port
 msgid "Port of the CamAlert API, as set in CamAlert on the player. Default: 8099."

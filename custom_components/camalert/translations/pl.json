@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Dodaj odtwarzacz CamAlert",
-        "description": "Odtwarzacz to odbiornik Enigma2 lub Kodi z CamAlert. Port, HTTPS i token jak ustawiono w CamAlert na odtwarzaczu.",
+        "description": "Odtwarzacz to odbiornik Enigma2, Kodi lub urządzenie Android TV / Fire TV z CamAlert. Port, HTTPS i token jak ustawiono w CamAlert na odtwarzaczu.",
         "data": {
           "host": "Nazwa hosta lub adres IP",
           "port": "Port",
@@ -12,7 +12,7 @@
           "token": "Token dostępu"
         },
         "data_description": {
-          "host": "Adres odtwarzacza (odbiornik Enigma2 lub Kodi) z CamAlert, np. 192.168.1.10.",
+          "host": "Adres odtwarzacza (odbiornik Enigma2, Kodi lub Android TV / Fire TV) z CamAlert, np. 192.168.1.10.",
           "port": "Port API CamAlert, jak ustawiono w CamAlert na odtwarzaczu. Domyślnie: 8099.",
           "https": "Włączyć, jeśli HTTPS dla API jest włączone w CamAlert na odtwarzaczu.",
           "verify_ssl": "Wyłączyć dla własnego (samopodpisanego) certyfikatu odtwarzacza. Tylko z HTTPS.",
@@ -30,7 +30,7 @@
           "token": "Token dostępu"
         },
         "data_description": {
-          "host": "Adres odtwarzacza (odbiornik Enigma2 lub Kodi) z CamAlert, np. 192.168.1.10.",
+          "host": "Adres odtwarzacza (odbiornik Enigma2, Kodi lub Android TV / Fire TV) z CamAlert, np. 192.168.1.10.",
           "port": "Port API CamAlert, jak ustawiono w CamAlert na odtwarzaczu. Domyślnie: 8099.",
           "https": "Włączyć, jeśli HTTPS dla API jest włączone w CamAlert na odtwarzaczu.",
           "verify_ssl": "Wyłączyć dla własnego (samopodpisanego) certyfikatu odtwarzacza. Tylko z HTTPS.",

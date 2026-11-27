@@ -1,4 +1,4 @@
-"""Base entity: one device per player (Enigma2 receiver or Kodi); the model comes from /status platform."""
+"""Base entity: one device per player (Enigma2 receiver, Kodi or Android TV); the model comes from /status platform."""
 from __future__ import annotations
 
 from homeassistant.helpers.device_registry import DeviceInfo

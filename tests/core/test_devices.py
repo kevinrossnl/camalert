@@ -1,13 +1,9 @@
 """Foscam / ONVIF builders, parsers and the client against a small local mock camera (no real camera needed)."""
 import base64
-import hashlib
 import os
-import re
-import sys
 import threading
 import unittest
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from urllib.parse import parse_qs, urlsplit
+from http.server import HTTPServer
 
 import _paths  # noqa: E402
 
@@ -17,81 +13,8 @@ from camalert_core.devices import config as dev_config  # noqa: E402
 from camalert_core.devices import foscam  # noqa: E402
 from camalert_core.devices import onvif  # noqa: E402
 
-FOSCAM_STATE = ("<CGI_Result><result>0</result><IOAlarm>0</IOAlarm><motionDetectAlarm>%s</motionDetectAlarm>"
-                "<soundAlarm>%s</soundAlarm><record>0</record><sdState>1</sdState></CGI_Result>")
-
-# Answers shaped like a real (Hikvision/Dahua/Reolink-style) ONVIF camera
-TIME = ('<?xml version="1.0"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://www.w3.org/2003/05/soap-envelope" '
-        'xmlns:tds="http://www.onvif.org/ver10/device/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema"><SOAP-ENV:Body>'
-        '<tds:GetSystemDateAndTimeResponse><tds:SystemDateAndTime><tt:DateTimeType>NTP</tt:DateTimeType>'
-        '<tt:UTCDateTime><tt:Time><tt:Hour>20</tt:Hour><tt:Minute>15</tt:Minute><tt:Second>0</tt:Second></tt:Time>'
-        '<tt:Date><tt:Year>2026</tt:Year><tt:Month>11</tt:Month><tt:Day>23</tt:Day></tt:Date></tt:UTCDateTime>'
-        '</tds:SystemDateAndTime></tds:GetSystemDateAndTimeResponse></SOAP-ENV:Body></SOAP-ENV:Envelope>')
-CAPS = ('<?xml version="1.0"?><env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" '
-        'xmlns:tds="http://www.onvif.org/ver10/device/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema"><env:Body>'
-        '<tds:GetCapabilitiesResponse><tds:Capabilities><tt:Device><tt:XAddr>{base}/onvif/device_service</tt:XAddr>'
-        '</tt:Device><tt:Media><tt:XAddr>{base}/onvif/Media</tt:XAddr></tt:Media><tt:PTZ><tt:XAddr>{base}/onvif/PTZ'
-        '</tt:XAddr></tt:PTZ></tds:Capabilities></tds:GetCapabilitiesResponse></env:Body></env:Envelope>')
-PROFILES = ('<?xml version="1.0"?><env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" '
-            'xmlns:trt="http://www.onvif.org/ver10/media/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema"><env:Body>'
-            '<trt:GetProfilesResponse><trt:Profiles fixed="true" token="Profile_1"><tt:Name>main</tt:Name>'
-            '<tt:PTZConfiguration token="ptz0"><tt:Name>ptz</tt:Name></tt:PTZConfiguration></trt:Profiles>'
-            '<trt:Profiles fixed="true" token="Profile_2"><tt:Name>sub</tt:Name></trt:Profiles>'
-            '</trt:GetProfilesResponse></env:Body></env:Envelope>')
-OK = ('<?xml version="1.0"?><env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"><env:Body>'
-      '<tptz:%sResponse xmlns:tptz="http://www.onvif.org/ver20/ptz/wsdl"/></env:Body></env:Envelope>')
-FAULT = ('<?xml version="1.0"?><env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"><env:Body><env:Fault>'
-         '<env:Code><env:Value>env:Sender</env:Value></env:Code><env:Reason><env:Text xml:lang="en">Sender not '
-         'Authorized</env:Text></env:Reason></env:Fault></env:Body></env:Envelope>')
-
-
-class MockCamera(BaseHTTPRequestHandler):
-    calls = []
-    alarm = "1"
-    password = "pa|ss"
-
-    def log_message(self, *a):
-        pass
-
-    def reply(self, code, text):
-        data = text.encode("utf-8")
-        self.send_response(code)
-        self.send_header("Content-Length", str(len(data)))
-        self.end_headers()
-        self.wfile.write(data)
-
-    def do_GET(self):  # Foscam CGI
-        q = {k: v[0] for k, v in parse_qs(urlsplit(self.path).query).items()}
-        if q.get("usr") != "admin" or q.get("pwd") != self.password:
-            return self.reply(200, "<CGI_Result><result>-2</result></CGI_Result>")
-        MockCamera.calls.append(q["cmd"])
-        if q["cmd"] == "getDevState":
-            return self.reply(200, FOSCAM_STATE % (MockCamera.alarm, "1"))
-        return self.reply(200, "<CGI_Result><result>0</result></CGI_Result>")
-
-    def do_POST(self):  # ONVIF
-        body = self.rfile.read(int(self.headers["Content-Length"])).decode("utf-8")
-        action = re.search(r"<s:Body><\w+:(\w+)", body).group(1)
-        if action != "GetSystemDateAndTime":  # everything else needs a valid digest
-            user = re.search(r"<Username>([^<]*)<", body)
-            digest = re.search(r"#PasswordDigest\">([^<]*)<", body)
-            nonce = re.search(r"#Base64Binary\">([^<]*)<", body)
-            created = re.search(r"<Created[^>]*>([^<]*)<", body)
-            if not (user and digest and nonce and created) or user.group(1) != "admin":
-                return self.reply(400, FAULT)
-            want = base64.b64encode(hashlib.sha1(base64.b64decode(nonce.group(1)) + created.group(1).encode()
-                                                 + self.password.encode()).digest()).decode()
-            if digest.group(1) != want or not created.group(1).startswith("2026-11-23T20:15:0"):
-                return self.reply(400, FAULT)  # wrong password or clock not corrected to the camera time
-        MockCamera.calls.append((self.path, action, re.findall(r"<tptz:ProfileToken>([^<]*)<", body)))
-        base = "http://127.0.0.1:%d" % self.server.server_port
-        if action == "GetSystemDateAndTime":
-            return self.reply(200, TIME)
-        if action == "GetCapabilities":
-            return self.reply(200, CAPS.format(base=base))
-        if action == "GetProfiles":
-            return self.reply(200, PROFILES)
-        return self.reply(200, OK % action)
+# the mock camera (Foscam CGI, ONVIF with WS-Security, colour snapshots) is shared: tests/fakes/camera.py (#32)
+from fakes.camera import CAPS, FAULT, FOSCAM_STATE, OK, PROFILES, TIME, MockCamera  # noqa: E402,F401
 
 
 class TestDeviceLogic(unittest.TestCase):

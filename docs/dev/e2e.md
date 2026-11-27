@@ -23,9 +23,11 @@ names of environment variables (`token_env`, `openwebif_password_env`, ...); the
 | `jsonrpc` | Kodi: `tcp` (port 9090), `http` (8080, user/password from `*_env`) or `ssh` |
 | `ha_device_id` | the player's CamAlert device in Home Assistant, for the `ha` scenario |
 | `scenarios`, `timeout` | default scenario list, global time limit in seconds (600) |
+| `resume_file` | Kodi: a short test film on the player (path or URL), for the `kodi_resume` scenario |
 
 The `ha` section has `url` and `token_env` (default `HA_TOKEN`, a long-lived token). Without a token the `ha`
-scenario is skipped.
+scenario is skipped. The optional `mqtt` section (`host`, `port`, `user_env`, `password_env`, `prefix`) is the
+broker the players use; without it the `mqtt` scenario is skipped.
 
 ## Running
 
@@ -38,6 +40,18 @@ python3 tools/e2e/run.py --restore last                          # undo a run th
 Scenarios: `show` (photo window), `strip` (multi-camera window), `mosaic`, `tour` (the camera changes), `dnd`
 (a normal request is ignored), `ptz` (only against the fake camera) and `ha` (Home Assistant `camalert.show` and
 `camalert.hide` end to end).
+
+More scenarios (#77), only when named with `--scenario` or in the profile's list:
+
+| Scenario | What it checks | Restores |
+|---|---|---|
+| `alarm_wake` | Enigma2: an `alarm` request wakes the receiver from standby (setting `alarm_wake` on for the scenario). Never on a `quiet` device | standby / on as before, `alarm_wake` |
+| `chime_muted` | a test request is tagged `test` in the event list and the chime setting rings no normal request | nothing changed |
+| `mqtt` | a show command on `camalert/<id>/show` (as Home Assistant's MQTT buttons send it) reaches the player | nothing changed |
+| `settings` | window position and size over `/camalert/settings` (#84), an invalid value is refused, the next window uses them (OSD geometry with fake cameras) | position and size |
+| `kodi_resume` | Kodi: the `resume_file` film plays on after a CamAlert window | the film is stopped |
+
+The CI runs every scenario against the fake devices (`tests/e2e/test_e2e_v13.py`), never against a real one.
 
 ## Safety
 

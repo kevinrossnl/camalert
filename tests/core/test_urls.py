@@ -67,6 +67,7 @@ class TestUrls(unittest.TestCase):
         self.assertEqual(urls.valid_port(0, 8099), 8099)
         self.assertEqual(urls.valid_port("x", 1883), 1883)
         self.assertEqual(urls.valid_port(70000, 1883), 1883)
+        self.assertEqual(urls.valid_port(float("inf"), 1883), 1883)  # found by the property tests (#34)
 
     def test_ipv6_servers(self):
         self.assertEqual(urls.normalize_server("fd00::10"), "http://[fd00::10]:1984")

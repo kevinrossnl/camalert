@@ -44,12 +44,19 @@ class SimController(object):
     def __init__(self, clock, box=None, on_change=None):
         self.clock, self.box, self.on_change = clock, box, on_change or (lambda: None)
         self.screen, self.dnd, self.calls, self.events, self.last_caller = None, False, [], [], None
+        self.receiver = None  # set by Receiver: alarm wake-up (#77)
 
     def show(self, stream=None, seconds=None, mode=None, priority=None, source="api", label=None, event_id=None):
         self.calls.append(("show", stream, mode, priority, source))
         if self.dnd and priority in (None, "normal"):
             return "ignore"
+        rx = self.receiver
+        if rx is not None and rx.standby:
+            if priority != "alarm" or rx.saved.get("alarm_wake") != "True":
+                return "ignore"
+            rx.standby = False  # #77: an alarm wakes the receiver (setting alarm_wake)
         cams = (stream or "front_door").split(",")
+        self.events.insert(0, {"camera": cams[0], "source": source, "priority": priority or "normal"})
         self.screen = ("strip" if len(cams) > 1 else "photo", cams, self.clock())
         self.on_change()
         return "show"
@@ -100,11 +107,18 @@ class SimController(object):
 class Backend(api.Backend):
     platform, version = "fake", "1.0.0"
 
-    def __init__(self, ctl, cameras):
+    def __init__(self, ctl, cameras, saved=None):
         self.ctl, self.camera_list = ctl, cameras
+        self.saved = saved if saved is not None else {}  # position / size set over /camalert/settings (#84)
 
     def settings(self):
-        return dict(DEFAULTS, dnd=self.ctl.dnd)
+        return dict(DEFAULTS, dnd=self.ctl.dnd, **{k: self.saved[k] for k in ("position", "size") if k in self.saved})
+
+    def set_display(self, key, value):
+        if value == DEFAULTS.get(key):
+            self.saved.pop(key, None)  # like Enigma2: a default value is not saved
+        else:
+            self.saved[key] = value
 
     def controller(self):
         return self.ctl
@@ -220,8 +234,9 @@ class Receiver(object):
         self.saved = dict(saved or {})
         self.saveconfig_calls, self.grabs, self.blank_grabs, self.keys = [], 0, 0, []
         self.ctl = SimController(clock, self.box)
+        self.ctl.receiver = self
         self.api = api_server(Backend(self.ctl, lambda: fakes.NAMES if "127.0.0.1" in self.saved.get("server", "")
-                                      else ["porch", "shed"]))
+                                      else ["porch", "shed"], self.saved))
         self.owif = _start(HTTPServer(("127.0.0.1", 0), self._handler()))
 
     def close(self):
@@ -349,6 +364,7 @@ class FakeKodi(object):
     def __init__(self, clock, playing=0, volume=60, muted=False, window=10000, mute_works=True):
         self.clock, self.playing, self.volume, self.muted, self.win = clock, playing, volume, muted, window
         self.mute_works, self.requests = mute_works, []
+        self.speed, self.pause_on_show = 1, False  # kodi_resume (#77): a player that stays paused is a bug
         self.ctl = SimController(clock, on_change=self._changed)
         self.api = api_server(Backend(self.ctl, lambda: ["porch", "shed", "yard"]))
         kodi = self
@@ -372,6 +388,8 @@ class FakeKodi(object):
 
     def _changed(self):
         s = self.ctl.screen
+        if s and self.playing and self.pause_on_show:
+            self.speed = 0
         self.win = 13001 if s and s[0] == "mosaic" else 13000 if s else 10000
 
     def close(self):
@@ -400,6 +418,14 @@ class FakeKodi(object):
             res = self.volume
         elif m == "Player.GetActivePlayers":
             res = [{"playerid": 1, "type": "video"}] * self.playing
+        elif m == "Player.Open":
+            self.playing, self.speed = 1, 1
+            res = "OK"
+        elif m == "Player.Stop":
+            self.playing = 0
+            res = "OK"
+        elif m == "Player.GetProperties":
+            res = {"speed": self.speed}
         elif m == "GUI.GetProperties":
             res = {"currentwindow": {"id": self.win, "label": "x"}}
         elif m == "GUI.ActivateWindow":

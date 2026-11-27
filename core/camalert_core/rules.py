@@ -11,7 +11,7 @@ MIN_SECONDS, MAX_SECONDS = 5, 300
 def clamp_seconds(value, default=30):
     try:
         s = int(value)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):  # OverflowError: float('inf') (#34)
         return default
     return max(MIN_SECONDS, min(MAX_SECONDS, s))
 

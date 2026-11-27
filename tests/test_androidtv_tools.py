@@ -38,6 +38,93 @@ class TestFakeOnDevice(unittest.TestCase):
         self.assertIn("rm -rf /data/local/tmp/camfake", F.stop_command())
 
 
+class TestScreenshots(unittest.TestCase):
+    """players/androidtv/testing/screenshots.py (#69) with a fake adb and a fake CamAlert API: lock, crop, hide."""
+
+    def setUp(self):
+        import screenshots
+        self.S = screenshots
+        try:
+            from PIL import Image
+        except ImportError:  # pragma: no cover
+            self.skipTest("Pillow not installed")
+        import io
+        img = Image.new("RGB", (1920, 1080), (40, 40, 40))
+        buf = io.BytesIO()
+        img.save(buf, "PNG")
+        self.png = buf.getvalue()
+        self.lock = ""
+        self.commands = []
+
+    def fake_run(self, args, **kw):
+        import types
+        self.commands.append(args[3:])
+        if args[3:5] == ["exec-out", "screencap"]:
+            return types.SimpleNamespace(stdout=self.png)
+        cmd = args[-1]
+        out = ""
+        if cmd.startswith("cat "):
+            out = self.lock + "\n1795464900\n"
+        elif cmd.startswith("echo "):
+            self.lock = cmd.split("'")[1]
+        elif cmd.startswith("rm -f"):
+            self.lock = ""
+        return types.SimpleNamespace(stdout=out.encode())
+
+    def api(self):
+        calls = []
+
+        class Api(object):
+            def call(self, name, **p):
+                calls.append((name, p))
+                return {"result": True, "position": "bottom_left", "size": "small"} if name == "status" else {}
+        a = Api()
+        a.calls = calls
+        return a
+
+    def test_takes_crops_and_cleans_up(self):
+        from PIL import Image
+        dev = self.S.Device("192.0.2.30:5555", "adb", run=self.fake_run)
+        api = self.api()
+        stripped = []
+        with tempfile.TemporaryDirectory() as d:
+            files = self.S.take(dev, api, ["photo", "mosaic", "settings"], d, wait=0, sleep=lambda s: None,
+                                strip=stripped.append)
+            self.assertEqual([os.path.basename(f) for f in files], ["photo.png", "mosaic.png", "settings.png"])
+            photo = Image.open(files[0])
+            self.assertLess(photo.size[0], 1920)  # cropped to the window: no launcher
+            self.assertEqual(Image.open(files[1]).size, (1920, 1080))
+        self.assertEqual(stripped, files)
+        self.assertEqual(self.lock, "")  # lock given back
+        names = [c[0] for c in api.calls]
+        self.assertEqual(names[0], "status")
+        self.assertEqual(names[-1], "hide")
+        self.assertIn(("show", {"cam": "front_door", "mode": "photo", "sec": 60, "priority": "normal",
+                                "label": "Person"}), api.calls)
+        self.assertTrue(any("SettingsActivity" in " ".join(c) for c in self.commands))
+
+    def test_busy_device_is_left_alone(self):
+        dev = self.S.Device("192.0.2.30:5555", "adb", run=self.fake_run)
+        self.lock = "D 1795464000"  # 15 minutes old
+        api = self.api()
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaises(self.S.Busy):
+                self.S.take(dev, api, ["photo"], d, wait=0, sleep=lambda s: None, strip=lambda p: None)
+        self.assertEqual(self.lock, "D 1795464000")  # someone else's lock stays
+        self.assertEqual(api.calls, [])
+        self.lock = "D 1795400000"  # stale: taken over and freed again
+        with tempfile.TemporaryDirectory() as d:
+            self.S.take(dev, api, ["mosaic"], d, wait=0, sleep=lambda s: None, strip=lambda p: None)
+        self.assertEqual(self.lock, "")
+
+    def test_crop_box_inside_the_screen(self):
+        for pos in ("top_left", "top_right", "bottom_left", "bottom_right"):
+            for scene in ("photo", "strip"):
+                x0, y0, x1, y1 = self.S.crop_box(scene, {"position": pos, "size": "large"}, 1920, 1080)
+                self.assertTrue(0 <= x0 < x1 <= 1920 and 0 <= y0 < y1 <= 1080, (pos, scene))
+        self.assertIsNone(self.S.crop_box("mosaic", {}, 1920, 1080))
+
+
 if __name__ == "__main__":
     unittest.main()
 

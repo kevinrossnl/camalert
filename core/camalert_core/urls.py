@@ -132,7 +132,7 @@ def valid_port(value, default):
     """Port number 1..65535, otherwise the default (ports are free number fields in the settings)."""
     try:
         p = int(value)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):  # OverflowError: float('inf'), found by #34
         return default
     return p if 1 <= p <= 65535 else default
 

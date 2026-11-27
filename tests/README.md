@@ -44,7 +44,17 @@ Python 3.8 (Kodi 19) needs `pip install "pytest<8.4"`. Optional: `pyyaml` (bluep
   toggle and OSD drawn from the CamAlert state, Kodi JSON-RPC over TCP, an ssh box): safety, restore, scenarios, geometry.
   Real devices only through `tools/e2e/run.py` ([docs/dev/e2e.md](../docs/dev/e2e.md)), never in CI.
 - `fakes/go2rtc.py`: fake go2rtc with demo cameras (solid-colour frames, `--unreachable`), for tests and screenshots; the Kodi
-  module tests run against it (`FakeGo2rtc().start()` on 127.0.0.1).
+  module tests run against it (`FakeGo2rtc().start()` on 127.0.0.1). Error switches (#32): `latency`, `fail` (HTTP 500),
+  `hang` (client timeouts), `empty` (no cameras), also on a running server.
+- `fakes/camera.py` (#32): colour-coded camera (cam1 red, cam2 green, ... with a big index number; `tile_index()` reads a
+  tile of a screenshot back), Foscam CGI and ONVIF with WS-Security that record every call (`start_camera(n)`).
+  `fakes/frigate.py`: event sequences (new/update/end) and the event snapshot API.
+- `tools/make_test_media.py` writes those pictures (and an ffmpeg test clip); `tools/record_fixture.py` records a real
+  answer as a fixture, always anonymised (documentation address ranges, cam1.., no secrets, fixed timestamps) and
+  only written when the privacy check passes. New tests use 192.0.2.0/24 and 2001:db8::/32 for remote addresses.
+- `core/test_properties.py` (#34): hypothesis property tests for the pure parsers (MQTT codec, redaction, URLs, ports,
+  Frigate); CI profile derandomized with 200 examples, `HYPOTHESIS_PROFILE=nightly` for more. A failing example
+  becomes an ordinary unit test. Skipped without hypothesis (Python 3.8).
 - **Network-free (#73):** `netguard.py`, installed by `conftest.py` for every pytest run, blocks outbound sockets (TCP
   connect, UDP sendto) to anything but loopback with `NetworkBlocked` (an `OSError`) and DNS lookups of real host
   names with `NameBlocked` (a `socket.gaierror`; reserved `.invalid`/`.test`/`.example` names fail at once and are
@@ -82,7 +92,9 @@ minimum, raise `requirements-min.txt` to the matching `pytest-homeassistant-cust
 ## CI
 
 `.forgejo/workflows/tests.yml` runs on every push and pull request; each area is `sh tools/ci.sh <area>`
-(`lint`, `core`, `unit`, `build`, `privacy`, `ha`, `androidtv`), so `sh tools/ci.sh unit` locally runs exactly what CI runs.
+(`lint`, `core`, `unit`, `build`, `privacy`, `ha`, `androidtv`, `pymatrix`), so `sh tools/ci.sh unit` locally runs exactly what CI runs.
+`pymatrix` (#21) runs the core, Enigma2, Kodi and contract tests on Python 3.8 .. 3.13, only on the workstation.
+`.forgejo/workflows/nightly.yml` runs the long property tests and the matrix every night; it never blocks a push.
 `ha` runs twice on the workstation (oldest and latest Home Assistant) and only with the latest one in the NAS fallback.
 `androidtv` (JDK 17+, Android SDK from dl.google.com, Gradle) runs only on the workstation; the NAS fallback skips it
 with a message (#64).

@@ -76,6 +76,21 @@ The Kodi screenshots were taken on Kodi 21 (LibreELEC) with Estuary at 1920x1080
    in a row crashed Kodi 21 once.
 6. Review, crop, `python3 tools/check_images.py --strip <files>` as for Enigma2.
 
+## How to take them (Android TV)
+
+`players/androidtv/testing/screenshots.py` (#69) does it over adb with the demo cameras of the fake go2rtc that it
+starts on the device itself (`fake_go2rtc_on_device.py`, `http://127.0.0.1:11984`):
+
+1. **Neutral first, never mute.** Nobody watching, nothing playing. In the app's settings note the go2rtc address
+   and set it to `http://127.0.0.1:11984` (settings are private to the app: the tool cannot read or restore them).
+2. `python3 players/androidtv/testing/screenshots.py --serial <ip>:5555 --out <folder> [--token-env CAMALERT_TOKEN]`
+   takes the test lock of the device (`/data/local/tmp/camalert-test.lock`), opens photo window, multi-camera window,
+   mosaic, tour and the settings screen through the API (with `test=1`), takes `adb exec-out screencap -p`, crops
+   the photo and multi-camera window to CamAlert's own window (the launcher behind it is third-party content),
+   strips metadata and gives the lock back.
+3. **Restore:** put the old go2rtc address back in the app; the tool already stopped the fake go2rtc.
+4. Review every picture against the [privacy checklist](privacy.md) before it goes into `images/androidtv/`.
+
 ## How to take them (Home Assistant)
 
 Never in a real Home Assistant: use a throw-away one with only the fake player, so no device, address or name of

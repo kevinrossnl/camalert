@@ -24,9 +24,11 @@ COMMON = {
 PER_TYPE = {
     "enigma2": {"openwebif_port": 80, "openwebif_user_env": "", "openwebif_password_env": "",
                 "fake_go2rtc_port": 19841, "fake_ptz_port": 19842},
-    "kodi": {"jsonrpc": "tcp", "jsonrpc_port": 9090, "jsonrpc_user_env": "", "jsonrpc_password_env": ""},
+    "kodi": {"jsonrpc": "tcp", "jsonrpc_port": 9090, "jsonrpc_user_env": "", "jsonrpc_password_env": "",
+             "resume_file": ""},  # kodi_resume scenario (#77): a short test film on the player (path or URL)
 }
 HA_KEYS = {"url": "", "token_env": "HA_TOKEN"}
+MQTT_KEYS = {"host": "", "port": 1883, "user_env": "", "password_env": "", "prefix": "camalert"}  # mqtt scenario
 WINDOW = re.compile(r"^([01]\d|2[0-3]):([0-5]\d)-([01]\d|2[0-3]):([0-5]\d)$")
 
 
@@ -104,13 +106,18 @@ def parse(data):
     """{'devices': {name: {...}}, 'ha': {...}} -> (devices dict, ha dict)."""
     if not isinstance(data, dict):
         raise ProfileError("profile file must be a mapping")
-    _check_keys("file", data, {"devices": 1, "ha": 1})
+    _check_keys("file", data, {"devices": 1, "ha": 1, "mqtt": 1})
     raw = data.get("devices") or {}
     if not isinstance(raw, dict) or not raw:
         raise ProfileError("no devices")
     ha = data.get("ha") or {}
     _check_keys("ha", ha, HA_KEYS)
-    return {n: device(n, d) for n, d in raw.items()}, dict(HA_KEYS, **ha)
+    mqtt = data.get("mqtt") or {}
+    _check_keys("mqtt", mqtt, MQTT_KEYS)
+    out = dict(HA_KEYS, **ha)
+    if mqtt.get("host"):
+        out["mqtt"] = dict(MQTT_KEYS, **mqtt)
+    return {n: device(n, d) for n, d in raw.items()}, out
 
 
 def load(path=None):

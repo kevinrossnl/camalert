@@ -12,6 +12,7 @@ class TestRules(unittest.TestCase):
         self.assertEqual(rules.clamp_seconds("2"), 5)
         self.assertEqual(rules.clamp_seconds("999"), 300)
         self.assertEqual(rules.clamp_seconds("x", 30), 30)
+        self.assertEqual(rules.clamp_seconds(float("inf"), 30), 30)  # found by the property tests (#34)
         self.assertEqual(rules.pick_mode("live"), "live")
         self.assertEqual(rules.pick_mode("evil", "photo"), "photo")
 

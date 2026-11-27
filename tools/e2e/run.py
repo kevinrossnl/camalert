@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from camalert_e2e import profiles  # noqa: E402
 from camalert_e2e.runner import REPORTS, Runner, restore_last  # noqa: E402
-from camalert_e2e.scenarios import CORE  # noqa: E402
+from camalert_e2e.scenarios import ALL, CORE  # noqa: E402
 
 
 def names(text):
@@ -29,7 +29,8 @@ def names(text):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--device", help="profile name(s), comma separated")
-    ap.add_argument("--scenario", help="comma separated, default: the profile's list or %s" % ",".join(CORE))
+    ap.add_argument("--scenario", help="comma separated, default: the profile's list or %s; also: %s"
+                    % (",".join(CORE), ",".join(sc for sc in ALL if sc not in CORE)))
     ap.add_argument("--dry-run", action="store_true", help="preconditions and snapshot only, change nothing")
     ap.add_argument("--restore", metavar="RUN", help="'last' (or a run id): undo a run that did not finish")
     ap.add_argument("--allow-quiet", action="store_true", help="allow quiet devices (never in their sleep hours)")
@@ -57,7 +58,7 @@ def main(argv=None):
     plan = {}
     for name in chosen:
         plan[name] = names(a.scenario) or devices[name]["scenarios"] or list(CORE)
-        bad = [s for s in plan[name] if s not in CORE]
+        bad = [s for s in plan[name] if s not in ALL]
         if bad:
             print("unknown scenario(s): %s" % ", ".join(bad))
             return 2

@@ -1,0 +1,51 @@
+# Nightly long tests (#21, #34): more property-test examples and the whole Python 3.8 .. 3.13 matrix.
+# Never blocks a push or the GitHub mirror (not part of tests.yml / gate). Runs only on the workstation runner
+# (decision 24-11-2026: no Python matrix on the NAS); when the workstation is offline the night is simply skipped.
+# Start by hand: Actions › nightly › Run workflow.
+name: nightly
+on:
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+
+env:
+  PACKAGES: python3-yaml python3-pytest python3-coverage python3-hypothesis
+
+jobs:
+  pick-runner:
+    runs-on: truenas
+    container: {image: "node:20-bookworm"}
+    timeout-minutes: 2
+    outputs:
+      runner: ${{ steps.pick.outputs.runner }}
+      mode: ${{ steps.pick.outputs.mode }}
+    steps:
+      - id: pick
+        name: pick the runner
+        env:
+          REPO_TOKEN: ${{ forgejo.token }}
+          RUNNER_STATUS_TOKEN: ${{ secrets.RUNNER_STATUS_TOKEN }}
+          FORCE_RUNNER: auto
+        run: |
+          curl -sSf --max-time 10 -H "Authorization: token $REPO_TOKEN" -o /tmp/ci_pick_runner.py \
+            "$GITHUB_SERVER_URL/api/v1/repos/$GITHUB_REPOSITORY/raw/tools/ci_pick_runner.py?ref=$GITHUB_SHA"
+          python3 /tmp/ci_pick_runner.py >> "$GITHUB_OUTPUT"
+
+  long-tests:
+    needs: pick-runner
+    if: needs.pick-runner.outputs.mode == 'parallel'
+    runs-on: ${{ needs.pick-runner.outputs.runner }}
+    container: {image: "node:20-bookworm"}
+    timeout-minutes: 60
+    env:
+      HYPOTHESIS_PROFILE: nightly
+    steps:
+      - uses: actions/checkout@v4
+      - {name: tools, run: sh tools/ci.sh tools}
+      - {name: "property tests, nightly profile (5000 examples each)", run: python3 -m pytest -q tests/core/test_properties.py}
+      - {name: "Python 3.8 .. 3.13 matrix", run: sh tools/ci.sh pymatrix}
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: nightly
+          path: junit-py*.xml

@@ -10,6 +10,7 @@ from . import scenarios as sc
 from .adapters.enigma2 import Enigma2
 from .adapters.ha import HomeAssistant
 from .adapters.kodi import Kodi
+from .adapters.mqtt import Mqtt
 from .errors import SafetyError, Skip
 from .fakes import CAMERAS, NAMES, ROOT
 from .profiles import secret
@@ -32,12 +33,21 @@ def make_ha(ha_cfg, environ=None):
     return HomeAssistant(ha_cfg["url"], token) if ha_cfg.get("url") and token else None
 
 
+def make_mqtt(ha_cfg, environ=None):
+    m = (ha_cfg or {}).get("mqtt")
+    if not m or not m.get("host"):
+        return None
+    return Mqtt(m["host"], m.get("port", 1883), secret(m.get("user_env"), environ),
+                secret(m.get("password_env"), environ), m.get("prefix") or "camalert")
+
+
 class Runner(object):
     def __init__(self, devices, ha_cfg, options, reports=REPORTS, environ=None, factory=make_device, ha=None,
-                 now=None, sleep=time.sleep, clock=time.time, log=print, use_alarm=True):
+                 now=None, sleep=time.sleep, clock=time.time, log=print, use_alarm=True, mqtt=None):
         self.devices, self.options, self.reports, self.environ = devices, options, reports, environ
         self.factory, self.sleep, self.clock, self.log, self.use_alarm = factory, sleep, clock, log, use_alarm
         self.ha = ha if ha is not None else make_ha(ha_cfg, environ)
+        self.mqtt = mqtt if mqtt is not None else make_mqtt(ha_cfg, environ)
         self.now = now or datetime.datetime.now
         self.store = Store(reports)
         self.folder = os.path.join(reports, self.store.run_id)
@@ -104,7 +114,7 @@ class Runner(object):
             res["test_flag"] = dev.camalert.supports_test_flag()
             cams, colours = self.cameras(dev, profile, fake)
             ctx = sc.Context(dev, state, cams, colours, dev.geometry_settings(state), self._shooter(dev, name),
-                             self.ha, self.sleep, self.clock)
+                             self.ha, self.sleep, self.clock, mqtt=self.mqtt, save=save)
             for s in selected:
                 self.log("  %s: %s ..." % (name, s))
                 first = len(ctx.shot.files)

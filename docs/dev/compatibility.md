@@ -27,5 +27,7 @@ enigma2 sources of each image; the source and commit are in each file. Not cover
 | Windows 11 (Kodi 21.2) | box: install from zip, e2e runner (#18) | |
 | Fire TV / Android | untested (#19) | different paths (`special://` only), no ffmpeg |
 
-Not yet: a CI matrix over several Python versions (#21; today the device code is checked against the Python 3.8
-grammar in the `lint` area) and a headless Kodi container smoke test (#37).
+Python versions (#21): the CI area `pymatrix` runs the core, Enigma2, Kodi and contract tests on Python 3.8, 3.9,
+3.10, 3.11, 3.12 and 3.13 (one uv venv each, workstation runner only; the NAS fallback skips it). The nightly
+workflow (`.forgejo/workflows/nightly.yml`) repeats it with the long property-test profile (#34).
+Not yet: a headless Kodi container smoke test (#37).

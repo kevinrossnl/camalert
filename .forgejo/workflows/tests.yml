@@ -24,7 +24,7 @@ on:
 
 env:
   # node:20-bookworm has Python 3.11 + git (actions/checkout needs node). Debian packages: no pip at run time.
-  PACKAGES: python3-yaml python3-pytest python3-coverage
+  PACKAGES: python3-yaml python3-pytest python3-coverage python3-hypothesis
   PYTEST_ADDOPTS: "-rN"
 
 jobs:
@@ -150,6 +150,23 @@ jobs:
             players/androidtv/app/build/reports/lint-results-debug.html
             players/androidtv/api/build/reports/tests/test/
 
+  pymatrix:
+    # Python 3.8 .. 3.13 compatibility matrix (#21): only in mode parallel = on the workstation runner (decision
+    # 24-11-2026: not on the NAS); the NAS fallback skips it with a message (step in `sequential`).
+    needs: pick-runner
+    if: needs.pick-runner.outputs.mode == 'parallel'
+    runs-on: ${{ needs.pick-runner.outputs.runner }}
+    container: {image: "node:20-bookworm"}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - {name: "Python 3.8 .. 3.13: core, Enigma2, Kodi and contract tests", run: sh tools/ci.sh pymatrix}
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: pymatrix
+          path: junit-py*.xml
+
   privacy:
     needs: pick-runner
     if: needs.pick-runner.outputs.mode == 'parallel'
@@ -199,6 +216,11 @@ jobs:
         env:
           ANDROIDTV_SKIP: "NAS fallback, the workstation runner is offline or busy elsewhere"
         run: sh tools/ci.sh androidtv
+      - name: Python matrix (workstation only, skipped here)
+        if: ${{ !cancelled() }}
+        env:
+          PYMATRIX_SKIP: "NAS fallback, the workstation runner is offline or busy elsewhere"
+        run: sh tools/ci.sh pymatrix
       - uses: actions/upload-artifact@v3
         if: always()
         with:
@@ -216,7 +238,7 @@ jobs:
 
   gate:
     if: always()
-    needs: [pick-runner, lint, core, unit, build, ha, androidtv, privacy, sequential]
+    needs: [pick-runner, lint, core, unit, build, ha, androidtv, pymatrix, privacy, sequential]
     runs-on: truenas
     container: {image: "node:20-bookworm"}
     timeout-minutes: 2
@@ -226,11 +248,11 @@ jobs:
           MODE: ${{ needs.pick-runner.outputs.mode }}
           RUNNER: ${{ needs.pick-runner.outputs.runner }}
           PICK: ${{ needs.pick-runner.result }}
-          PARALLEL: "${{ needs.lint.result }} ${{ needs.core.result }} ${{ needs.unit.result }} ${{ needs.build.result }} ${{ needs.ha.result }} ${{ needs.androidtv.result }} ${{ needs.privacy.result }}"
+          PARALLEL: "${{ needs.lint.result }} ${{ needs.core.result }} ${{ needs.unit.result }} ${{ needs.build.result }} ${{ needs.ha.result }} ${{ needs.androidtv.result }} ${{ needs.pymatrix.result }} ${{ needs.privacy.result }}"
           SEQUENTIAL: ${{ needs.sequential.result }}
         run: |
           echo "pick-runner: $PICK -> runner=$RUNNER mode=$MODE"
-          echo "lint core unit build ha androidtv privacy: $PARALLEL; sequential: $SEQUENTIAL"
+          echo "lint core unit build ha androidtv pymatrix privacy: $PARALLEL; sequential: $SEQUENTIAL"
           test "$PICK" = success || exit 1
           case "$MODE" in
             parallel)   for r in $PARALLEL; do test "$r" = success || exit 1; done ;;

@@ -62,7 +62,9 @@ class TestEventValues(unittest.TestCase):
                 targets = [t for x in node.targets for t in (x.elts if isinstance(x, ast.Tuple) else [x])]
                 if not any(isinstance(t, ast.Attribute) and t.attr == "reason" for t in targets):
                     continue
-                keys = {id(n.slice) for n in ast.walk(node.value) if isinstance(n, ast.Subscript)}
+                # Python 3.8 wraps a subscript key in ast.Index (found by the Python matrix, #21)
+                keys = {id(getattr(n.slice, "value", None) if type(n.slice).__name__ == "Index" else n.slice)
+                        for n in ast.walk(node.value) if isinstance(n, ast.Subscript)}
                 for n in ast.walk(node.value):
                     if isinstance(n, ast.Constant) and isinstance(n.value, str) and id(n) not in keys and \
                             n.value not in ("", "ignore", "error"):

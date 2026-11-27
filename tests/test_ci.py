@@ -19,7 +19,7 @@ except ImportError:  # optional, like the blueprint tests
 
 WORKFLOW = os.path.join(_paths.ROOT, ".forgejo", "workflows", "tests.yml")
 CI_SH = os.path.join(_paths.TOOLS, "ci.sh")
-AREAS = ["lint", "core", "unit", "build", "privacy", "ha", "androidtv"]
+AREAS = ["lint", "core", "unit", "build", "privacy", "ha", "androidtv", "pymatrix"]
 PREF = ["werkstation", "skills-werkstation"]
 
 
@@ -195,6 +195,36 @@ class Workflow(unittest.TestCase):
         out = subprocess.run(["sh", CI_SH, "androidtv"], env=dict(os.environ, ANDROIDTV_SKIP="test"),
                              stdout=subprocess.PIPE, cwd=_paths.ROOT, check=True).stdout.decode()
         self.assertIn("androidtv SKIPPED: test", out)
+
+    def test_pymatrix_only_on_the_workstation(self):
+        """#21: the Python 3.8 .. 3.13 matrix never runs on the NAS (decision 24-11-2026)."""
+        self.assertEqual(self.jobs["pymatrix"]["if"], "needs.pick-runner.outputs.mode == 'parallel'")
+        steps = [s for s in self.jobs["sequential"]["steps"] if "tools/ci.sh pymatrix" in json.dumps(s)]
+        self.assertEqual(len(steps), 1)
+        self.assertTrue(steps[0]["env"]["PYMATRIX_SKIP"])
+        with open(CI_SH) as f:
+            sh = f.read()
+        self.assertIn("3.8 3.9 3.10 3.11 3.12 3.13", sh)
+        import subprocess
+        out = subprocess.run(["sh", CI_SH, "pymatrix"], env=dict(os.environ, PYMATRIX_SKIP="test"),
+                             stdout=subprocess.PIPE, cwd=_paths.ROOT, check=True).stdout.decode()
+        self.assertIn("pymatrix SKIPPED: test", out)
+
+    def test_nightly_is_separate_and_never_blocks(self):
+        """#21/#34: the long runs (more hypothesis examples, the whole matrix) are a nightly workflow on the
+        workstation, not part of the gate."""
+        with open(os.path.join(os.path.dirname(WORKFLOW), "nightly.yml")) as f:
+            wf = yaml.safe_load(f)
+        on = wf.get("on", wf.get(True))
+        self.assertIn("schedule", on)
+        self.assertIn("workflow_dispatch", on)
+        text = json.dumps(wf)
+        self.assertIn("HYPOTHESIS_PROFILE", text)
+        self.assertIn("tools/ci.sh pymatrix", text)
+        job = wf["jobs"]["long-tests"]
+        self.assertEqual(job["runs-on"], "${{ needs.pick-runner.outputs.runner }}")
+        self.assertEqual(job["if"], "needs.pick-runner.outputs.mode == 'parallel'")  # never on the NAS
+        self.assertEqual(set(wf["jobs"]), {"pick-runner", "long-tests"})  # no gate, no mirror
 
     def test_force_runner_input(self):
         on = self.wf.get("on", self.wf.get(True))

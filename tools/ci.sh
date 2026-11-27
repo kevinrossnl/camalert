@@ -10,8 +10,11 @@
 #   androidtv Android TV player (#64): JVM contract tests, debug APK, Android lint, golden APK listing. Needs JDK 17+;
 #             the Android Gradle plugin downloads the SDK packages from dl.google.com (license accepted here).
 #             Workstation runner only: with ANDROIDTV_SKIP set (NAS fallback) it prints why and does nothing.
+#   pymatrix  compatibility matrix (#21): core, Enigma2, Kodi and contract tests on every Python the players run on
+#             (PY_VERSIONS, default 3.8 .. 3.13), each in its own uv venv; the property tests (#34) need hypothesis,
+#             which is installed from Python 3.9 on. Workstation runner only: PYMATRIX_SKIP set = skipped (NAS).
 set -eu
-area="${1:?usage: tools/ci.sh tools|lint|core|unit|build|privacy|ha|androidtv}"
+area="${1:?usage: tools/ci.sh tools|lint|core|unit|build|privacy|ha|androidtv|pymatrix}"
 case "$area" in
   tools)
     echo "apt: ${PACKAGES:?PACKAGES not set}"
@@ -81,6 +84,27 @@ print("commit history: %d problems" % len(bad)); sys.exit(1 if bad else 0)'
     ./gradlew --no-daemon --console=plain :api:test :app:assembleDebug :app:lintDebug
     cd ../..
     python3 tools/apk_listing.py check players/androidtv/app/build/outputs/apk/debug/app-debug.apk
+    ;;
+  pymatrix)
+    if [ -n "${PYMATRIX_SKIP:-}" ]; then
+      echo "pymatrix SKIPPED: $PYMATRIX_SKIP (the Python matrix runs only on the workstation runner, #21)"
+      exit 0
+    fi
+    if ! command -v uv > /dev/null; then
+      curl -LsSf "https://github.com/astral-sh/uv/releases/download/${UV_VERSION:-0.13.8}/uv-x86_64-unknown-linux-gnu.tar.gz" \
+        | tar xz -C /usr/local/bin --strip-components=1
+    fi
+    failed=""
+    for v in ${PY_VERSIONS:-3.8 3.9 3.10 3.11 3.12 3.13}; do
+      echo "=== Python $v"
+      uv venv -q --clear -p "$v" ".venv-py$v"
+      extra="hypothesis"; [ "$v" = 3.8 ] && extra=""
+      # shellcheck disable=SC2086
+      VIRTUAL_ENV=".venv-py$v" uv pip install -q pytest pyyaml pillow $extra
+      ".venv-py$v/bin/python" -m pytest -q tests/core tests/enigma2 tests/kodi tests/contract \
+        --junitxml="junit-py$v.xml" || failed="$failed $v"
+    done
+    test -z "$failed" || { echo "pymatrix failed on Python$failed"; exit 1; }
     ;;
   *)
     echo "unknown area: $area" >&2

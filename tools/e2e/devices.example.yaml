@@ -33,6 +33,11 @@ devices:
     cameras: real
     real_cameras: [front_door, garden]
     allowed_hours: "10:00-23:00"
+    # resume_file: special://home/media/test.mp4   # kodi_resume scenario: a short test film on the player
 ha:
   url: http://192.168.1.5:8123
   token_env: HA_TOKEN                       # long-lived token; without it the ha scenario is skipped
+# mqtt:                                     # the broker the players use, for the mqtt scenario (optional)
+#   host: 192.168.1.5
+#   user_env: MQTT_USER
+#   password_env: MQTT_PASSWORD

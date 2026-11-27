@@ -10,7 +10,7 @@ import unittest
 import pytest
 
 hypothesis = pytest.importorskip("hypothesis")
-from hypothesis import HealthCheck, given, settings  # noqa: E402
+from hypothesis import HealthCheck, assume, given, settings  # noqa: E402
 from hypothesis import strategies as st  # noqa: E402
 
 import _paths  # noqa: E402
@@ -74,11 +74,14 @@ class TestRedact(unittest.TestCase):
            st.sampled_from(["http", "https", "rtsp"]))
     def test_query_secrets_never_leak(self, secret, key, scheme):
         url = "%s://192.0.2.10:1984/api/x?src=cam1&%s=%s&width=640" % (scheme, key, secret)
+        # a "secret" that is part of the fixed text itself (e.g. "reques") proves nothing: skip it
+        assume(secret not in "request failed: " + url.replace(secret, "") + " (timed out) ***")
         self.assertNotIn(secret, redact(url))
         self.assertNotIn(secret, redact("request failed: " + url + " (timed out)"))
 
     @given(names, secrets, st.sampled_from(["http", "https", "rtsp", "rtsps"]))
     def test_userinfo_never_leaks(self, user, secret, scheme):
+        assume(secret not in "%s://%s:@192.0.2.10:554/stream1 ***" % (scheme, user))
         out = redact("%s://%s:%s@192.0.2.10:554/stream1" % (scheme, user, secret))
         self.assertNotIn(secret, out)
         self.assertIn("192.0.2.10:554/stream1", out)
@@ -87,6 +90,8 @@ class TestRedact(unittest.TestCase):
     def test_headers_and_json_never_leak(self, secret):
         for text in ("Authorization: Bearer %s" % secret, '{"token": "%s", "x": 1}' % secret,
                      "<wsse:Password Type=\"PasswordDigest\">%s</wsse:Password>" % secret, "password=%s" % secret):
+            if secret in text.replace(secret, "") + " ***":
+                continue  # the "secret" is part of the fixed text: proves nothing
             self.assertNotIn(secret, redact(text))
 
     @given(st.text(max_size=200))

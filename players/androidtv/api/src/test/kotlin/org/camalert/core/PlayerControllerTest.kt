@@ -39,6 +39,17 @@ class PlayerControllerTest {
     }
 
     @Test
+    fun windowMarksThePriorityButNotTheViewersOwnChoice() {  // #48, #13
+        env.values["chime"] = "all"
+        assertEquals("show", ctl.show("garden", null, "photo", "alarm", "api", null))
+        assertEquals("alarm", display.lastPriority)
+        ctl.hide()
+        assertEquals("show", ctl.show(null, null, null, "high", "menu", null))  // 'look at the door'
+        assertEquals("normal", display.lastPriority)
+        assertEquals(1, env.chimes)  // only the api request
+    }
+
+    @Test
     fun logOnlyModeRecordsButShowsNothing() {
         // display mode 'log' of the UniFi Protect rules (#72, like Kodi #71): event list and log, no window, no chime
         env.values["chime"] = "all"

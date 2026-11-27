@@ -17,11 +17,28 @@ def localeInit():
     gettext.bindtextdomain(PluginLanguageDomain, resolveFilename(SCOPE_PLUGINS, PluginLanguagePath))
 
 
+_LANGUAGE = {"code": None, "catalogue": None}  # #10: own language instead of the image language
+
+
 def _(txt):
     """Translation from CamAlert's own catalogue only (#56): never the image's enigma2 domain, which has some of our
     msgids with another meaning or case (English images translate "Normal" to "normal"). English has no catalogue,
-    so the msgid itself is the English text."""
+    so the msgid itself is the English text. With a language setting (#10) that language's catalogue is used."""
+    catalogue = _LANGUAGE["catalogue"]
+    if catalogue is not None:
+        return catalogue.gettext(txt)
     return gettext.dgettext(PluginLanguageDomain, txt)
+
+
+def set_language(code, localedir=None):
+    """#10: CamAlert's texts in this language ('nl', 'en', ...) whatever the image language; 'system' (or empty)
+    follows the image again. Screens built afterwards use it; setting labels after a GUI restart."""
+    if code in (None, "", "system"):
+        _LANGUAGE.update(code=None, catalogue=None)
+        return
+    path = localedir or resolveFilename(SCOPE_PLUGINS, PluginLanguagePath)
+    _LANGUAGE.update(code=code, catalogue=gettext.translation(PluginLanguageDomain, path, languages=[code],
+                                                              fallback=True))
 
 
 localeInit()
@@ -89,6 +106,21 @@ def _add(name, factory):
         setattr(c, name, factory())
 
 
+# #10 first, so the labels of every other setting are already in the chosen language after a GUI restart
+_add("language", lambda: ConfigSelection(default="system", choices=[("system", _("System language"))] + [
+    (code, name) for code, name in (("en", "English"), ("nl", "Nederlands"), ("de", "Deutsch"),
+                                    ("fr", "Fran\u00e7ais"), ("it", "Italiano"), ("pl", "Polski"))]))
+try:
+    set_language(c.language.value)
+except Exception:  # noqa: BLE001 - a broken catalogue must never stop the plugin: then the image language is used
+    set_language("system")
+
+
+def _language_changed(element):
+    set_language(element.value)
+
+
+c.language.addNotifier(_language_changed, initial_call=False)
 _add("enabled", lambda: ConfigYesNo(default=True))
 _add("source", lambda: ConfigSelection(default="go2rtc", choices=[
     ("go2rtc", _("go2rtc server")), ("direct", _("Directly from the cameras"))]))
@@ -160,6 +192,10 @@ _add("ptz_key", lambda: ConfigSelection(default="blue", choices=[
 _add("ha_buttons", lambda: ConfigYesNo(default=True))
 _add("ha_webhook", lambda: ConfigText(default="", fixed_size=False))
 _add("wizard_done", lambda: ConfigYesNo(default=False))  # first-start wizard (#120)
+_add("text_size", lambda: ConfigSelection(default="normal", choices=[  # #48: every CamAlert screen
+    ("normal", _("Normal")), ("large", _("Large")), ("xlarge", _("Extra large"))]))
+_add("priority_border", lambda: ConfigSelection(default="steady", choices=[  # #48: frame + word, never colour alone
+    ("off", _("Off")), ("steady", _("Steady")), ("flash", _("Flashing"))]))
 _add("foscam_enabled", lambda: ConfigYesNo(default=False))
 c.foscam_enabled.save_forced = True  # V2_MARKER
 _add("foscam_priority", lambda: ConfigSelection(default="normal", choices=PRIORITIES()))

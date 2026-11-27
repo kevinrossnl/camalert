@@ -20,6 +20,7 @@ from . import mqtt
 from . import settingsio
 from .helpable import HelpBase, help_actions, init_help
 from .camalert_core import schema
+from .camalert_core.style import PRESET_LABELS, PRESETS, preset_changes
 from .display import CAMERA_FILE, Controller, all_camera_names, direct_cameras, open_url, pillow_available
 from .camalert_core.cameras import (display_name, format_map, format_titles, parse_cams, parse_map,
                                     parse_orientation, parse_refresh, parse_titles, title_for)
@@ -93,6 +94,15 @@ def ordered():
         return (schema.SECTIONS.index(s.section), group[0] if s.section == "triggers" and group else 0, i)
     return [s for _i, s in sorted(enumerate(settings), key=key)]
 
+
+
+def apply_preset(c, name):
+    """Sets the settings of a preset (#48) on the config section c; returns {key: value} that changed."""
+    keys = [k for k in PRESETS.get(name, {}) if hasattr(c, k)]
+    changes = preset_changes(name, dict((k, getattr(c, k).value) for k in keys), keys)
+    for k, v in changes.items():
+        getattr(c, k).value = v
+    return changes
 
 class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
     # Designed for 1920x1080 and scaled to the receiver's skin resolution (many skins are 1280x720). Used when
@@ -197,6 +207,7 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
 
     def menu(self):
         choices = [(_("Diagnostics"), "diag"), (_("Event list"), "events"), (_("Start the wizard again"), "wizard"),
+                   (_(PRESET_LABELS["simple"]), "simple"),
                    (_("Export settings"), "export"), (_("Import settings"), "import")]
         if settingsio.backups().latest() is not None:
             choices.append((_("Undo the last import"), "undo"))
@@ -210,7 +221,10 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
         from .diagnostics import DiagnosticsScreen, EventsScreen
         if not choice:
             return
-        if choice[1] == "wizard":  # #120
+        if choice[1] == "simple":  # #48: a preset only fills in settings; Save keeps them, Cancel undoes them
+            apply_preset(config.plugins.camalert, "simple")
+            self.build()
+        elif choice[1] == "wizard":  # #120
             from .wizard import Wizard
             Wizard(self.session, on_close=self.build).start()
         elif choice[1] == "export":  # #7

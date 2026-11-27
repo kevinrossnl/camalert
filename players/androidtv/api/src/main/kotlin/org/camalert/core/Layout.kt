@@ -10,17 +10,24 @@ object Layout {
     private val SIZES = mapOf("small" to Pair(480, 270), "medium" to Pair(640, 360), "large" to Pair(960, 540))
     private val TITLE_SIZES = mapOf("small" to Pair(32, 22), "normal" to Pair(40, 26), "large" to Pair(56, 38))
 
-    fun titleFont(titleSize: String, screenW: Int) = ((TITLE_SIZES[titleSize] ?: TITLE_SIZES.getValue("normal")).second * screenW / 1920.0).toInt()
+    /** Factor for every font and the title bar (#48, core layout.TEXT_SIZES); 1.0 for an unknown value. */
+    fun textScale(textSize: String?): Double = CoreData.load().textSizes[textSize] ?: 1.0
+
+    /** A font size designed at 1080p, scaled to the screen and the text size (#48). */
+    fun fontPx(px1080: Int, screenW: Int, textSize: String? = "normal") = (px1080 * screenW / 1920.0 * textScale(textSize)).toInt()
+
+    fun titleFont(titleSize: String, screenW: Int, textSize: String? = "normal") =
+        fontPx((TITLE_SIZES[titleSize] ?: TITLE_SIZES.getValue("normal")).second, screenW, textSize)
 
     private fun left(p: String) = p == "top_left" || p == "bottom_left"
     private fun top(p: String) = p == "top_left" || p == "top_right"
 
-    fun window(position: String, size: String, sw: Int, sh: Int, titleSize: String = "normal"): Window {
+    fun window(position: String, size: String, sw: Int, sh: Int, titleSize: String = "normal", textSize: String? = "normal"): Window {
         val f = sw / 1920.0
         val (w0, h0) = SIZES[size] ?: SIZES.getValue("medium")
         val w = (w0 * f).toInt()
         val h = (h0 * f).toInt()
-        val title = ((TITLE_SIZES[titleSize] ?: TITLE_SIZES.getValue("normal")).first * f).toInt()
+        val title = ((TITLE_SIZES[titleSize] ?: TITLE_SIZES.getValue("normal")).first * f * textScale(textSize)).toInt()
         val margin = (40 * f).toInt()
         val x = if (left(position)) margin else sw - w - margin
         val y = if (top(position)) margin else sh - (h + title) - margin
@@ -43,7 +50,7 @@ object Layout {
 
     fun stripLayout(n: Int, layout: String) = if (layout in listOf("vertical", "horizontal", "grid")) layout else if (n >= 4) "grid" else "vertical"
 
-    fun strip(n0: Int, layout: String, position: String, size: String, sw: Int, sh: Int): Window {
+    fun strip(n0: Int, layout: String, position: String, size: String, sw: Int, sh: Int, textSize: String? = "normal"): Window {
         val n = n0.coerceIn(1, 4)
         val (cols, rows) = when (stripLayout(n, layout)) { "vertical" -> Pair(1, n); "horizontal" -> Pair(n, 1); else -> Pair(2, (n + 1) / 2) }
         val f = sw / 1920.0
@@ -51,7 +58,7 @@ object Layout {
         var tw = (tw0 * f).toInt()
         var th = (th0 * f).toInt()
         val gap = maxOf(2, (6 * f).toInt())
-        val title = (40 * f).toInt()
+        val title = (40 * f * textScale(textSize)).toInt()
         val margin = (40 * f).toInt()
         val maxW = (sw * 0.9).toInt() - margin
         val maxH = (sh * 0.9).toInt() - margin

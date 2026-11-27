@@ -99,6 +99,21 @@ object TlsCert {
     }
 }
 
+/** #10: CamAlert's own language instead of the device language ("system" = the device language). */
+object Lang {
+    fun code(ctx: Context): String? =
+        ctx.getSharedPreferences(ctx.packageName + "_preferences", Context.MODE_PRIVATE).getString("language", "system")
+            ?.takeIf { it in CoreData.load().languageNames }
+
+    /** The context to use: base with the chosen language, or base itself for "system". */
+    fun wrap(base: Context): Context {
+        val code = try { code(base) } catch (e: Exception) { null } ?: return base
+        val config = android.content.res.Configuration(base.resources.configuration)
+        config.setLocale(Locale(code))
+        return base.createConfigurationContext(config)
+    }
+}
+
 /** The settings (schema ids), stored in the default SharedPreferences; always read through Schema.validate. */
 class Store(private val ctx: Context) {
     val prefs: SharedPreferences = ctx.getSharedPreferences(ctx.packageName + "_preferences", Context.MODE_PRIVATE)

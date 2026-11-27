@@ -48,7 +48,48 @@ def english(string_id):
     return _english.get(string_id, "")
 
 
+KODI_LANGUAGES = {"en": "en_gb", "nl": "nl_nl", "de": "de_de", "fr": "fr_fr", "it": "it_it", "pl": "pl_pl"}
+_own = {"code": None, "at": 0.0, "strings": {}}
+
+
+def own_language():
+    """#10: the language setting ('nl', ...), or None for 'system' (Kodi's language). Read at most every 5 s."""
+    import time
+    now = time.time()
+    if now - _own["at"] > 5:
+        _own["at"] = now
+        try:
+            code = xbmcaddon.Addon(ADDON_ID).getSetting("language")
+        except Exception:  # noqa: BLE001
+            code = ""
+        _own["code"] = code if code in KODI_LANGUAGES else None
+    return _own["code"]
+
+
+def po_strings(code):
+    """{id: text} of the add-on's strings.po for a language (#10): msgstr, or msgid for English / untranslated."""
+    if code not in _own["strings"]:
+        out = {}
+        try:
+            with open(addon_path("resources", "language", "resource.language.%s" % KODI_LANGUAGES[code],
+                                 "strings.po"), encoding="utf-8") as f:
+                text = f.read()
+            for m in re.finditer(r'msgctxt "#(\d+)"\s*\nmsgid "((?:[^"\\]|\\.)*)"\s*\nmsgstr "((?:[^"\\]|\\.)*)"',
+                                 text):
+                value = m.group(3) or m.group(2)
+                out[int(m.group(1))] = value.replace('\\n', "\n").replace('\\"', '"')
+        except (OSError, KeyError):
+            pass
+        _own["strings"][code] = out
+    return _own["strings"][code]
+
+
 def tr(string_id):
+    code = own_language()
+    if code:  # #10: CamAlert's own language instead of Kodi's
+        text = po_strings(code).get(string_id)
+        if text:
+            return text
     return addon().getLocalizedString(string_id) or english(string_id)
 
 
@@ -70,7 +111,10 @@ def core_tr():
 
 
 def language():
-    """Kodi's GUI language as ISO 639-1 ('nl'), '' if unknown."""
+    """The language of CamAlert's texts as ISO 639-1 ('nl'): the language setting (#10), else Kodi's GUI
+    language; '' if unknown."""
+    if own_language():
+        return own_language()
     try:
         return xbmc.getLanguage(xbmc.ISO_639_1) or ""
     except Exception:

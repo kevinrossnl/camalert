@@ -57,7 +57,8 @@ class RecordingController(results: Map<String, Any?>? = null, val fail: String? 
 class FakeDisplay : Display {
     val calls = ArrayList<String>()
     var current = Screen(null, null)
-    override fun photo(tiles: List<Tile>, seconds: Int, label: String?) { calls.add("photo ${tiles.joinToString(",") { it.name }} $seconds"); current = Screen(if (tiles.size > 1) "strip" else "photo", tiles[0].name, tiles.map { it.name }) }
+    var lastPriority = "normal"
+    override fun photo(tiles: List<Tile>, seconds: Int, label: String?, priority: String) { lastPriority = priority; calls.add("photo ${tiles.joinToString(",") { it.name }} $seconds"); current = Screen(if (tiles.size > 1) "strip" else "photo", tiles[0].name, tiles.map { it.name }) }
     override fun extend(seconds: Int) { calls.add("extend $seconds") }
     override fun live(tile: Tile, seconds: Int, volumePercent: Int) { calls.add("live ${tile.name} $seconds $volumePercent"); current = Screen("live", tile.name) }
     override fun notify(tile: Tile, seconds: Int) { calls.add("notify ${tile.name} $seconds"); current = Screen("notify", tile.name) }

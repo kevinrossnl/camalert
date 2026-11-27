@@ -29,7 +29,7 @@ for p in (os.path.join(ROOT, "core"), TESTS):
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from camalert_core import access, api, discovery, frames, keymap, layout, present, rules, schema  # noqa: E402
+from camalert_core import access, api, discovery, frames, keymap, layout, present, rules, schema, style  # noqa: E402
 from camalert_core.devices.config import PTZ_ACTIONS  # noqa: E402
 from camalert_core.mqtt import topics as mqtt_topics  # noqa: E402
 from camalert_core.obs import log as obslog, metrics as obsmetrics  # noqa: E402
@@ -198,7 +198,29 @@ def core_reference():
             geometry.append({"kind": "grid", "args": [n, sw, sh], "out": [list(t) for t in layout.grid(n, sw, sh)]})
         for ts in layout.TITLE_SIZES:
             geometry.append({"kind": "title_font", "args": [ts, sw], "out": layout.title_font(ts, sw)})
+        for txt in layout.TEXT_SIZES:  # #48
+            for ts in layout.TITLE_SIZES:
+                geometry.append({"kind": "window_text", "args": ["bottom_left", "medium", sw, sh, ts, txt],
+                                 "out": list(layout.window_geometry("bottom_left", "medium", sw, sh, ts, txt))})
+                geometry.append({"kind": "title_font_text", "args": [ts, sw, txt], "out": layout.title_font(ts, sw, txt)})
+            x, y, w, h, title, tiles = layout.strip_geometry(3, "grid", "top_right", "medium", sw, sh, txt)
+            geometry.append({"kind": "strip_text", "args": [3, "grid", "top_right", "medium", sw, sh, txt],
+                             "out": [x, y, w, h, title, [list(t) for t in tiles]]})
+    style_cases = {
+        "marked_title": [{"args": [t, p, b], "out": style.marked_title(t, p, b, lambda m: m)}
+                         for t in ("Front door", "") for p in ("normal", "high", "alarm", "nonsense")
+                         for b in style.BORDER_MODES + ("nonsense",)],
+        "priority_mark": [{"args": [p, b], "out": style.priority_mark(p, b)}
+                          for p in ("normal", "high", "alarm") for b in style.BORDER_MODES],
+        "preset_changes": [{"args": ["simple", cur, keys], "out": style.preset_changes("simple", cur, keys)}
+                           for cur, keys in (({}, None), ({"text_size": "xlarge", "duration": 60}, None),
+                                             ({}, ["text_size", "size", "duration", "chime"]))],
+        "effective_language": [{"args": [a, b], "out": style.effective_language(a, b)}
+                               for a, b in (("system", "nl_NL"), ("system", "de-DE"), ("de", "nl"), ("system", ""),
+                                            ("system", "ja"), ("xx", "fr"))],
+    }
     return {
+        "style": style_cases,
         "_": HEADER,
         "geometry": geometry,
         "redact": [{"in": t, "out": obslog.redact(t)} for t in REDACT],
@@ -490,6 +512,16 @@ def runtime():
         "tile_labels": present.TILE_LABELS,
         "frame_cache_seconds": frames.CACHE_SECONDS,
         "still_max_seconds": frames.STILL_MAX_SECONDS,
+        "text_sizes": layout.TEXT_SIZES,
+        "border_modes": list(style.BORDER_MODES),
+        "priority_colours": style.PRIORITY_COLOURS,
+        "priority_marks": style.PRIORITY_MARKS,
+        "flash_ms": style.FLASH_MS,
+        "presets": style.PRESETS,
+        "preset_labels": style.PRESET_LABELS,
+        "languages": list(style.LANGUAGES),
+        "language_names": style.LANGUAGE_NAMES,
+        "system_language": style.SYSTEM_LANGUAGE,
         "setup_received": present.SETUP_RECEIVED,
     }
 

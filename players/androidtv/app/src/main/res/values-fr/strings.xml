@@ -36,6 +36,12 @@
     <string name="choice_title_size_small" formatted="false">Petite</string>
     <string name="choice_title_size_normal" formatted="false">Normale</string>
     <string name="choice_title_size_large" formatted="false">Grande</string>
+    <string name="choice_text_size_normal" formatted="false">Normale</string>
+    <string name="choice_text_size_large" formatted="false">Grande</string>
+    <string name="choice_text_size_xlarge" formatted="false">Très grande</string>
+    <string name="choice_priority_border_off" formatted="false">Désactivé</string>
+    <string name="choice_priority_border_steady" formatted="false">Fixe</string>
+    <string name="choice_priority_border_flash" formatted="false">Clignotant</string>
     <string name="choice_chime_off" formatted="false">Désactivé</string>
     <string name="choice_chime_high" formatted="false">Sonnette et alarme</string>
     <string name="choice_chime_all" formatted="false">Chaque demande</string>
@@ -109,6 +115,8 @@
     <string name="t_95d10e92" formatted="false">Appuyez sur OK pour nommer une caméra (vide = automatique).</string>
     <string name="t_6f1ca336" formatted="false">Sous-flux pour le direct</string>
     <string name="t_7302af3d" formatted="false">Pour les caméras que le récepteur ne peut pas lire (H.265/4K) : front_door=front_door_sub utilise ce flux go2rtc en direct.</string>
+    <string name="t_2dad13e3" formatted="false">Langue</string>
+    <string name="t_a75d2c72" formatted="false">Langue des textes de CamAlert sur cet appareil. Langue du système : la langue de l\'appareil lui-même.</string>
     <string name="t_7f13060c" formatted="false">Mode d\'affichage</string>
     <string name="t_37083c0d" formatted="false">Fenêtre photo : la TV continue. Direct : la chaîne passe sur la caméra.</string>
     <string name="t_0d46faad" formatted="false">Durée (secondes)</string>
@@ -131,6 +139,10 @@
     <string name="t_40405b3f" formatted="false">Disposition de la fenêtre multi-caméras</string>
     <string name="t_b90a4fd3" formatted="false">Une demande avec 2 à 4 caméras les affiche ensemble dans une fenêtre multi-caméras.</string>
     <string name="t_88c58adb" formatted="false">Taille du titre</string>
+    <string name="t_09cdafe2" formatted="false">Taille du texte</string>
+    <string name="t_5015df84" formatted="false">Tous les textes de CamAlert : titres des fenêtres, aide des touches, contrôle caméra, ronde, mosaïque et listes.</string>
+    <string name="t_d8e12772" formatted="false">Marquage sonnette et alarme</string>
+    <string name="t_89750080" formatted="false">Priorité haute : cadre orange et le mot Sonnette. Alarme : cadre rouge-orange et le mot ALARME. Clignotant : une fois par seconde.</string>
     <string name="t_d930321b" formatted="false">Son de sonnette</string>
     <string name="t_d9efc589" formatted="false">Joue un court ding-dong pour les demandes de priorité haute ou alarme (sonnette).</string>
     <string name="t_f2d70813" formatted="false">Format du direct</string>
@@ -266,6 +278,9 @@
     <string name="t_9ee51c54" formatted="false">pas un fichier de paramètres</string>
     <string name="t_53025dac" formatted="false">créé par une version plus récente de CamAlert</string>
     <string name="t_9dc41ec9" formatted="false">Sonnette</string>
+    <string name="t_83cb846d" formatted="false">ALARME</string>
+    <string name="t_f0af5f38" formatted="false">Simple : grand texte, grande fenêtre, 60 secondes</string>
+    <string name="t_1aeef2ad" formatted="false">Langue du système</string>
     <string name="t_3370d440" formatted="false">Personne</string>
     <string name="t_d43ddd1a" formatted="false">Véhicule</string>
     <string name="t_6d072629" formatted="false">Animal</string>

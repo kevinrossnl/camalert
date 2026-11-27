@@ -36,6 +36,12 @@
     <string name="choice_title_size_small" formatted="false">Klein</string>
     <string name="choice_title_size_normal" formatted="false">Normal</string>
     <string name="choice_title_size_large" formatted="false">Groß</string>
+    <string name="choice_text_size_normal" formatted="false">Normal</string>
+    <string name="choice_text_size_large" formatted="false">Groß</string>
+    <string name="choice_text_size_xlarge" formatted="false">Sehr groß</string>
+    <string name="choice_priority_border_off" formatted="false">Aus</string>
+    <string name="choice_priority_border_steady" formatted="false">Dauerhaft</string>
+    <string name="choice_priority_border_flash" formatted="false">Blinkend</string>
     <string name="choice_chime_off" formatted="false">Aus</string>
     <string name="choice_chime_high" formatted="false">Türklingel und Alarm</string>
     <string name="choice_chime_all" formatted="false">Jede Anfrage</string>
@@ -109,6 +115,8 @@
     <string name="t_95d10e92" formatted="false">OK drücken, um einer Kamera einen eigenen Namen zu geben (leer = automatisch).</string>
     <string name="t_6f1ca336" formatted="false">Substreams für die Live-Ansicht</string>
     <string name="t_7302af3d" formatted="false">Für Kameras, die der Receiver nicht abspielen kann (H.265/4K): front_door=front_door_sub nutzt diesen go2rtc-Stream für die Live-Ansicht.</string>
+    <string name="t_2dad13e3" formatted="false">Sprache</string>
+    <string name="t_a75d2c72" formatted="false">Sprache der CamAlert-Texte auf diesem Gerät. Systemsprache: die Sprache des Geräts selbst.</string>
     <string name="t_7f13060c" formatted="false">Anzeigemodus</string>
     <string name="t_37083c0d" formatted="false">Fotofenster: Fernsehen läuft weiter. Live: Kanal wechselt zur Kamera.</string>
     <string name="t_0d46faad" formatted="false">Dauer (Sekunden)</string>
@@ -131,6 +139,10 @@
     <string name="t_40405b3f" formatted="false">Anordnung im Fenster mit mehreren Kameras</string>
     <string name="t_b90a4fd3" formatted="false">Eine Anfrage mit 2-4 Kameras zeigt sie zusammen in einem Fenster mit mehreren Kameras.</string>
     <string name="t_88c58adb" formatted="false">Titelgröße</string>
+    <string name="t_09cdafe2" formatted="false">Schriftgröße</string>
+    <string name="t_5015df84" formatted="false">Alle CamAlert-Texte: Fenstertitel, Tastenhinweise, Kamerasteuerung, Rundgang, Mosaik und Listen.</string>
+    <string name="t_d8e12772" formatted="false">Markierung bei Türklingel und Alarm</string>
+    <string name="t_89750080" formatted="false">Priorität hoch: orangefarbener Rahmen und das Wort Türklingel. Alarm: rotoranger Rahmen und das Wort ALARM. Blinkend: einmal pro Sekunde.</string>
     <string name="t_d930321b" formatted="false">Türklingelton</string>
     <string name="t_d9efc589" formatted="false">Spielt ein kurzes Ding-Dong bei Anfragen mit Priorität hoch oder Alarm (Türklingel).</string>
     <string name="t_f2d70813" formatted="false">Format der Live-Ansicht</string>
@@ -266,6 +278,9 @@
     <string name="t_9ee51c54" formatted="false">keine Einstellungsdatei</string>
     <string name="t_53025dac" formatted="false">von einem neueren CamAlert erstellt</string>
     <string name="t_9dc41ec9" formatted="false">Türklingel</string>
+    <string name="t_83cb846d" formatted="false">ALARM</string>
+    <string name="t_f0af5f38" formatted="false">Einfach: große Schrift, großes Fenster, 60 Sekunden</string>
+    <string name="t_1aeef2ad" formatted="false">Systemsprache</string>
     <string name="t_3370d440" formatted="false">Person</string>
     <string name="t_d43ddd1a" formatted="false">Fahrzeug</string>
     <string name="t_6d072629" formatted="false">Tier</string>

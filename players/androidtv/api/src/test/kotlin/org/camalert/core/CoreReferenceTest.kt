@@ -110,9 +110,37 @@ class CoreReferenceTest {
                 "strip" -> Layout.strip(i(0), a[1] as String, a[2] as String, a[3] as String, i(4), i(5)).let { w ->
                     listOf(w.x, w.y, w.w, w.h, w.title, w.tiles.map { listOf(it.x, it.y, it.w, it.h) }) }
                 "grid" -> Layout.grid(i(0), i(1), i(2)).map { listOf(it.x, it.y, it.w, it.h) }
+                "window_text" -> Layout.window(a[0] as String, a[1] as String, i(2), i(3), a[4] as String, a[5] as String).let { listOf(it.x, it.y, it.w, it.h, it.title) }
+                "strip_text" -> Layout.strip(i(0), a[1] as String, a[2] as String, a[3] as String, i(4), i(5), a[6] as String).let { w ->
+                    listOf(w.x, w.y, w.w, w.h, w.title, w.tiles.map { listOf(it.x, it.y, it.w, it.h) }) }
+                "title_font_text" -> Layout.titleFont(a[0] as String, i(1), a[2] as String)
                 else -> Layout.titleFont(a[0] as String, i(1))
             }
             assertEquals("${c["kind"]} $a", Json.write(c["out"]), Json.write(got))
+        }
+    }
+
+    @Test
+    fun style() {  // #48, #10
+        fun sorted(m: Any?): String = Json.write((m as Map<String, Any?>?)?.let { java.util.TreeMap(it.mapValues { (_, v) -> if (v is Number) v.toLong() else v }) })
+        val s = ref["style"] as Map<String, List<Map<String, Any?>>>
+        for (c in s.getValue("marked_title")) {
+            val a = c["args"] as List<String>
+            assertEquals("$a", c["out"], Style.markedTitle(a[0], a[1], a[2]) { it })
+        }
+        for (c in s.getValue("priority_mark")) {
+            val a = c["args"] as List<String>
+            val got = Style.priorityMark(a[0], a[1])?.let { mapOf("colour" to it.colour, "label" to it.label, "flash" to it.flash) }
+            assertEquals("$a", sorted(c["out"]), sorted(got))
+        }
+        for (c in s.getValue("preset_changes")) {
+            val a = c["args"] as List<Any?>
+            val got = Style.presetChanges(a[0] as String, (a[1] as Map<String, Any?>).mapValues { (_, v) -> if (v is Long) v.toInt() else v }, a[2] as List<String>?)
+            assertEquals("$a", sorted(c["out"]), sorted(got))
+        }
+        for (c in s.getValue("effective_language")) {
+            val a = c["args"] as List<String>
+            assertEquals("$a", c["out"], Style.effectiveLanguage(a[0], a[1]))
         }
     }
 

@@ -36,6 +36,12 @@
     <string name="choice_title_size_small" formatted="false">Klein</string>
     <string name="choice_title_size_normal" formatted="false">Normaal</string>
     <string name="choice_title_size_large" formatted="false">Groot</string>
+    <string name="choice_text_size_normal" formatted="false">Normaal</string>
+    <string name="choice_text_size_large" formatted="false">Groot</string>
+    <string name="choice_text_size_xlarge" formatted="false">Extra groot</string>
+    <string name="choice_priority_border_off" formatted="false">Uit</string>
+    <string name="choice_priority_border_steady" formatted="false">Vast</string>
+    <string name="choice_priority_border_flash" formatted="false">Knipperend</string>
     <string name="choice_chime_off" formatted="false">Uit</string>
     <string name="choice_chime_high" formatted="false">Deurbel en alarm</string>
     <string name="choice_chime_all" formatted="false">Elk verzoek</string>
@@ -109,6 +115,8 @@
     <string name="t_95d10e92" formatted="false">Druk op OK om een camera een eigen naam te geven (leeg = automatisch).</string>
     <string name="t_6f1ca336" formatted="false">Substreams voor live beeld</string>
     <string name="t_7302af3d" formatted="false">Voor camera\'s die de ontvanger niet kan afspelen (H.265/4K): front_door=front_door_sub gebruikt die go2rtc-stream voor live beeld.</string>
+    <string name="t_2dad13e3" formatted="false">Taal</string>
+    <string name="t_a75d2c72" formatted="false">Taal van de CamAlert-teksten op dit apparaat. Systeemtaal: de taal van het apparaat zelf.</string>
     <string name="t_7f13060c" formatted="false">Weergavemodus</string>
     <string name="t_37083c0d" formatted="false">Fotovenster: tv kijken gaat door. Live: zender schakelt naar de camera.</string>
     <string name="t_0d46faad" formatted="false">Duur (seconden)</string>
@@ -131,6 +139,10 @@
     <string name="t_40405b3f" formatted="false">Indeling van het venster met meerdere camera\'s</string>
     <string name="t_b90a4fd3" formatted="false">Een verzoek met 2-4 camera\'s toont ze samen in één venster met meerdere camera\'s.</string>
     <string name="t_88c58adb" formatted="false">Titelgrootte</string>
+    <string name="t_09cdafe2" formatted="false">Tekstgrootte</string>
+    <string name="t_5015df84" formatted="false">Alle CamAlert-teksten: venstertitels, toetshints, camerabediening, rondgang, mozaïek en lijsten.</string>
+    <string name="t_d8e12772" formatted="false">Markering bij deurbel en alarm</string>
+    <string name="t_89750080" formatted="false">Prioriteit hoog: oranje rand en het woord Deurbel. Alarm: roodoranje rand en het woord ALARM. Knipperend: één keer per seconde.</string>
     <string name="t_d930321b" formatted="false">Deurbelgeluid</string>
     <string name="t_d9efc589" formatted="false">Speelt een kort ding-dong bij verzoeken met prioriteit hoog of alarm (deurbel).</string>
     <string name="t_f2d70813" formatted="false">Formaat van het live beeld</string>
@@ -266,6 +278,9 @@
     <string name="t_9ee51c54" formatted="false">geen instellingenbestand</string>
     <string name="t_53025dac" formatted="false">gemaakt door een nieuwere CamAlert</string>
     <string name="t_9dc41ec9" formatted="false">Deurbel</string>
+    <string name="t_83cb846d" formatted="false">ALARM</string>
+    <string name="t_f0af5f38" formatted="false">Eenvoudig: grote tekst, groot venster, 60 seconden</string>
+    <string name="t_1aeef2ad" formatted="false">Systeemtaal</string>
     <string name="t_3370d440" formatted="false">Persoon</string>
     <string name="t_d43ddd1a" formatted="false">Voertuig</string>
     <string name="t_6d072629" formatted="false">Dier</string>

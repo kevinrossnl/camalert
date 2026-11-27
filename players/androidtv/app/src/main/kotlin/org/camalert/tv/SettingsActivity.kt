@@ -19,6 +19,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreference
 import org.camalert.core.CoreData
+import org.camalert.core.Style
 import org.camalert.core.Setting
 
 /**
@@ -27,6 +28,8 @@ import org.camalert.core.Setting
  * "Show expert settings" is on; internal settings are never shown. Opening the app also starts the service.
  */
 class SettingsActivity : FragmentActivity() {
+    override fun attachBaseContext(base: android.content.Context) = super.attachBaseContext(Lang.wrap(base))  // #10
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         CamAlertService.start(this)
@@ -126,6 +129,21 @@ class SettingsActivity : FragmentActivity() {
             }
             if (section == "triggers") unifiConsole(screen)
             if (section == "camera_control") cameraDevices(screen)
+            if (section == "display") screen.addPreference(Preference(ctx).apply {  // #48: a preset fills in settings
+                title = tr(CoreData.load().presetLabels.getValue("simple"))
+                isIconSpaceReserved = false
+                setOnPreferenceClickListener {
+                    val store = Store(ctx)
+                    val ids = CoreData.load().settings.map { it.id }
+                    for ((k, v) in Style.presetChanges("simple", store.values(), ids)) store.set(k, v)
+                    activity?.recreate()
+                    true
+                }
+            })
+            screen.findPreference<ListPreference>("language")?.setOnPreferenceChangeListener { _, _ ->
+                view?.post { activity?.recreate() }  // #10: the settings at once in the new language
+                true
+            }
             preferenceScreen = screen
         }
 
@@ -220,7 +238,7 @@ class SettingsActivity : FragmentActivity() {
                 "choice" -> ListPreference(ctx).apply {
                     val values = s.choices!!
                     entryValues = values.toTypedArray()
-                    entries = values.map { tr.named("choice.${s.id}.$it", it) }.toTypedArray()
+                    entries = values.map { if (s.id == "language") Style.languageLabel(it, tr) else tr.named("choice.${s.id}.$it", it) }.toTypedArray()
                     setDefaultValue(s.default)
                     summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
                     dialogTitle = label(s, tr)

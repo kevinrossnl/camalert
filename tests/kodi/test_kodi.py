@@ -828,6 +828,58 @@ class _KodiModules(object):
             if w.timer:
                 w.timer.cancel()
 
+    def test_priority_frame_and_text_size(self):
+        """#48: a doorbell / alarm window gets a frame in the Okabe-Ito colour and the word in the title; the text
+        size picks larger skin fonts."""
+        display, klogic = Built.module("display"), Built.module("klogic")
+        w = display.PhotoWindow(FakeController(), self.CAMS[:1], self.settings(priority_border="flash"), keys=True,
+                                priority="alarm")
+        self.assertEqual(len(w.frame.controls), 4)
+        self.assertTrue(w.title_text.startswith("ALARM \u00b7 "))
+        w.frame.start()
+        self.assertIsNotNone(w.frame.timer)
+        w.stop()
+        self.assertIsNone(w.frame.timer)
+        plain = display.PhotoWindow(FakeController(), self.CAMS[:1], self.settings(), keys=True)
+        self.assertEqual(plain.frame.controls, [])
+        if plain.timer:
+            plain.timer.cancel()
+        fonts = {"font13": 30, "font14": 33, "font30": 42, "font45": 60}
+        self.assertEqual(klogic.title_font_name("normal", fonts), "font13")
+        self.assertEqual(klogic.text_font_name("large", fonts), "font14")
+        self.assertEqual(klogic.title_font_name("normal", fonts, "xlarge"), "font30")
+        self.assertEqual(klogic.text_font_name("normal", fonts), "font13")
+
+    def test_own_language(self):
+        """#10: the language setting wins over Kodi's language for CamAlert's texts."""
+        kodiapi = Built.module("kodiapi")
+        kodiapi.addon_path = lambda *p: os.path.join(ADDON, *p)
+        self.addCleanup(Built.store.pop, "language", None)
+        kodiapi._own["at"] = 0.0
+        Built.store["language"] = "nl"
+        self.assertEqual(kodiapi.tr(30192), "Camera's")
+        self.assertEqual(kodiapi.language(), "nl")
+        Built.store["language"] = "system"
+        kodiapi._own["at"] = 0.0
+        self.assertEqual(kodiapi.tr(30192), "Cameras")
+        kodiapi._own["at"] = 0.0
+
+    def test_door_key_and_preset(self):
+        """#13: RunScript(service.camalert,door) shows the default camera; #48: the simple preset."""
+        script = Built.module("script")
+        sent = []
+        self.addCleanup(setattr, script, "send", script.send)
+        script.send = lambda **cmd: sent.append(cmd)
+        script.run(["door"])
+        self.assertEqual(sent, [{"do": "show"}])
+        for k in ("text_size", "size", "duration", "ptz_key", "chime"):
+            self.addCleanup(Built.store.pop, k, None)
+        changes = script.apply_preset("simple")
+        self.assertEqual((Built.store["text_size"], Built.store["size"], Built.store["duration"]),
+                         ("xlarge", "large", "60"))
+        self.assertIn("ptz_key", changes)
+        self.assertEqual(script.apply_preset("simple"), {})
+
     def wait_for(self, cond, seconds=3.0):
         import time
         end = time.time() + seconds

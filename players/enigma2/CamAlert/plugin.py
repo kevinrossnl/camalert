@@ -27,6 +27,12 @@ def main(session, **kwargs):
     session.open(CamAlertSetup)
 
 
+def door(session, **kwargs):
+    """#13 'Look at the door': the default camera at once, in the chosen display mode. Put it on a key with the
+    image's key settings (openATV / OpenPLi: Menu > Setup > Hotkey / Button setup > Extensions)."""
+    Controller.instance.look_at_door()
+
+
 def mosaic(session, **kwargs):
     Controller.instance.mosaic()
 
@@ -45,6 +51,9 @@ def Plugins(**kwargs):
         PluginDescriptor(where=PluginDescriptor.WHERE_SESSIONSTART, fnc=sessionstart),
         PluginDescriptor(name="CamAlert", description=_("Show IP cameras on your TV"),
                          where=PluginDescriptor.WHERE_PLUGINMENU, icon="camalert.png", fnc=main),
+        PluginDescriptor(name=_("CamAlert: default camera"), description=_("Show the default camera at once"),
+                         where=[PluginDescriptor.WHERE_PLUGINMENU, PluginDescriptor.WHERE_EXTENSIONSMENU],
+                         icon="camalert.png", fnc=door),
         PluginDescriptor(name=_("CamAlert mosaic"), description=_("All cameras at once"),
                          where=[PluginDescriptor.WHERE_PLUGINMENU, PluginDescriptor.WHERE_EXTENSIONSMENU],
                          icon="camalert.png", fnc=mosaic),

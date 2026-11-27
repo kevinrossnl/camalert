@@ -21,6 +21,9 @@ msgstr "Hoch (Türklingel)"
 msgid "Alarm"
 msgstr "Alarm"
 
+msgid "System language"
+msgstr "Systemsprache"
+
 msgid "go2rtc server"
 msgstr "go2rtc-Server"
 
@@ -110,6 +113,15 @@ msgstr "ROT"
 
 msgid "GREEN"
 msgstr "GRÜN"
+
+msgid "Extra large"
+msgstr "Sehr groß"
+
+msgid "Steady"
+msgstr "Dauerhaft"
+
+msgid "Flashing"
+msgstr "Blinkend"
 
 msgid "Log only"
 msgstr "Nur protokollieren"
@@ -215,6 +227,12 @@ msgstr "CamAlert %s ist verfügbar (installiert: %s).\nUpdate über die Software
 
 msgid "Show IP cameras on your TV"
 msgstr "IP-Kameras auf dem Fernseher anzeigen"
+
+msgid "CamAlert: default camera"
+msgstr "CamAlert: Standardkamera"
+
+msgid "Show the default camera at once"
+msgstr "Die Standardkamera sofort zeigen"
 
 msgid "CamAlert mosaic"
 msgstr "CamAlert-Mosaik"
@@ -615,6 +633,12 @@ msgstr "von einem neueren CamAlert erstellt"
 msgid "Doorbell"
 msgstr "Türklingel"
 
+msgid "ALARM"
+msgstr "ALARM"
+
+msgid "Simple: large text, large window, 60 seconds"
+msgstr "Einfach: große Schrift, großes Fenster, 60 Sekunden"
+
 msgid "Person"
 msgstr "Person"
 
@@ -705,6 +729,12 @@ msgstr "Substreams für die Live-Ansicht"
 msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
 msgstr "Für Kameras, die der Receiver nicht abspielen kann (H.265/4K): front_door=front_door_sub nutzt diesen go2rtc-Stream für die Live-Ansicht."
 
+msgid "Language"
+msgstr "Sprache"
+
+msgid "Language of the CamAlert texts on this device. System language: the language of the device itself."
+msgstr "Sprache der CamAlert-Texte auf diesem Gerät. Systemsprache: die Sprache des Geräts selbst."
+
 msgid "Camera file (direct mode)"
 msgstr "Kameradatei (direkt)"
 
@@ -788,6 +818,18 @@ msgstr "Eine Anfrage mit 2-4 Kameras zeigt sie zusammen in einem Fenster mit meh
 
 msgid "Title size"
 msgstr "Titelgröße"
+
+msgid "Text size"
+msgstr "Schriftgröße"
+
+msgid "All CamAlert texts: window titles, key hints, camera control, tour, mosaic and lists."
+msgstr "Alle CamAlert-Texte: Fenstertitel, Tastenhinweise, Kamerasteuerung, Rundgang, Mosaik und Listen."
+
+msgid "Doorbell and alarm marking"
+msgstr "Markierung bei Türklingel und Alarm"
+
+msgid "Priority high: orange frame and the word Doorbell. Alarm: red-orange frame and the word ALARM. Flashing: once per second."
+msgstr "Priorität hoch: orangefarbener Rahmen und das Wort Türklingel. Alarm: rotoranger Rahmen und das Wort ALARM. Blinkend: einmal pro Sekunde."
 
 msgid "Doorbell chime"
 msgstr "Türklingelton"

@@ -23,6 +23,20 @@ actions and blueprint inputs stay backwards compatible.
   `seconds: 0`) keeps it until `hide` or a new `show`, at most 10 minutes, so a missed `hide` never leaves it on
   screen. The motion blueprint has a new option **Until the motion ends** (`until_motion_ends`) that hides the camera
   when every sensor is off again. Capability `hold`; older players get the longest fixed duration (#81).
+- **All players:** a **Text size** (normal, large, extra large) for every CamAlert screen: window titles, key hints,
+  camera control, tour, mosaic and lists; the title bar grows with it (#48).
+- **All players:** **Doorbell and alarm marking**: a window for a request with priority high gets an orange frame and
+  the word *Doorbell* in its title, alarm a red-orange frame and *ALARM*. Colours from the Okabe-Ito palette (safe
+  for colour blindness) and never colour alone; *Flashing* flashes once per second, *Off* turns it off (#48).
+- **All players:** **Simple settings** in one step: large text, large window, 60 seconds, camera control key off,
+  doorbell chime for doorbell and alarm (Enigma2: MENU in the settings; Kodi and Android TV: in the display
+  settings) (#48).
+- **All players:** a **Language** per player: CamAlert's texts in English, Dutch, German, French, Italian or Polish
+  whatever the language of the receiver, Kodi or Android device (#10). Enigma2 setting names follow after a restart
+  of the GUI; Kodi's settings dialog itself stays in Kodi's language; Android TV's overlay follows after a restart
+  of the app.
+- **Enigma2 and Kodi:** *Look at the door*: one key that shows the default camera at once, without chime
+  ([Remote keys](docs/user/keys.md#look-at-the-door-one-key-for-the-default-camera)) (#13).
 - **Home Assistant:** sets up a new player. Right after adding a player that has no go2rtc address yet, Home
   Assistant offers to send its go2rtc address (and a default camera); **Configure** on the entry sends one later. A
   player that was never set up takes any address, a player that is set up only one in the local network. New API

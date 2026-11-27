@@ -36,6 +36,12 @@
     <string name="choice_title_size_small" formatted="false">Małe</string>
     <string name="choice_title_size_normal" formatted="false">Normalny</string>
     <string name="choice_title_size_large" formatted="false">Duże</string>
+    <string name="choice_text_size_normal" formatted="false">Normalny</string>
+    <string name="choice_text_size_large" formatted="false">Duże</string>
+    <string name="choice_text_size_xlarge" formatted="false">Bardzo duże</string>
+    <string name="choice_priority_border_off" formatted="false">Wyłączone</string>
+    <string name="choice_priority_border_steady" formatted="false">Stała</string>
+    <string name="choice_priority_border_flash" formatted="false">Migająca</string>
     <string name="choice_chime_off" formatted="false">Wyłączone</string>
     <string name="choice_chime_high" formatted="false">Dzwonek i alarm</string>
     <string name="choice_chime_all" formatted="false">Każde żądanie</string>
@@ -109,6 +115,8 @@
     <string name="t_95d10e92" formatted="false">Naciśnij OK, aby nadać kamerze własną nazwę (puste = automatycznie).</string>
     <string name="t_6f1ca336" formatted="false">Strumienie pomocnicze na żywo</string>
     <string name="t_7302af3d" formatted="false">Dla kamer, których odbiornik nie odtworzy (H.265/4K): front_door=front_door_sub używa tego strumienia go2rtc na żywo.</string>
+    <string name="t_2dad13e3" formatted="false">Język</string>
+    <string name="t_a75d2c72" formatted="false">Język tekstów CamAlert na tym urządzeniu. Język systemu: język samego urządzenia.</string>
     <string name="t_7f13060c" formatted="false">Tryb wyświetlania</string>
     <string name="t_37083c0d" formatted="false">Okno ze zdjęciem: telewizja dalej gra. Na żywo: kanał przełącza się na kamerę.</string>
     <string name="t_0d46faad" formatted="false">Czas (sekundy)</string>
@@ -131,6 +139,10 @@
     <string name="t_40405b3f" formatted="false">Układ okna z kilkoma kamerami</string>
     <string name="t_b90a4fd3" formatted="false">Żądanie z 2-4 kamerami pokazuje je razem w oknie z kilkoma kamerami.</string>
     <string name="t_88c58adb" formatted="false">Rozmiar tytułu</string>
+    <string name="t_09cdafe2" formatted="false">Rozmiar tekstu</string>
+    <string name="t_5015df84" formatted="false">Wszystkie teksty CamAlert: tytuły okien, podpowiedzi przycisków, sterowanie kamerą, obchód, mozaika i listy.</string>
+    <string name="t_d8e12772" formatted="false">Oznaczenie dzwonka i alarmu</string>
+    <string name="t_89750080" formatted="false">Priorytet wysoki: pomarańczowa ramka i słowo Dzwonek. Alarm: czerwono-pomarańczowa ramka i słowo ALARM. Migająca: raz na sekundę.</string>
     <string name="t_d930321b" formatted="false">Dźwięk dzwonka</string>
     <string name="t_d9efc589" formatted="false">Odtwarza krótkie ding-dong dla żądań o priorytecie wysokim lub alarm (dzwonek).</string>
     <string name="t_f2d70813" formatted="false">Format obrazu na żywo</string>
@@ -266,6 +278,9 @@
     <string name="t_9ee51c54" formatted="false">to nie jest plik ustawień</string>
     <string name="t_53025dac" formatted="false">utworzony przez nowszą wersję CamAlert</string>
     <string name="t_9dc41ec9" formatted="false">Dzwonek</string>
+    <string name="t_83cb846d" formatted="false">ALARM</string>
+    <string name="t_f0af5f38" formatted="false">Prosto: duży tekst, duże okno, 60 sekund</string>
+    <string name="t_1aeef2ad" formatted="false">Język systemu</string>
     <string name="t_3370d440" formatted="false">Osoba</string>
     <string name="t_d43ddd1a" formatted="false">Pojazd</string>
     <string name="t_6d072629" formatted="false">Zwierzę</string>

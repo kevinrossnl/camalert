@@ -7,7 +7,7 @@ from urllib.parse import quote, urlsplit
 
 from .camalert_core import schema
 from .camalert_core.keymap import action_for, keys_for
-from .camalert_core.layout import TITLE_SIZES
+from .camalert_core.layout import TITLE_SIZES, text_scale
 
 # Kodi action ids (xbmcgui.ACTION_*)
 ACTION_LEFT, ACTION_RIGHT, ACTION_UP, ACTION_DOWN = 1, 2, 3, 4
@@ -97,6 +97,7 @@ DEFAULTS = {
     "unifi_mode": "photo", "unifi_seconds": 30, "unifi_interval": 5, "unifi_rules": "",
     "unifi_camera_rules": "",
     "log_level": "normal", "log_syslog": "", "ptz_key": "blue", "ha_buttons": True, "ha_webhook": "", "wizard_done": False,
+    "text_size": "normal", "priority_border": "steady", "language": "system",
     "title_size": "normal", "chime": "off", "frigate_url": "", "cooldown": "", "substreams": "",
 }
 CHOICES = {
@@ -109,6 +110,8 @@ CHOICES = {
     "unifi_mode": ("photo", "live", "notify", "log"), "unifi_priority": ("normal", "high", "alarm"),
     "log_level": ("off", "errors", "normal", "verbose"), "ptz_key": ("blue", "yellow", "red", "green", "off"),
     "title_size": ("small", "normal", "large"), "chime": ("off", "high", "all"),
+    "text_size": ("normal", "large", "xlarge"), "priority_border": ("off", "steady", "flash"),
+    "language": ("system", "en", "nl", "de", "fr", "it", "pl"),
 }
 RANGES = {"rtsp_port": (1, 65535), "duration": (5, 300), "frigate_seconds": (5, 300), "foscam_seconds": (5, 300),
           "foscam_interval": (1, 60), "unifi_seconds": (5, 300), "unifi_interval": (2, 60), "live_volume": (0, 100), "tour_interval": (3, 60), "http_port": (1024, 65535), "mqtt_port": (1, 65535)}
@@ -322,22 +325,30 @@ def skin_font_sizes(font_xml):
     return {}
 
 
-def title_font_name(title_size, fonts=None):
-    """Skin font for the photo-window title (#46). Skins only guarantee font13 (Estuary has no font30), so
-    'normal' is always font13 and small/large pick a plain 'fontNN' of the current skin (fonts = {name: size},
-    see skin_font_sizes) whose size is closest below the core's target ratio to normal (layout.TITLE_SIZES):
-    smaller resp. larger than font13. Unknown skin fonts or nothing suitable: font13."""
+def font_for_ratio(ratio, fonts=None):
+    """Skin font about `ratio` times font13 (#46, #48). Skins only guarantee font13 (Estuary has no font30), so
+    ratio 1 is always font13 and other ratios pick a plain 'fontNN' of the current skin (fonts = {name: size}, see
+    skin_font_sizes) whose size is closest below the target: smaller resp. larger than font13. Unknown skin fonts
+    or nothing suitable: font13."""
     fonts = fonts or {}
     base = fonts.get(SAFE_FONT)
-    if title_size not in ("small", "large") or not base:
+    if not base or abs(ratio - 1.0) < 0.01:
         return SAFE_FONT
-    target = base * TITLE_SIZES[title_size][1] / float(TITLE_SIZES["normal"][1])
+    target = base * ratio
     plain = [(size, name) for name, size in fonts.items() if re.match(r"^font\d+$", name) and size <= target + 0.5]
-    if title_size == "large":
-        plain = [p for p in plain if p[0] > base]
-    else:
-        plain = [p for p in plain if p[0] < base]
+    plain = [p for p in plain if (p[0] > base if ratio > 1 else p[0] < base)]
     return max(plain)[1] if plain else SAFE_FONT
+
+
+def title_font_name(title_size, fonts=None, text_size="normal"):
+    """Skin font for the photo-window title: the title size (layout.TITLE_SIZES) times the text size (#48)."""
+    ratio = TITLE_SIZES.get(title_size, TITLE_SIZES["normal"])[1] / float(TITLE_SIZES["normal"][1])
+    return font_for_ratio(ratio * text_scale(text_size), fonts)
+
+
+def text_font_name(text_size, fonts=None):
+    """Skin font for the other CamAlert texts (hints, mosaic labels, tour, live bar) at the text size (#48)."""
+    return font_for_ratio(text_scale(text_size), fonts)
 
 
 def chime_wanted(setting, priority):

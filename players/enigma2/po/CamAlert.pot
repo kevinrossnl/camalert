@@ -20,6 +20,9 @@ msgstr ""
 msgid "Alarm"
 msgstr ""
 
+msgid "System language"
+msgstr ""
+
 msgid "go2rtc server"
 msgstr ""
 
@@ -108,6 +111,15 @@ msgid "RED"
 msgstr ""
 
 msgid "GREEN"
+msgstr ""
+
+msgid "Extra large"
+msgstr ""
+
+msgid "Steady"
+msgstr ""
+
+msgid "Flashing"
 msgstr ""
 
 msgid "Log only"
@@ -213,6 +225,12 @@ msgid "CamAlert %s is available (installed: %s).\nUpdate via the software update
 msgstr ""
 
 msgid "Show IP cameras on your TV"
+msgstr ""
+
+msgid "CamAlert: default camera"
+msgstr ""
+
+msgid "Show the default camera at once"
 msgstr ""
 
 msgid "CamAlert mosaic"
@@ -614,6 +632,12 @@ msgstr ""
 msgid "Doorbell"
 msgstr ""
 
+msgid "ALARM"
+msgstr ""
+
+msgid "Simple: large text, large window, 60 seconds"
+msgstr ""
+
 msgid "Person"
 msgstr ""
 
@@ -704,6 +728,12 @@ msgstr ""
 msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
 msgstr ""
 
+msgid "Language"
+msgstr ""
+
+msgid "Language of the CamAlert texts on this device. System language: the language of the device itself."
+msgstr ""
+
 msgid "Camera file (direct mode)"
 msgstr ""
 
@@ -786,6 +816,18 @@ msgid "A request with 2-4 cameras shows them together in one multi-camera window
 msgstr ""
 
 msgid "Title size"
+msgstr ""
+
+msgid "Text size"
+msgstr ""
+
+msgid "All CamAlert texts: window titles, key hints, camera control, tour, mosaic and lists."
+msgstr ""
+
+msgid "Doorbell and alarm marking"
+msgstr ""
+
+msgid "Priority high: orange frame and the word Doorbell. Alarm: red-orange frame and the word ALARM. Flashing: once per second."
 msgstr ""
 
 msgid "Doorbell chime"

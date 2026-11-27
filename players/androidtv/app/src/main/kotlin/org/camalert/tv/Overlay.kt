@@ -36,6 +36,7 @@ import org.camalert.core.Display
 import org.camalert.core.Layout
 import org.camalert.core.Present
 import org.camalert.core.Screen
+import org.camalert.core.Style
 import org.camalert.core.Tile
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -81,9 +82,9 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
     fun allowed() = Settings.canDrawOverlays(ctx)
 
     // --- Display -----------------------------------------------------------------------------------------------------
-    override fun photo(tiles: List<Tile>, seconds: Int, label: String?) {
+    override fun photo(tiles: List<Tile>, seconds: Int, label: String?, priority: String) {
         state = Screen(if (tiles.size > 1) "strip" else "photo", tiles[0].name, tiles.map { it.name })
-        main.post { open(PhotoWin(tiles, seconds, label)) }
+        main.post { open(PhotoWin(tiles, seconds, label, priority = priority)) }
     }
 
     override fun extend(seconds: Int) {
@@ -157,6 +158,9 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
         return m
     }
 
+    /** The text size setting (#48): every window scales its fonts with it. */
+    private fun textSize() = host.settings()["text_size"]?.toString() ?: "normal"
+
     private fun text(size: Float, bold: Boolean = false) = TextView(ctx).apply {
         setTextColor(Color.WHITE)
         setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
@@ -191,6 +195,29 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
                 root.isFocusable = true
                 root.isFocusableInTouchMode = true
                 root.requestFocus()
+            }
+        }
+
+        /** The priority frame (#48): a border in the priority colour over the whole window, steady or flashing at
+         *  Style.flashMs (at most 3 flashes a second); the title carries the priority word too. */
+        fun addFrame(mark: Style.Mark, w: Int, h: Int) {
+            val b = maxOf(3, (6 * w / 640f).toInt().coerceAtMost(8))
+            val frame = View(ctx).apply {
+                background = android.graphics.drawable.GradientDrawable().apply {
+                    setColor(Color.TRANSPARENT)
+                    setStroke(b, Color.parseColor(mark.colour))
+                }
+            }
+            root.addView(frame, FrameLayout.LayoutParams(w, h))
+            if (mark.flash) {
+                val blink = object : Runnable {
+                    override fun run() {
+                        if (stop.get()) return
+                        frame.visibility = if (frame.visibility == View.VISIBLE) View.INVISIBLE else View.VISIBLE
+                        main.postDelayed(this, Style.flashMs.toLong())
+                    }
+                }
+                main.postDelayed(blink, Style.flashMs.toLong())
             }
         }
 
@@ -340,7 +367,7 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
         }
 
         fun hintBar(m: DisplayMetrics, parent: ViewGroup, x: Int, y: Int, w: Int, h: Int): TextView {
-            val tv = text(Layout.titleFont("small", m.widthPixels).toFloat())
+            val tv = text(Layout.titleFont("small", m.widthPixels, textSize()).toFloat())
             tv.setBackgroundColor(0x99000000.toInt())
             tv.text = host.present.keyHint(context, ptzKey(), hasPtz())
             parent.addView(tv, FrameLayout.LayoutParams(w, h).apply { leftMargin = x; topMargin = y })
@@ -420,7 +447,8 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
     }
 
     // --- photo window, multi-camera window, notification ---------------------------------------------------------------
-    private inner class PhotoWin(var tiles: List<Tile>, val seconds: Int, val label: String?, val notify: Boolean = false) :
+    private inner class PhotoWin(var tiles: List<Tile>, val seconds: Int, val label: String?, val notify: Boolean = false,
+                                 val priority: String = "normal") :
         Win(!notify && host.settings()["window_keys"] != false) {
         override val context = "window"
         lateinit var title: TextView
@@ -432,20 +460,22 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
             val pos = s["position"]?.toString() ?: "top_right"
             val size = if (notify) "small" else s["size"]?.toString() ?: "medium"
             val ts = s["title_size"]?.toString() ?: "normal"
-            val font = Layout.titleFont(ts, m.widthPixels).toFloat()
+            val font = Layout.titleFont(ts, m.widthPixels, textSize()).toFloat()
             val hint = if (takesKeys) (font * 1.4f).toInt() else 0
             root.setBackgroundColor(0xFF202020.toInt())
             val g: Layout.Window
             val rects: List<Layout.Rect>
             if (tiles.size == 1) {
-                g = Layout.window(pos, size, m.widthPixels, m.heightPixels, ts)
+                g = Layout.window(pos, size, m.widthPixels, m.heightPixels, ts, textSize())
                 rects = listOf(Layout.Rect(0, g.title, g.w, g.h))
             } else {
-                g = Layout.strip(tiles.size, s["strip_layout"]?.toString() ?: "auto", pos, size, m.widthPixels, m.heightPixels)
+                g = Layout.strip(tiles.size, s["strip_layout"]?.toString() ?: "auto", pos, size, m.widthPixels, m.heightPixels, textSize())
                 rects = g.tiles
             }
             title = text(font, true)
-            title.text = if (tiles.size == 1) tiles[0].title else listOfNotNull(label, tiles.joinToString(" · ") { it.title }).joinToString(" · ")
+            val border = s["priority_border"]?.toString() ?: "steady"
+            title.text = Style.markedTitle(if (tiles.size == 1) tiles[0].title else listOfNotNull(label, tiles.joinToString(" · ") { it.title }).joinToString(" · "),
+                priority, border, host.tr)
             root.addView(title, FrameLayout.LayoutParams(g.w, g.title))
             for ((i, t) in tiles.withIndex()) {
                 val iv = tileView(root, t, rects[i], font * 0.8f, tiles.size > 1)
@@ -455,6 +485,7 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
                 }
             }
             val total = g.title + g.h
+            Style.priorityMark(priority, border)?.let { addFrame(it, g.w, total + hint) }  // #48
             if (hint > 0) hintBar(m, root, 0, total, g.w, hint)
             extend(seconds)
             val y = if (pos.startsWith("bottom")) g.y - hint else g.y
@@ -519,7 +550,7 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
                 visibility = View.GONE
             }
             root.addView(stillView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-            val font = Layout.titleFont("normal", m.widthPixels).toFloat()
+            val font = Layout.titleFont("normal", m.widthPixels, textSize()).toFloat()
             bar = text(font)
             bar.setBackgroundColor(0x99000000.toInt())
             val h = (font * 1.6f).toInt()
@@ -637,7 +668,7 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
 
         override fun build(m: DisplayMetrics): WindowManager.LayoutParams {
             root.setBackgroundColor(Color.BLACK)
-            val font = Layout.titleFont("small", m.widthPixels).toFloat()
+            val font = Layout.titleFont("small", m.widthPixels, textSize()).toFloat()
             val rects = Layout.grid(tiles.size, m.widthPixels, m.heightPixels)
             for ((i, t) in tiles.withIndex()) tileView(root, t, rects[i], font, true)
             val hint = text(font).apply {
@@ -667,7 +698,7 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
 
         override fun build(m: DisplayMetrics): WindowManager.LayoutParams {
             root.setBackgroundColor(Color.BLACK)
-            val font = Layout.titleFont("normal", m.widthPixels).toFloat()
+            val font = Layout.titleFont("normal", m.widthPixels, textSize()).toFloat()
             val th = (font * 1.5f).toInt()
             title = text(font, true)
             title.setBackgroundColor(0x99000000.toInt())

@@ -263,6 +263,16 @@ def camera_password():
         xbmcgui.Dialog().ok("CamAlert", kodiapi.tr(30282))
 
 
+def apply_preset(name):
+    """#48: sets the settings of a preset (style.PRESETS) that this add-on has; returns {key: value} changed."""
+    from .camalert_core.style import preset_changes
+    from .klogic import DEFAULTS
+    changes = preset_changes(name, kodiapi.settings(), DEFAULTS)
+    for k, v in changes.items():
+        kodiapi.set_setting(k, v)
+    return changes
+
+
 def run(args):
     if not args:
         from . import kwizard
@@ -287,6 +297,11 @@ def run(args):
             return
         time.sleep(0.5)  # settings dialog closes first
         send(do="show", cam=s["camera"])
+    elif what == "door":  # #13 'Look at the door': map a key to RunScript(service.camalert,door)
+        send(do="show")
+    elif what == "preset":  # #48
+        apply_preset(args[1] if len(args) > 1 else "simple")
+        xbmcgui.Dialog().notification("CamAlert", kodiapi.tr(30738))
     elif what in ("mosaic", "tour", "hide"):
         time.sleep(0.5)
         send(do=what)

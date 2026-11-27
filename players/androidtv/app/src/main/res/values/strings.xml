@@ -37,6 +37,12 @@
     <string name="choice_title_size_small" formatted="false">Small</string>
     <string name="choice_title_size_normal" formatted="false">Normal</string>
     <string name="choice_title_size_large" formatted="false">Large</string>
+    <string name="choice_text_size_normal" formatted="false">Normal</string>
+    <string name="choice_text_size_large" formatted="false">Large</string>
+    <string name="choice_text_size_xlarge" formatted="false">Extra large</string>
+    <string name="choice_priority_border_off" formatted="false">Off</string>
+    <string name="choice_priority_border_steady" formatted="false">Steady</string>
+    <string name="choice_priority_border_flash" formatted="false">Flashing</string>
     <string name="choice_chime_off" formatted="false">Off</string>
     <string name="choice_chime_high" formatted="false">Doorbell and alarm</string>
     <string name="choice_chime_all" formatted="false">Every request</string>
@@ -110,6 +116,8 @@
     <string name="t_95d10e92" formatted="false">Press OK to give a camera its own name (empty = automatic).</string>
     <string name="t_6f1ca336" formatted="false">Live view substreams</string>
     <string name="t_7302af3d" formatted="false">For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view.</string>
+    <string name="t_2dad13e3" formatted="false">Language</string>
+    <string name="t_a75d2c72" formatted="false">Language of the CamAlert texts on this device. System language: the language of the device itself.</string>
     <string name="t_7f13060c" formatted="false">Display mode</string>
     <string name="t_37083c0d" formatted="false">Photo window keeps watching TV; live switches the channel to the camera.</string>
     <string name="t_0d46faad" formatted="false">Duration (seconds)</string>
@@ -132,6 +140,10 @@
     <string name="t_40405b3f" formatted="false">Multi-camera window layout</string>
     <string name="t_b90a4fd3" formatted="false">A request with 2-4 cameras shows them together in one multi-camera window.</string>
     <string name="t_88c58adb" formatted="false">Title size</string>
+    <string name="t_09cdafe2" formatted="false">Text size</string>
+    <string name="t_5015df84" formatted="false">All CamAlert texts: window titles, key hints, camera control, tour, mosaic and lists.</string>
+    <string name="t_d8e12772" formatted="false">Doorbell and alarm marking</string>
+    <string name="t_89750080" formatted="false">Priority high: orange frame and the word Doorbell. Alarm: red-orange frame and the word ALARM. Flashing: once per second.</string>
     <string name="t_d930321b" formatted="false">Doorbell chime</string>
     <string name="t_d9efc589" formatted="false">Plays a short ding-dong for requests with priority high or alarm (doorbell).</string>
     <string name="t_f2d70813" formatted="false">Live stream format</string>
@@ -267,6 +279,9 @@
     <string name="t_9ee51c54" formatted="false">not a settings file</string>
     <string name="t_53025dac" formatted="false">made by a newer CamAlert</string>
     <string name="t_9dc41ec9" formatted="false">Doorbell</string>
+    <string name="t_83cb846d" formatted="false">ALARM</string>
+    <string name="t_f0af5f38" formatted="false">Simple: large text, large window, 60 seconds</string>
+    <string name="t_1aeef2ad" formatted="false">System language</string>
     <string name="t_3370d440" formatted="false">Person</string>
     <string name="t_d43ddd1a" formatted="false">Vehicle</string>
     <string name="t_6d072629" formatted="false">Animal</string>

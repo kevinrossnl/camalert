@@ -156,6 +156,10 @@ class Controller(object):
         return True
 
     # --- public ----------------------------------------------------------------------------------------------
+    def window_priority(self, priority):
+        """The priority a window marks (#48): none for what the viewer asked for himself (#13)."""
+        return "normal" if getattr(self, "source", None) == "menu" else pick_priority(priority)
+
     def show(self, stream=None, seconds=None, mode=None, priority=None, source="api", label=None, event_id=None):
         """Handles a show request; logs it (source, decision, reason) and keeps it in the event list."""
         s = kodiapi.settings()
@@ -193,7 +197,7 @@ class Controller(object):
                        (" (%s)" % reason) if reason else ""), "error" if result == "error" else "normal")
         self.record_event(cam, label, source, pick_priority(priority), result, reason, event_id)
         if result in ("show", "extend") and chime_wanted(s["chime"], pick_priority(priority)) \
-                and not is_test(source):  # a test request never makes sound (#62)
+                and not is_test(source) and source != "menu":  # a test (#62) or the viewer's own choice (#13): no sound
             if kodiapi.cond("Player.Muted"):  # Kodi muted: no chime either (#20)
                 kodiapi.log("chime skipped: Kodi is muted")
             else:
@@ -285,7 +289,9 @@ class Controller(object):
             else:
                 self._close_window()
                 self._maybe_pause(s, kind, was_paused)
-                self.window = open_window(lambda: PhotoWindow(self, [(stream, title, snap)], s, s["window_keys"]))
+                mark = self.window_priority(priority)
+                self.window = open_window(lambda: PhotoWindow(self, [(stream, title, snap)], s, s["window_keys"],
+                                                              None, mark))
                 self.window.start(seconds)
         elif mode == "live":
             self._live(stream, live, title, seconds, s, priority, kind, f, pos, was_paused, action, snap)
@@ -318,7 +324,8 @@ class Controller(object):
         kind, _f, _p, was_paused = self.playing()
         self._maybe_pause(s, kind, was_paused)
         label = self.label
-        self.window = open_window(lambda: PhotoWindow(self, tiles, s, s["window_keys"], label))
+        mark = self.window_priority(priority)
+        self.window = open_window(lambda: PhotoWindow(self, tiles, s, s["window_keys"], label, mark))
         self.window.start(seconds)
         self.changed()
         return "show"

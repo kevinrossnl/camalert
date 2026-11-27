@@ -1369,6 +1369,94 @@ msgctxt "#30579"
 msgid "%s to Home Assistant"
 msgstr "%s naar Home Assistant"
 
+msgctxt "#30580"
+msgid "ALARM"
+msgstr "ALARM"
+
+msgctxt "#30581"
+msgid "Simple: large text, large window, 60 seconds"
+msgstr "Eenvoudig: grote tekst, groot venster, 60 seconden"
+
+msgctxt "#30582"
+msgid "System language"
+msgstr "Systeemtaal"
+
+msgctxt "#30720"
+msgid "Text size"
+msgstr "Tekstgrootte"
+
+msgctxt "#30721"
+msgid "All CamAlert texts: window titles, key hints, camera control, tour, mosaic and lists."
+msgstr "Alle CamAlert-teksten: venstertitels, toetshints, camerabediening, rondgang, mozaïek en lijsten."
+
+msgctxt "#30722"
+msgid "Extra large"
+msgstr "Extra groot"
+
+msgctxt "#30723"
+msgid "Doorbell and alarm marking"
+msgstr "Markering bij deurbel en alarm"
+
+msgctxt "#30724"
+msgid "Priority high: orange frame and the word Doorbell. Alarm: red-orange frame and the word ALARM. Flashing: once per second."
+msgstr "Prioriteit hoog: oranje rand en het woord Deurbel. Alarm: roodoranje rand en het woord ALARM. Knipperend: één keer per seconde."
+
+msgctxt "#30725"
+msgid "Steady"
+msgstr "Vast"
+
+msgctxt "#30726"
+msgid "Flashing"
+msgstr "Knipperend"
+
+msgctxt "#30727"
+msgid "Language"
+msgstr "Taal"
+
+msgctxt "#30728"
+msgid "Language of the CamAlert texts on this device. System language: the language of the device itself."
+msgstr "Taal van de CamAlert-teksten op dit apparaat. Systeemtaal: de taal van het apparaat zelf."
+
+msgctxt "#30729"
+msgid "System language"
+msgstr "Systeemtaal"
+
+msgctxt "#30730"
+msgid "English"
+msgstr "English"
+
+msgctxt "#30731"
+msgid "Nederlands"
+msgstr "Nederlands"
+
+msgctxt "#30732"
+msgid "Deutsch"
+msgstr "Deutsch"
+
+msgctxt "#30733"
+msgid "Français"
+msgstr "Français"
+
+msgctxt "#30734"
+msgid "Italiano"
+msgstr "Italiano"
+
+msgctxt "#30735"
+msgid "Polski"
+msgstr "Polski"
+
+msgctxt "#30736"
+msgid "Simple settings"
+msgstr "Eenvoudige instellingen"
+
+msgctxt "#30737"
+msgid "Large text, large window, 60 seconds, camera control key off, chime for doorbell and alarm."
+msgstr "Grote tekst, groot venster, 60 seconden, toets voor camerabediening uit, deurbelgeluid bij deurbel en alarm."
+
+msgctxt "#30738"
+msgid "Simple settings set: large text, large window, 60 seconds."
+msgstr "Eenvoudige instellingen gezet: grote tekst, groot venster, 60 seconden."
+
 msgctxt "#30780"
 msgid "Export settings"
 msgstr "Instellingen exporteren"

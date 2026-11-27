@@ -10,7 +10,8 @@ data class Screen(val kind: String?, val stream: String?, val streams: List<Stri
 
 /** The screen of the player: overlay windows on Android TV (implemented in the app, faked in the JVM tests). */
 interface Display {
-    fun photo(tiles: List<Tile>, seconds: Int, label: String?)
+    /** priority: what the window marks (#48), "normal" = no frame. */
+    fun photo(tiles: List<Tile>, seconds: Int, label: String?, priority: String = "normal")
     fun extend(seconds: Int)
     fun live(tile: Tile, seconds: Int, volumePercent: Int)
     fun notify(tile: Tile, seconds: Int)
@@ -109,7 +110,7 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
                     reason = "cooldown:$wait"
                     "ignore"
                 } else {
-                    val r = doShow(stream, seconds, mode, prio, lab, s)
+                    val r = doShow(stream, seconds, mode, prio, lab, s, if (source == "menu") "normal" else prio)
                     reason = r.second
                     r.first
                 }
@@ -127,7 +128,7 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
         env.log("request from $source: camera=$cam priority=$prio mode=${mode ?: "-"} label=${label ?: "-"} -> $result${if (reason.isNotEmpty()) " ($reason)" else ""}",
             if (result == "error") "error" else "normal")
         record(cam, lab, source, prio, result, reason, eventId)
-        if ((result == "show" || result == "extend") && source != "test" && Rules.chimeWanted(s["chime"]?.toString() ?: "off", prio)) env.chime()
+        if ((result == "show" || result == "extend") && source != "test" && source != "menu" && Rules.chimeWanted(s["chime"]?.toString() ?: "off", prio)) env.chime()
         env.changed()
         return result
     }
@@ -139,7 +140,9 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
     }
 
     /** (result, reason code). */
-    private fun doShow(stream: String?, seconds: Int?, mode: String?, priority: String, label: String?, s: Map<String, Any?>): Pair<String, String> {
+    /** mark: the priority the window marks (#48); "normal" for what the viewer asked for himself (#13). */
+    private fun doShow(stream: String?, seconds: Int?, mode: String?, priority: String, label: String?, s: Map<String, Any?>,
+                       mark: String = priority): Pair<String, String> {
         if (Rules.dndBlocks(priority, s["dnd"] == true, s["dnd_level"]?.toString() ?: "normal")) return Pair("ignore", "dnd")
         if (!env.screenOn()) {
             if (priority == "alarm" && s["alarm_wake"] == true) {
@@ -156,7 +159,7 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
             if (cams.size <= 4 && m == "photo") {
                 val tiles = cams.mapNotNull { tile(it, s) }.filter { it.snapshot != null }
                 if (tiles.isEmpty()) return Pair("error", "no_address")
-                display.photo(tiles, secs, label)
+                display.photo(tiles, secs, label, mark)
                 return Pair("show", "")
             }
             return Pair(mosaic(cams.joinToString(","), secs), "")
@@ -185,7 +188,7 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
         when (m) {
             "live" -> display.live(titled, secs, if (priority == "alarm") 100 else (s["live_volume"] as? Number)?.toInt() ?: 100)
             "notify" -> display.notify(titled, secs)
-            else -> display.photo(listOf(titled), secs, label)
+            else -> display.photo(listOf(titled), secs, label, mark)
         }
         return Pair("show", "")
     }

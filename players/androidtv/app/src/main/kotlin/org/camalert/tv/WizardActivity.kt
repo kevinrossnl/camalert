@@ -17,6 +17,8 @@ import java.util.concurrent.atomic.AtomicBoolean
  * The logic is org.camalert.core.Wizard; every network call runs in a thread. Leaving it at any point marks it done.
  */
 class WizardActivity : Activity() {
+    override fun attachBaseContext(base: android.content.Context) = super.attachBaseContext(Lang.wrap(base))  // #10
+
     private val stop = AtomicBoolean(false)
     private lateinit var store: Store
     private var found: List<Pair<String, List<String>>> = emptyList()

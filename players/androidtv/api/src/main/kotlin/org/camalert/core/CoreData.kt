@@ -37,6 +37,17 @@ class CoreData(val raw: Map<String, Any?>) {
     val frameCacheSeconds = (raw["frame_cache_seconds"] as Number).toInt()
     val stillMaxSeconds = (raw["still_max_seconds"] as Number).toDouble()
     val setupReceived = raw["setup_received"] as String
+    val textSizes = (raw["text_sizes"] as Map<String, Number>).mapValues { it.value.toDouble() }
+    val borderModes = raw["border_modes"] as List<String>
+    val priorityColours = raw["priority_colours"] as Map<String, String>
+    val priorityMarks = raw["priority_marks"] as Map<String, String>
+    val flashMs = (raw["flash_ms"] as Number).toInt()
+    val presets = (raw["presets"] as Map<String, Map<String, Any?>>).mapValues { (_, p) ->
+        p.mapValues { (_, v) -> if (v is Long) v.toInt() else v } }
+    val presetLabels = raw["preset_labels"] as Map<String, String>
+    val languages = raw["languages"] as List<String>
+    val languageNames = raw["language_names"] as Map<String, String>
+    val systemLanguage = raw["system_language"] as String
 
     companion object {
         @Volatile private var cached: CoreData? = null

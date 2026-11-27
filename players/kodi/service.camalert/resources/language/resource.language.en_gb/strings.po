@@ -1369,6 +1369,94 @@ msgctxt "#30579"
 msgid "%s to Home Assistant"
 msgstr ""
 
+msgctxt "#30580"
+msgid "ALARM"
+msgstr ""
+
+msgctxt "#30581"
+msgid "Simple: large text, large window, 60 seconds"
+msgstr ""
+
+msgctxt "#30582"
+msgid "System language"
+msgstr ""
+
+msgctxt "#30720"
+msgid "Text size"
+msgstr ""
+
+msgctxt "#30721"
+msgid "All CamAlert texts: window titles, key hints, camera control, tour, mosaic and lists."
+msgstr ""
+
+msgctxt "#30722"
+msgid "Extra large"
+msgstr ""
+
+msgctxt "#30723"
+msgid "Doorbell and alarm marking"
+msgstr ""
+
+msgctxt "#30724"
+msgid "Priority high: orange frame and the word Doorbell. Alarm: red-orange frame and the word ALARM. Flashing: once per second."
+msgstr ""
+
+msgctxt "#30725"
+msgid "Steady"
+msgstr ""
+
+msgctxt "#30726"
+msgid "Flashing"
+msgstr ""
+
+msgctxt "#30727"
+msgid "Language"
+msgstr ""
+
+msgctxt "#30728"
+msgid "Language of the CamAlert texts on this device. System language: the language of the device itself."
+msgstr ""
+
+msgctxt "#30729"
+msgid "System language"
+msgstr ""
+
+msgctxt "#30730"
+msgid "English"
+msgstr ""
+
+msgctxt "#30731"
+msgid "Nederlands"
+msgstr ""
+
+msgctxt "#30732"
+msgid "Deutsch"
+msgstr ""
+
+msgctxt "#30733"
+msgid "Français"
+msgstr ""
+
+msgctxt "#30734"
+msgid "Italiano"
+msgstr ""
+
+msgctxt "#30735"
+msgid "Polski"
+msgstr ""
+
+msgctxt "#30736"
+msgid "Simple settings"
+msgstr ""
+
+msgctxt "#30737"
+msgid "Large text, large window, 60 seconds, camera control key off, chime for doorbell and alarm."
+msgstr ""
+
+msgctxt "#30738"
+msgid "Simple settings set: large text, large window, 60 seconds."
+msgstr ""
+
 msgctxt "#30780"
 msgid "Export settings"
 msgstr ""

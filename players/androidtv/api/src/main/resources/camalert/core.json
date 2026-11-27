@@ -14,6 +14,11 @@
   "▼": "v",
   "◀": "<"
  },
+ "border_modes": [
+  "off",
+  "steady",
+  "flash"
+ ],
  "capabilities": [
   "cameras",
   "dnd",
@@ -50,6 +55,7 @@
   "live",
   "actions"
  ],
+ "flash_ms": 500,
  "frame_cache_seconds": 10,
  "hint_separator": "   ",
  "hints": {
@@ -343,6 +349,23 @@
    ]
   }
  },
+ "language_names": {
+  "de": "Deutsch",
+  "en": "English",
+  "fr": "Français",
+  "it": "Italiano",
+  "nl": "Nederlands",
+  "pl": "Polski"
+ },
+ "languages": [
+  "system",
+  "en",
+  "nl",
+  "de",
+  "fr",
+  "it",
+  "pl"
+ ],
  "levels": [
   "basic",
   "advanced",
@@ -364,15 +387,35 @@
   "ptz_user": "the default camera login is kept with the camera devices, never with the settings (#66)",
   "source": "go2rtc only for now (direct mode with a camera file: follow-up, #124)"
  },
+ "preset_labels": {
+  "simple": "Simple: large text, large window, 60 seconds"
+ },
+ "presets": {
+  "simple": {
+   "chime": "high",
+   "duration": 60,
+   "ptz_key": "off",
+   "size": "large",
+   "text_size": "xlarge"
+  }
+ },
  "priorities": [
   "normal",
   "high",
   "alarm"
  ],
+ "priority_colours": {
+  "alarm": "#D55E00",
+  "high": "#E69F00"
+ },
  "priority_labels": {
   "alarm": "Alarm",
   "high": "High",
   "normal": "Normal"
+ },
+ "priority_marks": {
+  "alarm": "ALARM",
+  "high": "Doorbell"
  },
  "ptz_actions": [
   "up",
@@ -553,6 +596,28 @@
    "section": "general",
    "step": null,
    "type": "bool",
+   "unit": null
+  },
+  {
+   "choices": [
+    "system",
+    "en",
+    "nl",
+    "de",
+    "fr",
+    "it",
+    "pl"
+   ],
+   "default": "system",
+   "help": "Language of the CamAlert texts on this device. System language: the language of the device itself.",
+   "id": "language",
+   "label": "Language",
+   "level": "advanced",
+   "max": null,
+   "min": null,
+   "section": "general",
+   "step": null,
+   "type": "choice",
    "unit": null
   },
   {
@@ -751,6 +816,42 @@
    "help": null,
    "id": "title_size",
    "label": "Title size",
+   "level": "advanced",
+   "max": null,
+   "min": null,
+   "section": "display",
+   "step": null,
+   "type": "choice",
+   "unit": null
+  },
+  {
+   "choices": [
+    "normal",
+    "large",
+    "xlarge"
+   ],
+   "default": "normal",
+   "help": "All CamAlert texts: window titles, key hints, camera control, tour, mosaic and lists.",
+   "id": "text_size",
+   "label": "Text size",
+   "level": "advanced",
+   "max": null,
+   "min": null,
+   "section": "display",
+   "step": null,
+   "type": "choice",
+   "unit": null
+  },
+  {
+   "choices": [
+    "off",
+    "steady",
+    "flash"
+   ],
+   "default": "steady",
+   "help": "Priority high: orange frame and the word Doorbell. Alarm: red-orange frame and the word ALARM. Flashing: once per second.",
+   "id": "priority_border",
+   "label": "Doorbell and alarm marking",
    "level": "advanced",
    "max": null,
    "min": null,
@@ -1485,7 +1586,13 @@
   "wake": "Wake up"
  },
  "still_max_seconds": 15,
+ "system_language": "System language",
  "test_source": "test",
+ "text_sizes": {
+  "large": 1.25,
+  "normal": 1.0,
+  "xlarge": 1.5
+ },
  "tile_labels": {
   "loading": "Loading picture...",
   "unreachable": "Camera not reachable"

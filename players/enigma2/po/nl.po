@@ -21,6 +21,9 @@ msgstr "Hoog (deurbel)"
 msgid "Alarm"
 msgstr "Alarm"
 
+msgid "System language"
+msgstr "Systeemtaal"
+
 msgid "go2rtc server"
 msgstr "go2rtc-server"
 
@@ -110,6 +113,15 @@ msgstr "ROOD"
 
 msgid "GREEN"
 msgstr "GROEN"
+
+msgid "Extra large"
+msgstr "Extra groot"
+
+msgid "Steady"
+msgstr "Vast"
+
+msgid "Flashing"
+msgstr "Knipperend"
 
 msgid "Log only"
 msgstr "Alleen loggen"
@@ -215,6 +227,12 @@ msgstr "CamAlert %s is beschikbaar (geïnstalleerd: %s).\nBijwerken via de softw
 
 msgid "Show IP cameras on your TV"
 msgstr "Toon IP-camera's op je tv"
+
+msgid "CamAlert: default camera"
+msgstr "CamAlert: standaardcamera"
+
+msgid "Show the default camera at once"
+msgstr "De standaardcamera direct tonen"
 
 msgid "CamAlert mosaic"
 msgstr "CamAlert-mozaïek"
@@ -615,6 +633,12 @@ msgstr "gemaakt door een nieuwere CamAlert"
 msgid "Doorbell"
 msgstr "Deurbel"
 
+msgid "ALARM"
+msgstr "ALARM"
+
+msgid "Simple: large text, large window, 60 seconds"
+msgstr "Eenvoudig: grote tekst, groot venster, 60 seconden"
+
 msgid "Person"
 msgstr "Persoon"
 
@@ -705,6 +729,12 @@ msgstr "Substreams voor live beeld"
 msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
 msgstr "Voor camera's die de ontvanger niet kan afspelen (H.265/4K): front_door=front_door_sub gebruikt die go2rtc-stream voor live beeld."
 
+msgid "Language"
+msgstr "Taal"
+
+msgid "Language of the CamAlert texts on this device. System language: the language of the device itself."
+msgstr "Taal van de CamAlert-teksten op dit apparaat. Systeemtaal: de taal van het apparaat zelf."
+
 msgid "Camera file (direct mode)"
 msgstr "Camerabestand (rechtstreeks)"
 
@@ -788,6 +818,18 @@ msgstr "Een verzoek met 2-4 camera's toont ze samen in één venster met meerder
 
 msgid "Title size"
 msgstr "Titelgrootte"
+
+msgid "Text size"
+msgstr "Tekstgrootte"
+
+msgid "All CamAlert texts: window titles, key hints, camera control, tour, mosaic and lists."
+msgstr "Alle CamAlert-teksten: venstertitels, toetshints, camerabediening, rondgang, mozaïek en lijsten."
+
+msgid "Doorbell and alarm marking"
+msgstr "Markering bij deurbel en alarm"
+
+msgid "Priority high: orange frame and the word Doorbell. Alarm: red-orange frame and the word ALARM. Flashing: once per second."
+msgstr "Prioriteit hoog: oranje rand en het woord Deurbel. Alarm: roodoranje rand en het woord ALARM. Knipperend: één keer per seconde."
 
 msgid "Doorbell chime"
 msgstr "Deurbelgeluid"

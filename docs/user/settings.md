@@ -23,6 +23,7 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Mosaic cameras | – |  | advanced | all | Press OK to choose up to 9 cameras for the mosaic. Empty = all. |
 | Camera names | – |  | advanced | all | Press OK to give a camera its own name (empty = automatic). |
 | Live view substreams | – |  | expert | all | For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view. |
+| Language | `system` | `system` / `en` / `nl` / `de` / `fr` / `it` / `pl` | advanced | all | Language of the CamAlert texts on this device. System language: the language of the device itself. |
 | Camera file (direct mode) | – |  | expert | Kodi | Empty = cameras.conf in the add-on data folder. One camera per line: name \| rtsp-url \| snapshot-url |
 
 ### Display
@@ -44,6 +45,8 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Refresh interval | – |  | advanced | all | Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera. |
 | Multi-camera window layout | `auto` | `auto` / `vertical` / `horizontal` / `grid` | advanced | all | A request with 2-4 cameras shows them together in one multi-camera window. |
 | Title size | `normal` | `small` / `normal` / `large` | advanced | all |  |
+| Text size | `normal` | `normal` / `large` / `xlarge` | advanced | all | All CamAlert texts: window titles, key hints, camera control, tour, mosaic and lists. |
+| Doorbell and alarm marking | `steady` | `off` / `steady` / `flash` | advanced | all | Priority high: orange frame and the word Doorbell. Alarm: red-orange frame and the word ALARM. Flashing: once per second. |
 | Doorbell chime | `off` | `off` / `high` / `all` | advanced | all | Plays a short ding-dong for requests with priority high or alarm (doorbell). |
 | Picons for the camera channels | No |  | advanced | Enigma2 | Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced. |
 | Live stream format | `mp4` | `mp4` / `hls` / `rtsp` | expert | Kodi, Android TV | MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds. |

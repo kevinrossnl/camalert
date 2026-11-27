@@ -67,6 +67,25 @@ switches camera control on for cameras with PTZ. Fire TV remotes have no colour 
 switches camera control on, FF/REW zoom and PLAY/PAUSE starts live view in the tour.
 <!-- END generated: keys -->
 
+## Look at the door: one key for the default camera
+
+One key that always shows the default camera at once, in your display mode (#13). It comes through *Do not disturb*
+and the time rules, and plays no doorbell chime: you asked for it yourself.
+
+- **Enigma2:** the plugin adds *CamAlert: default camera* to the extensions (BLUE) menu. Put it on a key of your
+  choice with the image's key settings (openATV: *Menu > Setup > System > Hotkey*; OpenPLi: *Menu > Setup >
+  Usage and GUI > Button setup*), for example a long press of a colour key.
+- **Kodi:** map a key to `RunScript(service.camalert,door)` in a keymap, for example in
+  `userdata/keymaps/camalert.xml`:
+
+  ```xml
+  <keymap><global><keyboard><f9>RunScript(service.camalert,door)</f9></keyboard>
+    <remote><red mod="longpress">RunScript(service.camalert,door)</red></remote></global></keymap>
+  ```
+- **Android TV:** remotes have no free key for apps; use the camera list of the app or a button in Home Assistant.
+
+On every CamAlert screen the bottom line shows which keys do what; the mosaic shows it in its title.
+
 ## Colour keys to Home Assistant
 
 While a camera is on screen, RED, GREEN, YELLOW and BLUE on the remote send an event to Home Assistant. Example: the

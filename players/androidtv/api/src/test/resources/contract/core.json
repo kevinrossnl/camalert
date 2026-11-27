@@ -7444,6 +7444,366 @@
   },
   {
    "args": [
+    "bottom_left",
+    "medium",
+    1920,
+    1080,
+    "small",
+    "normal"
+   ],
+   "kind": "window_text",
+   "out": [
+    40,
+    648,
+    640,
+    360,
+    32
+   ]
+  },
+  {
+   "args": [
+    "small",
+    1920,
+    "normal"
+   ],
+   "kind": "title_font_text",
+   "out": 22
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal"
+   ],
+   "kind": "window_text",
+   "out": [
+    40,
+    640,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "normal",
+    1920,
+    "normal"
+   ],
+   "kind": "title_font_text",
+   "out": 26
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1920,
+    1080,
+    "large",
+    "normal"
+   ],
+   "kind": "window_text",
+   "out": [
+    40,
+    624,
+    640,
+    360,
+    56
+   ]
+  },
+  {
+   "args": [
+    "large",
+    1920,
+    "normal"
+   ],
+   "kind": "title_font_text",
+   "out": 38
+  },
+  {
+   "args": [
+    3,
+    "grid",
+    "top_right",
+    "medium",
+    1920,
+    1080,
+    "normal"
+   ],
+   "kind": "strip_text",
+   "out": [
+    594,
+    40,
+    1286,
+    726,
+    40,
+    [
+     [
+      0,
+      40,
+      640,
+      360
+     ],
+     [
+      646,
+      40,
+      640,
+      360
+     ],
+     [
+      0,
+      406,
+      640,
+      360
+     ]
+    ]
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1920,
+    1080,
+    "small",
+    "large"
+   ],
+   "kind": "window_text",
+   "out": [
+    40,
+    640,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "small",
+    1920,
+    "large"
+   ],
+   "kind": "title_font_text",
+   "out": 27
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "large"
+   ],
+   "kind": "window_text",
+   "out": [
+    40,
+    630,
+    640,
+    360,
+    50
+   ]
+  },
+  {
+   "args": [
+    "normal",
+    1920,
+    "large"
+   ],
+   "kind": "title_font_text",
+   "out": 32
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1920,
+    1080,
+    "large",
+    "large"
+   ],
+   "kind": "window_text",
+   "out": [
+    40,
+    610,
+    640,
+    360,
+    70
+   ]
+  },
+  {
+   "args": [
+    "large",
+    1920,
+    "large"
+   ],
+   "kind": "title_font_text",
+   "out": 47
+  },
+  {
+   "args": [
+    3,
+    "grid",
+    "top_right",
+    "medium",
+    1920,
+    1080,
+    "large"
+   ],
+   "kind": "strip_text",
+   "out": [
+    594,
+    40,
+    1286,
+    726,
+    50,
+    [
+     [
+      0,
+      50,
+      640,
+      360
+     ],
+     [
+      646,
+      50,
+      640,
+      360
+     ],
+     [
+      0,
+      416,
+      640,
+      360
+     ]
+    ]
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1920,
+    1080,
+    "small",
+    "xlarge"
+   ],
+   "kind": "window_text",
+   "out": [
+    40,
+    632,
+    640,
+    360,
+    48
+   ]
+  },
+  {
+   "args": [
+    "small",
+    1920,
+    "xlarge"
+   ],
+   "kind": "title_font_text",
+   "out": 33
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "xlarge"
+   ],
+   "kind": "window_text",
+   "out": [
+    40,
+    620,
+    640,
+    360,
+    60
+   ]
+  },
+  {
+   "args": [
+    "normal",
+    1920,
+    "xlarge"
+   ],
+   "kind": "title_font_text",
+   "out": 39
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1920,
+    1080,
+    "large",
+    "xlarge"
+   ],
+   "kind": "window_text",
+   "out": [
+    40,
+    596,
+    640,
+    360,
+    84
+   ]
+  },
+  {
+   "args": [
+    "large",
+    1920,
+    "xlarge"
+   ],
+   "kind": "title_font_text",
+   "out": 57
+  },
+  {
+   "args": [
+    3,
+    "grid",
+    "top_right",
+    "medium",
+    1920,
+    1080,
+    "xlarge"
+   ],
+   "kind": "strip_text",
+   "out": [
+    594,
+    40,
+    1286,
+    726,
+    60,
+    [
+     [
+      0,
+      60,
+      640,
+      360
+     ],
+     [
+      646,
+      60,
+      640,
+      360
+     ],
+     [
+      0,
+      426,
+      640,
+      360
+     ]
+    ]
+   ]
+  },
+  {
+   "args": [
     "top_right",
     "small",
     1280,
@@ -13912,6 +14272,366 @@
   },
   {
    "args": [
+    "bottom_left",
+    "medium",
+    1280,
+    720,
+    "small",
+    "normal"
+   ],
+   "kind": "window_text",
+   "out": [
+    26,
+    433,
+    426,
+    240,
+    21
+   ]
+  },
+  {
+   "args": [
+    "small",
+    1280,
+    "normal"
+   ],
+   "kind": "title_font_text",
+   "out": 14
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal"
+   ],
+   "kind": "window_text",
+   "out": [
+    26,
+    428,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "normal",
+    1280,
+    "normal"
+   ],
+   "kind": "title_font_text",
+   "out": 17
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1280,
+    720,
+    "large",
+    "normal"
+   ],
+   "kind": "window_text",
+   "out": [
+    26,
+    417,
+    426,
+    240,
+    37
+   ]
+  },
+  {
+   "args": [
+    "large",
+    1280,
+    "normal"
+   ],
+   "kind": "title_font_text",
+   "out": 25
+  },
+  {
+   "args": [
+    3,
+    "grid",
+    "top_right",
+    "medium",
+    1280,
+    720,
+    "normal"
+   ],
+   "kind": "strip_text",
+   "out": [
+    398,
+    26,
+    856,
+    484,
+    26,
+    [
+     [
+      0,
+      26,
+      426,
+      240
+     ],
+     [
+      430,
+      26,
+      426,
+      240
+     ],
+     [
+      0,
+      270,
+      426,
+      240
+     ]
+    ]
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1280,
+    720,
+    "small",
+    "large"
+   ],
+   "kind": "window_text",
+   "out": [
+    26,
+    428,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "small",
+    1280,
+    "large"
+   ],
+   "kind": "title_font_text",
+   "out": 18
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "large"
+   ],
+   "kind": "window_text",
+   "out": [
+    26,
+    421,
+    426,
+    240,
+    33
+   ]
+  },
+  {
+   "args": [
+    "normal",
+    1280,
+    "large"
+   ],
+   "kind": "title_font_text",
+   "out": 21
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1280,
+    720,
+    "large",
+    "large"
+   ],
+   "kind": "window_text",
+   "out": [
+    26,
+    408,
+    426,
+    240,
+    46
+   ]
+  },
+  {
+   "args": [
+    "large",
+    1280,
+    "large"
+   ],
+   "kind": "title_font_text",
+   "out": 31
+  },
+  {
+   "args": [
+    3,
+    "grid",
+    "top_right",
+    "medium",
+    1280,
+    720,
+    "large"
+   ],
+   "kind": "strip_text",
+   "out": [
+    398,
+    26,
+    856,
+    484,
+    33,
+    [
+     [
+      0,
+      33,
+      426,
+      240
+     ],
+     [
+      430,
+      33,
+      426,
+      240
+     ],
+     [
+      0,
+      277,
+      426,
+      240
+     ]
+    ]
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1280,
+    720,
+    "small",
+    "xlarge"
+   ],
+   "kind": "window_text",
+   "out": [
+    26,
+    422,
+    426,
+    240,
+    32
+   ]
+  },
+  {
+   "args": [
+    "small",
+    1280,
+    "xlarge"
+   ],
+   "kind": "title_font_text",
+   "out": 22
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "xlarge"
+   ],
+   "kind": "window_text",
+   "out": [
+    26,
+    414,
+    426,
+    240,
+    40
+   ]
+  },
+  {
+   "args": [
+    "normal",
+    1280,
+    "xlarge"
+   ],
+   "kind": "title_font_text",
+   "out": 26
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1280,
+    720,
+    "large",
+    "xlarge"
+   ],
+   "kind": "window_text",
+   "out": [
+    26,
+    399,
+    426,
+    240,
+    55
+   ]
+  },
+  {
+   "args": [
+    "large",
+    1280,
+    "xlarge"
+   ],
+   "kind": "title_font_text",
+   "out": 38
+  },
+  {
+   "args": [
+    3,
+    "grid",
+    "top_right",
+    "medium",
+    1280,
+    720,
+    "xlarge"
+   ],
+   "kind": "strip_text",
+   "out": [
+    398,
+    26,
+    856,
+    484,
+    40,
+    [
+     [
+      0,
+      40,
+      426,
+      240
+     ],
+     [
+      430,
+      40,
+      426,
+      240
+     ],
+     [
+      0,
+      284,
+      426,
+      240
+     ]
+    ]
+   ]
+  },
+  {
+   "args": [
     "top_right",
     "small",
     3840,
@@ -20377,6 +21097,366 @@
    ],
    "kind": "title_font",
    "out": 76
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    3840,
+    2160,
+    "small",
+    "normal"
+   ],
+   "kind": "window_text",
+   "out": [
+    80,
+    1296,
+    1280,
+    720,
+    64
+   ]
+  },
+  {
+   "args": [
+    "small",
+    3840,
+    "normal"
+   ],
+   "kind": "title_font_text",
+   "out": 44
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal"
+   ],
+   "kind": "window_text",
+   "out": [
+    80,
+    1280,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "normal",
+    3840,
+    "normal"
+   ],
+   "kind": "title_font_text",
+   "out": 52
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    3840,
+    2160,
+    "large",
+    "normal"
+   ],
+   "kind": "window_text",
+   "out": [
+    80,
+    1248,
+    1280,
+    720,
+    112
+   ]
+  },
+  {
+   "args": [
+    "large",
+    3840,
+    "normal"
+   ],
+   "kind": "title_font_text",
+   "out": 76
+  },
+  {
+   "args": [
+    3,
+    "grid",
+    "top_right",
+    "medium",
+    3840,
+    2160,
+    "normal"
+   ],
+   "kind": "strip_text",
+   "out": [
+    1188,
+    80,
+    2572,
+    1452,
+    80,
+    [
+     [
+      0,
+      80,
+      1280,
+      720
+     ],
+     [
+      1292,
+      80,
+      1280,
+      720
+     ],
+     [
+      0,
+      812,
+      1280,
+      720
+     ]
+    ]
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    3840,
+    2160,
+    "small",
+    "large"
+   ],
+   "kind": "window_text",
+   "out": [
+    80,
+    1280,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "small",
+    3840,
+    "large"
+   ],
+   "kind": "title_font_text",
+   "out": 55
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "large"
+   ],
+   "kind": "window_text",
+   "out": [
+    80,
+    1260,
+    1280,
+    720,
+    100
+   ]
+  },
+  {
+   "args": [
+    "normal",
+    3840,
+    "large"
+   ],
+   "kind": "title_font_text",
+   "out": 65
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    3840,
+    2160,
+    "large",
+    "large"
+   ],
+   "kind": "window_text",
+   "out": [
+    80,
+    1220,
+    1280,
+    720,
+    140
+   ]
+  },
+  {
+   "args": [
+    "large",
+    3840,
+    "large"
+   ],
+   "kind": "title_font_text",
+   "out": 95
+  },
+  {
+   "args": [
+    3,
+    "grid",
+    "top_right",
+    "medium",
+    3840,
+    2160,
+    "large"
+   ],
+   "kind": "strip_text",
+   "out": [
+    1188,
+    80,
+    2572,
+    1452,
+    100,
+    [
+     [
+      0,
+      100,
+      1280,
+      720
+     ],
+     [
+      1292,
+      100,
+      1280,
+      720
+     ],
+     [
+      0,
+      832,
+      1280,
+      720
+     ]
+    ]
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    3840,
+    2160,
+    "small",
+    "xlarge"
+   ],
+   "kind": "window_text",
+   "out": [
+    80,
+    1264,
+    1280,
+    720,
+    96
+   ]
+  },
+  {
+   "args": [
+    "small",
+    3840,
+    "xlarge"
+   ],
+   "kind": "title_font_text",
+   "out": 66
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "xlarge"
+   ],
+   "kind": "window_text",
+   "out": [
+    80,
+    1240,
+    1280,
+    720,
+    120
+   ]
+  },
+  {
+   "args": [
+    "normal",
+    3840,
+    "xlarge"
+   ],
+   "kind": "title_font_text",
+   "out": 78
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    3840,
+    2160,
+    "large",
+    "xlarge"
+   ],
+   "kind": "window_text",
+   "out": [
+    80,
+    1192,
+    1280,
+    720,
+    168
+   ]
+  },
+  {
+   "args": [
+    "large",
+    3840,
+    "xlarge"
+   ],
+   "kind": "title_font_text",
+   "out": 114
+  },
+  {
+   "args": [
+    3,
+    "grid",
+    "top_right",
+    "medium",
+    3840,
+    2160,
+    "xlarge"
+   ],
+   "kind": "strip_text",
+   "out": [
+    1188,
+    80,
+    2572,
+    1452,
+    120,
+    [
+     [
+      0,
+      120,
+      1280,
+      720
+     ],
+     [
+      1292,
+      120,
+      1280,
+      720
+     ],
+     [
+      0,
+      852,
+      1280,
+      720
+     ]
+    ]
+   ]
   }
  ],
  "has_seconds": [
@@ -21121,6 +22201,7 @@
     "ha_buttons": true,
     "ha_webhook": "",
     "http_port": 8099,
+    "language": "system",
     "limit_hours": false,
     "live_format": "mp4",
     "live_volume": 0,
@@ -21137,6 +22218,7 @@
     "mqtt_user": "",
     "orientation": "",
     "position": "top_right",
+    "priority_border": "steady",
     "protect_snapshots": true,
     "ptz_key": "blue",
     "ready_cameras": "",
@@ -21147,6 +22229,7 @@
     "skip_playing": "off",
     "strip_layout": "auto",
     "substreams": "",
+    "text_size": "normal",
     "title_size": "normal",
     "titles": "",
     "token": "abc",
@@ -21211,6 +22294,7 @@
     "ha_buttons": true,
     "ha_webhook": "",
     "http_port": 8099,
+    "language": "system",
     "limit_hours": false,
     "live_format": "mp4",
     "live_volume": 55,
@@ -21227,6 +22311,7 @@
     "mqtt_user": "",
     "orientation": "",
     "position": "top_right",
+    "priority_border": "steady",
     "protect_snapshots": true,
     "ptz_key": "blue",
     "ready_cameras": "",
@@ -21237,6 +22322,7 @@
     "skip_playing": "off",
     "strip_layout": "auto",
     "substreams": "",
+    "text_size": "normal",
     "title_size": "normal",
     "titles": "",
     "token": "",
@@ -21295,6 +22381,7 @@
     "ha_buttons": true,
     "ha_webhook": "",
     "http_port": 8099,
+    "language": "system",
     "limit_hours": false,
     "live_format": "mp4",
     "live_volume": 0,
@@ -21311,6 +22398,7 @@
     "mqtt_user": "",
     "orientation": "",
     "position": "top_right",
+    "priority_border": "steady",
     "protect_snapshots": true,
     "ptz_key": "blue",
     "ready_cameras": "",
@@ -21321,6 +22409,7 @@
     "skip_playing": "off",
     "strip_layout": "auto",
     "substreams": "",
+    "text_size": "normal",
     "title_size": "normal",
     "titles": "",
     "token": "",
@@ -21410,6 +22499,440 @@
    "value": "-5"
   }
  ],
+ "style": {
+  "effective_language": [
+   {
+    "args": [
+     "system",
+     "nl_NL"
+    ],
+    "out": "nl"
+   },
+   {
+    "args": [
+     "system",
+     "de-DE"
+    ],
+    "out": "de"
+   },
+   {
+    "args": [
+     "de",
+     "nl"
+    ],
+    "out": "de"
+   },
+   {
+    "args": [
+     "system",
+     ""
+    ],
+    "out": "en"
+   },
+   {
+    "args": [
+     "system",
+     "ja"
+    ],
+    "out": "en"
+   },
+   {
+    "args": [
+     "xx",
+     "fr"
+    ],
+    "out": "fr"
+   }
+  ],
+  "marked_title": [
+   {
+    "args": [
+     "Front door",
+     "normal",
+     "off"
+    ],
+    "out": "Front door"
+   },
+   {
+    "args": [
+     "Front door",
+     "normal",
+     "steady"
+    ],
+    "out": "Front door"
+   },
+   {
+    "args": [
+     "Front door",
+     "normal",
+     "flash"
+    ],
+    "out": "Front door"
+   },
+   {
+    "args": [
+     "Front door",
+     "normal",
+     "nonsense"
+    ],
+    "out": "Front door"
+   },
+   {
+    "args": [
+     "Front door",
+     "high",
+     "off"
+    ],
+    "out": "Front door"
+   },
+   {
+    "args": [
+     "Front door",
+     "high",
+     "steady"
+    ],
+    "out": "Doorbell · Front door"
+   },
+   {
+    "args": [
+     "Front door",
+     "high",
+     "flash"
+    ],
+    "out": "Doorbell · Front door"
+   },
+   {
+    "args": [
+     "Front door",
+     "high",
+     "nonsense"
+    ],
+    "out": "Front door"
+   },
+   {
+    "args": [
+     "Front door",
+     "alarm",
+     "off"
+    ],
+    "out": "Front door"
+   },
+   {
+    "args": [
+     "Front door",
+     "alarm",
+     "steady"
+    ],
+    "out": "ALARM · Front door"
+   },
+   {
+    "args": [
+     "Front door",
+     "alarm",
+     "flash"
+    ],
+    "out": "ALARM · Front door"
+   },
+   {
+    "args": [
+     "Front door",
+     "alarm",
+     "nonsense"
+    ],
+    "out": "Front door"
+   },
+   {
+    "args": [
+     "Front door",
+     "nonsense",
+     "off"
+    ],
+    "out": "Front door"
+   },
+   {
+    "args": [
+     "Front door",
+     "nonsense",
+     "steady"
+    ],
+    "out": "Front door"
+   },
+   {
+    "args": [
+     "Front door",
+     "nonsense",
+     "flash"
+    ],
+    "out": "Front door"
+   },
+   {
+    "args": [
+     "Front door",
+     "nonsense",
+     "nonsense"
+    ],
+    "out": "Front door"
+   },
+   {
+    "args": [
+     "",
+     "normal",
+     "off"
+    ],
+    "out": ""
+   },
+   {
+    "args": [
+     "",
+     "normal",
+     "steady"
+    ],
+    "out": ""
+   },
+   {
+    "args": [
+     "",
+     "normal",
+     "flash"
+    ],
+    "out": ""
+   },
+   {
+    "args": [
+     "",
+     "normal",
+     "nonsense"
+    ],
+    "out": ""
+   },
+   {
+    "args": [
+     "",
+     "high",
+     "off"
+    ],
+    "out": ""
+   },
+   {
+    "args": [
+     "",
+     "high",
+     "steady"
+    ],
+    "out": "Doorbell"
+   },
+   {
+    "args": [
+     "",
+     "high",
+     "flash"
+    ],
+    "out": "Doorbell"
+   },
+   {
+    "args": [
+     "",
+     "high",
+     "nonsense"
+    ],
+    "out": ""
+   },
+   {
+    "args": [
+     "",
+     "alarm",
+     "off"
+    ],
+    "out": ""
+   },
+   {
+    "args": [
+     "",
+     "alarm",
+     "steady"
+    ],
+    "out": "ALARM"
+   },
+   {
+    "args": [
+     "",
+     "alarm",
+     "flash"
+    ],
+    "out": "ALARM"
+   },
+   {
+    "args": [
+     "",
+     "alarm",
+     "nonsense"
+    ],
+    "out": ""
+   },
+   {
+    "args": [
+     "",
+     "nonsense",
+     "off"
+    ],
+    "out": ""
+   },
+   {
+    "args": [
+     "",
+     "nonsense",
+     "steady"
+    ],
+    "out": ""
+   },
+   {
+    "args": [
+     "",
+     "nonsense",
+     "flash"
+    ],
+    "out": ""
+   },
+   {
+    "args": [
+     "",
+     "nonsense",
+     "nonsense"
+    ],
+    "out": ""
+   }
+  ],
+  "preset_changes": [
+   {
+    "args": [
+     "simple",
+     {},
+     null
+    ],
+    "out": {
+     "chime": "high",
+     "duration": 60,
+     "ptz_key": "off",
+     "size": "large",
+     "text_size": "xlarge"
+    }
+   },
+   {
+    "args": [
+     "simple",
+     {
+      "duration": 60,
+      "text_size": "xlarge"
+     },
+     null
+    ],
+    "out": {
+     "chime": "high",
+     "ptz_key": "off",
+     "size": "large"
+    }
+   },
+   {
+    "args": [
+     "simple",
+     {},
+     [
+      "text_size",
+      "size",
+      "duration",
+      "chime"
+     ]
+    ],
+    "out": {
+     "chime": "high",
+     "duration": 60,
+     "size": "large",
+     "text_size": "xlarge"
+    }
+   }
+  ],
+  "priority_mark": [
+   {
+    "args": [
+     "normal",
+     "off"
+    ],
+    "out": null
+   },
+   {
+    "args": [
+     "normal",
+     "steady"
+    ],
+    "out": null
+   },
+   {
+    "args": [
+     "normal",
+     "flash"
+    ],
+    "out": null
+   },
+   {
+    "args": [
+     "high",
+     "off"
+    ],
+    "out": null
+   },
+   {
+    "args": [
+     "high",
+     "steady"
+    ],
+    "out": {
+     "colour": "#E69F00",
+     "flash": false,
+     "label": "Doorbell"
+    }
+   },
+   {
+    "args": [
+     "high",
+     "flash"
+    ],
+    "out": {
+     "colour": "#E69F00",
+     "flash": true,
+     "label": "Doorbell"
+    }
+   },
+   {
+    "args": [
+     "alarm",
+     "off"
+    ],
+    "out": null
+   },
+   {
+    "args": [
+     "alarm",
+     "steady"
+    ],
+    "out": {
+     "colour": "#D55E00",
+     "flash": false,
+     "label": "ALARM"
+    }
+   },
+   {
+    "args": [
+     "alarm",
+     "flash"
+    ],
+    "out": {
+     "colour": "#D55E00",
+     "flash": true,
+     "label": "ALARM"
+    }
+   }
+  ]
+ },
  "syslog_line": [
   {
    "args": [

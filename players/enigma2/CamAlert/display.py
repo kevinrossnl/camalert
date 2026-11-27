@@ -32,7 +32,8 @@ from .camalert_core.warm import WarmFeeds
 from .camalert_core.events import TEST_SOURCE, add_event, event_title, is_test
 from .camalert_core.api import screen_name
 from .camalert_core.keymap import button_event
-from .camalert_core.layout import grid, strip_geometry, title_font, window_geometry
+from .camalert_core.layout import grid, strip_geometry, text_scale, title_font, window_geometry
+from .camalert_core.style import FLASH_MS, marked_title, priority_mark
 from .camalert_core.obs.log import redact
 from .camalert_core.obs.metrics import metrics_text
 from .camalert_core.triggers.foscam import FoscamSource
@@ -103,6 +104,56 @@ def hint_widget(x, y, w, h, f, text, font):
     return ('<widget name="hint" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" '
             'backgroundColor="#202020" halign="center" valign="center" noWrap="1" zPosition="5" />'
             % (x, y, w, h, fit_font(text, w - int(20 * f), font)))
+
+
+def text_size():
+    """The text size setting (#48): every CamAlert screen scales its fonts with it."""
+    return config.plugins.camalert.text_size.value
+
+
+def tf(f):
+    """Font factor: screen factor f (width / 1920) times the text size (#48)."""
+    return f * text_scale(text_size())
+
+
+def frame_skin(w, h, f, mark):
+    """Skin of the priority frame (#48): four bars around a window, in the priority colour; '' without a mark.
+    The window title carries the priority word as well, so the colour is never the only signal."""
+    if not mark:
+        return ""
+    b = max(3, int(6 * f))
+    return "".join('<widget name="frame%d" position="%d,%d" size="%d,%d" backgroundColor="%s" zPosition="6" />'
+                   % (i, x, y, fw, fh, mark["colour"])
+                   for i, (x, y, fw, fh) in enumerate(((0, 0, w, b), (0, h - b, w, b), (0, 0, b, h), (w - b, 0, b, h))))
+
+
+class Frame(object):
+    """The priority frame of a window (#48): steady, or flashing at style.FLASH_MS (at most 3 flashes a second)."""
+
+    def __init__(self, screen, mark):
+        self.screen, self.mark, self.on = screen, mark, True
+        self.timer = None
+        if mark:
+            for i in range(4):
+                screen["frame%d" % i] = Label("")
+            if mark["flash"]:
+                self.timer = eTimer()
+                self.timer.callback.append(self.toggle)
+
+    def start(self):
+        if self.timer is not None:
+            self.timer.start(FLASH_MS, False)
+
+    def toggle(self):
+        self.on = not self.on
+        for i in range(4):
+            key = "frame%d" % i
+            if key in self.screen:
+                (self.screen[key].show if self.on else self.screen[key].hide)()
+
+    def stop(self):
+        if self.timer is not None:
+            self.timer.stop()
 
 
 def hint_label(text):
@@ -313,7 +364,7 @@ def error_widget(name, x, y, w, h, f):
     """Skin of the 'camera not reachable' overlay of a tile (hidden until the camera fails twice)."""
     return ('<widget name="%s" position="%d,%d" size="%d,%d" font="Regular;%d" halign="center" valign="center" '
             'foregroundColor="#c0c0c0" backgroundColor="#303030" zPosition="4" />'
-            % (name, x, y, w, h, max(int(22 * f), min(int(34 * f), h // 6))))
+            % (name, x, y, w, h, max(int(22 * tf(f)), min(int(34 * tf(f)), h // 6))))
 
 
 def set_error(screen, error_key, picture_key, on):
@@ -339,17 +390,17 @@ class MosaicScreen(Screen, HelpBase):
         """cams: list of (name, title, snapshot url)."""
         size = getDesktop(0).size()
         sw, sh = size.width(), size.height()
-        tiles = grid(len(cams), sw, sh - int(50 * sw / 1920.0))
         f = sw / 1920.0
-        top = int(50 * f)
+        top = int(50 * tf(f))
+        tiles = grid(len(cams), sw, sh - top)
         parts = ['<screen name="CamAlertMosaic" position="0,0" size="%d,%d" flags="wfNoBorder" backgroundColor="#000000">' % (sw, sh),
                  '<widget name="title" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#000000" />'
-                 % (int(20 * f), int(8 * f), sw - int(40 * f), int(36 * f), int(28 * f))]
+                 % (int(20 * f), int(8 * f), sw - int(40 * f), int(40 * tf(f)), int(28 * tf(f)))]
         for i, (x, y, w, h) in enumerate(tiles):
             parts.append('<widget name="tile%d" position="%d,%d" size="%d,%d" alphatest="off" />' % (i, x, y + top, w, h))
             parts.append(error_widget("error%d" % i, x, y + top, w, h, f))
             parts.append('<widget name="label%d" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" noWrap="1" zPosition="5" />'
-                         % (i, x + int(8 * f), y + top + int(8 * f), w // 2, int(34 * f), int(24 * f)))
+                         % (i, x + int(8 * f), y + top + int(8 * f), w // 2, int(34 * tf(f)), int(24 * tf(f))))
         parts.append("</screen>")
         self.skin = "".join(parts)
         Screen.__init__(self, session)
@@ -428,26 +479,31 @@ class LiveStillScreen(Screen):
 class PhotoWindow(Screen):
     """Small always-on-top window that keeps fetching a fresh snapshot from go2rtc (about one every 1-2 s)."""
 
-    def __init__(self, session, stream, url, title=None, keys=False):
+    def __init__(self, session, stream, url, title=None, keys=False, priority="normal"):
         c = config.plugins.camalert
         size = getDesktop(0).size()
-        x, y, w, h, t = window_geometry(c.position.value, c.size.value, size.width(), size.height(), c.title_size.value)
+        x, y, w, h, t = window_geometry(c.position.value, c.size.value, size.width(), size.height(), c.title_size.value,
+                                        text_size())
         f = size.width() / 1920.0
-        base_title = title or display_name(stream)
+        mark = priority_mark(priority, c.priority_border.value)
+        base_title = marked_title(title or display_name(stream), priority, c.priority_border.value, _)
         hint_text = window_hint(stream) if keys else ""
-        font = title_font(c.title_size.value, size.width())
-        hh = max(int(t * 0.8), int(26 * f))
+        font = title_font(c.title_size.value, size.width(), text_size())
+        hh = max(int(t * 0.8), int(26 * tf(f)))
         self.skin = """<screen name="CamAlertPhoto" position="%d,%d" size="%d,%d" flags="wfNoBorder" backgroundColor="#ff000000" zPosition="10">
             <eLabel position="0,0" size="%d,%d" backgroundColor="#202020" zPosition="0" />
             <widget name="title" position="%d,0" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" valign="center" noWrap="1" zPosition="2" />
             <widget name="photo" position="0,%d" size="%d,%d" alphatest="off" zPosition="1" />
             %s
             %s
+            %s
         </screen>""" % (x, y, w, h + t, w, h + t, int(10 * f), w - int(20 * f), t,
                         fit_font(base_title, w - int(20 * f), font), t, w, h,
                         error_widget("error", 0, t, w, h, f),
-                        hint_widget(0, t + h - hh, w, hh, f, hint_text, int(font * 0.85)))
+                        hint_widget(0, t + h - hh, w, hh, f, hint_text, int(font * 0.85)),
+                        frame_skin(w, h + t, f, mark))
         Screen.__init__(self, session)
+        self.frame = Frame(self, mark)
         self.stream, self.url, self.size = stream, url, (w, h)
         self.base_title = self.title_text = base_title
         self["title"] = Label(self.title_text)
@@ -465,6 +521,7 @@ class PhotoWindow(Screen):
     def start(self, seconds):
         self.active = True
         self.show()
+        self.frame.start()
         self.close_timer.start(seconds * 1000, True)
         self.fetch()
 
@@ -514,6 +571,7 @@ class PhotoWindow(Screen):
     def stop(self):
         self.active = False
         self.close_timer.stop()
+        self.frame.stop()
         self.hide()
         Controller.instance.window_closed(self)
 
@@ -521,18 +579,20 @@ class PhotoWindow(Screen):
 class StripWindow(Screen):
     """One corner window with 2-4 cameras (below each other, next to each other or 2 x 2); TV stays visible."""
 
-    def __init__(self, session, cams, keys=False, label=None):
+    def __init__(self, session, cams, keys=False, label=None, priority="normal"):
         """cams: list of (name, title, snapshot url)."""
         c = config.plugins.camalert
         size = getDesktop(0).size()
         x, y, w, h, t, tiles = strip_geometry(len(cams), c.strip_layout.value, c.position.value, c.size.value,
-                                              size.width(), size.height())
+                                              size.width(), size.height(), text_size())
         f = size.width() / 1920.0
+        mark = priority_mark(priority, c.priority_border.value)
         self.names = [n for n, _t, _u in cams]
-        title_text = event_title("  ·  ".join(t for _n, t, _u in cams), label)
+        title_text = marked_title(event_title("  ·  ".join(t for _n, t, _u in cams), label), priority,
+                                  c.priority_border.value, _)
         hint_text = hint("window", self.names[0], without=("other camera",)) if keys else ""
-        font = min(title_font(c.title_size.value, size.width()), int(t * 0.8))
-        hh = max(int(t * 0.8), int(26 * f))
+        font = min(title_font(c.title_size.value, size.width(), text_size()), int(t * 0.8))
+        hh = max(int(t * 0.8), int(26 * tf(f)))
         parts = ['<screen name="CamAlertStrip" position="%d,%d" size="%d,%d" flags="wfNoBorder" backgroundColor="#ff000000" zPosition="10">' % (x, y, w, h + t),
                  '<eLabel position="0,0" size="%d,%d" backgroundColor="#202020" zPosition="0" />' % (w, h + t),
                  '<widget name="title" position="%d,0" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" valign="center" noWrap="1" zPosition="2" />'
@@ -541,11 +601,13 @@ class StripWindow(Screen):
             parts.append('<widget name="tile%d" position="%d,%d" size="%d,%d" alphatest="off" zPosition="1" />' % (i, tx, ty, tw, th))
             parts.append(error_widget("error%d" % i, tx, ty, tw, th, f))
             parts.append('<widget name="label%d" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" noWrap="1" zPosition="5" />'
-                         % (i, tx + int(6 * f), ty + int(6 * f), tw // 2, int(30 * f), int(22 * f)))
+                         % (i, tx + int(6 * f), ty + int(6 * f), tw // 2, int(30 * tf(f)), int(22 * tf(f))))
         parts.append(hint_widget(0, t + h - hh, w, hh, f, hint_text, int(font * 0.85)))
+        parts.append(frame_skin(w, h + t, f, mark))
         parts.append("</screen>")
         self.skin = "".join(parts)
         Screen.__init__(self, session)
+        self.frame = Frame(self, mark)
         self.stream = ",".join(self.names)
         self["title"] = Label(title_text)
         self["hint"] = hint_label(hint_text)
@@ -563,6 +625,7 @@ class StripWindow(Screen):
     def start(self, seconds):
         self.active = True
         self.show()
+        self.frame.start()
         self.close_timer.start(seconds * 1000, True)
         for t in self.tiles:
             t.fetch()
@@ -573,6 +636,7 @@ class StripWindow(Screen):
     def stop(self):
         self.active = False
         self.close_timer.stop()
+        self.frame.stop()
         self.hide()
         Controller.instance.window_closed(self)
 
@@ -584,14 +648,16 @@ class NotifyWindow(Screen):
     def __init__(self, session, stream, url, text):
         c = config.plugins.camalert
         size = getDesktop(0).size()
-        x, y, w, h, t = window_geometry(c.position.value, "small", size.width(), size.height(), c.title_size.value)
+        x, y, w, h, t = window_geometry(c.position.value, "small", size.width(), size.height(), c.title_size.value,
+                                        text_size())
         f = size.width() / 1920.0
         self.skin = """<screen name="CamAlertNotify" position="%d,%d" size="%d,%d" flags="wfNoBorder" backgroundColor="#ff000000" zPosition="10">
             <eLabel position="0,0" size="%d,%d" backgroundColor="#202020" zPosition="0" />
             <widget name="title" position="%d,0" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" valign="center" zPosition="2" />
             <widget name="photo" position="0,%d" size="%d,%d" alphatest="off" zPosition="1" />
             %s
-        </screen>""" % (x, y, w, h + t, w, h + t, int(10 * f), w - int(20 * f), t, title_font(c.title_size.value, size.width()),
+        </screen>""" % (x, y, w, h + t, w, h + t, int(10 * f), w - int(20 * f), t,
+                        title_font(c.title_size.value, size.width(), text_size()),
                         t, w, h, error_widget("error", 0, t, w, h, f))
         Screen.__init__(self, session)
         self.stream, self.url, self.size = stream, url, (w, h)
@@ -686,11 +752,11 @@ class PtzOverlay(Screen):
     def __init__(self, session, text):
         size = getDesktop(0).size()
         f = size.width() / 1920.0
-        w, h = int(1100 * f), int(56 * f)
+        w, h = int(1100 * f), int(56 * tf(f))
         self.skin = ('<screen name="CamAlertPtz" position="%d,%d" size="%d,%d" flags="wfNoBorder" backgroundColor="#202020" zPosition="12">'
                      '<widget name="text" position="0,0" size="%d,%d" font="Regular;%d" halign="center" valign="center" '
                      'foregroundColor="#ffcc00" backgroundColor="#202020" /></screen>'
-                     % ((size.width() - w) // 2, size.height() - h - int(60 * f), w, h, w, h, int(28 * f)))
+                     % ((size.width() - w) // 2, size.height() - h - int(60 * f), w, h, w, h, int(28 * tf(f))))
         Screen.__init__(self, session)
         self["text"] = Label(text)
 
@@ -814,7 +880,7 @@ class TourScreen(Screen, HelpBase):
             %s
             <widget name="title" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" zPosition="5" />
         </screen>""" % (sw, sh, sw, sh, error_widget("error0", 0, 0, sw, sh, f), int(30 * f), int(20 * f), sw - int(60 * f),
-                        int(46 * f), int(30 * f))
+                        int(46 * tf(f)), int(30 * tf(f)))
         Screen.__init__(self, session)
         init_help(self)
         self.cams, self.index, self.hold, self.interval = cams, 0, False, interval
@@ -1037,6 +1103,15 @@ class Controller(object):
         reactor.callLater(0.1, _notify)
 
     # --- public ----------------------------------------------------------------------------------------------
+    def window_priority(self, priority):
+        """The priority a window marks (#48): none for what the viewer asked for himself (#13)."""
+        return "normal" if getattr(self, "source", None) == "menu" else pick_priority(priority)
+
+    def look_at_door(self):
+        """#13: the default camera at once, asked for by the viewer (source "menu"): passes do-not-disturb and the
+        time rules like a high request, but without chime and without the doorbell frame."""
+        return self.show(None, None, None, "high", source="menu")
+
     def show(self, stream=None, seconds=None, mode=None, priority=None, source="api", label=None, event_id=None):
         """Handles a show request and logs it (source, decision and reason) in camalert.log and the event list."""
         self.reason, self.label, self.source = "", (label or "").strip()[:40] or None, source
@@ -1066,7 +1141,7 @@ class Controller(object):
                (" (%s)" % self.reason) if self.reason else ""), level="error" if result == "error" else "normal")
         self.record_event(cam, label, source, pick_priority(priority), result, self.reason, event_id)
         if result == "show" and chime_wanted(config.plugins.camalert.chime.value, pick_priority(priority)) \
-                and not is_test(source):  # a test request never makes sound (#62)
+                and not is_test(source) and source != "menu":  # a test (#62) or the viewer's own key (#13): no sound
             if self.muted():  # the chime plays through ALSA, which the receiver's mute does not reach (#20)
                 log("chime skipped: the receiver is muted")
             else:
@@ -1135,7 +1210,7 @@ class Controller(object):
             if self.blocked(priority, ",".join(cams)):
                 return "ignore"
             if len(cams) <= 4 and pick_mode(mode, c.mode.value) in ("photo", "strip") or mode == "strip":
-                return self.strip(cams[:4], seconds or int(c.duration.value))
+                return self.strip(cams[:4], seconds or int(c.duration.value), priority)
             return self.mosaic(cams, seconds or int(c.duration.value))
         stream = stream or c.camera.value
         if not stream:
@@ -1178,7 +1253,8 @@ class Controller(object):
                 if pause:
                     self.pause_tv()
                 keys = c.window_keys.value and self._tv_on_top()
-                self.window = self.session.instantiateDialog(PhotoWindow, stream, snap_url, title, keys)
+                self.window = self.session.instantiateDialog(PhotoWindow, stream, snap_url, title, keys,
+                                                             self.window_priority(priority))
                 self.window.start(seconds)
                 if keys:
                     self.close_keys()
@@ -1207,7 +1283,7 @@ class Controller(object):
                 self.notify_timer.start(seconds * 1000, True)
         return action
 
-    def strip(self, names, seconds):
+    def strip(self, names, seconds, priority="normal"):
         """2-4 cameras in one corner window (photo mode); falls back to the mosaic without snapshots."""
         cams = [(n, u[2], u[1]) for n, u in ((n, camera_urls(n)) for n in names) if u and u[1]]
         if len(cams) < 2:
@@ -1218,7 +1294,7 @@ class Controller(object):
             return "extend"
         self.hide(resume=False)
         keys = config.plugins.camalert.window_keys.value and self._tv_on_top()
-        self.window = self.session.instantiateDialog(StripWindow, cams, keys, self.label)
+        self.window = self.session.instantiateDialog(StripWindow, cams, keys, self.label, self.window_priority(priority))
         self.window.start(seconds)
         if keys:
             self.close_keys()
@@ -1608,6 +1684,8 @@ class Controller(object):
             w, self.window = self.window, None
             w.active = False
             w.close_timer.stop()
+            if getattr(w, "frame", None) is not None:
+                w.frame.stop()  # a flashing priority frame (#48)
             w.hide()
             self.session.deleteDialog(w)
         if self.live_stream is not None:

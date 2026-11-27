@@ -44,6 +44,8 @@ import org.camalert.core.Warm
  * services) and keeps the HTTP API (port 8099), the MQTT client and the overlay alive.
  */
 class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeListener {
+    override fun attachBaseContext(base: android.content.Context) = super.attachBaseContext(Lang.wrap(base))  // #10
+
     companion object {
         const val PLATFORM = "androidtv"
         const val MODEL = "Android TV"

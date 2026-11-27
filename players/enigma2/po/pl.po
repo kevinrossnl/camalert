@@ -21,6 +21,9 @@ msgstr "Wysoki (dzwonek)"
 msgid "Alarm"
 msgstr "Alarm"
 
+msgid "System language"
+msgstr "Język systemu"
+
 msgid "go2rtc server"
 msgstr "Serwer go2rtc"
 
@@ -110,6 +113,15 @@ msgstr "CZERWONY"
 
 msgid "GREEN"
 msgstr "ZIELONY"
+
+msgid "Extra large"
+msgstr "Bardzo duże"
+
+msgid "Steady"
+msgstr "Stała"
+
+msgid "Flashing"
+msgstr "Migająca"
 
 msgid "Log only"
 msgstr "Tylko dziennik"
@@ -215,6 +227,12 @@ msgstr "CamAlert %s jest dostępny (zainstalowany: %s).\nAktualizuj przez aktual
 
 msgid "Show IP cameras on your TV"
 msgstr "Pokaż kamery IP na telewizorze"
+
+msgid "CamAlert: default camera"
+msgstr "CamAlert: domyślna kamera"
+
+msgid "Show the default camera at once"
+msgstr "Od razu pokaż domyślną kamerę"
 
 msgid "CamAlert mosaic"
 msgstr "Mozaika CamAlert"
@@ -615,6 +633,12 @@ msgstr "utworzony przez nowszą wersję CamAlert"
 msgid "Doorbell"
 msgstr "Dzwonek"
 
+msgid "ALARM"
+msgstr "ALARM"
+
+msgid "Simple: large text, large window, 60 seconds"
+msgstr "Prosto: duży tekst, duże okno, 60 sekund"
+
 msgid "Person"
 msgstr "Osoba"
 
@@ -705,6 +729,12 @@ msgstr "Strumienie pomocnicze na żywo"
 msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
 msgstr "Dla kamer, których odbiornik nie odtworzy (H.265/4K): front_door=front_door_sub używa tego strumienia go2rtc na żywo."
 
+msgid "Language"
+msgstr "Język"
+
+msgid "Language of the CamAlert texts on this device. System language: the language of the device itself."
+msgstr "Język tekstów CamAlert na tym urządzeniu. Język systemu: język samego urządzenia."
+
 msgid "Camera file (direct mode)"
 msgstr "Plik kamer (tryb bezpośredni)"
 
@@ -788,6 +818,18 @@ msgstr "Żądanie z 2-4 kamerami pokazuje je razem w oknie z kilkoma kamerami."
 
 msgid "Title size"
 msgstr "Rozmiar tytułu"
+
+msgid "Text size"
+msgstr "Rozmiar tekstu"
+
+msgid "All CamAlert texts: window titles, key hints, camera control, tour, mosaic and lists."
+msgstr "Wszystkie teksty CamAlert: tytuły okien, podpowiedzi przycisków, sterowanie kamerą, obchód, mozaika i listy."
+
+msgid "Doorbell and alarm marking"
+msgstr "Oznaczenie dzwonka i alarmu"
+
+msgid "Priority high: orange frame and the word Doorbell. Alarm: red-orange frame and the word ALARM. Flashing: once per second."
+msgstr "Priorytet wysoki: pomarańczowa ramka i słowo Dzwonek. Alarm: czerwono-pomarańczowa ramka i słowo ALARM. Migająca: raz na sekundę."
 
 msgid "Doorbell chime"
 msgstr "Dźwięk dzwonka"

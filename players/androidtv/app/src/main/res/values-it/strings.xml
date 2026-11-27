@@ -36,6 +36,12 @@
     <string name="choice_title_size_small" formatted="false">Piccola</string>
     <string name="choice_title_size_normal" formatted="false">Normale</string>
     <string name="choice_title_size_large" formatted="false">Grande</string>
+    <string name="choice_text_size_normal" formatted="false">Normale</string>
+    <string name="choice_text_size_large" formatted="false">Grande</string>
+    <string name="choice_text_size_xlarge" formatted="false">Molto grande</string>
+    <string name="choice_priority_border_off" formatted="false">Disattivato</string>
+    <string name="choice_priority_border_steady" formatted="false">Fisso</string>
+    <string name="choice_priority_border_flash" formatted="false">Lampeggiante</string>
     <string name="choice_chime_off" formatted="false">Disattivato</string>
     <string name="choice_chime_high" formatted="false">Campanello e allarme</string>
     <string name="choice_chime_all" formatted="false">Ogni richiesta</string>
@@ -109,6 +115,8 @@
     <string name="t_95d10e92" formatted="false">Premere OK per dare un nome a una telecamera (vuoto = automatico).</string>
     <string name="t_6f1ca336" formatted="false">Substream per la visione live</string>
     <string name="t_7302af3d" formatted="false">Per le telecamere che il ricevitore non riesce a riprodurre (H.265/4K): front_door=front_door_sub usa quello stream go2rtc per la visione live.</string>
+    <string name="t_2dad13e3" formatted="false">Lingua</string>
+    <string name="t_a75d2c72" formatted="false">Lingua dei testi di CamAlert su questo dispositivo. Lingua del sistema: la lingua del dispositivo stesso.</string>
     <string name="t_7f13060c" formatted="false">Modalità di visualizzazione</string>
     <string name="t_37083c0d" formatted="false">Finestra foto: la TV continua. Live: il canale passa alla telecamera.</string>
     <string name="t_0d46faad" formatted="false">Durata (secondi)</string>
@@ -131,6 +139,10 @@
     <string name="t_40405b3f" formatted="false">Disposizione della finestra con più telecamere</string>
     <string name="t_b90a4fd3" formatted="false">Una richiesta con 2-4 telecamere le mostra insieme in una finestra con più telecamere.</string>
     <string name="t_88c58adb" formatted="false">Dimensione del titolo</string>
+    <string name="t_09cdafe2" formatted="false">Dimensione del testo</string>
+    <string name="t_5015df84" formatted="false">Tutti i testi di CamAlert: titoli delle finestre, aiuto dei tasti, controllo telecamera, giro, mosaico ed elenchi.</string>
+    <string name="t_d8e12772" formatted="false">Segnalazione di campanello e allarme</string>
+    <string name="t_89750080" formatted="false">Priorità alta: cornice arancione e la parola Campanello. Allarme: cornice rosso-arancione e la parola ALLARME. Lampeggiante: una volta al secondo.</string>
     <string name="t_d930321b" formatted="false">Suono del campanello</string>
     <string name="t_d9efc589" formatted="false">Riproduce un breve din-don per le richieste con priorità alta o allarme (campanello).</string>
     <string name="t_f2d70813" formatted="false">Formato della visione live</string>
@@ -266,6 +278,9 @@
     <string name="t_9ee51c54" formatted="false">non è un file di impostazioni</string>
     <string name="t_53025dac" formatted="false">creato da una versione più recente di CamAlert</string>
     <string name="t_9dc41ec9" formatted="false">Campanello</string>
+    <string name="t_83cb846d" formatted="false">ALLARME</string>
+    <string name="t_f0af5f38" formatted="false">Semplice: testo grande, finestra grande, 60 secondi</string>
+    <string name="t_1aeef2ad" formatted="false">Lingua del sistema</string>
     <string name="t_3370d440" formatted="false">Persona</string>
     <string name="t_d43ddd1a" formatted="false">Veicolo</string>
     <string name="t_6d072629" formatted="false">Animale</string>

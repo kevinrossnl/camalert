@@ -16,7 +16,7 @@ msgstr "Podgląd na żywo"
 msgid "Notification"
 msgstr "Powiadomienie"
 
-#: e2 kodi:30140 kodi:30231 kodi:30507 ha:selector.priority.options.normal atv:choice.frigate_priority.normal atv:choice.log_level.normal atv:choice.title_size.normal atv:choice.unifi_priority.normal
+#: e2 kodi:30140 kodi:30231 kodi:30507 ha:selector.priority.options.normal atv:choice.frigate_priority.normal atv:choice.log_level.normal atv:choice.text_size.normal atv:choice.title_size.normal atv:choice.unifi_priority.normal
 msgid "Normal"
 msgstr "Normalny"
 
@@ -27,6 +27,10 @@ msgstr "Wysoki (dzwonek)"
 #: e2 kodi:30142 kodi:30509 ha:selector.priority.options.alarm atv:choice.frigate_priority.alarm atv:choice.unifi_priority.alarm
 msgid "Alarm"
 msgstr "Alarm"
+
+#: e2 kodi:30582 kodi:30729
+msgid "System language"
+msgstr "Język systemu"
 
 #: e2 kodi:30014
 msgid "go2rtc server"
@@ -60,7 +64,7 @@ msgstr "Małe"
 msgid "Medium"
 msgstr "Średnie"
 
-#: e2 kodi:30055 ha:entity.select.window_size.state.large atv:choice.size.large atv:choice.title_size.large
+#: e2 kodi:30055 ha:entity.select.window_size.state.large atv:choice.size.large atv:choice.text_size.large atv:choice.title_size.large
 msgid "Large"
 msgstr "Duże"
 
@@ -120,7 +124,7 @@ msgstr "Obok siebie"
 msgid "2 x 2"
 msgstr "2 x 2"
 
-#: e2 kodi:30234 kodi:30305 atv:choice.chime.off atv:choice.log_level.off
+#: e2 kodi:30234 kodi:30305 atv:choice.chime.off atv:choice.log_level.off atv:choice.priority_border.off
 msgid "Off"
 msgstr "Wyłączone"
 
@@ -147,6 +151,18 @@ msgstr "CZERWONY"
 #: e2 kodi:30242 kodi:30534
 msgid "GREEN"
 msgstr "ZIELONY"
+
+#: e2 kodi:30722 atv:choice.text_size.xlarge
+msgid "Extra large"
+msgstr "Bardzo duże"
+
+#: e2 kodi:30725 atv:choice.priority_border.steady
+msgid "Steady"
+msgstr "Stała"
+
+#: e2 kodi:30726 atv:choice.priority_border.flash
+msgid "Flashing"
+msgstr "Migająca"
 
 #: e2 kodi:30270 kodi:30551 atv:choice.unifi_mode.log
 msgid "Log only"
@@ -287,6 +303,14 @@ msgstr "CamAlert %s jest dostępny (zainstalowany: %s).\nAktualizuj przez aktual
 #: e2
 msgid "Show IP cameras on your TV"
 msgstr "Pokaż kamery IP na telewizorze"
+
+#: e2
+msgid "CamAlert: default camera"
+msgstr "CamAlert: domyślna kamera"
+
+#: e2
+msgid "Show the default camera at once"
+msgstr "Od razu pokaż domyślną kamerę"
 
 #: e2
 msgid "CamAlert mosaic"
@@ -820,6 +844,14 @@ msgstr "utworzony przez nowszą wersję CamAlert"
 msgid "Doorbell"
 msgstr "Dzwonek"
 
+#: e2 kodi:30580
+msgid "ALARM"
+msgstr "ALARM"
+
+#: e2 kodi:30581
+msgid "Simple: large text, large window, 60 seconds"
+msgstr "Prosto: duży tekst, duże okno, 60 sekund"
+
 #: e2 kodi:30553
 msgid "Person"
 msgstr "Osoba"
@@ -940,6 +972,14 @@ msgstr "Strumienie pomocnicze na żywo"
 msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
 msgstr "Dla kamer, których odbiornik nie odtworzy (H.265/4K): front_door=front_door_sub używa tego strumienia go2rtc na żywo."
 
+#: e2 kodi:30727
+msgid "Language"
+msgstr "Język"
+
+#: e2 kodi:30728
+msgid "Language of the CamAlert texts on this device. System language: the language of the device itself."
+msgstr "Język tekstów CamAlert na tym urządzeniu. Język systemu: język samego urządzenia."
+
 #: e2 kodi:30022
 msgid "Camera file (direct mode)"
 msgstr "Plik kamer (tryb bezpośredni)"
@@ -1051,6 +1091,22 @@ msgstr "Żądanie z 2-4 kamerami pokazuje je razem w oknie z kilkoma kamerami."
 #: e2 kodi:30230
 msgid "Title size"
 msgstr "Rozmiar tytułu"
+
+#: e2 kodi:30720
+msgid "Text size"
+msgstr "Rozmiar tekstu"
+
+#: e2 kodi:30721
+msgid "All CamAlert texts: window titles, key hints, camera control, tour, mosaic and lists."
+msgstr "Wszystkie teksty CamAlert: tytuły okien, podpowiedzi przycisków, sterowanie kamerą, obchód, mozaika i listy."
+
+#: e2 kodi:30723
+msgid "Doorbell and alarm marking"
+msgstr "Oznaczenie dzwonka i alarmu"
+
+#: e2 kodi:30724
+msgid "Priority high: orange frame and the word Doorbell. Alarm: red-orange frame and the word ALARM. Flashing: once per second."
+msgstr "Priorytet wysoki: pomarańczowa ramka i słowo Dzwonek. Alarm: czerwono-pomarańczowa ramka i słowo ALARM. Migająca: raz na sekundę."
 
 #: e2 kodi:30232
 msgid "Doorbell chime"
@@ -1715,6 +1771,42 @@ msgstr "Kreator pierwszego uruchomienia zakończony"
 #: kodi:30451 atv:wizard_no_cameras
 msgid "go2rtc has no cameras yet. Add your cameras in go2rtc and start the wizard again from the menu."
 msgstr "go2rtc nie ma jeszcze kamer. Należy dodać kamery w go2rtc, a potem ponownie uruchomić kreator z menu."
+
+#: kodi:30730
+msgid "English"
+msgstr "English"
+
+#: kodi:30731
+msgid "Nederlands"
+msgstr "Nederlands"
+
+#: kodi:30732
+msgid "Deutsch"
+msgstr "Deutsch"
+
+#: kodi:30733
+msgid "Français"
+msgstr "Français"
+
+#: kodi:30734
+msgid "Italiano"
+msgstr "Italiano"
+
+#: kodi:30735
+msgid "Polski"
+msgstr "Polski"
+
+#: kodi:30736
+msgid "Simple settings"
+msgstr "Proste ustawienia"
+
+#: kodi:30737
+msgid "Large text, large window, 60 seconds, camera control key off, chime for doorbell and alarm."
+msgstr "Duży tekst, duże okno, 60 sekund, przycisk sterowania kamerą wyłączony, dźwięk dzwonka przy dzwonku i alarmie."
+
+#: kodi:30738
+msgid "Simple settings set: large text, large window, 60 seconds."
+msgstr "Ustawiono proste ustawienia: duży tekst, duże okno, 60 sekund."
 
 #: kodi:30785
 msgid "Choose a folder for the settings file"

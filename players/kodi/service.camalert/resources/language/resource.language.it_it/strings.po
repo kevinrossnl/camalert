@@ -1369,6 +1369,94 @@ msgctxt "#30579"
 msgid "%s to Home Assistant"
 msgstr "%s a Home Assistant"
 
+msgctxt "#30580"
+msgid "ALARM"
+msgstr "ALLARME"
+
+msgctxt "#30581"
+msgid "Simple: large text, large window, 60 seconds"
+msgstr "Semplice: testo grande, finestra grande, 60 secondi"
+
+msgctxt "#30582"
+msgid "System language"
+msgstr "Lingua del sistema"
+
+msgctxt "#30720"
+msgid "Text size"
+msgstr "Dimensione del testo"
+
+msgctxt "#30721"
+msgid "All CamAlert texts: window titles, key hints, camera control, tour, mosaic and lists."
+msgstr "Tutti i testi di CamAlert: titoli delle finestre, aiuto dei tasti, controllo telecamera, giro, mosaico ed elenchi."
+
+msgctxt "#30722"
+msgid "Extra large"
+msgstr "Molto grande"
+
+msgctxt "#30723"
+msgid "Doorbell and alarm marking"
+msgstr "Segnalazione di campanello e allarme"
+
+msgctxt "#30724"
+msgid "Priority high: orange frame and the word Doorbell. Alarm: red-orange frame and the word ALARM. Flashing: once per second."
+msgstr "Priorità alta: cornice arancione e la parola Campanello. Allarme: cornice rosso-arancione e la parola ALLARME. Lampeggiante: una volta al secondo."
+
+msgctxt "#30725"
+msgid "Steady"
+msgstr "Fisso"
+
+msgctxt "#30726"
+msgid "Flashing"
+msgstr "Lampeggiante"
+
+msgctxt "#30727"
+msgid "Language"
+msgstr "Lingua"
+
+msgctxt "#30728"
+msgid "Language of the CamAlert texts on this device. System language: the language of the device itself."
+msgstr "Lingua dei testi di CamAlert su questo dispositivo. Lingua del sistema: la lingua del dispositivo stesso."
+
+msgctxt "#30729"
+msgid "System language"
+msgstr "Lingua del sistema"
+
+msgctxt "#30730"
+msgid "English"
+msgstr "English"
+
+msgctxt "#30731"
+msgid "Nederlands"
+msgstr "Nederlands"
+
+msgctxt "#30732"
+msgid "Deutsch"
+msgstr "Deutsch"
+
+msgctxt "#30733"
+msgid "Français"
+msgstr "Français"
+
+msgctxt "#30734"
+msgid "Italiano"
+msgstr "Italiano"
+
+msgctxt "#30735"
+msgid "Polski"
+msgstr "Polski"
+
+msgctxt "#30736"
+msgid "Simple settings"
+msgstr "Impostazioni semplici"
+
+msgctxt "#30737"
+msgid "Large text, large window, 60 seconds, camera control key off, chime for doorbell and alarm."
+msgstr "Testo grande, finestra grande, 60 secondi, tasto del controllo telecamera disattivato, suono del campanello per campanello e allarme."
+
+msgctxt "#30738"
+msgid "Simple settings set: large text, large window, 60 seconds."
+msgstr "Impostazioni semplici applicate: testo grande, finestra grande, 60 secondi."
+
 msgctxt "#30780"
 msgid "Export settings"
 msgstr "Esporta impostazioni"

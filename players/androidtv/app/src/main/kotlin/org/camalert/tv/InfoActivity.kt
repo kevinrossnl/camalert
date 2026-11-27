@@ -15,6 +15,8 @@ import org.camalert.core.Urls
 
 /** Diagnostics (checks go2rtc, every camera's snapshot, API, MQTT, overlay permission) and the event list. */
 class InfoActivity : Activity() {
+    override fun attachBaseContext(base: android.content.Context) = super.attachBaseContext(Lang.wrap(base))  // #10
+
     private lateinit var view: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {

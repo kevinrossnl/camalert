@@ -35,6 +35,23 @@ class TestIntegration(unittest.TestCase):
         self.assertIn('__version__ = "%s"' % plugin, open(os.path.join(_paths.KODI_LIB, "__init__.py")).read())
         json.load(open(os.path.join(ROOT, "hacs.json")))
 
+    def test_used_components_are_dependencies(self):
+        """hassfest [DEPENDENCIES]: every homeassistant.components.<x> the integration imports is an entity
+        platform it provides, or is listed in dependencies / after_dependencies (hassio and network broke the
+        GitHub hassfest job after #122; hassfest does not run in our own CI)."""
+        m = json.load(open(os.path.join(CC, "manifest.json")))
+        listed = set(m.get("dependencies", [])) | set(m.get("after_dependencies", []))
+        platforms = {"binary_sensor", "button", "camera", "event", "image", "notify", "number", "select", "sensor",
+                     "switch", "text", "update"}
+        allowed = platforms | {"diagnostics", "repairs", "zeroconf"}  # what hassfest accepts without listing
+        used = set()
+        for name in os.listdir(CC):
+            if name.endswith(".py"):
+                used |= set(re.findall(r"homeassistant\.components\.([a-z_0-9]+)", open(os.path.join(CC, name), encoding="utf-8").read()))
+        self.assertEqual(sorted(used - allowed - listed), [], "add these to after_dependencies in manifest.json")
+        keys = list(m)
+        self.assertEqual(keys, ["domain", "name"] + sorted(keys[2:]), "hassfest: domain, name, then the rest sorted")
+
     def test_manifest_categories(self):
         """HACS warns without `categories` (#80). Same rules as hassfest: 1-3 unique values `category` or
         `category.subcategory` from https://contributors.home-assistant.io/core/integrations/categories/,

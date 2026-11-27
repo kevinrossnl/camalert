@@ -1336,3 +1336,75 @@ msgstr "Pronta: %s non collegata"
 msgctxt "#30571"
 msgid "Settings received from Home Assistant"
 msgstr "Impostazioni ricevute da Home Assistant"
+
+msgctxt "#30572"
+msgid "not a settings file"
+msgstr "non è un file di impostazioni"
+
+msgctxt "#30573"
+msgid "made by a newer CamAlert"
+msgstr "creato da una versione più recente di CamAlert"
+
+msgctxt "#30780"
+msgid "Export settings"
+msgstr "Esporta impostazioni"
+
+msgctxt "#30781"
+msgid "Import settings"
+msgstr "Importa impostazioni"
+
+msgctxt "#30782"
+msgid "Undo the last import"
+msgstr "Annulla l'ultima importazione"
+
+msgctxt "#30783"
+msgid "Without passwords and access token"
+msgstr "Senza password né token di accesso"
+
+msgctxt "#30784"
+msgid "With passwords and access token"
+msgstr "Con password e token di accesso"
+
+msgctxt "#30785"
+msgid "Choose a folder for the settings file"
+msgstr "Cartella per il file delle impostazioni"
+
+msgctxt "#30786"
+msgid "Choose the settings file"
+msgstr "File delle impostazioni"
+
+msgctxt "#30787"
+msgid "Settings saved in %s"
+msgstr "Impostazioni salvate in %s"
+
+msgctxt "#30788"
+msgid "Import the settings from %s?\nThe current settings are saved first, so you can undo this."
+msgstr "Importare le impostazioni da %s?\nLe impostazioni attuali vengono salvate prima, così l'operazione si può annullare."
+
+msgctxt "#30789"
+msgid "Go back to the settings from before the last import?"
+msgstr "Tornare alle impostazioni precedenti all'ultima importazione?"
+
+msgctxt "#30790"
+msgid "%d settings changed."
+msgstr "%d impostazioni modificate."
+
+msgctxt "#30791"
+msgid "Not imported (invalid value): %s"
+msgstr "Non importato (valore non valido): %s"
+
+msgctxt "#30792"
+msgid "This file cannot be imported (%s)."
+msgstr "Questo file non può essere importato (%s)."
+
+msgctxt "#30793"
+msgid "Could not save the settings: %s"
+msgstr "Impossibile salvare le impostazioni: %s"
+
+msgctxt "#30794"
+msgid "Could not read the settings: %s"
+msgstr "Impossibile leggere le impostazioni: %s"
+
+msgctxt "#30795"
+msgid "There is no import to undo."
+msgstr "Non c'è nessuna importazione da annullare."

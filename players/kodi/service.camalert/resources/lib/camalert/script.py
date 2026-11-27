@@ -157,7 +157,14 @@ def open_settings():
 # #106: what opening the add-on (Add-ons > Program add-ons, a favourite) offers: (label id, action)
 MENU = ((30171, lambda: send(do="mosaic")), (30172, lambda: send(do="tour")), (30205, lambda: show_camera()),
         (30204, lambda: events()), (30201, lambda: diagnostics()), (30284, lambda: open_settings()),
-        (30456, lambda: wizard()))
+        (30456, lambda: wizard()), (30780, lambda: settings_io("export_dialog")),
+        (30781, lambda: settings_io("import_dialog")), (30782, lambda: settings_io("undo_dialog")))
+
+
+def settings_io(action):
+    """#7: settings export / import / undo the last import."""
+    from . import ksettingsio
+    getattr(ksettingsio, action)()
 
 
 def wizard():

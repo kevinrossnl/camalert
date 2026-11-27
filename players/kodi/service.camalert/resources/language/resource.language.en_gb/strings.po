@@ -1336,3 +1336,75 @@ msgstr ""
 msgctxt "#30571"
 msgid "Settings received from Home Assistant"
 msgstr ""
+
+msgctxt "#30572"
+msgid "not a settings file"
+msgstr ""
+
+msgctxt "#30573"
+msgid "made by a newer CamAlert"
+msgstr ""
+
+msgctxt "#30780"
+msgid "Export settings"
+msgstr ""
+
+msgctxt "#30781"
+msgid "Import settings"
+msgstr ""
+
+msgctxt "#30782"
+msgid "Undo the last import"
+msgstr ""
+
+msgctxt "#30783"
+msgid "Without passwords and access token"
+msgstr ""
+
+msgctxt "#30784"
+msgid "With passwords and access token"
+msgstr ""
+
+msgctxt "#30785"
+msgid "Choose a folder for the settings file"
+msgstr ""
+
+msgctxt "#30786"
+msgid "Choose the settings file"
+msgstr ""
+
+msgctxt "#30787"
+msgid "Settings saved in %s"
+msgstr ""
+
+msgctxt "#30788"
+msgid "Import the settings from %s?\nThe current settings are saved first, so you can undo this."
+msgstr ""
+
+msgctxt "#30789"
+msgid "Go back to the settings from before the last import?"
+msgstr ""
+
+msgctxt "#30790"
+msgid "%d settings changed."
+msgstr ""
+
+msgctxt "#30791"
+msgid "Not imported (invalid value): %s"
+msgstr ""
+
+msgctxt "#30792"
+msgid "This file cannot be imported (%s)."
+msgstr ""
+
+msgctxt "#30793"
+msgid "Could not save the settings: %s"
+msgstr ""
+
+msgctxt "#30794"
+msgid "Could not read the settings: %s"
+msgstr ""
+
+msgctxt "#30795"
+msgid "There is no import to undo."
+msgstr ""

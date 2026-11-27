@@ -308,10 +308,52 @@ msgstr ""
 msgid "Start the wizard again"
 msgstr ""
 
+msgid "Export settings"
+msgstr ""
+
+msgid "Import settings"
+msgstr ""
+
+msgid "Undo the last import"
+msgstr ""
+
 msgid "Show all settings"
 msgstr ""
 
 msgid "Show fewer settings"
+msgstr ""
+
+msgid "Without passwords and access token"
+msgstr ""
+
+msgid "With passwords and access token"
+msgstr ""
+
+msgid "No %s found on a USB stick, the hard disk or in /home/root."
+msgstr ""
+
+msgid "Import the settings from %s?\nThe current settings are saved first, so you can undo this."
+msgstr ""
+
+msgid "Go back to the settings from before the last import?"
+msgstr ""
+
+msgid "Could not save the settings: %s"
+msgstr ""
+
+msgid "Settings saved in %s"
+msgstr ""
+
+msgid "This file cannot be imported (%s)."
+msgstr ""
+
+msgid "Could not read the settings: %s"
+msgstr ""
+
+msgid "%d settings changed."
+msgstr ""
+
+msgid "Not imported (invalid value): %s"
 msgstr ""
 
 msgid "No cameras found in %s.\nSee the guide for the format."
@@ -546,6 +588,12 @@ msgid "paused"
 msgstr ""
 
 msgid "tour"
+msgstr ""
+
+msgid "not a settings file"
+msgstr ""
+
+msgid "made by a newer CamAlert"
 msgstr ""
 
 msgid "Doorbell"

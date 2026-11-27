@@ -245,6 +245,8 @@
     <string name="t_d79a92ed" formatted="false">pausa</string>
     <string name="t_46b14e9b" formatted="false">in pausa</string>
     <string name="t_6ad1f969" formatted="false">giro</string>
+    <string name="t_9ee51c54" formatted="false">non è un file di impostazioni</string>
+    <string name="t_53025dac" formatted="false">creato da una versione più recente di CamAlert</string>
     <string name="t_9dc41ec9" formatted="false">Campanello</string>
     <string name="t_3370d440" formatted="false">Persona</string>
     <string name="t_d43ddd1a" formatted="false">Veicolo</string>

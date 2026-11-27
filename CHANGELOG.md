@@ -9,6 +9,11 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Added
 
+- **Enigma2 and Kodi:** export and import the settings as one file (`camalert-settings.json`), to copy them to
+  another player. Passwords and the access token only when you choose so; the file is checked against the settings
+  schema, an older file is updated, a newer one refused. Before every import (and before an update changes the
+  settings) the current settings are saved, and *Undo the last import* brings them back (#7).
+
 - **Home Assistant:** sets up a new player. Right after adding a player that has no go2rtc address yet, Home
   Assistant offers to send its go2rtc address (and a default camera); **Configure** on the entry sends one later. A
   player that was never set up takes any address, a player that is set up only one in the local network. New API

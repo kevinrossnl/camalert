@@ -38,6 +38,7 @@ file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/obs/metrics
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/present.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/rules.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/schema.py
+file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/settingsfile.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/triggers/__init__.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/triggers/foscam.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/triggers/frigate.py
@@ -51,6 +52,7 @@ file rw-r--r-- service.camalert/resources/lib/camalert/diag.py
 file rw-r--r-- service.camalert/resources/lib/camalert/display.py
 file rw-r--r-- service.camalert/resources/lib/camalert/klogic.py
 file rw-r--r-- service.camalert/resources/lib/camalert/kodiapi.py
+file rw-r--r-- service.camalert/resources/lib/camalert/ksettingsio.py
 file rw-r--r-- service.camalert/resources/lib/camalert/kwizard.py
 file rw-r--r-- service.camalert/resources/lib/camalert/mqtt.py
 file rw-r--r-- service.camalert/resources/lib/camalert/plugin.py

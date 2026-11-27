@@ -309,11 +309,53 @@ msgstr "Lista zdarzeń"
 msgid "Start the wizard again"
 msgstr "Ponowne uruchomienie kreatora"
 
+msgid "Export settings"
+msgstr "Eksportuj ustawienia"
+
+msgid "Import settings"
+msgstr "Importuj ustawienia"
+
+msgid "Undo the last import"
+msgstr "Cofnij ostatni import"
+
 msgid "Show all settings"
 msgstr "Pokaż wszystkie ustawienia"
 
 msgid "Show fewer settings"
 msgstr "Pokaż mniej ustawień"
+
+msgid "Without passwords and access token"
+msgstr "Bez haseł i tokenu dostępu"
+
+msgid "With passwords and access token"
+msgstr "Z hasłami i tokenem dostępu"
+
+msgid "No %s found on a USB stick, the hard disk or in /home/root."
+msgstr "Nie znaleziono %s na pendrivie, dysku twardym ani w /home/root."
+
+msgid "Import the settings from %s?\nThe current settings are saved first, so you can undo this."
+msgstr "Zaimportować ustawienia z %s?\nObecne ustawienia zostaną najpierw zapisane, więc można to cofnąć."
+
+msgid "Go back to the settings from before the last import?"
+msgstr "Przywrócić ustawienia sprzed ostatniego importu?"
+
+msgid "Could not save the settings: %s"
+msgstr "Nie można zapisać ustawień: %s"
+
+msgid "Settings saved in %s"
+msgstr "Ustawienia zapisano w %s"
+
+msgid "This file cannot be imported (%s)."
+msgstr "Tego pliku nie można zaimportować (%s)."
+
+msgid "Could not read the settings: %s"
+msgstr "Nie można odczytać ustawień: %s"
+
+msgid "%d settings changed."
+msgstr "Zmienione ustawienia: %d."
+
+msgid "Not imported (invalid value): %s"
+msgstr "Nie zaimportowano (nieprawidłowa wartość): %s"
 
 msgid "No cameras found in %s.\nSee the guide for the format."
 msgstr "Nie znaleziono kamer w %s.\nFormat opisano w instrukcji."
@@ -548,6 +590,12 @@ msgstr "wstrzymano"
 
 msgid "tour"
 msgstr "obchód"
+
+msgid "not a settings file"
+msgstr "to nie jest plik ustawień"
+
+msgid "made by a newer CamAlert"
+msgstr "utworzony przez nowszą wersję CamAlert"
 
 msgid "Doorbell"
 msgstr "Dzwonek"

@@ -309,11 +309,53 @@ msgstr "Elenco eventi"
 msgid "Start the wizard again"
 msgstr "Riavviare la procedura guidata"
 
+msgid "Export settings"
+msgstr "Esporta impostazioni"
+
+msgid "Import settings"
+msgstr "Importa impostazioni"
+
+msgid "Undo the last import"
+msgstr "Annulla l'ultima importazione"
+
 msgid "Show all settings"
 msgstr "Mostra tutte le impostazioni"
 
 msgid "Show fewer settings"
 msgstr "Mostra meno impostazioni"
+
+msgid "Without passwords and access token"
+msgstr "Senza password né token di accesso"
+
+msgid "With passwords and access token"
+msgstr "Con password e token di accesso"
+
+msgid "No %s found on a USB stick, the hard disk or in /home/root."
+msgstr "Nessun %s trovato su una chiavetta USB, sul disco rigido o in /home/root."
+
+msgid "Import the settings from %s?\nThe current settings are saved first, so you can undo this."
+msgstr "Importare le impostazioni da %s?\nLe impostazioni attuali vengono salvate prima, così l'operazione si può annullare."
+
+msgid "Go back to the settings from before the last import?"
+msgstr "Tornare alle impostazioni precedenti all'ultima importazione?"
+
+msgid "Could not save the settings: %s"
+msgstr "Impossibile salvare le impostazioni: %s"
+
+msgid "Settings saved in %s"
+msgstr "Impostazioni salvate in %s"
+
+msgid "This file cannot be imported (%s)."
+msgstr "Questo file non può essere importato (%s)."
+
+msgid "Could not read the settings: %s"
+msgstr "Impossibile leggere le impostazioni: %s"
+
+msgid "%d settings changed."
+msgstr "%d impostazioni modificate."
+
+msgid "Not imported (invalid value): %s"
+msgstr "Non importato (valore non valido): %s"
 
 msgid "No cameras found in %s.\nSee the guide for the format."
 msgstr "Nessuna telecamera trovata in %s.\nVedi la guida per il formato."
@@ -548,6 +590,12 @@ msgstr "in pausa"
 
 msgid "tour"
 msgstr "giro"
+
+msgid "not a settings file"
+msgstr "non è un file di impostazioni"
+
+msgid "made by a newer CamAlert"
+msgstr "creato da una versione più recente di CamAlert"
 
 msgid "Doorbell"
 msgstr "Campanello"

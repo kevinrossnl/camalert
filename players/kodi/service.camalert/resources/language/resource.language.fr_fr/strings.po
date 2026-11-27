@@ -1336,3 +1336,75 @@ msgstr "Prête : %s non connectée"
 msgctxt "#30571"
 msgid "Settings received from Home Assistant"
 msgstr "Réglages reçus de Home Assistant"
+
+msgctxt "#30572"
+msgid "not a settings file"
+msgstr "pas un fichier de paramètres"
+
+msgctxt "#30573"
+msgid "made by a newer CamAlert"
+msgstr "créé par une version plus récente de CamAlert"
+
+msgctxt "#30780"
+msgid "Export settings"
+msgstr "Exporter les paramètres"
+
+msgctxt "#30781"
+msgid "Import settings"
+msgstr "Importer les paramètres"
+
+msgctxt "#30782"
+msgid "Undo the last import"
+msgstr "Annuler la dernière importation"
+
+msgctxt "#30783"
+msgid "Without passwords and access token"
+msgstr "Sans mots de passe ni jeton d'accès"
+
+msgctxt "#30784"
+msgid "With passwords and access token"
+msgstr "Avec mots de passe et jeton d'accès"
+
+msgctxt "#30785"
+msgid "Choose a folder for the settings file"
+msgstr "Choisissez un dossier pour le fichier de paramètres"
+
+msgctxt "#30786"
+msgid "Choose the settings file"
+msgstr "Choisissez le fichier de paramètres"
+
+msgctxt "#30787"
+msgid "Settings saved in %s"
+msgstr "Paramètres enregistrés dans %s"
+
+msgctxt "#30788"
+msgid "Import the settings from %s?\nThe current settings are saved first, so you can undo this."
+msgstr "Importer les paramètres de %s ?\nLes paramètres actuels sont d'abord sauvegardés, vous pouvez donc annuler."
+
+msgctxt "#30789"
+msgid "Go back to the settings from before the last import?"
+msgstr "Revenir aux paramètres d'avant la dernière importation ?"
+
+msgctxt "#30790"
+msgid "%d settings changed."
+msgstr "%d paramètres modifiés."
+
+msgctxt "#30791"
+msgid "Not imported (invalid value): %s"
+msgstr "Non importé (valeur non valide) : %s"
+
+msgctxt "#30792"
+msgid "This file cannot be imported (%s)."
+msgstr "Ce fichier ne peut pas être importé (%s)."
+
+msgctxt "#30793"
+msgid "Could not save the settings: %s"
+msgstr "Impossible d'enregistrer les paramètres : %s"
+
+msgctxt "#30794"
+msgid "Could not read the settings: %s"
+msgstr "Impossible de lire les paramètres : %s"
+
+msgctxt "#30795"
+msgid "There is no import to undo."
+msgstr "Il n'y a aucune importation à annuler."

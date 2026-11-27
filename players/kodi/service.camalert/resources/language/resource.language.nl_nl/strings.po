@@ -1336,3 +1336,75 @@ msgstr "Klaar: %s niet verbonden"
 msgctxt "#30571"
 msgid "Settings received from Home Assistant"
 msgstr "Instellingen ontvangen van Home Assistant"
+
+msgctxt "#30572"
+msgid "not a settings file"
+msgstr "geen instellingenbestand"
+
+msgctxt "#30573"
+msgid "made by a newer CamAlert"
+msgstr "gemaakt door een nieuwere CamAlert"
+
+msgctxt "#30780"
+msgid "Export settings"
+msgstr "Instellingen exporteren"
+
+msgctxt "#30781"
+msgid "Import settings"
+msgstr "Instellingen importeren"
+
+msgctxt "#30782"
+msgid "Undo the last import"
+msgstr "Laatste import ongedaan maken"
+
+msgctxt "#30783"
+msgid "Without passwords and access token"
+msgstr "Zonder wachtwoorden en toegangstoken"
+
+msgctxt "#30784"
+msgid "With passwords and access token"
+msgstr "Met wachtwoorden en toegangstoken"
+
+msgctxt "#30785"
+msgid "Choose a folder for the settings file"
+msgstr "Kies een map voor het instellingenbestand"
+
+msgctxt "#30786"
+msgid "Choose the settings file"
+msgstr "Kies het instellingenbestand"
+
+msgctxt "#30787"
+msgid "Settings saved in %s"
+msgstr "Instellingen opgeslagen in %s"
+
+msgctxt "#30788"
+msgid "Import the settings from %s?\nThe current settings are saved first, so you can undo this."
+msgstr "De instellingen uit %s importeren?\nDe huidige instellingen worden eerst bewaard, zodat je dit ongedaan kunt maken."
+
+msgctxt "#30789"
+msgid "Go back to the settings from before the last import?"
+msgstr "Terug naar de instellingen van vóór de laatste import?"
+
+msgctxt "#30790"
+msgid "%d settings changed."
+msgstr "%d instellingen gewijzigd."
+
+msgctxt "#30791"
+msgid "Not imported (invalid value): %s"
+msgstr "Niet geïmporteerd (ongeldige waarde): %s"
+
+msgctxt "#30792"
+msgid "This file cannot be imported (%s)."
+msgstr "Dit bestand kan niet worden geïmporteerd (%s)."
+
+msgctxt "#30793"
+msgid "Could not save the settings: %s"
+msgstr "Kan de instellingen niet opslaan: %s"
+
+msgctxt "#30794"
+msgid "Could not read the settings: %s"
+msgstr "Kan de instellingen niet lezen: %s"
+
+msgctxt "#30795"
+msgid "There is no import to undo."
+msgstr "Er is geen import om ongedaan te maken."

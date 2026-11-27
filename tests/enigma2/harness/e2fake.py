@@ -18,6 +18,7 @@ import importlib.util
 import json
 import os
 import sys
+import tempfile
 import types
 
 import _paths  # noqa: E402
@@ -850,14 +851,32 @@ def uninstall():
     rec.calls[:] = []
 
 
+_BACKUPS = []
+
+
+def _backup_dir():
+    if not _BACKUPS:
+        import atexit
+        import shutil
+        _BACKUPS.append(tempfile.mkdtemp(prefix="camalert-e2-backups-"))
+        atexit.register(shutil.rmtree, _BACKUPS[0], True)
+    for name in os.listdir(_BACKUPS[0]):
+        os.remove(os.path.join(_BACKUPS[0], name))
+    return _BACKUPS[0]
+
+
 def install(profile_name, stored=None):
     """Installs the fake modules of an image and imports CamAlert (players/enigma2/CamAlert) fresh.
     stored: saved settings of config.plugins.camalert ({name: string}); env.stored is that dict afterwards."""
     uninstall()
+    # settings backups (#7) never go to the real /etc/enigma2: one folder per test process, emptied per install
+    env_backups = _backup_dir()
+    os.environ["CAMALERT_E2_BACKUP_DIR"] = env_backups
     profile = dict(PROFILES[profile_name], name=profile_name)
     snap = api(profile["api"])
     env = Env()
     env.profile, env.snapshot, env.rec = profile, snap, rec
+    env.backup_dir = env_backups
     env.reactor = install_twisted()
     install_enigma(profile)
     env.stored = dict(stored or {})

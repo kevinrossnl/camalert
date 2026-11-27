@@ -309,11 +309,53 @@ msgstr "Ereignisliste"
 msgid "Start the wizard again"
 msgstr "Assistenten erneut starten"
 
+msgid "Export settings"
+msgstr "Einstellungen exportieren"
+
+msgid "Import settings"
+msgstr "Einstellungen importieren"
+
+msgid "Undo the last import"
+msgstr "Letzten Import rückgängig machen"
+
 msgid "Show all settings"
 msgstr "Alle Einstellungen zeigen"
 
 msgid "Show fewer settings"
 msgstr "Weniger Einstellungen zeigen"
+
+msgid "Without passwords and access token"
+msgstr "Ohne Passwörter und Zugriffstoken"
+
+msgid "With passwords and access token"
+msgstr "Mit Passwörtern und Zugriffstoken"
+
+msgid "No %s found on a USB stick, the hard disk or in /home/root."
+msgstr "Keine %s auf einem USB-Stick, der Festplatte oder in /home/root gefunden."
+
+msgid "Import the settings from %s?\nThe current settings are saved first, so you can undo this."
+msgstr "Die Einstellungen aus %s importieren?\nDie aktuellen Einstellungen werden vorher gesichert, damit du das rückgängig machen kannst."
+
+msgid "Go back to the settings from before the last import?"
+msgstr "Zurück zu den Einstellungen vor dem letzten Import?"
+
+msgid "Could not save the settings: %s"
+msgstr "Die Einstellungen konnten nicht gespeichert werden: %s"
+
+msgid "Settings saved in %s"
+msgstr "Einstellungen gespeichert in %s"
+
+msgid "This file cannot be imported (%s)."
+msgstr "Diese Datei kann nicht importiert werden (%s)."
+
+msgid "Could not read the settings: %s"
+msgstr "Die Einstellungen konnten nicht gelesen werden: %s"
+
+msgid "%d settings changed."
+msgstr "%d Einstellungen geändert."
+
+msgid "Not imported (invalid value): %s"
+msgstr "Nicht importiert (ungültiger Wert): %s"
 
 msgid "No cameras found in %s.\nSee the guide for the format."
 msgstr "Keine Kameras in %s gefunden.\nDas Format steht in der Anleitung."
@@ -548,6 +590,12 @@ msgstr "angehalten"
 
 msgid "tour"
 msgstr "Rundgang"
+
+msgid "not a settings file"
+msgstr "keine Einstellungsdatei"
+
+msgid "made by a newer CamAlert"
+msgstr "von einem neueren CamAlert erstellt"
 
 msgid "Doorbell"
 msgstr "Türklingel"

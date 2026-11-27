@@ -1336,3 +1336,75 @@ msgstr "Bereit: %s nicht verbunden"
 msgctxt "#30571"
 msgid "Settings received from Home Assistant"
 msgstr "Einstellungen von Home Assistant erhalten"
+
+msgctxt "#30572"
+msgid "not a settings file"
+msgstr "keine Einstellungsdatei"
+
+msgctxt "#30573"
+msgid "made by a newer CamAlert"
+msgstr "von einem neueren CamAlert erstellt"
+
+msgctxt "#30780"
+msgid "Export settings"
+msgstr "Einstellungen exportieren"
+
+msgctxt "#30781"
+msgid "Import settings"
+msgstr "Einstellungen importieren"
+
+msgctxt "#30782"
+msgid "Undo the last import"
+msgstr "Letzten Import rückgängig machen"
+
+msgctxt "#30783"
+msgid "Without passwords and access token"
+msgstr "Ohne Passwörter und Zugriffstoken"
+
+msgctxt "#30784"
+msgid "With passwords and access token"
+msgstr "Mit Passwörtern und Zugriffstoken"
+
+msgctxt "#30785"
+msgid "Choose a folder for the settings file"
+msgstr "Wähle einen Ordner für die Einstellungsdatei"
+
+msgctxt "#30786"
+msgid "Choose the settings file"
+msgstr "Wähle die Einstellungsdatei"
+
+msgctxt "#30787"
+msgid "Settings saved in %s"
+msgstr "Einstellungen gespeichert in %s"
+
+msgctxt "#30788"
+msgid "Import the settings from %s?\nThe current settings are saved first, so you can undo this."
+msgstr "Die Einstellungen aus %s importieren?\nDie aktuellen Einstellungen werden vorher gesichert, damit du das rückgängig machen kannst."
+
+msgctxt "#30789"
+msgid "Go back to the settings from before the last import?"
+msgstr "Zurück zu den Einstellungen vor dem letzten Import?"
+
+msgctxt "#30790"
+msgid "%d settings changed."
+msgstr "%d Einstellungen geändert."
+
+msgctxt "#30791"
+msgid "Not imported (invalid value): %s"
+msgstr "Nicht importiert (ungültiger Wert): %s"
+
+msgctxt "#30792"
+msgid "This file cannot be imported (%s)."
+msgstr "Diese Datei kann nicht importiert werden (%s)."
+
+msgctxt "#30793"
+msgid "Could not save the settings: %s"
+msgstr "Die Einstellungen konnten nicht gespeichert werden: %s"
+
+msgctxt "#30794"
+msgid "Could not read the settings: %s"
+msgstr "Die Einstellungen konnten nicht gelesen werden: %s"
+
+msgctxt "#30795"
+msgid "There is no import to undo."
+msgstr "Es gibt keinen Import zum Rückgängigmachen."

@@ -246,6 +246,8 @@
     <string name="t_d79a92ed" formatted="false">pause</string>
     <string name="t_46b14e9b" formatted="false">paused</string>
     <string name="t_6ad1f969" formatted="false">tour</string>
+    <string name="t_9ee51c54" formatted="false">not a settings file</string>
+    <string name="t_53025dac" formatted="false">made by a newer CamAlert</string>
     <string name="t_9dc41ec9" formatted="false">Doorbell</string>
     <string name="t_3370d440" formatted="false">Person</string>
     <string name="t_d43ddd1a" formatted="false">Vehicle</string>

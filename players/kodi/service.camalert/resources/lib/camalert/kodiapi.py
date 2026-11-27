@@ -125,6 +125,14 @@ def migrate_settings():
             todo = migrations(saved_values(f.read()))
     except OSError:
         return []
+    if todo:  # #7: the settings as they were, to undo the migration (Undo the last import)
+        try:
+            from .camalert_core.settingsfile import Backups
+            with open(path, encoding="utf-8") as f:
+                Backups(os.path.join(profile_dir(), "backups")).save(saved_values(f.read()), "kodi", "migration",
+                                                                     schema_version=1)
+        except Exception as e:  # noqa: BLE001 - never stop the migration
+            log("backup before the settings migration failed: %s" % e, "error")
     for key, value in sorted(todo.items()):
         set_setting(key, value)
     if todo:

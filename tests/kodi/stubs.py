@@ -195,7 +195,7 @@ def install(settings=None, profile="/tmp/camalert-test-profile", version=DEFAULT
             "classes": {
                 "Window": {"getProperty": lambda self, key: ""},
                 "Dialog": {"ok": lambda self, *a, **kw: True, "select": lambda self, *a, **kw: -1,
-                           "yesno": lambda self, *a, **kw: False},
+                           "yesno": lambda self, *a, **kw: False, "browse": lambda self, *a, **kw: ""},
                 "WindowDialog": {"__init__": lambda self, *a, **kw: setattr(self, "controls", []),
                                  "addControl": lambda self, c: self.controls.append(c)},
                 "ListItem": {"__init__": lambda self, label="", label2="", path="", offscreen=False:
@@ -216,7 +216,12 @@ def install(settings=None, profile="/tmp/camalert-test-profile", version=DEFAULT
                           "getAddonInfo": lambda self, k: addon_path if k == "path" else "service.camalert"},
             },
         },
-        "xbmcvfs": {"functions": {"translatePath": translate}, "classes": {}},
+        "xbmcvfs": {"functions": {"translatePath": translate}, "classes": {
+            # local files only (#7 settings export / import): read() gives text, write() takes bytes like Kodi 19+
+            "File": {"__init__": lambda self, filepath, mode=None: self.__dict__.update(path=filepath, mode=mode),
+                     "read": lambda self, *a: open(self.path, encoding="utf-8").read(),
+                     "write": lambda self, buffer: open(self.path, "wb").write(buffer) is not None,
+                     "close": lambda self: None}}},
         "xbmcplugin": {"functions": {}, "classes": {}},  # #107: every call is only recorded
     }
     for name, m in api.items():

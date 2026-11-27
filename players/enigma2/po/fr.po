@@ -309,11 +309,53 @@ msgstr "Liste des événements"
 msgid "Start the wizard again"
 msgstr "Relancer l'assistant"
 
+msgid "Export settings"
+msgstr "Exporter les paramètres"
+
+msgid "Import settings"
+msgstr "Importer les paramètres"
+
+msgid "Undo the last import"
+msgstr "Annuler la dernière importation"
+
 msgid "Show all settings"
 msgstr "Afficher tous les réglages"
 
 msgid "Show fewer settings"
 msgstr "Afficher moins de réglages"
+
+msgid "Without passwords and access token"
+msgstr "Sans mots de passe ni jeton d'accès"
+
+msgid "With passwords and access token"
+msgstr "Avec mots de passe et jeton d'accès"
+
+msgid "No %s found on a USB stick, the hard disk or in /home/root."
+msgstr "Aucun %s trouvé sur une clé USB, le disque dur ou dans /home/root."
+
+msgid "Import the settings from %s?\nThe current settings are saved first, so you can undo this."
+msgstr "Importer les paramètres de %s ?\nLes paramètres actuels sont d'abord sauvegardés, vous pouvez donc annuler."
+
+msgid "Go back to the settings from before the last import?"
+msgstr "Revenir aux paramètres d'avant la dernière importation ?"
+
+msgid "Could not save the settings: %s"
+msgstr "Impossible d'enregistrer les paramètres : %s"
+
+msgid "Settings saved in %s"
+msgstr "Paramètres enregistrés dans %s"
+
+msgid "This file cannot be imported (%s)."
+msgstr "Ce fichier ne peut pas être importé (%s)."
+
+msgid "Could not read the settings: %s"
+msgstr "Impossible de lire les paramètres : %s"
+
+msgid "%d settings changed."
+msgstr "%d paramètres modifiés."
+
+msgid "Not imported (invalid value): %s"
+msgstr "Non importé (valeur non valide) : %s"
 
 msgid "No cameras found in %s.\nSee the guide for the format."
 msgstr "Aucune caméra trouvée dans %s.\nVoir le guide pour le format."
@@ -548,6 +590,12 @@ msgstr "en pause"
 
 msgid "tour"
 msgstr "ronde"
+
+msgid "not a settings file"
+msgstr "pas un fichier de paramètres"
+
+msgid "made by a newer CamAlert"
+msgstr "créé par une version plus récente de CamAlert"
 
 msgid "Doorbell"
 msgstr "Sonnette"

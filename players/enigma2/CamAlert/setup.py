@@ -17,6 +17,7 @@ from twisted.internet import threads
 from . import _, __version__
 from . import server
 from . import mqtt
+from . import settingsio
 from .helpable import HelpBase, help_actions, init_help
 from .camalert_core import schema
 from .display import CAMERA_FILE, Controller, all_camera_names, direct_cameras, open_url, pillow_available
@@ -195,7 +196,10 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
             "   " + (_("%d more settings via MENU") % self.hidden) if self.hidden else ""))
 
     def menu(self):
-        choices = [(_("Diagnostics"), "diag"), (_("Event list"), "events"), (_("Start the wizard again"), "wizard")]
+        choices = [(_("Diagnostics"), "diag"), (_("Event list"), "events"), (_("Start the wizard again"), "wizard"),
+                   (_("Export settings"), "export"), (_("Import settings"), "import")]
+        if settingsio.backups().latest() is not None:
+            choices.append((_("Undo the last import"), "undo"))
         if self.level < 2:
             choices.append((_("Show all settings"), "all"))
         elif image_level() < 2:
@@ -209,11 +213,68 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
         if choice[1] == "wizard":  # #120
             from .wizard import Wizard
             Wizard(self.session, on_close=self.build).start()
+        elif choice[1] == "export":  # #7
+            self.session.openWithCallback(self.export_chosen, ChoiceBox, title=_("Export settings"), list=[
+                (_("Without passwords and access token"), False), (_("With passwords and access token"), True)])
+        elif choice[1] == "import":
+            path = settingsio.import_file()
+            if path is None:
+                self.session.open(MessageBox, _("No %s found on a USB stick, the hard disk or in /home/root.")
+                                  % settingsio.FILE_NAME, MessageBox.TYPE_INFO)
+                return
+            self.import_path = path
+            self.session.openWithCallback(self.import_confirmed, MessageBox, _(
+                "Import the settings from %s?\nThe current settings are saved first, so you can undo this.") % path)
+        elif choice[1] == "undo":
+            self.session.openWithCallback(self.undo_confirmed, MessageBox, _(
+                "Go back to the settings from before the last import?"))
         elif choice[1] in ("all", "fewer"):
             self.level = 2 if choice[1] == "all" else image_level()
             self.build()
         else:
             self.session.open(DiagnosticsScreen if choice[1] == "diag" else EventsScreen)
+
+    def export_chosen(self, choice):
+        if not choice:
+            return
+        try:
+            path = settingsio.export(secrets=choice[1])
+        except (IOError, OSError) as e:
+            self.session.open(MessageBox, _("Could not save the settings: %s") % e, MessageBox.TYPE_ERROR)
+            return
+        self.session.open(MessageBox, _("Settings saved in %s") % path, MessageBox.TYPE_INFO)
+
+    def import_confirmed(self, yes):
+        if not yes:
+            return
+        try:
+            report = settingsio.do_import(self.import_path)
+        except settingsio.settingsfile.BadFile as e:
+            self.session.open(MessageBox, _("This file cannot be imported (%s).") % _(str(e)), MessageBox.TYPE_ERROR)
+            return
+        except (IOError, OSError) as e:
+            self.session.open(MessageBox, _("Could not read the settings: %s") % e, MessageBox.TYPE_ERROR)
+            return
+        self.settings_replaced(report)
+
+    def undo_confirmed(self, yes):
+        if not yes:
+            return
+        report = settingsio.undo()
+        if report is not None:
+            self.settings_replaced(report)
+
+    def settings_replaced(self, report):
+        """After an import or undo: restart what depends on the settings and show the new values (#7)."""
+        server.start()
+        mqtt.start()
+        if Controller.instance:
+            Controller.instance.refresh_names()
+        self.build()
+        text = _("%d settings changed.") % len(report["changed"])
+        if report["problems"]:
+            text += "\n" + _("Not imported (invalid value): %s") % ", ".join(report["problems"])
+        self.session.open(MessageBox, text, MessageBox.TYPE_INFO)
 
     def ask_server(self):
         """#73: go2rtc mode without an address: start on the go2rtc address (its help line says it is not set)."""

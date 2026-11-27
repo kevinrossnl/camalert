@@ -245,6 +245,8 @@
     <string name="t_d79a92ed" formatted="false">pauza</string>
     <string name="t_46b14e9b" formatted="false">wstrzymano</string>
     <string name="t_6ad1f969" formatted="false">obchód</string>
+    <string name="t_9ee51c54" formatted="false">to nie jest plik ustawień</string>
+    <string name="t_53025dac" formatted="false">utworzony przez nowszą wersję CamAlert</string>
     <string name="t_9dc41ec9" formatted="false">Dzwonek</string>
     <string name="t_3370d440" formatted="false">Osoba</string>
     <string name="t_d43ddd1a" formatted="false">Pojazd</string>

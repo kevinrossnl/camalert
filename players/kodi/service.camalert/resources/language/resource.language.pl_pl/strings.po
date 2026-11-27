@@ -1336,3 +1336,75 @@ msgstr "Gotowa: %s nie połączona"
 msgctxt "#30571"
 msgid "Settings received from Home Assistant"
 msgstr "Otrzymano ustawienia z Home Assistant"
+
+msgctxt "#30572"
+msgid "not a settings file"
+msgstr "to nie jest plik ustawień"
+
+msgctxt "#30573"
+msgid "made by a newer CamAlert"
+msgstr "utworzony przez nowszą wersję CamAlert"
+
+msgctxt "#30780"
+msgid "Export settings"
+msgstr "Eksportuj ustawienia"
+
+msgctxt "#30781"
+msgid "Import settings"
+msgstr "Importuj ustawienia"
+
+msgctxt "#30782"
+msgid "Undo the last import"
+msgstr "Cofnij ostatni import"
+
+msgctxt "#30783"
+msgid "Without passwords and access token"
+msgstr "Bez haseł i tokenu dostępu"
+
+msgctxt "#30784"
+msgid "With passwords and access token"
+msgstr "Z hasłami i tokenem dostępu"
+
+msgctxt "#30785"
+msgid "Choose a folder for the settings file"
+msgstr "Folder na plik ustawień"
+
+msgctxt "#30786"
+msgid "Choose the settings file"
+msgstr "Plik ustawień"
+
+msgctxt "#30787"
+msgid "Settings saved in %s"
+msgstr "Ustawienia zapisano w %s"
+
+msgctxt "#30788"
+msgid "Import the settings from %s?\nThe current settings are saved first, so you can undo this."
+msgstr "Zaimportować ustawienia z %s?\nObecne ustawienia zostaną najpierw zapisane, więc można to cofnąć."
+
+msgctxt "#30789"
+msgid "Go back to the settings from before the last import?"
+msgstr "Przywrócić ustawienia sprzed ostatniego importu?"
+
+msgctxt "#30790"
+msgid "%d settings changed."
+msgstr "Zmienione ustawienia: %d."
+
+msgctxt "#30791"
+msgid "Not imported (invalid value): %s"
+msgstr "Nie zaimportowano (nieprawidłowa wartość): %s"
+
+msgctxt "#30792"
+msgid "This file cannot be imported (%s)."
+msgstr "Tego pliku nie można zaimportować (%s)."
+
+msgctxt "#30793"
+msgid "Could not save the settings: %s"
+msgstr "Nie można zapisać ustawień: %s"
+
+msgctxt "#30794"
+msgid "Could not read the settings: %s"
+msgstr "Nie można odczytać ustawień: %s"
+
+msgctxt "#30795"
+msgid "There is no import to undo."
+msgstr "Brak importu do cofnięcia."

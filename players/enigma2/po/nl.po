@@ -309,11 +309,53 @@ msgstr "Gebeurtenissen"
 msgid "Start the wizard again"
 msgstr "Wizard opnieuw starten"
 
+msgid "Export settings"
+msgstr "Instellingen exporteren"
+
+msgid "Import settings"
+msgstr "Instellingen importeren"
+
+msgid "Undo the last import"
+msgstr "Laatste import ongedaan maken"
+
 msgid "Show all settings"
 msgstr "Alle instellingen tonen"
 
 msgid "Show fewer settings"
 msgstr "Minder instellingen tonen"
+
+msgid "Without passwords and access token"
+msgstr "Zonder wachtwoorden en toegangstoken"
+
+msgid "With passwords and access token"
+msgstr "Met wachtwoorden en toegangstoken"
+
+msgid "No %s found on a USB stick, the hard disk or in /home/root."
+msgstr "Geen %s gevonden op een USB-stick, de harde schijf of in /home/root."
+
+msgid "Import the settings from %s?\nThe current settings are saved first, so you can undo this."
+msgstr "De instellingen uit %s importeren?\nDe huidige instellingen worden eerst bewaard, zodat je dit ongedaan kunt maken."
+
+msgid "Go back to the settings from before the last import?"
+msgstr "Terug naar de instellingen van vóór de laatste import?"
+
+msgid "Could not save the settings: %s"
+msgstr "Kan de instellingen niet opslaan: %s"
+
+msgid "Settings saved in %s"
+msgstr "Instellingen opgeslagen in %s"
+
+msgid "This file cannot be imported (%s)."
+msgstr "Dit bestand kan niet worden geïmporteerd (%s)."
+
+msgid "Could not read the settings: %s"
+msgstr "Kan de instellingen niet lezen: %s"
+
+msgid "%d settings changed."
+msgstr "%d instellingen gewijzigd."
+
+msgid "Not imported (invalid value): %s"
+msgstr "Niet geïmporteerd (ongeldige waarde): %s"
 
 msgid "No cameras found in %s.\nSee the guide for the format."
 msgstr "Geen camera's gevonden in %s.\nZie de handleiding voor de opbouw."
@@ -548,6 +590,12 @@ msgstr "gepauzeerd"
 
 msgid "tour"
 msgstr "rondgang"
+
+msgid "not a settings file"
+msgstr "geen instellingenbestand"
+
+msgid "made by a newer CamAlert"
+msgstr "gemaakt door een nieuwere CamAlert"
 
 msgid "Doorbell"
 msgstr "Deurbel"

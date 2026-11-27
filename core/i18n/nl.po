@@ -412,6 +412,18 @@ msgstr "Gebeurtenissen"
 msgid "Start the wizard again"
 msgstr "Wizard opnieuw starten"
 
+#: e2 kodi:30780
+msgid "Export settings"
+msgstr "Instellingen exporteren"
+
+#: e2 kodi:30781
+msgid "Import settings"
+msgstr "Instellingen importeren"
+
+#: e2 kodi:30782
+msgid "Undo the last import"
+msgstr "Laatste import ongedaan maken"
+
 #: e2
 msgid "Show all settings"
 msgstr "Alle instellingen tonen"
@@ -419,6 +431,50 @@ msgstr "Alle instellingen tonen"
 #: e2
 msgid "Show fewer settings"
 msgstr "Minder instellingen tonen"
+
+#: e2 kodi:30783
+msgid "Without passwords and access token"
+msgstr "Zonder wachtwoorden en toegangstoken"
+
+#: e2 kodi:30784
+msgid "With passwords and access token"
+msgstr "Met wachtwoorden en toegangstoken"
+
+#: e2
+msgid "No %s found on a USB stick, the hard disk or in /home/root."
+msgstr "Geen %s gevonden op een USB-stick, de harde schijf of in /home/root."
+
+#: e2 kodi:30788
+msgid "Import the settings from %s?\nThe current settings are saved first, so you can undo this."
+msgstr "De instellingen uit %s importeren?\nDe huidige instellingen worden eerst bewaard, zodat je dit ongedaan kunt maken."
+
+#: e2 kodi:30789
+msgid "Go back to the settings from before the last import?"
+msgstr "Terug naar de instellingen van vóór de laatste import?"
+
+#: e2 kodi:30793
+msgid "Could not save the settings: %s"
+msgstr "Kan de instellingen niet opslaan: %s"
+
+#: e2 kodi:30787
+msgid "Settings saved in %s"
+msgstr "Instellingen opgeslagen in %s"
+
+#: e2 kodi:30792
+msgid "This file cannot be imported (%s)."
+msgstr "Dit bestand kan niet worden geïmporteerd (%s)."
+
+#: e2 kodi:30794
+msgid "Could not read the settings: %s"
+msgstr "Kan de instellingen niet lezen: %s"
+
+#: e2 kodi:30790
+msgid "%d settings changed."
+msgstr "%d instellingen gewijzigd."
+
+#: e2 kodi:30791
+msgid "Not imported (invalid value): %s"
+msgstr "Niet geïmporteerd (ongeldige waarde): %s"
 
 #: e2
 msgid "No cameras found in %s.\nSee the guide for the format."
@@ -731,6 +787,14 @@ msgstr "gepauzeerd"
 #: e2 kodi:30191 kodi:30548
 msgid "tour"
 msgstr "rondgang"
+
+#: e2 kodi:30572
+msgid "not a settings file"
+msgstr "geen instellingenbestand"
+
+#: e2 kodi:30573
+msgid "made by a newer CamAlert"
+msgstr "gemaakt door een nieuwere CamAlert"
 
 #: e2 kodi:30552
 msgid "Doorbell"
@@ -1631,6 +1695,18 @@ msgstr "Wizard bij eerste start gedaan"
 #: kodi:30451 atv:wizard_no_cameras
 msgid "go2rtc has no cameras yet. Add your cameras in go2rtc and start the wizard again from the menu."
 msgstr "go2rtc heeft nog geen camera's. Voeg je camera's toe in go2rtc en start de wizard daarna opnieuw vanuit het menu."
+
+#: kodi:30785
+msgid "Choose a folder for the settings file"
+msgstr "Kies een map voor het instellingenbestand"
+
+#: kodi:30786
+msgid "Choose the settings file"
+msgstr "Kies het instellingenbestand"
+
+#: kodi:30795
+msgid "There is no import to undo."
+msgstr "Er is geen import om ongedaan te maken."
 
 #: ha:config.flow_title
 msgid "{name}"

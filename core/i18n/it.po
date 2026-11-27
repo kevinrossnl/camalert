@@ -412,6 +412,18 @@ msgstr "Elenco eventi"
 msgid "Start the wizard again"
 msgstr "Riavviare la procedura guidata"
 
+#: e2 kodi:30780
+msgid "Export settings"
+msgstr "Esporta impostazioni"
+
+#: e2 kodi:30781
+msgid "Import settings"
+msgstr "Importa impostazioni"
+
+#: e2 kodi:30782
+msgid "Undo the last import"
+msgstr "Annulla l'ultima importazione"
+
 #: e2
 msgid "Show all settings"
 msgstr "Mostra tutte le impostazioni"
@@ -419,6 +431,50 @@ msgstr "Mostra tutte le impostazioni"
 #: e2
 msgid "Show fewer settings"
 msgstr "Mostra meno impostazioni"
+
+#: e2 kodi:30783
+msgid "Without passwords and access token"
+msgstr "Senza password né token di accesso"
+
+#: e2 kodi:30784
+msgid "With passwords and access token"
+msgstr "Con password e token di accesso"
+
+#: e2
+msgid "No %s found on a USB stick, the hard disk or in /home/root."
+msgstr "Nessun %s trovato su una chiavetta USB, sul disco rigido o in /home/root."
+
+#: e2 kodi:30788
+msgid "Import the settings from %s?\nThe current settings are saved first, so you can undo this."
+msgstr "Importare le impostazioni da %s?\nLe impostazioni attuali vengono salvate prima, così l'operazione si può annullare."
+
+#: e2 kodi:30789
+msgid "Go back to the settings from before the last import?"
+msgstr "Tornare alle impostazioni precedenti all'ultima importazione?"
+
+#: e2 kodi:30793
+msgid "Could not save the settings: %s"
+msgstr "Impossibile salvare le impostazioni: %s"
+
+#: e2 kodi:30787
+msgid "Settings saved in %s"
+msgstr "Impostazioni salvate in %s"
+
+#: e2 kodi:30792
+msgid "This file cannot be imported (%s)."
+msgstr "Questo file non può essere importato (%s)."
+
+#: e2 kodi:30794
+msgid "Could not read the settings: %s"
+msgstr "Impossibile leggere le impostazioni: %s"
+
+#: e2 kodi:30790
+msgid "%d settings changed."
+msgstr "%d impostazioni modificate."
+
+#: e2 kodi:30791
+msgid "Not imported (invalid value): %s"
+msgstr "Non importato (valore non valido): %s"
 
 #: e2
 msgid "No cameras found in %s.\nSee the guide for the format."
@@ -731,6 +787,14 @@ msgstr "in pausa"
 #: e2 kodi:30191 kodi:30548
 msgid "tour"
 msgstr "giro"
+
+#: e2 kodi:30572
+msgid "not a settings file"
+msgstr "non è un file di impostazioni"
+
+#: e2 kodi:30573
+msgid "made by a newer CamAlert"
+msgstr "creato da una versione più recente di CamAlert"
 
 #: e2 kodi:30552
 msgid "Doorbell"
@@ -1631,6 +1695,18 @@ msgstr "Procedura guidata iniziale completata"
 #: kodi:30451 atv:wizard_no_cameras
 msgid "go2rtc has no cameras yet. Add your cameras in go2rtc and start the wizard again from the menu."
 msgstr "go2rtc non ha ancora telecamere. Configurare le telecamere in go2rtc e poi riavviare la procedura guidata dal menu."
+
+#: kodi:30785
+msgid "Choose a folder for the settings file"
+msgstr "Cartella per il file delle impostazioni"
+
+#: kodi:30786
+msgid "Choose the settings file"
+msgstr "File delle impostazioni"
+
+#: kodi:30795
+msgid "There is no import to undo."
+msgstr "Non c'è nessuna importazione da annullare."
 
 #: ha:config.flow_title
 msgid "{name}"

@@ -92,6 +92,27 @@ On Enigma2 you can now also zap to your cameras via the new channel list (press 
 
 When the photo window is on screen you can use the remote: **OK** switches to the live picture, **◀ ▶** shows another camera, **EXIT** closes it (any other key also closes it, so you can just keep zapping).
 
+### Copy the settings to another player (export and import)
+
+Set up one player, then copy its settings to the others:
+
+- **Enigma2**: in the settings press **MENU › Export settings**. CamAlert writes `camalert-settings.json` to a USB
+  stick or the hard disk when there is one, otherwise to `/home/root`. On the other Enigma2 box put the file in one of
+  those places and choose **MENU › Import settings**.
+- **Kodi**: open the add-on (**Add-ons › Program add-ons › CamAlert**) and choose **Export settings** or **Import
+  settings**; you pick the folder or file yourself, so a USB stick or a network share works.
+
+The export leaves the passwords and the access token out, unless you choose *With passwords and access token*
+(then keep the file to yourself). A setting the file does not hold keeps its value, so importing an export without
+passwords keeps the passwords of the player. Settings another kind of player does not have are skipped, and a file
+of an older CamAlert is updated on import; a file of a newer CamAlert is refused.
+
+Before every import CamAlert saves the current settings, and **Undo the last import** brings them back (also after
+an update of CamAlert that changed the settings). The last 5 copies stay on the player: Enigma2
+`/etc/enigma2/camalert-backups/`, Kodi `addon_data/service.camalert/backups/`.
+
+The Android TV app has no export or import yet.
+
 ## Step 5 – Show the camera automatically
 
 - **Home Assistant**: install the CamAlert integration and use a ready-made blueprint, see [Home Assistant](../integrations/home-assistant.md). No YAML needed.

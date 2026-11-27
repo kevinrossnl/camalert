@@ -245,6 +245,8 @@
     <string name="t_d79a92ed" formatted="false">pause</string>
     <string name="t_46b14e9b" formatted="false">en pause</string>
     <string name="t_6ad1f969" formatted="false">ronde</string>
+    <string name="t_9ee51c54" formatted="false">pas un fichier de paramètres</string>
+    <string name="t_53025dac" formatted="false">créé par une version plus récente de CamAlert</string>
     <string name="t_9dc41ec9" formatted="false">Sonnette</string>
     <string name="t_3370d440" formatted="false">Personne</string>
     <string name="t_d43ddd1a" formatted="false">Véhicule</string>

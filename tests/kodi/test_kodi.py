@@ -1339,7 +1339,8 @@ class _KodiModules(object):
             setattr(script, name, fake)
         return script, rec
 
-    MENU = ["Show mosaic", "Start tour", "Show camera", "Event list", "Diagnostics", "Settings", "Start the wizard again"]
+    MENU = ["Show mosaic", "Start tour", "Show camera", "Event list", "Diagnostics", "Settings", "Start the wizard again",
+            "Export settings", "Import settings", "Undo the last import"]  # #7
 
     def test_menu_without_arguments(self):
         """#106: opening CamAlert from Add-ons > Program add-ons shows a choice list, not the settings."""

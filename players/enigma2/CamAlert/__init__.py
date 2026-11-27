@@ -46,6 +46,13 @@ def _migrate():
         if not stored or V2_MARKER in stored:
             return
         values = dict(V1_DEFAULTS, **stored)
+        try:  # #7: the settings as they were, to undo the migration (MENU > Undo the last import)
+            import os
+            from .camalert_core.settingsfile import Backups
+            folder = os.environ.get("CAMALERT_E2_BACKUP_DIR") or "/etc/enigma2/camalert-backups"  # = settingsio
+            Backups(folder).save(dict(stored), "enigma2", "migration", schema_version=1)
+        except Exception as e:
+            print("[CamAlert] backup before the settings migration failed (%s)" % e)
         new = schema.migrate(values, "enigma2")
         for key, value in list(new.items()):
             if isinstance(value, bool):

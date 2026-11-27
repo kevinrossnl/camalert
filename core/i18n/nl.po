@@ -1564,6 +1564,10 @@ msgstr "de camera zelf"
 msgid "Up to 9 cameras: the first 9 are used."
 msgstr "Maximaal 9 camera's: de eerste 9 worden gebruikt."
 
+#: ha:config.flow_title
+msgid "{name}"
+msgstr "{name}"
+
 #: ha:config.step.user.title
 msgid "Add a CamAlert player"
 msgstr "CamAlert-speler toevoegen"
@@ -1584,7 +1588,7 @@ msgstr "Poort"
 msgid "Use HTTPS"
 msgstr "HTTPS gebruiken"
 
-#: ha:config.step.reconfigure.data.token ha:config.step.user.data.token
+#: ha:config.step.reconfigure.data.token ha:config.step.user.data.token ha:config.step.zeroconf_confirm.data.token
 msgid "Access token"
 msgstr "Toegangstoken"
 
@@ -1607,6 +1611,18 @@ msgstr "Zet uit voor het eigen (zelfondertekende) certificaat van de speler. All
 #: ha:config.step.reconfigure.data_description.token ha:config.step.user.data_description.token
 msgid "Only if an access token is set in CamAlert on the player. It is sent in a header, never in the address."
 msgstr "Alleen als er een toegangstoken is ingesteld in CamAlert op de speler. Het wordt in een header verstuurd, nooit in het adres."
+
+#: ha:config.step.zeroconf_confirm.title
+msgid "Add {name}"
+msgstr "{name} toevoegen"
+
+#: ha:config.step.zeroconf_confirm.description
+msgid "CamAlert found {name} on the network ({host}). Add this player to Home Assistant?"
+msgstr "CamAlert heeft {name} op het netwerk gevonden ({host}). Wil je deze speler aan Home Assistant toevoegen?"
+
+#: ha:config.step.zeroconf_confirm.data_description.token
+msgid "The player has an access token: enter the token set in CamAlert on the player. It is sent in a header, never in the address."
+msgstr "De speler heeft een toegangstoken: vul het token in dat in CamAlert op de speler is ingesteld. Het wordt in een header verstuurd, nooit in het adres."
 
 #: ha:config.step.reconfigure.title
 msgid "Change the CamAlert player"
@@ -1643,6 +1659,10 @@ msgstr "De speler is gewijzigd."
 #: ha:config.abort.wrong_player
 msgid "This address belongs to another player. Add it as a new player instead."
 msgstr "Dit adres hoort bij een andere speler. Voeg hem toe als nieuwe speler."
+
+#: ha:config.abort.not_camalert
+msgid "This device did not say which CamAlert player it is."
+msgstr "Dit apparaat meldt niet welke CamAlert-speler het is."
 
 #: ha:options.step.init.title
 msgid "CamAlert player options"

@@ -14,11 +14,14 @@ from Components.config import config, configfile
 
 from . import __version__
 from .display import Controller, all_camera_names, camera_urls, log
-from .camalert_core import api
+from .camalert_core import api, discovery
 from .camalert_core.obs.camlog import LOG
 from .camalert_core.urls import valid_port
 
 _port = None
+_https = False
+# #121: announced as _camalert._tcp while the API is on (avahi service file, else the core's mDNS responder)
+ADVERTISER = discovery.Advertiser(log=lambda m, level="normal": log(m, level=level))
 CERT = "/etc/enigma2/camalert.crt"
 KEY = "/etc/enigma2/camalert.key"
 
@@ -150,9 +153,21 @@ class Api(resource.Resource):
         return write(req, api.handle(BACKEND, r))
 
 
+def announce():
+    """#121: Home Assistant finds the receiver while its API listens and is on; call after the settings changed."""
+    c = config.plugins.camalert
+    info = None
+    if _port is not None and discovery.should_advertise({"enabled": c.enabled.value, "allow": c.allow.value}):
+        from .mqtt import node_id, node_name
+        info = discovery.service_info(node_id(), node_name(), Backend.platform, Backend.version, api.API_VERSION,
+                                      valid_port(c.http_port.value, 8099), _https)
+    return ADVERTISER.update(info)
+
+
 def start():
-    global _port
+    global _port, _https
     stop()
+    _https = False
     root = resource.Resource()
     root.putChild(b"camalert", Api())
     c = config.plugins.camalert
@@ -161,12 +176,14 @@ def start():
             from twisted.internet import ssl
             ctx = ssl.DefaultOpenSSLContextFactory(KEY, CERT)
             _port = reactor.listenSSL(valid_port(c.http_port.value, 8099), server.Site(root), ctx)
+            _https = True
             log("listening on port", valid_port(c.http_port.value, 8099), "(https)")
         else:
             _port = reactor.listenTCP(valid_port(c.http_port.value, 8099), server.Site(root))
             log("listening on port", valid_port(c.http_port.value, 8099))
     except Exception as e:
         log("could not start HTTP API:", e)
+    announce()
 
 
 def stop():

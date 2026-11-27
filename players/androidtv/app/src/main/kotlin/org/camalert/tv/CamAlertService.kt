@@ -11,6 +11,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.ServiceInfo
 import android.media.AudioManager
+import android.net.nsd.NsdManager
+import android.net.nsd.NsdServiceInfo
 import android.media.ToneGenerator
 import android.os.Build
 import android.os.Handler
@@ -22,6 +24,7 @@ import org.camalert.core.Api
 import org.camalert.core.Backend
 import org.camalert.core.Cameras
 import org.camalert.core.Controller
+import org.camalert.core.Discovery
 import org.camalert.core.HttpServer
 import org.camalert.core.MqttClient
 import org.camalert.core.MqttTopics
@@ -67,6 +70,8 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
     private var serverHttps = false
     private var mqtt: MqttClient? = null
     private var mqttKey = ""
+    private var nsdListener: NsdManager.RegistrationListener? = null
+    private var nsdKey: String? = null
     private val main = Handler(Looper.getMainLooper())
     val version: String by lazy {
         try { packageManager.getPackageInfo(packageName, 0).versionName ?: "0" } catch (e: Exception) { "0" }
@@ -258,6 +263,7 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
             serverPort = port
             serverHttps = wantHttps
         }
+        announce(s)
         val key = listOf("mqtt_enabled", "mqtt_host", "mqtt_port", "mqtt_user", "mqtt_password", "mqtt_discovery", "mqtt_name",
             "frigate_enabled", "frigate_prefix").joinToString("|") { "${s[it]}" }
         if (key != mqttKey) {
@@ -270,6 +276,52 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
                     cameraNames().map { Pair(it, Cameras.titleFor(it, titles)) }
                 }, { nodeName() }, MODEL) { m, l -> CamLog.log(m, l) }.also { it.start() }
             }
+        }
+    }
+
+    /** #121: Home Assistant finds this device while the API listens and is on (NsdManager, _camalert._tcp). */
+    private fun announce(s: Map<String, Any?>) {
+        val srv = server
+        val info = if (srv != null && Discovery.shouldAdvertise(s))
+            Discovery.serviceInfo(node, nodeName(s), "androidtv", version, api.data.apiVersion, serverPort, srv.https) else null
+        val key = info?.toString()
+        if (key == nsdKey) return
+        unannounce()
+        nsdKey = key
+        if (info == null) return
+        val nm = getSystemService(Context.NSD_SERVICE) as? NsdManager ?: return
+        val si = NsdServiceInfo().apply {
+            serviceName = info["instance"] as String
+            serviceType = Discovery.SERVICE_TYPE
+            port = info["port"] as Int
+            @Suppress("UNCHECKED_CAST")
+            for (kv in info["txt"] as List<List<String>>) setAttribute(kv[0], kv[1])
+        }
+        val listener = object : NsdManager.RegistrationListener {
+            override fun onServiceRegistered(i: NsdServiceInfo) {
+                CamLog.log("announced on the network as ${i.serviceName}", "verbose")
+            }
+            override fun onRegistrationFailed(i: NsdServiceInfo, code: Int) {
+                CamLog.log("network announcement failed ($code)", "error")
+            }
+            override fun onServiceUnregistered(i: NsdServiceInfo) {}
+            override fun onUnregistrationFailed(i: NsdServiceInfo, code: Int) {}
+        }
+        try {
+            nm.registerService(si, NsdManager.PROTOCOL_DNS_SD, listener)
+            nsdListener = listener
+        } catch (e: Exception) {
+            CamLog.log("network announcement failed: $e", "error")
+        }
+    }
+
+    private fun unannounce() {
+        val listener = nsdListener ?: return
+        nsdListener = null
+        nsdKey = null
+        try {
+            (getSystemService(Context.NSD_SERVICE) as NsdManager).unregisterService(listener)
+        } catch (e: Exception) {  // already gone
         }
     }
 
@@ -314,6 +366,7 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         warmThread?.interrupt()
         warm.stop()
         store.prefs.unregisterOnSharedPreferenceChangeListener(this)
+        unannounce()
         server?.stop()
         mqtt?.let { m -> Thread { m.shutdown() }.start() }
         overlay.hide()

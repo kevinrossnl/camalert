@@ -12,7 +12,9 @@ actions and blueprint inputs stay backwards compatible.
 - **Home Assistant:** selects **Window position** and **Window size** per player, to change where the photo window
   appears and how big it is from Home Assistant or an automation. New API route `/camalert/settings` (capability
   `settings`); `/camalert/status` also reports `position` and `size` (#84).
-
+- **Home Assistant:** players are found automatically. Every player announces itself on the local network
+  (`_camalert._tcp`, without a token), Home Assistant shows it as *Discovered* and adds it with one click; it asks for
+  the access token only when the player has one, and takes over a new IP address of a player it knows (#121).
 - **Home Assistant:** the player's device is shown under the device of the TV or Enigma2 receiver it runs on, found
   automatically by address from the Enigma2, Kodi or Android TV integration. **Configure** on the CamAlert entry
   (*Show under device*) chooses another device or turns this off.

@@ -11,12 +11,16 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
 from . import __version__, kodiapi, sources
-from .camalert_core import api
+from .camalert_core import api, discovery
 from .camalert_core.urls import valid_port
 from .klogic import node_from_mac
 
 _server = None
 _thread = None
+_https = False
+# #121: announced as _camalert._tcp while the API is on (the core's mDNS responder; an avahi service file where
+# avahi runs and /etc/avahi/services is writable, which LibreELEC's read-only /etc is not)
+ADVERTISER = discovery.Advertiser(log=lambda m, level="normal": kodiapi.log(m, level))
 
 
 def node_id():
@@ -139,9 +143,20 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
 
+def announce(s=None):
+    """#121: Home Assistant finds this Kodi while its API listens and is on; call after the settings changed."""
+    s = s or kodiapi.settings()
+    info = None
+    if _server is not None and discovery.should_advertise(s):
+        info = discovery.service_info(node_id(), node_name(s), Backend.platform, Backend.version, api.API_VERSION,
+                                      valid_port(s["http_port"], 8099), _https)
+    return ADVERTISER.update(info)
+
+
 def start():
-    global _server, _thread
-    stop()
+    global _server, _thread, _https
+    _stop_server()
+    _https = False
     s = kodiapi.settings()
     port = valid_port(s["http_port"], 8099)
     try:
@@ -153,14 +168,22 @@ def start():
             ctx.load_cert_chain(*cert_paths())
             srv.socket = ctx.wrap_socket(srv.socket, server_side=True)
         _server = srv
+        _https = https
         _thread = threading.Thread(target=srv.serve_forever, name="camalert-http", daemon=True)
         _thread.start()
         kodiapi.log("listening on port %d%s" % (port, " (https)" if https else ""))
     except OSError as e:
         kodiapi.log("could not start HTTP API: %s" % e)
+    announce(s)
 
 
 def stop():
+    """The API goes (Kodi stops the add-on): no longer announced on the network either."""
+    ADVERTISER.stop()
+    _stop_server()
+
+
+def _stop_server():
     global _server, _thread
     if _server is not None:
         _server.shutdown()

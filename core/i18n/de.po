@@ -1564,6 +1564,10 @@ msgstr "die Kamera selbst"
 msgid "Up to 9 cameras: the first 9 are used."
 msgstr "Höchstens 9 Kameras: die ersten 9 werden verwendet."
 
+#: ha:config.flow_title
+msgid "{name}"
+msgstr "{name}"
+
 #: ha:config.step.user.title
 msgid "Add a CamAlert player"
 msgstr "CamAlert-Wiedergabegerät hinzufügen"
@@ -1584,7 +1588,7 @@ msgstr "Port"
 msgid "Use HTTPS"
 msgstr "HTTPS verwenden"
 
-#: ha:config.step.reconfigure.data.token ha:config.step.user.data.token
+#: ha:config.step.reconfigure.data.token ha:config.step.user.data.token ha:config.step.zeroconf_confirm.data.token
 msgid "Access token"
 msgstr "Zugriffstoken"
 
@@ -1607,6 +1611,18 @@ msgstr "Für das eigene (selbst signierte) Zertifikat des Wiedergabegeräts auss
 #: ha:config.step.reconfigure.data_description.token ha:config.step.user.data_description.token
 msgid "Only if an access token is set in CamAlert on the player. It is sent in a header, never in the address."
 msgstr "Nur wenn in CamAlert auf dem Wiedergabegerät ein Zugriffstoken eingestellt ist. Es wird in einem Header gesendet, nie in der Adresse."
+
+#: ha:config.step.zeroconf_confirm.title
+msgid "Add {name}"
+msgstr "{name} hinzufügen"
+
+#: ha:config.step.zeroconf_confirm.description
+msgid "CamAlert found {name} on the network ({host}). Add this player to Home Assistant?"
+msgstr "CamAlert hat {name} im Netzwerk gefunden ({host}). Möchtest du dieses Wiedergabegerät zu Home Assistant hinzufügen?"
+
+#: ha:config.step.zeroconf_confirm.data_description.token
+msgid "The player has an access token: enter the token set in CamAlert on the player. It is sent in a header, never in the address."
+msgstr "Das Wiedergabegerät hat ein Zugriffstoken: Gib das Token ein, das in CamAlert auf dem Wiedergabegerät eingestellt ist. Es wird in einem Header gesendet, nie in der Adresse."
 
 #: ha:config.step.reconfigure.title
 msgid "Change the CamAlert player"
@@ -1643,6 +1659,10 @@ msgstr "Das Wiedergabegerät wurde geändert."
 #: ha:config.abort.wrong_player
 msgid "This address belongs to another player. Add it as a new player instead."
 msgstr "Diese Adresse gehört zu einem anderen Wiedergabegerät. Füge es als neues Wiedergabegerät hinzu."
+
+#: ha:config.abort.not_camalert
+msgid "This device did not say which CamAlert player it is."
+msgstr "Dieses Gerät meldet nicht, welches CamAlert-Wiedergabegerät es ist."
 
 #: ha:options.step.init.title
 msgid "CamAlert player options"

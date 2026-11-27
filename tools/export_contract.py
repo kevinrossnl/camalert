@@ -29,7 +29,7 @@ for p in (os.path.join(ROOT, "core"), TESTS):
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from camalert_core import access, api, frames, keymap, layout, present, rules, schema  # noqa: E402
+from camalert_core import access, api, discovery, frames, keymap, layout, present, rules, schema  # noqa: E402
 from camalert_core.devices.config import PTZ_ACTIONS  # noqa: E402
 from camalert_core.mqtt import topics as mqtt_topics  # noqa: E402
 from camalert_core.obs import log as obslog, metrics as obsmetrics  # noqa: E402
@@ -218,6 +218,15 @@ def core_reference():
                         ("", '  {"cam": "x"}'), ("application/json", "[1]"), ("application/json", '{"cam": '),
                         ("text/plain", ""))],
         "key_hints": hints,
+        "discovery": [{"args": [i, n, p, v, a, port, h],
+                       "info": discovery.service_info(i, n, p, v, a, port, h),
+                       "advertise": [discovery.should_advertise({"enabled": e, "allow": al})
+                                     for e, al in ((True, "lan"), (True, "any"), (False, "lan"), (True, "x"))]}
+                      for i, n, p, v, a, port, h in (
+                          ("00f1f52edd14", "CamAlert Fire TV (Living room)", "androidtv", "1.3.0", 1, 8099, False),
+                          ("AB:CD/ef", " \t ", "androidtv", "1.3.0", 1, 8443, True),
+                          ("x1", "é" * 40, "androidtv", "1.3.0-dev", 1, 8099, False),
+                          ("", "no id", "androidtv", "1", 1, 8099, False))],
         "metrics": metrics,
         "settings": settings,
         "caller_source": [{"ua": ua, "source": __import__("camalert_core.events", fromlist=["x"]).caller_source(ua)}

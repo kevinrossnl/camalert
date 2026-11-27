@@ -31,6 +31,19 @@ class CoreReferenceTest {
     }
 
     @Test
+    fun discovery() {  // #121: the same announcement as the Python players
+        for (c in cases("discovery")) {
+            val a = c["args"] as List<Any?>
+            val got = Discovery.serviceInfo(a[0] as String, a[1] as String, a[2] as String, a[3] as String,
+                (a[4] as Number).toInt(), (a[5] as Number).toInt(), a[6] as Boolean)
+            assertEquals("discovery(${a[0]})", Json.write(c["info"]), Json.write(got))
+            val adv = listOf(Pair(true, "lan"), Pair(true, "any"), Pair(false, "lan"), Pair(true, "x"))
+                .map { Discovery.shouldAdvertise(mapOf("enabled" to it.first, "allow" to it.second)) }
+            assertEquals(c["advertise"], adv)
+        }
+    }
+
+    @Test
     fun parameters() {
         for (c in cases("clamp_seconds")) {
             assertEquals("clamp_seconds(${c["value"]})", (c["out"] as Number).toInt(), Rules.clampSeconds(c["value"], (c["default"] as Number).toInt()))

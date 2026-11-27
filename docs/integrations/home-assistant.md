@@ -20,15 +20,27 @@ the user interface, no YAML. It works the same for Enigma2 receivers, Kodi and t
 3. Without HACS: download `camalert-homeassistant-x.y.z.zip` from the
    [latest release](https://github.com/kevinrossnl/camalert/releases/latest) and unpack it into your Home Assistant
    `config` folder (it contains `custom_components/camalert/`), then restart.
-4. **Settings › Devices & services › Add integration › CamAlert**. Enter the host name or IP address of the player
-   (and the port, HTTPS and token if you changed them in CamAlert). Repeat for every player. *Reconfigure* on the
-   entry changes the address, port, HTTPS or token later.
-5. The player's device is shown under the device of the TV or Enigma2 receiver it runs on: automatically when the
+4. **Found automatically:** a player with CamAlert 1.3 or later announces itself on the local network. Home
+   Assistant shows it under **Settings › Devices & services › Discovered**: click **Add** and confirm. Only when an
+   access token is set on the player does Home Assistant ask for it. When the player later gets another IP address,
+   Home Assistant takes it over by itself.
+5. **By hand** (an older player, or a network that blocks multicast, such as a separate VLAN without an mDNS
+   repeater): **Settings › Devices & services › Add integration › CamAlert**. Enter the host name or IP address of
+   the player (and the port, HTTPS and token if you changed them in CamAlert). Repeat for every player.
+   *Reconfigure* on the entry changes the address, port, HTTPS or token later.
+6. The player's device is shown under the device of the TV or Enigma2 receiver it runs on: automatically when the
    Enigma2, Kodi or Android TV integration has a device with the same address. **Configure** on the entry
    (*Show under device*) chooses another device, or none.
 
 The device model shows *Enigma2 receiver* or *Kodi*. Certificates are checked by default; turn *Check certificates*
-off only for the player's own self-signed certificate.
+off only for the player's own self-signed certificate. A discovered player with HTTPS on is added with the check off
+(it uses its own certificate); *Reconfigure* turns it on.
+
+**What a player announces** (DNS-SD service `_camalert._tcp`, port of the API): its name and the keys `id`, `name`,
+`platform`, `version`, `api_version` and `https`. Never a token or another setting. Nothing is announced while
+*Enable CamAlert* is off. On an Enigma2 receiver avahi does it (a file in `/etc/avahi/services/`, removed with the
+plugin); on Kodi (LibreELEC, desktop) and wherever avahi cannot be used, CamAlert answers the network queries itself;
+the Android TV app uses Android's network service discovery.
 
 ![Add a CamAlert player: host, port, HTTPS, certificates and token](../images/homeassistant/config-flow.png)
 

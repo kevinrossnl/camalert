@@ -45,6 +45,7 @@ glossary: `python3 tools/docs.py update`.
 | `keymap` | remote-key map per player and screen, colour keys (#42) |
 | `present` | what players show as text (#41): event codes and labels, `event_line`/`event_details`, dates, key hints, `tour_status`, tile texts (`tile_label`) |
 | `frames` | where window pictures come from: first picture from go2rtc's cache (#110) |
+| `discovery` | network announcement `_camalert._tcp.local.` for Home Assistant (#121): TXT, avahi file, small mDNS responder, `Advertiser` |
 | `i18n` | `N_()` marker, `kodi_ids`/`kodi_translator` |
 | `schema` | the one settings schema (id, section, level, type, default, range/step, unit, label/help, platforms) and `migrate()` (#38/#7/#39) |
 | `update` | update check |

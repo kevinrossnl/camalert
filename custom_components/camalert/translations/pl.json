@@ -1,5 +1,6 @@
 {
   "config": {
+    "flow_title": "{name}",
     "step": {
       "user": {
         "title": "Dodaj odtwarzacz CamAlert",
@@ -17,6 +18,16 @@
           "https": "Włączyć, jeśli HTTPS dla API jest włączone w CamAlert na odtwarzaczu.",
           "verify_ssl": "Wyłączyć dla własnego (samopodpisanego) certyfikatu odtwarzacza. Tylko z HTTPS.",
           "token": "Tylko jeśli w CamAlert na odtwarzaczu ustawiono token dostępu. Jest wysyłany w nagłówku, nigdy w adresie."
+        }
+      },
+      "zeroconf_confirm": {
+        "title": "Dodaj {name}",
+        "description": "CamAlert znalazł {name} w sieci ({host}). Dodać ten odtwarzacz do Home Assistant?",
+        "data": {
+          "token": "Token dostępu"
+        },
+        "data_description": {
+          "token": "Odtwarzacz ma token dostępu: wpisz token ustawiony w CamAlert na odtwarzaczu. Jest wysyłany w nagłówku, nigdy w adresie."
         }
       },
       "reconfigure": {
@@ -47,7 +58,8 @@
     "abort": {
       "already_configured": "Ten odtwarzacz jest już dodany.",
       "reconfigure_successful": "Odtwarzacz został zmieniony.",
-      "wrong_player": "Ten adres należy do innego odtwarzacza. Dodać go jako nowy odtwarzacz."
+      "wrong_player": "Ten adres należy do innego odtwarzacza. Dodać go jako nowy odtwarzacz.",
+      "not_camalert": "To urządzenie nie podaje, którym odtwarzaczem CamAlert jest."
     }
   },
   "options": {

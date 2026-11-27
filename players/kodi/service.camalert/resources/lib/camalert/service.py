@@ -14,6 +14,7 @@ RESTART_KEYS = {
     "mqtt": ("mqtt_enabled", "mqtt_host", "mqtt_port", "mqtt_user", "mqtt_password", "mqtt_discovery", "mqtt_name",
              "frigate_enabled", "frigate_prefix"),
     "ptz": ("foscam_enabled", "unifi_enabled"),
+    "announce": ("enabled", "allow", "mqtt_name"),  # network announcement for Home Assistant (#121)
 }
 
 
@@ -68,6 +69,8 @@ class Service(object):
         self.configure_log(new)
         if "server" in parts:
             server.start()
+        elif "announce" in parts:
+            server.announce(new)
         if "mqtt" in parts:
             mqtt.start(self.ctl)
         elif dnd_changed:

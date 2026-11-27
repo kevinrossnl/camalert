@@ -424,6 +424,8 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
         configfile.save()  # write /etc/enigma2/settings now, not only at shutdown
         if port_changed:
             server.start()
+        else:
+            server.announce()  # on/off, allowed callers or the name changed (#121)
         if mqtt_changed:
             mqtt.start()
         if Controller.instance:

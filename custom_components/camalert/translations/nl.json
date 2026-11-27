@@ -1,5 +1,6 @@
 {
   "config": {
+    "flow_title": "{name}",
     "step": {
       "user": {
         "title": "CamAlert-speler toevoegen",
@@ -17,6 +18,16 @@
           "https": "Zet aan als HTTPS voor de API aan staat in CamAlert op de speler.",
           "verify_ssl": "Zet uit voor het eigen (zelfondertekende) certificaat van de speler. Alleen bij HTTPS.",
           "token": "Alleen als er een toegangstoken is ingesteld in CamAlert op de speler. Het wordt in een header verstuurd, nooit in het adres."
+        }
+      },
+      "zeroconf_confirm": {
+        "title": "{name} toevoegen",
+        "description": "CamAlert heeft {name} op het netwerk gevonden ({host}). Wil je deze speler aan Home Assistant toevoegen?",
+        "data": {
+          "token": "Toegangstoken"
+        },
+        "data_description": {
+          "token": "De speler heeft een toegangstoken: vul het token in dat in CamAlert op de speler is ingesteld. Het wordt in een header verstuurd, nooit in het adres."
         }
       },
       "reconfigure": {
@@ -47,7 +58,8 @@
     "abort": {
       "already_configured": "Deze speler is al toegevoegd.",
       "reconfigure_successful": "De speler is gewijzigd.",
-      "wrong_player": "Dit adres hoort bij een andere speler. Voeg hem toe als nieuwe speler."
+      "wrong_player": "Dit adres hoort bij een andere speler. Voeg hem toe als nieuwe speler.",
+      "not_camalert": "Dit apparaat meldt niet welke CamAlert-speler het is."
     }
   },
   "options": {

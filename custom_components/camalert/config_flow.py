@@ -1,5 +1,7 @@
 """Add a player (Enigma2 receiver, Kodi or Android TV with CamAlert) from the Home Assistant UI; change its address later
-with "Reconfigure"."""
+with "Reconfigure". Players announce themselves as _camalert._tcp (#121): Home Assistant shows them as discovered,
+adding one is a confirmation (and the token, only when the player asks for one), and a known player that comes back
+on another address gets the new address."""
 from __future__ import annotations
 
 import logging
@@ -15,6 +17,7 @@ from .const import CONF_HTTPS, CONF_TOKEN, CONF_VERIFY_SSL, DEFAULT_PORT, DEFAUL
 from .parent import CONF_PARENT, PARENT_AUTO, PARENT_NONE, parent_choices
 
 _LOGGER = logging.getLogger(__name__)
+TXT_ID, TXT_NAME, TXT_HTTPS = "id", "name", "https"
 
 
 def _schema(defaults: dict) -> vol.Schema:
@@ -68,6 +71,41 @@ class CamAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(title=status.get("name") or "CamAlert %s" % user_input[CONF_HOST],
                                                data=user_input)
         return self.async_show_form(step_id="user", data_schema=_schema(user_input or {}), errors=errors)
+
+    async def async_step_zeroconf(self, discovery_info):
+        """A player announced itself (#121): TXT id, name, platform, version, api_version, https."""
+        props = discovery_info.properties or {}
+        node = (props.get(TXT_ID) or "").strip()
+        if not node:
+            return self.async_abort(reason="not_camalert")
+        host, port = str(discovery_info.ip_address), int(discovery_info.port or DEFAULT_PORT)
+        await self.async_set_unique_id(node)
+        self._abort_if_unique_id_configured(updates={CONF_HOST: host, CONF_PORT: port})
+        https = props.get(TXT_HTTPS) == "1"
+        # HTTPS on a player means its own self-signed certificate (#66): Reconfigure can turn checking on
+        self._discovered = {CONF_HOST: host, CONF_PORT: port, CONF_HTTPS: https,
+                            CONF_VERIFY_SSL: False if https else DEFAULT_VERIFY_SSL, CONF_TOKEN: ""}
+        self._name = (props.get(TXT_NAME) or "").strip() or discovery_info.name.split(".", 1)[0]
+        self._need_token = False
+        self.context["title_placeholders"] = {"name": self._name}
+        return await self.async_step_zeroconf_confirm()
+
+    async def async_step_zeroconf_confirm(self, user_input=None):
+        errors = {}
+        if user_input is not None:
+            data = dict(self._discovered, **{CONF_TOKEN: (user_input.get(CONF_TOKEN) or "").strip()})
+            status, errors = await _check(self.hass, data)
+            if status is not None:
+                if status.get("id") and status["id"] != self.unique_id:
+                    return self.async_abort(reason="wrong_player")
+                return self.async_create_entry(title=status.get("name") or self._name, data=data)
+            if errors.get("base") == "forbidden" and not self._need_token:
+                self._need_token = True  # the player has a token: ask for it (no error the first time)
+                errors = {}
+        schema = vol.Schema({vol.Optional(CONF_TOKEN, default=""): str}) if self._need_token else vol.Schema({})
+        return self.async_show_form(step_id="zeroconf_confirm", data_schema=schema, errors=errors,
+                                    description_placeholders={"name": self._name,
+                                                              "host": self._discovered[CONF_HOST]})
 
     async def async_step_reconfigure(self, user_input=None):
         """New address, port, HTTPS or token for a player that is already added (same player only)."""

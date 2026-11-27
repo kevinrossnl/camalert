@@ -1,5 +1,6 @@
 {
   "config": {
+    "flow_title": "{name}",
     "step": {
       "user": {
         "title": "Add a CamAlert player",
@@ -17,6 +18,16 @@
           "https": "Turn on if HTTPS is on for the API in CamAlert on the player.",
           "verify_ssl": "Turn off for the player's own (self-signed) certificate. Only used with HTTPS.",
           "token": "Only if an access token is set in CamAlert on the player. It is sent in a header, never in the address."
+        }
+      },
+      "zeroconf_confirm": {
+        "title": "Add {name}",
+        "description": "CamAlert found {name} on the network ({host}). Add this player to Home Assistant?",
+        "data": {
+          "token": "Access token"
+        },
+        "data_description": {
+          "token": "The player has an access token: enter the token set in CamAlert on the player. It is sent in a header, never in the address."
         }
       },
       "reconfigure": {
@@ -47,7 +58,8 @@
     "abort": {
       "already_configured": "This player is already added.",
       "reconfigure_successful": "The player was changed.",
-      "wrong_player": "This address belongs to another player. Add it as a new player instead."
+      "wrong_player": "This address belongs to another player. Add it as a new player instead.",
+      "not_camalert": "This device did not say which CamAlert player it is."
     }
   },
   "options": {

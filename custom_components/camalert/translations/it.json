@@ -1,5 +1,6 @@
 {
   "config": {
+    "flow_title": "{name}",
     "step": {
       "user": {
         "title": "Aggiungere un lettore CamAlert",
@@ -17,6 +18,16 @@
           "https": "Da attivare se HTTPS è attivo per l'API in CamAlert sul lettore.",
           "verify_ssl": "Da disattivare per il certificato proprio (autofirmato) del lettore. Solo con HTTPS.",
           "token": "Solo se in CamAlert sul lettore è impostato un token di accesso. Viene inviato in un header, mai nell'indirizzo."
+        }
+      },
+      "zeroconf_confirm": {
+        "title": "Aggiungere {name}",
+        "description": "CamAlert ha trovato {name} in rete ({host}). Aggiungere questo lettore a Home Assistant?",
+        "data": {
+          "token": "Token di accesso"
+        },
+        "data_description": {
+          "token": "Il lettore ha un token di accesso: inserire il token impostato in CamAlert sul lettore. Viene inviato in un header, mai nell'indirizzo."
         }
       },
       "reconfigure": {
@@ -47,7 +58,8 @@
     "abort": {
       "already_configured": "Questo lettore è già stato aggiunto.",
       "reconfigure_successful": "Il lettore è stato modificato.",
-      "wrong_player": "Questo indirizzo appartiene a un altro lettore. Aggiungerlo come nuovo lettore."
+      "wrong_player": "Questo indirizzo appartiene a un altro lettore. Aggiungerlo come nuovo lettore.",
+      "not_camalert": "Questo dispositivo non indica quale lettore CamAlert sia."
     }
   },
   "options": {

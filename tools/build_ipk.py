@@ -101,6 +101,7 @@ exit 0
 """
 POSTRM = """#!/bin/sh
 rm -rf /usr/lib/enigma2/python/Plugins/Extensions/CamAlert
+rm -f /etc/avahi/services/camalert.service  # network announcement (#121); the plugin writes it again at start
 exit 0
 """
 

@@ -37,6 +37,7 @@ import pytest  # noqa: E402
 import netguard  # noqa: E402
 
 netguard.install()
+os.environ["CAMALERT_NO_ANNOUNCE"] = "1"  # players never announce themselves on the network in tests (#121)
 
 
 @pytest.fixture(autouse=True)

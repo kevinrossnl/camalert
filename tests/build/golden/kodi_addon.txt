@@ -22,6 +22,7 @@ file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/devices/con
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/devices/foscam.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/devices/onvif.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/devices/unifi.py
+file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/discovery.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/events.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/frames.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/i18n.py

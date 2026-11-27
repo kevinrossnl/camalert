@@ -1564,6 +1564,10 @@ msgstr "la telecamera stessa"
 msgid "Up to 9 cameras: the first 9 are used."
 msgstr "Al massimo 9 telecamere: vengono usate le prime 9."
 
+#: ha:config.flow_title
+msgid "{name}"
+msgstr "{name}"
+
 #: ha:config.step.user.title
 msgid "Add a CamAlert player"
 msgstr "Aggiungere un lettore CamAlert"
@@ -1584,7 +1588,7 @@ msgstr "Porta"
 msgid "Use HTTPS"
 msgstr "Usa HTTPS"
 
-#: ha:config.step.reconfigure.data.token ha:config.step.user.data.token
+#: ha:config.step.reconfigure.data.token ha:config.step.user.data.token ha:config.step.zeroconf_confirm.data.token
 msgid "Access token"
 msgstr "Token di accesso"
 
@@ -1607,6 +1611,18 @@ msgstr "Da disattivare per il certificato proprio (autofirmato) del lettore. Sol
 #: ha:config.step.reconfigure.data_description.token ha:config.step.user.data_description.token
 msgid "Only if an access token is set in CamAlert on the player. It is sent in a header, never in the address."
 msgstr "Solo se in CamAlert sul lettore è impostato un token di accesso. Viene inviato in un header, mai nell'indirizzo."
+
+#: ha:config.step.zeroconf_confirm.title
+msgid "Add {name}"
+msgstr "Aggiungere {name}"
+
+#: ha:config.step.zeroconf_confirm.description
+msgid "CamAlert found {name} on the network ({host}). Add this player to Home Assistant?"
+msgstr "CamAlert ha trovato {name} in rete ({host}). Aggiungere questo lettore a Home Assistant?"
+
+#: ha:config.step.zeroconf_confirm.data_description.token
+msgid "The player has an access token: enter the token set in CamAlert on the player. It is sent in a header, never in the address."
+msgstr "Il lettore ha un token di accesso: inserire il token impostato in CamAlert sul lettore. Viene inviato in un header, mai nell'indirizzo."
 
 #: ha:config.step.reconfigure.title
 msgid "Change the CamAlert player"
@@ -1643,6 +1659,10 @@ msgstr "Il lettore è stato modificato."
 #: ha:config.abort.wrong_player
 msgid "This address belongs to another player. Add it as a new player instead."
 msgstr "Questo indirizzo appartiene a un altro lettore. Aggiungerlo come nuovo lettore."
+
+#: ha:config.abort.not_camalert
+msgid "This device did not say which CamAlert player it is."
+msgstr "Questo dispositivo non indica quale lettore CamAlert sia."
 
 #: ha:options.step.init.title
 msgid "CamAlert player options"

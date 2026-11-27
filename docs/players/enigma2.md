@@ -6,20 +6,8 @@ not supported.
 
 ## Install
 
-On the receiver (via Telnet/SSH), replace the version with the
-[latest release](https://github.com/kevinrossnl/camalert/releases/latest):
-
-```sh
-cd /tmp
-wget -O camalert.ipk https://github.com/kevinrossnl/camalert/releases/download/v1.1.0/enigma2-plugin-extensions-camalert_1.1.0_all.ipk
-opkg install /tmp/camalert.ipk
-```
-
-Then restart the GUI and open **Menu › Plugins › CamAlert**.
-
-### Updates through the receiver's software update
-
-Every release is also published as an opkg feed, so the receiver's normal software update picks it up:
+On the receiver (via Telnet/SSH), add the CamAlert opkg feed and install from it. The receiver's normal software
+update then keeps CamAlert up to date:
 
 ```sh
 wget -O /etc/opkg/camalert-feed.conf https://kevinrossnl.github.io/camalert/camalert-feed.conf
@@ -27,6 +15,23 @@ opkg update && opkg install enigma2-plugin-extensions-camalert
 ```
 
 or create `/etc/opkg/camalert-feed.conf` yourself with the line `src/gz camalert https://kevinrossnl.github.io/camalert`.
+Then restart the GUI and open **Menu › Plugins › CamAlert**.
+
+**Already installed from an `.ipk` file?** Add the feed with the two commands above: `opkg install` then upgrades
+CamAlert and keeps your settings. Without the feed the software update never updates CamAlert.
+
+**Without the feed** (for example a receiver without internet access): download the `.ipk` of the
+[latest release](https://github.com/kevinrossnl/camalert/releases/latest) and install it; it does not update by itself.
+
+```sh
+cd /tmp
+wget -O camalert.ipk https://github.com/kevinrossnl/camalert/releases/download/v1.1.0/enigma2-plugin-extensions-camalert_1.1.0_all.ipk
+opkg install /tmp/camalert.ipk
+```
+
+### Updates
+
+With the feed, every release arrives through the receiver's software update.
 *Check for updates* (on by default) also looks once a day on GitHub for a newer release and shows a message once per
 version.
 

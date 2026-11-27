@@ -70,7 +70,7 @@ More: [Enigma2 receiver](docs/players/enigma2.md), [illustrated mosaic](docs/ima
 
 | | |
 |---|---|
-| **Enigma2 receiver** | `.ipk` from the [latest release](https://github.com/kevinrossnl/camalert/releases/latest) or the opkg feed: [Enigma2 receiver](docs/players/enigma2.md#install) |
+| **Enigma2 receiver** | the CamAlert opkg feed, so the software update keeps it up to date (or the `.ipk` from the [latest release](https://github.com/kevinrossnl/camalert/releases/latest)): [Enigma2 receiver](docs/players/enigma2.md#install) |
 | **Kodi** | the CamAlert repository zip, Kodi then updates CamAlert by itself: [Kodi](docs/players/kodi.md#install) |
 | **Home Assistant** | **Settings › Marketplace** (HACS): search for **CamAlert** and install it. Fallback: add `https://github.com/kevinrossnl/camalert` as a custom repository (Integration): [Home Assistant](docs/integrations/home-assistant.md#install) |
 

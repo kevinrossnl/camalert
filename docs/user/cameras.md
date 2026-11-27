@@ -54,10 +54,11 @@ that stream open **while it is on**.
 
 The diagnostics show per camera *Ready: front_door (last picture 1 s ago)* or *not connected*.
 
-**What it costs** (estimate, measure on your own host): while at least one player is on, go2rtc runs one ffmpeg per
-ready camera, however many players watch it. Decoding the camera stream is the largest part: with hardware
-acceleration it takes almost no CPU, in software roughly 10–20 % of one core for a 1080p stream (less with a
-substream); making 2 JPEGs per second at 640 px wide is negligible. No extra traffic from the camera when go2rtc
+**What it costs**: while at least one player is on, go2rtc runs one ffmpeg per ready camera, however many players
+watch it. Decoding the camera stream is the largest part: with hardware acceleration it takes almost no CPU; in
+software we measured **17.6 % of one core** for one UniFi camera on an Intel i3-N305 (2.2 % of the 8-core machine;
+go2rtc 1.9.15, `#video=mjpeg#width=640#raw=-r 2`), less with a substream. When the last player goes into standby
+ffmpeg stops within about 20 s; making 2 JPEGs per second at 640 px wide is negligible. No extra traffic from the camera when go2rtc
 already pulls it (for example for `preload` of the camera itself); each player that is on receives about 50–100 KB/s.
 Measure it with `docker stats` (or your NAS's monitoring) before and after.
 

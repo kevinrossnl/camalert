@@ -36,6 +36,8 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Changed
 
+- **Enigma2:** the install guide installs through the opkg feed first, so the receiver's software update keeps
+  CamAlert up to date; receivers installed from an `.ipk` add the feed once (the `.ipk` stays as a fallback).
 - **Photo window, multi-camera window, mosaic and tour:** a tile shows *Loading picture...* at once instead of a
   black or empty picture, and the first picture asks go2rtc for a cached frame (`cache=10s`, go2rtc 1.9.14 or newer;
   older versions ignore it): a camera that was shown a moment ago appears at once instead of after 2–5 seconds.

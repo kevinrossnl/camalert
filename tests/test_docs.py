@@ -240,3 +240,22 @@ class TestKodiZipToRepository(unittest.TestCase):
         text = open(os.path.join(ROOT, ".github", "pages", "index.html"), encoding="utf-8").read()
         kodi = text.split('id="kodi"', 1)[1].split("<h2", 1)[0]
         self.assertIn("Already installed from a zip", kodi)
+
+
+class TestEnigma2FeedFirst(unittest.TestCase):
+    """#112: an .ipk-only install never updates through the receiver's software update; the guide, the README and
+    the start page install through the opkg feed first and keep the single .ipk as the fallback."""
+
+    FEED = "camalert-feed.conf"
+
+    def test_install_section_feed_first(self):
+        text = open(os.path.join(ROOT, "docs", "players", "enigma2.md"), encoding="utf-8").read()
+        section = text.split("## Install", 1)[1].split("\n## ", 1)[0]
+        self.assertIn(self.FEED, section)
+        self.assertIn("opkg update && opkg install enigma2-plugin-extensions-camalert", section)
+        self.assertLess(section.index(self.FEED), section.index(".ipk"), "the .ipk comes before the feed")
+
+    def test_readme_row_feed_first(self):
+        text = open(os.path.join(ROOT, "README.md"), encoding="utf-8").read()
+        row = next(line for line in text.splitlines() if line.startswith("| **Enigma2 receiver** |"))
+        self.assertLess(row.index("feed"), row.index(".ipk"), row)

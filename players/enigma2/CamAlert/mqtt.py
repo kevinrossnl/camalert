@@ -21,7 +21,7 @@ from .camalert_core.cameras import slug
 from .camalert_core.keymap import button_event
 from .camalert_core.mqtt.codec import (mqtt_connect, MQTT_DISCONNECT, mqtt_parse_publish, MQTT_PING, mqtt_publish,
                                        mqtt_split, mqtt_subscribe)
-from .camalert_core.mqtt.topics import discovery, mqtt_command
+from .camalert_core.mqtt.topics import discovery, discovery_filter, DiscoveryCleaner, mqtt_command
 from .camalert_core.rules import clamp_seconds
 from .camalert_core.triggers import dispatch, enabled_sources, mqtt_topics
 from .camalert_core.urls import valid_port
@@ -54,6 +54,7 @@ class CamAlertMqtt(Protocol):
         self.node = node_id()
         self.prefix = "camalert/%s/" % self.node
         self.pinger = None
+        self.cleaner = DiscoveryCleaner(self.node)
 
     def connectionMade(self):
         c = config.plugins.camalert
@@ -71,6 +72,9 @@ class CamAlertMqtt(Protocol):
                 self.connected_ok()
             elif kind == 3:  # PUBLISH
                 topic, payload = mqtt_parse_publish(flags, body)
+                if self.cleaner.ours(topic):  # a retained discovery config of this player (#116)
+                    self.clear(self.cleaner.seen(topic, payload))
+                    continue
                 self.command(topic, payload)
 
     def connected_ok(self):
@@ -80,6 +84,10 @@ class CamAlertMqtt(Protocol):
         topics = [self.prefix + "show", self.prefix + "mosaic", self.prefix + "hide", self.prefix + "dnd/set"]
         c = config.plugins.camalert
         topics += mqtt_topics(enabled_sources(trigger_settings(), "mqtt"))  # Frigate etc. (#6)
+        self.cleaner = DiscoveryCleaner(self.node)
+        if not c.mqtt_discovery.value:
+            self.cleaner.disabled()  # every discovery config of this player goes (#116)
+        topics.append(discovery_filter(self.node))
         self.transport.write(mqtt_subscribe(1, topics))
         self.publish("availability", "online", retain=True)
         self.publish_state()
@@ -96,6 +104,12 @@ class CamAlertMqtt(Protocol):
 
     def publish(self, sub, payload, retain=False):
         self.transport.write(mqtt_publish(self.prefix + sub, payload, retain))
+
+    def clear(self, topics):
+        """Removes stale Home Assistant discovery configs: an empty retained payload (#116)."""
+        for topic in topics:
+            self.transport.write(mqtt_publish(topic, b"", True))
+            log("MQTT discovery removed", topic)
 
     def publish_raw(self, topic, payload, retain=True):
         self.transport.write(mqtt_publish(topic, payload, retain))
@@ -162,6 +176,7 @@ def announce():
         p = _factory.protocol_instance if _factory else None
         if p is None:
             return
+        p.clear(p.cleaner.known([n for n, _t in cams]))
         for topic, payload in discovery(p.node, node_name(), cams):
             p.publish_raw(topic, payload)
         log("MQTT discovery sent for", len(cams), "cameras")

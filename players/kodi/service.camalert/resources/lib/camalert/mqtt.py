@@ -15,7 +15,7 @@ from . import kodiapi, sources
 from .camalert_core.keymap import button_event
 from .camalert_core.mqtt.codec import (mqtt_connect, MQTT_DISCONNECT, mqtt_parse_publish, MQTT_PING, mqtt_publish,
                                        mqtt_split, mqtt_subscribe)
-from .camalert_core.mqtt.topics import discovery, mqtt_command
+from .camalert_core.mqtt.topics import discovery, discovery_filter, DiscoveryCleaner, mqtt_command
 from .camalert_core.rules import clamp_seconds
 from .camalert_core.triggers import dispatch, enabled_sources, mqtt_topics
 from .camalert_core.urls import valid_port
@@ -51,6 +51,7 @@ class Client(threading.Thread):
         self.stopping = threading.Event()
         self.frigate_seen = {}
         self.up = False
+        self.cleaner = DiscoveryCleaner(self.node)
 
     # --- io --------------------------------------------------------------------------------------------------
     def send(self, data):
@@ -105,6 +106,9 @@ class Client(threading.Thread):
                         self.connected(s)
                     elif kind == 3:
                         topic, payload = mqtt_parse_publish(flags, body)
+                        if self.cleaner.ours(topic):  # a retained discovery config of this player (#116)
+                            self.clear(self.cleaner.seen(topic, payload))
+                            continue
                         threading.Thread(target=self.command, args=(topic, payload), daemon=True).start()
             except socket.timeout:
                 pass
@@ -117,11 +121,21 @@ class Client(threading.Thread):
         kodiapi.log("MQTT connected as %s" % self.node)
         topics = [self.prefix + t for t in ("show", "mosaic", "hide", "dnd/set")]
         topics += mqtt_topics(enabled_sources(trigger_settings(s), "mqtt"))  # Frigate etc. (#6)
+        self.cleaner = DiscoveryCleaner(self.node)
+        if not s["mqtt_discovery"]:
+            self.cleaner.disabled()  # every discovery config of this player goes (#116)
+        topics.append(discovery_filter(self.node))
         self.send(mqtt_subscribe(1, topics))
         self.publish("availability", "online", retain=True)
         self.publish_state()
         if s["mqtt_discovery"]:
             threading.Thread(target=self.announce, daemon=True).start()
+
+    def clear(self, topics):
+        """Removes stale Home Assistant discovery configs: an empty retained payload (#116)."""
+        for topic in topics:
+            self.send(mqtt_publish(topic, b"", True))
+            kodiapi.log("MQTT discovery removed %s" % topic)
 
     def announce(self):
         s = kodiapi.settings()
@@ -133,6 +147,7 @@ class Client(threading.Thread):
         except Exception as e:
             kodiapi.log("MQTT discovery failed: %s" % e)
             return
+        self.clear(self.cleaner.known([n for n, _t in cams]))
         for topic, payload in kodi_discovery(self.node, node_name(s), cams):
             self.send(mqtt_publish(topic, payload, True))
         kodiapi.log("MQTT discovery sent for %d cameras" % len(cams))

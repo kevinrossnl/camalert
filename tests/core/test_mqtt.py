@@ -61,3 +61,57 @@ class TestMqtt(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestDiscoveryCleaner(unittest.TestCase):
+    """#116: retained discovery configs of cameras that are gone (renamed, removed, a helper stream) are removed with
+    an empty retained payload; with discovery off every config of this player goes. Read back from the broker, so
+    it also works after a reinstall (no state file)."""
+
+    def setUp(self):
+        from camalert_core.mqtt.topics import DiscoveryCleaner, discovery_filter
+        self.filter = discovery_filter("node1")
+        self.c = DiscoveryCleaner("node1")
+
+    def cfg(self, oid, kind="button", node="node1"):
+        return "homeassistant/%s/camalert_%s/%s/config" % (kind, node, oid)
+
+    def test_filter(self):
+        self.assertEqual(self.filter, "homeassistant/+/camalert_node1/+/config")
+
+    def test_waits_for_the_camera_list(self):
+        self.assertEqual(self.c.seen(self.cfg("show_old"), b"{}"), [])  # list not known yet: nothing removed
+        self.assertEqual(self.c.seen(self.cfg("show_garden"), b"{}"), [])
+        self.assertEqual(self.c.known(["garden", "front_door"]), [self.cfg("show_old")])
+        self.assertEqual(self.c.seen(self.cfg("show_garden"), b"{}"), [])  # our own discovery comes back
+        self.assertEqual(self.c.seen(self.cfg("show_front_door_jpeg"), b"{}"), [self.cfg("show_front_door_jpeg")])
+
+    def test_keeps_the_fixed_entities_and_other_players(self):
+        self.c.known(["garden"])
+        for oid, kind in (("mosaic", "button"), ("hide", "button"), ("on_screen", "sensor"), ("dnd", "switch"),
+                          ("button", "event")):
+            self.assertEqual(self.c.seen(self.cfg(oid, kind), b"{}"), [], oid)
+        self.assertEqual(self.c.seen(self.cfg("show_old", node="other"), b"{}"), [])
+        self.assertEqual(self.c.seen("homeassistant/button/camalert_node1/show_old/config/x", b"{}"), [])
+        self.assertEqual(self.c.seen("camalert/node1/show", b"garden"), [])
+
+    def test_empty_payload_is_already_removed(self):
+        self.c.known(["garden"])
+        self.assertEqual(self.c.seen(self.cfg("show_old"), b""), [])
+
+    def test_unknown_list_removes_nothing(self):
+        """go2rtc not reachable: the camera list is unknown, never 'no cameras' (would remove every button)."""
+        for i in range(600):
+            self.c.seen(self.cfg("show_%d" % i), b"{}")
+        self.assertLessEqual(len(self.c.pending), 500)
+
+    def test_discovery_off_removes_everything_of_this_player(self):
+        self.assertEqual(self.c.seen(self.cfg("show_garden"), b"{}"), [])
+        self.assertEqual(self.c.disabled(), [self.cfg("show_garden")])
+        self.assertEqual(self.c.seen(self.cfg("mosaic"), b"{}"), [self.cfg("mosaic")])
+        self.assertEqual(self.c.seen(self.cfg("show_x", node="other"), b"{}"), [])
+
+    def test_discovery_on_again(self):
+        self.c.disabled()
+        self.assertEqual(self.c.known(["garden"]), [])
+        self.assertEqual(self.c.seen(self.cfg("mosaic"), b"{}"), [])

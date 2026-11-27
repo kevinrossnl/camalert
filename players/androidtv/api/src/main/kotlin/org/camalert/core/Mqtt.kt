@@ -118,6 +118,9 @@ object MqttTopics {
         return if (text.isEmpty()) emptyMap() else mapOf("cam" to text)
     }
 
+    /** Subscription for this player's own retained discovery configs (#116, core mqtt/topics.discovery_filter). */
+    fun discoveryFilter(node: String, base: String = "homeassistant") = "$base/+/camalert_$node/+/config"
+
     /** Home Assistant discovery: [(topic, payload)], the same as core mqtt/topics.discovery() apart from the model. */
     fun discovery(node: String, name: String, cameras: List<Pair<String, String>>, model: String, prefix: String = "camalert", base: String = "homeassistant"): List<Pair<String, String>> {
         val avail = "$prefix/$node/availability"
@@ -195,6 +198,58 @@ class Frigate(val settings: Map<String, Any?>) {
 }
 
 /**
+ * Removes this player's stale Home Assistant discovery configs (#116, core mqtt/topics.DiscoveryCleaner): with
+ * discovery off every config of this player, otherwise the button of a camera that is no longer in the camera list.
+ * Read back from the broker (retained), so it also works after a reinstall. Nothing goes while the list is unknown.
+ */
+class DiscoveryCleaner(private val node: String, private val base: String = "homeassistant") {
+    private var cameras: Set<String>? = null
+    private var enabled = true
+    val pending = ArrayList<String>()
+
+    fun ours(topic: String): Boolean {
+        val p = topic.split("/")
+        return p.size == 5 && p[0] == base && p[2] == "camalert_$node" && p[4] == "config"
+    }
+
+    private fun stale(topic: String): Boolean {
+        if (!enabled) return true
+        val p = topic.split("/")
+        return p[1] == "button" && p[3].startsWith("show_") && p[3].substring(5) !in cameras!!
+    }
+
+    @Synchronized
+    fun seen(topic: String, payload: ByteArray): List<String> {
+        if (payload.isEmpty() || !ours(topic)) return emptyList()
+        if (enabled && cameras == null) {
+            if (topic !in pending && pending.size < MAX_PENDING) pending.add(topic)
+            return emptyList()
+        }
+        return if (stale(topic)) listOf(topic) else emptyList()
+    }
+
+    private fun flush(): List<String> {
+        val out = pending.filter { stale(it) }
+        pending.clear()
+        return out
+    }
+
+    @Synchronized
+    fun known(names: List<String>): List<String> {
+        cameras = names.toSet(); enabled = true
+        return flush()
+    }
+
+    @Synchronized
+    fun disabled(): List<String> {
+        enabled = false
+        return flush()
+    }
+
+    companion object { const val MAX_PENDING = 500 }
+}
+
+/**
  * The MQTT session of the player. Settings: mqtt_enabled, mqtt_host, mqtt_port, mqtt_user, mqtt_password,
  * mqtt_discovery, mqtt_name, enabled, frigate_*. The player gives its controller and camera list.
  */
@@ -213,6 +268,7 @@ class MqttClient(
     @Volatile var stopping = false
     @Volatile var up = false
     private var frigateSeen = HashMap<String, Double>()
+    @Volatile private var cleaner = DiscoveryCleaner(node)
 
     init { isDaemon = true }
 
@@ -268,7 +324,8 @@ class MqttClient(
                         connected(s)
                     } else if (p.type == 3) {
                         val (topic, payload) = MqttCodec.parsePublish(p.flags, p.body)
-                        Thread { command(topic, payload) }.apply { isDaemon = true }.start()
+                        if (cleaner.ours(topic)) clear(cleaner.seen(topic, payload))  // own discovery config (#116)
+                        else Thread { command(topic, payload) }.apply { isDaemon = true }.start()
                     }
                 }
             } catch (e: SocketTimeoutException) {
@@ -286,12 +343,14 @@ class MqttClient(
         val topics = listOf("show", "mosaic", "hide", "dnd/set").map { prefix + it }.toMutableList()
         val f = Frigate(s)
         if (f.enabled && f.topic() !in topics) topics.add(f.topic())
+        topics.add(MqttTopics.discoveryFilter(node))
         return topics
     }
 
     private fun connected(s: Map<String, Any?>) {
         up = true
         log("MQTT connected as $node", "normal")
+        cleaner = DiscoveryCleaner(node).also { if (s["mqtt_discovery"] != true) it.disabled() }
         send(MqttCodec.subscribe(1, subscriptions(s)))
         publish("availability", "online", true)
         publishState()
@@ -303,8 +362,17 @@ class MqttClient(
             log("MQTT discovery failed: ${e.message}", "normal")
             return
         }
+        clear(cleaner.known(cams.map { it.first }))
         for ((topic, payload) in MqttTopics.discovery(node, nodeName(), cams, model)) send(MqttCodec.publish(topic, payload, true))
         log("MQTT discovery sent for ${cams.size} cameras", "normal")
+    }
+
+    /** Removes stale Home Assistant discovery configs: an empty retained payload (#116). */
+    fun clear(topics: List<String>) {
+        for (t in topics) {
+            send(MqttCodec.publish(t, ByteArray(0), true))
+            log("MQTT discovery removed $t", "normal")
+        }
     }
 
     fun publishState() {

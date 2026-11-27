@@ -324,6 +324,7 @@
   "camalert/{node}/mosaic",
   "camalert/{node}/hide",
   "camalert/{node}/dnd/set",
-  "frigate/events"
+  "frigate/events",
+  "homeassistant/+/camalert_{node}/+/config"
  ]
 }

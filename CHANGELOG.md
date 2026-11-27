@@ -52,6 +52,9 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Fixed
 
+- **MQTT / Home Assistant:** discovery now removes the button of a camera that is gone (renamed, removed, or a helper
+  stream of *Keep cameras ready*); turning discovery off removes all of the player's entities. Old leftovers are
+  cleaned up the next time the player connects.
 - **Keep cameras ready:** the helper stream (for example `front_door_jpeg`) is no longer shown as a camera of its own
   in the mosaic, the tour, the channel list, the camera choice or Home Assistant.
 

@@ -28,10 +28,10 @@ def wait(pred, timeout=5.0):
 class KodiClient(object):
     platform = "kodi"
 
-    def __init__(self, port):
+    def __init__(self, port, discovery=True):
         from kodi import stubs
         self.store = stubs.install({"mqtt_enabled": "true", "mqtt_host": "127.0.0.1", "mqtt_port": str(port),
-                                         "mqtt_discovery": "true", "mqtt_name": "CamAlert test",
+                                         "mqtt_discovery": "true" if discovery else "false", "mqtt_name": "CamAlert test",
                                          "frigate_enabled": "true"})
         _paths.kodi_package()
         self.mqtt = _paths.kodi_module("mqtt")
@@ -70,13 +70,13 @@ class Enigma2Client(object):
     """The Twisted protocol, fed from a real socket by pump() in the test thread (deterministic)."""
     platform = "enigma2"
 
-    def __init__(self, port):
+    def __init__(self, port, discovery=True):
         from enigma2.harness import e2fake
         self.e2fake = e2fake
         self.env = e2fake.install("openatv")
         c = self.env.config.plugins.camalert
         c.mqtt_enabled.value, c.mqtt_host.value, c.mqtt_port.value = True, "127.0.0.1", port
-        c.mqtt_discovery.value, c.mqtt_name.value, c.frigate_enabled.value = True, "CamAlert test", True
+        c.mqtt_discovery.value, c.mqtt_name.value, c.frigate_enabled.value = discovery, "CamAlert test", True
         self.m = self.env.camalert.mqtt
         self.m.node_id = lambda: T.NODE
         self.m.all_camera_names = lambda: list(CAMS)
@@ -211,6 +211,58 @@ class TestMqttContract(unittest.TestCase):
                     found[platform][m.topic] = d
         self.assertTrue(found["enigma2"])
         self.assertEqual(found["enigma2"], found["kodi"])
+
+
+SEEDED = ["homeassistant/button/camalert_{node}/show_old_camera/config",
+          "homeassistant/button/camalert_{node}/show_garden/config",
+          "homeassistant/button/camalert_{node}/mosaic/config",
+          "homeassistant/button/camalert_other/show_old_camera/config"]
+
+
+def run_cleanup(client_class, discovery, expect):
+    """#116: the broker holds retained discovery configs before the player connects; returns the topics the player
+    cleared (empty retained payload) and the configs still retained afterwards."""
+    with Broker() as b:
+        for t in SEEDED:
+            b.publish(T.topic(t), json.dumps({"name": "x"}), retain=True)
+        cl = client_class(b.port, discovery=discovery)
+        cl.start()
+        stop = threading.Event()
+
+        def pumping():
+            while not stop.is_set():
+                cl.pump()
+                time.sleep(0.005)
+        pump = threading.Thread(target=pumping, daemon=True)
+        pump.start()
+
+        def cleared():
+            return sorted({m.topic for m in b.messages if m.client != "test" and m.retain and m.payload == b""})
+        try:
+            b.wait_subscribed()
+            wait(lambda: cleared() == sorted(T.topic(t) for t in expect))
+            time.sleep(0.5)  # nothing more is removed
+        finally:
+            cl.stop()
+            stop.set()
+            pump.join(2)
+        return cleared(), sorted(t for t in b.retained if t.startswith("homeassistant/"))
+
+
+class TestDiscoveryCleanup(unittest.TestCase):
+    def test_stale_camera_button_is_removed(self):
+        for client in (Enigma2Client, KodiClient):
+            cleared, kept = run_cleanup(client, True, [SEEDED[0]])
+            self.assertEqual(cleared, [T.topic(SEEDED[0])], client.platform)
+            self.assertNotIn(T.topic(SEEDED[0]), kept, client.platform)
+            for t in SEEDED[1:]:
+                self.assertIn(T.topic(t), kept, client.platform)
+
+    def test_discovery_off_removes_this_player_only(self):
+        for client in (Enigma2Client, KodiClient):
+            cleared, kept = run_cleanup(client, False, SEEDED[:3])
+            self.assertEqual(cleared, sorted(T.topic(t) for t in SEEDED[:3]), client.platform)
+            self.assertEqual(kept, [T.topic(SEEDED[3])], client.platform)
 
 
 if __name__ == "__main__":

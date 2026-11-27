@@ -9,6 +9,12 @@ control it. The same topics on Enigma2, Kodi and Android TV.
    as with the integration.
 3. In automations, use the action *Button: Press* on e.g. "Show Front door".
 
+The player keeps the discovered entities tidy: a camera that is renamed or removed in go2rtc (or a helper stream of
+*Keep cameras ready*) loses its button, and turning discovery off removes all of the player's entities. It reads its
+own retained discovery messages (`homeassistant/+/camalert_<id>/+/config`) after connecting and clears the stale ones
+with an empty retained message, so this also works after a reinstall. While the camera list cannot be fetched (go2rtc
+not reachable) nothing is removed.
+
 Topics (`<id>` = player id, see the device in Home Assistant or `/camalert/status`):
 
 | Topic | Payload |

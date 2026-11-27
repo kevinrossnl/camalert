@@ -33,9 +33,9 @@ PUBLISHED = [
     ("homeassistant/+/camalert_{node}/+/config", True, _json_keys("unique_id", "object_id", "availability_topic",
                                                                   "device", "name")),
 ]
-# the player subscribes to (Frigate only when enabled)
+# the player subscribes to (Frigate only when enabled; its own retained discovery configs to remove stale ones, #116)
 SUBSCRIBED = ["camalert/{node}/show", "camalert/{node}/mosaic", "camalert/{node}/hide", "camalert/{node}/dnd/set",
-              "frigate/events"]
+              "frigate/events", "homeassistant/+/camalert_{node}/+/config"]
 LAST_WILL = ("camalert/{node}/availability", b"offline", True)
 
 FRIGATE_EVENT = json.dumps({"type": "new", "after": {"camera": "garden", "label": "person", "id": "1.5-abc",

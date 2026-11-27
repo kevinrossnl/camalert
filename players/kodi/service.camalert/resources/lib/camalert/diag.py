@@ -88,6 +88,9 @@ def collect(state):
         lines.append(diag_line(True, tr(30222) % ", ".join("%s (%s)" % (n, d["type"]) for n, d in sorted(devs.items()))))
     if s["unifi_enabled"]:  # UniFi Protect source (#71): last check, last event, last error (redacted)
         lines.extend(unifi_lines(state.get("unifi")))
+    from .camalert_core.warm import lines_from_state  # #111: ready cameras and their last picture
+    for ok, text in lines_from_state(state.get("warm"), kodiapi.core_tr()):
+        lines.append(diag_line(ok, text))
     if s["dnd"]:
         lines.append(diag_line(None, tr(30223)))
     lines.append(diag_line(bool(state.get("log")) or s["log_level"] == "off", tr(30224) % (state.get("log") or "-")))

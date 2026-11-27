@@ -9,6 +9,9 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Added
 
+- **All players:** *Keep cameras ready* – for the cameras you choose, the player keeps a small MJPEG stream from
+  go2rtc open while it is on, so the photo window shows the camera at once. Closed in standby, with the screen off
+  or with CamAlert off; go2rtc then stops transcoding by itself. Off by default ([cameras](docs/user/cameras.md#keep-cameras-ready)).
 - **All players:** UniFi Protect cameras get the pictures of the photo window, the multi-camera window, the mosaic
   and the tour straight from the UniFi Protect console in the devices file: a fresh picture at once instead of
   waiting 2–5 seconds for the camera's next key frame in go2rtc. New setting *Pictures from UniFi Protect* (on);

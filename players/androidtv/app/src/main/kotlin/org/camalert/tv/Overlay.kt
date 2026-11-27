@@ -61,6 +61,8 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
         fun colourKey(camera: String?, colour: String)
         fun unreachable()
         fun changed()
+        /** #111: the last picture of a ready camera when it is fresh, or null. */
+        fun warmPicture(camera: String): ByteArray? = null
         /** #109: a fresh picture of a UniFi Protect camera, or null (use go2rtc). */
         fun protectPicture(camera: String, width: Int): ByteArray? = null
     }
@@ -250,7 +252,8 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
                 var first = true  // #110: the first picture may come from go2rtc's cache
                 while (!stop.get()) {
                     try {
-                        val bytes = host.protectPicture(tile.name, width.coerceIn(160, 1920))  // #109
+                        val bytes = host.warmPicture(tile.name)  // #111
+                            ?: host.protectPicture(tile.name, width.coerceIn(160, 1920))  // #109
                             ?: Net.fetch(if (first) org.camalert.core.Urls.withCache(url, cache)!! else url, verify, 6000)
                         first = false
                         val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size) ?: throw java.io.IOException("not an image")

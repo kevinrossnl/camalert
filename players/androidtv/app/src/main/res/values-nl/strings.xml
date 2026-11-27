@@ -100,6 +100,8 @@
     <string name="t_5de5bce0" formatted="false">Druk op OK om een camera die ondersteboven hangt te draaien (vereist python3-pillow).</string>
     <string name="t_2bd7c5d1" formatted="false">Beelden van UniFi Protect</string>
     <string name="t_e77479eb" formatted="false">UniFi-camera\'s krijgen hun beelden van de UniFi Protect-console uit het apparatenbestand: sneller dan go2rtc.</string>
+    <string name="t_75e5f19c" formatted="false">Camera\'s klaarhouden</string>
+    <string name="t_43e4c1ed" formatted="false">Alleen zolang deze speler aan staat: houdt de MJPEG-stream van deze camera\'s open, zodat het fotovenster ze meteen toont, bijv. front_door=front_door_jpeg. Leeg = uit.</string>
     <string name="t_97588905" formatted="false">Verversinterval</string>
     <string name="t_591884e5" formatted="false">Druk op OK om foto\'s van een camera minder vaak op te halen (seconden), bijv. voor een trage camera.</string>
     <string name="t_40405b3f" formatted="false">Indeling van het venster met meerdere camera\'s</string>
@@ -238,4 +240,7 @@
     <string name="t_badf84fc" formatted="false">UniFi Protect: laatste controle %s</string>
     <string name="t_92e36ee7" formatted="false">UniFi Protect: laatste gebeurtenis %s, %s</string>
     <string name="t_11cd7c0c" formatted="false">UniFi Protect: geen gebeurtenis sinds de start</string>
+    <string name="t_8adbd98c" formatted="false">Klaar: %s (niet zolang de speler uit staat)</string>
+    <string name="t_d5bba5c9" formatted="false">Klaar: %s (laatste beeld %d s geleden)</string>
+    <string name="t_026a941b" formatted="false">Klaar: %s niet verbonden</string>
 </resources>

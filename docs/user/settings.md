@@ -40,6 +40,7 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Tour: seconds per camera | `8` s | 3–60 | advanced | all |  |
 | Turn or mirror image | – |  | advanced | all | Press OK to turn a camera that hangs upside down (needs python3-pillow). |
 | Pictures from UniFi Protect | Yes |  | advanced | all | UniFi cameras get their pictures from the UniFi Protect console in the devices file: faster than go2rtc. |
+| Keep cameras ready | – |  | advanced | all | Only while this player is on: keeps the MJPEG stream of these cameras open so the photo window shows them at once, e.g. front_door=front_door_jpeg. Empty = off. |
 | Refresh interval | – |  | advanced | all | Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera. |
 | Multi-camera window layout | `auto` | `auto` / `vertical` / `horizontal` / `grid` | advanced | all | A request with 2-4 cameras shows them together in one multi-camera window. |
 | Title size | `normal` | `small` / `normal` / `large` | advanced | all |  |

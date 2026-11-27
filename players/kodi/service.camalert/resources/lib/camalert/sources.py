@@ -10,6 +10,7 @@ from .klogic import live_url
 from .camalert_core.cameras import display_name, live_stream_name, parse_camera_file, parse_titles, title_for
 from .camalert_core.devices.client import load_devices
 from .camalert_core.frames import ProtectSnapshots, snapshot_request, url_width
+from .camalert_core.warm import WarmFeeds
 from .camalert_core.present import go2rtc_problem as _problem_text
 from .camalert_core.urls import go2rtc_state, normalize_server, snapshot_url, split_credentials, streams_from_json
 
@@ -88,6 +89,17 @@ def download(url, path, verify=True, timeout=8):
 
 
 PROTECT = ProtectSnapshots()
+_WARM_VERIFY = [True]
+WARM = WarmFeeds(lambda url: open_url(url, 10, _WARM_VERIFY[0]))  # #111: ready cameras while Kodi is on
+
+
+def warm_tick(screen_off):
+    """#111, every second from the service loop: ready cameras get a warm MJPEG feed while CamAlert is on, the
+    camera source is go2rtc and the screen is not off (Kodi's standby)."""
+    get = kodiapi.addon_setting
+    _WARM_VERIFY[0] = get("verify_ssl") != "false"
+    on = get("enabled") != "false" and (get("source") or "go2rtc") == "go2rtc" and not screen_off
+    WARM.update(get("server"), get("ready_cameras"), on)
 _PROTECT_KEY = [None]
 
 
@@ -109,15 +121,20 @@ def protect_snapshots(s):
 
 
 def picture(name, url, path, verify=True, first=False, s=None):
-    """One picture of a camera into path (in a Feeder thread), from the fastest source: UniFi Protect for a Protect
-    camera (#109), else go2rtc - the first picture of a window from go2rtc's cache (#110). Returns the source."""
-    data = protect_snapshots(s or kodiapi.settings())(name, url_width(url)) if name else None
+    """One picture of a camera into path (in a Feeder thread), from the fastest source: the warm feed of a ready
+    camera (#111), UniFi Protect for a Protect camera (#109), else go2rtc - the first picture of a window from
+    go2rtc's cache (#110). Returns the source."""
+    data = WARM.frame(name) if name else None  # #111
+    source = "warm"
+    if not data and name:
+        data = protect_snapshots(s or kodiapi.settings())(name, url_width(url))
+        source = "protect"
     if data:
         tmp = path + ".tmp"
         with open(tmp, "wb") as f:
             f.write(data)
         os.replace(tmp, path)
-        return "protect"
+        return source
     asked = snapshot_request(url, first)
     download(asked, path, verify)
     return "cache" if asked != url else "go2rtc"

@@ -91,6 +91,9 @@ def collect():
     if c.unifi_enabled.value:  # UniFi Protect source (#70): last check, last event, last error (redacted)
         for ok, text in UNIFI_STATUS.lines(_, lambda ts: present.event_time(ts, ui_language())):
             lines.append(diag_line(ok, text))
+    from .display import WARM  # #111: ready cameras and their last picture
+    for ok, text in WARM.lines(_):
+        lines.append(diag_line(ok, text))
     if c.dnd.value:
         lines.append(diag_line(None, _("Do not disturb is on")))
     lines.append(diag_line(LOG.path is not None or c.log_level.value == "off",

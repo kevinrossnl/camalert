@@ -101,6 +101,8 @@
     <string name="t_5de5bce0" formatted="false">Press OK to turn a camera that hangs upside down (needs python3-pillow).</string>
     <string name="t_2bd7c5d1" formatted="false">Pictures from UniFi Protect</string>
     <string name="t_e77479eb" formatted="false">UniFi cameras get their pictures from the UniFi Protect console in the devices file: faster than go2rtc.</string>
+    <string name="t_75e5f19c" formatted="false">Keep cameras ready</string>
+    <string name="t_43e4c1ed" formatted="false">Only while this player is on: keeps the MJPEG stream of these cameras open so the photo window shows them at once, e.g. front_door=front_door_jpeg. Empty = off.</string>
     <string name="t_97588905" formatted="false">Refresh interval</string>
     <string name="t_591884e5" formatted="false">Press OK to fetch a camera\'s photos less often (seconds), e.g. for a slow camera.</string>
     <string name="t_40405b3f" formatted="false">Multi-camera window layout</string>
@@ -239,4 +241,7 @@
     <string name="t_badf84fc" formatted="false">UniFi Protect: last check %s</string>
     <string name="t_92e36ee7" formatted="false">UniFi Protect: last event %s, %s</string>
     <string name="t_11cd7c0c" formatted="false">UniFi Protect: no event since the start</string>
+    <string name="t_8adbd98c" formatted="false">Ready: %s (not while the player is off)</string>
+    <string name="t_d5bba5c9" formatted="false">Ready: %s (last picture %d s ago)</string>
+    <string name="t_026a941b" formatted="false">Ready: %s not connected</string>
 </resources>

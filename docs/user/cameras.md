@@ -28,3 +28,41 @@ The same holds for go2rtc's snapshots (`frame.jpeg`): go2rtc waits for the next 
 the photo window can take 2–5 seconds. CamAlert asks for the first picture with `cache=10s` (go2rtc 1.9.14 or newer)
 and shows *Loading picture...* meanwhile; UniFi Protect cameras get their pictures from Protect
 ([devices](devices.md#pictures-from-unifi-protect)).
+
+### Keep cameras ready
+
+For one or two important cameras (the front door, say) the picture can be there at once, also when nothing asked
+for that camera in the last seconds: let go2rtc turn the camera into a small MJPEG stream and let the player keep
+that stream open **while it is on**.
+
+1. In go2rtc add a stream for the camera, **without** putting it in `preload`:
+
+   ```yaml
+   streams:
+     front_door_jpeg: ffmpeg:front_door#video=mjpeg#hardware#width=640#raw=-r 2
+   ```
+
+   `#hardware` uses the GPU of the go2rtc host when it has one (Intel Quick Sync, VAAPI); leave it out otherwise.
+2. In CamAlert set *Display › Keep cameras ready* to `front_door=front_door_jpeg` (camera name = go2rtc stream;
+   several with `|`; just `front_door` uses the camera's own stream, which must then be MJPEG).
+3. While the player is on, it keeps `stream.mjpeg` of that stream open and keeps only the last picture; the photo
+   window, the multi-camera window and the tour show it at once (it is used when it is at most 5 seconds old,
+   otherwise the next source: UniFi Protect, then go2rtc's `frame.jpeg`). In standby, with the screen off or with
+   CamAlert off the player closes the stream. When no player watches it any more, go2rtc stops ffmpeg by itself:
+   that is why the stream must **not** be in `preload`. Waking a player from standby takes seconds anyway, so
+   the stream is not kept open in standby.
+
+The diagnostics show per camera *Ready: front_door (last picture 1 s ago)* or *not connected*.
+
+**What it costs** (estimate, measure on your own host): while at least one player is on, go2rtc runs one ffmpeg per
+ready camera, however many players watch it. Decoding the camera stream is the largest part: with hardware
+acceleration it takes almost no CPU, in software roughly 10–20 % of one core for a 1080p stream (less with a
+substream); making 2 JPEGs per second at 640 px wide is negligible. No extra traffic from the camera when go2rtc
+already pulls it (for example for `preload` of the camera itself); each player that is on receives about 50–100 KB/s.
+Measure it with `docker stats` (or your NAS's monitoring) before and after.
+
+**Alternative without the player setting** (not tested with go2rtc 1.9.15): go2rtc's API can add and remove a
+`preload` while it runs (`PUT` / `DELETE` on the preload endpoint in go2rtc's OpenAPI, since 1.9.14), so a Home
+Assistant automation could preload `front_door_jpeg` when a CamAlert player is on and remove it when all are off.
+That only keeps go2rtc warm: the player still asks `frame.jpeg`, which then answers within about half a second. The player
+setting above does both in one place and needs no automation.

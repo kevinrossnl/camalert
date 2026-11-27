@@ -43,6 +43,7 @@ file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/triggers/fr
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/triggers/unifi.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/update.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/urls.py
+file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/warm.py
 file rw-r--r-- service.camalert/resources/lib/camalert/controller.py
 file rw-r--r-- service.camalert/resources/lib/camalert/diag.py
 file rw-r--r-- service.camalert/resources/lib/camalert/display.py

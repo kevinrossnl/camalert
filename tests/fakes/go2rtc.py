@@ -16,7 +16,15 @@ import json
 import struct
 import threading
 import zlib
+import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
+try:
+    from http.server import ThreadingHTTPServer
+except ImportError:  # pragma: no cover - Python < 3.7
+    from socketserver import ThreadingMixIn
+
+    class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
+        daemon_threads = True
 from urllib.parse import parse_qs, urlsplit
 
 # neutral names and calm colours (Okabe-Ito based, darkened), one per camera
@@ -82,14 +90,56 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(500, "text/plain", b"streams: no producers")
             ctype, data = frame((q.get("width") or [640])[0], cams[name])
             return self._send(200, ctype, data)
+        if url.path == "/api/stream.mjpeg":  # #111: multipart pictures, like go2rtc, until the client goes
+            name = (q.get("src") or [""])[0]
+            if name not in cams or name in self.server.unreachable:
+                return self._send(500, "text/plain", b"streams: no producers")
+            return self._mjpeg(name)
         self._send(404, "text/plain", b"not found")
 
+    def _mjpeg(self, name):
+        srv = self.server
+        self.send_response(200)
+        self.send_header("Content-Type", "multipart/x-mixed-replace; boundary=frame")
+        self.end_headers()
+        with srv.lock:
+            srv.mjpeg_clients += 1
+            srv.mjpeg_opened += 1
+        try:
+            n = 0
+            while not srv.stopping:
+                n += 1
+                _ctype, data = frame(320, srv.cameras[name])
+                data += b"#%d" % n  # every picture differs
+                part = b"--frame\r\nContent-Type: image/jpeg\r\nContent-Length: %d\r\n\r\n" % len(data)
+                self.wfile.write(part + data + b"\r\n")
+                self.wfile.flush()
+                time.sleep(1.0 / srv.mjpeg_fps)
+        except (BrokenPipeError, ConnectionResetError, OSError):
+            pass
+        finally:
+            with srv.lock:
+                srv.mjpeg_clients -= 1
 
-class FakeGo2rtc(HTTPServer):
-    def __init__(self, host="127.0.0.1", port=0, cameras=None, unreachable=()):
-        HTTPServer.__init__(self, (host, port), Handler)
+
+class FakeGo2rtc(ThreadingHTTPServer):
+    daemon_threads = True
+    block_on_close = False
+
+    def __init__(self, host="127.0.0.1", port=0, cameras=None, unreachable=(), mjpeg_fps=10):
+        ThreadingHTTPServer.__init__(self, (host, port), Handler)
         self.cameras = dict(cameras or CAMERAS)
         self.unreachable = set(unreachable)
+        self.mjpeg_fps = mjpeg_fps
+        self.mjpeg_clients = 0  # open stream.mjpeg connections now (#111)
+        self.mjpeg_opened = 0  # stream.mjpeg connections in total
+        self.stopping = False
+        self.lock = threading.Lock()
+
+    def stop(self):
+        self.stopping = True
+        self.shutdown()
+        self.server_close()
 
     @property
     def url(self):

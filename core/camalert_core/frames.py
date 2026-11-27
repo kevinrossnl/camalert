@@ -80,19 +80,24 @@ class ProtectSnapshots(object):
 
 
 class Snapshots(object):
-    """One picture of a camera for a window, from the fastest source that has one (#109, #110): UniFi Protect
-    (fresh, no keyframe wait), else go2rtc frame.jpeg (cached for the first picture of a window).
+    """One picture of a camera for a window, from the fastest source that has one (#111, #109, #110): the warm
+    MJPEG feed of a ready camera, UniFi Protect (fresh, no keyframe wait), else go2rtc frame.jpeg (cached for the
+    first picture of a window).
     download(url) -> bytes is the player's own HTTP fetch (certificate setting, user:password@)."""
 
-    def __init__(self, download, protect=None):
+    def __init__(self, download, protect=None, warm=None):
         self.download = download
         self.protect = protect
-        self.last_source = {}  # camera -> 'protect' / 'cache' / 'go2rtc' (diagnostics, tests)
+        self.warm = warm  # warm.WarmFeeds (#111) or None
+        self.last_source = {}  # camera -> 'warm' / 'protect' / 'cache' / 'go2rtc' (diagnostics, tests)
 
     def fetch(self, camera, url, first=False):
         """(JPEG bytes, source). Raises what download() raises when go2rtc fails too."""
         data, source = None, None
-        if camera and self.protect is not None:
+        if camera and self.warm is not None:  # #111: the last picture of a ready camera, if fresh
+            data = self.warm.frame(camera)
+            source = "warm" if data else None
+        if data is None and camera and self.protect is not None:
             data = self.protect(camera, url_width(url))
             source = "protect" if data else None
         if data is None:

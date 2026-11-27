@@ -28,6 +28,7 @@ from .camalert_core.cameras import (display_name, known_camera, live_stream_name
                                     title_for)
 from .camalert_core import present
 from .camalert_core.frames import ProtectSnapshots, Snapshots
+from .camalert_core.warm import WarmFeeds
 from .camalert_core.events import TEST_SOURCE, add_event, event_title, is_test
 from .camalert_core.api import screen_name
 from .camalert_core.keymap import button_event
@@ -217,7 +218,8 @@ def _read(url):
         return r.read()
 
 
-SNAPSHOTS = Snapshots(lambda url: _read(url), ProtectSnapshots())
+WARM = WarmFeeds(lambda url: open_url(url, timeout=10))  # #111: ready cameras while the receiver is on
+SNAPSHOTS = Snapshots(lambda url: _read(url), ProtectSnapshots(), WARM)
 _SNAPSHOT_KEY = [None]
 
 
@@ -894,6 +896,9 @@ class Controller(object):
         self.unifi_timer.callback.append(self.poll_unifi)
         self.unifi_seconds = self.unifi_interval()
         self.unifi_timer.start(self.unifi_seconds * 1000, False)
+        self.warm_timer = eTimer()  # #111: keep cameras ready only while the receiver is on (checked every second)
+        self.warm_timer.callback.append(self.warm_tick)
+        self.warm_timer.start(1000, False)
         self.button_hook = GlobalKeys()
         c = config.plugins.camalert
         LOG.configure(c.log_level.value, c.log_syslog.value)
@@ -1241,6 +1246,16 @@ class Controller(object):
                     log("Foscam %s: %s" % (name, err.getErrorMessage()), level="error")
                 self.alarms[name] = None
             threads.deferToThread(source.poll, dev).addCallbacks(done, failed)
+
+    def warm_tick(self):
+        """#111: ready cameras get a warm MJPEG feed while CamAlert is on and the receiver is not in standby."""
+        from Screens.Standby import inStandby
+        c = config.plugins.camalert
+        on = c.enabled.value and inStandby is None and c.source.value == "go2rtc"
+        try:
+            WARM.update(c.server.value, c.ready_cameras.value, on)
+        except Exception as e:  # never let the timer die
+            log("keep cameras ready: %s" % e, "error")
 
     def poll_unifi(self):
         """UniFi Protect consoles (#70): one poll per console in a thread (never on the GUI thread); the first

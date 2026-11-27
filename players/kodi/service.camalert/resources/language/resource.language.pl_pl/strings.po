@@ -973,6 +973,14 @@ msgctxt "#30351"
 msgid "UniFi cameras get their pictures from the UniFi Protect console in the devices file: faster than go2rtc."
 msgstr "Kamery UniFi otrzymują obrazy z konsoli UniFi Protect z pliku urządzeń: szybciej niż go2rtc."
 
+msgctxt "#30352"
+msgid "Keep cameras ready"
+msgstr "Kamery w gotowości"
+
+msgctxt "#30353"
+msgid "Only while this player is on: keeps the MJPEG stream of these cameras open so the photo window shows them at once, e.g. front_door=front_door_jpeg. Empty = off."
+msgstr "Tylko gdy ten odtwarzacz jest włączony: utrzymuje otwarty strumień MJPEG tych kamer, aby okno ze zdjęciem pokazało je od razu, np. front_door=front_door_jpeg. Puste = wyłączone."
+
 msgctxt "#30500"
 msgid "API"
 msgstr "API"
@@ -1244,3 +1252,15 @@ msgstr "UniFi Protect: następna próba logowania %s"
 msgctxt "#30567"
 msgid "Loading picture..."
 msgstr "Wczytywanie obrazu..."
+
+msgctxt "#30568"
+msgid "Ready: %s (not while the player is off)"
+msgstr "Gotowa: %s (nie gdy odtwarzacz jest wyłączony)"
+
+msgctxt "#30569"
+msgid "Ready: %s (last picture %d s ago)"
+msgstr "Gotowa: %s (ostatni obraz %d s temu)"
+
+msgctxt "#30570"
+msgid "Ready: %s not connected"
+msgstr "Gotowa: %s nie połączona"

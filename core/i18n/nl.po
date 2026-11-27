@@ -716,6 +716,18 @@ msgstr "UniFi Protect: laatste gebeurtenis %s, %s"
 msgid "UniFi Protect: no event since the start"
 msgstr "UniFi Protect: geen gebeurtenis sinds de start"
 
+#: e2 kodi:30568
+msgid "Ready: %s (not while the player is off)"
+msgstr "Klaar: %s (niet zolang de speler uit staat)"
+
+#: e2 kodi:30569
+msgid "Ready: %s (last picture %d s ago)"
+msgstr "Klaar: %s (laatste beeld %d s geleden)"
+
+#: e2 kodi:30570
+msgid "Ready: %s not connected"
+msgstr "Klaar: %s niet verbonden"
+
 #: e2 kodi:30010
 msgid "Enable CamAlert"
 msgstr "CamAlert inschakelen"
@@ -867,6 +879,14 @@ msgstr "Beelden van UniFi Protect"
 #: e2 kodi:30351
 msgid "UniFi cameras get their pictures from the UniFi Protect console in the devices file: faster than go2rtc."
 msgstr "UniFi-camera's krijgen hun beelden van de UniFi Protect-console uit het apparatenbestand: sneller dan go2rtc."
+
+#: e2 kodi:30352
+msgid "Keep cameras ready"
+msgstr "Camera's klaarhouden"
+
+#: e2 kodi:30353
+msgid "Only while this player is on: keeps the MJPEG stream of these cameras open so the photo window shows them at once, e.g. front_door=front_door_jpeg. Empty = off."
+msgstr "Alleen zolang deze speler aan staat: houdt de MJPEG-stream van deze camera's open, zodat het fotovenster ze meteen toont, bijv. front_door=front_door_jpeg. Leeg = uit."
 
 #: e2 kodi:30064
 msgid "Refresh interval"

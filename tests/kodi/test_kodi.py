@@ -430,6 +430,46 @@ class _KodiModules(object):
         self.assertEqual(service.changed_parts({"mqtt_host": "a"}, {"mqtt_host": "b"}), {"mqtt"})
         self.assertEqual(service.changed_parts({"duration": 1}, {"duration": 2}), set())
 
+    def test_ready_cameras_follow_the_screen(self):
+        """#111: warm feeds on with CamAlert on, go2rtc as source and the screen not off; a fresh warm picture wins."""
+        sources, kodiapi = Built.module("sources"), Built.module("kodiapi")
+        values = {"enabled": "true", "source": "go2rtc", "server": "192.168.1.10:1984",
+                  "ready_cameras": "front_door=front_door_jpeg", "verify_ssl": "true"}
+        self.addCleanup(setattr, kodiapi, "addon_setting", kodiapi.addon_setting)
+        kodiapi.addon_setting = lambda key: values.get(key, "")
+        calls = []
+        self.addCleanup(setattr, sources.WARM, "update", sources.WARM.update)
+        sources.WARM.update = lambda server, ready, on: calls.append((server, ready, on))
+        sources.warm_tick(False)
+        self.assertEqual(calls[-1], ("192.168.1.10:1984", "front_door=front_door_jpeg", True))
+        sources.warm_tick(True)  # screen off = Kodi's standby
+        self.assertFalse(calls[-1][2])
+        values["enabled"] = "false"
+        sources.warm_tick(False)
+        self.assertFalse(calls[-1][2])
+        values.update(enabled="true", source="direct")
+        sources.warm_tick(False)
+        self.assertFalse(calls[-1][2])
+
+        self.addCleanup(setattr, sources.WARM, "frame", sources.WARM.frame)
+        sources.WARM.frame = lambda cam, max_age=5: b"warm" if cam == "front_door" else None
+        asked = []
+
+        def download(url, p, verify=True):
+            asked.append(url)
+            with open(p, "wb") as f:
+                f.write(b"go2rtc")
+            return p
+        self.addCleanup(setattr, sources, "download", sources.download)
+        sources.download = download
+        out = os.path.join(Built.tmp, "warm.jpg")
+        url = "http://192.168.1.10:1984/api/frame.jpeg?src=%s&width=640"
+        self.assertEqual(sources.picture("front_door", url % "front_door", out, True, True, self.settings()), "warm")
+        with open(out, "rb") as f:
+            self.assertEqual(f.read(), b"warm")
+        self.assertEqual(asked, [])
+        self.assertEqual(sources.picture("garden", url % "garden", out, True, True, self.settings()), "cache")
+
     def test_protect_camera_pictures_come_from_protect(self):
         """#109: a camera of the UniFi console in devices.conf gets its picture from Protect; other cameras, and every
         camera with the setting off, from go2rtc (the first picture cached, #110)."""
@@ -1035,6 +1075,15 @@ class _KodiModules(object):
             xbmcgui.ControlImage(0, 0, 10, 10, "", nonsense=1)
         with self.assertRaises(AttributeError):
             getattr(xbmcgui, "ControlWebBrowser")
+
+    def test_diagnostics_show_ready_cameras(self):
+        """#111: the diagnostics (another interpreter) show each ready camera from the service state."""
+        diag = Built.module("diag")
+        state = {"warm": {"active": True, "cameras": {"front_door": 1.4, "garden": None}}}
+        lines = [l for l in diag.collect(state) if "Ready:" in l]
+        self.assertEqual(len(lines), 2, lines)
+        self.assertIn("Ready: front_door (last picture 1 s ago)", lines[0])
+        self.assertIn("Ready: garden not connected", lines[1])
 
     def test_go2rtc_address_not_set(self):
         """#73: no default address. Not set = no network call, the diagnostics, the service start and the camera

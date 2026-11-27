@@ -536,6 +536,15 @@ msgstr ""
 msgid "UniFi Protect: no event since the start"
 msgstr ""
 
+msgid "Ready: %s (not while the player is off)"
+msgstr ""
+
+msgid "Ready: %s (last picture %d s ago)"
+msgstr ""
+
+msgid "Ready: %s not connected"
+msgstr ""
+
 msgid "Enable CamAlert"
 msgstr ""
 
@@ -648,6 +657,12 @@ msgid "Pictures from UniFi Protect"
 msgstr ""
 
 msgid "UniFi cameras get their pictures from the UniFi Protect console in the devices file: faster than go2rtc."
+msgstr ""
+
+msgid "Keep cameras ready"
+msgstr ""
+
+msgid "Only while this player is on: keeps the MJPEG stream of these cameras open so the photo window shows them at once, e.g. front_door=front_door_jpeg. Empty = off."
 msgstr ""
 
 msgid "Refresh interval"

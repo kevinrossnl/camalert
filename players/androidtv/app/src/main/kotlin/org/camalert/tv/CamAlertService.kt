@@ -140,6 +140,7 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         override fun colourKey(camera: String?, colour: String) = sendButton(camera, colour)
         override fun unreachable() { synchronized(controller.stats) { controller.stats.unreachable++ } }
         override fun changed() = env.changed()
+        override fun warmPicture(camera: String): ByteArray? = warm.frame(camera)
         override fun protectPicture(camera: String, width: Int): ByteArray? {
             val s = settings()
             protectPictures.configure(unifiLogin.consoles(), s["unifi_cameras"]?.toString(), s["protect_snapshots"] != false)
@@ -149,6 +150,30 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
 
     /** #109: pictures of UniFi Protect cameras through the poller's Protect session (no keyframe wait). */
     private val protectPictures = org.camalert.core.ProtectSnapshots({ c, cam, names, w -> unifi.snapshot(c, cam, names, w) })
+
+    /** #111: ready cameras get a warm MJPEG feed while CamAlert is on and the screen is on. */
+    val warm = org.camalert.core.WarmFeeds({ url -> Net.openStream(url, settings()["verify_ssl"] != false) })
+    private var warmThread: Thread? = null
+
+    private fun startWarm() {
+        warmThread = Thread({
+            while (!Thread.currentThread().isInterrupted) {
+                try {
+                    val s = settings()
+                    val on = s["enabled"] != false &&
+                        (getSystemService(Context.POWER_SERVICE) as PowerManager).isInteractive
+                    warm.update(s["server"]?.toString(), s["ready_cameras"]?.toString(), on)
+                } catch (e: Exception) {  // never let it die
+                    CamLog.log("keep cameras ready: $e", "error")
+                }
+                try {
+                    Thread.sleep(1000)
+                } catch (e: InterruptedException) {
+                    break
+                }
+            }
+        }, "camalert-warm-check").apply { isDaemon = true; start() }
+    }
 
     /** A colour key while a camera is on screen -> Home Assistant (MQTT event entity and webhook). */
     fun sendButton(camera: String?, colour: String) {
@@ -186,6 +211,7 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         CamLog.log("CamAlert $version started (node $node)")
         apply()
         startUnifi()
+        startWarm()
     }
 
     private fun foreground() {
@@ -282,6 +308,8 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
     override fun onDestroy() {
         CamLog.log("CamAlert stopped")
         unifiThread?.interrupt()
+        warmThread?.interrupt()
+        warm.stop()
         store.prefs.unregisterOnSharedPreferenceChangeListener(this)
         server?.stop()
         mqtt?.let { m -> Thread { m.shutdown() }.start() }

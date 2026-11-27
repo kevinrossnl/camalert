@@ -100,6 +100,8 @@
     <string name="t_5de5bce0" formatted="false">OK drücken, um eine kopfüber hängende Kamera zu drehen (benötigt python3-pillow).</string>
     <string name="t_2bd7c5d1" formatted="false">Bilder von UniFi Protect</string>
     <string name="t_e77479eb" formatted="false">UniFi-Kameras bekommen ihre Bilder von der UniFi-Protect-Konsole aus der Gerätedatei: schneller als go2rtc.</string>
+    <string name="t_75e5f19c" formatted="false">Kameras bereithalten</string>
+    <string name="t_43e4c1ed" formatted="false">Nur solange dieses Wiedergabegerät an ist: hält den MJPEG-Stream dieser Kameras offen, damit das Fotofenster sie sofort zeigt, z. B. front_door=front_door_jpeg. Leer = aus.</string>
     <string name="t_97588905" formatted="false">Aktualisierungsintervall</string>
     <string name="t_591884e5" formatted="false">OK drücken, um Fotos einer Kamera seltener zu holen (Sekunden), z. B. bei einer langsamen Kamera.</string>
     <string name="t_40405b3f" formatted="false">Anordnung im Fenster mit mehreren Kameras</string>
@@ -238,4 +240,7 @@
     <string name="t_badf84fc" formatted="false">UniFi Protect: letzte Prüfung %s</string>
     <string name="t_92e36ee7" formatted="false">UniFi Protect: letztes Ereignis %s, %s</string>
     <string name="t_11cd7c0c" formatted="false">UniFi Protect: kein Ereignis seit dem Start</string>
+    <string name="t_8adbd98c" formatted="false">Bereit: %s (nicht solange das Wiedergabegerät aus ist)</string>
+    <string name="t_d5bba5c9" formatted="false">Bereit: %s (letztes Bild vor %d s)</string>
+    <string name="t_026a941b" formatted="false">Bereit: %s nicht verbunden</string>
 </resources>

@@ -77,6 +77,7 @@ class InfoActivity : Activity() {
                 java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.ROOT).format(java.util.Date((ts * 1000).toLong()))
             }) line(ok, text)
         }
+        for ((ok, text) in svc.warm.lines(svc.tr)) line(ok, text)  // #111
         val last = svc.controller.lastCaller
         line(null, if (last == null) "no API call yet" else "last API call from ${last.second} (${last.third})")
     }

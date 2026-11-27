@@ -100,6 +100,8 @@
     <string name="t_5de5bce0" formatted="false">Naciśnij OK, aby obrócić kamerę zamontowaną do góry nogami (wymaga python3-pillow).</string>
     <string name="t_2bd7c5d1" formatted="false">Obrazy z UniFi Protect</string>
     <string name="t_e77479eb" formatted="false">Kamery UniFi otrzymują obrazy z konsoli UniFi Protect z pliku urządzeń: szybciej niż go2rtc.</string>
+    <string name="t_75e5f19c" formatted="false">Kamery w gotowości</string>
+    <string name="t_43e4c1ed" formatted="false">Tylko gdy ten odtwarzacz jest włączony: utrzymuje otwarty strumień MJPEG tych kamer, aby okno ze zdjęciem pokazało je od razu, np. front_door=front_door_jpeg. Puste = wyłączone.</string>
     <string name="t_97588905" formatted="false">Odstęp odświeżania</string>
     <string name="t_591884e5" formatted="false">Naciśnij OK, aby rzadziej pobierać zdjęcia z kamery (sekundy), np. z wolnej kamery.</string>
     <string name="t_40405b3f" formatted="false">Układ okna z kilkoma kamerami</string>
@@ -238,4 +240,7 @@
     <string name="t_badf84fc" formatted="false">UniFi Protect: ostatnie sprawdzenie %s</string>
     <string name="t_92e36ee7" formatted="false">UniFi Protect: ostatnie zdarzenie %s, %s</string>
     <string name="t_11cd7c0c" formatted="false">UniFi Protect: brak zdarzeń od uruchomienia</string>
+    <string name="t_8adbd98c" formatted="false">Gotowa: %s (nie gdy odtwarzacz jest wyłączony)</string>
+    <string name="t_d5bba5c9" formatted="false">Gotowa: %s (ostatni obraz %d s temu)</string>
+    <string name="t_026a941b" formatted="false">Gotowa: %s nie połączona</string>
 </resources>

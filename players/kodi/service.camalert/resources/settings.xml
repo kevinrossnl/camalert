@@ -32,6 +32,7 @@
         <setting id="orientation" type="string" label="30062" help="30063"><level>1</level><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><heading>30062</heading></control></setting>
         <setting id="pick_orientation" type="action" label="30296"><level>1</level><data>RunScript(service.camalert,pick,orientation)</data><control type="button" format="action"><close>true</close></control></setting>
         <setting id="protect_snapshots" type="boolean" label="30350" help="30351"><level>1</level><default>true</default><control type="toggle"/></setting>
+        <setting id="ready_cameras" type="string" label="30352" help="30353"><level>1</level><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><heading>30352</heading></control></setting>
         <setting id="refresh" type="string" label="30064" help="30065"><level>1</level><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><heading>30064</heading></control></setting>
         <setting id="pick_refresh" type="action" label="30296"><level>1</level><data>RunScript(service.camalert,pick,refresh)</data><control type="button" format="action"><close>true</close></control></setting>
         <setting id="window_keys" type="boolean" label="30066" help="30067"><level>1</level><default>true</default><control type="toggle"/></setting>

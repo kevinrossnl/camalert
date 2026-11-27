@@ -100,6 +100,8 @@
     <string name="t_5de5bce0" formatted="false">Appuyez sur OK pour tourner une caméra montée à l\'envers (nécessite python3-pillow).</string>
     <string name="t_2bd7c5d1" formatted="false">Images de UniFi Protect</string>
     <string name="t_e77479eb" formatted="false">Les caméras UniFi reçoivent leurs images de la console UniFi Protect du fichier des appareils : plus rapide que go2rtc.</string>
+    <string name="t_75e5f19c" formatted="false">Garder les caméras prêtes</string>
+    <string name="t_43e4c1ed" formatted="false">Seulement quand ce lecteur est allumé : garde ouvert le flux MJPEG de ces caméras pour que la fenêtre photo les affiche tout de suite, p. ex. front_door=front_door_jpeg. Vide = désactivé.</string>
     <string name="t_97588905" formatted="false">Intervalle d\'actualisation</string>
     <string name="t_591884e5" formatted="false">Appuyez sur OK pour récupérer moins souvent les photos d\'une caméra (secondes), p. ex. une caméra lente.</string>
     <string name="t_40405b3f" formatted="false">Disposition de la fenêtre multi-caméras</string>
@@ -238,4 +240,7 @@
     <string name="t_badf84fc" formatted="false">UniFi Protect : dernière vérification %s</string>
     <string name="t_92e36ee7" formatted="false">UniFi Protect : dernier événement %s, %s</string>
     <string name="t_11cd7c0c" formatted="false">UniFi Protect : aucun événement depuis le démarrage</string>
+    <string name="t_8adbd98c" formatted="false">Prête : %s (pas quand le lecteur est éteint)</string>
+    <string name="t_d5bba5c9" formatted="false">Prête : %s (dernière image il y a %d s)</string>
+    <string name="t_026a941b" formatted="false">Prête : %s non connectée</string>
 </resources>

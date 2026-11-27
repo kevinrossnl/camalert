@@ -633,6 +633,20 @@
   {
    "choices": null,
    "default": "",
+   "help": "Only while this player is on: keeps the MJPEG stream of these cameras open so the photo window shows them at once, e.g. front_door=front_door_jpeg. Empty = off.",
+   "id": "ready_cameras",
+   "label": "Keep cameras ready",
+   "level": "advanced",
+   "max": null,
+   "min": null,
+   "section": "display",
+   "step": null,
+   "type": "text",
+   "unit": null
+  },
+  {
+   "choices": null,
+   "default": "",
    "help": "Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera.",
    "id": "refresh",
    "label": "Refresh interval",

@@ -172,6 +172,26 @@ object Net {
         }
     }
 
+    /** #111: an open HTTP stream (go2rtc stream.mjpeg); IOException on HTTP errors. Closing it ends the request. */
+    fun openStream(url: String, verify: Boolean = true, timeoutMs: Int = 10000): java.io.InputStream {
+        val c = URL(url).openConnection() as HttpURLConnection
+        if (!verify && c is HttpsURLConnection) {
+            c.sslSocketFactory = trustAll.socketFactory
+            c.setHostnameVerifier { _, _ -> true }
+        }
+        c.connectTimeout = timeoutMs
+        c.readTimeout = timeoutMs
+        c.setRequestProperty("User-Agent", "CamAlert-AndroidTV")
+        val code = c.responseCode
+        if (code !in 200..299) { c.disconnect(); throw java.io.IOException("HTTP $code") }
+        val inp = c.inputStream
+        return object : java.io.FilterInputStream(inp) {
+            override fun close() {
+                try { super.close() } finally { c.disconnect() }
+            }
+        }
+    }
+
     /** GET (or POST with body) -> bytes; IOException on HTTP errors. verify=false accepts self-signed certificates
      *  (setting *Check certificates*, only in your own network). */
     fun fetch(url: String, verify: Boolean = true, timeoutMs: Int = 5000, body: ByteArray? = null, max: Int = 8 shl 20): ByteArray {

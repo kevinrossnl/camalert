@@ -74,6 +74,60 @@ class TestTiles(unittest.TestCase):
         with open(path, "rb") as f:
             self.assertEqual(f.read(), b"jpeg")
 
+    def test_ready_cameras_only_while_the_receiver_is_on(self):
+        """#111: the warm feeds are switched on with CamAlert on, go2rtc as source and the receiver not in standby."""
+        import sys
+        calls = []
+        self.addCleanup(setattr, self.d.WARM, "update", self.d.WARM.update)
+        self.d.WARM.update = lambda server, ready, on: calls.append((server, ready, on))
+        c = self.env.config.plugins.camalert
+        c.ready_cameras.value = "front_door=front_door_jpeg"
+        self.ctl.warm_tick()
+        self.assertEqual(calls[-1], ("http://192.168.1.10:1984", "front_door=front_door_jpeg", True))
+        standby = sys.modules["Screens.Standby"]
+        self.addCleanup(setattr, standby, "inStandby", None)
+        standby.inStandby = object()
+        self.ctl.warm_tick()
+        self.assertFalse(calls[-1][2])
+        standby.inStandby = None
+        c.enabled.value = False
+        self.ctl.warm_tick()
+        self.assertFalse(calls[-1][2])
+        c.enabled.value = True
+        c.source.value = "direct"
+        self.ctl.warm_tick()
+        self.assertFalse(calls[-1][2])
+        self.d.WARM.update = lambda *a: (_ for _ in ()).throw(RuntimeError("boom"))
+        self.ctl.warm_tick()  # an error never stops the timer
+
+    def test_ready_camera_picture_comes_first(self):
+        """#111: a fresh warm picture wins over Protect and go2rtc; without one the next source is asked."""
+        import tempfile
+        import os
+        asked = []
+
+        class R(object):
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+            def read(self):
+                return b"go2rtc"
+        self.d.open_url = lambda url, timeout=8: asked.append(url) or R()
+        self.addCleanup(setattr, self.d.WARM, "frame", self.d.WARM.frame)
+        self.d.WARM.frame = lambda cam, max_age=5: b"warm" if cam == "front_door" else None
+        path = os.path.join(tempfile.mkdtemp(), "p.jpg")
+        self.d._download(SNAP % "front_door", path, None, True, "front_door")
+        with open(path, "rb") as f:
+            self.assertEqual(f.read(), b"warm")
+        self.assertEqual(asked, [])
+        self.d._download(SNAP % "garden", path, None, True, "garden")
+        with open(path, "rb") as f:
+            self.assertEqual(f.read(), b"go2rtc")
+        self.assertEqual(self.d.SNAPSHOTS.last_source, {"front_door": "warm", "garden": "cache"})
+
     def test_protect_camera_pictures_come_from_protect(self):
         """#109: a UniFi Protect camera gets its picture from the console in the devices file, other cameras and the
         setting off from go2rtc."""

@@ -104,7 +104,8 @@ class Service(object):
             from . import mqtt
             Window(10000).setProperty("camalert.state", json.dumps({
                 "events": self.ctl.events, "last_caller": self.ctl.last_caller, "mqtt": mqtt.connected(),
-                "log": kodiapi.camlog().path, "time": c.get("time"), "unifi": unifi_state()}))
+                "log": kodiapi.camlog().path, "time": c.get("time"), "unifi": unifi_state(),
+                "warm": sources.WARM.state()}))
         elif what == "play":
             self.ctl.play_clip(c.get("url"), c.get("title"))
 
@@ -115,7 +116,14 @@ class Service(object):
             if self.monitor.waitForAbort(0.5):
                 break
             self.script_commands()
+            self.ticks = getattr(self, "ticks", 0) + 1
+            if self.ticks % 2 == 0:  # once a second (#111)
+                try:
+                    sources.warm_tick(self.ctl.screen_off())
+                except Exception as e:  # never stop the service loop
+                    kodiapi.log("keep cameras ready: %s" % e, "error")
         kodiapi.log("stopping")
+        sources.WARM.stop()
         ptz.stop()
         mqtt.stop()
         server.stop()

@@ -537,6 +537,15 @@ msgstr "UniFi Protect: ostatnie zdarzenie %s, %s"
 msgid "UniFi Protect: no event since the start"
 msgstr "UniFi Protect: brak zdarzeń od uruchomienia"
 
+msgid "Ready: %s (not while the player is off)"
+msgstr "Gotowa: %s (nie gdy odtwarzacz jest wyłączony)"
+
+msgid "Ready: %s (last picture %d s ago)"
+msgstr "Gotowa: %s (ostatni obraz %d s temu)"
+
+msgid "Ready: %s not connected"
+msgstr "Gotowa: %s nie połączona"
+
 msgid "Enable CamAlert"
 msgstr "Włącz CamAlert"
 
@@ -650,6 +659,12 @@ msgstr "Obrazy z UniFi Protect"
 
 msgid "UniFi cameras get their pictures from the UniFi Protect console in the devices file: faster than go2rtc."
 msgstr "Kamery UniFi otrzymują obrazy z konsoli UniFi Protect z pliku urządzeń: szybciej niż go2rtc."
+
+msgid "Keep cameras ready"
+msgstr "Kamery w gotowości"
+
+msgid "Only while this player is on: keeps the MJPEG stream of these cameras open so the photo window shows them at once, e.g. front_door=front_door_jpeg. Empty = off."
+msgstr "Tylko gdy ten odtwarzacz jest włączony: utrzymuje otwarty strumień MJPEG tych kamer, aby okno ze zdjęciem pokazało je od razu, np. front_door=front_door_jpeg. Puste = wyłączone."
 
 msgid "Refresh interval"
 msgstr "Odstęp odświeżania"

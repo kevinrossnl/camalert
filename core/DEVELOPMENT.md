@@ -43,7 +43,8 @@ glossary: `python3 tools/docs.py update`.
 | `access` | allowlist (`LAN_NETWORKS`), token, rate limit |
 | `events` | event list, caller source, diagnostics lines (the event line itself is `present.event_line`) |
 | `keymap` | remote-key map per player and screen, colour keys (#42) |
-| `present` | what players show as text (#41): event codes and labels, `event_line`/`event_details`, dates, key hints, `tour_status` |
+| `present` | what players show as text (#41): event codes and labels, `event_line`/`event_details`, dates, key hints, `tour_status`, tile texts (`tile_label`) |
+| `frames` | where window pictures come from: first picture from go2rtc's cache (#110) |
 | `i18n` | `N_()` marker, `kodi_ids`/`kodi_translator` |
 | `schema` | the one settings schema (id, section, level, type, default, range/step, unit, label/help, platforms) and `migrate()` (#38/#7/#39) |
 | `update` | update check |

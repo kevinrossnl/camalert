@@ -22233,5 +22233,42 @@
    "url": "http://100.101.102.103/x",
    "why": null
   }
+ ],
+ "with_cache": [
+  {
+   "out": "http://192.168.1.10:1984/api/frame.jpeg?src=front_door&width=640&cache=10s",
+   "seconds": 10,
+   "url": "http://192.168.1.10:1984/api/frame.jpeg?src=front_door&width=640"
+  },
+  {
+   "out": "http://h:1984/api/frame.jpeg?cache=10s",
+   "seconds": 10,
+   "url": "http://h:1984/api/frame.jpeg"
+  },
+  {
+   "out": "http://192.168.1.20/snap.jpg",
+   "seconds": 10,
+   "url": "http://192.168.1.20/snap.jpg"
+  },
+  {
+   "out": "http://h:1984/api/frame.jpeg?src=a&cache=1m",
+   "seconds": 10,
+   "url": "http://h:1984/api/frame.jpeg?src=a&cache=1m"
+  },
+  {
+   "out": "http://h:1984/api/frame.jpeg?src=a",
+   "seconds": 0,
+   "url": "http://h:1984/api/frame.jpeg?src=a"
+  },
+  {
+   "out": null,
+   "seconds": 10,
+   "url": null
+  },
+  {
+   "out": "",
+   "seconds": 10,
+   "url": ""
+  }
  ]
 }

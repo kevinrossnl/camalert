@@ -29,9 +29,11 @@ class TestTiles(unittest.TestCase):
 
     def check_tile(self, screen, tile, error, picture):
         screen.active = True
-        self.assertFalse(screen[error].visible)
+        self.assertTrue(screen[error].visible)  # #110: 'Loading picture...' until the first picture
+        self.assertEqual(screen[error].text, "Loading picture...")
+        self.assertTrue(tile.first)
         tile.failed(ERR)
-        self.assertFalse(screen[error].visible)  # one miss is not shown
+        self.assertEqual(screen[error].text, "Loading picture...")  # one miss is not shown
         tile.failed(ERR)
         self.assertTrue(screen[error].visible)
         self.assertEqual(screen[error].text, "Camera not reachable")
@@ -39,6 +41,38 @@ class TestTiles(unittest.TestCase):
         tile.loaded(None)
         self.assertFalse(screen[error].visible)
         self.assertTrue(screen[picture].visible)
+        self.assertFalse(tile.first)
+
+    def test_first_picture_loads_at_once(self):
+        """#110: the first picture hides 'Loading picture...' without a failure first."""
+        w = self.session.instantiateDialog(self.d.PhotoWindow, "garden", SNAP % "garden", "Garden")
+        w.active = True
+        self.assertEqual(w["error"].text, "Loading picture...")
+        w.loaded(None)
+        self.assertFalse(w["error"].visible)
+        self.assertTrue(w["photo"].visible)
+
+    def test_download_asks_for_a_cached_first_picture(self):
+        asked = []
+
+        class R(object):
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+            def read(self):
+                return b"jpeg"
+        self.d.open_url = lambda url, timeout=8: asked.append(url) or R()
+        import tempfile
+        import os
+        path = os.path.join(tempfile.mkdtemp(), "p.jpg")
+        self.d._download(SNAP % "garden", path, None, True)
+        self.d._download(SNAP % "garden", path)
+        self.assertEqual(asked, [SNAP % "garden" + "&cache=10s", SNAP % "garden"])
+        with open(path, "rb") as f:
+            self.assertEqual(f.read(), b"jpeg")
 
     def test_mosaic_strip_and_tour_tiles(self):
         m = self.session.open(self.d.MosaicScreen, CAMS, 10)
@@ -64,8 +98,10 @@ class TestTiles(unittest.TestCase):
         self.assertEqual(n.url, SNAP % "front_door")
         self.assertNotIn("AddPopup", self.env.rec.names())
         n.active = True
+        self.assertEqual(n["error"].text, "Loading picture...")  # #110
         n.failed(ERR)
         self.assertTrue(n["error"].visible)
+        self.assertEqual(n["error"].text, "Camera not reachable")
         self.ctl.show("garden", 10, "notify", "normal")
         self.assertIsNot(self.ctl.notice, n)  # replaced
         self.assertEqual(self.ctl.notice["title"].text, "Camera: Garden")

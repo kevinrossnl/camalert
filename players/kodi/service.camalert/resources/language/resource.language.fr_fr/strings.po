@@ -1232,3 +1232,7 @@ msgstr "Aucune adresse go2rtc valide"
 msgctxt "#30566"
 msgid "UniFi Protect: next login attempt %s"
 msgstr "UniFi Protect : prochaine tentative de connexion %s"
+
+msgctxt "#30567"
+msgid "Loading picture..."
+msgstr "Chargement de l'image..."

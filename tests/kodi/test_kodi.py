@@ -767,13 +767,17 @@ class _KodiModules(object):
         return kodiapi
 
     def test_unreachable_tile_is_dimmed_with_text(self):
-        """#49: every tile type shows a dimmed 'Camera not reachable' layer instead of a frozen or black picture."""
+        """#49: every tile type shows a dimmed 'Camera not reachable' layer instead of a frozen or black picture.
+        #110: until the first picture the layer says 'Loading picture...', and the first request asks go2rtc for a
+        cached frame."""
         display = Built.module("display")
         sources = Built.module("sources")
         self.core_strings()
         down = {"garden"}
+        asked = []
 
         def download(url, path, verify=True):
+            asked.append(url)
             if any("src=%s&" % c in url for c in down):
                 raise IOError("timed out")
             with open(path, "wb") as f:
@@ -786,7 +790,9 @@ class _KodiModules(object):
             seen = {}
             for tile in win.tiles:
                 dim, text = tile["error"]
-                self.assertEqual(text._args[4], "Camera not reachable")
+                self.assertEqual(text._args[4], "Loading picture...")
+                labels = tile["labels"] = []
+                text.setLabel = labels.append
                 dim.setVisible = lambda v, n=tile["name"]: seen.__setitem__(n, v)
             win.feeder.retry = 0.01
             return seen
@@ -801,7 +807,10 @@ class _KodiModules(object):
             win.feeder.start()
             try:
                 self.assertTrue(self.wait_for(lambda: seen.get("garden") is True), (win, seen))
-                self.assertNotIn("front_door", seen)  # the camera that answers keeps its picture
+                bad = [t for t in win.tiles if t["name"] == "garden"][0]
+                self.assertEqual(bad["labels"][-1], "Camera not reachable")
+                if win is not tour:  # the camera that answers: its first picture hides 'Loading picture...'
+                    self.assertTrue(self.wait_for(lambda: seen.get("front_door") is False), (win, seen))
                 if win is tour:
                     down.clear()
                     self.assertTrue(self.wait_for(lambda: seen.get("garden") is False), seen)
@@ -809,6 +818,33 @@ class _KodiModules(object):
             finally:
                 win.feeder.stop()
         self.assertEqual(titles, [])  # a multi-camera window keeps its title; the tile says it
+        front = [u for u in asked if "src=front_door&" in u]
+        self.assertTrue(front and front[0].endswith("&cache=10s"), front[:2])
+
+    def test_only_the_first_picture_is_cached(self):
+        """#110: the first request of a tile asks go2rtc for a cached frame, the refreshes for a new one."""
+        display = Built.module("display")
+        sources = Built.module("sources")
+        asked = []
+
+        def download(url, path, verify=True):
+            asked.append(url)
+            with open(path, "wb") as f:
+                f.write(b"jpg")
+            return path
+        self.addCleanup(setattr, sources, "download", sources.download)
+        sources.download = download
+        win = display.PhotoWindow(FakeController(), self.CAMS[:1], self.settings(), keys=False)
+        hidden = []
+        win.tiles[0]["error"][0].setVisible = hidden.append
+        win.feeder.start()
+        try:
+            self.assertTrue(self.wait_for(lambda: len(asked) >= 2, 10), asked)
+        finally:
+            win.feeder.stop()
+        self.assertTrue(asked[0].endswith("&cache=10s"))
+        self.assertFalse(asked[1].endswith("&cache=10s"))
+        self.assertEqual(hidden[:1], [False])  # 'Loading picture...' hidden by the first picture
 
     def test_diagnostics_caller_uses_region_date_and_translated_source(self):
         diag = Built.module("diag")

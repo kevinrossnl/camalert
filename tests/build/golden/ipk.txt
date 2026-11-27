@@ -23,6 +23,7 @@ data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_co
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/devices/onvif.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/devices/unifi.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/events.py
+data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/frames.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/i18n.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/keymap.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/layout.py

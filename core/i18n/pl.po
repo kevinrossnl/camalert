@@ -264,10 +264,6 @@ msgstr "Pokaż tę kamerę"
 msgid "Motion"
 msgstr "Ruch"
 
-#: e2 kodi:30527
-msgid "Camera not reachable"
-msgstr "Kamera nieosiągalna"
-
 #: e2 kodi:30192 ha:entity.sensor.on_screen.state_attributes.cameras.name ha:services.mosaic.fields.cameras.name ha:services.show.fields.camera.name
 msgid "Cameras"
 msgstr "Kamery"
@@ -587,6 +583,14 @@ msgstr "Nieznana kamera"
 #: e2 kodi:30526
 msgid "Unknown camera or no valid go2rtc address"
 msgstr "Nieznana kamera lub brak prawidłowego adresu go2rtc"
+
+#: e2 kodi:30527
+msgid "Camera not reachable"
+msgstr "Kamera nieosiągalna"
+
+#: e2 kodi:30567
+msgid "Loading picture..."
+msgstr "Wczytywanie obrazu..."
 
 #: e2 kodi:30564
 msgid "go2rtc address not set"

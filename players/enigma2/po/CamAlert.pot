@@ -197,9 +197,6 @@ msgstr ""
 msgid "Motion"
 msgstr ""
 
-msgid "Camera not reachable"
-msgstr ""
-
 msgid "Cameras"
 msgstr ""
 
@@ -438,6 +435,12 @@ msgid "Unknown camera"
 msgstr ""
 
 msgid "Unknown camera or no valid go2rtc address"
+msgstr ""
+
+msgid "Camera not reachable"
+msgstr ""
+
+msgid "Loading picture..."
 msgstr ""
 
 msgid "go2rtc address not set"

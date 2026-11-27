@@ -29,7 +29,7 @@ for p in (os.path.join(ROOT, "core"), TESTS):
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from camalert_core import access, api, keymap, layout, present, rules, schema  # noqa: E402
+from camalert_core import access, api, frames, keymap, layout, present, rules, schema  # noqa: E402
 from camalert_core.devices.config import PTZ_ACTIONS  # noqa: E402
 from camalert_core.mqtt import topics as mqtt_topics  # noqa: E402
 from camalert_core.obs import log as obslog, metrics as obsmetrics  # noqa: E402
@@ -229,6 +229,11 @@ def core_reference():
                          ("show failed\nsecond line password=hunter2", "error", "tv box", 0.0),
                          ("x", "verbose", "", 1795000000.999), ("y", "other", None, 1795000000.0004),
                          ("z", "normal", "h\u00f6st" + "x" * 300, 86399.9996))],
+        "with_cache": [{"url": u, "seconds": n, "out": frames.with_cache(u, n)} for u, n in
+                       (("http://192.168.1.10:1984/api/frame.jpeg?src=front_door&width=640", 10),
+                        ("http://h:1984/api/frame.jpeg", 10), ("http://192.168.1.20/snap.jpg", 10),
+                        ("http://h:1984/api/frame.jpeg?src=a&cache=1m", 10),
+                        ("http://h:1984/api/frame.jpeg?src=a", 0), (None, 10), ("", 10))],
         "parse_hostport": [{"in": t, "out": (lambda r: list(r) if r else None)(__import__("camalert_core.urls", fromlist=["x"]).parse_hostport(t))}
                            for t in ("192.168.1.10:514", "loki.local", " 10.0.0.1:1514 ", "", None, "host:", "host:99999",
                                      "host:abc", "[::1]:514", "::1", ":514")],
@@ -386,6 +391,8 @@ def runtime():
         "source_labels": present.SOURCE_LABELS,
         "priority_labels": present.PRIORITY_LABELS,
         "result_labels": present.RESULT_LABELS,
+        "tile_labels": present.TILE_LABELS,
+        "frame_cache_seconds": frames.CACHE_SECONDS,
     }
 
 

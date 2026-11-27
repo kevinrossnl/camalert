@@ -191,6 +191,12 @@ object Urls {
     fun snapshotUrl(server: String?, stream: String?, width: Int = 640): String? =
         if (server.isNullOrEmpty() || stream.isNullOrEmpty()) null else "$server/api/frame.jpeg?src=${quote(stream)}&width=$width"
 
+    /** A go2rtc frame.jpeg URL with cache=<n>s for the first picture of a window (#110, frames.with_cache). */
+    fun withCache(url: String?, seconds: Int): String? {
+        if (url.isNullOrEmpty() || seconds <= 0 || "/api/frame.jpeg" !in url || Regex("[?&]cache=").containsMatchIn(url)) return url
+        return url + (if ('?' in url) "&" else "?") + "cache=${seconds}s"
+    }
+
     /** rtsp:// towards go2rtc (the player forces RTSP over TCP itself). */
     fun rtspUrl(server: String?, stream: String?, port: Int = 8554): String? {
         val host = serverHost(server) ?: return null

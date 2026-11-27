@@ -1232,3 +1232,7 @@ msgstr ""
 msgctxt "#30566"
 msgid "UniFi Protect: next login attempt %s"
 msgstr ""
+
+msgctxt "#30567"
+msgid "Loading picture..."
+msgstr ""

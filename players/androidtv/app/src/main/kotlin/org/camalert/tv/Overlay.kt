@@ -242,11 +242,14 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
             val orientation = Cameras.parseOrientation(s["orientation"]?.toString())[tile.name]
             val verify = s["verify_ssl"] != false
             val url = tile.snapshot?.replace(Regex("width=\\d+"), "width=" + width.coerceIn(160, 1920)) ?: return
+            val cache = org.camalert.core.CoreData.load().frameCacheSeconds
             val t = Thread({
                 var failed = false
+                var first = true  // #110: the first picture may come from go2rtc's cache
                 while (!stop.get()) {
                     try {
-                        val bytes = Net.fetch(url, verify, 6000)
+                        val bytes = Net.fetch(if (first) org.camalert.core.Urls.withCache(url, cache)!! else url, verify, 6000)
+                        first = false
                         val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size) ?: throw java.io.IOException("not an image")
                         val shown = orient(bmp, orientation)
                         main.post { if (!stop.get()) { view.setImageBitmap(shown); error.visibility = View.GONE } }
@@ -259,7 +262,7 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
                             host.unreachable()
                         }
                         failed = true
-                        main.post { if (!stop.get()) error.visibility = View.VISIBLE }
+                        main.post { if (!stop.get()) { error.text = host.tr(org.camalert.core.CoreData.load().tileLabels.getValue("unreachable")); error.visibility = View.VISIBLE } }
                     }
                     try { Thread.sleep((refresh * 1000).toLong().coerceAtLeast(500L) * (if (failed) 3 else 1)) } catch (e: InterruptedException) { break }
                 }
@@ -280,10 +283,9 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
                 parent.addView(l, FrameLayout.LayoutParams(r.w, lh).apply { leftMargin = r.x; topMargin = r.y + r.h - lh })
             }
             val err = text(font, true).apply {
-                text = host.tr("Camera not reachable")
+                text = host.tr(org.camalert.core.CoreData.load().tileLabels.getValue("loading"))  // #110, until the first picture
                 gravity = Gravity.CENTER
                 setBackgroundColor(0xC0000000.toInt())
-                visibility = View.GONE
             }
             parent.addView(err, FrameLayout.LayoutParams(r.w, r.h).apply { leftMargin = r.x; topMargin = r.y })
             load(tile, iv, err, r.w)

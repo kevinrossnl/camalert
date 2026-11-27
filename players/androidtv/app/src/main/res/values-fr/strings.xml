@@ -199,6 +199,7 @@
     <string name="t_b2ba445f" formatted="false">Caméra inconnue ou aucune adresse go2rtc valide</string>
     <string name="t_0b37da62" formatted="false">Caméra injoignable</string>
     <string name="t_7343c86d" formatted="false">Journal uniquement</string>
+    <string name="t_5666945f" formatted="false">Chargement de l\'image...</string>
     <string name="t_9a27f08a" formatted="false">Adresse go2rtc non définie</string>
     <string name="t_8516e22b" formatted="false">Aucune adresse go2rtc valide</string>
     <string name="t_cfa6377b" formatted="false">Heure</string>

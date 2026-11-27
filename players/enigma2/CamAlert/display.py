@@ -27,6 +27,7 @@ from .camalert_core.cameras import (display_name, known_camera, live_stream_name
                                     parse_cams, parse_orientation, parse_refresh, parse_titles, refresh_delay, slug,
                                     title_for)
 from .camalert_core import present
+from .camalert_core.frames import snapshot_request
 from .camalert_core.events import TEST_SOURCE, add_event, event_title, is_test
 from .camalert_core.api import screen_name
 from .camalert_core.keymap import button_event
@@ -211,8 +212,9 @@ def delay_for(name, minimum=0.2):
     return refresh_delay(name, parse_refresh(config.plugins.camalert.refresh.value), minimum)
 
 
-def _download(url, path=PHOTO, orientation=None):
-    with open_url(url) as r:
+def _download(url, path=PHOTO, orientation=None, first=False):
+    """Fetches one snapshot into path; the first picture of a window asks go2rtc for a cached frame (#110)."""
+    with open_url(snapshot_request(url, first)) as r:
         data = r.read()
     with open(path + ".tmp", "wb") as f:
         f.write(data)
@@ -237,21 +239,23 @@ class Tile(object):
         self.busy = False
         self.failures = 0
         self.error_key = key.replace("tile", "error")
-        set_error(screen, self.error_key, key, False)
+        self.first = True  # until the first picture: 'Loading picture...' and a cached frame (#110)
+        set_error(screen, self.error_key, key, "loading")
 
     def fetch(self):
         if not getattr(self.screen, "active", False) or self.busy or not self.url:
             return
         self.busy = True
-        threads.deferToThread(_download, self.url, self.path, orientation_for(self.stream)).addCallbacks(
+        threads.deferToThread(_download, self.url, self.path, orientation_for(self.stream), self.first).addCallbacks(
             self.loaded, self.failed)
 
     def loaded(self, _path):
         self.busy = False
         if not getattr(self.screen, "active", False) or not self.url:
             return
-        if self.failures >= 2:
+        if self.failures >= 2 or self.first:
             set_error(self.screen, self.error_key, self.key, False)
+        self.first = False
         self.failures = 0
         try:
             self.picload.setPara((self.size[0], self.size[1], 1, 1, False, 1, "#ff000000"))
@@ -283,11 +287,12 @@ def error_widget(name, x, y, w, h, f):
 
 
 def set_error(screen, error_key, picture_key, on):
-    """Shows or hides the 'camera not reachable' overlay of a tile (and the frozen picture under it)."""
+    """Shows or hides the text overlay of a tile (and the picture under it): on = True for 'Camera not reachable'
+    (#49), 'loading' for 'Loading picture...' until the first picture arrives (#110), False for the picture."""
     if error_key not in screen:
         return
     if on:
-        screen[error_key].setText(_("Camera not reachable"))
+        screen[error_key].setText(present.tile_label("loading" if on == "loading" else "unreachable", _))
         screen[error_key].show()
         if picture_key in screen:
             screen[picture_key].hide()
@@ -380,7 +385,8 @@ class PhotoWindow(Screen):
         self["hint"] = hint_label(hint_text)
         self["photo"] = Pixmap()
         self["error"] = Label("")
-        set_error(self, "error", "photo", False)
+        self.first = True  # until the first picture: 'Loading picture...' and a cached frame (#110)
+        set_error(self, "error", "photo", "loading")
         self.picload = ePicLoad()
         self.busy = self.active = False
         self.failures = 0
@@ -400,7 +406,7 @@ class PhotoWindow(Screen):
         if not getattr(self, "active", False) or self.busy:
             return
         self.busy = True
-        threads.deferToThread(_download, self.url, PHOTO, orientation_for(self.stream)).addCallbacks(
+        threads.deferToThread(_download, self.url, PHOTO, orientation_for(self.stream), self.first).addCallbacks(
             self.loaded, self.failed)
 
     def loaded(self, _result):
@@ -409,7 +415,9 @@ class PhotoWindow(Screen):
             return
         if self.failures >= 2:
             self["title"].setText(self.title_text)
+        if self.failures >= 2 or self.first:
             set_error(self, "error", "photo", False)
+        self.first = False
         self.failures = 0
         try:
             self.picload.setPara((self.size[0], self.size[1], 1, 1, False, 1, "#ff000000"))
@@ -522,7 +530,7 @@ class NotifyWindow(Screen):
         self["title"] = Label(text)
         self["photo"] = Pixmap()
         self["error"] = Label("")
-        set_error(self, "error", "photo", False)
+        set_error(self, "error", "photo", "loading" if url else False)
         self.picload = ePicLoad()
         self.active = False
         self.close_timer = eTimer()
@@ -533,12 +541,13 @@ class NotifyWindow(Screen):
         self.show()
         self.close_timer.start(seconds * 1000, True)
         if self.url:
-            threads.deferToThread(_download, self.url, self.path, orientation_for(self.stream)).addCallbacks(
+            threads.deferToThread(_download, self.url, self.path, orientation_for(self.stream), True).addCallbacks(
                 self.loaded, self.failed)
 
     def loaded(self, _path):
         if not getattr(self, "active", False):
             return
+        set_error(self, "error", "photo", False)
         try:
             self.picload.setPara((self.size[0], self.size[1], 1, 1, False, 1, "#ff000000"))
             if self.picload.startDecode(self.path, 0, 0, False) == 0:
@@ -1392,6 +1401,7 @@ class Controller(object):
             return
         w = self.window
         w.stream, w.url = target, urls[1]
+        w.first = True  # the other camera's first picture may come from go2rtc's cache (#110)
         w.base_title = w.title_text = urls[2]
         w["title"].setText(w.title_text)
         w["hint"].setText(window_hint(target))

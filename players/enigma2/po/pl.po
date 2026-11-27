@@ -198,9 +198,6 @@ msgstr "Pokaż tę kamerę"
 msgid "Motion"
 msgstr "Ruch"
 
-msgid "Camera not reachable"
-msgstr "Kamera nieosiągalna"
-
 msgid "Cameras"
 msgstr "Kamery"
 
@@ -440,6 +437,12 @@ msgstr "Nieznana kamera"
 
 msgid "Unknown camera or no valid go2rtc address"
 msgstr "Nieznana kamera lub brak prawidłowego adresu go2rtc"
+
+msgid "Camera not reachable"
+msgstr "Kamera nieosiągalna"
+
+msgid "Loading picture..."
+msgstr "Wczytywanie obrazu..."
 
 msgid "go2rtc address not set"
 msgstr "Adres go2rtc nie jest ustawiony"

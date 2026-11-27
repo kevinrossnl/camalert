@@ -29,6 +29,9 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Changed
 
+- **Photo window, multi-camera window, mosaic and tour:** a tile shows *Loading picture...* at once instead of a
+  black or empty picture, and the first picture asks go2rtc for a cached frame (`cache=10s`, go2rtc 1.9.14 or newer;
+  older versions ignore it): a camera that was shown a moment ago appears at once instead of after 2–5 seconds.
 - **Kodi:** the camera list (*Videos › Video add-ons › CamAlert*) keeps its own order – mosaic, tour, cameras,
   event list, settings – instead of *Sort by: Date*, and every item has a short description in the info panel.
 - **Docs:** the [settings list](docs/user/settings.md) now also shows which settings the Android TV / Fire TV

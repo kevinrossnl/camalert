@@ -52,6 +52,9 @@ class CoreReferenceTest {
             val a = c["args"] as List<Any?>
             assertEquals(c["out"], Obs.syslogLine(a[0] as String, a[1] as String, a[2] as String?, (a[3] as Number).toDouble()))
         }
+        for (c in cases("with_cache")) {
+            assertEquals("with_cache(${c["url"]})", c["out"], Urls.withCache(c["url"] as String?, (c["seconds"] as Number).toInt()))
+        }
         for (c in cases("parse_hostport")) {
             assertEquals("parse_hostport(${c["in"]})", Json.write(c["out"]), Json.write(Obs.parseHostPort(c["in"] as String?)?.toList()))
         }

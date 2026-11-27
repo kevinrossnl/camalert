@@ -42,6 +42,7 @@
   "mosaic",
   "live"
  ],
+ "frame_cache_seconds": 10,
  "hint_separator": "   ",
  "hints": {
   "live": [
@@ -1292,5 +1293,9 @@
   "unifi": "UniFi Protect",
   "wake": "Wake up"
  },
- "test_source": "test"
+ "test_source": "test",
+ "tile_labels": {
+  "loading": "Loading picture...",
+  "unreachable": "Camera not reachable"
+ }
 }

@@ -12,7 +12,8 @@ from .klogic import (PTZ_TOGGLE as TOGGLE_IDS, SCREEN_H, SCREEN_W, colour_name, 
                      live_key, mosaic_key, ptz_action, title_font_name, tour_key)
 from .camalert_core.cameras import parse_orientation, parse_refresh, refresh_delay
 from .camalert_core.events import event_title
-from .camalert_core.present import key_hint, reason_label, tour_status
+from .camalert_core.frames import snapshot_request
+from .camalert_core.present import key_hint, tile_label, tour_status
 from .camalert_core.layout import grid, strip_geometry, window_geometry
 
 WHITE = None
@@ -40,21 +41,23 @@ def has_ptz(name, s):
 
 
 def add_error_overlay(win, tile, x, y, w, h, font="font13"):
-    """Dimmed layer with the translated 'Camera not reachable' over one tile, hidden until the Feeder reports
-    the camera (#49): no silent frozen or black picture."""
+    """Dimmed layer with a text over one tile: 'Loading picture...' until the first picture arrives (#110), and
+    'Camera not reachable' when the Feeder reports the camera (#49): no silent frozen or black picture."""
     dim = xbmcgui.ControlImage(x, y, w, h, white(), colorDiffuse="C0000000")
-    text = xbmcgui.ControlLabel(x + 8, y, max(10, w - 16), h, reason_label("unreachable", kodiapi.core_tr()),
+    text = xbmcgui.ControlLabel(x + 8, y, max(10, w - 16), h, tile_label("loading", kodiapi.core_tr()),
                                 font=font, textColor="FFFFFFFF", alignment=0x00000002 | 0x00000004)
     win.addControl(dim)
     win.addControl(text)
-    for c in (dim, text):
-        c.setVisible(False)
     tile["error"] = (dim, text)
 
 
-def show_error(tile, bad):
-    for c in tile.get("error", ()):
-        c.setVisible(bool(bad))
+def show_error(tile, state):
+    """state: False/None = the picture, True or 'unreachable' (#49), 'loading' (#110)."""
+    parts = tile.get("error", ())
+    if state and len(parts) == 2:
+        parts[1].setLabel(tile_label("loading" if state == "loading" else "unreachable", kodiapi.core_tr()))
+    for c in parts:
+        c.setVisible(bool(state))
 
 
 def count_unreachable(bad):
@@ -150,6 +153,7 @@ class Feeder(object):
         self.refresh = parse_refresh(s.get("refresh", ""))
         self.active = True
         self.on_unreachable = None  # callback(tile, unreachable)
+        self.on_loaded = None  # callback(tile): the first picture of a camera in a tile arrived (#110)
         self.retry = 2.0  # seconds between attempts while a camera does not answer
 
     def start(self):
@@ -164,12 +168,12 @@ class Feeder(object):
         while self.active:
             t = self.tiles[i]
             if t is not last:  # another camera in this tile (tour, other camera): count its failures from 0
-                fails[i], last = 0, t
+                fails[i], last, first = 0, t, True
             n += 1
             path, stale = frame_name(os.path.join(tmp, "f%d_%x" % (i, id(self) & 0xffff)), n)
             start = time.time()
             try:
-                sources.download(t["url"], path, self.verify)
+                sources.download(snapshot_request(t["url"], first), path, self.verify)  # first: cached (#110)
             except Exception as e:  # camera or go2rtc not reachable: try again a bit later
                 fails[i] = fails.get(i, 0) + 1
                 if fails[i] == 1:
@@ -185,6 +189,9 @@ class Feeder(object):
                 break
             if self.tiles[i] is t:  # not switched to another camera meanwhile
                 t["control"].setImage(path, False)
+                if first and self.on_loaded:
+                    self.on_loaded(t)
+            first = False
             try:
                 os.remove(stale)
             except OSError:
@@ -253,6 +260,7 @@ class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
         self.duration = s["duration"]
         self.feeder = Feeder(self.tiles, s)
         self.feeder.on_unreachable = self.unreachable
+        self.feeder.on_loaded = lambda tile: show_error(tile, False)
         self.timer = None
         self.ptz_label(False)
 
@@ -376,6 +384,7 @@ class FullScreen(xbmcgui.WindowDialog):
         self.addControl(self.title)
         self.feeder = Feeder(self.tiles, s)
         self.feeder.on_unreachable = self.unreachable
+        self.feeder.on_loaded = lambda tile: show_error(tile, False)
         self.timer = None
         self.close_timer = None
         self.seconds = seconds

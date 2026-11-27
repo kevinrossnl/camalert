@@ -198,9 +198,6 @@ msgstr "Deze camera tonen"
 msgid "Motion"
 msgstr "Beweging"
 
-msgid "Camera not reachable"
-msgstr "Camera niet bereikbaar"
-
 msgid "Cameras"
 msgstr "Camera's"
 
@@ -440,6 +437,12 @@ msgstr "Onbekende camera"
 
 msgid "Unknown camera or no valid go2rtc address"
 msgstr "Onbekende camera of geen geldig go2rtc-adres"
+
+msgid "Camera not reachable"
+msgstr "Camera niet bereikbaar"
+
+msgid "Loading picture..."
+msgstr "Beeld laden..."
 
 msgid "go2rtc address not set"
 msgstr "go2rtc-adres niet ingesteld"

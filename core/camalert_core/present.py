@@ -44,6 +44,8 @@ REASON_LABELS = {
     "log_only": N_("Log only"),
 }
 REASONS = tuple(REASON_LABELS)
+# what a tile shows instead of a picture (#49, #110): until the first picture arrives / when the camera fails
+TILE_LABELS = {"loading": N_("Loading picture..."), "unreachable": REASON_LABELS["unreachable"]}
 WITH_NUMBER = ("cooldown",)
 # English reason texts of players before #41 -> code (events saved by an older version)
 LEGACY_REASONS = {
@@ -108,6 +110,11 @@ def priority_label(code, tr):
 
 def result_label(code, tr):
     return _label(RESULT_LABELS, code, tr)
+
+
+def tile_label(state, tr):
+    """Text over a tile without a picture: 'loading' (#110) or 'unreachable' (#49); '' for anything else."""
+    return tr(TILE_LABELS[state]) if state in TILE_LABELS else ""
 
 
 def reason_label(text, tr):

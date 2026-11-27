@@ -8,7 +8,7 @@ from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 from Components.config import config, ConfigSubsection, ConfigYesNo, ConfigText, ConfigInteger, \
     ConfigSelection, ConfigSelectionNumber, ConfigClock, ConfigPassword, ConfigNumber
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 PluginLanguageDomain = "CamAlert"
 PluginLanguagePath = "Extensions/CamAlert/locale"
 

@@ -25,7 +25,7 @@ CamAlert and keeps your settings. Without the feed the software update never upd
 
 ```sh
 cd /tmp
-wget -O camalert.ipk https://github.com/kevinrossnl/camalert/releases/download/v1.1.0/enigma2-plugin-extensions-camalert_1.1.0_all.ipk
+wget -O camalert.ipk https://github.com/kevinrossnl/camalert/releases/download/v1.2.0/enigma2-plugin-extensions-camalert_1.2.0_all.ipk
 opkg install /tmp/camalert.ipk
 ```
 

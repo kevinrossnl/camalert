@@ -7,6 +7,8 @@ actions and blueprint inputs stay backwards compatible.
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-27
+
 ### Added
 
 - **Android TV / Fire TV:** every release now has a signed app (`camalert-androidtv-X.Y.Z.apk`) to install with
@@ -55,9 +57,6 @@ actions and blueprint inputs stay backwards compatible.
 - **MQTT / Home Assistant:** discovery now removes the button of a camera that is gone (renamed, removed, or a helper
   stream of *Keep cameras ready*); turning discovery off removes all of the player's entities. Old leftovers are
   cleaned up the next time the player connects.
-- **Keep cameras ready:** the helper stream (for example `front_door_jpeg`) is no longer shown as a camera of its own
-  in the mosaic, the tour, the channel list, the camera choice or Home Assistant.
-
 
 ## [1.1.0] - 2026-11-26
 
@@ -197,7 +196,8 @@ device (Kodi 19 or newer), controlled by Home Assistant, MQTT, Frigate, UniFi Pr
 - Every player and the Home Assistant integration in English, Dutch, German, French, Italian and Polish, from one
   master catalogue with a shared glossary ([Translating](docs/dev/translating.md)).
 
-[Unreleased]: https://github.com/kevinrossnl/camalert/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/kevinrossnl/camalert/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/kevinrossnl/camalert/releases/tag/v1.2.0
 [1.1.0]: https://github.com/kevinrossnl/camalert/releases/tag/v1.1.0
 [1.0.1]: https://github.com/kevinrossnl/camalert/releases/tag/v1.0.1
 [1.0.0]: https://github.com/kevinrossnl/camalert/releases/tag/v1.0.0

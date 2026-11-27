@@ -13,7 +13,9 @@ Services needed.
 
 ## Install (sideload with ADB)
 
-The app is not in an app store; you install the APK from a computer in the same network.
+The app is not in an app store. Every [release](https://github.com/kevinrossnl/camalert/releases/latest) has a signed
+`camalert-androidtv-X.Y.Z.apk`; you install it from a computer in the same network (or with a downloader app on the
+TV device, then run the `appops` line below once from a computer).
 
 1. **Fire TV:** Settings › My Fire TV › About › select the device name **7 times** to show *Developer options*.
    Then Settings › My Fire TV › Developer options: turn on **ADB debugging** (and *Apps from unknown sources*).
@@ -24,7 +26,7 @@ The app is not in an app store; you install the APK from a computer in the same 
 
    ```sh
    adb connect 192.168.1.30:5555        # confirm "Allow USB debugging" on the TV the first time
-   adb install -r camalert-androidtv-debug.apk
+   adb install -r camalert-androidtv-X.Y.Z.apk   # from the latest release (assets)
    adb shell appops set org.camalert.tv SYSTEM_ALERT_WINDOW allow   # may draw over other apps
    adb shell am start -n org.camalert.tv/.SettingsActivity           # open the settings once
    ```
@@ -38,7 +40,9 @@ The app is not in an app store; you install the APK from a computer in the same 
 apps after a boot only when they were opened once after installing; some Android TV devices also have a list of
 apps that may start automatically (Settings › Apps › Special app access › *Autostart*): allow CamAlert there.
 
-**Update:** `adb install -r` with the new APK keeps the settings. **Remove:** `adb uninstall org.camalert.tv`.
+**Update:** `adb install -r` with the APK of the new release keeps the settings. A debug or self-built APK has
+another signature: replacing it with the release APK (or back) needs `adb uninstall org.camalert.tv` first, which
+removes the app's settings. **Remove:** `adb uninstall org.camalert.tv`.
 
 ## Settings
 

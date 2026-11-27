@@ -52,6 +52,7 @@ file rw-r--r-- service.camalert/resources/lib/camalert/kodiapi.py
 file rw-r--r-- service.camalert/resources/lib/camalert/mqtt.py
 file rw-r--r-- service.camalert/resources/lib/camalert/plugin.py
 file rw-r--r-- service.camalert/resources/lib/camalert/ptz.py
+file rw-r--r-- service.camalert/resources/lib/camalert/screensaver.py
 file rw-r--r-- service.camalert/resources/lib/camalert/script.py
 file rw-r--r-- service.camalert/resources/lib/camalert/server.py
 file rw-r--r-- service.camalert/resources/lib/camalert/service.py
@@ -59,11 +60,13 @@ file rw-r--r-- service.camalert/resources/lib/camalert/sources.py
 file rw-r--r-- service.camalert/resources/media/chime.wav
 file rw-r--r-- service.camalert/resources/media/white.png
 file rw-r--r-- service.camalert/resources/settings.xml
+file rw-r--r-- service.camalert/screensaver.py
 file rw-r--r-- service.camalert/service.py
 addon id=service.camalert version=@VERSION@ provider=CamAlert developers
 requires xbmc.python 3.0.0
 extension xbmc.service library=service.py start=login
 extension xbmc.python.script library=default.py
+extension xbmc.ui.screensaver library=screensaver.py
 extension xbmc.python.pluginsource library=plugin.py
 extension xbmc.addon.metadata
   platform all

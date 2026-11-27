@@ -71,6 +71,18 @@ To reach the cameras straight from the home screen: on a camera, the mosaic or t
 
 ![CamAlert camera list in Videos › Video add-ons, a demo camera selected](../images/kodi/camera-list.png)
 
+## As screensaver
+
+CamAlert can also be Kodi's screensaver: while Kodi is idle the screen shows the mosaic cameras (the
+*Mosaic cameras* setting, otherwise all cameras, up to 9) without title or key hints.
+Choose it under **Settings › Interface › Screensaver › Screensaver mode › CamAlert**; *Wait time* there sets
+after how many idle minutes it starts, and **Preview** shows it at once. Any key closes it, like every Kodi
+screensaver.
+
+The pictures come from UniFi Protect, the go2rtc cache or a fresh frame, refreshed like in the mosaic;
+*Keep cameras ready* does not apply here. Without a go2rtc address (or without cameras) the screen stays black,
+with the reason in small grey text.
+
 ## What you see
 
 - **Photo window** – a camera in a corner while the film or TV keeps playing. Remote: **OK** = live,

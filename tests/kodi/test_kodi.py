@@ -25,7 +25,7 @@ from fakes.go2rtc import FakeGo2rtc  # noqa: E402
 # Problems the strict Kodi stubs find, each with its issue (a fixed one fails its test)
 KNOWN_STUB_PROBLEMS = {}
 MODULES = ("kodiapi", "sources", "display", "controller", "server", "mqtt", "ptz", "service", "script", "diag",
-           "browse", "plugin")
+           "browse", "plugin", "screensaver")
 # first fontset of Estuary's Font.xml (Kodi 21), shortened
 ESTUARY_FONTS = """<fonts><fontset id="Default"><font><name>font10</name><size>23</size></font>
 <font><name>font12</name><size>25</size></font><font><name>font13</name><size>30</size></font>
@@ -81,6 +81,7 @@ class Built(object):
 def tearDownModule():
     if Built.tmp:
         shutil.rmtree(Built.tmp, ignore_errors=True)
+        Built.tmp = None  # a later test module (test_screensaver) builds again
 
 
 class _KodiLogic(object):

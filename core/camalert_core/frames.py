@@ -15,6 +15,7 @@ from .devices import unifi
 
 CACHE_SECONDS = 10  # first picture of a window may be this old; the next refresh replaces it
 PROTECT_ERROR_SKIP = 60  # s: after a Protect error the camera's pictures come from go2rtc for a while (#109)
+STILL_MAX_SECONDS = 15  # s: a still picture never covers a live stream longer than this, frame or no frame (#91)
 PROTECT_UNKNOWN_SKIP = 600  # s: a camera that is not a Protect camera is not asked again for this long
 
 
@@ -107,3 +108,63 @@ class Snapshots(object):
         if camera:
             self.last_source[camera] = source
         return data, source
+
+
+def still_picture(snapshots, camera, url):
+    """(JPEG bytes, source) for the still picture of a live view that is opening (#91), from the fastest source:
+    warm feed, UniFi Protect, go2rtc's cache, frame.jpeg (Snapshots.fetch for a first picture). (None, None) when
+    no source has a picture or the camera has no snapshot address. Blocks: call it from a worker thread."""
+    if not url:
+        return None, None
+    try:
+        data, source = snapshots.fetch(camera, url, first=True)
+    except Exception:
+        return None, None
+    return (data, source) if data else (None, None)
+
+
+class LiveStill(object):
+    """When a live view may show its still picture and when it has to go (#91). The player opens the live stream
+    and fetches a picture (still_picture) at the same time; the picture is shown only while the stream has no
+    frame yet, and goes at the first frame, at stop, or after max_seconds. start() returns a token: a picture or a
+    first frame of an earlier camera (LEFT/RIGHT, a new alert) is ignored."""
+
+    def __init__(self, clock=time.time, max_seconds=STILL_MAX_SECONDS):
+        self.clock, self.max_seconds = clock, max_seconds
+        self.token, self.camera, self.started = 0, None, 0.0
+        self.showing = self.live = False
+
+    def start(self, camera):
+        self.token += 1
+        self.camera, self.started = camera, self.clock()
+        self.showing = self.live = False
+        return self.token
+
+    def picture(self, token):
+        """A picture for token arrived: True when the player shows it now."""
+        if token != self.token or self.camera is None or self.live or self.clock() - self.started > self.max_seconds:
+            return False
+        self.showing = True
+        return True
+
+    def playing(self, token=None):
+        """The live stream shows its first frame: True when a shown still has to go."""
+        if token is not None and token != self.token:
+            return False
+        self.live = True
+        was, self.showing = self.showing, False
+        return was
+
+    def expired(self):
+        """True once when a shown still has been up for max_seconds without a frame: hide it."""
+        if self.showing and self.clock() - self.started > self.max_seconds:
+            self.showing = False
+            return True
+        return False
+
+    def stop(self):
+        """The live view ends: True when a shown still has to go."""
+        self.token += 1
+        self.camera = None
+        was, self.showing = self.showing, False
+        return was

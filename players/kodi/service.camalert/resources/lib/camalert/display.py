@@ -521,3 +521,28 @@ class LiveOverlay(PtzMode, xbmcgui.WindowDialog):
             self.ctl.hide()
         elif what == "pause":
             kodiapi.builtin("Action(Pause)")
+
+
+class LiveStillWindow(xbmcgui.WindowDialog):
+    """Full-screen still picture while a live view opens (#91); the controller closes it as soon as the camera
+    picture is on screen. BACK/STOP ends the live view, < > another camera, like the live overlay."""
+
+    def __init__(self, ctl, path):
+        xbmcgui.WindowDialog.__init__(self)
+        self.ctl = ctl
+        self.addControl(xbmcgui.ControlImage(0, 0, SCREEN_W, SCREEN_H, white(), colorDiffuse="FF000000"))
+        self.image = xbmcgui.ControlImage(0, 0, SCREEN_W, SCREEN_H, path, aspectRatio=2)
+        self.addControl(self.image)
+
+    def stop(self):
+        try:
+            self.close()
+        except Exception:
+            pass
+
+    def onAction(self, action):
+        what = live_key(action.getId())
+        if what in ("prev", "next"):
+            self.ctl.live_other(-1 if what == "prev" else 1)
+        elif what == "close":
+            self.ctl.hide()

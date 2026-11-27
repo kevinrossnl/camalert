@@ -1321,6 +1321,7 @@
   "unifi": "UniFi Protect",
   "wake": "Wake up"
  },
+ "still_max_seconds": 15,
  "test_source": "test",
  "tile_labels": {
   "loading": "Loading picture...",

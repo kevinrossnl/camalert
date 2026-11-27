@@ -11,12 +11,13 @@ import xbmc
 import xbmcgui
 
 from . import kodiapi, sources
-from .display import FullScreen, LiveOverlay, PhotoWindow, open_window
+from .display import FullScreen, LiveOverlay, LiveStillWindow, PhotoWindow, open_window
 from .klogic import blocked_by_playing, chime_wanted, kodi_volume, live_mime, playing_kind, resume_plan
 from .camalert_core.access import url_target
 from .camalert_core.cameras import known_camera, neighbour, parse_cams, slug
 from .camalert_core.api import screen_name
 from .camalert_core.events import TEST_SOURCE, add_event, event_title, is_test
+from .camalert_core.frames import LiveStill, STILL_MAX_SECONDS
 from .camalert_core.keymap import button_event, colour_action
 from .camalert_core.present import priority_label, reason as reason_code
 from .camalert_core.rules import (blocked_by_rules, clamp_seconds, clock_tuple, cooldown_seconds, decide, dnd_blocks,
@@ -68,6 +69,14 @@ def notification_text(title, priority):
     return text
 
 
+def _remove(path):
+    try:
+        if path:
+            os.remove(path)
+    except OSError:
+        pass
+
+
 class Controller(object):
     instance = None
 
@@ -81,6 +90,8 @@ class Controller(object):
         self.live_timer = None
         self.live_seconds = 30
         self.overlay = None
+        self.still = LiveStill()  # #91: still picture until the camera picture is on screen
+        self.still_win = None
         self.resume = None
         self.saved_volume = None
         self.paused = False
@@ -263,7 +274,7 @@ class Controller(object):
                 self.window = open_window(lambda: PhotoWindow(self, [(stream, title, snap)], s, s["window_keys"]))
                 self.window.start(seconds)
         elif mode == "live":
-            self._live(stream, live, title, seconds, s, priority, kind, f, pos, was_paused, action)
+            self._live(stream, live, title, seconds, s, priority, kind, f, pos, was_paused, action, snap)
         else:
             self._maybe_pause(s, kind, was_paused)
             icon = ""
@@ -298,7 +309,7 @@ class Controller(object):
         self.changed()
         return "show"
 
-    def _live(self, stream, url, title, seconds, s, priority, kind, f, pos, was_paused, action):
+    def _live(self, stream, url, title, seconds, s, priority, kind, f, pos, was_paused, action, snap=None):
         if action == "show":
             if self.live_stream is None:
                 self.resume = resume_plan(f, pos, kind, was_paused) if s["live_return"] else None
@@ -310,9 +321,61 @@ class Controller(object):
             self._close_window()
             self.player.play(url, live_item(url, title))
             self.live_stream = stream
+            self._start_still(stream, snap, s, url)
             threading.Thread(target=self._show_overlay, args=(stream, title), daemon=True).start()
         self.live_seconds = seconds
         self.extend_live()
+
+    def _start_still(self, stream, snap, s, live_url):
+        """#91: fetch a picture (warm feed, Protect, go2rtc cache, frame.jpeg) in a thread while the stream opens,
+        and close it from another thread as soon as this camera's stream is on screen."""
+        with self.lock:
+            self._close_still()
+            if not snap:
+                return
+            token = self.still.start(stream)
+        threading.Thread(target=self._fetch_still, args=(stream, snap, s, token), daemon=True).start()
+        threading.Thread(target=self._watch_still, args=(live_url, token), daemon=True).start()
+
+    def _stream_on_screen(self, live_url):
+        kind, f = self.playing()[:2]
+        return kind == "camera" and f.split("|", 1)[0] == live_url and \
+            bool(kodiapi.cond("Window.IsActive(fullscreenvideo)"))
+
+    def _watch_still(self, live_url, token):
+        for _ in range(int(STILL_MAX_SECONDS * 4) + 8):
+            xbmc.sleep(250)
+            with self.lock:
+                if self.still.token != token:
+                    return  # ended, or another camera with its own watcher
+                if self._stream_on_screen(live_url):
+                    if self.still.playing(token):
+                        self._close_still()
+                    return
+                if self.still.expired():
+                    self._close_still()
+                    return
+
+    def _fetch_still(self, stream, snap, s, token):
+        path = os.path.join(kodiapi.temp_dir(), "still_%d.jpg" % token)  # a new name: Kodi caches by path
+        try:
+            sources.picture(stream, snap, path, s["verify_ssl"], True, s)
+        except Exception as e:
+            kodiapi.log("still picture for %s failed: %s" % (stream, e), "verbose")
+            return
+        with self.lock:
+            if self.live_stream != stream or not self.still.picture(token):
+                _remove(path)  # the stream was faster, or live view ended / another camera meanwhile
+                return
+            self.still_win = open_window(lambda: LiveStillWindow(self, path))
+            self.still_win.path = path
+        kodiapi.log("live view %s: still picture shown" % stream, "verbose")
+
+    def _close_still(self):
+        w, self.still_win = self.still_win, None
+        if w is not None:
+            w.stop()
+            _remove(getattr(w, "path", ""))
 
     def _show_overlay(self, stream, title):
         for _ in range(120):  # wait until the camera picture is on screen
@@ -345,6 +408,7 @@ class Controller(object):
         with self.lock:
             self.player.play(u[0], live_item(u[0], u[2]))
             self.live_stream = target
+            self._start_still(target, u[1], s, u[0])
             if self.overlay is not None:
                 self.overlay.set_camera(target, u[2])
             self.extend_live()
@@ -368,6 +432,8 @@ class Controller(object):
                 self.live_timer = None
             stream, self.live_stream = self.live_stream, None
             plan, self.resume = self.resume, None
+            self.still.stop()
+            self._close_still()
             if self.overlay is not None:
                 o, self.overlay = self.overlay, None
                 o.stop()

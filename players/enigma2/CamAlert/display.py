@@ -27,7 +27,7 @@ from .camalert_core.cameras import (display_name, known_camera, live_stream_name
                                     parse_cams, parse_orientation, parse_refresh, parse_titles, refresh_delay, slug,
                                     title_for)
 from .camalert_core import present
-from .camalert_core.frames import ProtectSnapshots, Snapshots
+from .camalert_core.frames import LiveStill, ProtectSnapshots, Snapshots, STILL_MAX_SECONDS
 from .camalert_core.warm import WarmFeeds
 from .camalert_core.events import TEST_SOURCE, add_event, event_title, is_test
 from .camalert_core.api import screen_name
@@ -46,6 +46,7 @@ from .keys import actionmap_actions, button_for, key_action, ptz_key
 from .services import chime_command, github_repo, is_media_ref, service_ref, stream_from_ref
 
 PHOTO = "/tmp/camalert.jpg"
+STILL = "/tmp/camalert-still.jpg"  # still picture of a live view that is opening (#91)
 # ◀ ▶ ▲ ▼ in key hints: skin fonts rarely have them, Enigma2 draws them with its fallback font (openATV, OpenPLi:
 # /usr/share/fonts/fallback.font). Without that font the hints use < > ^ v.
 GLYPHS = os.path.exists("/usr/share/fonts/fallback.font")
@@ -379,6 +380,45 @@ class MosaicScreen(Screen, HelpBase):
         self.active = False
         self.timer.stop()
         unregister_fullscreen(self)
+
+
+def first_frame_events():
+    """Service events that mean the live stream shows video (#91): the video size is known (all images, gstreamer
+    and exteplayer3), or gstreamer started playing (OpenPLi family). Missing names are skipped."""
+    try:
+        from enigma import iPlayableService
+    except ImportError:
+        return set()
+    return set(v for v in (getattr(iPlayableService, n, None) for n in ("evVideoSizeChanged", "evGstreamerPlayStarted"))
+               if v is not None)
+
+
+class LiveStillScreen(Screen):
+    """Full-screen still picture over a live view that is still opening (#91). The controller hides it at the
+    first video frame; the picture keeps its aspect on black, like the live picture itself."""
+
+    def __init__(self, session):
+        size = getDesktop(0).size()
+        self.size = (size.width(), size.height())
+        self.skin = """<screen name="CamAlertLiveStill" position="0,0" size="%d,%d" flags="wfNoBorder" backgroundColor="#00000000" zPosition="5">
+            <widget name="photo" position="0,0" size="%d,%d" alphatest="off" zPosition="1" />
+        </screen>""" % (self.size + self.size)
+        Screen.__init__(self, session)
+        self["photo"] = Pixmap()
+        self.picload = ePicLoad()
+
+    def load(self, path):
+        """Shows the picture at path; False when it cannot be decoded (the live view then opens without it)."""
+        try:
+            self.picload.setPara((self.size[0], self.size[1], 1, 1, False, 1, "#ff000000"))
+            if self.picload.startDecode(path, 0, 0, False) == 0:
+                ptr = self.picload.getData()
+                if ptr is not None:
+                    self["photo"].instance.setPixmap(ptr)
+                    return True
+        except Exception as e:
+            log("showing still picture failed:", e)
+        return False
 
 
 class PhotoWindow(Screen):
@@ -866,6 +906,14 @@ class Controller(object):
         self.previous_ref = None
         self.live_timer = eTimer()
         self.live_timer.callback.append(self.end_live)
+        self.still = LiveStill()  # #91: still picture until the live stream shows video
+        self.still_screen = None
+        self.still_timer = eTimer()
+        self.still_timer.callback.append(self.hide_still)
+        self.first_frame = first_frame_events()
+        events = getattr(session.nav, "event", None)
+        if isinstance(events, list):
+            events.append(self.service_event)
         self._names = []
         self._names_at = 0
         reactor.callLater(20, self.refresh_names)
@@ -1135,6 +1183,7 @@ class Controller(object):
                     self.previous_ref = cur.toString() if cur else None
                 self.session.nav.playService(eServiceReference(service_ref(live_url, title)))
                 self.live_stream = stream
+                self.start_still(stream, snap_url)
                 if priority != "alarm":
                     self.lower_volume(int(c.live_volume.value))
             self.live_timer.start(seconds * 1000, True)
@@ -1592,9 +1641,45 @@ class Controller(object):
             log("volume restore failed:", e)
         self.saved_volume = None
 
+    def start_still(self, stream, snap_url):
+        """#91: fetch a picture (warm feed, Protect, go2rtc cache, frame.jpeg) in a thread while the stream opens."""
+        self.hide_still()
+        if not snap_url:
+            return
+        token = self.still.start(stream)
+        threads.deferToThread(_download, snap_url, STILL, orientation_for(stream), True, stream).addCallbacks(
+            lambda _r: self.still_ready(token), lambda err: log("still picture failed:", err.getErrorMessage(),
+                                                                 level="verbose"))
+
+    def still_ready(self, token):
+        if self.live_stream is None or not self.still.picture(token):
+            return  # the stream was faster, or the live view ended / changed camera meanwhile
+        if self.still_screen is None:
+            self.still_screen = self.session.instantiateDialog(LiveStillScreen)
+        if not self.still_screen.load(STILL):
+            self.still.playing(token)
+            self.hide_still()
+            return
+        self.still_screen.show()
+        self.still_timer.start(int(STILL_MAX_SECONDS * 1000), True)
+        log("live view", self.live_stream, "still picture shown", level="verbose")
+
+    def service_event(self, ev):
+        if ev in self.first_frame and self.still.playing():
+            self.hide_still()
+
+    def hide_still(self):
+        self.still_timer.stop()
+        s, self.still_screen = self.still_screen, None
+        if s is not None:
+            s.hide()
+            self.session.deleteDialog(s)
+
     def end_live(self):
         reactor.callLater(0.1, _notify)
         self.live_timer.stop()
+        self.still.stop()
+        self.hide_still()
         self.restore_volume()
         stream, self.live_stream = self.live_stream, None
         if stream and config.plugins.camalert.live_return.value and self.previous_ref \

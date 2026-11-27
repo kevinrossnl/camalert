@@ -1062,6 +1062,62 @@ class _KodiModules(object):
             for k in ("live_volume", "server"):
                 Built.store.pop(k, None)
 
+    def test_live_still_until_the_camera_is_on_screen(self):
+        """#91: a still picture at once (warm / Protect / go2rtc cache / frame.jpeg, in a thread), closed as soon as
+        this camera's stream is on screen; a stream that is faster is never covered."""
+        ctl_mod, display = Built.module("controller"), Built.module("display")
+        Built.store.update({"server": self.go2rtc.url})
+        self.addCleanup(Built.store.pop, "server", None)
+        ctl = ctl_mod.Controller()
+        ctl._show_overlay = lambda *a: None
+        fetch, watch, calls = ctl._fetch_still, ctl._watch_still, []
+        ctl._fetch_still = lambda *a: calls.append(("fetch", a))
+        ctl._watch_still = lambda *a: calls.append(("watch", a))
+        s = Built.module("kodiapi").settings()
+        snap = "%s/api/frame.jpeg?src=garden&width=640" % self.go2rtc.url
+        live = "%s/api/stream.mp4?src=garden" % self.go2rtc.url
+        on_screen = []
+        ctl._stream_on_screen = lambda url: url in on_screen
+        ctl._live("garden", live, "Garden", 10, s, "normal", "none", "", 0, False, "show", snap)
+        (k1, fa), (k2, wa) = calls  # both in threads: the live view starts at once
+        self.assertEqual((k1, k2, fa[1], wa[0]), ("fetch", "watch", snap, live))
+        fetch(*fa)
+        self.assertIsInstance(ctl.still_win, display.LiveStillWindow)
+        path = ctl.still_win.path
+        self.assertTrue(os.path.exists(path))
+        watch(*wa)  # not on screen within the maximum: the still stays until it expires
+        self.assertIsNotNone(ctl.still_win)
+        on_screen.append(live)
+        watch(*wa)
+        self.assertIsNone(ctl.still_win)
+        self.assertFalse(os.path.exists(path))
+
+        del calls[:]
+        ctl.live_other(1)  # another camera: its own still and its own watcher
+        (_k, fa2), (_k, wa2) = calls
+        self.assertNotEqual(fa2[0], "garden")
+        watch(*wa)  # the old watcher stops: its token is gone
+        on_screen.append(wa2[0])
+        watch(*wa2)  # stream faster than the picture
+        fetch(*fa2)
+        self.assertIsNone(ctl.still_win)
+
+        del calls[:]
+        ctl.live_other(1)
+        (_k, fa3), _w = calls
+        ctl.end_live()
+        fetch(*fa3)
+        self.assertIsNone(ctl.still_win)
+
+    def test_live_still_window_keys(self):
+        display = Built.module("display")
+        ctl = FakeController()
+        ctl.live_other = lambda step: ctl.calls.append(("other", step))
+        w = display.LiveStillWindow(ctl, "/tmp/x.jpg")
+        for aid in (1, 2, 92):
+            w.onAction(self.Action(aid))
+        self.assertEqual(ctl.calls, [("other", -1), ("other", 1), ("hide",)])
+
     def test_jsonrpc_check_sees_wrong_requests(self):
         """Self test of the strict stub: an unknown method and an unknown property are refused."""
         kodiapi = Built.module("kodiapi")

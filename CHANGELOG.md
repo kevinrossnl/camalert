@@ -17,6 +17,9 @@ actions and blueprint inputs stay backwards compatible.
 - **Kodi:** CamAlert can be Kodi's screensaver: while Kodi is idle it shows the mosaic cameras (or all cameras,
   up to 9); any key closes it. Choose it under *Settings › Interface › Screensaver › Screensaver mode*
   ([Kodi](docs/players/kodi.md#as-screensaver)).
+- **All players:** live view shows a still picture of the camera at once and switches to the moving picture as
+  soon as the stream runs, instead of a black screen while it opens. The picture comes from the fastest source
+  there is: the warm feed of a ready camera, UniFi Protect, go2rtc's cache, else a new frame (#91).
 
 ### Fixed
 

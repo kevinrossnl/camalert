@@ -71,7 +71,8 @@ Log. Which rows you see follows *Menu › Setup › System › Settings level* (
 | ![Key help in the tour](../images/enigma2/key-help.png) | **HELP** key: the keys of the screen (settings, tour, mosaic, diagnostics, event list) |
 
 *Live view* switches to the camera as a normal channel and back to your channel when the time is up (*Return to what
-was playing*). All keys: [remote keys](../user/keys.md).
+was playing*). While the stream opens you see a still picture of the camera at once; it goes as soon as the video
+runs (#91). All keys: [remote keys](../user/keys.md).
 
 ## Channel list with your cameras
 

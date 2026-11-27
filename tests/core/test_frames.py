@@ -131,3 +131,78 @@ class TestTileLabel(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestLiveStill(unittest.TestCase):
+    """#91: a still picture at once while the live stream opens, gone at its first frame."""
+
+    def setUp(self):
+        self.now = [100.0]
+        self.still = frames.LiveStill(clock=lambda: self.now[0])
+
+    def test_picture_before_first_frame_is_shown_then_hidden(self):
+        t = self.still.start("front_door")
+        self.assertTrue(self.still.picture(t))
+        self.assertTrue(self.still.showing)
+        self.assertTrue(self.still.playing(t))
+        self.assertFalse(self.still.showing)
+        self.assertFalse(self.still.playing(t))  # hidden once
+
+    def test_picture_after_first_frame_is_not_shown(self):
+        t = self.still.start("front_door")
+        self.assertFalse(self.still.playing(t))  # nothing shown yet
+        self.assertFalse(self.still.picture(t))  # stream was faster: never cover it
+
+    def test_picture_of_an_earlier_camera_is_ignored(self):
+        old = self.still.start("front_door")
+        new = self.still.start("garden")  # LEFT/RIGHT or a new alert
+        self.assertFalse(self.still.picture(old))
+        self.assertFalse(self.still.playing(old))
+        self.assertTrue(self.still.picture(new))
+
+    def test_still_never_stays_longer_than_the_maximum(self):
+        t = self.still.start("front_door")
+        self.assertTrue(self.still.picture(t))
+        self.now[0] += frames.STILL_MAX_SECONDS - 1
+        self.assertFalse(self.still.expired())
+        self.now[0] += 2
+        self.assertTrue(self.still.expired())
+        self.assertFalse(self.still.expired())
+        t = self.still.start("garden")
+        self.now[0] += frames.STILL_MAX_SECONDS + 1
+        self.assertFalse(self.still.picture(t))  # too late to be useful
+
+    def test_stop_hides_and_drops_late_pictures(self):
+        t = self.still.start("front_door")
+        self.assertTrue(self.still.picture(t))
+        self.assertTrue(self.still.stop())
+        self.assertFalse(self.still.picture(t))
+        self.assertFalse(self.still.stop())
+
+    def test_still_picture_uses_the_fast_sources_in_order(self):
+        class Warm(object):
+            def __init__(self, data):
+                self.data = data
+
+            def frame(self, camera):
+                return self.data
+
+        asked = []
+
+        def download(url):
+            asked.append(url)
+            return b"go2rtc"
+
+        url = "http://go2rtc:1984/api/frame.jpeg?src=front_door&width=640"
+        snaps = frames.Snapshots(download, protect=lambda cam, w: None, warm=Warm(b"warm"))
+        self.assertEqual(frames.still_picture(snaps, "front_door", url), (b"warm", "warm"))
+        snaps = frames.Snapshots(download, protect=lambda cam, w: b"protect", warm=Warm(None))
+        self.assertEqual(frames.still_picture(snaps, "front_door", url), (b"protect", "protect"))
+        snaps = frames.Snapshots(download, protect=lambda cam, w: None, warm=Warm(None))
+        self.assertEqual(frames.still_picture(snaps, "front_door", url), (b"go2rtc", "cache"))
+        self.assertIn("cache=", asked[-1])
+        self.assertEqual(frames.still_picture(snaps, "front_door", None), (None, None))
+
+        def broken(url):
+            raise IOError("down")
+        self.assertEqual(frames.still_picture(frames.Snapshots(broken), "front_door", url), (None, None))

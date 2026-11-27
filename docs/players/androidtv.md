@@ -77,7 +77,8 @@ event and, while it waits, the next login attempt.
 - **Live view** – the camera full screen over the app (Media3/ExoPlayer: MP4 or HLS from go2rtc, or RTSP over
   TCP). **Muted** by default (on Android TV *Volume during live view* starts at 0 %, because the app underneath keeps playing its own sound); turn it up to hear the camera.
   CamAlert never requests audio focus, so the app underneath is not paused or turned down by a camera window
-  (#88; on a Fire TV Stick 4K live view plays muted by default with MP4, HLS and RTSP, #68).
+  (#88; on a Fire TV Stick 4K live view plays muted by default with MP4, HLS and RTSP, #68). While the stream
+  opens a still picture of the camera is shown at once, until the first video frame (#91).
 - **Notification** – a small window with the snapshot and the title.
 
 ## API and Home Assistant

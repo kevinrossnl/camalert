@@ -92,7 +92,8 @@ with the reason in small grey text.
   window (below each other, next to each other or 2×2); more cameras open the mosaic.
 - **Live view** – the camera full screen with a small bar: **◀ ▶** other camera, **MENU** = PTZ, **BACK** = back. When the
   time is up (or after BACK) Kodi **continues the film at the same position** or **returns to the same TV channel**.
-  The volume can be lowered meanwhile.
+  The volume can be lowered meanwhile. While the stream opens a still picture of the camera is shown at once,
+  until the video runs (#91).
 - **Notification** – a Kodi notification with a snapshot as icon.
 - **Who/what in the title** – `label=Person` (API, MQTT JSON, blueprints) or Frigate's label / recognised name
   shows as "Person · Front door".

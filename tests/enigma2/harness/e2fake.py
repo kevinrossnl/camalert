@@ -443,7 +443,7 @@ def install_enigma(profile):
     module("enigma", eTimer=eTimer, ePicLoad=ePicLoad, getDesktop=lambda n=0: desktop, eSize=eSize, ePoint=ePoint,
            eServiceReference=eServiceReference, eActionMap=eActionMap, eDVBVolumecontrol=eDVBVolumecontrol,
            eDVBDB=eDVBDB, eConsoleAppContainer=eConsoleAppContainer, quitMainloop=lambda n: rec.add("quit", n),
-           iPlayableService=types.SimpleNamespace(evStart=0, evEnd=1, evUpdatedInfo=2),
+           iPlayableService=types.SimpleNamespace(evStart=0, evEnd=1, evUpdatedInfo=2, evVideoSizeChanged=3),
            gFont=lambda *a: a, RT_HALIGN_LEFT=0, RT_HALIGN_CENTER=2, RT_VALIGN_CENTER=8, RT_WRAP=32,
            loadPNG=lambda p: p)
 
@@ -810,6 +810,7 @@ class Session(object):
         }
         Nav = strict_class(snap, "Navigation", object, dict(impl, __init__=lambda nav, *a, **kw: None))
         self.nav = Nav.__new__(Nav)
+        self.nav.event = []  # Navigation.__init__ sets this list on every image; dispatchEvent calls each entry
         sess = snap["classes"]["Session"]["methods"]
         self._open_check = checker(sess["open"], "open")
         self._owc_check = checker(sess["openWithCallback"], "openWithCallback")

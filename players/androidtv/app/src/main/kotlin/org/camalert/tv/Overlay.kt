@@ -395,11 +395,20 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
         var player: ExoPlayer? = null
         var errorView: TextView? = null
         lateinit var bar: TextView
+        val still = org.camalert.core.LiveStill()  // #91: still picture until the first video frame
+        var stillView: ImageView? = null
+        private val stillTimeout = Runnable { if (still.expired()) stillView?.visibility = View.GONE }
 
         override fun build(m: DisplayMetrics): WindowManager.LayoutParams {
             root.setBackgroundColor(Color.BLACK)
             val view = PlayerView(ctx).apply { useController = false; isFocusable = false }
             root.addView(view, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+            stillView = ImageView(ctx).apply {
+                scaleType = ImageView.ScaleType.FIT_CENTER
+                setBackgroundColor(Color.BLACK)
+                visibility = View.GONE
+            }
+            root.addView(stillView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
             val font = Layout.titleFont("normal", m.widthPixels).toFloat()
             bar = text(font)
             bar.setBackgroundColor(0x99000000.toInt())
@@ -419,7 +428,10 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
                     host.unreachable()
                     errorView?.visibility = View.VISIBLE
                 }
-                override fun onRenderedFirstFrame() { errorView?.visibility = View.GONE }
+                override fun onRenderedFirstFrame() {
+                    errorView?.visibility = View.GONE
+                    if (still.playing()) stillView?.visibility = View.GONE
+                }
             })
             view.player = p
             player = p
@@ -441,8 +453,43 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
             p.setMediaSource(source)
             p.prepare()
             p.playWhenReady = true
+            showStill(t)
             bar.text = t.title + "     " + host.present.keyHint(context)
             CamLog.log("live view ${t.name} (volume ${(p.volume * 100).toInt()} %)", "verbose")
+        }
+
+        /** #91: a picture of the camera from the fastest source (warm feed, Protect, go2rtc cache, frame.jpeg) in a
+         *  thread, shown on the UI thread only while the stream has no frame yet. */
+        fun showStill(t: Tile) {
+            main.removeCallbacks(stillTimeout)
+            stillView?.visibility = View.GONE
+            val token = still.start(t.name)
+            val url = t.snapshot ?: return
+            val s = host.settings()
+            val verify = s["verify_ssl"] != false
+            val orientation = Cameras.parseOrientation(s["orientation"]?.toString())[t.name]
+            val width = metrics().widthPixels.coerceIn(160, 1920)
+            val sized = url.replace(Regex("width=\\d+"), "width=$width")
+            val cache = org.camalert.core.CoreData.load().frameCacheSeconds
+            val th = Thread({
+                val bmp = try {
+                    val bytes = host.warmPicture(t.name) ?: host.protectPicture(t.name, width)
+                        ?: Net.fetch(org.camalert.core.Urls.withCache(sized, cache)!!, verify, 6000)
+                    BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.let { orient(it, orientation) }
+                } catch (e: Exception) {
+                    CamLog.log("still picture ${t.name} failed: ${e.message}", "verbose")
+                    null
+                }
+                if (bmp != null) main.post {
+                    if (!stop.get() && still.picture(token)) {
+                        stillView?.setImageBitmap(bmp)
+                        stillView?.visibility = View.VISIBLE
+                        main.postDelayed(stillTimeout, (org.camalert.core.CoreData.load().stillMaxSeconds * 1000).toLong() + 100)
+                    }
+                }
+            }, "camalert-still-${t.name}")
+            loaders.add(th)
+            th.start()
         }
 
         override fun key(action: String?, name: String?): Boolean {
@@ -464,6 +511,8 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
         }
 
         override fun detach() {
+            still.stop()
+            main.removeCallbacks(stillTimeout)
             player?.release()
             player = null
             super.detach()

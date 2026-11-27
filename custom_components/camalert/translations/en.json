@@ -128,6 +128,25 @@
       "camalert": {
         "name": "CamAlert"
       }
+    },
+    "select": {
+      "window_position": {
+        "name": "Window position",
+        "state": {
+          "top_right": "Top right",
+          "top_left": "Top left",
+          "bottom_right": "Bottom right",
+          "bottom_left": "Bottom left"
+        }
+      },
+      "window_size": {
+        "name": "Window size",
+        "state": {
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large"
+        }
+      }
     }
   },
   "selector": {

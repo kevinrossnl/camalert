@@ -128,6 +128,25 @@
       "camalert": {
         "name": "CamAlert"
       }
+    },
+    "select": {
+      "window_position": {
+        "name": "Vensterpositie",
+        "state": {
+          "top_right": "Rechtsboven",
+          "top_left": "Linksboven",
+          "bottom_right": "Rechtsonder",
+          "bottom_left": "Linksonder"
+        }
+      },
+      "window_size": {
+        "name": "Venstergrootte",
+        "state": {
+          "small": "Klein",
+          "medium": "Middel",
+          "large": "Groot"
+        }
+      }
     }
   },
   "selector": {

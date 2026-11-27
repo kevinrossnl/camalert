@@ -42,13 +42,13 @@ def prometheus(body):
 
 
 STATUS_KEYS = ("result", "version", "id", "name", "window", "live", "paused", "dnd", "platform", "api_version",
-               "capabilities", "min_ha_version", "mqtt", "screen")
+               "capabilities", "min_ha_version", "mqtt", "screen", "position", "size")
 SCREENS = ("none", "photo", "strip", "notification", "live", "mosaic", "tour")  # status "screen" (#63)
 
 
 def status_keys(body):
     return all(k in body for k in STATUS_KEYS) and body["result"] is True and body["api_version"] == 1 and \
-        {"post", "header_token", "show", "ptz", "screen", "test"} <= set(body["capabilities"]) and \
+        {"post", "header_token", "show", "ptz", "screen", "settings", "test"} <= set(body["capabilities"]) and \
         body["screen"] in SCREENS
 
 
@@ -120,6 +120,19 @@ TABLE = [
     get("dnd_state", "/camalert/dnd", settings={"dnd": True}, json={"result": True, "dnd": True}, calls=[],
         headers={"Deprecation": None}),
     row("dnd_invalid_value", "/camalert/dnd", {"on": "maybe"}, code=400, calls=[]),
+    # --- window position and size (#84) ------------------------------------------------------------------------
+    get("settings_read", "/camalert/settings", settings={"position": "bottom_left", "size": "large"},
+        json={"result": True, "position": "bottom_left", "size": "large"}, calls=[], headers={"Deprecation": None}),
+    row("settings_set_position", "/camalert/settings", {"position": "top_left"},
+        json={"result": True, "position": "top_left", "size": "medium"}, calls=[]),
+    row("settings_set_both", "/camalert/settings", {"position": "bottom_right", "size": "small"},
+        json={"result": True, "position": "bottom_right", "size": "small"}),
+    row("settings_json_body", "/camalert/settings", body=b'{"size": "large"}',
+        json={"result": True, "position": "top_right", "size": "large"}),
+    row("settings_invalid_position", "/camalert/settings", {"position": "middle"}, code=400, json={"result": False}),
+    row("settings_invalid_size", "/camalert/settings", {"size": "huge"}, code=400, json={"result": False}),
+    get("settings_get_with_value_deprecated", "/camalert/settings", {"size": "small"},
+        json={"result": True, "size": "small"}, headers={"Deprecation": "true"}),
     # --- camera control, webhook -------------------------------------------------------------------------------
     row("ptz", "/camalert/ptz", {"cam": "garden", "move": "left"}, json={"result": True, "cam": "garden", "move": "left"},
         calls=[("ptz", "left", "garden")]),

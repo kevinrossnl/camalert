@@ -47,7 +47,7 @@ class Backend(api.Backend):
         c = config.plugins.camalert
         return {"enabled": c.enabled.value, "allow": c.allow.value, "token": c.token.value,
                 "duration": int(c.duration.value), "camera": c.camera.value, "dnd": bool(c.dnd.value),
-                "ha_webhook": c.ha_webhook.value}
+                "ha_webhook": c.ha_webhook.value, "position": c.position.value, "size": c.size.value}
 
     def controller(self):
         return Controller.instance
@@ -73,6 +73,15 @@ class Backend(api.Backend):
             c = config.plugins.camalert
             c.ha_webhook.value = url
             c.ha_webhook.save()
+            configfile.save()
+        reactor.callFromThread(save)
+
+    def set_display(self, key, value):
+        """Window position or size from the API (#84): saved on the main thread, used by the next window."""
+        def save():
+            item = getattr(config.plugins.camalert, key)
+            item.value = value
+            item.save()
             configfile.save()
         reactor.callFromThread(save)
 

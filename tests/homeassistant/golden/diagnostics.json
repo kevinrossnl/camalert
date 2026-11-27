@@ -53,6 +53,7 @@
       "post",
       "ptz",
       "screen",
+      "settings",
       "show",
       "status",
       "strip",
@@ -80,6 +81,7 @@
       "post",
       "ptz",
       "screen",
+      "settings",
       "show",
       "status",
       "strip",
@@ -95,8 +97,10 @@
     "name": "Living room",
     "paused": false,
     "platform": "enigma2",
+    "position": "top_right",
     "result": true,
     "screen": "none",
+    "size": "medium",
     "version": "1.0.0",
     "window": null
   }

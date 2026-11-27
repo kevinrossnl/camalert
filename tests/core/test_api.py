@@ -37,6 +37,9 @@ class FakeBackend(api.Backend):
     def set_webhook(self, url):
         self.webhook = url
 
+    def set_display(self, key, value):
+        self.values[key] = value
+
     def log_tail(self, lines):
         return ["a", "token=secret"][-lines:]
 
@@ -202,8 +205,27 @@ class TestApiDetails(unittest.TestCase):
                 getattr(b, name)() if name not in ("log_tail",) else b.log_tail(1)
         with self.assertRaises(NotImplementedError):
             b.set_webhook("")
+        with self.assertRaises(NotImplementedError):
+            b.set_display("size", "small")
         self.assertEqual(b.status_extra(), {})
         self.assertIsNone(b.log("x"))
+
+    def test_window_settings(self):
+        """#84: position and size are read and saved, only when they change, with their schema choices."""
+        self.assertEqual(api.DISPLAY_SETTINGS["size"], ("small", "medium", "large"))
+        self.b.values.update(position="top_right", size="medium")
+        r = self.call("/camalert/settings", "POST", {"size": "large"})
+        self.assertEqual(r.body, {"result": True, "position": "top_right", "size": "large"})
+        self.assertEqual(self.b.values["size"], "large")
+        self.assertIn(("normal", "window size set to large"), self.b.logged)
+        logged = len(self.b.logged)
+        self.call("/camalert/settings", "POST", {"size": "large"})  # unchanged: nothing saved, nothing logged
+        self.assertEqual([m for m in self.b.logged[logged:] if "window" in m[1]], [])
+        st = self.call("/camalert/status").body
+        self.assertEqual((st["position"], st["size"]), ("top_right", "large"))
+        self.assertIn("settings", st["capabilities"])
+        self.assertEqual(self.call("/camalert/settings", "POST", {"position": "centre"}).code, 400)
+        self.assertEqual(self.b.values["position"], "top_right")
 
     def test_payload(self):
         self.assertEqual(json.loads(api.Response(200, {"a": 1}).payload()), {"a": 1})

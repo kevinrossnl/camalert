@@ -49,7 +49,8 @@ interface Controller {
     fun status(): Map<String, Any?>
 }
 
-/** What a player provides to the API. settings(): enabled, allow, token, duration, camera, dnd, ha_webhook. */
+/** What a player provides to the API. settings(): enabled, allow, token, duration, camera, dnd, ha_webhook,
+ *  position, size. */
 interface Backend {
     val platform: String
     val version: String
@@ -58,6 +59,8 @@ interface Backend {
     fun node(): Pair<String, String>
     fun cameras(): List<Map<String, Any?>>
     fun setWebhook(url: String)
+    /** Saves position or size (#84); value is one of Api.displaySettings[key]. */
+    fun setDisplay(key: String, value: String)
     fun logTail(lines: Int): List<String>
     fun metrics(): String
     fun statusExtra(): Map<String, Any?> = emptyMap()
@@ -78,10 +81,14 @@ class Api(val data: CoreData = CoreData.load()) {
         Route("hide", action = true, handler = ::hide), Route("mosaic", action = true, handler = ::mosaic),
         Route("tour", action = true, handler = ::tour), Route("ptz", action = true, handler = ::ptz),
         Route("webhook", action = true, handler = ::webhook), Route("dnd", handler = ::dnd),
-        Route("status", handler = ::status), Route("cameras", handler = ::cameras),
+        Route("status", handler = ::status), Route("settings", handler = ::settings), Route("cameras", handler = ::cameras),
         Route("log", sensitive = true, handler = ::log), Route("events", sensitive = true, handler = ::events),
         Route("metrics", sensitive = true, handler = ::metrics),
     ).associateBy { it.name }
+
+    /** Settings a caller may change through /camalert/settings (#84), with their choices from the schema. */
+    val displaySettings: Map<String, List<String>> =
+        listOf("position", "size").associateWith { data.byId.getValue(it).choices ?: emptyList() }
 
     fun reset() {
         limit.clear()
@@ -214,12 +221,28 @@ class Api(val data: CoreData = CoreData.load()) {
         return mapOf("result" to true, "cameras" to cams)
     }
 
+    private fun settings(b: Backend, ctl: Controller, a: MutableMap<String, String>, s: Map<String, Any?>, source: String): Any {
+        val new = displaySettings.mapValues { (k, allowed) -> choiceParam(a, k, allowed) }
+        val out = LinkedHashMap<String, Any?>()
+        out["result"] = true
+        for (k in displaySettings.keys) {
+            val v = new[k]
+            if (v != null && v != s[k]) {
+                b.setDisplay(k, v)
+                b.log("window $k set to $v")
+            }
+            out[k] = v ?: s[k]
+        }
+        return out
+    }
+
     private fun status(b: Backend, ctl: Controller, a: MutableMap<String, String>, s: Map<String, Any?>, source: String): Any {
         val (node, name) = b.node()
         val out = LinkedHashMap<String, Any?>(ctl.status())
         out["result"] = true; out["version"] = b.version; out["id"] = node; out["name"] = name
         out["platform"] = b.platform; out["api_version"] = data.apiVersion; out["capabilities"] = data.capabilities
         out["min_ha_version"] = data.minHaVersion
+        for (k in displaySettings.keys) out[k] = s[k]  // #84
         out.putAll(b.statusExtra())
         if (out["screen"] !in data.screens) {  // a controller that does not know it (#63)
             out["screen"] = if (out["window"] != null) "photo" else if (out["live"] != null) "live" else "none"
@@ -285,7 +308,8 @@ class Api(val data: CoreData = CoreData.load()) {
                 args.putAll(parseBody(req.contentType, req.body))
                 args.remove("token")
             }
-            val isAction = route.action || (route.name == "dnd" && "on" in args)
+            val isAction = route.action || (route.name == "dnd" && "on" in args) ||
+                (route.name == "settings" && displaySettings.keys.any { it in args })
             if (isAction && req.method == "GET") {
                 headers["Deprecation"] = "true"
                 once(b, "get|${route.name}|$ip", "deprecated: $ip uses GET for /camalert/${route.name}; use POST")

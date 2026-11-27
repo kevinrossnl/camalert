@@ -52,6 +52,10 @@ off only for the player's own self-signed certificate.
   [latest release](https://github.com/kevinrossnl/camalert/releases/latest), with the release notes. Home Assistant
   checks GitHub at most once every 6 hours for all players (no account or token). It only tells you there is an
   update: install it on the player as before.
+- Two selects **Window position** and **Window size** (under *Configuration*): where the photo window appears and
+  how big it is, the same settings as on the player. A change is saved on the player and used by the next window,
+  so an automation can, for example, make the window small in the evening or large for the doorbell. Only players
+  from CamAlert 1.3 on have them.
 - **Download diagnostics** on the integration entry: version, platform, capabilities, status, last events and the
   player's log (redacted).
 - Actions for automations and scripts:

@@ -46,7 +46,8 @@ def plan_request(action: str, params: dict | None, capabilities) -> tuple[str, d
     """(method, query params, JSON body or None) for an action on a player with these capabilities
     (None = unknown/older player: GET with query parameters)."""
     params = {k: v for k, v in (params or {}).items() if v not in (None, "")}
-    is_action = action in ACTIONS or (action == "dnd" and "on" in params)
+    is_action = action in ACTIONS or (action == "dnd" and "on" in params) or \
+        (action == "settings" and bool(params))
     if capabilities is not None and "post" in capabilities and is_action:
         return "POST", {}, params
     return "GET", params, None
@@ -148,6 +149,10 @@ class CamAlertApi:
 
     async def dnd(self, on: bool | None = None) -> dict:
         return await self._get("dnd", {} if on is None else {"on": "1" if on else "0"})
+
+    async def settings(self, **values) -> dict:
+        """Window position and/or size of the player (#84); without values: read them."""
+        return await self._get("settings", values)
 
     async def webhook(self, url: str) -> dict:
         return await self._get("webhook", {"url": url} if url else {"url": ""})

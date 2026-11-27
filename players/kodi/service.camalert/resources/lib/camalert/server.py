@@ -77,6 +77,9 @@ class Backend(api.Backend):
     def set_webhook(self, url):
         kodiapi.set_setting("ha_webhook", url)
 
+    def set_display(self, key, value):
+        kodiapi.set_setting(key, value)  # window position or size from the API (#84)
+
     def log_tail(self, lines):
         return kodiapi.camlog().tail(lines)
 

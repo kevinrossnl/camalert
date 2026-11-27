@@ -36,6 +36,8 @@
   "duration": 30,
   "enabled": true,
   "ha_webhook": "",
+  "position": "top_right",
+  "size": "medium",
   "token": ""
  },
  "dns": {
@@ -89,6 +91,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -118,6 +122,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -144,6 +150,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -174,6 +182,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -204,6 +214,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -232,6 +244,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": "secret"
    },
    "user_agent": ""
@@ -258,6 +272,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": "secret"
    },
    "user_agent": ""
@@ -288,6 +304,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": "secret"
    },
    "user_agent": ""
@@ -318,6 +336,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": "secret"
    },
    "user_agent": ""
@@ -347,6 +367,8 @@
     "duration": 30,
     "enabled": false,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -376,6 +398,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -402,6 +426,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -433,6 +459,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -480,6 +508,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -520,6 +550,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -559,6 +591,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": "HomeAssistant/2026.11 aiohttp/3.10"
@@ -598,6 +632,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -637,6 +673,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -666,6 +704,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -701,6 +741,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -732,6 +774,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -760,6 +804,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -789,6 +835,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -818,6 +866,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -854,6 +904,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -880,6 +932,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -922,6 +976,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -961,6 +1017,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": "HomeAssistant/2026.11 aiohttp/3.10"
@@ -1000,6 +1058,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1032,6 +1092,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1066,6 +1128,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1108,6 +1172,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1145,6 +1211,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1179,6 +1247,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1207,6 +1277,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1241,6 +1313,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1275,6 +1349,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1308,6 +1384,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1344,6 +1422,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1380,6 +1460,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1411,6 +1493,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1439,6 +1523,242 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {},
+   "body": null,
+   "calls": [],
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {
+    "Deprecation": null
+   },
+   "ip": "192.168.1.5",
+   "json": {
+    "position": "bottom_left",
+    "result": true,
+    "size": "large"
+   },
+   "method": "GET",
+   "name": "settings_read",
+   "path": "/camalert/settings",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "bottom_left",
+    "size": "large",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "position": "top_left"
+   },
+   "body": null,
+   "calls": [],
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "position": "top_left",
+    "result": true,
+    "size": "medium"
+   },
+   "method": "POST",
+   "name": "settings_set_position",
+   "path": "/camalert/settings",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "position": "bottom_right",
+    "size": "small"
+   },
+   "body": null,
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "position": "bottom_right",
+    "result": true,
+    "size": "small"
+   },
+   "method": "POST",
+   "name": "settings_set_both",
+   "path": "/camalert/settings",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {},
+   "body": "{\"size\": \"large\"}",
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "position": "top_right",
+    "result": true,
+    "size": "large"
+   },
+   "method": "POST",
+   "name": "settings_json_body",
+   "path": "/camalert/settings",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "position": "middle"
+   },
+   "body": null,
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 400,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "result": false
+   },
+   "method": "POST",
+   "name": "settings_invalid_position",
+   "path": "/camalert/settings",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "size": "huge"
+   },
+   "body": null,
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 400,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "result": false
+   },
+   "method": "POST",
+   "name": "settings_invalid_size",
+   "path": "/camalert/settings",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "size": "small"
+   },
+   "body": null,
+   "calls": null,
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {
+    "Deprecation": "true"
+   },
+   "ip": "192.168.1.5",
+   "json": {
+    "result": true,
+    "size": "small"
+   },
+   "method": "GET",
+   "name": "settings_get_with_value_deprecated",
+   "path": "/camalert/settings",
+   "settings": {
+    "allow": "lan",
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1478,6 +1798,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1509,6 +1831,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1538,6 +1862,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1568,6 +1894,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1599,6 +1927,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1630,6 +1960,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1660,6 +1992,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1688,6 +2022,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1716,6 +2052,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1744,6 +2082,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1775,6 +2115,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1803,6 +2145,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1834,6 +2178,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1860,6 +2206,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1903,6 +2251,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1931,6 +2281,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1961,6 +2313,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -1987,6 +2341,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -2013,6 +2369,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -2039,6 +2397,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -2065,6 +2425,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": ""
    },
    "user_agent": ""
@@ -2093,6 +2455,8 @@
     "duration": 30,
     "enabled": true,
     "ha_webhook": "",
+    "position": "top_right",
+    "size": "medium",
     "token": "secret"
    },
    "user_agent": ""
@@ -2121,6 +2485,8 @@
   "capabilities",
   "min_ha_version",
   "mqtt",
-  "screen"
+  "screen",
+  "position",
+  "size"
  ]
 }

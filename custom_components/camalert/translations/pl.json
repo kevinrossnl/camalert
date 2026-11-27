@@ -128,6 +128,25 @@
       "camalert": {
         "name": "CamAlert"
       }
+    },
+    "select": {
+      "window_position": {
+        "name": "Pozycja okna",
+        "state": {
+          "top_right": "Prawy górny róg",
+          "top_left": "Lewy górny róg",
+          "bottom_right": "Prawy dolny róg",
+          "bottom_left": "Lewy dolny róg"
+        }
+      },
+      "window_size": {
+        "name": "Rozmiar okna",
+        "state": {
+          "small": "Małe",
+          "medium": "Średnie",
+          "large": "Duże"
+        }
+      }
     }
   },
   "selector": {

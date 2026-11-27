@@ -19,7 +19,8 @@ from .coordinator import CamAlertCoordinator
 from .parent import link_parent
 
 _LOGGER = logging.getLogger(__name__)
-PLATFORMS = [Platform.BUTTON, Platform.SENSOR, Platform.SWITCH, Platform.EVENT, Platform.NOTIFY, Platform.UPDATE]
+PLATFORMS = [Platform.BUTTON, Platform.SENSOR, Platform.SWITCH, Platform.EVENT, Platform.NOTIFY, Platform.UPDATE,
+             Platform.SELECT]
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 # Target is optional: without a target the action goes to every loaded player.

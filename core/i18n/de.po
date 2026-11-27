@@ -36,31 +36,31 @@ msgstr "go2rtc-Server"
 msgid "Directly from the cameras"
 msgstr "Direkt von den Kameras"
 
-#: e2 kodi:30048 atv:choice.position.top_right
+#: e2 kodi:30048 ha:entity.select.window_position.state.top_right atv:choice.position.top_right
 msgid "Top right"
 msgstr "Oben rechts"
 
-#: e2 kodi:30049 atv:choice.position.top_left
+#: e2 kodi:30049 ha:entity.select.window_position.state.top_left atv:choice.position.top_left
 msgid "Top left"
 msgstr "Oben links"
 
-#: e2 kodi:30050 atv:choice.position.bottom_right
+#: e2 kodi:30050 ha:entity.select.window_position.state.bottom_right atv:choice.position.bottom_right
 msgid "Bottom right"
 msgstr "Unten rechts"
 
-#: e2 kodi:30051 atv:choice.position.bottom_left
+#: e2 kodi:30051 ha:entity.select.window_position.state.bottom_left atv:choice.position.bottom_left
 msgid "Bottom left"
 msgstr "Unten links"
 
-#: e2 kodi:30053 atv:choice.size.small atv:choice.title_size.small
+#: e2 kodi:30053 ha:entity.select.window_size.state.small atv:choice.size.small atv:choice.title_size.small
 msgid "Small"
 msgstr "Klein"
 
-#: e2 kodi:30054 atv:choice.size.medium
+#: e2 kodi:30054 ha:entity.select.window_size.state.medium atv:choice.size.medium
 msgid "Medium"
 msgstr "Mittel"
 
-#: e2 kodi:30055 atv:choice.size.large atv:choice.title_size.large
+#: e2 kodi:30055 ha:entity.select.window_size.state.large atv:choice.size.large atv:choice.title_size.large
 msgid "Large"
 msgstr "Groß"
 
@@ -820,11 +820,11 @@ msgstr "Dauer (Sekunden)"
 msgid "How long the camera stays on screen."
 msgstr "Wie lange die Kamera angezeigt wird."
 
-#: e2 kodi:30047
+#: e2 kodi:30047 ha:entity.select.window_position.name
 msgid "Window position"
 msgstr "Fensterposition"
 
-#: e2 kodi:30052
+#: e2 kodi:30052 ha:entity.select.window_size.name
 msgid "Window size"
 msgstr "Fenstergröße"
 

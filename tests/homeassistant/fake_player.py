@@ -26,7 +26,7 @@ from fakes.controller import RecordingController  # noqa: E402
 LAN = "192.168.1.5"
 CALLER_HEADER = "X-Test-Caller"  # only this fake: which address the core sees as the caller
 DEFAULTS = {"enabled": True, "allow": "lan", "token": "", "camera": "front_door", "duration": 30, "dnd": False,
-            "ha_webhook": ""}
+            "ha_webhook": "", "position": "top_right", "size": "medium"}
 
 
 class Backend(api.Backend):
@@ -54,6 +54,9 @@ class Backend(api.Backend):
     def set_webhook(self, url):
         self.player.settings["ha_webhook"] = url
         self.player.webhooks.append(url)
+
+    def set_display(self, key, value):
+        self.player.settings[key] = value
 
     def log_tail(self, lines):
         return ["CamAlert started", "show front_door token=[redacted]"][-lines:]

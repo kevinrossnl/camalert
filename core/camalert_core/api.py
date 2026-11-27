@@ -7,7 +7,8 @@ The players only adapt their HTTP server to Request/Response and implement a Bac
 camera list, log, metrics); everything else happens here, so Enigma2 and Kodi answer exactly the same.
 
     POST /camalert/<action>   actions: show, mosaic, tour, hide, dnd (with on=...), ptz, webhook
-    GET  /camalert/<action>   reads: status, cameras, dnd (state), events, log, metrics
+    GET  /camalert/<action>   reads: status, cameras, dnd (state), settings, events, log, metrics
+    POST /camalert/settings   position=... and/or size=...: the photo window of this player (#84)
                               (GET of an action still works, but is deprecated and logged once per caller)
     Parameters: query string, form body or JSON object body.
     test=1 on any request (#62): the caller source becomes "test": no chime, the event is tagged "test".
@@ -30,11 +31,14 @@ from .devices.config import PTZ_ACTIONS
 from .events import TEST_SOURCE, caller_source
 from .obs.log import redact
 from .rules import MODES, PRIORITIES, clamp_seconds
+from .schema import BY_ID as _SCHEMA
 
 API_VERSION = 1
 MIN_HA_VERSION = "1.0.0"  # oldest Home Assistant integration that understands this API version
 CAPABILITIES = ("cameras", "dnd", "events", "header_token", "hide", "log", "metrics", "mosaic", "post", "ptz",
-                "screen", "show", "status", "strip", "test", "tour", "webhook")
+                "screen", "settings", "show", "status", "strip", "test", "tour", "webhook")
+# Settings a caller may change through /camalert/settings (#84), with their choices from the settings schema.
+DISPLAY_SETTINGS = {k: tuple(_SCHEMA[k].choices) for k in ("position", "size")}
 # What /camalert/status reports as "screen" (#63): the top-most CamAlert screen, "none" when nothing is shown.
 SCREENS = ("none", "photo", "strip", "notification", "live", "mosaic", "tour")
 NAME = re.compile(r"^[A-Za-z0-9_.-]+$")
@@ -69,7 +73,7 @@ class Backend(object):
     version = ""
 
     def settings(self):
-        """{enabled, allow, token, duration, camera, dnd}"""
+        """{enabled, allow, token, duration, camera, dnd, ha_webhook, position, size}"""
         raise NotImplementedError
 
     def controller(self):
@@ -86,6 +90,10 @@ class Backend(object):
     def set_webhook(self, url):
         raise NotImplementedError
 
+    def set_display(self, key, value):
+        """Saves position or size (#84); value is one of DISPLAY_SETTINGS[key]."""
+        raise NotImplementedError
+
     def log_tail(self, lines):
         raise NotImplementedError
 
@@ -100,8 +108,15 @@ class Backend(object):
 
 
 class Route(object):
-    def __init__(self, name, handler, action=False, sensitive=False, blocking=False):
+    """writes: parameters that turn a read into a change (dnd: on; settings: position, size)."""
+
+    def __init__(self, name, handler, action=False, sensitive=False, blocking=False, writes=()):
         self.name, self.handler, self.action, self.sensitive, self.blocking = name, handler, action, sensitive, blocking
+        self.writes = tuple(writes)
+
+    def changes(self, args):
+        """True when this request changes something on the player (POST; GET still works but is deprecated)."""
+        return self.action or any(k in args for k in self.writes)
 
 
 # --- parameters ---------------------------------------------------------------------------------------------------
@@ -224,6 +239,18 @@ def _webhook(b, ctl, a, s, source):
     return {"result": True, "webhook": bool(url)}
 
 
+def _settings(b, ctl, a, s, source):
+    new = {k: choice_param(a, k, allowed) for k, allowed in DISPLAY_SETTINGS.items()}
+    out = {"result": True}
+    for k in DISPLAY_SETTINGS:
+        value = new[k] or s.get(k)
+        if new[k] is not None and new[k] != s.get(k):
+            b.set_display(k, new[k])
+            b.log("window %s set to %s" % (k, new[k]))
+        out[k] = value
+    return out
+
+
 def _cameras(b, ctl, a, s, source):
     try:
         cams = b.cameras()
@@ -237,6 +264,7 @@ def _status(b, ctl, a, s, source):
     node, name = b.node()
     out = dict(ctl.status(), result=True, version=b.version, id=node, name=name, platform=b.platform,
                api_version=API_VERSION, capabilities=list(CAPABILITIES), min_ha_version=MIN_HA_VERSION)
+    out.update({k: s.get(k) for k in DISPLAY_SETTINGS})  # #84
     out.update(b.status_extra())
     if out.get("screen") not in SCREENS:  # a player that does not know it yet (#63)
         out["screen"] = screen_name(window="photo" if out.get("window") else None, live=bool(out.get("live")))
@@ -259,7 +287,8 @@ def _metrics(b, ctl, a, s, source):
 ROUTES = {r.name: r for r in (
     Route("show", _show, action=True), Route("camalert", _show, action=True), Route("hide", _hide, action=True),
     Route("mosaic", _mosaic, action=True), Route("tour", _tour, action=True), Route("ptz", _ptz, action=True),
-    Route("webhook", _webhook, action=True, blocking=True), Route("dnd", _dnd), Route("status", _status),
+    Route("webhook", _webhook, action=True, blocking=True), Route("dnd", _dnd, writes=("on",)),
+    Route("status", _status), Route("settings", _settings, writes=tuple(DISPLAY_SETTINGS)),
     Route("cameras", _cameras, blocking=True), Route("log", _log, sensitive=True),
     Route("events", _events, sensitive=True), Route("metrics", _metrics, sensitive=True),
 )}
@@ -324,7 +353,7 @@ def handle(b, req, now=None):
         if req.method == "POST":
             args.update(parse_body(req.content_type, req.body))
             args.pop("token", None)
-        is_action = route.action or (route.name == "dnd" and "on" in args)
+        is_action = route.changes(args)
         if is_action and req.method == "GET":
             headers["Deprecation"] = "true"
             _once(b, ("get", route.name, ip), "deprecated: %s uses GET for /camalert/%s; use POST" % (ip, route.name))

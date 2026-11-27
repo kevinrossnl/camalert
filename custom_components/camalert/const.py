@@ -14,3 +14,8 @@ SIGNAL_BUTTON = "camalert_button_%s"
 SCAN_INTERVAL_SECONDS = 10
 CAMERA_REFRESH_SECONDS = 300
 PRIORITIES = ["normal", "high", "alarm"]
+# Window position and size of a player (#84), the choices of its settings (tests check them against the core).
+WINDOW_SETTINGS = {
+    "position": ["top_right", "top_left", "bottom_right", "bottom_left"],
+    "size": ["small", "medium", "large"],
+}

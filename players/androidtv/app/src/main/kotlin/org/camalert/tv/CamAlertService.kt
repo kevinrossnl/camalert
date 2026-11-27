@@ -125,6 +125,7 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
             return cameraNames().map { n -> mapOf("name" to n, "title" to Cameras.titleFor(n, titles), "snapshot" to true) }
         }
         override fun setWebhook(url: String) = store.set("ha_webhook", url)
+        override fun setDisplay(key: String, value: String) = store.set(key, value)  // window position / size (#84)
         override fun logTail(lines: Int) = CamLog.tail(lines)
         override fun metrics() = controller.metrics(version, PLATFORM)
         override fun statusExtra() = mapOf("mqtt" to mqttConnected())

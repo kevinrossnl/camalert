@@ -35,6 +35,8 @@ class HttpContractTest {
         override fun cameras(): List<Map<String, Any?>> =
             (cams ?: error("no camera list")).map { mapOf("name" to it, "title" to Cameras.displayName(it).let { t -> t.substring(0, 1) + t.substring(1).lowercase() }, "snapshot" to true) }
         override fun setWebhook(url: String) { hook = url }
+        val display = HashMap<String, String>()
+        override fun setDisplay(key: String, value: String) { display[key] = value }
         override fun logTail(lines: Int) = listOf("started", "url http://u:pw1@x/ token=abc").take(lines)
         override fun metrics() = PlayerController(FakeEnv(), FakeDisplay()).metrics(version, platform)
         override fun statusExtra() = mapOf("mqtt" to false)
@@ -162,6 +164,7 @@ class HttpContractTest {
             override fun node() = current!!.node()
             override fun logTail(lines: Int) = current!!.logTail(lines)
             override fun setWebhook(url: String) = current!!.setWebhook(url)
+            override fun setDisplay(key: String, value: String) = current!!.setDisplay(key, value)
             override fun resolve(host: String) = Exported.resolve(host)
         }
         val server = HttpServer(api, proxy, 0, java.net.InetAddress.getLoopbackAddress())

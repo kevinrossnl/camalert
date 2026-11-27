@@ -28,7 +28,8 @@ async def test_entities_of_a_player(hass, player):
         er.async_get(hass), hass.config_entries.async_entries("camalert")[0].entry_id))
     assert ids == ["button.living_room_hide_camera", "button.living_room_mosaic", "button.living_room_show_front_door",
                    "button.living_room_show_garden", "event.living_room_remote_button",
-                   "notify.living_room_notification", SENSOR, SWITCH, "update.living_room_camalert"]
+                   "notify.living_room_notification", "select.living_room_window_position",
+                   "select.living_room_window_size", SENSOR, SWITCH, "update.living_room_camalert"]
     assert hass.states.get("button.living_room_show_front_door").attributes["friendly_name"] == \
         "Living room Show Front door"
     for e in ids:  # icons come from icons.json, not from the entities

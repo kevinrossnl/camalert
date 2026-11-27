@@ -42,7 +42,7 @@ def route_params():
     for name, route in api.ROUTES.items():
         src = inspect.getsource(route.handler)
         keys = set(re.findall(r"a\.get\(\"(\w+)\"\)|a\[\"(\w+)\"\]|\"(\w+)\" in a\b|choice_param\(a, \"(\w+)\"", src))
-        out[name] = {k for t in keys for k in t if k and not k.startswith("_")} | COMMON
+        out[name] = {k for t in keys for k in t if k and not k.startswith("_")} | set(route.writes) | COMMON
     return out
 
 
@@ -91,10 +91,10 @@ class TestApiExamples(unittest.TestCase):
                         bad.append("%s: unknown route %s" % (where, route))
                         continue
                     keys = set(json.loads(body)) if body else set()
-                    action = r.action or (route == "dnd" and "on" in keys)
+                    action = r.changes(keys)
                     if method == "GET" and r.action:
                         bad.append("%s: GET for the action %s (deprecated, document POST)" % (where, route))
-                    if method == "POST" and not action and route != "dnd":
+                    if method == "POST" and not action and not r.writes:
                         bad.append("%s: POST for the read %s" % (where, route))
                     bad += ["%s: %s has no parameter %r" % (where, route, k) for k in keys - self.params[route]]
         self.assertGreater(seen, 10)

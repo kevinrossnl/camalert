@@ -11,6 +11,10 @@
     "switch": {
       "dnd": {"default": "mdi:bell-off", "state": {"off": "mdi:bell"}}
     },
+    "select": {
+      "window_position": {"default": "mdi:dock-window"},
+      "window_size": {"default": "mdi:resize"}
+    },
     "event": {
       "remote_button": {"default": "mdi:remote"}
     },

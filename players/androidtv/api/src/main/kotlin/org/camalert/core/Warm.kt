@@ -126,9 +126,13 @@ class WarmFeeds(private val open: (String) -> InputStream,
     private val errors = HashMap<String, String>()
     val running: MutableSet<String> = java.util.Collections.synchronizedSet(HashSet())
 
-    fun update(server: String?, readyText: String?, on: Boolean) {
+    /** With several go2rtc servers (#15) `resolve(name)` gives (server, stream) for each helper stream. */
+    fun update(server: String?, readyText: String?, on: Boolean, resolve: ((String) -> Pair<String?, String>)? = null) {
         val u = LinkedHashMap<String, String>()
-        for ((cam, stream) in Warm.parseReady(readyText).toSortedMap()) Warm.mjpegUrl(server, stream)?.let { u[cam] = it }
+        for ((cam, stream) in Warm.parseReady(readyText).toSortedMap()) {
+            val (srv, st) = resolve?.invoke(stream) ?: Pair(server, stream)
+            Warm.mjpegUrl(srv, st)?.let { u[cam] = it }
+        }
         val act = on && u.isNotEmpty()
         val old: List<InputStream>
         val g: Int

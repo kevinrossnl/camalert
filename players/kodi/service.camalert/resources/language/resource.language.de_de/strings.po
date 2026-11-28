@@ -1556,3 +1556,11 @@ msgstr "Gesprochene Ansage"
 msgctxt "#30941"
 msgid "Plays the text Home Assistant sends with a camera (for example \"Someone is at the door\"), for doorbell and alarm or for all requests. Follows Kodi's volume; never for a test."
 msgstr "Spielt den Text ab, den Home Assistant mit einer Kamera sendet (zum Beispiel \"Jemand ist an der Tür\"), bei Türklingel und Alarm oder bei allen Anfragen. Folgt der Kodi-Lautstärke; nie bei einem Test."
+
+msgctxt "#30960"
+msgid "More go2rtc servers"
+msgstr "Weitere go2rtc-Server"
+
+msgctxt "#30961"
+msgid "Other go2rtc servers, separated by commas, each with an optional prefix: garden=http://192.168.1.20:1984. Their cameras are called garden.<name>; without a prefix they keep their names (s2.<name> if the main server has the same name)."
+msgstr "Andere go2rtc-Server, durch Kommas getrennt, jeweils mit optionalem Präfix: garden=http://192.168.1.20:1984. Deren Kameras heißen dann garden.<Name>; ohne Präfix behalten sie ihren Namen (s2.<Name>, wenn der Hauptserver denselben Namen hat)."

@@ -1556,3 +1556,11 @@ msgstr ""
 msgctxt "#30941"
 msgid "Plays the text Home Assistant sends with a camera (for example \"Someone is at the door\"), for doorbell and alarm or for all requests. Follows Kodi's volume; never for a test."
 msgstr ""
+
+msgctxt "#30960"
+msgid "More go2rtc servers"
+msgstr ""
+
+msgctxt "#30961"
+msgid "Other go2rtc servers, separated by commas, each with an optional prefix: garden=http://192.168.1.20:1984. Their cameras are called garden.<name>; without a prefix they keep their names (s2.<name> if the main server has the same name)."
+msgstr ""

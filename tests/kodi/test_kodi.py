@@ -478,7 +478,7 @@ class _KodiModules(object):
         kodiapi.addon_setting = lambda key: values.get(key, "")
         calls = []
         self.addCleanup(setattr, sources.WARM, "update", sources.WARM.update)
-        sources.WARM.update = lambda server, ready, on: calls.append((server, ready, on))
+        sources.WARM.update = lambda server, ready, on, *resolve: calls.append((server, ready, on))
         sources.warm_tick(False)
         self.assertEqual(calls[-1], ("192.168.1.10:1984", "front_door=front_door_jpeg", True))
         sources.warm_tick(True)  # screen off = Kodi's standby

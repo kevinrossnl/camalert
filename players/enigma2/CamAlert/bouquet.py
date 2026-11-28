@@ -38,8 +38,10 @@ def _write(path, text):
 def build(names):
     c = config.plugins.camalert
     direct = direct_cameras() if c.source.value == "direct" else None
+    from .display import resolve_camera
     return bouquet_text(c.bouquet_name.value or "Cameras", normalize_server(c.server.value), names,
-                        valid_port(c.rtsp_port.value, 8554), cameras=direct, titles=parse_titles(c.titles.value))
+                        valid_port(c.rtsp_port.value, 8554), cameras=direct, titles=parse_titles(c.titles.value),
+                        resolve=resolve_camera)
 
 
 def apply(names, force=False):

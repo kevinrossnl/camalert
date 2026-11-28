@@ -202,6 +202,22 @@ def direct_cameras():
         return []
 
 
+SERVER_MAP = {}  # camera name -> (go2rtc server, stream) of the last camera list (#15)
+
+
+def go2rtc_servers():
+    """The go2rtc servers in order: the setting `server` first, then `more_servers` (#15)."""
+    from .camalert_core.servers import server_list
+    c = config.plugins.camalert
+    return server_list(c.server.value, c.more_servers.value)
+
+
+def resolve_camera(name):
+    """(go2rtc server, stream) for a camera name; (None, name) without a server."""
+    from .camalert_core.servers import resolve
+    return resolve(name, go2rtc_servers(), SERVER_MAP)
+
+
 def camera_urls(name):
     """(live url, snapshot url or None, title) for a camera in the current mode; None if unknown."""
     c = config.plugins.camalert
@@ -210,12 +226,12 @@ def camera_urls(name):
             if cam["name"] == name:
                 return tcp_url(cam["rtsp"]), cam["snapshot"], cam["title"]
         return None
-    server = normalize_server(c.server.value)
+    server, stream = resolve_camera(name)
     if not server:
         return None
     title = title_for(name, parse_titles(c.titles.value))
-    return (rtsp_url(server, live_stream_name(name, c.substreams.value), valid_port(c.rtsp_port.value, 8554)),
-            snapshot_url(server, name), title)
+    live_server, live = resolve_camera(live_stream_name(name, c.substreams.value))
+    return (rtsp_url(live_server, live, valid_port(c.rtsp_port.value, 8554)), snapshot_url(server, stream), title)
 
 
 def trigger_settings():
@@ -248,12 +264,27 @@ def all_camera_names():
     global COMPOSITES
     if config.plugins.camalert.source.value == "direct":
         return [cam["name"] for cam in direct_cameras()]
-    server = normalize_server(config.plugins.camalert.server.value)
-    if not server:  # no (valid) go2rtc address: nothing to ask, no network call (#73)
+    global SERVER_MAP
+    servers = go2rtc_servers()
+    if not servers:  # no (valid) go2rtc address: nothing to ask, no network call (#73)
         return []
     from .setup import fetch_stream_info
+    from .camalert_core.servers import combine
     from .camalert_core.warm import visible_cameras
-    names, COMPOSITES = fetch_stream_info(server)
+    per, error = [], None
+    for srv in servers:  # #15: every server on its own; one that does not answer only drops its own cameras
+        try:
+            names, comp = fetch_stream_info(srv.url)
+        except Exception as e:  # noqa: BLE001
+            if len(servers) == 1:
+                raise
+            log("go2rtc server %s not reachable: %s" % (srv.url, e))
+            error = e
+            continue
+        per.append((srv, names, comp))
+    if not per and error is not None:
+        raise error
+    names, COMPOSITES, SERVER_MAP = combine(per)
     return visible_cameras(names, config.plugins.camalert.ready_cameras.value)  # #113
 
 
@@ -1053,7 +1084,13 @@ class Controller(object):
         if not ref:
             return None
         direct = config.plugins.camalert.source.value == "direct"
-        return stream_from_ref(ref.toString(), direct_cameras() if direct else None)
+        stream = stream_from_ref(ref.toString(), direct_cameras() if direct else None)
+        if stream and not direct and len(go2rtc_servers()) > 1:  # #15: the camera name of a stream on another server
+            from .camalert_core.servers import name_for_stream
+            from .camalert_core.urls import server_host
+            from .services import url_from_ref
+            return name_for_stream(server_host(url_from_ref(ref.toString())), stream, SERVER_MAP) or stream
+        return stream
 
     def playing_media(self):
         ref = self.session.nav.getCurrentlyPlayingServiceReference()
@@ -1396,7 +1433,7 @@ class Controller(object):
         c = config.plugins.camalert
         on = c.enabled.value and inStandby is None and c.source.value == "go2rtc"
         try:
-            WARM.update(c.server.value, c.ready_cameras.value, on)
+            WARM.update(c.server.value, c.ready_cameras.value, on, resolve_camera)
         except Exception as e:  # never let the timer die
             log("keep cameras ready: %s" % e, "error")
 

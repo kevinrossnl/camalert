@@ -79,7 +79,7 @@ class TestTiles(unittest.TestCase):
         import sys
         calls = []
         self.addCleanup(setattr, self.d.WARM, "update", self.d.WARM.update)
-        self.d.WARM.update = lambda server, ready, on: calls.append((server, ready, on))
+        self.d.WARM.update = lambda server, ready, on, *resolve: calls.append((server, ready, on))
         c = self.env.config.plugins.camalert
         c.ready_cameras.value = "front_door=front_door_jpeg"
         self.ctl.warm_tick()

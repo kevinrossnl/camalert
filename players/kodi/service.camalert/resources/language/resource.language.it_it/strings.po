@@ -1556,3 +1556,11 @@ msgstr "Annuncio vocale"
 msgctxt "#30941"
 msgid "Plays the text Home Assistant sends with a camera (for example \"Someone is at the door\"), for doorbell and alarm or for all requests. Follows Kodi's volume; never for a test."
 msgstr "Riproduce il testo che Home Assistant invia con una telecamera (per esempio \"C'è qualcuno alla porta\"), per campanello e allarme o per tutte le richieste. Segue il volume di Kodi; mai per un test."
+
+msgctxt "#30960"
+msgid "More go2rtc servers"
+msgstr "Altri server go2rtc"
+
+msgctxt "#30961"
+msgid "Other go2rtc servers, separated by commas, each with an optional prefix: garden=http://192.168.1.20:1984. Their cameras are called garden.<name>; without a prefix they keep their names (s2.<name> if the main server has the same name)."
+msgstr "Altri server go2rtc, separati da virgole, ciascuno con un prefisso facoltativo: garden=http://192.168.1.20:1984. Le loro telecamere si chiamano garden.<nome>; senza prefisso mantengono il nome (s2.<nome> se il server principale ha lo stesso nome)."

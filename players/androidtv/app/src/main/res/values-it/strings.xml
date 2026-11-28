@@ -112,6 +112,8 @@
     <string name="t_7c54e851" formatted="false">Si consiglia go2rtc. Senza go2rtc, elenca le telecamere in %s</string>
     <string name="t_bc6c5ac6" formatted="false">Indirizzo go2rtc</string>
     <string name="t_884d0266" formatted="false">Indirizzo del server go2rtc, ad es. http://192.168.1.10:1984</string>
+    <string name="t_e5d9508c" formatted="false">Altri server go2rtc</string>
+    <string name="t_cc18fbef" formatted="false">Altri server go2rtc, separati da virgole, ciascuno con un prefisso facoltativo: garden=http://192.168.1.20:1984. Le loro telecamere si chiamano garden.&lt;nome&gt;; senza prefisso mantengono il nome (s2.&lt;nome&gt; se il server principale ha lo stesso nome).</string>
     <string name="t_3fed7aa8" formatted="false">Porta RTSP go2rtc</string>
     <string name="t_90d56c33" formatted="false">Di solito 8554. Usata per la visione live e l\'elenco telecamere.</string>
     <string name="t_0b093d4c" formatted="false">Telecamera predefinita</string>

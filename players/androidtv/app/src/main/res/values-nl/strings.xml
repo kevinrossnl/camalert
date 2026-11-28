@@ -112,6 +112,8 @@
     <string name="t_7c54e851" formatted="false">go2rtc wordt aangeraden. Zonder go2rtc zet je je camera\'s in %s</string>
     <string name="t_bc6c5ac6" formatted="false">go2rtc-adres</string>
     <string name="t_884d0266" formatted="false">Adres van je go2rtc-server, bijv. http://192.168.1.10:1984</string>
+    <string name="t_e5d9508c" formatted="false">Meer go2rtc-servers</string>
+    <string name="t_cc18fbef" formatted="false">Andere go2rtc-servers, gescheiden door komma\'s, elk met een voorvoegsel naar keuze: garden=http://192.168.1.20:1984. Hun camera\'s heten dan garden.&lt;naam&gt;; zonder voorvoegsel houden ze hun naam (s2.&lt;naam&gt; als de hoofdserver dezelfde naam heeft).</string>
     <string name="t_3fed7aa8" formatted="false">go2rtc RTSP-poort</string>
     <string name="t_90d56c33" formatted="false">Meestal 8554. Gebruikt voor live beeld en de cameralijst.</string>
     <string name="t_0b093d4c" formatted="false">Standaardcamera</string>

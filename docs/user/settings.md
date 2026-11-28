@@ -17,6 +17,7 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Enable CamAlert | Yes |  | basic | all | Turn the HTTP API and the camera display on or off. |
 | Cameras via | `go2rtc` | `go2rtc` / `direct` | basic | all | go2rtc is recommended. Without go2rtc, list your cameras in the camera file |
 | go2rtc address | – |  | basic | all | Address of your go2rtc server, e.g. http://192.168.1.10:1984 |
+| More go2rtc servers | – |  | advanced | all | Other go2rtc servers, separated by commas, each with an optional prefix: garden=http://192.168.1.20:1984. Their cameras are called garden.<name>; without a prefix they keep their names (s2.<name> if the main server has the same name). |
 | go2rtc RTSP port | `8554` | 1–65535 | expert | all | Usually 8554. Used for live view and the camera list. |
 | Default camera | – |  | basic | all | Press OK to choose from the cameras in go2rtc. |
 | Check certificates | Yes |  | expert | all | Turn off for a self-signed certificate (only in your own network). |

@@ -131,11 +131,13 @@ class WarmFeeds(object):
         self.errors = {}  # camera -> short error text
         self.running = set()
 
-    def update(self, server, ready_text, active):
-        """Configures the feeds and switches them on or off; cheap when nothing changed."""
+    def update(self, server, ready_text, active, resolve=None):
+        """Configures the feeds and switches them on or off; cheap when nothing changed. With several go2rtc
+        servers (#15) `resolve(name)` gives (server, stream) for the helper stream of each camera."""
         urls = {}
         for cam, stream in sorted(parse_ready(ready_text).items()):
-            u = mjpeg_url(server, stream)
+            srv, st = resolve(stream) if resolve else (server, stream)
+            u = mjpeg_url(srv, st)
             if u:
                 urls[cam] = u
         active = bool(active and urls)

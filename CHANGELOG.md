@@ -14,6 +14,9 @@ actions and blueprint inputs stay backwards compatible.
   player plays it after the chime, when the new setting *Spoken announcement* allows it (default: doorbell and
   alarm). The Android TV app can also speak the text with Android's own speech engine. The doorbell blueprint has
   the inputs `announce`, `announce_speakers` (speak it on media players too) and `tts_engine`.
+- **All players:** several go2rtc servers at once (#15). The main server stays in *go2rtc address*; *More go2rtc
+  servers* lists the others with an optional prefix (`garden=http://192.168.1.20:1984`), whose cameras are called
+  `garden.<name>`. Names of the main server do not change. See [cameras](docs/user/cameras.md#several-go2rtc-servers).
 - **Home Assistant:** a doorbell without an automation. Choose the doorbell (event entity or binary sensor) and an
   optional camera in the player's options (**Configure**): every ring shows the camera on that player with priority
   high (#90).

@@ -67,3 +67,23 @@ Measure it with `docker stats` (or your NAS's monitoring) before and after.
 Assistant automation could preload `front_door_jpeg` when a CamAlert player is on and remove it when all are off.
 That only keeps go2rtc warm: the player still asks `frame.jpeg`, which then answers within about half a second. The player
 setting above does both in one place and needs no automation.
+
+## Several go2rtc servers
+
+Cameras on more than one go2rtc server (for example a second site, or a go2rtc next to Frigate) can all be
+used at once (#15). Keep the main server in **go2rtc address** and list the others in **More go2rtc servers**,
+separated by commas, each with an optional prefix:
+
+```
+garden=http://192.168.1.20:1984, http://192.168.1.30:1984
+```
+
+- Cameras of the main server keep their names, so existing settings, automations and channel lists stay as they
+  are.
+- A server with a prefix shows its cameras as `<prefix>.<name>`, here `garden.shed`. A prefix is lowercase
+  letters, digits, `_` or `-`, at most 16 characters.
+- A server without a prefix keeps the camera names. If an earlier server already has that name, the camera is
+  called `s<n>.<name>` (n = position of the server; the main server is s1, the next one s2 and so on).
+- Use these names everywhere a camera name is asked: the default camera, the mosaic, Home Assistant, MQTT,
+  Keep cameras ready (`garden.shed=garden.shed_jpeg`) and Live view substreams.
+- A server that does not answer only drops its own cameras; the others stay. The log says which one.

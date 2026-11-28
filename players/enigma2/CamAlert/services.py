@@ -40,11 +40,13 @@ def stream_from_ref(ref, cameras=None):
     return m.group(1) if m else None
 
 
-def bouquet_text(title, server, streams, port=8554, cameras=None, titles=None):
-    """Channel list. go2rtc mode: `streams` names via `server` (names from `titles`); direct mode: `cameras`."""
+def bouquet_text(title, server, streams, port=8554, cameras=None, titles=None, resolve=None):
+    """Channel list. go2rtc mode: `streams` names via `server` (names from `titles`), or via `resolve(name)` ->
+    (server, stream) with several go2rtc servers (#15); direct mode: `cameras`."""
     lines = ["#NAME %s" % title]
+    where = resolve or (lambda s: (server, s))
     entries = [(c["title"], tcp_url(c["rtsp"])) for c in cameras] if cameras else \
-        [((titles or {}).get(s) or display_name(s), rtsp_url(server, s, port)) for s in streams]
+        [((titles or {}).get(s) or display_name(s), rtsp_url(*(where(s) + (port,)))) for s in streams]
     for i, (name, url) in enumerate(entries, 1):
         lines.append("#SERVICE " + service_ref(url, name, i))
         lines.append("#DESCRIPTION " + name)

@@ -112,6 +112,8 @@
     <string name="t_7c54e851" formatted="false">Zalecane jest go2rtc. Bez go2rtc wpisz kamery do %s</string>
     <string name="t_bc6c5ac6" formatted="false">Adres go2rtc</string>
     <string name="t_884d0266" formatted="false">Adres serwera go2rtc, np. http://192.168.1.10:1984</string>
+    <string name="t_e5d9508c" formatted="false">Więcej serwerów go2rtc</string>
+    <string name="t_cc18fbef" formatted="false">Inne serwery go2rtc, oddzielone przecinkami, każdy z opcjonalnym prefiksem: garden=http://192.168.1.20:1984. Ich kamery nazywają się wtedy garden.&lt;nazwa&gt;; bez prefiksu zachowują swoją nazwę (s2.&lt;nazwa&gt;, jeśli serwer główny ma tę samą nazwę).</string>
     <string name="t_3fed7aa8" formatted="false">Port RTSP go2rtc</string>
     <string name="t_90d56c33" formatted="false">Zwykle 8554. Używany do podglądu na żywo i listy kamer.</string>
     <string name="t_0b093d4c" formatted="false">Domyślna kamera</string>

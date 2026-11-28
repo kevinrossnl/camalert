@@ -29,6 +29,8 @@ interface PlayerEnv {
     fun cameraNames(): List<String>
     /** Composite streams (an own mosaic in go2rtc) of the last camera list (#125). */
     fun compositeStreams(): Set<String> = emptySet()
+    /** #15: camera name -> (go2rtc server, stream) of the last camera list. */
+    fun serverMap(): Map<String, Pair<String, String>> = emptyMap()
     /** Direct mode (#124): the cameras of the camera list (no go2rtc). */
     fun directCameras(): List<DirectCamera> = emptyList()
     fun screenOn(): Boolean = true
@@ -87,15 +89,17 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
             val cam = env.directCameras().firstOrNull { it.name == name } ?: return null
             return Tile(name, cam.title, cam.snapshot, cam.rtsp)  // the title from the camera list, as on Enigma2 and Kodi
         }
-        val server = Urls.normalizeServer(s["server"]?.toString()) ?: return null
+        val servers = Servers.serverList(s["server"]?.toString(), s["more_servers"]?.toString())  // #15
+        val (server, stream) = Servers.resolve(name, servers, env.serverMap())
+        if (server == null) return null
         val titles = Cameras.parseMap(s["titles"]?.toString())
-        val live = Cameras.liveStreamName(name, s["substreams"]?.toString())
+        val (liveServer, live) = Servers.resolve(Cameras.liveStreamName(name, s["substreams"]?.toString()), servers, env.serverMap())
         val url = when (s["live_format"]?.toString()) {
-            "rtsp" -> Urls.rtspUrl(server, live, Urls.validPort(s["rtsp_port"], 8554))
-            "hls" -> Urls.hlsUrl(server, live)
-            else -> Urls.mp4Url(server, live)
+            "rtsp" -> Urls.rtspUrl(liveServer, live, Urls.validPort(s["rtsp_port"], 8554))
+            "hls" -> Urls.hlsUrl(liveServer, live)
+            else -> Urls.mp4Url(liveServer, live)
         }
-        return Tile(name, Cameras.titleFor(name, titles), Urls.snapshotUrl(server, name), url)
+        return Tile(name, Cameras.titleFor(name, titles), Urls.snapshotUrl(server, stream), url)
     }
 
     override fun show(stream: String?, seconds: Int?, mode: String?, priority: String?, source: String, label: String?, eventId: String?): String {

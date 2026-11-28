@@ -11,6 +11,7 @@ from .camalert_core.cameras import display_name, live_stream_name, parse_camera_
 from .camalert_core.devices.client import load_devices
 from .camalert_core.frames import ProtectSnapshots, snapshot_request, url_width
 from .camalert_core.warm import WarmFeeds, visible_cameras
+from .camalert_core.servers import combine, resolve, server_list
 from .camalert_core.present import go2rtc_problem as _problem_text
 from .camalert_core.urls import (go2rtc_state, normalize_server, overview_cameras, snapshot_url, split_credentials,
                                  stream_info_from_json, streams_from_json)
@@ -57,13 +58,40 @@ def all_camera_names(s=None):
     s = s or kodiapi.settings()
     if s["source"] == "direct":
         return [c["name"] for c in direct_cameras()]
-    srv = normalize_server(s["server"])
-    if not srv:
+    servers = go2rtc_servers(s)
+    if not servers:
         return []
-    global COMPOSITES
-    with open_url(srv + "/api/streams", 5, s["verify_ssl"]) as r:
-        names, COMPOSITES = stream_info_from_json(r.read().decode("utf-8", "replace"))
+    global COMPOSITES, SERVER_MAP
+    per, error = [], None
+    for srv in servers:  # #15: every server on its own; one that does not answer only drops its own cameras
+        try:
+            with open_url(srv.url + "/api/streams", 5, s["verify_ssl"]) as r:
+                names, comp = stream_info_from_json(r.read().decode("utf-8", "replace"))
+        except Exception as e:  # noqa: BLE001
+            if len(servers) == 1:
+                raise
+            kodiapi.log("go2rtc server %s not reachable: %s" % (srv.url, e))
+            error = e
+            continue
+        per.append((srv, names, comp))
+    if not per and error is not None:
+        raise error
+    names, COMPOSITES, SERVER_MAP = combine(per)
     return visible_cameras(names, s.get("ready_cameras", ""))  # #113: helper streams are not cameras
+
+
+SERVER_MAP = {}  # camera name -> (go2rtc server, stream) of the last camera list (#15)
+
+
+def go2rtc_servers(s=None):
+    """The go2rtc servers in order: `server` first, then `more_servers` (#15)."""
+    s = s or kodiapi.settings()
+    return server_list(s["server"], s.get("more_servers", ""))
+
+
+def resolve_camera(name, s=None):
+    """(go2rtc server, stream) for a camera name; (None, name) without a server."""
+    return resolve(name, go2rtc_servers(s), SERVER_MAP)
 
 
 COMPOSITES = set()  # composite streams (an own mosaic in go2rtc) of the last camera list (#125)
@@ -82,10 +110,11 @@ def camera_urls(name, s=None):
             if cam["name"] == name:
                 return cam["rtsp"], cam["snapshot"], cam["title"]
         return None
-    srv = normalize_server(s["server"])
+    srv, stream = resolve_camera(name, s)
     if not srv or not name:
         return None
-    return (live_url(srv, live_stream_name(name, s["substreams"]), s["live_format"], s["rtsp_port"]), snapshot_url(srv, name),
+    live_srv, live = resolve_camera(live_stream_name(name, s["substreams"]), s)
+    return (live_url(live_srv, live, s["live_format"], s["rtsp_port"]), snapshot_url(srv, stream),
             title_for(name, parse_titles(s["titles"])))
 
 
@@ -110,7 +139,8 @@ def warm_tick(screen_off):
     get = kodiapi.addon_setting
     _WARM_VERIFY[0] = get("verify_ssl") != "false"
     on = get("enabled") != "false" and (get("source") or "go2rtc") == "go2rtc" and not screen_off
-    WARM.update(get("server"), get("ready_cameras"), on)
+    servers = server_list(get("server"), get("more_servers") or "")
+    WARM.update(get("server"), get("ready_cameras"), on, lambda n: resolve(n, servers, SERVER_MAP))
 _PROTECT_KEY = [None]
 
 

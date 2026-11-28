@@ -696,6 +696,12 @@ msgstr "Si consiglia go2rtc. Senza go2rtc, elenca le telecamere in %s"
 msgid "Address of your go2rtc server, e.g. http://192.168.1.10:1984"
 msgstr "Indirizzo del server go2rtc, ad es. http://192.168.1.10:1984"
 
+msgid "More go2rtc servers"
+msgstr "Altri server go2rtc"
+
+msgid "Other go2rtc servers, separated by commas, each with an optional prefix: garden=http://192.168.1.20:1984. Their cameras are called garden.<name>; without a prefix they keep their names (s2.<name> if the main server has the same name)."
+msgstr "Altri server go2rtc, separati da virgole, ciascuno con un prefisso facoltativo: garden=http://192.168.1.20:1984. Le loro telecamere si chiamano garden.<nome>; senza prefisso mantengono il nome (s2.<nome> se il server principale ha lo stesso nome)."
+
 msgid "go2rtc RTSP port"
 msgstr "Porta RTSP go2rtc"
 

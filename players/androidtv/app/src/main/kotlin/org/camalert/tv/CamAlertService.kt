@@ -27,8 +27,10 @@ import org.camalert.core.Backend
 import org.camalert.core.Cameras
 import org.camalert.core.Controller
 import org.camalert.core.Discovery
+import org.camalert.core.GoServer
 import org.camalert.core.HttpServer
 import org.camalert.core.MqttClient
+import org.camalert.core.Servers
 import org.camalert.core.MqttTopics
 import org.camalert.core.Obs
 import org.camalert.core.PlayerController
@@ -95,6 +97,7 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
     fun nodeName(s: Map<String, Any?> = settings()) = s["mqtt_name"]?.toString()?.trim()?.ifEmpty { null } ?: "CamAlert ${deviceName(this)}"
 
     @Volatile var composites: Set<String> = emptySet()  // own mosaic streams of the last camera list (#125)
+    @Volatile var serverMap: Map<String, Pair<String, String>> = emptyMap()  // #15: camera -> (go2rtc server, stream)
 
     fun cameraNames(): List<String> {
         val s = settings()
@@ -102,10 +105,25 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
             composites = emptySet()
             return directCameras.cameras().map { it.name }
         }
-        val server = Urls.normalizeServer(s["server"]?.toString()) ?: return emptyList()
-        val (names, comp) = Urls.streamInfoFromJson(String(Net.fetch("$server/api/streams", s["verify_ssl"] != false, 5000), Charsets.UTF_8))
-        composites = comp
-        return Warm.visibleCameras(names, s["ready_cameras"]?.toString())  // #113: helper streams are not cameras
+        val servers = Servers.serverList(s["server"]?.toString(), s["more_servers"]?.toString())
+        if (servers.isEmpty()) return emptyList()
+        val per = ArrayList<Triple<GoServer, List<String>, Set<String>>>()
+        var error: Exception? = null
+        for (srv in servers) {  // #15: every server on its own; one that does not answer only drops its own cameras
+            try {
+                val (names, comp) = Urls.streamInfoFromJson(String(Net.fetch("${srv.url}/api/streams", s["verify_ssl"] != false, 5000), Charsets.UTF_8))
+                per.add(Triple(srv, names, comp))
+            } catch (e: Exception) {
+                if (servers.size == 1) throw e
+                CamLog.log("go2rtc server ${srv.url} not reachable: ${e.message}")
+                error = e
+            }
+        }
+        if (per.isEmpty() && error != null) throw error
+        val r = Servers.combine(per)
+        composites = r.composites
+        serverMap = r.mapping
+        return Warm.visibleCameras(r.names, s["ready_cameras"]?.toString())  // #113: helper streams are not cameras
     }
 
     fun tile(name: String) = controller.tile(name)
@@ -117,6 +135,7 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         override fun setSetting(id: String, value: Any?) = store.set(id, value)
         override fun cameraNames() = this@CamAlertService.cameraNames()
         override fun compositeStreams() = this@CamAlertService.composites
+        override fun serverMap() = this@CamAlertService.serverMap
         override fun directCameras() = this@CamAlertService.directCameras.cameras()
         override fun screenOn() = (getSystemService(Context.POWER_SERVICE) as PowerManager).isInteractive
         override fun wake() {
@@ -272,7 +291,8 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
                     val s = settings()
                     val on = s["enabled"] != false &&
                         (getSystemService(Context.POWER_SERVICE) as PowerManager).isInteractive
-                    warm.update(s["server"]?.toString(), s["ready_cameras"]?.toString(), on)
+                    val servers = Servers.serverList(s["server"]?.toString(), s["more_servers"]?.toString())
+                    warm.update(s["server"]?.toString(), s["ready_cameras"]?.toString(), on) { Servers.resolve(it, servers, serverMap) }
                 } catch (e: Exception) {  // never let it die
                     CamLog.log("keep cameras ready: $e", "error")
                 }

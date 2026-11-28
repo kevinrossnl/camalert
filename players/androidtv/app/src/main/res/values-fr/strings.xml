@@ -112,6 +112,8 @@
     <string name="t_7c54e851" formatted="false">go2rtc est recommandé. Sans go2rtc, listez vos caméras dans %s</string>
     <string name="t_bc6c5ac6" formatted="false">Adresse go2rtc</string>
     <string name="t_884d0266" formatted="false">Adresse de votre serveur go2rtc, p. ex. http://192.168.1.10:1984</string>
+    <string name="t_e5d9508c" formatted="false">Autres serveurs go2rtc</string>
+    <string name="t_cc18fbef" formatted="false">Autres serveurs go2rtc, séparés par des virgules, chacun avec un préfixe facultatif : garden=http://192.168.1.20:1984. Leurs caméras s\'appellent alors garden.&lt;nom&gt; ; sans préfixe, elles gardent leur nom (s2.&lt;nom&gt; si le serveur principal a le même nom).</string>
     <string name="t_3fed7aa8" formatted="false">Port RTSP go2rtc</string>
     <string name="t_90d56c33" formatted="false">Généralement 8554. Utilisé pour le direct et la liste des caméras.</string>
     <string name="t_0b093d4c" formatted="false">Caméra par défaut</string>

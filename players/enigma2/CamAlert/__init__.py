@@ -125,6 +125,7 @@ _add("enabled", lambda: ConfigYesNo(default=True))
 _add("source", lambda: ConfigSelection(default="go2rtc", choices=[
     ("go2rtc", _("go2rtc server")), ("direct", _("Directly from the cameras"))]))
 _add("server", lambda: ConfigText(default="", fixed_size=False))  # empty = not set (#73)
+_add("more_servers", lambda: ConfigText(default="", fixed_size=False))  # #15: other go2rtc servers
 _add("rtsp_port", lambda: ConfigNumber(default=8554))
 _add("camera", lambda: ConfigText(default="", fixed_size=False))
 _add("mode", lambda: ConfigSelection(default="photo", choices=MODES()))

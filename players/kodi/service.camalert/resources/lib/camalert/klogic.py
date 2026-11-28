@@ -77,7 +77,7 @@ def live_key(action_id):
 
 # --- settings --------------------------------------------------------------------------------------------------
 DEFAULTS = {
-    "enabled": True, "source": "go2rtc", "server": "", "rtsp_port": 8554,
+    "enabled": True, "source": "go2rtc", "server": "", "more_servers": "", "rtsp_port": 8554,
     "verify_ssl": True, "camera_file": "", "camera": "", "titles": "", "mosaic": "",
     "orientation": "", "refresh": "", "strip_layout": "auto", "protect_snapshots": True, "ready_cameras": "",
     "mode": "photo", "duration": 30, "position": "top_right", "size": "medium",

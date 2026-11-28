@@ -616,7 +616,7 @@ msgstr "Assistant CamAlert"
 msgid "No go2rtc found in your network. Enter its address yourself, or set up go2rtc first (see the guide)."
 msgstr "Aucun go2rtc trouvé sur votre réseau. Saisissez son adresse vous-même ou installez d'abord go2rtc (voir le guide)."
 
-#: e2 kodi:30016 ha:config.step.setup.data.go2rtc_server atv:wizard_address web
+#: e2 kodi:30016 ha:config.step.app.data.go2rtc ha:config.step.reconfigure_app.data.go2rtc ha:config.step.setup.data.go2rtc_server atv:wizard_address web
 msgid "go2rtc address"
 msgstr "Adresse go2rtc"
 
@@ -976,7 +976,7 @@ msgstr "Port RTSP go2rtc"
 msgid "Usually 8554. Used for live view and the camera list."
 msgstr "Généralement 8554. Utilisé pour le direct et la liste des caméras."
 
-#: e2 kodi:30024 ha:config.step.setup.data.camera ha:options.step.init.data.camera web
+#: e2 kodi:30024 ha:config.step.app.data.camera ha:config.step.reconfigure_app.data.camera ha:config.step.setup.data.camera ha:options.step.init.data.camera web
 msgid "Default camera"
 msgstr "Caméra par défaut"
 
@@ -984,7 +984,7 @@ msgstr "Caméra par défaut"
 msgid "Press OK to choose from the cameras in go2rtc."
 msgstr "Appuyez sur OK pour choisir parmi les caméras de go2rtc."
 
-#: e2 kodi:30020 ha:config.step.reconfigure.data.verify_ssl ha:config.step.user.data.verify_ssl
+#: e2 kodi:30020 ha:config.step.player.data.verify_ssl ha:config.step.reconfigure.data.verify_ssl
 msgid "Check certificates"
 msgstr "Vérifier les certificats"
 
@@ -1928,49 +1928,113 @@ msgstr "Lit le texte que Home Assistant envoie avec une caméra (par exemple \"Q
 msgid "{name}"
 msgstr "{name}"
 
-#: ha:config.step.user.title
+#: ha:config.step.player.title ha:config.step.user.title
 msgid "Add a CamAlert player"
 msgstr "Ajouter un lecteur CamAlert"
 
 #: ha:config.step.user.description
+msgid "What kind of player?"
+msgstr "Quel type de lecteur ?"
+
+#: ha:config.step.user.menu_options.player
+msgid "A player with CamAlert: Enigma2 receiver, Kodi or Android TV / Fire TV"
+msgstr "Un lecteur avec CamAlert : récepteur Enigma2, Kodi ou Android TV / Fire TV"
+
+#: ha:config.step.user.menu_options.app
+msgid "A TV with a notification app (PiPup, TvOverlay or Notifications for Android TV / Fire TV)"
+msgstr "Un téléviseur avec une application de notification (PiPup, TvOverlay ou Notifications for Android TV / Fire TV)"
+
+#: ha:config.step.player.description
 msgid "A player is an Enigma2 receiver, Kodi or an Android TV / Fire TV device with CamAlert. Port, HTTPS and token as set in CamAlert on the player."
 msgstr "Un lecteur est un récepteur Enigma2, Kodi ou un appareil Android TV / Fire TV avec CamAlert. Port, HTTPS et jeton tels que réglés dans CamAlert sur le lecteur."
 
-#: ha:config.step.reconfigure.data.host ha:config.step.user.data.host
+#: ha:config.step.player.data.host ha:config.step.reconfigure.data.host
 msgid "Host name or IP address"
 msgstr "Nom d'hôte ou adresse IP"
 
-#: ha:config.step.reconfigure.data.port ha:config.step.user.data.port
+#: ha:config.step.app.data.port ha:config.step.player.data.port ha:config.step.reconfigure.data.port ha:config.step.reconfigure_app.data.port
 msgid "Port"
 msgstr "Port"
 
-#: ha:config.step.reconfigure.data.https ha:config.step.user.data.https
+#: ha:config.step.player.data.https ha:config.step.reconfigure.data.https
 msgid "Use HTTPS"
 msgstr "Utiliser HTTPS"
 
-#: ha:config.step.reconfigure.data.token ha:config.step.user.data.token ha:config.step.zeroconf_confirm.data.token web
+#: ha:config.step.player.data.token ha:config.step.reconfigure.data.token ha:config.step.zeroconf_confirm.data.token web
 msgid "Access token"
 msgstr "Jeton d'accès"
 
-#: ha:config.step.reconfigure.data_description.host ha:config.step.user.data_description.host
+#: ha:config.step.player.data_description.host ha:config.step.reconfigure.data_description.host
 msgid "Address of the player (Enigma2 receiver, Kodi or Android TV / Fire TV) with CamAlert, e.g. 192.168.1.10."
 msgstr "Adresse du lecteur (récepteur Enigma2, Kodi ou Android TV / Fire TV) avec CamAlert, par ex. 192.168.1.10."
 
-#: ha:config.step.reconfigure.data_description.port ha:config.step.user.data_description.port
+#: ha:config.step.player.data_description.port ha:config.step.reconfigure.data_description.port
 msgid "Port of the CamAlert API, as set in CamAlert on the player. Default: 8099."
 msgstr "Port de l'API CamAlert, tel que réglé dans CamAlert sur le lecteur. Par défaut : 8099."
 
-#: ha:config.step.reconfigure.data_description.https ha:config.step.user.data_description.https
+#: ha:config.step.player.data_description.https ha:config.step.reconfigure.data_description.https
 msgid "Turn on if HTTPS is on for the API in CamAlert on the player."
 msgstr "Activez si HTTPS est activé pour l'API dans CamAlert sur le lecteur."
 
-#: ha:config.step.reconfigure.data_description.verify_ssl ha:config.step.user.data_description.verify_ssl
+#: ha:config.step.player.data_description.verify_ssl ha:config.step.reconfigure.data_description.verify_ssl
 msgid "Turn off for the player's own (self-signed) certificate. Only used with HTTPS."
 msgstr "Désactivez pour le certificat propre (auto-signé) du lecteur. Uniquement avec HTTPS."
 
-#: ha:config.step.reconfigure.data_description.token ha:config.step.user.data_description.token
+#: ha:config.step.player.data_description.token ha:config.step.reconfigure.data_description.token
 msgid "Only if an access token is set in CamAlert on the player. It is sent in a header, never in the address."
 msgstr "Uniquement si un jeton d'accès est réglé dans CamAlert sur le lecteur. Il est envoyé dans un en-tête, jamais dans l'adresse."
+
+#: ha:config.step.app.title
+msgid "Add a TV with a notification app"
+msgstr "Ajouter un téléviseur avec une application de notification"
+
+#: ha:config.step.app.description
+msgid "No CamAlert on the TV: Home Assistant sends the camera picture to a notification app that already runs on it. Fewer features than a CamAlert player: no mosaic, tour, camera control or colour keys."
+msgstr "Pas de CamAlert sur le téléviseur : Home Assistant envoie l'image de la caméra à une application de notification qui y tourne déjà. Moins de fonctions qu'un lecteur CamAlert : pas de mosaïque, de ronde, de contrôle de la caméra ni de touches de couleur."
+
+#: ha:config.step.app.data.app ha:config.step.reconfigure_app.data.app
+msgid "App"
+msgstr "Application"
+
+#: ha:config.step.app.data.name ha:config.step.reconfigure_app.data.name web
+msgid "Name"
+msgstr "Nom"
+
+#: ha:config.step.app.data.host ha:config.step.reconfigure_app.data.host
+msgid "TV address"
+msgstr "Adresse du téléviseur"
+
+#: ha:config.step.app.data.notify_entity ha:config.step.reconfigure_app.data.notify_entity
+msgid "Notify entity"
+msgstr "Entité de notification"
+
+#: ha:config.step.app.data_description.app ha:config.step.reconfigure_app.data_description.app
+msgid "PiPup or TvOverlay on the TV, or Home Assistant's own Notifications for Android TV / Fire TV integration."
+msgstr "PiPup ou TvOverlay sur le téléviseur, ou l'intégration Notifications for Android TV / Fire TV de Home Assistant."
+
+#: ha:config.step.app.data_description.name ha:config.step.reconfigure_app.data_description.name
+msgid "Optional: the name of the player in Home Assistant."
+msgstr "Facultatif : le nom du lecteur dans Home Assistant."
+
+#: ha:config.step.app.data_description.host ha:config.step.reconfigure_app.data_description.host
+msgid "PiPup and TvOverlay: the address of the TV, e.g. 192.168.1.30."
+msgstr "PiPup et TvOverlay : l'adresse du téléviseur, p. ex. 192.168.1.30."
+
+#: ha:config.step.app.data_description.port ha:config.step.reconfigure_app.data_description.port
+msgid "Empty: the app's default (PiPup 7979, TvOverlay 5001)."
+msgstr "Vide : le port par défaut de l'application (PiPup 7979, TvOverlay 5001)."
+
+#: ha:config.step.app.data_description.notify_entity ha:config.step.reconfigure_app.data_description.notify_entity
+msgid "Notifications for Android TV / Fire TV: its notify entity. A picture appears when Home Assistant has a camera entity with the camera's name (camera.front_door); otherwise text only."
+msgstr "Notifications for Android TV / Fire TV : son entité de notification. Une image apparaît si Home Assistant a une entité caméra au nom de la caméra (camera.front_door) ; sinon du texte seulement."
+
+#: ha:config.step.app.data_description.go2rtc ha:config.step.reconfigure_app.data_description.go2rtc
+msgid "The TV fetches pictures and live video straight from this go2rtc, so it must be in your local network, e.g. http://192.168.1.10:1984."
+msgstr "Le téléviseur récupère les images et la vidéo en direct directement sur ce go2rtc, qui doit donc être dans votre réseau local, p. ex. http://192.168.1.10:1984."
+
+#: ha:config.step.app.data_description.camera ha:config.step.reconfigure_app.data_description.camera
+msgid "Optional: the go2rtc name of the camera to show when a request names none, e.g. front_door. Empty: the first camera."
+msgstr "Facultatif : le nom go2rtc de la caméra à afficher quand une demande n'en indique aucune, p. ex. front_door. Vide : la première caméra."
 
 #: ha:config.step.browser_confirm.title ha:config.step.zeroconf_confirm.title
 msgid "Add {name}"
@@ -1995,6 +2059,14 @@ msgstr "Modifier le lecteur CamAlert"
 #: ha:config.step.reconfigure.description
 msgid "New address, port, HTTPS or token of the same player."
 msgstr "Nouvelle adresse, nouveau port, HTTPS ou jeton du même lecteur."
+
+#: ha:config.step.reconfigure_app.title
+msgid "Change the notification app"
+msgstr "Modifier l'application de notification"
+
+#: ha:config.step.reconfigure_app.description
+msgid "Another address, port, notify entity or go2rtc of the same TV."
+msgstr "Une autre adresse, un autre port, une autre entité de notification ou un autre go2rtc du même téléviseur."
 
 #: ha:config.step.setup.title
 msgid "Set up {name}"
@@ -2040,6 +2112,22 @@ msgstr "Le lecteur est déjà configuré et n'accepte qu'une adresse go2rtc de v
 msgid "Invalid camera name: one go2rtc name, e.g. front_door."
 msgstr "Nom de caméra non valide : un seul nom go2rtc, par ex. front_door."
 
+#: ha:config.error.host_required
+msgid "Enter the TV's address."
+msgstr "Saisissez l'adresse du téléviseur."
+
+#: ha:config.error.entity_required
+msgid "Choose the notify entity of Notifications for Android TV / Fire TV."
+msgstr "Choisissez l'entité de notification de Notifications for Android TV / Fire TV."
+
+#: ha:config.error.go2rtc_not_local
+msgid "Use a go2rtc address in your local network, e.g. http://192.168.1.10:1984: the TV fetches the pictures from it."
+msgstr "Utilisez une adresse go2rtc de votre réseau local, p. ex. http://192.168.1.10:1984 : le téléviseur y récupère les images."
+
+#: ha:config.error.app_unreachable
+msgid "Cannot reach the app on the TV. Is the TV on, does the app run, and is the port correct?"
+msgstr "Impossible de joindre l'application sur le téléviseur. Le téléviseur est-il allumé, l'application tourne-t-elle et le port est-il correct ?"
+
 #: ha:config.abort.already_configured
 msgid "This player is already added."
 msgstr "Ce lecteur est déjà ajouté."
@@ -2080,6 +2168,14 @@ msgstr "Envoyer l'adresse go2rtc"
 msgid "Doorbell camera"
 msgstr "Caméra de la sonnette"
 
+#: ha:options.step.init.data.active_from
+msgid "Active from"
+msgstr "Actif à partir de"
+
+#: ha:options.step.init.data.active_until
+msgid "Active until"
+msgstr "Actif jusqu'à"
+
 #: ha:options.step.init.data_description.parent_device
 msgid "Automatic: the device of the Enigma2, Kodi or Android TV integration with the same address as the player. Or choose a device yourself, or none."
 msgstr "Automatique : l'appareil de l'intégration Enigma2, Kodi ou Android TV ayant la même adresse que le lecteur. Ou choisissez vous-même un appareil, ou aucun."
@@ -2099,6 +2195,14 @@ msgstr "Facultatif : quand l'un d'eux sonne (un événement de sonnette, ou un c
 #: ha:options.step.init.data_description.doorbell_camera
 msgid "The go2rtc name of the camera to show for the doorbell, e.g. front_door. Empty: the player's default camera."
 msgstr "Le nom go2rtc de la caméra à afficher pour la sonnette, p. ex. front_door. Vide : la caméra par défaut du lecteur."
+
+#: ha:options.step.init.data_description.active_from
+msgid "Notification app only: requests with priority normal are shown only between these times. Empty: all day. High and alarm always come through."
+msgstr "Application de notification seulement : les demandes de priorité normale ne s'affichent qu'entre ces heures. Vide : toute la journée. Haute et alarme passent toujours."
+
+#: ha:options.step.init.data_description.active_until
+msgid "End of the active hours; may be after midnight, e.g. 07:00 to 23:00 or 22:00 to 06:00."
+msgstr "Fin des heures actives ; peut être après minuit, p. ex. 07:00 à 23:00 ou 22:00 à 06:00."
 
 #: ha:entity.button.show.name
 msgid "Show {camera}"
@@ -2187,6 +2291,18 @@ msgstr "Arrêt"
 #: ha:selector.parent_device.options.none
 msgid "None"
 msgstr "Aucun"
+
+#: ha:selector.app.options.pipup
+msgid "PiPup"
+msgstr "PiPup"
+
+#: ha:selector.app.options.tvoverlay
+msgid "TvOverlay"
+msgstr "TvOverlay"
+
+#: ha:selector.app.options.nfandroidtv
+msgid "Notifications for Android TV / Fire TV"
+msgstr "Notifications for Android TV / Fire TV"
 
 #: ha:services.show.description
 msgid "Shows one or more cameras on the TV of one or more players. Without a target: every player."
@@ -2371,10 +2487,6 @@ msgstr "Oui"
 #: atv:wizard_no
 msgid "No"
 msgstr "Non"
-
-#: web
-msgid "Name"
-msgstr "Nom"
 
 #: web
 msgid "Also show alerts on Home Assistant dashboards in this browser"

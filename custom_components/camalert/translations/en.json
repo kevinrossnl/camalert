@@ -4,6 +4,14 @@
     "step": {
       "user": {
         "title": "Add a CamAlert player",
+        "description": "What kind of player?",
+        "menu_options": {
+          "player": "A player with CamAlert: Enigma2 receiver, Kodi or Android TV / Fire TV",
+          "app": "A TV with a notification app (PiPup, TvOverlay or Notifications for Android TV / Fire TV)"
+        }
+      },
+      "player": {
+        "title": "Add a CamAlert player",
         "description": "A player is an Enigma2 receiver, Kodi or an Android TV / Fire TV device with CamAlert. Port, HTTPS and token as set in CamAlert on the player.",
         "data": {
           "host": "Host name or IP address",
@@ -18,6 +26,28 @@
           "https": "Turn on if HTTPS is on for the API in CamAlert on the player.",
           "verify_ssl": "Turn off for the player's own (self-signed) certificate. Only used with HTTPS.",
           "token": "Only if an access token is set in CamAlert on the player. It is sent in a header, never in the address."
+        }
+      },
+      "app": {
+        "title": "Add a TV with a notification app",
+        "description": "No CamAlert on the TV: Home Assistant sends the camera picture to a notification app that already runs on it. Fewer features than a CamAlert player: no mosaic, tour, camera control or colour keys.",
+        "data": {
+          "app": "App",
+          "name": "Name",
+          "host": "TV address",
+          "port": "Port",
+          "notify_entity": "Notify entity",
+          "go2rtc": "go2rtc address",
+          "camera": "Default camera"
+        },
+        "data_description": {
+          "app": "PiPup or TvOverlay on the TV, or Home Assistant's own Notifications for Android TV / Fire TV integration.",
+          "name": "Optional: the name of the player in Home Assistant.",
+          "host": "PiPup and TvOverlay: the address of the TV, e.g. 192.168.1.30.",
+          "port": "Empty: the app's default (PiPup 7979, TvOverlay 5001).",
+          "notify_entity": "Notifications for Android TV / Fire TV: its notify entity. A picture appears when Home Assistant has a camera entity with the camera's name (camera.front_door); otherwise text only.",
+          "go2rtc": "The TV fetches pictures and live video straight from this go2rtc, so it must be in your local network, e.g. http://192.168.1.10:1984.",
+          "camera": "Optional: the go2rtc name of the camera to show when a request names none, e.g. front_door. Empty: the first camera."
         }
       },
       "zeroconf_confirm": {
@@ -52,6 +82,28 @@
           "token": "Only if an access token is set in CamAlert on the player. It is sent in a header, never in the address."
         }
       },
+      "reconfigure_app": {
+        "title": "Change the notification app",
+        "description": "Another address, port, notify entity or go2rtc of the same TV.",
+        "data": {
+          "app": "App",
+          "name": "Name",
+          "host": "TV address",
+          "port": "Port",
+          "notify_entity": "Notify entity",
+          "go2rtc": "go2rtc address",
+          "camera": "Default camera"
+        },
+        "data_description": {
+          "app": "PiPup or TvOverlay on the TV, or Home Assistant's own Notifications for Android TV / Fire TV integration.",
+          "name": "Optional: the name of the player in Home Assistant.",
+          "host": "PiPup and TvOverlay: the address of the TV, e.g. 192.168.1.30.",
+          "port": "Empty: the app's default (PiPup 7979, TvOverlay 5001).",
+          "notify_entity": "Notifications for Android TV / Fire TV: its notify entity. A picture appears when Home Assistant has a camera entity with the camera's name (camera.front_door); otherwise text only.",
+          "go2rtc": "The TV fetches pictures and live video straight from this go2rtc, so it must be in your local network, e.g. http://192.168.1.10:1984.",
+          "camera": "Optional: the go2rtc name of the camera to show when a request names none, e.g. front_door. Empty: the first camera."
+        }
+      },
       "setup": {
         "title": "Set up {name}",
         "description": "{name} has not been set up yet. Home Assistant can send it the address of go2rtc, so the player can show your cameras straight away. Leave the address empty to skip; you can also do this later in the options of the player.",
@@ -72,7 +124,11 @@
       "unknown": "Unexpected error. Details are in the Home Assistant log.",
       "invalid_server": "This is not a valid address. Use e.g. http://192.168.1.10:1984.",
       "already_set_up": "The player is already set up and only accepts a go2rtc address in your local network.",
-      "invalid_camera": "Invalid camera name: one go2rtc name, e.g. front_door."
+      "invalid_camera": "Invalid camera name: one go2rtc name, e.g. front_door.",
+      "host_required": "Enter the TV's address.",
+      "entity_required": "Choose the notify entity of Notifications for Android TV / Fire TV.",
+      "go2rtc_not_local": "Use a go2rtc address in your local network, e.g. http://192.168.1.10:1984: the TV fetches the pictures from it.",
+      "app_unreachable": "Cannot reach the app on the TV. Is the TV on, does the app run, and is the port correct?"
     },
     "abort": {
       "already_configured": "This player is already added.",
@@ -92,14 +148,18 @@
           "go2rtc_server": "Send go2rtc address",
           "camera": "Default camera",
           "doorbell": "Doorbell",
-          "doorbell_camera": "Doorbell camera"
+          "doorbell_camera": "Doorbell camera",
+          "active_from": "Active from",
+          "active_until": "Active until"
         },
         "data_description": {
           "parent_device": "Automatic: the device of the Enigma2, Kodi or Android TV integration with the same address as the player. Or choose a device yourself, or none.",
           "go2rtc_server": "Optional: sends this go2rtc address to the player. A player that is already set up only accepts an address in your local network. Empty: the player keeps its own setting.",
           "camera": "Optional, with the go2rtc address: the go2rtc name of the default camera, e.g. front_door.",
           "doorbell": "Optional: when one of these rings (a doorbell event, or a binary sensor that turns on), the player shows the camera with priority high. No automation needed; blueprints remain for your own rules.",
-          "doorbell_camera": "The go2rtc name of the camera to show for the doorbell, e.g. front_door. Empty: the player's default camera."
+          "doorbell_camera": "The go2rtc name of the camera to show for the doorbell, e.g. front_door. Empty: the player's default camera.",
+          "active_from": "Notification app only: requests with priority normal are shown only between these times. Empty: all day. High and alarm always come through.",
+          "active_until": "End of the active hours; may be after midnight, e.g. 07:00 to 23:00 or 22:00 to 06:00."
         }
       }
     },
@@ -232,6 +292,13 @@
       "options": {
         "auto": "Automatic",
         "none": "None"
+      }
+    },
+    "app": {
+      "options": {
+        "pipup": "PiPup",
+        "tvoverlay": "TvOverlay",
+        "nfandroidtv": "Notifications for Android TV / Fire TV"
       }
     }
   },

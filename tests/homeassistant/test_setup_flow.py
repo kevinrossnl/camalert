@@ -23,6 +23,7 @@ def suggested(result, key="go2rtc_server"):
 async def add(hass, player):
     """Starts adding the player through the user step; returns the next step."""
     result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": config_entries.SOURCE_USER})
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], {"next_step_id": "player"})  # #95
     return await hass.config_entries.flow.async_configure(result["flow_id"], form_input(player))
 
 

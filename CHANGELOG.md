@@ -12,6 +12,11 @@ actions and blueprint inputs stay backwards compatible.
 - **All players:** shorter settings screens. On Enigma2 the first screen shows the basic settings and one line per
   section (with what is on there); OK opens a section, BLUE shows the expert settings. On every player the fields
   of Frigate, Foscam, UniFi Protect, MQTT and the active hours only appear once they are turned on (#130).
+- **Home Assistant:** a TV without CamAlert as a light player (#95): **Add integration › CamAlert › A TV with a
+  notification app** with PiPup, TvOverlay or Home Assistant's Notifications for Android TV / Fire TV. The TV fetches
+  the camera picture (and with PiPup or TvOverlay the live video) from go2rtc. `camalert.show`, `camalert.hide`, the
+  doorbell option, the blueprints, Do not disturb, window position and size and active hours work; mosaic, tour,
+  camera control, colour keys and updates do not. See [Home Assistant](docs/integrations/home-assistant.md#a-tv-with-a-notification-app-no-camalert-on-the-tv).
 - **All players and Home Assistant:** a spoken announcement with a camera (#89). `camalert.show` has the fields
   `announce` (text), `tts` (TTS engine) and `language`: Home Assistant makes a WAV with its text-to-speech and the
   player plays it after the chime, when the new setting *Spoken announcement* allows it (default: doorbell and
@@ -68,6 +73,8 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Fixed
 
+- **Core:** a show request with an infinite duration no longer raises an error (`show_seconds`, like
+  `clamp_seconds` in #34).
 - **Android TV:** camera control via ONVIF and UniFi Protect's "retry later" with a date no longer crash the app on
   Android 7 (Fire OS 6): they used Java APIs that only exist from Android 8.
 

@@ -257,7 +257,8 @@ class TestPlayersNamed(unittest.TestCase):
 
     def test_config_flow_texts(self):
         s = json.load(open(os.path.join(ROOT, "custom_components", "camalert", "strings.json"), encoding="utf-8"))
-        texts = [s["config"]["step"]["user"]["description"], s["config"]["step"]["user"]["data_description"]["host"],
+        texts = [s["config"]["step"]["user"]["menu_options"]["player"], s["config"]["step"]["player"]["description"],
+                 s["config"]["step"]["player"]["data_description"]["host"],
                  s["config"]["step"]["reconfigure"]["data_description"]["host"]]
         for t in texts:
             self.assertIn("Android TV", t)

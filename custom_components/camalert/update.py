@@ -63,6 +63,8 @@ def release_cache(hass) -> ReleaseCache:
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
+    if getattr(entry.runtime_data.api, "is_app", False):  # #95: a notification app is not CamAlert, nothing to update
+        return
     async_add_entities([CamAlertUpdate(entry.runtime_data, entry, release_cache(hass))])
 
 

@@ -24,7 +24,7 @@ def show_seconds(value, default=30):
     try:
         if int(value) == 0:
             return HOLD_SECONDS
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):  # OverflowError: float('inf'), as in clamp_seconds (#34)
         pass
     return clamp_seconds(value, default)
 

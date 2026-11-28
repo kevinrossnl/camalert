@@ -12,7 +12,7 @@ CONF_PARENT = "parent_device"
 PARENT_AUTO = "auto"
 PARENT_NONE = "none"
 # integrations that make a device for the TV or receiver itself; their config entry has the address in "host"
-PARENT_DOMAINS = ("enigma2", "kodi", "androidtv", "androidtv_remote")
+PARENT_DOMAINS = ("enigma2", "kodi", "androidtv", "androidtv_remote", "nfandroidtv")
 
 
 def _host(value) -> str:
@@ -34,6 +34,12 @@ def find_parent(hass: HomeAssistant, entry, own_id: str | None = None) -> str | 
     if choice != PARENT_AUTO:
         device = reg.async_get(choice)  # removed since: no parent
         return device.id if device is not None and device.id != own_id else None
+    notify = entry.data.get("notify_entity")
+    if notify:  # #95: a notification app through Home Assistant's nfandroidtv: under that integration's TV device
+        from homeassistant.helpers import entity_registry as er
+        ent = er.async_get(hass).async_get(notify)
+        if ent is not None and ent.device_id and ent.device_id != own_id:
+            return ent.device_id
     host = _host(entry.data.get(CONF_HOST))
     for other in hass.config_entries.async_entries():
         if other.domain in PARENT_DOMAINS and host and _host(other.data.get(CONF_HOST)) == host:

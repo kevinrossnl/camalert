@@ -4,6 +4,14 @@
     "step": {
       "user": {
         "title": "Aggiungere un lettore CamAlert",
+        "description": "Che tipo di lettore?",
+        "menu_options": {
+          "player": "Un lettore con CamAlert: ricevitore Enigma2, Kodi o Android TV / Fire TV",
+          "app": "Un televisore con un'app di notifica (PiPup, TvOverlay o Notifications for Android TV / Fire TV)"
+        }
+      },
+      "player": {
+        "title": "Aggiungere un lettore CamAlert",
         "description": "Un lettore è un ricevitore Enigma2, Kodi o un dispositivo Android TV / Fire TV con CamAlert. Porta, HTTPS e token come impostati in CamAlert sul lettore.",
         "data": {
           "host": "Nome host o indirizzo IP",
@@ -18,6 +26,28 @@
           "https": "Da attivare se HTTPS è attivo per l'API in CamAlert sul lettore.",
           "verify_ssl": "Da disattivare per il certificato proprio (autofirmato) del lettore. Solo con HTTPS.",
           "token": "Solo se in CamAlert sul lettore è impostato un token di accesso. Viene inviato in un header, mai nell'indirizzo."
+        }
+      },
+      "app": {
+        "title": "Aggiungere un televisore con un'app di notifica",
+        "description": "Nessun CamAlert sul televisore: Home Assistant invia l'immagine della telecamera a un'app di notifica già in esecuzione. Meno funzioni di un lettore CamAlert: niente mosaico, giro, controllo telecamera o tasti colorati.",
+        "data": {
+          "app": "App",
+          "name": "Nome",
+          "host": "Indirizzo del televisore",
+          "port": "Porta",
+          "notify_entity": "Entità di notifica",
+          "go2rtc": "Indirizzo go2rtc",
+          "camera": "Telecamera predefinita"
+        },
+        "data_description": {
+          "app": "PiPup o TvOverlay sul televisore, oppure l'integrazione Notifications for Android TV / Fire TV di Home Assistant.",
+          "name": "Facoltativo: il nome del lettore in Home Assistant.",
+          "host": "PiPup e TvOverlay: l'indirizzo del televisore, ad es. 192.168.1.30.",
+          "port": "Vuoto: la porta predefinita dell'app (PiPup 7979, TvOverlay 5001).",
+          "notify_entity": "Notifications for Android TV / Fire TV: la sua entità di notifica. Un'immagine appare se Home Assistant ha un'entità telecamera con il nome della telecamera (camera.front_door); altrimenti solo testo.",
+          "go2rtc": "Il televisore prende immagini e video in diretta direttamente da questo go2rtc, che deve quindi trovarsi nella rete locale, ad es. http://192.168.1.10:1984.",
+          "camera": "Facoltativo: il nome go2rtc della telecamera da mostrare quando una richiesta non ne indica una, ad es. front_door. Vuoto: la prima telecamera."
         }
       },
       "zeroconf_confirm": {
@@ -52,6 +82,28 @@
           "token": "Solo se in CamAlert sul lettore è impostato un token di accesso. Viene inviato in un header, mai nell'indirizzo."
         }
       },
+      "reconfigure_app": {
+        "title": "Modificare l'app di notifica",
+        "description": "Un altro indirizzo, porta, entità di notifica o go2rtc dello stesso televisore.",
+        "data": {
+          "app": "App",
+          "name": "Nome",
+          "host": "Indirizzo del televisore",
+          "port": "Porta",
+          "notify_entity": "Entità di notifica",
+          "go2rtc": "Indirizzo go2rtc",
+          "camera": "Telecamera predefinita"
+        },
+        "data_description": {
+          "app": "PiPup o TvOverlay sul televisore, oppure l'integrazione Notifications for Android TV / Fire TV di Home Assistant.",
+          "name": "Facoltativo: il nome del lettore in Home Assistant.",
+          "host": "PiPup e TvOverlay: l'indirizzo del televisore, ad es. 192.168.1.30.",
+          "port": "Vuoto: la porta predefinita dell'app (PiPup 7979, TvOverlay 5001).",
+          "notify_entity": "Notifications for Android TV / Fire TV: la sua entità di notifica. Un'immagine appare se Home Assistant ha un'entità telecamera con il nome della telecamera (camera.front_door); altrimenti solo testo.",
+          "go2rtc": "Il televisore prende immagini e video in diretta direttamente da questo go2rtc, che deve quindi trovarsi nella rete locale, ad es. http://192.168.1.10:1984.",
+          "camera": "Facoltativo: il nome go2rtc della telecamera da mostrare quando una richiesta non ne indica una, ad es. front_door. Vuoto: la prima telecamera."
+        }
+      },
       "setup": {
         "title": "Configura {name}",
         "description": "{name} non è ancora configurato. Home Assistant può inviare a questo lettore l'indirizzo di go2rtc, così può mostrare subito le telecamere. Lasciare l'indirizzo vuoto per saltare; si può fare anche più tardi nelle opzioni del lettore.",
@@ -72,7 +124,11 @@
       "unknown": "Errore imprevisto. I dettagli sono nel log di Home Assistant.",
       "invalid_server": "Indirizzo non valido. Usare ad es. http://192.168.1.10:1984.",
       "already_set_up": "Il lettore è già configurato e accetta solo un indirizzo go2rtc della rete locale.",
-      "invalid_camera": "Nome della telecamera non valido: un solo nome go2rtc, ad es. front_door."
+      "invalid_camera": "Nome della telecamera non valido: un solo nome go2rtc, ad es. front_door.",
+      "host_required": "Inserire l'indirizzo del televisore.",
+      "entity_required": "Scegliere l'entità di notifica di Notifications for Android TV / Fire TV.",
+      "go2rtc_not_local": "Usare un indirizzo go2rtc della rete locale, ad es. http://192.168.1.10:1984: il televisore prende le immagini da lì.",
+      "app_unreachable": "Impossibile raggiungere l'app sul televisore. Il televisore è acceso, l'app è in esecuzione e la porta è corretta?"
     },
     "abort": {
       "already_configured": "Questo lettore è già stato aggiunto.",
@@ -92,14 +148,18 @@
           "go2rtc_server": "Invia indirizzo go2rtc",
           "camera": "Telecamera predefinita",
           "doorbell": "Campanello",
-          "doorbell_camera": "Telecamera del campanello"
+          "doorbell_camera": "Telecamera del campanello",
+          "active_from": "Attivo dalle",
+          "active_until": "Attivo fino alle"
         },
         "data_description": {
           "parent_device": "Automatico: il dispositivo dell'integrazione Enigma2, Kodi o Android TV con lo stesso indirizzo del lettore. Oppure scegliere un dispositivo, o nessuno.",
           "go2rtc_server": "Facoltativo: invia questo indirizzo go2rtc al lettore. Un lettore già configurato accetta solo un indirizzo della rete locale. Vuoto: il lettore mantiene la propria impostazione.",
           "camera": "Facoltativo, insieme all'indirizzo go2rtc: il nome go2rtc della telecamera predefinita, ad es. front_door.",
           "doorbell": "Facoltativo: quando uno di questi suona (un evento del campanello o un sensore binario che si attiva), il lettore mostra la telecamera con priorità alta. Nessuna automazione necessaria; i blueprint restano per le proprie regole.",
-          "doorbell_camera": "Il nome go2rtc della telecamera da mostrare per il campanello, ad es. front_door. Vuoto: la telecamera predefinita del lettore."
+          "doorbell_camera": "Il nome go2rtc della telecamera da mostrare per il campanello, ad es. front_door. Vuoto: la telecamera predefinita del lettore.",
+          "active_from": "Solo per un'app di notifica: le richieste con priorità normale appaiono solo tra questi orari. Vuoto: tutto il giorno. Alta e allarme passano sempre.",
+          "active_until": "Fine dell'orario attivo; può essere dopo mezzanotte, ad es. dalle 07:00 alle 23:00 o dalle 22:00 alle 06:00."
         }
       }
     },
@@ -232,6 +292,13 @@
       "options": {
         "auto": "Automatico",
         "none": "Nessuno"
+      }
+    },
+    "app": {
+      "options": {
+        "pipup": "PiPup",
+        "tvoverlay": "TvOverlay",
+        "nfandroidtv": "Notifications for Android TV / Fire TV"
       }
     }
   },

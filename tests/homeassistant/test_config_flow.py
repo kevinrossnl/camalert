@@ -14,7 +14,9 @@ def form_input(p, **kw):
 
 async def start(hass):
     result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": config_entries.SOURCE_USER})
-    assert result["type"] is FlowResultType.FORM and result["step_id"] == "user"
+    assert result["type"] is FlowResultType.MENU and result["menu_options"] == ["player", "app"]  # #95
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], {"next_step_id": "player"})
+    assert result["type"] is FlowResultType.FORM and result["step_id"] == "player"
     return result
 
 

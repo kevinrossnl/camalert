@@ -4,6 +4,14 @@
     "step": {
       "user": {
         "title": "CamAlert-Wiedergabegerät hinzufügen",
+        "description": "Was für ein Wiedergabegerät?",
+        "menu_options": {
+          "player": "Ein Wiedergabegerät mit CamAlert: Enigma2-Receiver, Kodi oder Android TV / Fire TV",
+          "app": "Ein Fernseher mit einer Benachrichtigungs-App (PiPup, TvOverlay oder Notifications for Android TV / Fire TV)"
+        }
+      },
+      "player": {
+        "title": "CamAlert-Wiedergabegerät hinzufügen",
         "description": "Ein Wiedergabegerät ist ein Enigma2-Receiver, Kodi oder ein Android-TV-/Fire-TV-Gerät mit CamAlert. Port, HTTPS und Token wie in CamAlert auf dem Wiedergabegerät eingestellt.",
         "data": {
           "host": "Hostname oder IP-Adresse",
@@ -18,6 +26,28 @@
           "https": "Einschalten, wenn HTTPS für die API in CamAlert auf dem Wiedergabegerät an ist.",
           "verify_ssl": "Für das eigene (selbst signierte) Zertifikat des Wiedergabegeräts ausschalten. Nur bei HTTPS.",
           "token": "Nur wenn in CamAlert auf dem Wiedergabegerät ein Zugriffstoken eingestellt ist. Es wird in einem Header gesendet, nie in der Adresse."
+        }
+      },
+      "app": {
+        "title": "Fernseher mit Benachrichtigungs-App hinzufügen",
+        "description": "Kein CamAlert auf dem Fernseher: Home Assistant schickt das Kamerabild an eine Benachrichtigungs-App, die dort schon läuft. Weniger Funktionen als ein CamAlert-Wiedergabegerät: kein Mosaik, kein Rundgang, keine Kamerasteuerung und keine Farbtasten.",
+        "data": {
+          "app": "App",
+          "name": "Name",
+          "host": "Adresse des Fernsehers",
+          "port": "Port",
+          "notify_entity": "Benachrichtigungs-Entität",
+          "go2rtc": "go2rtc-Adresse",
+          "camera": "Standardkamera"
+        },
+        "data_description": {
+          "app": "PiPup oder TvOverlay auf dem Fernseher oder die eigene Integration Notifications for Android TV / Fire TV von Home Assistant.",
+          "name": "Optional: der Name des Wiedergabegeräts in Home Assistant.",
+          "host": "PiPup und TvOverlay: die Adresse des Fernsehers, z. B. 192.168.1.30.",
+          "port": "Leer: der Standardport der App (PiPup 7979, TvOverlay 5001).",
+          "notify_entity": "Notifications for Android TV / Fire TV: deren Benachrichtigungs-Entität. Ein Bild erscheint, wenn Home Assistant eine Kamera-Entität mit dem Namen der Kamera hat (camera.front_door); sonst nur Text.",
+          "go2rtc": "Der Fernseher holt Bilder und Live-Video direkt von diesem go2rtc, es muss also in deinem lokalen Netzwerk sein, z. B. http://192.168.1.10:1984.",
+          "camera": "Optional: der go2rtc-Name der Kamera, die erscheint, wenn eine Anfrage keine nennt, z. B. front_door. Leer: die erste Kamera."
         }
       },
       "zeroconf_confirm": {
@@ -52,6 +82,28 @@
           "token": "Nur wenn in CamAlert auf dem Wiedergabegerät ein Zugriffstoken eingestellt ist. Es wird in einem Header gesendet, nie in der Adresse."
         }
       },
+      "reconfigure_app": {
+        "title": "Benachrichtigungs-App ändern",
+        "description": "Andere Adresse, anderer Port, andere Benachrichtigungs-Entität oder anderes go2rtc desselben Fernsehers.",
+        "data": {
+          "app": "App",
+          "name": "Name",
+          "host": "Adresse des Fernsehers",
+          "port": "Port",
+          "notify_entity": "Benachrichtigungs-Entität",
+          "go2rtc": "go2rtc-Adresse",
+          "camera": "Standardkamera"
+        },
+        "data_description": {
+          "app": "PiPup oder TvOverlay auf dem Fernseher oder die eigene Integration Notifications for Android TV / Fire TV von Home Assistant.",
+          "name": "Optional: der Name des Wiedergabegeräts in Home Assistant.",
+          "host": "PiPup und TvOverlay: die Adresse des Fernsehers, z. B. 192.168.1.30.",
+          "port": "Leer: der Standardport der App (PiPup 7979, TvOverlay 5001).",
+          "notify_entity": "Notifications for Android TV / Fire TV: deren Benachrichtigungs-Entität. Ein Bild erscheint, wenn Home Assistant eine Kamera-Entität mit dem Namen der Kamera hat (camera.front_door); sonst nur Text.",
+          "go2rtc": "Der Fernseher holt Bilder und Live-Video direkt von diesem go2rtc, es muss also in deinem lokalen Netzwerk sein, z. B. http://192.168.1.10:1984.",
+          "camera": "Optional: der go2rtc-Name der Kamera, die erscheint, wenn eine Anfrage keine nennt, z. B. front_door. Leer: die erste Kamera."
+        }
+      },
       "setup": {
         "title": "{name} einrichten",
         "description": "{name} ist noch nicht eingerichtet. Home Assistant kann diesem Wiedergabegerät die Adresse von go2rtc schicken, damit es deine Kameras sofort zeigen kann. Lass die Adresse leer, um das zu überspringen; du kannst es auch später in den Optionen des Wiedergabegeräts tun.",
@@ -72,7 +124,11 @@
       "unknown": "Unerwarteter Fehler. Details stehen im Home-Assistant-Protokoll.",
       "invalid_server": "Das ist keine gültige Adresse. Verwende z. B. http://192.168.1.10:1984.",
       "already_set_up": "Das Wiedergabegerät ist schon eingerichtet und nimmt nur eine go2rtc-Adresse in deinem lokalen Netzwerk an.",
-      "invalid_camera": "Ungültiger Kameraname: ein go2rtc-Name, z. B. front_door."
+      "invalid_camera": "Ungültiger Kameraname: ein go2rtc-Name, z. B. front_door.",
+      "host_required": "Gib die Adresse des Fernsehers ein.",
+      "entity_required": "Wähle die Benachrichtigungs-Entität von Notifications for Android TV / Fire TV.",
+      "go2rtc_not_local": "Verwende eine go2rtc-Adresse in deinem lokalen Netzwerk, z. B. http://192.168.1.10:1984: der Fernseher holt die Bilder dort.",
+      "app_unreachable": "Die App auf dem Fernseher ist nicht erreichbar. Ist der Fernseher an, läuft die App und stimmt der Port?"
     },
     "abort": {
       "already_configured": "Dieses Wiedergabegerät ist bereits hinzugefügt.",
@@ -92,14 +148,18 @@
           "go2rtc_server": "go2rtc-Adresse senden",
           "camera": "Standardkamera",
           "doorbell": "Türklingel",
-          "doorbell_camera": "Türklingel-Kamera"
+          "doorbell_camera": "Türklingel-Kamera",
+          "active_from": "Aktiv ab",
+          "active_until": "Aktiv bis"
         },
         "data_description": {
           "parent_device": "Automatisch: das Gerät der Enigma2-, Kodi- oder Android-TV-Integration mit derselben Adresse wie das Wiedergabegerät. Oder wähle selbst ein Gerät oder keines.",
           "go2rtc_server": "Optional: schickt diese go2rtc-Adresse an das Wiedergabegerät. Ein schon eingerichtetes Wiedergabegerät nimmt nur eine Adresse in deinem lokalen Netzwerk an. Leer: das Wiedergabegerät behält seine eigene Einstellung.",
           "camera": "Optional, zusammen mit der go2rtc-Adresse: der go2rtc-Name der Standardkamera, z. B. front_door.",
           "doorbell": "Optional: Klingelt eine davon (ein Türklingel-Ereignis oder ein Binärsensor, der einschaltet), zeigt das Wiedergabegerät die Kamera mit Priorität hoch. Keine Automatisierung nötig; Blueprints bleiben für deine eigenen Regeln.",
-          "doorbell_camera": "Der go2rtc-Name der Kamera, die bei der Türklingel erscheint, z. B. front_door. Leer: die Standardkamera des Wiedergabegeräts."
+          "doorbell_camera": "Der go2rtc-Name der Kamera, die bei der Türklingel erscheint, z. B. front_door. Leer: die Standardkamera des Wiedergabegeräts.",
+          "active_from": "Nur für eine Benachrichtigungs-App: Anfragen mit Priorität normal erscheinen nur zwischen diesen Zeiten. Leer: den ganzen Tag. Hoch und Alarm kommen immer durch.",
+          "active_until": "Ende der aktiven Zeit; darf nach Mitternacht liegen, z. B. 07:00 bis 23:00 oder 22:00 bis 06:00."
         }
       }
     },
@@ -232,6 +292,13 @@
       "options": {
         "auto": "Automatisch",
         "none": "Keines"
+      }
+    },
+    "app": {
+      "options": {
+        "pipup": "PiPup",
+        "tvoverlay": "TvOverlay",
+        "nfandroidtv": "Notifications for Android TV / Fire TV"
       }
     }
   },

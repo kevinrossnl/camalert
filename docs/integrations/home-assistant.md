@@ -159,6 +159,28 @@ The phone notification follows the blueprint's own conditions (for motion: armed
 *Only when someone is home*: the phone also gets it when nobody is home. The picture outside your home needs
 remote access to Home Assistant (Nabu Casa or your own address).
 
+### A TV with a notification app (no CamAlert on the TV)
+
+A TV without CamAlert can still show the camera when it runs a notification app (#95). Choose **Add integration ›
+CamAlert › A TV with a notification app** and pick the app:
+
+| App | On the TV | What CamAlert sends | Live view |
+|---|---|---|---|
+| [PiPup](https://github.com/rogro82/PiPup) (or a fork, e.g. [mhoogenbosch/PiPup](https://github.com/mhoogenbosch/PiPup)) | the app; give it the overlay permission once (`adb shell appops set nl.rogro82.pipup SYSTEM_ALERT_WINDOW allow`) | the go2rtc picture, port 7979 | yes (go2rtc RTSP) |
+| [TvOverlay](https://github.com/gugutab/TvOverlay) | the app from the Play Store | the go2rtc picture, port 5001 | yes (go2rtc RTSP) |
+| [Notifications for Android TV / Fire TV](https://www.home-assistant.io/integrations/nfandroidtv/) | the app, set up in Home Assistant's own integration | through that integration's notify entity | no |
+
+- The TV fetches pictures and live video straight from **go2rtc**, so enter a go2rtc address in your local network
+  (e.g. `http://192.168.1.10:1984`). The camera list comes from the same go2rtc.
+- Notifications for Android TV / Fire TV only shows a picture when Home Assistant has a camera entity with the
+  camera's name (`camera.front_door`); otherwise the text only.
+- Such a TV is a player like the others: `camalert.show`, `camalert.hide`, the doorbell option, the blueprints,
+  **Do not disturb**, **Window position** and **Window size** work. Its **active hours** (normal priority only) are
+  set with **Configure**.
+- Not possible: mosaic, tour, camera control, colour keys, updates from Home Assistant, spoken announcements and
+  "until hide" (`seconds: 0` becomes 300 s). `camalert.hide` closes the window where the app allows it (TvOverlay,
+  newer PiPup forks).
+
 ### Ready-made blueprints
 
 Import them via **Settings › Automations & scenes › Blueprints › Import blueprint** and paste the address:

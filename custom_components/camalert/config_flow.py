@@ -12,7 +12,7 @@ from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import callback
 from homeassistant.helpers.selector import (EntitySelector, EntitySelectorConfig, SelectSelector, SelectSelectorConfig,
-                                            SelectSelectorMode)
+                                            SelectSelectorMode, TimeSelector)
 
 from .api import CamAlertCertificateError, CamAlertError, CamAlertForbidden
 from .const import CONF_HTTPS, CONF_TOKEN, CONF_VERIFY_SSL, DEFAULT_PORT, DEFAULT_VERIFY_SSL, DOMAIN
@@ -53,6 +53,62 @@ async def _check(hass, data: dict) -> tuple[dict | None, dict]:
         return None, {"base": "unknown"}
 
 
+def _app_schema(defaults: dict) -> vol.Schema:
+    """A TV with an existing notification app (#95): which app, where it is, and the go2rtc it fetches from."""
+    from .apps import APPS, CONF_APP, CONF_DEFAULT_CAMERA, CONF_NOTIFY_ENTITY, CONF_SERVER
+    return vol.Schema({
+        vol.Required(CONF_APP, default=defaults.get(CONF_APP, APPS[0])): SelectSelector(SelectSelectorConfig(
+            options=list(APPS), mode=SelectSelectorMode.LIST, translation_key="app")),
+        vol.Optional("name", default=defaults.get("name", "")): str,
+        vol.Optional(CONF_HOST, default=defaults.get(CONF_HOST, "")): str,
+        vol.Optional(CONF_PORT, description={"suggested_value": defaults.get(CONF_PORT)}): vol.All(
+            vol.Coerce(int), vol.Range(min=1, max=65535)),
+        vol.Optional(CONF_NOTIFY_ENTITY, description={"suggested_value": defaults.get(CONF_NOTIFY_ENTITY)}):
+            EntitySelector(EntitySelectorConfig(domain="notify", integration="nfandroidtv")),
+        vol.Required(CONF_SERVER, default=defaults.get(CONF_SERVER, "")): str,
+        vol.Optional(CONF_DEFAULT_CAMERA, default=defaults.get(CONF_DEFAULT_CAMERA, "")): str,
+    })
+
+
+async def _check_app(hass, user_input: dict) -> tuple[dict | None, dict, dict]:
+    """(status or None, errors, cleaned entry data) for a notification app (#95)."""
+    from .apps import (APP, CONF_APP, CONF_DEFAULT_CAMERA, CONF_NOTIFY_ENTITY, CONF_SERVER, CONF_TYPE,
+                       DEFAULT_PORTS, HOST_APPS, normalize_server)
+    from .browser import lan_server
+    app = user_input.get(CONF_APP)
+    data = {CONF_TYPE: APP, CONF_APP: app, "name": (user_input.get("name") or "").strip(),
+            CONF_DEFAULT_CAMERA: (user_input.get(CONF_DEFAULT_CAMERA) or "").strip()}
+    errors = {}
+    if app in HOST_APPS:
+        data[CONF_HOST] = (user_input.get(CONF_HOST) or "").strip()
+        data[CONF_PORT] = int(user_input.get(CONF_PORT) or DEFAULT_PORTS[app])
+        if not data[CONF_HOST]:
+            errors[CONF_HOST] = "host_required"
+    else:
+        data[CONF_NOTIFY_ENTITY] = user_input.get(CONF_NOTIFY_ENTITY) or ""
+        if not data[CONF_NOTIFY_ENTITY]:
+            errors[CONF_NOTIFY_ENTITY] = "entity_required"
+    server = normalize_server(user_input.get(CONF_SERVER))
+    if not server or not await lan_server(hass, server):  # the TV fetches from it: only the local network
+        errors[CONF_SERVER] = "go2rtc_not_local"
+    data[CONF_SERVER] = server
+    if data[CONF_DEFAULT_CAMERA] and not _CAMERA.match(data[CONF_DEFAULT_CAMERA]):
+        errors[CONF_DEFAULT_CAMERA] = "invalid_camera"
+    if errors:
+        return None, errors, data
+    status, errors = await _check(hass, data)
+    if errors.get("base") == "cannot_connect":
+        errors = {"base": "app_unreachable"}
+    return status, errors, data
+
+
+def _app_title(data: dict) -> str:
+    from .apps import CONF_APP, CONF_NOTIFY_ENTITY
+    from .api import MODELS
+    where = data.get(CONF_HOST) or data.get(CONF_NOTIFY_ENTITY, "")
+    return data.get("name") or "%s %s" % (MODELS.get(data.get(CONF_APP), data.get(CONF_APP)), where)
+
+
 def _clean(user_input: dict) -> dict:
     return dict(user_input, **{CONF_HOST: user_input[CONF_HOST].strip()})
 
@@ -66,6 +122,10 @@ class CamAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return CamAlertOptionsFlow()
 
     async def async_step_user(self, user_input=None):
+        """A CamAlert player, or a TV with an existing notification app (#95)."""
+        return self.async_show_menu(step_id="user", menu_options=["player", "app"])
+
+    async def async_step_player(self, user_input=None):
         errors = {}
         if user_input is not None:
             user_input = _clean(user_input)
@@ -75,7 +135,22 @@ class CamAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._abort_if_unique_id_configured(updates={CONF_HOST: user_input[CONF_HOST]})
                 return await self._create(status.get("name") or "CamAlert %s" % user_input[CONF_HOST], user_input,
                                           status)
-        return self.async_show_form(step_id="user", data_schema=_schema(user_input or {}), errors=errors)
+        return self.async_show_form(step_id="player", data_schema=_schema(user_input or {}), errors=errors)
+
+    async def async_step_app(self, user_input=None):
+        """#95: PiPup, TvOverlay or Home Assistant's Notifications for Android TV / Fire TV as a light player."""
+        from .apps import CONF_SERVER, node_id
+        errors = {}
+        if user_input is not None:
+            status, errors, data = await _check_app(self.hass, user_input)
+            if status is not None:
+                await self.async_set_unique_id(node_id(data))
+                self._abort_if_unique_id_configured(updates=data)
+                return self.async_create_entry(title=_app_title(data), data=data)
+        defaults = dict(user_input or {})
+        if user_input is None:
+            defaults[CONF_SERVER] = await suggested_go2rtc(self.hass)
+        return self.async_show_form(step_id="app", data_schema=_app_schema(defaults), errors=errors)
 
     async def async_step_zeroconf(self, discovery_info):
         """A player announced itself (#121): TXT id, name, platform, version, api_version, https."""
@@ -165,6 +240,9 @@ class CamAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         from .browser import is_browser
         if is_browser(entry.data):
             return self.async_abort(reason="browser_player")
+        from .apps import is_app
+        if is_app(entry.data):  # #95: the app form, for the same TV
+            return await self.async_step_reconfigure_app()
         errors = {}
         if user_input is not None:
             user_input = _clean(user_input)
@@ -175,6 +253,21 @@ class CamAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_update_reload_and_abort(entry, data=user_input)
         return self.async_show_form(step_id="reconfigure", data_schema=_schema(user_input or dict(entry.data)),
                                     errors=errors)
+
+
+    async def async_step_reconfigure_app(self, user_input=None):
+        """#95: another address, port, entity or go2rtc of the same notification app."""
+        from .apps import node_id
+        entry = self._get_reconfigure_entry()
+        errors = {}
+        if user_input is not None:
+            status, errors, data = await _check_app(self.hass, user_input)
+            if status is not None:
+                if node_id(data) != entry.unique_id:
+                    return self.async_abort(reason="wrong_player")
+                return self.async_update_reload_and_abort(entry, data=data, title=_app_title(data))
+        return self.async_show_form(step_id="reconfigure_app", errors=errors,
+                                    data_schema=_app_schema(user_input or dict(entry.data)))
 
 
 class CamAlertOptionsFlow(config_entries.OptionsFlow):
@@ -193,6 +286,10 @@ class CamAlertOptionsFlow(config_entries.OptionsFlow):
                 errors = await send(api, server, camera)
             # #90: an emptied field is missing from the input: store it empty, not the old value
             user_input.setdefault(CONF_DOORBELL, [])
+            from .apps import CONF_ACTIVE_FROM, CONF_ACTIVE_UNTIL, is_app
+            if is_app(self.config_entry.data):  # #95: emptied active hours = all day
+                for key in (CONF_ACTIVE_FROM, CONF_ACTIVE_UNTIL):
+                    user_input.setdefault(key, "")
             user_input[CONF_DOORBELL_CAMERA] = (user_input.get(CONF_DOORBELL_CAMERA) or "").strip()
             if user_input[CONF_DOORBELL_CAMERA] and not _CAMERA.match(user_input[CONF_DOORBELL_CAMERA]):
                 errors[CONF_DOORBELL_CAMERA] = "invalid_camera"
@@ -210,6 +307,10 @@ class CamAlertOptionsFlow(config_entries.OptionsFlow):
             EntitySelector(EntitySelectorConfig(domain=["event", "binary_sensor"], multiple=True))
         fields[vol.Optional(CONF_DOORBELL_CAMERA,
                             description={"suggested_value": opts.get(CONF_DOORBELL_CAMERA) or ""})] = str
+        from .apps import CONF_ACTIVE_FROM, CONF_ACTIVE_UNTIL, is_app
+        if is_app(self.config_entry.data):  # #95: the player's active hours live in Home Assistant
+            for key in (CONF_ACTIVE_FROM, CONF_ACTIVE_UNTIL):
+                fields[vol.Optional(key, description={"suggested_value": opts.get(key)})] = TimeSelector()
         if can_setup:  # #122: send Home Assistant's go2rtc address to the player (empty = leave it alone)
             fields[vol.Optional(CONF_GO2RTC)] = str
             fields[vol.Optional(CONF_CAMERA)] = str

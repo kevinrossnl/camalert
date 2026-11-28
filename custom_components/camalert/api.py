@@ -12,7 +12,9 @@ from urllib.parse import urlencode
 INTEGRATION_VERSION = "1.3.1"  # = manifest.json version
 ACTIONS = ("show", "mosaic", "tour", "hide", "ptz", "webhook", "setup", "update")  # change something on the player: POST
 TIMEOUT = 10  # seconds per request
-MODELS = {"enigma2": "Enigma2 receiver", "kodi": "Kodi", "androidtv": "Android TV", "browser": "Web browser"}  # device model per /status platform (#44, #64)
+MODELS = {"enigma2": "Enigma2 receiver", "kodi": "Kodi", "androidtv": "Android TV", "browser": "Web browser",
+          "pipup": "PiPup (TV app)", "tvoverlay": "TvOverlay (TV app)",
+          "nfandroidtv": "Notifications for Android TV / Fire TV"}  # device model per /status platform (#44, #64)
 
 
 def build_url(host: str, port: int, https: bool, action: str, params: dict | None = None) -> str:

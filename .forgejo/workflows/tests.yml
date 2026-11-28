@@ -287,21 +287,22 @@ jobs:
   # ---- #104: the GitHub push mirror has no sync on commit; it only runs after a green gate (privacy included) ----
   mirror:
     needs: gate
-    # Paused (28-11-2026): GitHub gets a filtered copy without the contributor notes; until that job exists, nothing
-    # is mirrored.
-    if: false && needs.gate.result == 'success' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    # GitHub gets a filtered public copy (tools/mirror/public_copy.py, kept out of that copy), only after a green gate
+    # (privacy check included), for main and version tags only. The filter is deterministic, so pushes fast-forward.
+    if: needs.gate.result == 'success' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
     runs-on: truenas
-    container: {image: "node:20-bookworm"}
-    timeout-minutes: 2
+    container: {image: "python:3.12-bookworm"}
+    timeout-minutes: 10
     steps:
-      - name: start the GitHub push mirror
+      - name: push the filtered public copy to GitHub
         env:
-          MIRROR_SYNC_TOKEN: ${{ secrets.MIRROR_SYNC_TOKEN }}
+          GH_MIRROR_TOKEN: ${{ secrets.GH_MIRROR_TOKEN }}
+          REPO_TOKEN: ${{ github.token }}
         run: |
-          if [ -z "$MIRROR_SYNC_TOKEN" ]; then
-            echo "MIRROR_SYNC_TOKEN not set: start the mirror by hand (POST .../push_mirrors-sync, #104)"
+          if [ -z "$GH_MIRROR_TOKEN" ]; then
+            echo "GH_MIRROR_TOKEN not set: the public copy is not pushed"
             exit 0
           fi
-          curl -sSf --max-time 30 -X POST -H "Authorization: token $MIRROR_SYNC_TOKEN" \
-            "$GITHUB_SERVER_URL/api/v1/repos/$GITHUB_REPOSITORY/push_mirrors-sync"
-          echo "mirror started"
+          pip install -q --root-user-action=ignore git-filter-repo==2.47.0
+          git -c http.extraHeader="Authorization: token $REPO_TOKEN" clone -q "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git" /tmp/src
+          python3 /tmp/src/tools/mirror/public_copy.py /tmp/src /tmp/public --push

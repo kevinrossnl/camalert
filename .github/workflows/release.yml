@@ -6,6 +6,8 @@ name: build and release
 # While the repository is private the HACS check and Pages are skipped (not failed).
 # The Pages site only holds the packages of the LATEST release; older versions stay available as release assets.
 # A tag also adds the release-signed Android TV APK (job android, #65) when the signing secrets exist.
+# Only a NEW tag releases (github.event.created): a tag pushed again (e.g. a rewritten public history) builds and
+# tests but never re-releases an old version or puts it on Pages.
 on:
   push:
     branches: [main]
@@ -46,7 +48,7 @@ jobs:
           sh tools/ci.sh core
           sh tools/ci.sh unit
       - name: tag = version
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') && github.event.created
         run: |
           ver=$(python3 -c "import re;print(re.search(r'__version__ = \"([^\"]+)\"', open('players/enigma2/CamAlert/__init__.py').read()).group(1))")
           test "${GITHUB_REF_NAME}" = "v$ver" || { echo "tag ${GITHUB_REF_NAME} != v$ver (__version__)"; exit 1; }
@@ -77,7 +79,7 @@ jobs:
           print(out)
           PY
       - name: release notes from CHANGELOG.md
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') && github.event.created
         run: |
           ver="${GITHUB_REF_NAME#v}"
           awk -v h="## [$ver]" 'index($0, h) == 1 {on=1; next} on && /^## / {exit} on && !/^\[[^]]*\]: / {print}' \
@@ -92,7 +94,7 @@ jobs:
             dist/*.ipk
             dist/*.zip
       - name: release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') && github.event.created
         uses: softprops/action-gh-release@v3
         with:
           body_path: dist/release-notes.md
@@ -103,7 +105,7 @@ jobs:
             dist/camalert-homeassistant-*.zip
             dist/camalert-browser-*.zip
       - name: opkg feed (Packages / Packages.gz), Kodi repository and start page for GitHub Pages
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') && github.event.created
         run: |
           mkdir -p feed/kodi
           cp dist/*.ipk feed/
@@ -112,7 +114,7 @@ jobs:
           python3 tools/build_feed.py feed --index .github/pages/index.html --owner "${{ github.repository_owner }}"
           printf 'src/gz camalert https://%s.github.io/camalert\n' "${{ github.repository_owner }}" > feed/camalert-feed.conf
       - uses: actions/upload-pages-artifact@v5
-        if: startsWith(github.ref, 'refs/tags/v') && !github.event.repository.private
+        if: startsWith(github.ref, 'refs/tags/v') && github.event.created && !github.event.repository.private
         with:
           path: feed
   android:
@@ -120,7 +122,7 @@ jobs:
     # ANDROID_KEYSTORE_B64 / _PASSWORD / ANDROID_KEY_ALIAS / ANDROID_KEY_PASSWORD; without them this job says so and
     # adds nothing (the release of the other players goes on).
     needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') && github.event.created
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -182,7 +184,7 @@ jobs:
   pages:
     # GitHub Pages only for a public repository (GitHub Free has no Pages for private ones); the release itself
     # is created either way
-    if: startsWith(github.ref, 'refs/tags/v') && !github.event.repository.private
+    if: startsWith(github.ref, 'refs/tags/v') && github.event.created && !github.event.repository.private
     needs: [build, hassfest, hacs]
     runs-on: ubuntu-latest
     permissions:

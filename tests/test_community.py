@@ -118,7 +118,7 @@ class ReleaseWorkflow(unittest.TestCase):
         without them the job says so and the release of the other players goes on."""
         job = self.wf["jobs"]["android"]
         self.assertEqual(job["needs"], "build")
-        self.assertEqual(job["if"], "startsWith(github.ref, 'refs/tags/v')")
+        self.assertEqual(job["if"], "startsWith(github.ref, 'refs/tags/v') && github.event.created")  # a re-pushed tag never re-releases
         self.assertEqual(job["permissions"], {"contents": "write"})
         text = json.dumps(job)
         for secret in ("ANDROID_KEYSTORE_B64", "ANDROID_KEYSTORE_PASSWORD", "ANDROID_KEY_ALIAS", "ANDROID_KEY_PASSWORD"):
@@ -153,6 +153,7 @@ class ReleaseWorkflow(unittest.TestCase):
         self.assertIn("!github.event.repository.private", jobs["hacs"]["if"])
         self.assertIn("!github.event.repository.private", jobs["pages"]["if"])
         self.assertIn("startsWith(github.ref, 'refs/tags/v')", jobs["pages"]["if"])
+        self.assertIn("github.event.created", jobs["pages"]["if"])  # an old tag pushed again never goes back on Pages
         steps = jobs["build"]["steps"]
         upload = next(s for s in steps if s.get("uses", "").startswith("actions/upload-pages-artifact"))
         self.assertIn("!github.event.repository.private", upload["if"])

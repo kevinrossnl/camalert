@@ -290,21 +290,26 @@ def flow():
             d.text((mx, my - 26 if above else my + 26), label, font=font(24, True), fill=colour, anchor="mm")
 
     blue, green, orange, purple = (52, 110, 200), (40, 150, 100), (220, 120, 40), (130, 80, 190)
+    grey, dark = (90, 100, 120), (60, 60, 70)
     d.text((W / 2, 50), "How CamAlert fits together", font=font(44, True), fill=(30, 36, 50), anchor="mm")
-    box(60, 160, 330, 260, "Cameras", ["UniFi, Reolink,", "Hikvision, Dahua,", "Tapo, Axis, ..."], (90, 100, 120))
-    box(560, 160, 360, 260, "go2rtc", ["one link per camera", "RTSP + snapshots", "(optional)"], blue)
-    box(1090, 160, 360, 260, "Receiver", ["Enigma2 + CamAlert", "photo window, live,", "mosaic, tour"], green)
-    box(1580, 160, 280, 260, "TV", ["camera on screen", "while you watch"], (60, 60, 70))
-    box(1090, 560, 360, 260, "Home Assistant", ["CamAlert integration", "blueprints, MQTT"], orange)
-    box(560, 560, 360, 260, "Sensors", ["motion, person,", "doorbell, alarm"], purple)
-    arrow((390, 290), (560, 290), "RTSP")
-    arrow((920, 290), (1090, 290), "RTSP / JPEG")
-    arrow((1450, 290), (1580, 290), "HDMI")
-    arrow((920, 690), (1090, 690), "events")
-    arrow((1270, 560), (1270, 420), "")
-    d.text((1290, 490), "show / mosaic / hide", font=font(24, True), fill=(70, 80, 100), anchor="lm")
-    d.text((W / 2, 870), "Without go2rtc the receiver can also talk to the cameras directly.", font=font(24),
-           fill=(90, 98, 115), anchor="mm")
+    # top row: the picture
+    box(60, 150, 330, 260, "Cameras", ["UniFi, Reolink,", "Hikvision, Dahua,", "Tapo, Axis, ..."], grey)
+    box(500, 150, 330, 260, "go2rtc", ["one link per camera", "RTSP, snapshots,", "WebRTC (optional)"], blue)
+    box(960, 150, 400, 260, "Players + CamAlert", ["Enigma2 box, Kodi,", "Android TV / Fire TV,", "web player, browser"], green)
+    box(1520, 150, 340, 260, "Screen", ["TV, tablet or PC:", "photo window, live,", "mosaic, tour"], dark)
+    # bottom row: what tells the players to show something
+    box(500, 560, 330, 260, "Sensors", ["motion, person,", "doorbell, alarm", "(Protect, Frigate)"], purple)
+    box(960, 560, 400, 260, "Home Assistant", ["CamAlert integration:", "finds, sets up and", "updates players"], orange)
+    box(1520, 560, 340, 260, "Phone", ["HA app: picture,", "Show on TV,", "talk to the door"], grey)
+    arrow((390, 280), (500, 280), "RTSP")
+    arrow((830, 280), (960, 280), "video")
+    arrow((1360, 280), (1520, 280), "display")
+    arrow((830, 690), (960, 690), "events")
+    arrow((1360, 690), (1520, 690), "notify")
+    arrow((1160, 560), (1160, 410), "")
+    d.text((1180, 485), "show / hide / settings", font=font(24, True), fill=(70, 80, 100), anchor="lm")
+    d.text((W / 2, 862), "Players can also listen to UniFi Protect, Frigate and Foscam themselves, "
+           "and show cameras without go2rtc.", font=font(24), fill=(90, 98, 115), anchor="mm")
     return img
 
 

@@ -35,7 +35,7 @@ server. It can also [connect to the cameras directly](docs/user/without-go2rtc.m
 
 ## How it fits together
 
-![Cameras → go2rtc → player with CamAlert → TV; Home Assistant tells the player what to show](docs/images/flow.png)
+![Cameras → go2rtc → players with CamAlert (Enigma2, Kodi, Android TV, web player) → TV, tablet or PC; Home Assistant tells the players what to show and notifies phones](docs/images/flow.png)
 
 ## Features
 

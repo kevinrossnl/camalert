@@ -67,6 +67,9 @@ class Backend(api.Backend):
     def set_display(self, key, value):
         self.player.settings[key] = value
 
+    def set_guest(self, on):
+        self.player.settings["guest_mode"] = bool(on)
+
     def set_setup(self, server, camera):
         self.player.settings["server"] = server
         if camera:

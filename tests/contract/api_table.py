@@ -47,7 +47,7 @@ def prometheus(body):
 
 STATUS_KEYS = ("result", "version", "id", "name", "window", "live", "paused", "dnd", "platform", "api_version",
                "capabilities", "min_ha_version", "mqtt", "screen", "position", "size",
-               "configured", "button_signing")
+               "configured", "button_signing", "guest_mode")
 SCREENS = ("none", "photo", "strip", "notification", "live", "mosaic", "tour")  # status "screen" (#63)
 
 
@@ -162,6 +162,15 @@ TABLE = [
     row("settings_invalid_size", "/camalert/settings", {"size": "huge"}, code=400, json={"result": False}),
     get("settings_get_with_value_deprecated", "/camalert/settings", {"size": "small"},
         json={"result": True, "size": "small"}, headers={"Deprecation": "true"}),
+    # --- guest mode (#11) ----------------------------------------------------------------------------------------
+    get("guest_read_off", "/camalert/settings", json={"result": True, "guest_mode": False}, calls=[]),
+    get("guest_read_on", "/camalert/settings", settings={"guest_mode": True}, json={"result": True, "guest_mode": True}),
+    row("guest_on", "/camalert/settings", {"guest_mode": "1"}, json={"result": True, "guest_mode": True,
+                                                                       "position": "top_right"}),
+    row("guest_off_json", "/camalert/settings", body=b'{"guest_mode": false}', settings={"guest_mode": True},
+        json={"result": True, "guest_mode": False}),
+    row("guest_invalid", "/camalert/settings", {"guest_mode": "maybe"}, code=400, json={"result": False}),
+    get("guest_in_status", "/camalert/status", settings={"guest_mode": True}, json={"result": True, "guest_mode": True}),
     # --- Home Assistant sets the player up (#122): never set up = any address, else only the local network ------
     row("setup_new_player", "/camalert/setup", {"server": "http://192.168.1.10:1984", "camera": "garden"},
         json={"result": True, "configured": True, "server": "http://192.168.1.10:1984", "camera": "garden"}, calls=[]),

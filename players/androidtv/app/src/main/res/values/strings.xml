@@ -146,6 +146,8 @@
     <string name="t_e77479eb" formatted="false">UniFi cameras get their pictures from the UniFi Protect console in the devices file: faster than go2rtc.</string>
     <string name="t_75e5f19c" formatted="false">Keep cameras ready</string>
     <string name="t_43e4c1ed" formatted="false">Only while this player is on: keeps the MJPEG stream of these cameras open so the photo window shows them at once, e.g. front_door=front_door_jpeg. Empty = off.</string>
+    <string name="t_8eebf6f2" formatted="false">Privacy masks</string>
+    <string name="t_f06d0049" formatted="false">Black boxes over parts of a camera picture, on every CamAlert screen and over live video: camera=x1,y1,x2,y2 in 0..1 of the picture, several boxes with +, several cameras with |, e.g. garden=0,0,0.3,0.5. Not applied to pictures outside CamAlert.</string>
     <string name="t_97588905" formatted="false">Refresh interval</string>
     <string name="t_591884e5" formatted="false">Press OK to fetch a camera\'s photos less often (seconds), e.g. for a slow camera.</string>
     <string name="t_40405b3f" formatted="false">Multi-camera window layout</string>
@@ -170,6 +172,10 @@
     <string name="t_5be62243" formatted="false">Requests with priority \'alarm\' switch the receiver (and TV via HDMI-CEC) on.</string>
     <string name="t_28c9edf9" formatted="false">Do not disturb</string>
     <string name="t_c5b1831e" formatted="false">Ignores requests with normal priority (with \'Do not disturb blocks\' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant.</string>
+    <string name="t_87af6e38" formatted="false">Guest mode</string>
+    <string name="t_5af9f19f" formatted="false">Hides the guest mode cameras: no windows for them and not in the mosaic or the tour. Also via the API and Home Assistant.</string>
+    <string name="t_0c4af5e2" formatted="false">Guest mode cameras</string>
+    <string name="t_e980286e" formatted="false">The cameras guest mode hides, e.g. garden|living_room. Empty = all cameras.</string>
     <string name="t_f741a814" formatted="false">Do not disturb blocks</string>
     <string name="t_d73e05a4" formatted="false">Cooldown per camera</string>
     <string name="t_cd163b29" formatted="false">Seconds before the same camera is shown again, e.g. *=30|garden=120 (* = all cameras). Alarm always.</string>

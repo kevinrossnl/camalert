@@ -175,7 +175,7 @@ class CamAlertApi:
         return await self._get("dnd", {} if on is None else {"on": "1" if on else "0"})
 
     async def settings(self, **values) -> dict:
-        """Window position and/or size of the player (#84); without values: read them."""
+        """Window position and/or size (#84) or guest mode (#11, "1"/"0") of the player; without values: read."""
         return await self._get("settings", values)
 
     async def setup(self, server: str, camera: str | None = None) -> dict:

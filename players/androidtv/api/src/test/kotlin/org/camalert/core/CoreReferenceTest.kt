@@ -13,6 +13,28 @@ class CoreReferenceTest {
     private fun cases(name: String) = ref[name] as List<Map<String, Any?>>
 
     @Test
+    fun privacy() {  // #11
+        @Suppress("UNCHECKED_CAST")
+        val p = ref["privacy"] as Map<String, List<Map<String, Any?>>>
+        for (c in p.getValue("parse_masks")) {
+            val got = Privacy.parseMasks(c["text"] as String).mapValues { (_, v) -> v.map { listOf(it.x0, it.y0, it.x1, it.y1) } }
+            val want = (c["out"] as Map<*, *>).entries.associate { (k, v) ->
+                k.toString() to (v as List<*>).map { b -> (b as List<*>).map { (it as Number).toDouble() } } }
+            assertEquals("parse_masks(${c["text"]})", want, got)
+        }
+        for (c in p.getValue("mask_rects")) {
+            val box = (c["box"] as List<*>).map { (it as Number).toInt() }.toIntArray()
+            val size = (c["size"] as List<*>).map { (it as Number).toInt() }
+            val got = Privacy.maskRects(c["name"] as String, Privacy.parseMasks(c["text"] as String), box, size[0], size[1]).map { it.toList() }
+            val want = (c["out"] as List<*>).map { r -> (r as List<*>).map { (it as Number).toInt() } }
+            assertEquals("mask_rects($c)", want, got)
+        }
+        for (c in p.getValue("guest_hidden")) {
+            assertEquals("guest_hidden($c)", c["out"], Privacy.guestHidden(c["name"] as String, c["on"] as Boolean, c["text"] as String))
+        }
+    }
+
+    @Test
     fun redact() {
         for (c in cases("redact")) assertEquals("redact(${c["in"]})", c["out"], Obs.redact(c["in"] as String))
     }

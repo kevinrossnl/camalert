@@ -1381,6 +1381,10 @@ msgctxt "#30582"
 msgid "System language"
 msgstr "Systeemtaal"
 
+msgctxt "#30583"
+msgid "Guest mode"
+msgstr "Gastmodus"
+
 msgctxt "#30720"
 msgid "Text size"
 msgstr "Tekstgrootte"
@@ -1521,10 +1525,6 @@ msgctxt "#30795"
 msgid "There is no import to undo."
 msgstr "Er is geen import om ongedaan te maken."
 
-msgctxt "#30880"
-msgid "Colour keys: signing secret (Home Assistant)"
-msgstr "Kleurtoetsen: geheim voor ondertekening (Home Assistant)"
-
 msgctxt "#30800"
 msgid "Allow updates from Home Assistant"
 msgstr "Updates vanuit Home Assistant toestaan"
@@ -1549,6 +1549,10 @@ msgctxt "#30823"
 msgid "Smooth video instead of photos. When nothing plays: only while Kodi plays nothing. Also pause what plays: a film or live TV stops for the window and plays on from where it was afterwards."
 msgstr "Vloeiende video in plaats van foto's. Als er niets speelt: alleen als Kodi niets afspeelt. Ook pauzeren wat speelt: een film of live-tv stopt voor het venster en speelt daarna verder waar hij was."
 
+msgctxt "#30880"
+msgid "Colour keys: signing secret (Home Assistant)"
+msgstr "Kleurtoetsen: geheim voor ondertekening (Home Assistant)"
+
 msgctxt "#30940"
 msgid "Spoken announcement"
 msgstr "Gesproken melding"
@@ -1564,3 +1568,27 @@ msgstr "Meer go2rtc-servers"
 msgctxt "#30961"
 msgid "Other go2rtc servers, separated by commas, each with an optional prefix: garden=http://192.168.1.20:1984. Their cameras are called garden.<name>; without a prefix they keep their names (s2.<name> if the main server has the same name)."
 msgstr "Andere go2rtc-servers, gescheiden door komma's, elk met een voorvoegsel naar keuze: garden=http://192.168.1.20:1984. Hun camera's heten dan garden.<naam>; zonder voorvoegsel houden ze hun naam (s2.<naam> als de hoofdserver dezelfde naam heeft)."
+
+msgctxt "#30980"
+msgid "Privacy masks"
+msgstr "Privacymaskers"
+
+msgctxt "#30981"
+msgid "Black boxes over parts of a camera picture, on every CamAlert screen and over live video: camera=x1,y1,x2,y2 in 0..1 of the picture, several boxes with +, several cameras with |, e.g. garden=0,0,0.3,0.5. Not applied to pictures outside CamAlert."
+msgstr "Zwarte vlakken over delen van een camerabeeld, op elk CamAlert-scherm en over livevideo: camera=x1,y1,x2,y2 in 0..1 van het beeld, meerdere vlakken met +, meerdere camera's met |, bijv. garden=0,0,0.3,0.5. Geldt niet voor beelden buiten CamAlert."
+
+msgctxt "#30982"
+msgid "Guest mode"
+msgstr "Gastmodus"
+
+msgctxt "#30983"
+msgid "Hides the guest mode cameras: no windows for them and not in the mosaic or the tour. Also via the API and Home Assistant."
+msgstr "Verbergt de camera's van de gastmodus: geen vensters voor die camera's en niet in het mozaïek of de rondgang. Ook via de API en Home Assistant."
+
+msgctxt "#30984"
+msgid "Guest mode cameras"
+msgstr "Camera's in gastmodus"
+
+msgctxt "#30985"
+msgid "The cameras guest mode hides, e.g. garden|living_room. Empty = all cameras."
+msgstr "De camera's die de gastmodus verbergt, bijv. garden|living_room. Leeg = alle camera's."

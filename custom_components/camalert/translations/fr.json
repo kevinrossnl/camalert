@@ -150,6 +150,9 @@
     "switch": {
       "dnd": {
         "name": "Ne pas déranger"
+      },
+      "guest_mode": {
+        "name": "Mode invité"
       }
     },
     "event": {

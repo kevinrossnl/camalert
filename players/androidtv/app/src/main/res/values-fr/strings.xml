@@ -145,6 +145,8 @@
     <string name="t_e77479eb" formatted="false">Les caméras UniFi reçoivent leurs images de la console UniFi Protect du fichier des appareils : plus rapide que go2rtc.</string>
     <string name="t_75e5f19c" formatted="false">Garder les caméras prêtes</string>
     <string name="t_43e4c1ed" formatted="false">Seulement quand ce lecteur est allumé : garde ouvert le flux MJPEG de ces caméras pour que la fenêtre photo les affiche tout de suite, p. ex. front_door=front_door_jpeg. Vide = désactivé.</string>
+    <string name="t_8eebf6f2" formatted="false">Masques de confidentialité</string>
+    <string name="t_f06d0049" formatted="false">Zones noires sur des parties d\'une image de caméra, sur chaque écran CamAlert et sur la vidéo en direct : caméra=x1,y1,x2,y2 entre 0 et 1 de l\'image, plusieurs zones avec +, plusieurs caméras avec |, p. ex. garden=0,0,0.3,0.5. Ne s\'applique pas aux images hors de CamAlert.</string>
     <string name="t_97588905" formatted="false">Intervalle d\'actualisation</string>
     <string name="t_591884e5" formatted="false">Appuyez sur OK pour récupérer moins souvent les photos d\'une caméra (secondes), p. ex. une caméra lente.</string>
     <string name="t_40405b3f" formatted="false">Disposition de la fenêtre multi-caméras</string>
@@ -169,6 +171,10 @@
     <string name="t_5be62243" formatted="false">Les demandes de priorité \'alarm\' allument le récepteur (et la TV via HDMI-CEC).</string>
     <string name="t_28c9edf9" formatted="false">Ne pas déranger</string>
     <string name="t_c5b1831e" formatted="false">Ignore les demandes de priorité normale (avec « Ne pas déranger bloque », aussi la priorité haute). L\'alarme passe toujours. Aussi via l\'API, MQTT et Home Assistant.</string>
+    <string name="t_87af6e38" formatted="false">Mode invité</string>
+    <string name="t_5af9f19f" formatted="false">Masque les caméras du mode invité : aucune fenêtre pour elles et absentes de la mosaïque et de la ronde. Aussi via l\'API et Home Assistant.</string>
+    <string name="t_0c4af5e2" formatted="false">Caméras du mode invité</string>
+    <string name="t_e980286e" formatted="false">Les caméras masquées par le mode invité, p. ex. garden|living_room. Vide = toutes les caméras.</string>
     <string name="t_f741a814" formatted="false">Ne pas déranger bloque</string>
     <string name="t_d73e05a4" formatted="false">Délai par caméra</string>
     <string name="t_cd163b29" formatted="false">Secondes avant de réafficher la même caméra, p. ex. *=30|garden=120 (* = toutes les caméras). Alarme toujours.</string>

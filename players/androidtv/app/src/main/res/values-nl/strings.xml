@@ -145,6 +145,8 @@
     <string name="t_e77479eb" formatted="false">UniFi-camera\'s krijgen hun beelden van de UniFi Protect-console uit het apparatenbestand: sneller dan go2rtc.</string>
     <string name="t_75e5f19c" formatted="false">Camera\'s klaarhouden</string>
     <string name="t_43e4c1ed" formatted="false">Alleen zolang deze speler aan staat: houdt de MJPEG-stream van deze camera\'s open, zodat het fotovenster ze meteen toont, bijv. front_door=front_door_jpeg. Leeg = uit.</string>
+    <string name="t_8eebf6f2" formatted="false">Privacymaskers</string>
+    <string name="t_f06d0049" formatted="false">Zwarte vlakken over delen van een camerabeeld, op elk CamAlert-scherm en over livevideo: camera=x1,y1,x2,y2 in 0..1 van het beeld, meerdere vlakken met +, meerdere camera\'s met |, bijv. garden=0,0,0.3,0.5. Geldt niet voor beelden buiten CamAlert.</string>
     <string name="t_97588905" formatted="false">Verversinterval</string>
     <string name="t_591884e5" formatted="false">Druk op OK om foto\'s van een camera minder vaak op te halen (seconden), bijv. voor een trage camera.</string>
     <string name="t_40405b3f" formatted="false">Indeling van het venster met meerdere camera\'s</string>
@@ -169,6 +171,10 @@
     <string name="t_5be62243" formatted="false">Verzoeken met prioriteit \'alarm\' zetten de ontvanger (en via HDMI-CEC de tv) aan.</string>
     <string name="t_28c9edf9" formatted="false">Niet storen</string>
     <string name="t_c5b1831e" formatted="false">Negeert verzoeken met normale prioriteit (met \'Niet storen blokkeert\' ook hoge). Alarm komt altijd door. Ook via de API, MQTT en Home Assistant.</string>
+    <string name="t_87af6e38" formatted="false">Gastmodus</string>
+    <string name="t_5af9f19f" formatted="false">Verbergt de camera\'s van de gastmodus: geen vensters voor die camera\'s en niet in het mozaïek of de rondgang. Ook via de API en Home Assistant.</string>
+    <string name="t_0c4af5e2" formatted="false">Camera\'s in gastmodus</string>
+    <string name="t_e980286e" formatted="false">De camera\'s die de gastmodus verbergt, bijv. garden|living_room. Leeg = alle camera\'s.</string>
     <string name="t_f741a814" formatted="false">Niet storen blokkeert</string>
     <string name="t_d73e05a4" formatted="false">Wachttijd per camera</string>
     <string name="t_cd163b29" formatted="false">Seconden voordat dezelfde camera opnieuw getoond wordt, bijv. *=30|garden=120 (* = alle camera\'s). Alarm altijd.</string>

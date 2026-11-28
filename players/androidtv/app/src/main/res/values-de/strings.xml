@@ -145,6 +145,8 @@
     <string name="t_e77479eb" formatted="false">UniFi-Kameras bekommen ihre Bilder von der UniFi-Protect-Konsole aus der Gerätedatei: schneller als go2rtc.</string>
     <string name="t_75e5f19c" formatted="false">Kameras bereithalten</string>
     <string name="t_43e4c1ed" formatted="false">Nur solange dieses Wiedergabegerät an ist: hält den MJPEG-Stream dieser Kameras offen, damit das Fotofenster sie sofort zeigt, z. B. front_door=front_door_jpeg. Leer = aus.</string>
+    <string name="t_8eebf6f2" formatted="false">Privatsphäre-Masken</string>
+    <string name="t_f06d0049" formatted="false">Schwarze Flächen über Teilen eines Kamerabilds, auf jedem CamAlert-Bildschirm und über Live-Video: Kamera=x1,y1,x2,y2 in 0..1 des Bildes, mehrere Flächen mit +, mehrere Kameras mit |, z. B. garden=0,0,0.3,0.5. Gilt nicht für Bilder außerhalb von CamAlert.</string>
     <string name="t_97588905" formatted="false">Aktualisierungsintervall</string>
     <string name="t_591884e5" formatted="false">OK drücken, um Fotos einer Kamera seltener zu holen (Sekunden), z. B. bei einer langsamen Kamera.</string>
     <string name="t_40405b3f" formatted="false">Anordnung im Fenster mit mehreren Kameras</string>
@@ -169,6 +171,10 @@
     <string name="t_5be62243" formatted="false">Anfragen mit Priorität \'alarm\' schalten den Receiver (und per HDMI-CEC den Fernseher) ein.</string>
     <string name="t_28c9edf9" formatted="false">Nicht stören</string>
     <string name="t_c5b1831e" formatted="false">Ignoriert Anfragen mit normaler Priorität (mit \'Nicht stören blockiert\' auch hohe). Alarm kommt immer durch. Auch über die API, MQTT und Home Assistant.</string>
+    <string name="t_87af6e38" formatted="false">Gastmodus</string>
+    <string name="t_5af9f19f" formatted="false">Blendet die Kameras des Gastmodus aus: keine Fenster für sie und nicht im Mosaik oder im Rundgang. Auch über die API und Home Assistant.</string>
+    <string name="t_0c4af5e2" formatted="false">Kameras im Gastmodus</string>
+    <string name="t_e980286e" formatted="false">Die Kameras, die der Gastmodus ausblendet, z. B. garden|living_room. Leer = alle Kameras.</string>
     <string name="t_f741a814" formatted="false">Nicht stören blockiert</string>
     <string name="t_d73e05a4" formatted="false">Wartezeit pro Kamera</string>
     <string name="t_cd163b29" formatted="false">Sekunden, bevor dieselbe Kamera erneut gezeigt wird, z. B. *=30|garden=120 (* = alle Kameras). Alarm immer.</string>

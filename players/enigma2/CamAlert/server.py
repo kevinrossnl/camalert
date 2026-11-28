@@ -76,7 +76,7 @@ class Backend(api.Backend):
                 "duration": int(c.duration.value), "camera": c.camera.value, "dnd": bool(c.dnd.value),
                 "ha_webhook": c.ha_webhook.value, "ha_webhook_secret": c.ha_webhook_secret.value,
                 "allow_update": bool(c.allow_update.value), "speak": c.speak.value,
-                "position": c.position.value, "size": c.size.value,
+                "position": c.position.value, "size": c.size.value, "guest_mode": bool(c.guest_mode.value),
                 "server": c.server.value, "source": c.source.value, "wizard_done": _wizard_done(c)}
 
     def controller(self):
@@ -130,6 +130,10 @@ class Backend(api.Backend):
             return False
         threads.deferToThread(_say, url).addErrback(lambda e: log("spoken announcement failed:", e.getErrorMessage()))
         return True
+
+    def set_guest(self, on):
+        """Guest mode from the API (#11): saved on the main thread, applies to the next request at once."""
+        self.set_display("guest_mode", bool(on))
 
     def set_setup(self, server, camera):
         """go2rtc address (and default camera) from Home Assistant (#122): saved on the main thread, then the

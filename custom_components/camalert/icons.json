@@ -9,7 +9,8 @@
       "on_screen": {"default": "mdi:television", "state": {"none": "mdi:television-off"}}
     },
     "switch": {
-      "dnd": {"default": "mdi:bell-off", "state": {"off": "mdi:bell"}}
+      "dnd": {"default": "mdi:bell-off", "state": {"off": "mdi:bell"}},
+      "guest_mode": {"default": "mdi:account-eye-outline", "state": {"off": "mdi:account-group"}}
     },
     "select": {
       "window_position": {"default": "mdi:dock-window"},

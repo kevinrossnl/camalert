@@ -145,6 +145,8 @@
     <string name="t_e77479eb" formatted="false">Kamery UniFi otrzymują obrazy z konsoli UniFi Protect z pliku urządzeń: szybciej niż go2rtc.</string>
     <string name="t_75e5f19c" formatted="false">Kamery w gotowości</string>
     <string name="t_43e4c1ed" formatted="false">Tylko gdy ten odtwarzacz jest włączony: utrzymuje otwarty strumień MJPEG tych kamer, aby okno ze zdjęciem pokazało je od razu, np. front_door=front_door_jpeg. Puste = wyłączone.</string>
+    <string name="t_8eebf6f2" formatted="false">Maski prywatności</string>
+    <string name="t_f06d0049" formatted="false">Czarne prostokąty na częściach obrazu kamery, na każdym ekranie CamAlert i na wideo na żywo: kamera=x1,y1,x2,y2 w zakresie 0..1 obrazu, kilka prostokątów przez +, kilka kamer przez |, np. garden=0,0,0.3,0.5. Nie dotyczy obrazów poza CamAlert.</string>
     <string name="t_97588905" formatted="false">Odstęp odświeżania</string>
     <string name="t_591884e5" formatted="false">Naciśnij OK, aby rzadziej pobierać zdjęcia z kamery (sekundy), np. z wolnej kamery.</string>
     <string name="t_40405b3f" formatted="false">Układ okna z kilkoma kamerami</string>
@@ -169,6 +171,10 @@
     <string name="t_5be62243" formatted="false">Żądania z priorytetem \'alarm\' włączają odbiornik (i telewizor przez HDMI-CEC).</string>
     <string name="t_28c9edf9" formatted="false">Nie przeszkadzać</string>
     <string name="t_c5b1831e" formatted="false">Ignoruje żądania o normalnym priorytecie (z \'Nie przeszkadzać blokuje\' także wysokie). Alarm zawsze przechodzi. Także przez API, MQTT i Home Assistant.</string>
+    <string name="t_87af6e38" formatted="false">Tryb gościa</string>
+    <string name="t_5af9f19f" formatted="false">Ukrywa kamery trybu gościa: bez okien dla nich i bez nich w mozaice oraz obchodzie. Także przez API i Home Assistant.</string>
+    <string name="t_0c4af5e2" formatted="false">Kamery trybu gościa</string>
+    <string name="t_e980286e" formatted="false">Kamery ukrywane przez tryb gościa, np. garden|living_room. Puste = wszystkie kamery.</string>
     <string name="t_f741a814" formatted="false">Nie przeszkadzać blokuje</string>
     <string name="t_d73e05a4" formatted="false">Przerwa dla kamery</string>
     <string name="t_cd163b29" formatted="false">Sekundy, zanim ta sama kamera zostanie znów pokazana, np. *=30|garden=120 (* = wszystkie). Alarm zawsze.</string>

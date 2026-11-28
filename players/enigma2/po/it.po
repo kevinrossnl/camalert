@@ -549,6 +549,9 @@ msgstr "Telecamera sconosciuta o nessun indirizzo go2rtc valido"
 msgid "Camera not reachable"
 msgstr "Telecamera non raggiungibile"
 
+msgid "Guest mode"
+msgstr "Modalità ospite"
+
 msgid "Loading picture..."
 msgstr "Caricamento immagine..."
 
@@ -816,6 +819,12 @@ msgstr "Tenere pronte le telecamere"
 msgid "Only while this player is on: keeps the MJPEG stream of these cameras open so the photo window shows them at once, e.g. front_door=front_door_jpeg. Empty = off."
 msgstr "Solo mentre questo lettore è acceso: tiene aperto il flusso MJPEG di queste telecamere, così la finestra foto le mostra subito, ad es. front_door=front_door_jpeg. Vuoto = disattivato."
 
+msgid "Privacy masks"
+msgstr "Maschere privacy"
+
+msgid "Black boxes over parts of a camera picture, on every CamAlert screen and over live video: camera=x1,y1,x2,y2 in 0..1 of the picture, several boxes with +, several cameras with |, e.g. garden=0,0,0.3,0.5. Not applied to pictures outside CamAlert."
+msgstr "Riquadri neri su parti dell'immagine di una telecamera, in ogni schermata di CamAlert e sul video live: telecamera=x1,y1,x2,y2 tra 0 e 1 dell'immagine, più riquadri con +, più telecamere con |, ad es. garden=0,0,0.3,0.5. Non vale per le immagini fuori da CamAlert."
+
 msgid "Refresh interval"
 msgstr "Intervallo di aggiornamento"
 
@@ -896,6 +905,15 @@ msgstr "Le richieste con priorità 'alarm' accendono il ricevitore (e la TV tram
 
 msgid "Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant."
 msgstr "Ignora le richieste con priorità normale (con 'Non disturbare blocca' anche alta). L'allarme passa sempre. Anche tramite API, MQTT e Home Assistant."
+
+msgid "Hides the guest mode cameras: no windows for them and not in the mosaic or the tour. Also via the API and Home Assistant."
+msgstr "Nasconde le telecamere della modalità ospite: nessuna finestra per loro e non compaiono nel mosaico né nel giro. Anche tramite l'API e Home Assistant."
+
+msgid "Guest mode cameras"
+msgstr "Telecamere della modalità ospite"
+
+msgid "The cameras guest mode hides, e.g. garden|living_room. Empty = all cameras."
+msgstr "Le telecamere nascoste dalla modalità ospite, ad es. garden|living_room. Vuoto = tutte le telecamere."
 
 msgid "Do not disturb blocks"
 msgstr "Non disturbare blocca"

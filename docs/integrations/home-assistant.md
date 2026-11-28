@@ -59,6 +59,9 @@ the Android TV app uses Android's network service discovery.
 - A sensor **Camera on screen** (*Nothing* when no camera is shown).
 - A switch **Do not disturb** (blocks normal requests; doorbell and alarm still come through, configurable on the
   player).
+- A switch **Guest mode** (#11, players from 1.4): hides the player's guest cameras (*Guest mode cameras* on the
+  player; empty = all): no windows for them, also not for alarm, and not in the mosaic or tour. Handy in an
+  automation when guests arrive. See [privacy masks and guest mode](../user/features.md#privacy-masks-and-guest-mode).
 - An event entity **Remote button**: while a camera is on screen, the colour keys of the remote fire an event
   (`red`, `green`, `yellow`, `blue`, with the camera as attribute). The integration also fires the bus event
   `camalert_button` (`device_id`, `player`, `camera`, `button`, `verified`; `receiver` is kept for older

@@ -41,6 +41,9 @@ class FakeBackend(api.Backend):
     def set_display(self, key, value):
         self.values[key] = value
 
+    def set_guest(self, on):
+        self.values["guest_mode"] = on
+
     def set_setup(self, server, camera):
         self.values["server"] = server
         if camera:
@@ -223,15 +226,29 @@ class TestApiDetails(unittest.TestCase):
             b.set_display("size", "small")
         with self.assertRaises(NotImplementedError):
             b.set_setup("http://192.168.1.10:1984", None)
+        with self.assertRaises(NotImplementedError):
+            b.set_guest(True)
         self.assertEqual(b.status_extra(), {})
         self.assertIsNone(b.log("x"))
+
+    def test_guest_mode(self):
+        """#11: guest mode is read and switched through /camalert/settings, saved only when it changes."""
+        r = self.call("/camalert/settings", "POST", {"guest_mode": "on"})
+        self.assertIs(r.body["guest_mode"], True)
+        self.assertIs(self.b.values["guest_mode"], True)
+        self.assertIn(("normal", "guest mode on"), self.b.logged)
+        logged = len(self.b.logged)
+        self.call("/camalert/settings", "POST", {"guest_mode": "1"})
+        self.assertEqual(len(self.b.logged), logged + 1)  # only the API line, no second "guest mode on"
+        self.assertIs(self.call("/camalert/status").body["guest_mode"], True)
+        self.assertIn("guest", api.CAPABILITIES)
 
     def test_window_settings(self):
         """#84: position and size are read and saved, only when they change, with their schema choices."""
         self.assertEqual(api.DISPLAY_SETTINGS["size"], ("small", "medium", "large"))
         self.b.values.update(position="top_right", size="medium")
         r = self.call("/camalert/settings", "POST", {"size": "large"})
-        self.assertEqual(r.body, {"result": True, "position": "top_right", "size": "large"})
+        self.assertEqual(r.body, {"result": True, "position": "top_right", "size": "large", "guest_mode": False})
         self.assertEqual(self.b.values["size"], "large")
         self.assertIn(("normal", "window size set to large"), self.b.logged)
         logged = len(self.b.logged)

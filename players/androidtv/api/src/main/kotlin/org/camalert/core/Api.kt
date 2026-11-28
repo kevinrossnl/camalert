@@ -62,6 +62,8 @@ interface Backend {
     fun setWebhook(url: String, secret: String = "")
     /** Saves position or size (#84); value is one of Api.displaySettings[key]. */
     fun setDisplay(key: String, value: String)
+    /** Turns guest mode on or off (#11): the guest cameras are hidden while it is on. */
+    fun setGuest(on: Boolean)
     /** go2rtc address (and default camera, null = keep) sent by Home Assistant; shows the setup message (#122). */
     fun setSetup(server: String, camera: String?)
     fun logTail(lines: Int): List<String>
@@ -288,6 +290,17 @@ class Api(val data: CoreData = CoreData.load()) {
             }
             out[k] = v ?: s[k]
         }
+        val g = a["guest_mode"]
+        if (g != null) {  // #11
+            val on = boolParam(g, "guest_mode")
+            if (on != (s["guest_mode"] == true)) {
+                b.setGuest(on)
+                b.log("guest mode ${if (on) "on" else "off"}")
+            }
+            out["guest_mode"] = on
+        } else {
+            out["guest_mode"] = s["guest_mode"] == true
+        }
         return out
     }
 
@@ -299,6 +312,7 @@ class Api(val data: CoreData = CoreData.load()) {
         out["min_ha_version"] = data.minHaVersion
         for (k in displaySettings.keys) out[k] = s[k]  // #84
         out["configured"] = configured(s)  // #122
+        out["guest_mode"] = s["guest_mode"] == true  // #11
         out["button_signing"] = (s["ha_webhook"]?.toString() ?: "").isNotEmpty() && (s["ha_webhook_secret"]?.toString() ?: "").isNotEmpty()  // #82
         out.putAll(b.updateStatus())  // #126
         out.putAll(b.statusExtra())
@@ -367,7 +381,7 @@ class Api(val data: CoreData = CoreData.load()) {
                 args.remove("token")
             }
             val isAction = route.action || (route.name == "dnd" && "on" in args) ||
-                (route.name == "settings" && displaySettings.keys.any { it in args })
+                (route.name == "settings" && (displaySettings.keys.any { it in args } || "guest_mode" in args))
             if (isAction && req.method == "GET") {
                 headers["Deprecation"] = "true"
                 once(b, "get|${route.name}|$ip", "deprecated: $ip uses GET for /camalert/${route.name}; use POST")

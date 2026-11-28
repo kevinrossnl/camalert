@@ -21,6 +21,7 @@ from .camalert_core.events import TEST_SOURCE, add_event, event_title, is_test
 from .camalert_core.frames import LiveStill, STILL_MAX_SECONDS
 from .camalert_core.keymap import button_event, colour_action
 from .camalert_core.present import priority_label, reason as reason_code
+from .camalert_core.privacy import GUEST, guest_hidden
 from .camalert_core.rules import (blocked_by_rules, clamp_seconds, clock_tuple, cooldown_seconds, decide, dnd_blocks,
                                   in_cooldown, in_time_window, pick_mode, pick_priority)
 
@@ -254,6 +255,11 @@ class Controller(object):
         cams = parse_cams(stream)
         seconds = seconds or s["duration"]
         if len(cams) > 1:
+            cams = sources.guest_filter(cams, s)  # #11
+            if not cams:
+                self.reason = reason_code(GUEST)
+                return "ignore"
+        if len(cams) > 1:
             if 2 <= len(cams) <= 4 and pick_mode(mode, s["mode"]) == "photo":
                 return self._strip(cams, seconds, s, priority)
             return self.mosaic(",".join(cams), seconds)
@@ -266,6 +272,9 @@ class Controller(object):
         if not known_camera(stream, self.names):
             self.reason = reason_code("unknown_camera")
             return "error"
+        if guest_hidden(stream, s.get("guest_mode"), s.get("guest_cameras", "")):  # #11
+            self.reason = reason_code(GUEST)
+            return "ignore"
         mode = pick_mode(mode, s["mode"])
         urls = sources.camera_urls(stream, s)
         if not urls:
@@ -384,8 +393,9 @@ class Controller(object):
                 self.saved_volume = vol
                 kodiapi.jsonrpc("Application.SetVolume", {"volume": kodi_volume(vol, s["live_volume"])})
         mark = self.window_priority(priority)
-        name, path, _geo = video_xml(s, mark)
-        w = open_window(lambda: VideoWindow(name, path, "Default", "720p").setup(self, stream, title, snap, s, mark))
+        name, path, geo = video_xml(s, mark)
+        w = open_window(lambda: VideoWindow(name, path, "Default", "720p").setup(self, stream, title, snap, s, mark,
+                                                                                   geo))
         self.window = w
         w.start(seconds)
         self._play_in_window(w, live, title, snap, s, priority)
@@ -489,7 +499,7 @@ class Controller(object):
             if self.live_stream != stream or not self.still.picture(token):
                 _remove(path)  # the stream was faster, or live view ended / another camera meanwhile
                 return
-            self.still_win = open_window(lambda: LiveStillWindow(self, path))
+            self.still_win = open_window(lambda: LiveStillWindow(self, path, stream, s))  # masks: #11
             self.still_win.path = path
         kodiapi.log("live view %s: still picture shown" % stream, "verbose")
 
@@ -662,6 +672,10 @@ class Controller(object):
         if self.screen_off():
             return "ignore"
         streams = parse_cams(stream) or parse_cams(s["mosaic"]) or sources.overview_names(self.refresh_names(s))
+        streams = sources.guest_filter(streams, s)  # #11
+        if not streams:
+            self.reason = reason_code(GUEST)
+            return "ignore"
         cams = self._cams_with_snapshots(streams, s)
         if not cams:
             return "error"

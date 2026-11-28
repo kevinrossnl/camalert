@@ -44,6 +44,7 @@ REASON_LABELS = {
     "no_address": N_("Unknown camera or no valid go2rtc address"),
     "unreachable": N_("Camera not reachable"),
     "log_only": N_("Log only"),
+    "guest": N_("Guest mode"),
 }
 REASONS = tuple(REASON_LABELS)
 # what a tile shows instead of a picture (#49, #110): until the first picture arrives / when the camera fails

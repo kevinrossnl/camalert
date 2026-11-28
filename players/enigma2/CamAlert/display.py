@@ -8,7 +8,7 @@ import urllib.request
 
 import time
 
-from enigma import eActionMap, eTimer, ePicLoad, getDesktop, eServiceReference, eDVBVolumecontrol
+from enigma import eActionMap, eTimer, ePicLoad, getDesktop, eServiceReference, eDVBVolumecontrol, ePoint, eSize
 from Screens.Screen import Screen
 from Screens.MessageBox import MessageBox
 from Components.Label import Label
@@ -28,6 +28,7 @@ from .camalert_core.cameras import (display_name, known_camera, live_stream_name
                                     title_for)
 from .camalert_core import present
 from .camalert_core.frames import LiveStill, ProtectSnapshots, Snapshots, STILL_MAX_SECONDS
+from .camalert_core.privacy import GUEST, MAX_MASKS, guest_hidden, guest_visible, jpeg_file_size, mask_rects, parse_masks
 from .camalert_core.warm import WarmFeeds
 from .camalert_core.events import TEST_SOURCE, add_event, event_title, is_test
 from .camalert_core.api import screen_name
@@ -289,9 +290,20 @@ def all_camera_names():
 
 
 def overview_names(names):
-    """Default cameras of a mosaic or tour: all cameras except composite streams (#125)."""
+    """Default cameras of a mosaic or tour: all cameras except composite streams (#125) and guest-mode cameras."""
     from .camalert_core.urls import overview_cameras
-    return overview_cameras(names, COMPOSITES)
+    return guest_filter(overview_cameras(names, COMPOSITES))
+
+
+def guest_filter(names):
+    """names without the cameras guest mode hides right now (#11)."""
+    c = config.plugins.camalert
+    return guest_visible(names, c.guest_mode.value, c.guest_cameras.value)
+
+
+def is_guest_hidden(name):
+    c = config.plugins.camalert
+    return guest_hidden(name, c.guest_mode.value, c.guest_cameras.value)
 
 
 try:  # optional: python3-pillow turns/mirrors snapshots of cameras that hang upside down
@@ -352,11 +364,69 @@ def _download(url, path=PHOTO, orientation=None, first=False, camera=None):
     return path
 
 
+IMAGE_SIZES = {}  # camera -> (width, height) of its last picture: where the masks go over live video (#11)
+_MASKS = [None, {}]
+
+
+def current_masks():
+    """The privacy masks of the settings (#11), parsed once per change."""
+    text = config.plugins.camalert.privacy_masks.value or ""
+    if _MASKS[0] != text:
+        _MASKS[0], _MASKS[1] = text, parse_masks(text)
+    return _MASKS[1]
+
+
+def mask_skin(prefix, z=8):
+    """Skin of the black mask boxes of one picture (none without masks): moved into place per picture."""
+    if not current_masks():
+        return ""
+    return "".join('<widget name="%s%d" position="0,0" size="1,1" backgroundColor="#000000" zPosition="%d" />'
+                   % (prefix, i, z) for i in range(MAX_MASKS))
+
+
+class Masks(object):
+    """Privacy masks (#11) over one picture of a screen: black boxes, placed after each picture."""
+
+    def __init__(self, screen, prefix="mask"):
+        self.screen = screen
+        self.keys = ["%s%d" % (prefix, i) for i in range(MAX_MASKS)] if current_masks() else []
+        for k in self.keys:
+            screen[k] = Label("")
+        if self.keys:
+            screen.onLayoutFinish.append(self.hide_all)
+
+    def hide_all(self):
+        for k in self.keys:
+            self.screen[k].hide()
+
+    def place(self, name, box, image_size=None):
+        """Covers the masked areas of camera `name` drawn in box (x, y, w, h) of the screen."""
+        if not self.keys:
+            return
+        if image_size:
+            IMAGE_SIZES[name] = image_size
+        rects = mask_rects(name, current_masks(), box, image_size or IMAGE_SIZES.get(name))
+        for i, k in enumerate(self.keys):
+            w = self.screen[k]
+            if i < len(rects):
+                x, y, rw, rh = rects[i]
+                try:
+                    w.instance.move(ePoint(x, y))
+                    w.instance.resize(eSize(rw, rh))
+                except Exception as e:  # never show the picture without its mask: hide the picture instead
+                    log("privacy mask failed:", e)
+                    raise
+                w.show()
+            else:
+                w.hide()
+
+
 class Tile(object):
     """One camera in the mosaic: keeps fetching snapshots into its own pixmap widget."""
 
-    def __init__(self, screen, key, stream, url, size):
+    def __init__(self, screen, key, stream, url, size, box=None, masks=None):
         self.screen, self.key, self.stream, self.url, self.size = screen, key, stream, url, size
+        self.box, self.masks = box or (0, 0, size[0], size[1]), masks  # #11: where the tile is, its mask boxes
         self.path = "/tmp/camalert_%s.jpg" % key
         self.picload = ePicLoad()
         self.busy = False
@@ -385,6 +455,8 @@ class Tile(object):
             if self.picload.startDecode(self.path, 0, 0, False) == 0:
                 ptr = self.picload.getData()
                 if ptr is not None:
+                    if self.masks:
+                        self.masks.place(self.stream, self.box, jpeg_file_size(self.path))
                     self.screen[self.key].instance.setPixmap(ptr)
         except Exception as e:
             log("mosaic tile failed:", e)
@@ -441,6 +513,7 @@ class MosaicScreen(Screen, HelpBase):
         for i, (x, y, w, h) in enumerate(tiles):
             parts.append('<widget name="tile%d" position="%d,%d" size="%d,%d" alphatest="off" />' % (i, x, y + top, w, h))
             parts.append(error_widget("error%d" % i, x, y + top, w, h, f))
+            parts.append(mask_skin("mask%d_" % i, 3))
             parts.append('<widget name="label%d" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" noWrap="1" zPosition="5" />'
                          % (i, x + int(8 * f), y + top + int(8 * f), w // 2, int(34 * tf(f)), int(24 * tf(f))))
         parts.append("</screen>")
@@ -454,7 +527,7 @@ class MosaicScreen(Screen, HelpBase):
             self["error%d" % i] = Label("")
             self["label%d" % i] = Label(" " + title + " ")
             url = url.replace("width=640", "width=%d" % min(960, w)) if "/api/frame.jpeg" in url else url
-            self.tiles.append(Tile(self, "tile%d" % i, name, url, (w, h)))
+            self.tiles.append(Tile(self, "tile%d" % i, name, url, (w, h), (x, y + top, w, h), Masks(self, "mask%d_" % i)))
         key_actions(self, "mosaic", {"close": self.close})
         self.active = False
         register_fullscreen(self)
@@ -490,6 +563,23 @@ def first_frame_events():
                if v is not None)
 
 
+class LiveMaskScreen(Screen):
+    """Privacy masks over live video (#11): a transparent full-screen layer with only the black boxes. The video
+    keeps its aspect ratio; where it lands follows the camera's last picture (16:9 until one was seen)."""
+
+    def __init__(self, session):
+        size = getDesktop(0).size()
+        self.size = (size.width(), size.height())
+        self.skin = """<screen name="CamAlertLiveMask" position="0,0" size="%d,%d" flags="wfNoBorder" backgroundColor="#ff000000" zPosition="6">
+            %s
+        </screen>""" % (self.size + (mask_skin("mask", 1),))
+        Screen.__init__(self, session)
+        self.masks = Masks(self)
+
+    def place(self, stream):
+        self.masks.place(stream, (0, 0) + self.size, IMAGE_SIZES.get(stream) or (16, 9))
+
+
 class LiveStillScreen(Screen):
     """Full-screen still picture over a live view that is still opening (#91). The controller hides it at the
     first video frame; the picture keeps its aspect on black, like the live picture itself."""
@@ -499,18 +589,22 @@ class LiveStillScreen(Screen):
         self.size = (size.width(), size.height())
         self.skin = """<screen name="CamAlertLiveStill" position="0,0" size="%d,%d" flags="wfNoBorder" backgroundColor="#00000000" zPosition="5">
             <widget name="photo" position="0,0" size="%d,%d" alphatest="off" zPosition="1" />
-        </screen>""" % (self.size + self.size)
+            %s
+        </screen>""" % (self.size + self.size + (mask_skin("mask", 3),))
         Screen.__init__(self, session)
         self["photo"] = Pixmap()
+        self.masks = Masks(self)  # #11
         self.picload = ePicLoad()
 
-    def load(self, path):
+    def load(self, path, stream=None):
         """Shows the picture at path; False when it cannot be decoded (the live view then opens without it)."""
         try:
             self.picload.setPara((self.size[0], self.size[1], 1, 1, False, 1, "#ff000000"))
             if self.picload.startDecode(path, 0, 0, False) == 0:
                 ptr = self.picload.getData()
                 if ptr is not None:
+                    if stream:
+                        self.masks.place(stream, (0, 0) + self.size, jpeg_file_size(path))  # #11
                     self["photo"].instance.setPixmap(ptr)
                     return True
         except Exception as e:
@@ -539,14 +633,16 @@ class PhotoWindow(Screen):
             %s
             %s
             %s
+            %s
         </screen>""" % (x, y, w, h + t, w, h + t, int(10 * f), w - int(20 * f), t,
                         fit_font(base_title, w - int(20 * f), font), t, w, h,
-                        error_widget("error", 0, t, w, h, f),
+                        error_widget("error", 0, t, w, h, f), mask_skin("mask", 3),
                         hint_widget(0, t + h - hh, w, hh, f, hint_text, int(font * 0.85)),
                         frame_skin(w, h + t, f, mark))
         Screen.__init__(self, session)
         self.frame = Frame(self, mark)
         self.stream, self.url, self.size = stream, url, (w, h)
+        self.masks, self.box = Masks(self), (0, t, w, h)  # #11
         self.base_title = self.title_text = base_title
         self["title"] = Label(self.title_text)
         self["hint"] = hint_label(hint_text)
@@ -592,6 +688,7 @@ class PhotoWindow(Screen):
             if self.picload.startDecode(PHOTO, 0, 0, False) == 0:
                 ptr = self.picload.getData()
                 if ptr is not None:
+                    self.masks.place(self.stream, self.box, jpeg_file_size(PHOTO))  # before the picture (#11)
                     self["photo"].instance.setPixmap(ptr)
         except Exception as e:
             log("showing photo failed:", e)
@@ -642,6 +739,7 @@ class StripWindow(Screen):
         for i, (tx, ty, tw, th) in enumerate(tiles):
             parts.append('<widget name="tile%d" position="%d,%d" size="%d,%d" alphatest="off" zPosition="1" />' % (i, tx, ty, tw, th))
             parts.append(error_widget("error%d" % i, tx, ty, tw, th, f))
+            parts.append(mask_skin("mask%d_" % i, 3))
             parts.append('<widget name="label%d" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" noWrap="1" zPosition="5" />'
                          % (i, tx + int(6 * f), ty + int(6 * f), tw // 2, int(30 * tf(f)), int(22 * tf(f))))
         parts.append(hint_widget(0, t + h - hh, w, hh, f, hint_text, int(font * 0.85)))
@@ -659,7 +757,7 @@ class StripWindow(Screen):
             self["error%d" % i] = Label("")
             self["label%d" % i] = Label(" " + title + " ")
             url = url.replace("width=640", "width=%d" % min(960, tw)) if "/api/frame.jpeg" in url else url
-            self.tiles.append(Tile(self, "tile%d" % i, name, url, (tw, th)))
+            self.tiles.append(Tile(self, "tile%d" % i, name, url, (tw, th), (tx, ty, tw, th), Masks(self, "mask%d_" % i)))
         self.active = False
         self.close_timer = eTimer()
         self.close_timer.callback.append(self.stop)
@@ -698,12 +796,14 @@ class NotifyWindow(Screen):
             <widget name="title" position="%d,0" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" valign="center" zPosition="2" />
             <widget name="photo" position="0,%d" size="%d,%d" alphatest="off" zPosition="1" />
             %s
+            %s
         </screen>""" % (x, y, w, h + t, w, h + t, int(10 * f), w - int(20 * f), t,
                         title_font(c.title_size.value, size.width(), text_size()),
-                        t, w, h, error_widget("error", 0, t, w, h, f))
+                        t, w, h, error_widget("error", 0, t, w, h, f), mask_skin("mask", 3))
         Screen.__init__(self, session)
         self.stream, self.url, self.size = stream, url, (w, h)
         self.path = "/tmp/camalert_notify.jpg"
+        self.masks, self.box = Masks(self), (0, t, w, h)  # #11
         self["title"] = Label(text)
         self["photo"] = Pixmap()
         self["error"] = Label("")
@@ -730,6 +830,7 @@ class NotifyWindow(Screen):
             if self.picload.startDecode(self.path, 0, 0, False) == 0:
                 ptr = self.picload.getData()
                 if ptr is not None:
+                    self.masks.place(self.stream, self.box, jpeg_file_size(self.path))  # #11
                     self["photo"].instance.setPixmap(ptr)
         except Exception as e:
             log("notification photo failed:", e)
@@ -920,14 +1021,16 @@ class TourScreen(Screen, HelpBase):
         self.skin = """<screen name="CamAlertTour" position="0,0" size="%d,%d" flags="wfNoBorder" backgroundColor="#000000">
             <widget name="tile0" position="0,0" size="%d,%d" alphatest="off" />
             %s
+            %s
             <widget name="title" position="%d,%d" size="%d,%d" font="Regular;%d" foregroundColor="#ffffff" backgroundColor="#202020" zPosition="5" />
-        </screen>""" % (sw, sh, sw, sh, error_widget("error0", 0, 0, sw, sh, f), int(30 * f), int(20 * f), sw - int(60 * f),
+        </screen>""" % (sw, sh, sw, sh, error_widget("error0", 0, 0, sw, sh, f), mask_skin("mask", 3), int(30 * f), int(20 * f), sw - int(60 * f),
                         int(46 * tf(f)), int(30 * tf(f)))
         Screen.__init__(self, session)
         init_help(self)
         self.cams, self.index, self.hold, self.interval = cams, 0, False, interval
         self["tile0"] = Pixmap()
         self["error0"] = Label("")
+        self.masks = Masks(self)  # #11
         self["title"] = Label("")
         self.active = False
         self.tile = None
@@ -959,7 +1062,7 @@ class TourScreen(Screen, HelpBase):
                                                   hint("tour", name)))
         size = getDesktop(0).size()
         url = url.replace("width=640", "width=1280") if "/api/frame.jpeg" in url else url
-        self.tile = Tile(self, "tile0", name, url, (size.width(), size.height()))
+        self.tile = Tile(self, "tile0", name, url, (size.width(), size.height()), None, self.masks)
         self.tile.fetch()
         if not self.hold:
             self.timer.start(self.interval * 1000, True)
@@ -1020,6 +1123,7 @@ class Controller(object):
         self.live_timer.callback.append(self.end_live)
         self.still = LiveStill()  # #91: still picture until the live stream shows video
         self.still_screen = None
+        self.mask_screen = None  # privacy masks over live video (#11)
         self.still_timer = eTimer()
         self.still_timer.callback.append(self.hide_still)
         self.pending_play = None  # (token, service reference) of a live stream waiting for its still (#91)
@@ -1255,6 +1359,11 @@ class Controller(object):
         inStandby = None
         cams = parse_cams(stream)
         if len(cams) > 1:
+            cams = guest_filter(cams)  # #11
+            if not cams:
+                self.reason = present.reason(GUEST)
+                return "ignore"
+        if len(cams) > 1:
             if self.blocked(priority, ",".join(cams)):
                 return "ignore"
             if len(cams) <= 4 and pick_mode(mode, c.mode.value) in ("photo", "strip") or mode == "strip":
@@ -1269,6 +1378,9 @@ class Controller(object):
         if not known_camera(stream, self._names if fresh else []):
             self.reason = present.reason("unknown_camera")
             return "error"
+        if is_guest_hidden(stream):  # #11
+            self.reason = present.reason(GUEST)
+            return "ignore"
         if not fresh:
             self.refresh_names()  # camera list older than a minute: refresh it in the background
         seconds = seconds or int(c.duration.value)
@@ -1358,6 +1470,10 @@ class Controller(object):
             streams = parse_cams(streams)
         streams = streams or parse_cams(config.plugins.camalert.mosaic.value)
         if streams:
+            streams = guest_filter(streams)  # #11
+            if not streams:
+                self.reason = present.reason(GUEST)
+                return "ignore"
             return then(streams)
         if self._names:
             return then(overview_names(self._names)[:9])
@@ -1779,6 +1895,7 @@ class Controller(object):
         stream (at the latest after STILL_WAIT_SECONDS). Without a picture address the stream starts at once."""
         self.hide_still()
         self.play_timer.stop()
+        self.show_live_masks(stream)
         if not snap_url:
             self.pending_play = None
             self.session.nav.playService(ref)
@@ -1813,7 +1930,7 @@ class Controller(object):
             return  # the stream was faster, or the live view ended / changed camera meanwhile
         if self.still_screen is None:
             self.still_screen = self.session.instantiateDialog(LiveStillScreen)
-        if not self.still_screen.load(STILL):
+        if not self.still_screen.load(STILL, self.live_stream):
             self.still.playing(token)
             self.hide_still()
             self.play_soon(token, 0)
@@ -1836,8 +1953,25 @@ class Controller(object):
             s.hide()
             self.session.deleteDialog(s)
 
+    def show_live_masks(self, stream):
+        """Black boxes over the live video of a camera with privacy masks (#11); removed without masks."""
+        if not current_masks().get(stream):
+            self.hide_live_masks()
+            return
+        if self.mask_screen is None:
+            self.mask_screen = self.session.instantiateDialog(LiveMaskScreen)
+        self.mask_screen.place(stream)
+        self.mask_screen.show()
+
+    def hide_live_masks(self):
+        s, self.mask_screen = self.mask_screen, None
+        if s is not None:
+            s.hide()
+            self.session.deleteDialog(s)
+
     def end_live(self):
         reactor.callLater(0.1, _notify)
+        self.hide_live_masks()
         self.live_timer.stop()
         self.play_timer.stop()
         self.pending_play = None

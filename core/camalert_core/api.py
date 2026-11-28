@@ -41,7 +41,7 @@ from .urls import go2rtc_state, normalize_server
 
 API_VERSION = 1
 MIN_HA_VERSION = "1.0.0"  # oldest Home Assistant integration that understands this API version
-CAPABILITIES = ("cameras", "dnd", "events", "header_token", "hide", "hold", "log", "metrics", "mosaic", "post", "ptz",
+CAPABILITIES = ("cameras", "dnd", "events", "guest", "header_token", "hide", "hold", "log", "metrics", "mosaic", "post", "ptz",
                 "screen", "settings", "setup", "show", "signed_buttons", "speak", "status", "strip", "test", "tour", "update",
                 "webhook")
 # Settings a caller may change through /camalert/settings (#84), with their choices from the settings schema.
@@ -106,6 +106,10 @@ class Backend(object):
 
     def set_display(self, key, value):
         """Saves position or size (#84); value is one of DISPLAY_SETTINGS[key]."""
+        raise NotImplementedError
+
+    def set_guest(self, on):
+        """Turns guest mode on or off (#11): the guest cameras are hidden while it is on."""
         raise NotImplementedError
 
     def set_setup(self, server, camera):
@@ -292,6 +296,14 @@ def _settings(b, ctl, a, s, source):
             b.set_display(k, new[k])
             b.log("window %s set to %s" % (k, new[k]))
         out[k] = value
+    if "guest_mode" in a:  # #11
+        on = bool_param(a["guest_mode"], "guest_mode")
+        if on != bool(s.get("guest_mode")):
+            b.set_guest(on)
+            b.log("guest mode %s" % ("on" if on else "off"))
+        out["guest_mode"] = on
+    else:
+        out["guest_mode"] = bool(s.get("guest_mode"))
     return out
 
 
@@ -345,6 +357,7 @@ def _status(b, ctl, a, s, source):
                api_version=API_VERSION, capabilities=list(CAPABILITIES), min_ha_version=MIN_HA_VERSION)
     out.update({k: s.get(k) for k in DISPLAY_SETTINGS})  # #84
     out["configured"] = configured(s)  # #122
+    out["guest_mode"] = bool(s.get("guest_mode"))  # #11
     out["button_signing"] = bool(s.get("ha_webhook") and s.get("ha_webhook_secret"))  # #82
     out.update(b.update_status())  # #126
     out.update(b.status_extra())
@@ -371,7 +384,7 @@ ROUTES = {r.name: r for r in (
     Route("mosaic", _mosaic, action=True), Route("tour", _tour, action=True), Route("ptz", _ptz, action=True),
     Route("webhook", _webhook, action=True, blocking=True), Route("setup", _setup, action=True, blocking=True),
     Route("update", _update, action=True), Route("dnd", _dnd, writes=("on",)),
-    Route("status", _status), Route("settings", _settings, writes=tuple(DISPLAY_SETTINGS)),
+    Route("status", _status), Route("settings", _settings, writes=tuple(DISPLAY_SETTINGS) + ("guest_mode",)),
     Route("cameras", _cameras, blocking=True), Route("log", _log, sensitive=True),
     Route("events", _events, sensitive=True), Route("metrics", _metrics, sensitive=True),
 )}

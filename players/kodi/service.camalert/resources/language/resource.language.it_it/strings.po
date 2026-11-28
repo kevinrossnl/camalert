@@ -1381,6 +1381,10 @@ msgctxt "#30582"
 msgid "System language"
 msgstr "Lingua del sistema"
 
+msgctxt "#30583"
+msgid "Guest mode"
+msgstr "Modalità ospite"
+
 msgctxt "#30720"
 msgid "Text size"
 msgstr "Dimensione del testo"
@@ -1521,10 +1525,6 @@ msgctxt "#30795"
 msgid "There is no import to undo."
 msgstr "Non c'è nessuna importazione da annullare."
 
-msgctxt "#30880"
-msgid "Colour keys: signing secret (Home Assistant)"
-msgstr "Tasti colorati: segreto di firma (Home Assistant)"
-
 msgctxt "#30800"
 msgid "Allow updates from Home Assistant"
 msgstr "Consenti aggiornamenti da Home Assistant"
@@ -1549,6 +1549,10 @@ msgctxt "#30823"
 msgid "Smooth video instead of photos. When nothing plays: only while Kodi plays nothing. Also pause what plays: a film or live TV stops for the window and plays on from where it was afterwards."
 msgstr "Video fluido invece delle foto. Quando non è in riproduzione nulla: solo se Kodi non riproduce nulla. Metti in pausa anche la riproduzione: un film o la TV in diretta si ferma per la finestra e poi riprende da dove era."
 
+msgctxt "#30880"
+msgid "Colour keys: signing secret (Home Assistant)"
+msgstr "Tasti colorati: segreto di firma (Home Assistant)"
+
 msgctxt "#30940"
 msgid "Spoken announcement"
 msgstr "Annuncio vocale"
@@ -1564,3 +1568,27 @@ msgstr "Altri server go2rtc"
 msgctxt "#30961"
 msgid "Other go2rtc servers, separated by commas, each with an optional prefix: garden=http://192.168.1.20:1984. Their cameras are called garden.<name>; without a prefix they keep their names (s2.<name> if the main server has the same name)."
 msgstr "Altri server go2rtc, separati da virgole, ciascuno con un prefisso facoltativo: garden=http://192.168.1.20:1984. Le loro telecamere si chiamano garden.<nome>; senza prefisso mantengono il nome (s2.<nome> se il server principale ha lo stesso nome)."
+
+msgctxt "#30980"
+msgid "Privacy masks"
+msgstr "Maschere privacy"
+
+msgctxt "#30981"
+msgid "Black boxes over parts of a camera picture, on every CamAlert screen and over live video: camera=x1,y1,x2,y2 in 0..1 of the picture, several boxes with +, several cameras with |, e.g. garden=0,0,0.3,0.5. Not applied to pictures outside CamAlert."
+msgstr "Riquadri neri su parti dell'immagine di una telecamera, in ogni schermata di CamAlert e sul video live: telecamera=x1,y1,x2,y2 tra 0 e 1 dell'immagine, più riquadri con +, più telecamere con |, ad es. garden=0,0,0.3,0.5. Non vale per le immagini fuori da CamAlert."
+
+msgctxt "#30982"
+msgid "Guest mode"
+msgstr "Modalità ospite"
+
+msgctxt "#30983"
+msgid "Hides the guest mode cameras: no windows for them and not in the mosaic or the tour. Also via the API and Home Assistant."
+msgstr "Nasconde le telecamere della modalità ospite: nessuna finestra per loro e non compaiono nel mosaico né nel giro. Anche tramite l'API e Home Assistant."
+
+msgctxt "#30984"
+msgid "Guest mode cameras"
+msgstr "Telecamere della modalità ospite"
+
+msgctxt "#30985"
+msgid "The cameras guest mode hides, e.g. garden|living_room. Empty = all cameras."
+msgstr "Le telecamere nascoste dalla modalità ospite, ad es. garden|living_room. Vuoto = tutte le telecamere."

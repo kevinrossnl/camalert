@@ -9,7 +9,6 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Added
 
-<<<<<<< ours
 - **All players and Home Assistant:** a spoken announcement with a camera (#89). `camalert.show` has the fields
   `announce` (text), `tts` (TTS engine) and `language`: Home Assistant makes a WAV with its text-to-speech and the
   player plays it after the chime, when the new setting *Spoken announcement* allows it (default: doorbell and
@@ -18,7 +17,6 @@ actions and blueprint inputs stay backwards compatible.
 - **All players:** several go2rtc servers at once (#15). The main server stays in *go2rtc address*; *More go2rtc
   servers* lists the others with an optional prefix (`garden=http://192.168.1.20:1984`), whose cameras are called
   `garden.<name>`. Names of the main server do not change. See [cameras](docs/user/cameras.md#several-go2rtc-servers).
-=======
 - **Web player** (#92): a page served by the Home Assistant integration for wall tablets (Fully Kiosk) and smart-TV
   browsers, and optionally CamAlert windows on top of Home Assistant dashboards in a chosen browser. It signs in with
   Home Assistant's own login and is added as a player like the others (discovered under Devices & services). See
@@ -26,7 +24,14 @@ actions and blueprint inputs stay backwards compatible.
 - **Browser extension** (#127): the same player for Chrome and Edge on a desktop PC, without an open tab: an alert
   opens a small window, a mosaic fills the screen, with the chime. Every release has `camalert-browser-X.Y.Z.zip`
   (Load unpacked).
->>>>>>> theirs
+- **All players:** privacy masks and guest mode (#11). *Privacy masks* puts black boxes over parts of a camera
+  picture (for example a neighbour's window) on every CamAlert screen: photo window, multi-camera window,
+  notification, mosaic, tour, the still picture of live view, live video, and Kodi's video in the window. Boxes are
+  given in 0..1 of the picture: `garden=0,0,0.3,0.5+0.7,0,1,0.4`. Pictures outside CamAlert (Home Assistant camera
+  entities, phone notifications, go2rtc's own pages) are not masked. *Guest mode* hides chosen cameras (or all):
+  requests for them are ignored with the reason *Guest mode* (also alarm), and the mosaic and tour leave them out.
+  Switch it on the player, over the API (`POST /camalert/settings` with `guest_mode`) or with the new **Guest mode**
+  switch per player in Home Assistant.
 - **Home Assistant:** a doorbell without an automation. Choose the doorbell (event entity or binary sensor) and an
   optional camera in the player's options (**Configure**): every ring shows the camera on that player with priority
   high (#90).

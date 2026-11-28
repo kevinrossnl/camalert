@@ -188,6 +188,7 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
             store.set("ha_webhook_secret", secret)  // signs the colour keys (#82)
         }
         override fun setDisplay(key: String, value: String) = store.set(key, value)  // window position / size (#84)
+        override fun setGuest(on: Boolean) = store.set("guest_mode", on)  // #11
         override fun setSetup(server: String, camera: String?) {  // go2rtc address from Home Assistant (#122)
             store.set("server", server)
             if (camera != null) store.set("camera", camera)

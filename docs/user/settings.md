@@ -44,6 +44,7 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Turn or mirror image | – |  | advanced | all | Press OK to turn a camera that hangs upside down (needs python3-pillow). |
 | Pictures from UniFi Protect | Yes |  | advanced | all | UniFi cameras get their pictures from the UniFi Protect console in the devices file: faster than go2rtc. |
 | Keep cameras ready | – |  | advanced | all | Only while this player is on: keeps the MJPEG stream of these cameras open so the photo window shows them at once, e.g. front_door=front_door_jpeg. Empty = off. |
+| Privacy masks | – |  | advanced | all | Black boxes over parts of a camera picture, on every CamAlert screen and over live video: camera=x1,y1,x2,y2 in 0..1 of the picture, several boxes with +, several cameras with \|, e.g. garden=0,0,0.3,0.5. Not applied to pictures outside CamAlert. |
 | Refresh interval | – |  | advanced | all | Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera. |
 | Multi-camera window layout | `auto` | `auto` / `vertical` / `horizontal` / `grid` | advanced | all | A request with 2-4 cameras shows them together in one multi-camera window. |
 | Title size | `normal` | `small` / `normal` / `large` | advanced | all |  |
@@ -64,6 +65,8 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Until | `23:00` |  | basic | all | May pass midnight, e.g. 07:00 to 23:00. |
 | Wake up on alarm | No |  | advanced | all | Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) on. |
 | Do not disturb | No |  | basic | all | Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant. |
+| Guest mode | No |  | advanced | all | Hides the guest mode cameras: no windows for them and not in the mosaic or the tour. Also via the API and Home Assistant. |
+| Guest mode cameras | – |  | advanced | all | The cameras guest mode hides, e.g. garden\|living_room. Empty = all cameras. |
 | Do not disturb blocks | `normal` | `normal` / `high` | advanced | all |  |
 | Cooldown per camera | – |  | expert | all | Seconds before the same camera is shown again, e.g. *=30\|garden=120 (* = all cameras). Alarm always. |
 | Not while playing | `off` | `off` / `video` / `all` | advanced | all | Ignore normal requests while a video or recording plays (video) or while anything plays (all). High and alarm always come through. |

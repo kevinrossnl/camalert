@@ -8,7 +8,8 @@ import time
 import xbmcgui
 
 from . import kodiapi, sources
-from .klogic import (PTZ_TOGGLE as TOGGLE_IDS, SCREEN_H, SCREEN_W, VIDEO_FRAME, VIDEO_HINT, VIDEO_TITLE, colour_name,
+from .klogic import (PTZ_TOGGLE as TOGGLE_IDS, SCREEN_H, SCREEN_W, VIDEO_FRAME, VIDEO_HINT, VIDEO_MASKS, VIDEO_TITLE,
+                     colour_name,
                      forward_builtin, frame_name, key_action, live_key, mosaic_key, ptz_action, text_font_name,
                      title_font_name, tour_key, video_window_xml)
 from .camalert_core.cameras import parse_orientation, parse_refresh, refresh_delay
@@ -16,6 +17,7 @@ from .camalert_core.events import event_title
 from .camalert_core.present import key_hint, tile_label, tour_status
 from .camalert_core.layout import grid, strip_geometry, text_scale, window_geometry
 from .camalert_core.style import FLASH_MS, marked_title, priority_mark
+from .camalert_core.privacy import MAX_MASKS, jpeg_file_size, mask_rects, parse_masks
 
 WHITE = None
 ANIM = {"rot180": "effect=rotate end=180 center=auto", "mirror": "effect=rotatey end=180 center=auto",
@@ -144,6 +146,47 @@ class PtzMode(object):
         pass
 
 
+IMAGE_SIZES = {}  # camera -> (width, height) of its last picture: where the masks go over live video (#11)
+
+
+def masks_of(s):
+    return parse_masks((s or {}).get("privacy_masks", ""))
+
+
+def add_masks(win, s, controls=None):
+    """MAX_MASKS hidden black boxes on win (#11), only when some camera has privacy masks; added after the
+    pictures, so they lie on top of them. controls: existing image controls of a skin XML window instead."""
+    if not masks_of(s):
+        return []
+    if controls is not None:
+        return list(controls)
+    out = []
+    for _ in range(MAX_MASKS):
+        c = xbmcgui.ControlImage(0, 0, 1, 1, white(), colorDiffuse="FF000000")
+        win.addControl(c)
+        c.setVisible(False)
+        out.append(c)
+    return out
+
+
+def place_masks(controls, name, s, box, size=None):
+    """Covers the masked areas of camera `name` drawn in box (x, y, w, h) (#11); other boxes are hidden."""
+    if not controls:
+        return
+    if size:
+        IMAGE_SIZES[name] = size
+    rects = mask_rects(name, masks_of(s), box, size or IMAGE_SIZES.get(name))
+    for i, c in enumerate(controls):
+        if i < len(rects):
+            x, y, w, h = rects[i]
+            c.setPosition(x, y)
+            c.setWidth(w)
+            c.setHeight(h)
+            c.setVisible(True)
+        else:
+            c.setVisible(False)
+
+
 class Feeder(object):
     """Keeps fetching snapshots, one thread per tile (a slow camera never holds up the others), each camera with
     its own refresh interval. Every picture gets a new file name so Kodi never shows a cached one."""
@@ -190,6 +233,7 @@ class Feeder(object):
             if not self.active:
                 break
             if self.tiles[i] is t:  # not switched to another camera meanwhile
+                place_masks(t.get("masks"), t["name"], self.settings, t.get("box"), jpeg_file_size(path))  # #11
                 t["control"].setImage(path, False)
                 if first and self.on_loaded:
                     self.on_loaded(t)
@@ -321,7 +365,9 @@ class PhotoWindow(CornerKeys, PtzMode, xbmcgui.WindowDialog):
             img = xbmcgui.ControlImage(x + tx, y + ty, tw, th, "", aspectRatio=2)
             self.addControl(img)
             orient(img, name, orientation)
-            self.tiles.append({"name": name, "url": url, "control": img})
+            self.tiles.append({"name": name, "url": url, "control": img, "box": (x + tx, y + ty, tw, th)})
+        for tile in self.tiles:
+            tile["masks"] = add_masks(self, s)  # #11
         for tile, (tx, ty, tw, th) in zip(self.tiles, tiles):
             add_error_overlay(self, tile, x + tx, y + ty, tw, th, font)
         self.stream = self.cams[0][0] if n == 1 else ",".join(c[0] for c in self.cams)
@@ -420,7 +466,7 @@ def video_xml(s, priority):
     hint_h = max(22, t - 8)
     mark = priority_mark(priority, s.get("priority_border", "steady"))
     xml = video_window_xml(x, y, w, h, t, title_font_name(s["title_size"], fonts, ts),
-                           title_font_name("small", fonts, ts), hint_h, mark)
+                           title_font_name("small", fonts, ts), hint_h, mark, bool(masks_of(s)))
     base = os.path.join(kodiapi.profile_dir(), *VIDEO_XML_DIR)
     folder, media = os.path.join(base, "720p"), os.path.join(base, "media")
     for d in (folder, media):
@@ -450,8 +496,10 @@ class VideoWindow(CornerKeys, PtzMode, xbmcgui.WindowXMLDialog):
     window control shows it inside this dialog). The controller starts and stops the stream; the window shows the
     first picture (still) until the video runs, the title, the key hint and the priority frame."""
 
-    def setup(self, ctl, name, title, snap, s, priority="normal"):
+    def setup(self, ctl, name, title, snap, s, priority="normal", geo=None):
         self.ctl, self.stream, self.keys, self.settings = ctl, name, s["window_keys"], s
+        self.box = (geo[0], geo[1] + geo[4], geo[2], geo[3]) if geo else None  # where the video is (#11)
+        self.masks = []
         self.snap, self.duration, self.priority = snap, s["duration"], priority
         self.title_text = marked_title(title, priority, s.get("priority_border", "steady"), kodiapi.core_tr())
         self.timer, self.frame, self.closed, self.still_path = None, None, False, ""
@@ -466,7 +514,14 @@ class VideoWindow(CornerKeys, PtzMode, xbmcgui.WindowXMLDialog):
             bars = [self.getControl(cid) for cid in VIDEO_FRAME]
         self.frame = Frame(self, 0, 0, 0, 0, mark, bars)
         self.frame.start()
+        if self.box and masks_of(self.settings):  # #11
+            self.masks = add_masks(self, self.settings, [self.getControl(cid) for cid in VIDEO_MASKS])
+            self.place()
         self.ptz_label(False)
+
+    def place(self):
+        if self.masks:
+            place_masks(self.masks, self.stream, self.settings, self.box, IMAGE_SIZES.get(self.stream) or (16, 9))
 
     def start(self, seconds):
         if self.snap:
@@ -484,6 +539,10 @@ class VideoWindow(CornerKeys, PtzMode, xbmcgui.WindowXMLDialog):
         if self.closed:
             _remove(path)
             return
+        size = jpeg_file_size(path)
+        if size:
+            IMAGE_SIZES[self.stream] = size
+            self.place()
         self.still_path = path
         self.setProperty("still", path)
 
@@ -500,6 +559,7 @@ class VideoWindow(CornerKeys, PtzMode, xbmcgui.WindowXMLDialog):
         self.title_text = marked_title(title, self.priority, self.settings.get("priority_border", "steady"),
                                        kodiapi.core_tr())
         self.setProperty("still", "")
+        self.place()
         if url:
             threading.Thread(target=self.fetch_still, daemon=True).start()
         self.ptz_label(False)
@@ -547,7 +607,8 @@ class FullScreen(xbmcgui.WindowDialog):
         if tour:
             img = xbmcgui.ControlImage(0, top, SCREEN_W, SCREEN_H - top, "", aspectRatio=2)
             self.addControl(img)
-            self.tiles = [{"name": self.cams[0][0], "url": self.cams[0][2], "control": img}]
+            self.tiles = [{"name": self.cams[0][0], "url": self.cams[0][2], "control": img,
+                           "box": (0, top, SCREEN_W, SCREEN_H - top), "masks": add_masks(self, s)}]
             orient(img, self.cams[0][0], self.orientation)
             add_error_overlay(self, self.tiles[0], 0, top, SCREEN_W, SCREEN_H - top, font)
         else:
@@ -557,7 +618,8 @@ class FullScreen(xbmcgui.WindowDialog):
                 img = xbmcgui.ControlImage(x, y + top, w, h, "", aspectRatio=2)
                 self.addControl(img)
                 orient(img, name, self.orientation)
-                self.tiles.append({"name": name, "url": url, "control": img})
+                self.tiles.append({"name": name, "url": url, "control": img, "box": (x, y + top, w, h)})
+                self.tiles[-1]["masks"] = add_masks(self, s)  # #11
                 add_error_overlay(self, self.tiles[-1], x, y + top, w, h, font)
             for (name, title, url), (x, y, w, h) in zip(self.cams, cells):  # labels on top of all pictures
                 # dark strip behind the label: ControlLabel has no shadowColor in any Kodi version (#25)
@@ -663,12 +725,19 @@ class LiveOverlay(PtzMode, xbmcgui.WindowDialog):
         self.label = xbmcgui.ControlLabel(16, SCREEN_H - bar + 2, SCREEN_W - 32, bar - 4, "",
                                           font=text_font_name(ts, kodiapi.skin_fonts()), textColor="FFFFFFFF")
         self.addControl(self.label)
+        self.masks = add_masks(self, self.settings)  # #11: over the live video
+        self.place()
         self.ptz_label(False)
+
+    def place(self):
+        place_masks(self.masks, self.name, self.settings, (0, 0, SCREEN_W, SCREEN_H),
+                    IMAGE_SIZES.get(self.name) or (16, 9))
 
     def set_camera(self, name, title):
         if self.ptz is not None:
             self.ptz_leave()
         self.name, self.title_text = name, title
+        self.place()
         self.ptz_label(False)
 
     def ptz_label(self, on):
@@ -714,12 +783,14 @@ class LiveStillWindow(xbmcgui.WindowDialog):
     """Full-screen still picture while a live view opens (#91); the controller closes it as soon as the camera
     picture is on screen. BACK/STOP ends the live view, < > another camera, like the live overlay."""
 
-    def __init__(self, ctl, path):
+    def __init__(self, ctl, path, name=None, s=None):
         xbmcgui.WindowDialog.__init__(self)
         self.ctl = ctl
         self.addControl(xbmcgui.ControlImage(0, 0, SCREEN_W, SCREEN_H, white(), colorDiffuse="FF000000"))
         self.image = xbmcgui.ControlImage(0, 0, SCREEN_W, SCREEN_H, path, aspectRatio=2)
         self.addControl(self.image)
+        if name:  # #11
+            place_masks(add_masks(self, s), name, s, (0, 0, SCREEN_W, SCREEN_H), jpeg_file_size(path))
 
     def stop(self):
         try:

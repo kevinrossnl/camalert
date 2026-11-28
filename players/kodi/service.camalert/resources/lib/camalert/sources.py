@@ -12,6 +12,7 @@ from .camalert_core.devices.client import load_devices
 from .camalert_core.frames import ProtectSnapshots, snapshot_request, url_width
 from .camalert_core.warm import WarmFeeds, visible_cameras
 from .camalert_core.servers import combine, resolve, server_list
+from .camalert_core.privacy import guest_visible
 from .camalert_core.present import go2rtc_problem as _problem_text
 from .camalert_core.urls import (go2rtc_state, normalize_server, overview_cameras, snapshot_url, split_credentials,
                                  stream_info_from_json, streams_from_json)
@@ -98,8 +99,15 @@ COMPOSITES = set()  # composite streams (an own mosaic in go2rtc) of the last ca
 
 
 def overview_names(names):
-    """Default cameras of a mosaic, tour, screensaver or camera list: all except composite streams (#125)."""
-    return overview_cameras(names, COMPOSITES)
+    """Default cameras of a mosaic, tour, screensaver or camera list: all except composite streams (#125) and the
+    cameras guest mode hides (#11)."""
+    return guest_filter(overview_cameras(names, COMPOSITES))
+
+
+def guest_filter(names, s=None):
+    """names without the cameras guest mode hides right now (#11)."""
+    s = s or kodiapi.settings()
+    return guest_visible(names, s.get("guest_mode"), s.get("guest_cameras", ""))
 
 
 def camera_urls(name, s=None):

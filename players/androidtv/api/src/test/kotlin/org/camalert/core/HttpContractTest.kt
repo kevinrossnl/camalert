@@ -38,6 +38,8 @@ class HttpContractTest {
         override fun setWebhook(url: String, secret: String) { hook = url; this.secret = secret }
         val display = HashMap<String, String>()
         override fun setDisplay(key: String, value: String) { display[key] = value }
+        var guest: Boolean? = null
+        override fun setGuest(on: Boolean) { guest = on }
         var setup: Pair<String, String?>? = null
         override fun setSetup(server: String, camera: String?) { setup = Pair(server, camera) }
         override fun logTail(lines: Int) = listOf("started", "url http://u:pw1@x/ token=abc").take(lines)
@@ -170,6 +172,7 @@ class HttpContractTest {
             override fun logTail(lines: Int) = current!!.logTail(lines)
             override fun setWebhook(url: String, secret: String) = current!!.setWebhook(url, secret)
             override fun setDisplay(key: String, value: String) = current!!.setDisplay(key, value)
+            override fun setGuest(on: Boolean) = current!!.setGuest(on)
             override fun setSetup(server: String, camera: String?) = current!!.setSetup(server, camera)
             override fun startUpdate(version: String) = current!!.startUpdate(version)
             override fun updateStatus() = current!!.updateStatus()

@@ -23,6 +23,7 @@
   "cameras",
   "dnd",
   "events",
+  "guest",
   "header_token",
   "hide",
   "hold",
@@ -432,6 +433,7 @@
  "reason_labels": {
   "cooldown": "Cooldown (%d s)",
   "dnd": "Do not disturb",
+  "guest": "Guest mode",
   "log_only": "Log only",
   "no_address": "Unknown camera or no valid go2rtc address",
   "no_camera": "No camera given and no default camera set",
@@ -809,6 +811,20 @@
   {
    "choices": null,
    "default": "",
+   "help": "Black boxes over parts of a camera picture, on every CamAlert screen and over live video: camera=x1,y1,x2,y2 in 0..1 of the picture, several boxes with +, several cameras with |, e.g. garden=0,0,0.3,0.5. Not applied to pictures outside CamAlert.",
+   "id": "privacy_masks",
+   "label": "Privacy masks",
+   "level": "advanced",
+   "max": null,
+   "min": null,
+   "section": "display",
+   "step": null,
+   "type": "text",
+   "unit": null
+  },
+  {
+   "choices": null,
+   "default": "",
    "help": "Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera.",
    "id": "refresh",
    "label": "Refresh interval",
@@ -1015,6 +1031,34 @@
    "section": "rules",
    "step": null,
    "type": "bool",
+   "unit": null
+  },
+  {
+   "choices": null,
+   "default": false,
+   "help": "Hides the guest mode cameras: no windows for them and not in the mosaic or the tour. Also via the API and Home Assistant.",
+   "id": "guest_mode",
+   "label": "Guest mode",
+   "level": "advanced",
+   "max": null,
+   "min": null,
+   "section": "rules",
+   "step": null,
+   "type": "bool",
+   "unit": null
+  },
+  {
+   "choices": null,
+   "default": "",
+   "help": "The cameras guest mode hides, e.g. garden|living_room. Empty = all cameras.",
+   "id": "guest_cameras",
+   "label": "Guest mode cameras",
+   "level": "advanced",
+   "max": null,
+   "min": null,
+   "section": "rules",
+   "step": null,
+   "type": "text",
    "unit": null
   },
   {

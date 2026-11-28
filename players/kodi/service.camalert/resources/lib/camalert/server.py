@@ -105,6 +105,9 @@ class Backend(api.Backend):
     def set_display(self, key, value):
         kodiapi.set_setting(key, value)  # window position or size from the API (#84)
 
+    def set_guest(self, on):
+        kodiapi.set_setting("guest_mode", bool(on))  # guest mode from the API (#11)
+
     def set_setup(self, server, camera):
         """go2rtc address (and default camera) from Home Assistant (#122); the camera list follows at once."""
         kodiapi.set_setting("server", server)

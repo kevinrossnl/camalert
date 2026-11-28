@@ -165,6 +165,8 @@ _add("auto_bouquet", lambda: ConfigYesNo(default=True))
 _add("bouquet_position", lambda: ConfigSelection(default="keep", choices=[
     ("keep", _("Where I put it")), ("bottom", _("At the bottom")), ("top", _("At the top"))]))
 _add("dnd", lambda: ConfigYesNo(default=False))
+_add("guest_mode", lambda: ConfigYesNo(default=False))  # #11
+_add("guest_cameras", lambda: ConfigText(default="", fixed_size=False))
 _add("dnd_level", lambda: ConfigSelection(default="normal", choices=[
     # short values like Kodi (#56): long ones overlapped the label; HELP explains the rest
     ("normal", _("Normal priority")), ("high", _("Normal and high priority"))]))
@@ -174,6 +176,7 @@ _add("skip_playing", lambda: ConfigSelection(default="off", choices=[
 _add("orientation", lambda: ConfigText(default="", fixed_size=False))
 _add("protect_snapshots", lambda: ConfigYesNo(default=True))
 _add("ready_cameras", lambda: ConfigText(default="", fixed_size=False))
+_add("privacy_masks", lambda: ConfigText(default="", fixed_size=False))  # #11
 _add("refresh", lambda: ConfigText(default="", fixed_size=False))
 _add("strip_layout", lambda: ConfigSelection(default="auto", choices=[
     ("auto", _("Automatic")), ("vertical", _("Below each other")), ("horizontal", _("Next to each other")),

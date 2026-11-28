@@ -1381,6 +1381,10 @@ msgctxt "#30582"
 msgid "System language"
 msgstr ""
 
+msgctxt "#30583"
+msgid "Guest mode"
+msgstr ""
+
 msgctxt "#30720"
 msgid "Text size"
 msgstr ""
@@ -1521,10 +1525,6 @@ msgctxt "#30795"
 msgid "There is no import to undo."
 msgstr ""
 
-msgctxt "#30880"
-msgid "Colour keys: signing secret (Home Assistant)"
-msgstr ""
-
 msgctxt "#30800"
 msgid "Allow updates from Home Assistant"
 msgstr ""
@@ -1549,6 +1549,10 @@ msgctxt "#30823"
 msgid "Smooth video instead of photos. When nothing plays: only while Kodi plays nothing. Also pause what plays: a film or live TV stops for the window and plays on from where it was afterwards."
 msgstr ""
 
+msgctxt "#30880"
+msgid "Colour keys: signing secret (Home Assistant)"
+msgstr ""
+
 msgctxt "#30940"
 msgid "Spoken announcement"
 msgstr ""
@@ -1563,4 +1567,28 @@ msgstr ""
 
 msgctxt "#30961"
 msgid "Other go2rtc servers, separated by commas, each with an optional prefix: garden=http://192.168.1.20:1984. Their cameras are called garden.<name>; without a prefix they keep their names (s2.<name> if the main server has the same name)."
+msgstr ""
+
+msgctxt "#30980"
+msgid "Privacy masks"
+msgstr ""
+
+msgctxt "#30981"
+msgid "Black boxes over parts of a camera picture, on every CamAlert screen and over live video: camera=x1,y1,x2,y2 in 0..1 of the picture, several boxes with +, several cameras with |, e.g. garden=0,0,0.3,0.5. Not applied to pictures outside CamAlert."
+msgstr ""
+
+msgctxt "#30982"
+msgid "Guest mode"
+msgstr ""
+
+msgctxt "#30983"
+msgid "Hides the guest mode cameras: no windows for them and not in the mosaic or the tour. Also via the API and Home Assistant."
+msgstr ""
+
+msgctxt "#30984"
+msgid "Guest mode cameras"
+msgstr ""
+
+msgctxt "#30985"
+msgid "The cameras guest mode hides, e.g. garden|living_room. Empty = all cameras."
 msgstr ""

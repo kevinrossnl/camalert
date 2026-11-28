@@ -150,6 +150,9 @@
     "switch": {
       "dnd": {
         "name": "Non disturbare"
+      },
+      "guest_mode": {
+        "name": "Modalità ospite"
       }
     },
     "event": {

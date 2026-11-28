@@ -165,7 +165,11 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
             }
             return Pair("ignore", "screen_off")
         }
-        val cams = Cameras.parseCams(stream)
+        val guestOn = s["guest_mode"] == true
+        val guestText = s["guest_cameras"]?.toString()
+        val all = Cameras.parseCams(stream)
+        val cams = if (all.size > 1) Privacy.guestVisible(all, guestOn, guestText) else all  // #11
+        if (all.size > 1 && cams.isEmpty()) return Pair("ignore", Privacy.GUEST)
         val secs = seconds ?: (s["duration"] as? Number)?.toInt() ?: 30
         val m = Rules.pickMode(mode, s["mode"]?.toString() ?: "photo")
         if (cams.size > 1) {
@@ -180,6 +184,7 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
         val name = stream ?: s["camera"]?.toString() ?: ""
         if (name.isEmpty()) return Pair("error", "no_camera")
         if (!Cameras.knownCamera(name, knownNames())) return Pair("error", "unknown_camera")
+        if (Privacy.guestHidden(name, guestOn, guestText)) return Pair("ignore", Privacy.GUEST)  // #11
         val t = tile(name, s) ?: return Pair("error", "no_address")
         val inHours = Rules.inTimeWindow(env.localTime(), Rules.clockTuple(s["from_time"]?.toString()), Rules.clockTuple(s["until_time"]?.toString()))
         val skip = s["skip_playing"]?.toString() ?: "off"
@@ -207,15 +212,18 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
         return Pair("show", "")
     }
 
-    private fun tilesOf(stream: String?, s: Map<String, Any?>): List<Tile> {
-        val streams = Cameras.parseCams(stream).ifEmpty { Cameras.parseCams(s["mosaic"]?.toString()) }.ifEmpty { Urls.overviewCameras(refreshNames(), env.compositeStreams()) }
+    /** The cameras of a mosaic or tour without the ones guest mode hides (#11); null when guest mode hides all. */
+    private fun tilesOf(stream: String?, s: Map<String, Any?>): List<Tile>? {
+        val wanted = Cameras.parseCams(stream).ifEmpty { Cameras.parseCams(s["mosaic"]?.toString()) }.ifEmpty { Urls.overviewCameras(refreshNames(), env.compositeStreams()) }
+        val streams = Privacy.guestVisible(wanted, s["guest_mode"] == true, s["guest_cameras"]?.toString())
+        if (wanted.isNotEmpty() && streams.isEmpty()) return null
         return streams.take(9).mapNotNull { tile(it, s) }.filter { it.snapshot != null }
     }
 
     override fun mosaic(streams: String?, seconds: Int): String {
         val s = env.settings()
         if (!env.screenOn()) return "ignore"
-        val tiles = tilesOf(streams, s)
+        val tiles = tilesOf(streams, s) ?: return "ignore"
         if (tiles.isEmpty()) return "error"
         display.mosaic(tiles, if (seconds > 0) Rules.clampSeconds(seconds, 60) else 0)
         env.changed()
@@ -225,7 +233,7 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
     override fun tour(streams: String?, interval: Int?): String {
         val s = env.settings()
         if (!env.screenOn()) return "ignore"
-        val tiles = tilesOf(streams, s)
+        val tiles = tilesOf(streams, s) ?: return "ignore"
         if (tiles.isEmpty()) return "error"
         display.tour(tiles, interval ?: (s["tour_interval"] as? Number)?.toInt() ?: 8)
         env.changed()

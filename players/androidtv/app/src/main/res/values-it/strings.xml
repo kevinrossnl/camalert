@@ -145,6 +145,8 @@
     <string name="t_e77479eb" formatted="false">Le telecamere UniFi ricevono le immagini dalla console UniFi Protect del file dispositivi: più veloce di go2rtc.</string>
     <string name="t_75e5f19c" formatted="false">Tenere pronte le telecamere</string>
     <string name="t_43e4c1ed" formatted="false">Solo mentre questo lettore è acceso: tiene aperto il flusso MJPEG di queste telecamere, così la finestra foto le mostra subito, ad es. front_door=front_door_jpeg. Vuoto = disattivato.</string>
+    <string name="t_8eebf6f2" formatted="false">Maschere privacy</string>
+    <string name="t_f06d0049" formatted="false">Riquadri neri su parti dell\'immagine di una telecamera, in ogni schermata di CamAlert e sul video live: telecamera=x1,y1,x2,y2 tra 0 e 1 dell\'immagine, più riquadri con +, più telecamere con |, ad es. garden=0,0,0.3,0.5. Non vale per le immagini fuori da CamAlert.</string>
     <string name="t_97588905" formatted="false">Intervallo di aggiornamento</string>
     <string name="t_591884e5" formatted="false">Premere OK per scaricare meno spesso le foto di una telecamera (secondi), ad es. per una telecamera lenta.</string>
     <string name="t_40405b3f" formatted="false">Disposizione della finestra con più telecamere</string>
@@ -169,6 +171,10 @@
     <string name="t_5be62243" formatted="false">Le richieste con priorità \'alarm\' accendono il ricevitore (e la TV tramite HDMI-CEC).</string>
     <string name="t_28c9edf9" formatted="false">Non disturbare</string>
     <string name="t_c5b1831e" formatted="false">Ignora le richieste con priorità normale (con \'Non disturbare blocca\' anche alta). L\'allarme passa sempre. Anche tramite API, MQTT e Home Assistant.</string>
+    <string name="t_87af6e38" formatted="false">Modalità ospite</string>
+    <string name="t_5af9f19f" formatted="false">Nasconde le telecamere della modalità ospite: nessuna finestra per loro e non compaiono nel mosaico né nel giro. Anche tramite l\'API e Home Assistant.</string>
+    <string name="t_0c4af5e2" formatted="false">Telecamere della modalità ospite</string>
+    <string name="t_e980286e" formatted="false">Le telecamere nascoste dalla modalità ospite, ad es. garden|living_room. Vuoto = tutte le telecamere.</string>
     <string name="t_f741a814" formatted="false">Non disturbare blocca</string>
     <string name="t_d73e05a4" formatted="false">Attesa per telecamera</string>
     <string name="t_cd163b29" formatted="false">Secondi prima di mostrare di nuovo la stessa telecamera, ad es. *=30|garden=120 (* = tutte). Allarme sempre.</string>

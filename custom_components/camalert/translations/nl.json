@@ -150,6 +150,9 @@
     "switch": {
       "dnd": {
         "name": "Niet storen"
+      },
+      "guest_mode": {
+        "name": "Gastmodus"
       }
     },
     "event": {

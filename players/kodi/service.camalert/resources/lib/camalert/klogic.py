@@ -80,6 +80,7 @@ DEFAULTS = {
     "enabled": True, "source": "go2rtc", "server": "", "more_servers": "", "rtsp_port": 8554,
     "verify_ssl": True, "camera_file": "", "camera": "", "titles": "", "mosaic": "",
     "orientation": "", "refresh": "", "strip_layout": "auto", "protect_snapshots": True, "ready_cameras": "",
+    "privacy_masks": "", "guest_mode": False, "guest_cameras": "",
     "mode": "photo", "duration": 30, "position": "top_right", "size": "medium",
     "pause_tv": False, "video_window": "idle", "live_return": True, "live_volume": 100, "live_format": "mp4",
     "limit_hours": False, "from_time": "07:00", "until_time": "23:00", "skip_playing": "off",
@@ -213,9 +214,10 @@ def _xml_text(text):
 
 VIDEO_TITLE, VIDEO_HINT, VIDEO_STILL = 102, 104, 101
 VIDEO_FRAME = (110, 111, 112, 113)
+VIDEO_MASKS = tuple(range(120, 128))  # privacy mask boxes over the video (#11), placed from Python
 
 
-def video_window_xml(x, y, w, h, t, title_font, hint_font, hint_h, mark=None):
+def video_window_xml(x, y, w, h, t, title_font, hint_font, hint_h, mark=None, masks=False):
     """Skin XML (720p coordinates, like SCREEN_W/SCREEN_H) of the video window (#129): dark background, the still
     picture (window property 'still') under the video window (so the first picture shows until the video runs),
     title bar on top, key hint strip at the bottom, and the priority frame (#48) when mark is set. Label texts are
@@ -239,6 +241,9 @@ def video_window_xml(x, y, w, h, t, title_font, hint_font, hint_h, mark=None):
     image(VIDEO_STILL, x, y + t, w, h, "$INFO[Window.Property(still)]", extra="<aspectratio>keep</aspectratio>")
     parts.append('    <control type="videowindow"><left>%d</left><top>%d</top><width>%d</width><height>%d</height>'
                  '</control>' % (x, y + t, w, h))
+    if masks:  # #11: black boxes over the video, sized from Python (0 x 0 = nothing until then)
+        for cid in VIDEO_MASKS:
+            image(cid, x, y + t, 0, 0, "white.png", "FF000000")
     label(VIDEO_TITLE, x + 8, y, w - 16, t, title_font, "FFFFFFFF", "left")
     image(103, x, y + total - hint_h, w, hint_h, "white.png", "99000000")
     label(VIDEO_HINT, x + 8, y + total - hint_h, w - 16, hint_h, hint_font, "FFDDDDDD", "center")

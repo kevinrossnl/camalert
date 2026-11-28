@@ -548,6 +548,9 @@ msgstr ""
 msgid "Camera not reachable"
 msgstr ""
 
+msgid "Guest mode"
+msgstr ""
+
 msgid "Loading picture..."
 msgstr ""
 
@@ -815,6 +818,12 @@ msgstr ""
 msgid "Only while this player is on: keeps the MJPEG stream of these cameras open so the photo window shows them at once, e.g. front_door=front_door_jpeg. Empty = off."
 msgstr ""
 
+msgid "Privacy masks"
+msgstr ""
+
+msgid "Black boxes over parts of a camera picture, on every CamAlert screen and over live video: camera=x1,y1,x2,y2 in 0..1 of the picture, several boxes with +, several cameras with |, e.g. garden=0,0,0.3,0.5. Not applied to pictures outside CamAlert."
+msgstr ""
+
 msgid "Refresh interval"
 msgstr ""
 
@@ -894,6 +903,15 @@ msgid "Requests with priority 'alarm' switch the receiver (and TV via HDMI-CEC) 
 msgstr ""
 
 msgid "Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant."
+msgstr ""
+
+msgid "Hides the guest mode cameras: no windows for them and not in the mosaic or the tour. Also via the API and Home Assistant."
+msgstr ""
+
+msgid "Guest mode cameras"
+msgstr ""
+
+msgid "The cameras guest mode hides, e.g. garden|living_room. Empty = all cameras."
 msgstr ""
 
 msgid "Do not disturb blocks"

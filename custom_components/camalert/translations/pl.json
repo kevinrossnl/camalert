@@ -150,6 +150,9 @@
     "switch": {
       "dnd": {
         "name": "Nie przeszkadzać"
+      },
+      "guest_mode": {
+        "name": "Tryb gościa"
       }
     },
     "event": {

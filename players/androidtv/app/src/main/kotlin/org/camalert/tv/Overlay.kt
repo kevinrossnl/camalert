@@ -394,7 +394,12 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
                         first = false
                         val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size) ?: throw java.io.IOException("not an image")
                         val shown = orient(bmp, orientation)
-                        main.post { if (!stop.get()) { view.setImageBitmap(shown); error.visibility = View.GONE } }
+                        main.post {
+                            if (!stop.get()) {
+                                (view.tag as? MaskView)?.show(tile.name, shown.width, shown.height)  // #11, before the picture
+                                view.setImageBitmap(shown); error.visibility = View.GONE
+                            }
+                        }
                         failed = false
                     } catch (e: InterruptedException) {
                         break
@@ -417,6 +422,9 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
         fun tileView(parent: FrameLayout, tile: Tile, r: Layout.Rect, font: Float, label: Boolean): ImageView {
             val iv = ImageView(ctx).apply { scaleType = ImageView.ScaleType.FIT_CENTER; setBackgroundColor(Color.BLACK) }
             parent.addView(iv, FrameLayout.LayoutParams(r.w, r.h).apply { leftMargin = r.x; topMargin = r.y })
+            val mask = MaskView(ctx) { host.settings() }  // #11: privacy masks on top of the picture
+            parent.addView(mask, FrameLayout.LayoutParams(r.w, r.h).apply { leftMargin = r.x; topMargin = r.y })
+            iv.tag = mask
             if (label) {
                 val l = text(font)
                 l.text = tile.title
@@ -538,6 +546,7 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
         lateinit var bar: TextView
         val still = org.camalert.core.LiveStill()  // #91: still picture until the first video frame
         var stillView: ImageView? = null
+        var maskView: MaskView? = null  // #11: privacy masks over the video and the still picture
         private val stillTimeout = Runnable { if (still.expired()) stillView?.visibility = View.GONE }
 
         override fun build(m: DisplayMetrics): WindowManager.LayoutParams {
@@ -550,6 +559,8 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
                 visibility = View.GONE
             }
             root.addView(stillView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+            maskView = MaskView(ctx) { host.settings() }
+            root.addView(maskView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
             val font = Layout.titleFont("normal", m.widthPixels, textSize()).toFloat()
             bar = text(font)
             bar.setBackgroundColor(0x99000000.toInt())
@@ -568,6 +579,12 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
                     CamLog.log("live view ${tile.name} failed: ${error.errorCodeName}", "error")
                     host.unreachable()
                     errorView?.visibility = View.VISIBLE
+                }
+                override fun onVideoSizeChanged(videoSize: androidx.media3.common.VideoSize) {
+                    if (videoSize.width > 0 && videoSize.height > 0) {
+                        val w = (videoSize.width * videoSize.pixelWidthHeightRatio).toInt()
+                        maskView?.show(tile.name, w, videoSize.height)
+                    }
                 }
                 override fun onRenderedFirstFrame() {
                     errorView?.visibility = View.GONE
@@ -591,6 +608,7 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
                 else -> DefaultMediaSourceFactory(ctx).createMediaSource(item)
             }
             errorView?.visibility = View.GONE
+            maskView?.show(t.name)  // #11: before the first frame of this camera
             p.setMediaSource(source)
             p.prepare()
             p.playWhenReady = true
@@ -623,6 +641,7 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
                 }
                 if (bmp != null) main.post {
                     if (!stop.get() && still.picture(token)) {
+                        maskView?.show(t.name, bmp.width, bmp.height)  // #11
                         stillView?.setImageBitmap(bmp)
                         stillView?.visibility = View.VISIBLE
                         main.postDelayed(stillTimeout, (org.camalert.core.CoreData.load().stillMaxSeconds * 1000).toLong() + 100)

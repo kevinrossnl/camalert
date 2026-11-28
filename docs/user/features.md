@@ -41,6 +41,27 @@ Frigate events use the sub label (a recognised face or plate) or the object labe
 CamAlert makes a name from the go2rtc name ("front_door" → "Front door"). The name is used everywhere: channel list,
 photo window, mosaic, tour and Home Assistant.
 
+## Privacy masks and guest mode
+
+**Privacy masks** (setting *Privacy masks*, #11) put black boxes over parts of a camera picture, for example a
+neighbour's window or garden, on every CamAlert screen of that camera: the photo window, the multi-camera window,
+notifications, the mosaic, the tour, the still picture while live view opens, live video, and Kodi's video in the
+window. A box is given in fractions of the picture (0 = left / top, 1 = right / bottom) as `x1,y1,x2,y2`, several
+boxes with `+`, several cameras with `|`:
+
+    garden=0,0,0.3,0.5+0.7,0,1,0.4|front_door=0.6,0.6,1,1
+
+The boxes are drawn on screen over the picture as CamAlert shows it (after turning or mirroring); the picture files
+themselves are not changed. Live video gets its boxes from the size of the camera's last picture (16:9 until there
+was one); while a live view opens, the first fraction of a second of video can show before the boxes are in place
+on Kodi. Pictures that do not pass through CamAlert are **not** masked: Home Assistant camera entities, phone
+notifications and go2rtc's own pages. Use the masks of your camera or NVR for those.
+
+**Guest mode** (setting *Guest mode*, also the **Guest mode** switch in Home Assistant and `guest_mode` in the API)
+hides the cameras in *Guest mode cameras* (empty = all cameras): requests for them are ignored with the reason
+*Guest mode* - also alarm - and the mosaic and tour leave them out. The cameras stay in the player's own camera lists
+and in Home Assistant.
+
 ## Turning and mirroring the image
 
 *Turn or mirror image* (OK on the row): per camera *mirror*, *upside down (flip)* or *turned 180 degrees*. It is

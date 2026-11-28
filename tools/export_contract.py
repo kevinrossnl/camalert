@@ -29,7 +29,7 @@ for p in (os.path.join(ROOT, "core"), TESTS):
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from camalert_core import access, api, discovery, frames, keymap, layout, present, rules, schema, style  # noqa: E402
+from camalert_core import access, api, discovery, frames, keymap, layout, present, privacy, rules, schema, style  # noqa: E402
 from camalert_core.devices.config import PTZ_ACTIONS  # noqa: E402
 from camalert_core.mqtt import topics as mqtt_topics  # noqa: E402
 from camalert_core.obs import log as obslog, metrics as obsmetrics  # noqa: E402
@@ -219,7 +219,23 @@ def core_reference():
                                for a, b in (("system", "nl_NL"), ("system", "de-DE"), ("de", "nl"), ("system", ""),
                                             ("system", "ja"), ("xx", "fr"))],
     }
+    mask_texts = ("garden=0,0,0.3,0.5+1,1,0.7,0.6;0.1,0.1,0.1,0.9|front_door=0.6,0.6,1.5,1|drive=a,b,c,d|=0,0,1,1",
+                  "x=" + "+".join("0,0,0.%d,1" % (i + 1) for i in range(10)), "", "x=0,0,0.5,0.5|x=0.5,0.5,1,1",
+                  " garden = 0.333,0.333,0.667,0.667 ")
+    privacy_cases = {  # #11
+        "parse_masks": [{"text": t, "out": {k: [list(b) for b in v] for k, v in privacy.parse_masks(t).items()}}
+                        for t in mask_texts],
+        "mask_rects": [{"text": t, "name": n, "box": list(b), "size": list(sz),
+                        "out": [list(r) for r in privacy.mask_rects(n, privacy.parse_masks(t), b, sz)]}
+                       for t in mask_texts for n in ("garden", "front_door", "x")
+                       for b in ((0, 0, 640, 360), (100, 50, 640, 480), (10, 20, 400, 400), (0, 0, 641, 361))
+                       for sz in ((0, 0), (1920, 1080), (1080, 1920), (16, 9))],
+        "guest_hidden": [{"name": n, "on": on, "text": t, "out": privacy.guest_hidden(n, on, t)}
+                         for n in ("garden", "front_door") for on in (False, True)
+                         for t in ("", "garden", " garden , drive ", "a b|c")],
+    }
     return {
+        "privacy": privacy_cases,
         "style": style_cases,
         "_": HEADER,
         "geometry": geometry,

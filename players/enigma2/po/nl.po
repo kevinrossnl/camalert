@@ -549,6 +549,9 @@ msgstr "Onbekende camera of geen geldig go2rtc-adres"
 msgid "Camera not reachable"
 msgstr "Camera niet bereikbaar"
 
+msgid "Guest mode"
+msgstr "Gastmodus"
+
 msgid "Loading picture..."
 msgstr "Beeld laden..."
 
@@ -816,6 +819,12 @@ msgstr "Camera's klaarhouden"
 msgid "Only while this player is on: keeps the MJPEG stream of these cameras open so the photo window shows them at once, e.g. front_door=front_door_jpeg. Empty = off."
 msgstr "Alleen zolang deze speler aan staat: houdt de MJPEG-stream van deze camera's open, zodat het fotovenster ze meteen toont, bijv. front_door=front_door_jpeg. Leeg = uit."
 
+msgid "Privacy masks"
+msgstr "Privacymaskers"
+
+msgid "Black boxes over parts of a camera picture, on every CamAlert screen and over live video: camera=x1,y1,x2,y2 in 0..1 of the picture, several boxes with +, several cameras with |, e.g. garden=0,0,0.3,0.5. Not applied to pictures outside CamAlert."
+msgstr "Zwarte vlakken over delen van een camerabeeld, op elk CamAlert-scherm en over livevideo: camera=x1,y1,x2,y2 in 0..1 van het beeld, meerdere vlakken met +, meerdere camera's met |, bijv. garden=0,0,0.3,0.5. Geldt niet voor beelden buiten CamAlert."
+
 msgid "Refresh interval"
 msgstr "Verversinterval"
 
@@ -896,6 +905,15 @@ msgstr "Verzoeken met prioriteit 'alarm' zetten de ontvanger (en via HDMI-CEC de
 
 msgid "Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant."
 msgstr "Negeert verzoeken met normale prioriteit (met 'Niet storen blokkeert' ook hoge). Alarm komt altijd door. Ook via de API, MQTT en Home Assistant."
+
+msgid "Hides the guest mode cameras: no windows for them and not in the mosaic or the tour. Also via the API and Home Assistant."
+msgstr "Verbergt de camera's van de gastmodus: geen vensters voor die camera's en niet in het mozaïek of de rondgang. Ook via de API en Home Assistant."
+
+msgid "Guest mode cameras"
+msgstr "Camera's in gastmodus"
+
+msgid "The cameras guest mode hides, e.g. garden|living_room. Empty = all cameras."
+msgstr "De camera's die de gastmodus verbergt, bijv. garden|living_room. Leeg = alle camera's."
 
 msgid "Do not disturb blocks"
 msgstr "Niet storen blokkeert"

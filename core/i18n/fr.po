@@ -732,6 +732,10 @@ msgstr "Caméra inconnue ou aucune adresse go2rtc valide"
 msgid "Camera not reachable"
 msgstr "Caméra injoignable"
 
+#: e2 kodi:30583 kodi:30982 ha:entity.switch.guest_mode.name
+msgid "Guest mode"
+msgstr "Mode invité"
+
 #: e2 kodi:30567 web
 msgid "Loading picture..."
 msgstr "Chargement de l'image..."
@@ -1088,6 +1092,14 @@ msgstr "Garder les caméras prêtes"
 msgid "Only while this player is on: keeps the MJPEG stream of these cameras open so the photo window shows them at once, e.g. front_door=front_door_jpeg. Empty = off."
 msgstr "Seulement quand ce lecteur est allumé : garde ouvert le flux MJPEG de ces caméras pour que la fenêtre photo les affiche tout de suite, p. ex. front_door=front_door_jpeg. Vide = désactivé."
 
+#: e2 kodi:30980
+msgid "Privacy masks"
+msgstr "Masques de confidentialité"
+
+#: e2 kodi:30981
+msgid "Black boxes over parts of a camera picture, on every CamAlert screen and over live video: camera=x1,y1,x2,y2 in 0..1 of the picture, several boxes with +, several cameras with |, e.g. garden=0,0,0.3,0.5. Not applied to pictures outside CamAlert."
+msgstr "Zones noires sur des parties d'une image de caméra, sur chaque écran CamAlert et sur la vidéo en direct : caméra=x1,y1,x2,y2 entre 0 et 1 de l'image, plusieurs zones avec +, plusieurs caméras avec |, p. ex. garden=0,0,0.3,0.5. Ne s'applique pas aux images hors de CamAlert."
+
 #: e2 kodi:30064
 msgid "Refresh interval"
 msgstr "Intervalle d'actualisation"
@@ -1195,6 +1207,18 @@ msgstr "Les demandes de priorité 'alarm' allument le récepteur (et la TV via H
 #: e2 kodi:30103
 msgid "Ignores requests with normal priority (with 'Do not disturb blocks' also high). Alarm always comes through. Also via the API, MQTT and Home Assistant."
 msgstr "Ignore les demandes de priorité normale (avec « Ne pas déranger bloque », aussi la priorité haute). L'alarme passe toujours. Aussi via l'API, MQTT et Home Assistant."
+
+#: e2 kodi:30983
+msgid "Hides the guest mode cameras: no windows for them and not in the mosaic or the tour. Also via the API and Home Assistant."
+msgstr "Masque les caméras du mode invité : aucune fenêtre pour elles et absentes de la mosaïque et de la ronde. Aussi via l'API et Home Assistant."
+
+#: e2 kodi:30984
+msgid "Guest mode cameras"
+msgstr "Caméras du mode invité"
+
+#: e2 kodi:30985
+msgid "The cameras guest mode hides, e.g. garden|living_room. Empty = all cameras."
+msgstr "Les caméras masquées par le mode invité, p. ex. garden|living_room. Vide = toutes les caméras."
 
 #: e2 kodi:30104
 msgid "Do not disturb blocks"
@@ -1852,10 +1876,6 @@ msgstr "Choisissez le fichier de paramètres"
 msgid "There is no import to undo."
 msgstr "Il n'y a aucune importation à annuler."
 
-#: kodi:30880
-msgid "Colour keys: signing secret (Home Assistant)"
-msgstr "Touches de couleur : secret de signature (Home Assistant)"
-
 #: kodi:30801
 msgid "Home Assistant can install a new CamAlert release on this add-on (only the official release, only a newer version, checked with its checksum). Never while something plays."
 msgstr "Home Assistant peut installer une nouvelle version de CamAlert dans cet add-on (uniquement la version officielle, uniquement une version plus récente, vérifiée par sa somme de contrôle). Jamais pendant une lecture."
@@ -1867,6 +1887,10 @@ msgstr "Quand rien n'est lu"
 #: kodi:30822
 msgid "Also pause what plays"
 msgstr "Mettre aussi la lecture en pause"
+
+#: kodi:30880
+msgid "Colour keys: signing secret (Home Assistant)"
+msgstr "Touches de couleur : secret de signature (Home Assistant)"
 
 #: kodi:30941
 msgid "Plays the text Home Assistant sends with a camera (for example \"Someone is at the door\"), for doorbell and alarm or for all requests. Follows Kodi's volume; never for a test."

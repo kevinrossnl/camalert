@@ -109,6 +109,24 @@ class PlayerControllerTest {
     }
 
     @Test
+    fun guestMode() {  // #11
+        env.values["guest_mode"] = true
+        env.values["guest_cameras"] = "garden"
+        assertEquals("ignore", show("garden", priority = "alarm"))
+        assertEquals("guest", ctl.events[0]["reason"])
+        assertEquals("show", show("front_door"))
+        display.hide()
+        assertEquals("show", ctl.mosaic(null, 0))
+        assertEquals("mosaic front_door,driveway 0", display.calls.last())
+        display.hide()
+        env.values["guest_cameras"] = ""
+        assertEquals("ignore", ctl.mosaic("front_door,garden", 0))
+        assertEquals("ignore", show("front_door,garden"))
+        env.values["guest_mode"] = false
+        assertEquals("show", show("garden"))
+    }
+
+    @Test
     fun rules() {
         env.values["dnd"] = true
         assertEquals("ignore", show("garden"))

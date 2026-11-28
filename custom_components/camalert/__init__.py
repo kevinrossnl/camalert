@@ -80,12 +80,18 @@ EXCEPTIONS = {
 def make_api(hass: HomeAssistant, data) -> CamAlertApi:
     """API client for a config entry (or the config flow's input). The certificate check needs the verifying
     session: a request option cannot turn verification back on in a session made without it."""
+    from .browser import BrowserApi, CONF_BROWSER_ID, is_browser
+    if is_browser(data):  # a web page or browser extension over the WebSocket (#92, #127)
+        return BrowserApi(hass, data[CONF_BROWSER_ID])
     https, verify = bool(data.get(CONF_HTTPS, False)), bool(data.get(CONF_VERIFY_SSL, False))
     return CamAlertApi(async_get_clientsession(hass, verify_ssl=https and verify), data[CONF_HOST],
                        data.get(CONF_PORT, DEFAULT_PORT), https, verify, data.get(CONF_TOKEN, ""))
 
 
 async def async_setup(hass: HomeAssistant, config) -> bool:
+    from .browser import async_setup as async_setup_browsers
+    await async_setup_browsers(hass)
+
     async def targets(call: ServiceCall):
         try:  # Home Assistant 2025.x and newer: only the service call
             ids = await async_extract_config_entry_ids(call)

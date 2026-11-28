@@ -19,7 +19,7 @@ except ImportError:  # optional, like the blueprint tests
 
 WORKFLOW = os.path.join(_paths.ROOT, ".forgejo", "workflows", "tests.yml")
 CI_SH = os.path.join(_paths.TOOLS, "ci.sh")
-AREAS = ["lint", "core", "unit", "build", "privacy", "ha", "androidtv", "pymatrix"]
+AREAS = ["lint", "core", "unit", "build", "privacy", "ha", "androidtv", "web", "pymatrix"]
 PREF = ["werkstation", "skills-werkstation"]
 
 
@@ -209,6 +209,17 @@ class Workflow(unittest.TestCase):
         out = subprocess.run(["sh", CI_SH, "pymatrix"], env=dict(os.environ, PYMATRIX_SKIP="test"),
                              stdout=subprocess.PIPE, cwd=_paths.ROOT, check=True).stdout.decode()
         self.assertIn("pymatrix SKIPPED: test", out)
+
+    def test_web_end_to_end_only_on_the_workstation(self):
+        """#92/#127: Playwright (a Chromium download) never runs on the NAS: there only the Node unit tests run."""
+        self.assertEqual(self.jobs["web"]["if"], "needs.pick-runner.outputs.mode == 'parallel'")
+        steps = [s for s in self.jobs["sequential"]["steps"] if "tools/ci.sh web" in json.dumps(s)]
+        self.assertEqual(len(steps), 1)
+        self.assertTrue(steps[0]["env"]["WEB_E2E_SKIP"])
+        with open(CI_SH) as f:
+            sh = f.read()
+        self.assertIn('if [ -n "${WEB_E2E_SKIP:-}" ]', sh)
+        self.assertIn("npx playwright test", sh)
 
     def test_nightly_is_separate_and_never_blocks(self):
         """#21/#34: the long runs (more hypothesis examples, the whole matrix) are a nightly workflow on the

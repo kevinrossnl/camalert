@@ -16,7 +16,7 @@ msgstr "Visione live"
 msgid "Notification"
 msgstr "Notifica"
 
-#: e2 kodi:30140 kodi:30231 kodi:30507 ha:selector.priority.options.normal atv:choice.frigate_priority.normal atv:choice.log_level.normal atv:choice.text_size.normal atv:choice.title_size.normal atv:choice.unifi_priority.normal
+#: e2 kodi:30140 kodi:30231 kodi:30507 ha:selector.priority.options.normal atv:choice.frigate_priority.normal atv:choice.log_level.normal atv:choice.text_size.normal atv:choice.title_size.normal atv:choice.unifi_priority.normal web
 msgid "Normal"
 msgstr "Normale"
 
@@ -28,7 +28,7 @@ msgstr "Alta (campanello)"
 msgid "Alarm"
 msgstr "Allarme"
 
-#: e2 kodi:30582 kodi:30729
+#: e2 kodi:30582 kodi:30729 web
 msgid "System language"
 msgstr "Lingua del sistema"
 
@@ -40,31 +40,31 @@ msgstr "Server go2rtc"
 msgid "Directly from the cameras"
 msgstr "Direttamente dalle telecamere"
 
-#: e2 kodi:30048 ha:entity.select.window_position.state.top_right atv:choice.position.top_right
+#: e2 kodi:30048 ha:entity.select.window_position.state.top_right atv:choice.position.top_right web
 msgid "Top right"
 msgstr "In alto a destra"
 
-#: e2 kodi:30049 ha:entity.select.window_position.state.top_left atv:choice.position.top_left
+#: e2 kodi:30049 ha:entity.select.window_position.state.top_left atv:choice.position.top_left web
 msgid "Top left"
 msgstr "In alto a sinistra"
 
-#: e2 kodi:30050 ha:entity.select.window_position.state.bottom_right atv:choice.position.bottom_right
+#: e2 kodi:30050 ha:entity.select.window_position.state.bottom_right atv:choice.position.bottom_right web
 msgid "Bottom right"
 msgstr "In basso a destra"
 
-#: e2 kodi:30051 ha:entity.select.window_position.state.bottom_left atv:choice.position.bottom_left
+#: e2 kodi:30051 ha:entity.select.window_position.state.bottom_left atv:choice.position.bottom_left web
 msgid "Bottom left"
 msgstr "In basso a sinistra"
 
-#: e2 kodi:30053 ha:entity.select.window_size.state.small atv:choice.size.small atv:choice.title_size.small
+#: e2 kodi:30053 ha:entity.select.window_size.state.small atv:choice.size.small atv:choice.title_size.small web
 msgid "Small"
 msgstr "Piccola"
 
-#: e2 kodi:30054 ha:entity.select.window_size.state.medium atv:choice.size.medium
+#: e2 kodi:30054 ha:entity.select.window_size.state.medium atv:choice.size.medium web
 msgid "Medium"
 msgstr "Media"
 
-#: e2 kodi:30055 ha:entity.select.window_size.state.large atv:choice.size.large atv:choice.text_size.large atv:choice.title_size.large
+#: e2 kodi:30055 ha:entity.select.window_size.state.large atv:choice.size.large atv:choice.text_size.large atv:choice.title_size.large web
 msgid "Large"
 msgstr "Grande"
 
@@ -124,7 +124,7 @@ msgstr "Una accanto all'altra"
 msgid "2 x 2"
 msgstr "2 x 2"
 
-#: e2 kodi:30234 kodi:30305 atv:choice.chime.off atv:choice.log_level.off atv:choice.priority_border.off
+#: e2 kodi:30234 kodi:30305 atv:choice.chime.off atv:choice.log_level.off atv:choice.priority_border.off web
 msgid "Off"
 msgstr "Disattivato"
 
@@ -152,7 +152,7 @@ msgstr "ROSSO"
 msgid "GREEN"
 msgstr "VERDE"
 
-#: e2 kodi:30722 atv:choice.text_size.xlarge
+#: e2 kodi:30722 atv:choice.text_size.xlarge web
 msgid "Extra large"
 msgstr "Molto grande"
 
@@ -168,11 +168,11 @@ msgstr "Lampeggiante"
 msgid "Log only"
 msgstr "Solo registro"
 
-#: e2 kodi:30235 atv:choice.chime.high
+#: e2 kodi:30235 atv:choice.chime.high web
 msgid "Doorbell and alarm"
 msgstr "Campanello e allarme"
 
-#: e2 kodi:30236 atv:choice.chime.all
+#: e2 kodi:30236 atv:choice.chime.all web
 msgid "Every request"
 msgstr "Ogni richiesta"
 
@@ -244,7 +244,7 @@ msgstr "Diagnostica CamAlert"
 msgid "Checking..."
 msgstr "Verifica in corso..."
 
-#: e2
+#: e2 web
 msgid "Close"
 msgstr "Chiudi"
 
@@ -372,7 +372,7 @@ msgstr "Log e diagnostica"
 msgid "Cancel"
 msgstr "Annulla"
 
-#: e2
+#: e2 web
 msgid "Save"
 msgstr "Salva"
 
@@ -588,7 +588,7 @@ msgstr "Procedura guidata CamAlert"
 msgid "No go2rtc found in your network. Enter its address yourself, or set up go2rtc first (see the guide)."
 msgstr "Nessun go2rtc trovato nella rete. Inserire l'indirizzo manualmente oppure installare prima go2rtc (vedere la guida)."
 
-#: e2 kodi:30016 ha:config.step.setup.data.go2rtc_server atv:wizard_address
+#: e2 kodi:30016 ha:config.step.setup.data.go2rtc_server atv:wizard_address web
 msgid "go2rtc address"
 msgstr "Indirizzo go2rtc"
 
@@ -656,7 +656,7 @@ msgstr "Richiesta di test"
 msgid "High"
 msgstr "Alta"
 
-#: e2 kodi:30571
+#: e2 kodi:30571 web
 msgid "Settings received from Home Assistant"
 msgstr "Impostazioni ricevute da Home Assistant"
 
@@ -680,7 +680,7 @@ msgstr "Errore"
 msgid "Woken up"
 msgstr "Risvegliato"
 
-#: e2 kodi:30102 kodi:30515 ha:entity.switch.dnd.name
+#: e2 kodi:30102 kodi:30515 ha:entity.switch.dnd.name web
 msgid "Do not disturb"
 msgstr "Non disturbare"
 
@@ -728,15 +728,15 @@ msgstr "Telecamera sconosciuta"
 msgid "Unknown camera or no valid go2rtc address"
 msgstr "Telecamera sconosciuta o nessun indirizzo go2rtc valido"
 
-#: e2 kodi:30527
+#: e2 kodi:30527 web
 msgid "Camera not reachable"
 msgstr "Telecamera non raggiungibile"
 
-#: e2 kodi:30567
+#: e2 kodi:30567 web
 msgid "Loading picture..."
 msgstr "Caricamento immagine..."
 
-#: e2 kodi:30564
+#: e2 kodi:30564 web
 msgid "go2rtc address not set"
 msgstr "Indirizzo go2rtc non impostato"
 
@@ -840,11 +840,11 @@ msgstr "non è un file di impostazioni"
 msgid "made by a newer CamAlert"
 msgstr "creato da una versione più recente di CamAlert"
 
-#: e2 kodi:30552 ha:options.step.init.data.doorbell
+#: e2 kodi:30552 ha:options.step.init.data.doorbell web
 msgid "Doorbell"
 msgstr "Campanello"
 
-#: e2 kodi:30580
+#: e2 kodi:30580 web
 msgid "ALARM"
 msgstr "ALLARME"
 
@@ -944,7 +944,7 @@ msgstr "Porta RTSP go2rtc"
 msgid "Usually 8554. Used for live view and the camera list."
 msgstr "Di solito 8554. Usata per la visione live e l'elenco telecamere."
 
-#: e2 kodi:30024 ha:config.step.setup.data.camera ha:options.step.init.data.camera
+#: e2 kodi:30024 ha:config.step.setup.data.camera ha:options.step.init.data.camera web
 msgid "Default camera"
 msgstr "Telecamera predefinita"
 
@@ -980,7 +980,7 @@ msgstr "Substream per la visione live"
 msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
 msgstr "Per le telecamere che il ricevitore non riesce a riprodurre (H.265/4K): front_door=front_door_sub usa quello stream go2rtc per la visione live."
 
-#: e2 kodi:30727 ha:services.show.fields.language.name
+#: e2 kodi:30727 ha:services.show.fields.language.name web
 msgid "Language"
 msgstr "Lingua"
 
@@ -1004,7 +1004,7 @@ msgstr "Modalità di visualizzazione"
 msgid "Photo window keeps watching TV; live switches the channel to the camera."
 msgstr "Finestra foto: la TV continua. Live: il canale passa alla telecamera."
 
-#: e2 kodi:30045
+#: e2 kodi:30045 web
 msgid "Duration (seconds)"
 msgstr "Durata (secondi)"
 
@@ -1012,11 +1012,11 @@ msgstr "Durata (secondi)"
 msgid "How long the camera stays on screen."
 msgstr "Per quanto tempo resta visibile la telecamera."
 
-#: e2 kodi:30047 ha:entity.select.window_position.name
+#: e2 kodi:30047 ha:entity.select.window_position.name web
 msgid "Window position"
 msgstr "Posizione finestra"
 
-#: e2 kodi:30052 ha:entity.select.window_size.name
+#: e2 kodi:30052 ha:entity.select.window_size.name web
 msgid "Window size"
 msgstr "Dimensione finestra"
 
@@ -1108,7 +1108,7 @@ msgstr "Una richiesta con 2-4 telecamere le mostra insieme in una finestra con p
 msgid "Title size"
 msgstr "Dimensione del titolo"
 
-#: e2 kodi:30720
+#: e2 kodi:30720 web
 msgid "Text size"
 msgstr "Dimensione del testo"
 
@@ -1124,7 +1124,7 @@ msgstr "Segnalazione di campanello e allarme"
 msgid "Priority high: orange frame and the word Doorbell. Alarm: red-orange frame and the word ALARM. Flashing: once per second."
 msgstr "Priorità alta: cornice arancione e la parola Campanello. Allarme: cornice rosso-arancione e la parola ALLARME. Lampeggiante: una volta al secondo."
 
-#: e2 kodi:30232
+#: e2 kodi:30232 web
 msgid "Doorbell chime"
 msgstr "Suono del campanello"
 
@@ -1744,7 +1744,7 @@ msgstr "Password telecamera rimossa."
 msgid "Used when devices.conf has no password for a camera. A password typed here is moved to devices.conf and this field is emptied again."
 msgstr "Usata se devices.conf non indica una password per una telecamera. Una password inserita qui viene spostata in devices.conf e il campo viene svuotato."
 
-#: kodi:30284
+#: kodi:30284 web
 msgid "Settings"
 msgstr "Impostazioni"
 
@@ -1896,7 +1896,7 @@ msgstr "Porta"
 msgid "Use HTTPS"
 msgstr "Usa HTTPS"
 
-#: ha:config.step.reconfigure.data.token ha:config.step.user.data.token ha:config.step.zeroconf_confirm.data.token
+#: ha:config.step.reconfigure.data.token ha:config.step.user.data.token ha:config.step.zeroconf_confirm.data.token web
 msgid "Access token"
 msgstr "Token di accesso"
 
@@ -1920,7 +1920,7 @@ msgstr "Da disattivare per il certificato proprio (autofirmato) del lettore. Sol
 msgid "Only if an access token is set in CamAlert on the player. It is sent in a header, never in the address."
 msgstr "Solo se in CamAlert sul lettore è impostato un token di accesso. Viene inviato in un header, mai nell'indirizzo."
 
-#: ha:config.step.zeroconf_confirm.title
+#: ha:config.step.browser_confirm.title ha:config.step.zeroconf_confirm.title
 msgid "Add {name}"
 msgstr "Aggiungere {name}"
 
@@ -1931,6 +1931,10 @@ msgstr "CamAlert ha trovato {name} in rete ({host}). Aggiungere questo lettore a
 #: ha:config.step.zeroconf_confirm.data_description.token
 msgid "The player has an access token: enter the token set in CamAlert on the player. It is sent in a header, never in the address."
 msgstr "Il lettore ha un token di accesso: inserire il token impostato in CamAlert sul lettore. Viene inviato in un header, mai nell'indirizzo."
+
+#: ha:config.step.browser_confirm.description
+msgid "{name} connected to Home Assistant as a CamAlert player: a web page or the browser extension in a browser. Add this player to Home Assistant?"
+msgstr "{name} si è collegato a Home Assistant come lettore CamAlert: una pagina web o l'estensione in un browser. Aggiungere questo lettore a Home Assistant?"
 
 #: ha:config.step.reconfigure.title
 msgid "Change the CamAlert player"
@@ -1999,6 +2003,10 @@ msgstr "Questo indirizzo appartiene a un altro lettore. Aggiungerlo come nuovo l
 #: ha:config.abort.not_camalert
 msgid "This device did not say which CamAlert player it is."
 msgstr "Questo dispositivo non indica quale lettore CamAlert sia."
+
+#: ha:config.abort.browser_player
+msgid "This player is a web browser: it has no address. Change its settings on the player page in the browser."
+msgstr "Questo lettore è un browser web: non ha un indirizzo. Le impostazioni si cambiano nella pagina del lettore nel browser."
 
 #: ha:options.step.init.title
 msgid "CamAlert player options"
@@ -2311,3 +2319,51 @@ msgstr "Sì"
 #: atv:wizard_no
 msgid "No"
 msgstr "No"
+
+#: web
+msgid "Name"
+msgstr "Nome"
+
+#: web
+msgid "Also show alerts on Home Assistant dashboards in this browser"
+msgstr "Mostrare gli avvisi anche nelle dashboard di Home Assistant in questo browser"
+
+#: web
+msgid "Add this player in Home Assistant under Settings › Devices & services: it is listed as discovered."
+msgstr "Aggiungere questo lettore in Home Assistant in Impostazioni › Dispositivi e servizi: compare tra quelli rilevati."
+
+#: web
+msgid "Connecting to Home Assistant..."
+msgstr "Connessione a Home Assistant..."
+
+#: web
+msgid "Connected to Home Assistant"
+msgstr "Collegato a Home Assistant"
+
+#: web
+msgid "Sign in to Home Assistant"
+msgstr "Accedere a Home Assistant"
+
+#: web
+msgid "Not connected"
+msgstr "Non collegato"
+
+#: web
+msgid "Tap to enable sound"
+msgstr "Toccare per attivare l'audio"
+
+#: web
+msgid "Home Assistant address"
+msgstr "Indirizzo di Home Assistant"
+
+#: web
+msgid "Create a long-lived access token in your Home Assistant profile, preferably for a separate user that is not an administrator."
+msgstr "Creare un token di accesso a lunga durata nel profilo di Home Assistant, preferibilmente per un utente separato che non sia amministratore."
+
+#: web
+msgid "Allow access to this Home Assistant"
+msgstr "Consentire l'accesso a questo Home Assistant"
+
+#: web
+msgid "Open the web player"
+msgstr "Aprire il lettore web"

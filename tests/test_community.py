@@ -91,7 +91,7 @@ class ReleaseWorkflow(unittest.TestCase):
         release = next(s for s in steps if s.get("uses", "").startswith("softprops/action-gh-release"))
         files = release["with"]["files"].split()
         self.assertEqual(files, ["dist/*.ipk", "dist/service.camalert-*.zip", "dist/repository.camalert-*.zip",
-                                 "dist/camalert-homeassistant-*.zip"])
+                                 "dist/camalert-homeassistant-*.zip", "dist/camalert-browser-*.zip"])  # #127
         self.assertEqual(release["with"]["body_path"], "dist/release-notes.md")
 
     def test_release_checksums(self):

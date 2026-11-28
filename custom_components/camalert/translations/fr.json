@@ -30,6 +30,10 @@
           "token": "Le lecteur a un jeton d'accès : saisissez le jeton réglé dans CamAlert sur le lecteur. Il est envoyé dans un en-tête, jamais dans l'adresse."
         }
       },
+      "browser_confirm": {
+        "title": "Ajouter {name}",
+        "description": "{name} s'est connecté à Home Assistant comme lecteur CamAlert : une page web ou l'extension dans un navigateur. Ajouter ce lecteur à Home Assistant ?"
+      },
       "reconfigure": {
         "title": "Modifier le lecteur CamAlert",
         "description": "Nouvelle adresse, nouveau port, HTTPS ou jeton du même lecteur.",
@@ -74,7 +78,8 @@
       "already_configured": "Ce lecteur est déjà ajouté.",
       "reconfigure_successful": "Le lecteur a été modifié.",
       "wrong_player": "Cette adresse appartient à un autre lecteur. Ajoutez-le plutôt comme nouveau lecteur.",
-      "not_camalert": "Cet appareil n'indique pas de quel lecteur CamAlert il s'agit."
+      "not_camalert": "Cet appareil n'indique pas de quel lecteur CamAlert il s'agit.",
+      "browser_player": "Ce lecteur est un navigateur web : il n'a pas d'adresse. Modifiez ses réglages sur la page du lecteur dans le navigateur."
     }
   },
   "options": {

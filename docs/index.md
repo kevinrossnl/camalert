@@ -29,6 +29,7 @@ words used on screen and in these pages are listed in the [glossary](user/glossa
 | [Enigma2 receiver](players/enigma2.md) | Install, update feed, settings screen, channel list, picons, chime, files |
 | [Kodi](players/kodi.md) | Install, settings, what you see, platforms, differences with Enigma2 |
 | [Android TV and Fire TV](players/androidtv.md) | The app without Kodi (in development): sideload with ADB, overlay permission, start at boot |
+| [Web player and browser extension](players/web.md) | Wall tablets, TV browsers and desktop browsers, served by the Home Assistant integration |
 
 ## Integrations
 

@@ -30,6 +30,10 @@
           "token": "Il lettore ha un token di accesso: inserire il token impostato in CamAlert sul lettore. Viene inviato in un header, mai nell'indirizzo."
         }
       },
+      "browser_confirm": {
+        "title": "Aggiungere {name}",
+        "description": "{name} si è collegato a Home Assistant come lettore CamAlert: una pagina web o l'estensione in un browser. Aggiungere questo lettore a Home Assistant?"
+      },
       "reconfigure": {
         "title": "Modificare il lettore CamAlert",
         "description": "Nuovo indirizzo, porta, HTTPS o token dello stesso lettore.",
@@ -74,7 +78,8 @@
       "already_configured": "Questo lettore è già stato aggiunto.",
       "reconfigure_successful": "Il lettore è stato modificato.",
       "wrong_player": "Questo indirizzo appartiene a un altro lettore. Aggiungerlo come nuovo lettore.",
-      "not_camalert": "Questo dispositivo non indica quale lettore CamAlert sia."
+      "not_camalert": "Questo dispositivo non indica quale lettore CamAlert sia.",
+      "browser_player": "Questo lettore è un browser web: non ha un indirizzo. Le impostazioni si cambiano nella pagina del lettore nel browser."
     }
   },
   "options": {

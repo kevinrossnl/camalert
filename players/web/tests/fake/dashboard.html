@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<!-- A stand-in for a Home Assistant dashboard (tests of page/frontend.js, #92): a <home-assistant> element with a
+     hass object whose connection the test drives. -->
+<html><head><meta charset="utf-8"></head><body>
+<home-assistant></home-assistant>
+<script>
+  const ha = document.querySelector("home-assistant");
+  window.sent = [];
+  ha.hass = {
+    auth: { accessToken: "test-token" },
+    connection: {
+      subscribeMessage: async (cb, msg) => { window.hello = msg; window.deliver = cb; return async () => {}; },
+      sendMessagePromise: async (msg) => {
+        window.sent.push(msg);
+        return msg.type === "auth/sign_path" ? { path: msg.path + "?authSig=fake" } : null;
+      },
+    },
+  };
+  localStorage.setItem("camalert.dashboard", "1");
+</script>
+<script type="module" src="/camalert_static/page/frontend.js"></script>
+</body></html>

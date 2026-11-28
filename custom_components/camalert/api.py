@@ -12,7 +12,7 @@ from urllib.parse import urlencode
 INTEGRATION_VERSION = "1.3.1"  # = manifest.json version
 ACTIONS = ("show", "mosaic", "tour", "hide", "ptz", "webhook", "setup", "update")  # change something on the player: POST
 TIMEOUT = 10  # seconds per request
-MODELS = {"enigma2": "Enigma2 receiver", "kodi": "Kodi", "androidtv": "Android TV"}  # device model per /status platform (#44, #64)
+MODELS = {"enigma2": "Enigma2 receiver", "kodi": "Kodi", "androidtv": "Android TV", "browser": "Web browser"}  # device model per /status platform (#44, #64)
 
 
 def build_url(host: str, port: int, https: bool, action: str, params: dict | None = None) -> str:
@@ -80,6 +80,27 @@ class CamAlertAlreadySetUp(CamAlertError):
     """The player is already set up and the go2rtc address is outside the local network (#122)."""
 
 
+def check_answer(status: int, data, action: str = "") -> dict[str, Any]:
+    """The answer of a player as a dict, or the matching CamAlertError for its HTTP-like status (players over HTTP
+    and browser players over the WebSocket, #92, answer the same way)."""
+    if status == 400 and isinstance(data, dict) and data.get("error"):
+        raise CamAlertError(data["error"])
+    if status == 403:
+        why = data.get("error") if isinstance(data, dict) else ""
+        raise CamAlertForbidden(why if "updates from Home Assistant" in str(why) else "forbidden (token or network)")
+    if status == 409 and isinstance(data, dict) and data.get("error"):
+        return data  # setup refused (#122): the caller reads result/error
+    if status == 429:
+        raise CamAlertError("too many requests")
+    if status in (404, 405, 501):
+        raise CamAlertNotSupported("not supported by this player (%s)" % action)
+    if status >= 500:
+        raise CamAlertError("player error (HTTP %d)" % status)
+    if not isinstance(data, dict):
+        raise CamAlertError("unexpected answer")
+    return data
+
+
 class CamAlertApi:
     def __init__(self, session, host: str, port: int, https: bool = False, verify_ssl: bool = False, token: str = ""):
         self._session = session
@@ -92,6 +113,11 @@ class CamAlertApi:
     def supports(self, capability: str) -> bool:
         """True if the player has this capability (unknown/older players: assume yes, they tell with an error)."""
         return self.capabilities is None or capability in self.capabilities
+
+    @property
+    def configuration_url(self) -> str | None:
+        host = "[%s]" % self.host if ":" in self.host and not self.host.startswith("[") else self.host
+        return "%s://%s" % ("https" if self.https else "http", host)
 
     @property
     def model(self) -> str:
@@ -120,20 +146,7 @@ class CamAlertApi:
             raise CamAlertCertificateError(str(err)) from err
         except (aiohttp.ClientError, TimeoutError, ValueError) as err:
             raise CamAlertError(str(err) or type(err).__name__) from err
-        if resp.status == 400 and isinstance(data, dict) and data.get("error"):
-            raise CamAlertError(data["error"])
-        if resp.status == 403:
-            why = data.get("error") if isinstance(data, dict) else ""
-            raise CamAlertForbidden(why if "updates from Home Assistant" in str(why) else "forbidden (token or network)")
-        if resp.status == 429:
-            raise CamAlertError("too many requests")
-        if resp.status in (404, 405, 501):
-            raise CamAlertNotSupported("not supported by this player (%s)" % action)
-        if resp.status >= 500:
-            raise CamAlertError("player error (HTTP %d)" % resp.status)
-        if not isinstance(data, dict):
-            raise CamAlertError("unexpected answer")
-        return data
+        return check_answer(resp.status, data, action)
 
     async def status(self) -> dict[str, Any]:
         data = await self._get("status")

@@ -30,6 +30,10 @@
           "token": "Das Wiedergabegerät hat ein Zugriffstoken: Gib das Token ein, das in CamAlert auf dem Wiedergabegerät eingestellt ist. Es wird in einem Header gesendet, nie in der Adresse."
         }
       },
+      "browser_confirm": {
+        "title": "{name} hinzufügen",
+        "description": "{name} hat sich als CamAlert-Wiedergabegerät mit Home Assistant verbunden: eine Webseite oder die Browsererweiterung in einem Browser. Dieses Wiedergabegerät zu Home Assistant hinzufügen?"
+      },
       "reconfigure": {
         "title": "CamAlert-Wiedergabegerät ändern",
         "description": "Neue Adresse, neuer Port, HTTPS oder Token desselben Wiedergabegeräts.",
@@ -74,7 +78,8 @@
       "already_configured": "Dieses Wiedergabegerät ist bereits hinzugefügt.",
       "reconfigure_successful": "Das Wiedergabegerät wurde geändert.",
       "wrong_player": "Diese Adresse gehört zu einem anderen Wiedergabegerät. Füge es als neues Wiedergabegerät hinzu.",
-      "not_camalert": "Dieses Gerät meldet nicht, welches CamAlert-Wiedergabegerät es ist."
+      "not_camalert": "Dieses Gerät meldet nicht, welches CamAlert-Wiedergabegerät es ist.",
+      "browser_player": "Dieses Wiedergabegerät ist ein Webbrowser: Es hat keine Adresse. Ändere die Einstellungen auf der Seite des Wiedergabegeräts im Browser."
     }
   },
   "options": {

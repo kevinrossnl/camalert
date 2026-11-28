@@ -30,6 +30,10 @@
           "token": "De speler heeft een toegangstoken: vul het token in dat in CamAlert op de speler is ingesteld. Het wordt in een header verstuurd, nooit in het adres."
         }
       },
+      "browser_confirm": {
+        "title": "{name} toevoegen",
+        "description": "{name} heeft verbinding gemaakt met Home Assistant als CamAlert-speler: een webpagina of de browserextensie in een browser. Deze speler toevoegen aan Home Assistant?"
+      },
       "reconfigure": {
         "title": "CamAlert-speler wijzigen",
         "description": "Nieuw adres, nieuwe poort, HTTPS of token van dezelfde speler.",
@@ -74,7 +78,8 @@
       "already_configured": "Deze speler is al toegevoegd.",
       "reconfigure_successful": "De speler is gewijzigd.",
       "wrong_player": "Dit adres hoort bij een andere speler. Voeg hem toe als nieuwe speler.",
-      "not_camalert": "Dit apparaat meldt niet welke CamAlert-speler het is."
+      "not_camalert": "Dit apparaat meldt niet welke CamAlert-speler het is.",
+      "browser_player": "Deze speler is een webbrowser: hij heeft geen adres. Wijzig de instellingen op de spelerpagina in de browser."
     }
   },
   "options": {

@@ -112,6 +112,26 @@ class CamAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                                     description_placeholders={"name": self._name,
                                                               "host": self._discovered[CONF_HOST]})
 
+    async def async_step_browser(self, discovery_info):
+        """A web page or browser extension connected as a player (#92, #127): offer to add it."""
+        from .browser import BROWSER, CONF_BROWSER_ID, CONF_TYPE
+        bid = discovery_info[CONF_BROWSER_ID]
+        await self.async_set_unique_id(bid)
+        self._abort_if_unique_id_configured()
+        self._discovered = {CONF_TYPE: BROWSER, CONF_BROWSER_ID: bid}
+        self._name = (discovery_info.get("name") or "").strip() or "CamAlert browser %s" % bid[-4:]
+        self.context["title_placeholders"] = {"name": self._name}
+        return await self.async_step_browser_confirm()
+
+    async def async_step_browser_confirm(self, user_input=None):
+        errors = {}
+        if user_input is not None:
+            status, errors = await _check(self.hass, self._discovered)
+            if status is not None:
+                return await self._create(self._name, self._discovered, status)
+        return self.async_show_form(step_id="browser_confirm", data_schema=vol.Schema({}), errors=errors,
+                                    description_placeholders={"name": self._name})
+
     async def _create(self, title: str, data: dict, status: dict):
         """Adds the player; first offers to send the go2rtc address when it was never set up (#122)."""
         if not offer_setup(status):
@@ -142,6 +162,9 @@ class CamAlertConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_reconfigure(self, user_input=None):
         """New address, port, HTTPS or token for a player that is already added (same player only)."""
         entry = self._get_reconfigure_entry()
+        from .browser import is_browser
+        if is_browser(entry.data):
+            return self.async_abort(reason="browser_player")
         errors = {}
         if user_input is not None:
             user_input = _clean(user_input)

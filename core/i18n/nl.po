@@ -16,7 +16,7 @@ msgstr "Live beeld"
 msgid "Notification"
 msgstr "Melding"
 
-#: e2 kodi:30140 kodi:30231 kodi:30507 ha:selector.priority.options.normal atv:choice.frigate_priority.normal atv:choice.log_level.normal atv:choice.text_size.normal atv:choice.title_size.normal atv:choice.unifi_priority.normal
+#: e2 kodi:30140 kodi:30231 kodi:30507 ha:selector.priority.options.normal atv:choice.frigate_priority.normal atv:choice.log_level.normal atv:choice.text_size.normal atv:choice.title_size.normal atv:choice.unifi_priority.normal web
 msgid "Normal"
 msgstr "Normaal"
 
@@ -28,7 +28,7 @@ msgstr "Hoog (deurbel)"
 msgid "Alarm"
 msgstr "Alarm"
 
-#: e2 kodi:30582 kodi:30729
+#: e2 kodi:30582 kodi:30729 web
 msgid "System language"
 msgstr "Systeemtaal"
 
@@ -40,31 +40,31 @@ msgstr "go2rtc-server"
 msgid "Directly from the cameras"
 msgstr "Rechtstreeks van de camera's"
 
-#: e2 kodi:30048 ha:entity.select.window_position.state.top_right atv:choice.position.top_right
+#: e2 kodi:30048 ha:entity.select.window_position.state.top_right atv:choice.position.top_right web
 msgid "Top right"
 msgstr "Rechtsboven"
 
-#: e2 kodi:30049 ha:entity.select.window_position.state.top_left atv:choice.position.top_left
+#: e2 kodi:30049 ha:entity.select.window_position.state.top_left atv:choice.position.top_left web
 msgid "Top left"
 msgstr "Linksboven"
 
-#: e2 kodi:30050 ha:entity.select.window_position.state.bottom_right atv:choice.position.bottom_right
+#: e2 kodi:30050 ha:entity.select.window_position.state.bottom_right atv:choice.position.bottom_right web
 msgid "Bottom right"
 msgstr "Rechtsonder"
 
-#: e2 kodi:30051 ha:entity.select.window_position.state.bottom_left atv:choice.position.bottom_left
+#: e2 kodi:30051 ha:entity.select.window_position.state.bottom_left atv:choice.position.bottom_left web
 msgid "Bottom left"
 msgstr "Linksonder"
 
-#: e2 kodi:30053 ha:entity.select.window_size.state.small atv:choice.size.small atv:choice.title_size.small
+#: e2 kodi:30053 ha:entity.select.window_size.state.small atv:choice.size.small atv:choice.title_size.small web
 msgid "Small"
 msgstr "Klein"
 
-#: e2 kodi:30054 ha:entity.select.window_size.state.medium atv:choice.size.medium
+#: e2 kodi:30054 ha:entity.select.window_size.state.medium atv:choice.size.medium web
 msgid "Medium"
 msgstr "Middel"
 
-#: e2 kodi:30055 ha:entity.select.window_size.state.large atv:choice.size.large atv:choice.text_size.large atv:choice.title_size.large
+#: e2 kodi:30055 ha:entity.select.window_size.state.large atv:choice.size.large atv:choice.text_size.large atv:choice.title_size.large web
 msgid "Large"
 msgstr "Groot"
 
@@ -124,7 +124,7 @@ msgstr "Naast elkaar"
 msgid "2 x 2"
 msgstr "2 x 2"
 
-#: e2 kodi:30234 kodi:30305 atv:choice.chime.off atv:choice.log_level.off atv:choice.priority_border.off
+#: e2 kodi:30234 kodi:30305 atv:choice.chime.off atv:choice.log_level.off atv:choice.priority_border.off web
 msgid "Off"
 msgstr "Uit"
 
@@ -152,7 +152,7 @@ msgstr "ROOD"
 msgid "GREEN"
 msgstr "GROEN"
 
-#: e2 kodi:30722 atv:choice.text_size.xlarge
+#: e2 kodi:30722 atv:choice.text_size.xlarge web
 msgid "Extra large"
 msgstr "Extra groot"
 
@@ -168,11 +168,11 @@ msgstr "Knipperend"
 msgid "Log only"
 msgstr "Alleen loggen"
 
-#: e2 kodi:30235 atv:choice.chime.high
+#: e2 kodi:30235 atv:choice.chime.high web
 msgid "Doorbell and alarm"
 msgstr "Deurbel en alarm"
 
-#: e2 kodi:30236 atv:choice.chime.all
+#: e2 kodi:30236 atv:choice.chime.all web
 msgid "Every request"
 msgstr "Elk verzoek"
 
@@ -244,7 +244,7 @@ msgstr "CamAlert-diagnose"
 msgid "Checking..."
 msgstr "Bezig met controleren..."
 
-#: e2
+#: e2 web
 msgid "Close"
 msgstr "Sluiten"
 
@@ -372,7 +372,7 @@ msgstr "Log en diagnose"
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: e2
+#: e2 web
 msgid "Save"
 msgstr "Opslaan"
 
@@ -588,7 +588,7 @@ msgstr "CamAlert-wizard"
 msgid "No go2rtc found in your network. Enter its address yourself, or set up go2rtc first (see the guide)."
 msgstr "Geen go2rtc gevonden in je netwerk. Vul het adres zelf in, of installeer eerst go2rtc (zie de handleiding)."
 
-#: e2 kodi:30016 ha:config.step.setup.data.go2rtc_server atv:wizard_address
+#: e2 kodi:30016 ha:config.step.setup.data.go2rtc_server atv:wizard_address web
 msgid "go2rtc address"
 msgstr "go2rtc-adres"
 
@@ -656,7 +656,7 @@ msgstr "Testverzoek"
 msgid "High"
 msgstr "Hoog"
 
-#: e2 kodi:30571
+#: e2 kodi:30571 web
 msgid "Settings received from Home Assistant"
 msgstr "Instellingen ontvangen van Home Assistant"
 
@@ -680,7 +680,7 @@ msgstr "Fout"
 msgid "Woken up"
 msgstr "Gewekt"
 
-#: e2 kodi:30102 kodi:30515 ha:entity.switch.dnd.name
+#: e2 kodi:30102 kodi:30515 ha:entity.switch.dnd.name web
 msgid "Do not disturb"
 msgstr "Niet storen"
 
@@ -728,15 +728,15 @@ msgstr "Onbekende camera"
 msgid "Unknown camera or no valid go2rtc address"
 msgstr "Onbekende camera of geen geldig go2rtc-adres"
 
-#: e2 kodi:30527
+#: e2 kodi:30527 web
 msgid "Camera not reachable"
 msgstr "Camera niet bereikbaar"
 
-#: e2 kodi:30567
+#: e2 kodi:30567 web
 msgid "Loading picture..."
 msgstr "Beeld laden..."
 
-#: e2 kodi:30564
+#: e2 kodi:30564 web
 msgid "go2rtc address not set"
 msgstr "go2rtc-adres niet ingesteld"
 
@@ -840,11 +840,11 @@ msgstr "geen instellingenbestand"
 msgid "made by a newer CamAlert"
 msgstr "gemaakt door een nieuwere CamAlert"
 
-#: e2 kodi:30552 ha:options.step.init.data.doorbell
+#: e2 kodi:30552 ha:options.step.init.data.doorbell web
 msgid "Doorbell"
 msgstr "Deurbel"
 
-#: e2 kodi:30580
+#: e2 kodi:30580 web
 msgid "ALARM"
 msgstr "ALARM"
 
@@ -944,7 +944,7 @@ msgstr "go2rtc RTSP-poort"
 msgid "Usually 8554. Used for live view and the camera list."
 msgstr "Meestal 8554. Gebruikt voor live beeld en de cameralijst."
 
-#: e2 kodi:30024 ha:config.step.setup.data.camera ha:options.step.init.data.camera
+#: e2 kodi:30024 ha:config.step.setup.data.camera ha:options.step.init.data.camera web
 msgid "Default camera"
 msgstr "Standaardcamera"
 
@@ -980,7 +980,7 @@ msgstr "Substreams voor live beeld"
 msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
 msgstr "Voor camera's die de ontvanger niet kan afspelen (H.265/4K): front_door=front_door_sub gebruikt die go2rtc-stream voor live beeld."
 
-#: e2 kodi:30727 ha:services.show.fields.language.name
+#: e2 kodi:30727 ha:services.show.fields.language.name web
 msgid "Language"
 msgstr "Taal"
 
@@ -1004,7 +1004,7 @@ msgstr "Weergavemodus"
 msgid "Photo window keeps watching TV; live switches the channel to the camera."
 msgstr "Fotovenster: tv kijken gaat door. Live: zender schakelt naar de camera."
 
-#: e2 kodi:30045
+#: e2 kodi:30045 web
 msgid "Duration (seconds)"
 msgstr "Duur (seconden)"
 
@@ -1012,11 +1012,11 @@ msgstr "Duur (seconden)"
 msgid "How long the camera stays on screen."
 msgstr "Hoe lang de camera in beeld blijft."
 
-#: e2 kodi:30047 ha:entity.select.window_position.name
+#: e2 kodi:30047 ha:entity.select.window_position.name web
 msgid "Window position"
 msgstr "Vensterpositie"
 
-#: e2 kodi:30052 ha:entity.select.window_size.name
+#: e2 kodi:30052 ha:entity.select.window_size.name web
 msgid "Window size"
 msgstr "Venstergrootte"
 
@@ -1108,7 +1108,7 @@ msgstr "Een verzoek met 2-4 camera's toont ze samen in één venster met meerder
 msgid "Title size"
 msgstr "Titelgrootte"
 
-#: e2 kodi:30720
+#: e2 kodi:30720 web
 msgid "Text size"
 msgstr "Tekstgrootte"
 
@@ -1124,7 +1124,7 @@ msgstr "Markering bij deurbel en alarm"
 msgid "Priority high: orange frame and the word Doorbell. Alarm: red-orange frame and the word ALARM. Flashing: once per second."
 msgstr "Prioriteit hoog: oranje rand en het woord Deurbel. Alarm: roodoranje rand en het woord ALARM. Knipperend: één keer per seconde."
 
-#: e2 kodi:30232
+#: e2 kodi:30232 web
 msgid "Doorbell chime"
 msgstr "Deurbelgeluid"
 
@@ -1744,7 +1744,7 @@ msgstr "Camerawachtwoord verwijderd."
 msgid "Used when devices.conf has no password for a camera. A password typed here is moved to devices.conf and this field is emptied again."
 msgstr "Gebruikt als devices.conf geen wachtwoord voor een camera heeft. Een wachtwoord dat je hier invult, wordt naar devices.conf verplaatst en dit veld wordt weer leeg."
 
-#: kodi:30284
+#: kodi:30284 web
 msgid "Settings"
 msgstr "Instellingen"
 
@@ -1896,7 +1896,7 @@ msgstr "Poort"
 msgid "Use HTTPS"
 msgstr "HTTPS gebruiken"
 
-#: ha:config.step.reconfigure.data.token ha:config.step.user.data.token ha:config.step.zeroconf_confirm.data.token
+#: ha:config.step.reconfigure.data.token ha:config.step.user.data.token ha:config.step.zeroconf_confirm.data.token web
 msgid "Access token"
 msgstr "Toegangstoken"
 
@@ -1920,7 +1920,7 @@ msgstr "Zet uit voor het eigen (zelfondertekende) certificaat van de speler. All
 msgid "Only if an access token is set in CamAlert on the player. It is sent in a header, never in the address."
 msgstr "Alleen als er een toegangstoken is ingesteld in CamAlert op de speler. Het wordt in een header verstuurd, nooit in het adres."
 
-#: ha:config.step.zeroconf_confirm.title
+#: ha:config.step.browser_confirm.title ha:config.step.zeroconf_confirm.title
 msgid "Add {name}"
 msgstr "{name} toevoegen"
 
@@ -1931,6 +1931,10 @@ msgstr "CamAlert heeft {name} op het netwerk gevonden ({host}). Wil je deze spel
 #: ha:config.step.zeroconf_confirm.data_description.token
 msgid "The player has an access token: enter the token set in CamAlert on the player. It is sent in a header, never in the address."
 msgstr "De speler heeft een toegangstoken: vul het token in dat in CamAlert op de speler is ingesteld. Het wordt in een header verstuurd, nooit in het adres."
+
+#: ha:config.step.browser_confirm.description
+msgid "{name} connected to Home Assistant as a CamAlert player: a web page or the browser extension in a browser. Add this player to Home Assistant?"
+msgstr "{name} heeft verbinding gemaakt met Home Assistant als CamAlert-speler: een webpagina of de browserextensie in een browser. Deze speler toevoegen aan Home Assistant?"
 
 #: ha:config.step.reconfigure.title
 msgid "Change the CamAlert player"
@@ -1999,6 +2003,10 @@ msgstr "Dit adres hoort bij een andere speler. Voeg hem toe als nieuwe speler."
 #: ha:config.abort.not_camalert
 msgid "This device did not say which CamAlert player it is."
 msgstr "Dit apparaat meldt niet welke CamAlert-speler het is."
+
+#: ha:config.abort.browser_player
+msgid "This player is a web browser: it has no address. Change its settings on the player page in the browser."
+msgstr "Deze speler is een webbrowser: hij heeft geen adres. Wijzig de instellingen op de spelerpagina in de browser."
 
 #: ha:options.step.init.title
 msgid "CamAlert player options"
@@ -2311,3 +2319,51 @@ msgstr "Ja"
 #: atv:wizard_no
 msgid "No"
 msgstr "Nee"
+
+#: web
+msgid "Name"
+msgstr "Naam"
+
+#: web
+msgid "Also show alerts on Home Assistant dashboards in this browser"
+msgstr "Meldingen ook tonen op Home Assistant-dashboards in deze browser"
+
+#: web
+msgid "Add this player in Home Assistant under Settings › Devices & services: it is listed as discovered."
+msgstr "Voeg deze speler toe in Home Assistant onder Instellingen › Apparaten & diensten: hij staat bij Ontdekt."
+
+#: web
+msgid "Connecting to Home Assistant..."
+msgstr "Verbinden met Home Assistant..."
+
+#: web
+msgid "Connected to Home Assistant"
+msgstr "Verbonden met Home Assistant"
+
+#: web
+msgid "Sign in to Home Assistant"
+msgstr "Inloggen bij Home Assistant"
+
+#: web
+msgid "Not connected"
+msgstr "Niet verbonden"
+
+#: web
+msgid "Tap to enable sound"
+msgstr "Tik om geluid aan te zetten"
+
+#: web
+msgid "Home Assistant address"
+msgstr "Adres van Home Assistant"
+
+#: web
+msgid "Create a long-lived access token in your Home Assistant profile, preferably for a separate user that is not an administrator."
+msgstr "Maak een langlevend toegangstoken aan in je profiel in Home Assistant, liefst voor een aparte gebruiker die geen beheerder is."
+
+#: web
+msgid "Allow access to this Home Assistant"
+msgstr "Toegang tot deze Home Assistant toestaan"
+
+#: web
+msgid "Open the web player"
+msgstr "Webspeler openen"

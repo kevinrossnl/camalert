@@ -16,7 +16,7 @@ msgstr "Live-Ansicht"
 msgid "Notification"
 msgstr "Benachrichtigung"
 
-#: e2 kodi:30140 kodi:30231 kodi:30507 ha:selector.priority.options.normal atv:choice.frigate_priority.normal atv:choice.log_level.normal atv:choice.text_size.normal atv:choice.title_size.normal atv:choice.unifi_priority.normal
+#: e2 kodi:30140 kodi:30231 kodi:30507 ha:selector.priority.options.normal atv:choice.frigate_priority.normal atv:choice.log_level.normal atv:choice.text_size.normal atv:choice.title_size.normal atv:choice.unifi_priority.normal web
 msgid "Normal"
 msgstr "Normal"
 
@@ -28,7 +28,7 @@ msgstr "Hoch (Türklingel)"
 msgid "Alarm"
 msgstr "Alarm"
 
-#: e2 kodi:30582 kodi:30729
+#: e2 kodi:30582 kodi:30729 web
 msgid "System language"
 msgstr "Systemsprache"
 
@@ -40,31 +40,31 @@ msgstr "go2rtc-Server"
 msgid "Directly from the cameras"
 msgstr "Direkt von den Kameras"
 
-#: e2 kodi:30048 ha:entity.select.window_position.state.top_right atv:choice.position.top_right
+#: e2 kodi:30048 ha:entity.select.window_position.state.top_right atv:choice.position.top_right web
 msgid "Top right"
 msgstr "Oben rechts"
 
-#: e2 kodi:30049 ha:entity.select.window_position.state.top_left atv:choice.position.top_left
+#: e2 kodi:30049 ha:entity.select.window_position.state.top_left atv:choice.position.top_left web
 msgid "Top left"
 msgstr "Oben links"
 
-#: e2 kodi:30050 ha:entity.select.window_position.state.bottom_right atv:choice.position.bottom_right
+#: e2 kodi:30050 ha:entity.select.window_position.state.bottom_right atv:choice.position.bottom_right web
 msgid "Bottom right"
 msgstr "Unten rechts"
 
-#: e2 kodi:30051 ha:entity.select.window_position.state.bottom_left atv:choice.position.bottom_left
+#: e2 kodi:30051 ha:entity.select.window_position.state.bottom_left atv:choice.position.bottom_left web
 msgid "Bottom left"
 msgstr "Unten links"
 
-#: e2 kodi:30053 ha:entity.select.window_size.state.small atv:choice.size.small atv:choice.title_size.small
+#: e2 kodi:30053 ha:entity.select.window_size.state.small atv:choice.size.small atv:choice.title_size.small web
 msgid "Small"
 msgstr "Klein"
 
-#: e2 kodi:30054 ha:entity.select.window_size.state.medium atv:choice.size.medium
+#: e2 kodi:30054 ha:entity.select.window_size.state.medium atv:choice.size.medium web
 msgid "Medium"
 msgstr "Mittel"
 
-#: e2 kodi:30055 ha:entity.select.window_size.state.large atv:choice.size.large atv:choice.text_size.large atv:choice.title_size.large
+#: e2 kodi:30055 ha:entity.select.window_size.state.large atv:choice.size.large atv:choice.text_size.large atv:choice.title_size.large web
 msgid "Large"
 msgstr "Groß"
 
@@ -124,7 +124,7 @@ msgstr "Nebeneinander"
 msgid "2 x 2"
 msgstr "2 x 2"
 
-#: e2 kodi:30234 kodi:30305 atv:choice.chime.off atv:choice.log_level.off atv:choice.priority_border.off
+#: e2 kodi:30234 kodi:30305 atv:choice.chime.off atv:choice.log_level.off atv:choice.priority_border.off web
 msgid "Off"
 msgstr "Aus"
 
@@ -152,7 +152,7 @@ msgstr "ROT"
 msgid "GREEN"
 msgstr "GRÜN"
 
-#: e2 kodi:30722 atv:choice.text_size.xlarge
+#: e2 kodi:30722 atv:choice.text_size.xlarge web
 msgid "Extra large"
 msgstr "Sehr groß"
 
@@ -168,11 +168,11 @@ msgstr "Blinkend"
 msgid "Log only"
 msgstr "Nur protokollieren"
 
-#: e2 kodi:30235 atv:choice.chime.high
+#: e2 kodi:30235 atv:choice.chime.high web
 msgid "Doorbell and alarm"
 msgstr "Türklingel und Alarm"
 
-#: e2 kodi:30236 atv:choice.chime.all
+#: e2 kodi:30236 atv:choice.chime.all web
 msgid "Every request"
 msgstr "Jede Anfrage"
 
@@ -244,7 +244,7 @@ msgstr "CamAlert-Diagnose"
 msgid "Checking..."
 msgstr "Wird geprüft..."
 
-#: e2
+#: e2 web
 msgid "Close"
 msgstr "Schließen"
 
@@ -372,7 +372,7 @@ msgstr "Protokoll und Diagnose"
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: e2
+#: e2 web
 msgid "Save"
 msgstr "Speichern"
 
@@ -588,7 +588,7 @@ msgstr "CamAlert-Assistent"
 msgid "No go2rtc found in your network. Enter its address yourself, or set up go2rtc first (see the guide)."
 msgstr "Kein go2rtc in deinem Netzwerk gefunden. Gib die Adresse selbst ein oder richte zuerst go2rtc ein (siehe Anleitung)."
 
-#: e2 kodi:30016 ha:config.step.setup.data.go2rtc_server atv:wizard_address
+#: e2 kodi:30016 ha:config.step.setup.data.go2rtc_server atv:wizard_address web
 msgid "go2rtc address"
 msgstr "go2rtc-Adresse"
 
@@ -656,7 +656,7 @@ msgstr "Testanfrage"
 msgid "High"
 msgstr "Hoch"
 
-#: e2 kodi:30571
+#: e2 kodi:30571 web
 msgid "Settings received from Home Assistant"
 msgstr "Einstellungen von Home Assistant erhalten"
 
@@ -680,7 +680,7 @@ msgstr "Fehler"
 msgid "Woken up"
 msgstr "Geweckt"
 
-#: e2 kodi:30102 kodi:30515 ha:entity.switch.dnd.name
+#: e2 kodi:30102 kodi:30515 ha:entity.switch.dnd.name web
 msgid "Do not disturb"
 msgstr "Nicht stören"
 
@@ -728,15 +728,15 @@ msgstr "Unbekannte Kamera"
 msgid "Unknown camera or no valid go2rtc address"
 msgstr "Unbekannte Kamera oder keine gültige go2rtc-Adresse"
 
-#: e2 kodi:30527
+#: e2 kodi:30527 web
 msgid "Camera not reachable"
 msgstr "Kamera nicht erreichbar"
 
-#: e2 kodi:30567
+#: e2 kodi:30567 web
 msgid "Loading picture..."
 msgstr "Bild wird geladen..."
 
-#: e2 kodi:30564
+#: e2 kodi:30564 web
 msgid "go2rtc address not set"
 msgstr "go2rtc-Adresse nicht eingestellt"
 
@@ -840,11 +840,11 @@ msgstr "keine Einstellungsdatei"
 msgid "made by a newer CamAlert"
 msgstr "von einem neueren CamAlert erstellt"
 
-#: e2 kodi:30552 ha:options.step.init.data.doorbell
+#: e2 kodi:30552 ha:options.step.init.data.doorbell web
 msgid "Doorbell"
 msgstr "Türklingel"
 
-#: e2 kodi:30580
+#: e2 kodi:30580 web
 msgid "ALARM"
 msgstr "ALARM"
 
@@ -944,7 +944,7 @@ msgstr "go2rtc-RTSP-Port"
 msgid "Usually 8554. Used for live view and the camera list."
 msgstr "Meist 8554. Für Live-Ansicht und Kameraliste."
 
-#: e2 kodi:30024 ha:config.step.setup.data.camera ha:options.step.init.data.camera
+#: e2 kodi:30024 ha:config.step.setup.data.camera ha:options.step.init.data.camera web
 msgid "Default camera"
 msgstr "Standardkamera"
 
@@ -980,7 +980,7 @@ msgstr "Substreams für die Live-Ansicht"
 msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
 msgstr "Für Kameras, die der Receiver nicht abspielen kann (H.265/4K): front_door=front_door_sub nutzt diesen go2rtc-Stream für die Live-Ansicht."
 
-#: e2 kodi:30727 ha:services.show.fields.language.name
+#: e2 kodi:30727 ha:services.show.fields.language.name web
 msgid "Language"
 msgstr "Sprache"
 
@@ -1004,7 +1004,7 @@ msgstr "Anzeigemodus"
 msgid "Photo window keeps watching TV; live switches the channel to the camera."
 msgstr "Fotofenster: Fernsehen läuft weiter. Live: Kanal wechselt zur Kamera."
 
-#: e2 kodi:30045
+#: e2 kodi:30045 web
 msgid "Duration (seconds)"
 msgstr "Dauer (Sekunden)"
 
@@ -1012,11 +1012,11 @@ msgstr "Dauer (Sekunden)"
 msgid "How long the camera stays on screen."
 msgstr "Wie lange die Kamera angezeigt wird."
 
-#: e2 kodi:30047 ha:entity.select.window_position.name
+#: e2 kodi:30047 ha:entity.select.window_position.name web
 msgid "Window position"
 msgstr "Fensterposition"
 
-#: e2 kodi:30052 ha:entity.select.window_size.name
+#: e2 kodi:30052 ha:entity.select.window_size.name web
 msgid "Window size"
 msgstr "Fenstergröße"
 
@@ -1108,7 +1108,7 @@ msgstr "Eine Anfrage mit 2-4 Kameras zeigt sie zusammen in einem Fenster mit meh
 msgid "Title size"
 msgstr "Titelgröße"
 
-#: e2 kodi:30720
+#: e2 kodi:30720 web
 msgid "Text size"
 msgstr "Schriftgröße"
 
@@ -1124,7 +1124,7 @@ msgstr "Markierung bei Türklingel und Alarm"
 msgid "Priority high: orange frame and the word Doorbell. Alarm: red-orange frame and the word ALARM. Flashing: once per second."
 msgstr "Priorität hoch: orangefarbener Rahmen und das Wort Türklingel. Alarm: rotoranger Rahmen und das Wort ALARM. Blinkend: einmal pro Sekunde."
 
-#: e2 kodi:30232
+#: e2 kodi:30232 web
 msgid "Doorbell chime"
 msgstr "Türklingelton"
 
@@ -1744,7 +1744,7 @@ msgstr "Kamerapasswort entfernt."
 msgid "Used when devices.conf has no password for a camera. A password typed here is moved to devices.conf and this field is emptied again."
 msgstr "Wird benutzt, wenn devices.conf kein Passwort für eine Kamera enthält. Ein hier eingegebenes Passwort wird nach devices.conf verschoben und dieses Feld wieder geleert."
 
-#: kodi:30284
+#: kodi:30284 web
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -1896,7 +1896,7 @@ msgstr "Port"
 msgid "Use HTTPS"
 msgstr "HTTPS verwenden"
 
-#: ha:config.step.reconfigure.data.token ha:config.step.user.data.token ha:config.step.zeroconf_confirm.data.token
+#: ha:config.step.reconfigure.data.token ha:config.step.user.data.token ha:config.step.zeroconf_confirm.data.token web
 msgid "Access token"
 msgstr "Zugriffstoken"
 
@@ -1920,7 +1920,7 @@ msgstr "Für das eigene (selbst signierte) Zertifikat des Wiedergabegeräts auss
 msgid "Only if an access token is set in CamAlert on the player. It is sent in a header, never in the address."
 msgstr "Nur wenn in CamAlert auf dem Wiedergabegerät ein Zugriffstoken eingestellt ist. Es wird in einem Header gesendet, nie in der Adresse."
 
-#: ha:config.step.zeroconf_confirm.title
+#: ha:config.step.browser_confirm.title ha:config.step.zeroconf_confirm.title
 msgid "Add {name}"
 msgstr "{name} hinzufügen"
 
@@ -1931,6 +1931,10 @@ msgstr "CamAlert hat {name} im Netzwerk gefunden ({host}). Möchtest du dieses W
 #: ha:config.step.zeroconf_confirm.data_description.token
 msgid "The player has an access token: enter the token set in CamAlert on the player. It is sent in a header, never in the address."
 msgstr "Das Wiedergabegerät hat ein Zugriffstoken: Gib das Token ein, das in CamAlert auf dem Wiedergabegerät eingestellt ist. Es wird in einem Header gesendet, nie in der Adresse."
+
+#: ha:config.step.browser_confirm.description
+msgid "{name} connected to Home Assistant as a CamAlert player: a web page or the browser extension in a browser. Add this player to Home Assistant?"
+msgstr "{name} hat sich als CamAlert-Wiedergabegerät mit Home Assistant verbunden: eine Webseite oder die Browsererweiterung in einem Browser. Dieses Wiedergabegerät zu Home Assistant hinzufügen?"
 
 #: ha:config.step.reconfigure.title
 msgid "Change the CamAlert player"
@@ -1999,6 +2003,10 @@ msgstr "Diese Adresse gehört zu einem anderen Wiedergabegerät. Füge es als ne
 #: ha:config.abort.not_camalert
 msgid "This device did not say which CamAlert player it is."
 msgstr "Dieses Gerät meldet nicht, welches CamAlert-Wiedergabegerät es ist."
+
+#: ha:config.abort.browser_player
+msgid "This player is a web browser: it has no address. Change its settings on the player page in the browser."
+msgstr "Dieses Wiedergabegerät ist ein Webbrowser: Es hat keine Adresse. Ändere die Einstellungen auf der Seite des Wiedergabegeräts im Browser."
 
 #: ha:options.step.init.title
 msgid "CamAlert player options"
@@ -2311,3 +2319,51 @@ msgstr "Ja"
 #: atv:wizard_no
 msgid "No"
 msgstr "Nein"
+
+#: web
+msgid "Name"
+msgstr "Name"
+
+#: web
+msgid "Also show alerts on Home Assistant dashboards in this browser"
+msgstr "Meldungen auch auf Home-Assistant-Dashboards in diesem Browser zeigen"
+
+#: web
+msgid "Add this player in Home Assistant under Settings › Devices & services: it is listed as discovered."
+msgstr "Füge dieses Wiedergabegerät in Home Assistant unter Einstellungen › Geräte & Dienste hinzu: Es steht bei den Entdeckten."
+
+#: web
+msgid "Connecting to Home Assistant..."
+msgstr "Verbindung mit Home Assistant..."
+
+#: web
+msgid "Connected to Home Assistant"
+msgstr "Mit Home Assistant verbunden"
+
+#: web
+msgid "Sign in to Home Assistant"
+msgstr "Bei Home Assistant anmelden"
+
+#: web
+msgid "Not connected"
+msgstr "Nicht verbunden"
+
+#: web
+msgid "Tap to enable sound"
+msgstr "Tippe, um den Ton einzuschalten"
+
+#: web
+msgid "Home Assistant address"
+msgstr "Adresse von Home Assistant"
+
+#: web
+msgid "Create a long-lived access token in your Home Assistant profile, preferably for a separate user that is not an administrator."
+msgstr "Erstelle ein langlebiges Zugriffstoken in deinem Profil in Home Assistant, am besten für einen eigenen Benutzer ohne Administratorrechte."
+
+#: web
+msgid "Allow access to this Home Assistant"
+msgstr "Zugriff auf dieses Home Assistant erlauben"
+
+#: web
+msgid "Open the web player"
+msgstr "Web-Wiedergabegerät öffnen"

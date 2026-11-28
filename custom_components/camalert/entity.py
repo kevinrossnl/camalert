@@ -19,7 +19,7 @@ class CamAlertEntity(CoordinatorEntity):
             identifiers={(DOMAIN, entry.unique_id or entry.entry_id)},
             name=entry.title, manufacturer="CamAlert", model=coordinator.api.model,
             sw_version=(coordinator.data or {}).get("version"),
-            configuration_url="%s://%s" % ("https" if coordinator.api.https else "http", coordinator.api.host))
+            configuration_url=coordinator.api.configuration_url)
 
     async def _call(self, coro, refresh: bool = True):
         """Run an API call for a button or switch; errors are shown in the UI (never silent)."""

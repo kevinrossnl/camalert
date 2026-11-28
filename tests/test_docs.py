@@ -144,9 +144,10 @@ class TestDocs(unittest.TestCase):
     def test_development_md_files_name_existing_files(self):
         """#36: the file tables and commands in the DEVELOPMENT.md files name files that exist (one DEVELOPMENT.md per folder)."""
         names = sorted(rel(p) for p in glob.glob(os.path.join(ROOT, "**", "DEVELOPMENT.md"), recursive=True)
-                       if "/dist/" not in p and "/.venv" not in p)
+                       if "/dist/" not in p and "/.venv" not in p and "/node_modules/" not in p)
         self.assertEqual(names, ["DEVELOPMENT.md", "core/DEVELOPMENT.md", "custom_components/DEVELOPMENT.md", "docs/DEVELOPMENT.md",
-                                 "players/androidtv/DEVELOPMENT.md", "players/enigma2/DEVELOPMENT.md", "players/kodi/DEVELOPMENT.md"])
+                                 "players/androidtv/DEVELOPMENT.md", "players/enigma2/DEVELOPMENT.md", "players/kodi/DEVELOPMENT.md",
+                                 "players/web/DEVELOPMENT.md"])
         token = re.compile(r"`([\w./-]+\.(?:py|md|json|yaml|yml|xml|po|sh|wav|txt))`")
         import subprocess
         tracked = subprocess.check_output(["git", "ls-files", "-co", "--exclude-standard"], cwd=ROOT).decode().split()

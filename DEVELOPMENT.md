@@ -9,6 +9,7 @@ file table of that folder: read the root file **and** the one of the folder you 
 | `players/enigma2/` – Enigma2 plugin | [players/enigma2/DEVELOPMENT.md](players/enigma2/DEVELOPMENT.md) |
 | `players/kodi/` – Kodi add-on and repository | [players/kodi/DEVELOPMENT.md](players/kodi/DEVELOPMENT.md) |
 | `players/androidtv/` – Android TV / Fire TV app (Kotlin, #64) | [players/androidtv/DEVELOPMENT.md](players/androidtv/DEVELOPMENT.md) |
+| `players/web/` – web player and browser extension (JavaScript, #92, #127) | [players/web/DEVELOPMENT.md](players/web/DEVELOPMENT.md) |
 | `custom_components/camalert/` + `homeassistant/` – Home Assistant integration and blueprints | [custom_components/DEVELOPMENT.md](custom_components/DEVELOPMENT.md) |
 | `docs/` + `README.md` – documentation | [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) |
 | `tests/` | [tests/README.md](tests/README.md) |
@@ -59,16 +60,18 @@ file table of that folder: read the root file **and** the one of the folder you 
 | `players/enigma2/CamAlert/` | Enigma2 plugin |
 | `players/kodi/service.camalert/`, `players/kodi/repository.camalert/` | Kodi add-on and Kodi repository add-on |
 | `players/androidtv/` | Android TV / Fire TV app (Gradle: `api/` pure Kotlin + contract tests, `app/` Android) |
+| `players/web/` | web player and browser extension: shared JS core (`core/`), page (`page/`), Manifest V3 extension (`extension/`), Node + Playwright tests |
 | `custom_components/camalert/` | Home Assistant integration (stays in the root for HACS) |
 | `homeassistant/` | blueprints (`blueprints/README.md`: frozen inputs) and the REST-command package |
 | `players/enigma2/po/` | Enigma2 translations, generated from `core/i18n/` (never edit by hand) |
 | `extras/grafana/` | Grafana dashboard |
 | `docs/` | documentation ([docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)) |
-| `tools/` | `build_ipk.py`, `build_feed.py`, `build_kodi.py` (packages), `ci.sh` + `ci_pick_runner.py` (CI), `check_private.py` + `check_images.py` (privacy), `docs.py` (generated docs), `apk_listing.py` (golden APK listing), `export_contract.py` (contract and core data as JSON for the Android TV player), `i18n/i18n.py` (translations), `strings.py`, `msgfmt.py`, `make_chime.py`, `make_brand.py` (Home Assistant brand icons), `readme_images.py`, `e2_api_snapshot.py`, `kodi_api_snapshot.py`, `kodi_jsonrpc_snapshot.py`, `e2e/run.py` (end-to-end runner on real players, #35) |
+| `tools/` | `build_ipk.py`, `build_feed.py`, `build_kodi.py`, `build_web.py` (packages; web player data and extension), `ci.sh` + `ci_pick_runner.py` (CI), `check_private.py` + `check_images.py` (privacy), `docs.py` (generated docs), `apk_listing.py` (golden APK listing), `export_contract.py` (contract and core data as JSON for the Android TV player), `i18n/i18n.py` (translations), `strings.py`, `msgfmt.py`, `make_chime.py`, `make_brand.py` (Home Assistant brand icons), `readme_images.py`, `e2_api_snapshot.py`, `kodi_api_snapshot.py`, `kodi_jsonrpc_snapshot.py`, `e2e/run.py` (end-to-end runner on real players, #35) |
 | `tests/` | all tests; `tests/_paths.py` is the only file that knows where things live |
 
 ## CI (Forgejo Actions, `.forgejo/workflows/tests.yml`)
-- Every area runs `sh tools/ci.sh <area>` (`lint`, `core`, `unit`, `build`, `privacy`, `ha`, `androidtv`); run the same locally before a push.
+- Every area runs `sh tools/ci.sh <area>` (`lint`, `core`, `unit`, `build`, `privacy`, `ha`, `androidtv`, `web`); run the same locally before a push.
+  `web` (#92) runs the Node unit tests everywhere and Playwright only on the workstation runner (`WEB_E2E_SKIP` on the NAS).
   `androidtv` (#64) runs only on the workstation runner; in the NAS fallback it is skipped with a message.
   `ha` = Home Assistant runtime tests (#33, `tests/homeassistant/`): oldest (hacs.json) and latest Home Assistant on the
   workstation, latest only in the NAS fallback; integration branch coverage >= 90 %.

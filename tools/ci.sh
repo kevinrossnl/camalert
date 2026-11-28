@@ -10,11 +10,14 @@
 #   androidtv Android TV player (#64): JVM contract tests, debug APK, Android lint, golden APK listing. Needs JDK 17+;
 #             the Android Gradle plugin downloads the SDK packages from dl.google.com (license accepted here).
 #             Workstation runner only: with ANDROIDTV_SKIP set (NAS fallback) it prints why and does nothing.
+#   web       web player and browser extension (#92, #127): the Node unit tests of the shared JS core everywhere;
+#             with Playwright (npm ci + Chromium) the end-to-end tests against the fake Home Assistant, workstation
+#             runner only: WEB_E2E_SKIP set (NAS fallback) = unit tests only
 #   pymatrix  compatibility matrix (#21): core, Enigma2, Kodi and contract tests on every Python the players run on
 #             (PY_VERSIONS, default 3.8 .. 3.13), each in its own uv venv; the property tests (#34) need hypothesis,
 #             which is installed from Python 3.9 on. Workstation runner only: PYMATRIX_SKIP set = skipped (NAS).
 set -eu
-area="${1:?usage: tools/ci.sh tools|lint|core|unit|build|privacy|ha|androidtv|pymatrix}"
+area="${1:?usage: tools/ci.sh tools|lint|core|unit|build|privacy|ha|androidtv|web|pymatrix}"
 case "$area" in
   tools)
     echo "apt: ${PACKAGES:?PACKAGES not set}"
@@ -38,6 +41,7 @@ case "$area" in
     python3 -m pytest -m build --junitxml=junit-build.xml
     python3 tools/build_ipk.py dist
     python3 tools/build_kodi.py dist
+    python3 tools/build_web.py dist dist
     ;;
   privacy)
     # blocks the GitHub mirror if anything personal slipped in (files and the whole commit history)
@@ -84,6 +88,18 @@ print("commit history: %d problems" % len(bad)); sys.exit(1 if bad else 0)'
     ./gradlew --no-daemon --console=plain :api:test :app:assembleDebug :app:lintDebug
     cd ../..
     python3 tools/apk_listing.py check players/androidtv/app/build/outputs/apk/debug/app-debug.apk
+    ;;
+  web)
+    python3 tools/build_web.py check
+    node --test players/web/tests/unit/*.test.mjs
+    if [ -n "${WEB_E2E_SKIP:-}" ]; then
+      echo "web end-to-end SKIPPED: $WEB_E2E_SKIP (Playwright runs only on the workstation runner, #92)"
+      exit 0
+    fi
+    cd players/web
+    npm ci --no-audit --no-fund
+    npx playwright install --with-deps chromium > /dev/null
+    npx playwright test
     ;;
   pymatrix)
     if [ -n "${PYMATRIX_SKIP:-}" ]; then

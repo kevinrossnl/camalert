@@ -9,7 +9,9 @@
 Dreambox, Zgemma, Octagon and others) or a **Kodi** player (LibreELEC, CoreELEC, OSMC, Windows, Linux, Android;
 **Kodi 19 or newer**). All players have the same Home Assistant integration, blueprints, MQTT topics and HTTP API.
 An **Android TV / Google TV / Fire TV app** (no Kodi needed) with the same API comes with every release as a signed
-APK: see [Android TV and Fire TV](docs/players/androidtv.md).
+APK: see [Android TV and Fire TV](docs/players/androidtv.md). A **web player** for wall tablets and TV browsers and a
+**browser extension** for desktop PCs come with the Home Assistant integration: see
+[Web player and browser extension](docs/players/web.md).
 
 ![CamAlert photo window on top of a TV programme](docs/images/hero.jpg)
 

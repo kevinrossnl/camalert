@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!-- CamAlert web player (#92): served by the CamAlert Home Assistant integration at /camalert_static/page/player.html.
+     Open it full screen on a wall tablet (Fully Kiosk) or in a TV browser and add it in Home Assistant. -->
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CamAlert</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #000; color: #eee; font-family: sans-serif; overflow: hidden; }
+  #idle { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1em; text-align: center; padding: 2em; box-sizing: border-box; }
+  #clock { font-size: 12vw; font-weight: 200; opacity: .8; }
+  #state { opacity: .7; max-width: 40em; }
+  #gear { position: fixed; top: .6em; left: .6em; background: rgba(255,255,255,.1); color: #fff; border: 0;
+    border-radius: 6px; padding: .5em .8em; font-size: 1.1em; cursor: pointer; }
+  #sound { position: fixed; bottom: 1em; left: 50%; transform: translateX(-50%); background: #E69F00; color: #000;
+    border: 0; border-radius: 6px; padding: .7em 1.2em; font-size: 1.1em; cursor: pointer; }
+  #panel { position: fixed; top: 0; left: 0; bottom: 0; width: min(28em, 100%); background: #202020; overflow: auto;
+    padding: 1em 1.2em; box-sizing: border-box; display: none; z-index: 10; }
+  #panel.open { display: block; }
+  #panel label { display: block; margin: .7em 0 .2em; opacity: .85; }
+  #panel input, #panel select { width: 100%; box-sizing: border-box; padding: .45em; font-size: 1em; background: #111;
+    color: #eee; border: 1px solid #555; border-radius: 4px; }
+  #panel input[type=checkbox] { width: auto; }
+  #panel .row { display: flex; gap: .5em; margin-top: 1.2em; }
+  #panel button { padding: .55em 1em; font-size: 1em; border-radius: 4px; border: 0; cursor: pointer; }
+  #panel h2 { margin: .2em 0 .6em; font-weight: 400; }
+  #panel .small { font-size: .85em; opacity: .7; }
+</style>
+</head>
+<body>
+<div id="idle"><div id="clock"></div><div id="state"></div></div>
+<button id="gear" title="Settings">&#9881;</button>
+<button id="sound" hidden></button>
+<form id="panel" autocomplete="off">
+  <h2>CamAlert</h2>
+  <div id="panel-state" class="small"></div>
+  <label for="f-name" data-t="Name"></label><input id="f-name" maxlength="64">
+  <label for="f-server" data-t="go2rtc address"></label><input id="f-server" placeholder="http://192.168.1.10:1984">
+  <label for="f-camera" data-t="Default camera"></label><input id="f-camera" list="cams"><datalist id="cams"></datalist>
+  <label for="f-duration" data-t="Duration (seconds)"></label><input id="f-duration" type="number" min="5" max="300" step="5">
+  <label for="f-position" data-t="Window position"></label><select id="f-position"></select>
+  <label for="f-size" data-t="Window size"></label><select id="f-size"></select>
+  <label for="f-text_size" data-t="Text size"></label><select id="f-text_size"></select>
+  <label for="f-chime" data-t="Doorbell chime"></label><select id="f-chime"></select>
+  <label for="f-language" data-t="Language"></label><select id="f-language"></select>
+  <label><input id="f-dnd" type="checkbox"> <span data-t="Do not disturb"></span></label>
+  <label><input id="f-dashboard" type="checkbox"> <span data-t="Also show alerts on Home Assistant dashboards in this browser"></span></label>
+  <div class="row"><button id="save" type="submit" data-t="Save"></button><button id="close" type="button" data-t="Close"></button></div>
+  <p class="small" data-t="Add this player in Home Assistant under Settings › Devices &amp; services: it is listed as discovered."></p>
+</form>
+<script type="module" src="page.js"></script>
+</body>
+</html>

@@ -30,6 +30,10 @@
           "token": "The player has an access token: enter the token set in CamAlert on the player. It is sent in a header, never in the address."
         }
       },
+      "browser_confirm": {
+        "title": "Add {name}",
+        "description": "{name} connected to Home Assistant as a CamAlert player: a web page or the browser extension in a browser. Add this player to Home Assistant?"
+      },
       "reconfigure": {
         "title": "Change the CamAlert player",
         "description": "New address, port, HTTPS or token of the same player.",
@@ -74,7 +78,8 @@
       "already_configured": "This player is already added.",
       "reconfigure_successful": "The player was changed.",
       "wrong_player": "This address belongs to another player. Add it as a new player instead.",
-      "not_camalert": "This device did not say which CamAlert player it is."
+      "not_camalert": "This device did not say which CamAlert player it is.",
+      "browser_player": "This player is a web browser: it has no address. Change its settings on the player page in the browser."
     }
   },
   "options": {

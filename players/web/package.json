@@ -1,0 +1,14 @@
+{
+  "name": "camalert-web",
+  "private": true,
+  "description": "CamAlert web player and browser extension (#92, #127): tests only, the player itself has no dependencies",
+  "license": "GPL-2.0-only",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/unit/*.test.mjs",
+    "e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.57.0"
+  }
+}

@@ -30,6 +30,10 @@
           "token": "Odtwarzacz ma token dostępu: wpisz token ustawiony w CamAlert na odtwarzaczu. Jest wysyłany w nagłówku, nigdy w adresie."
         }
       },
+      "browser_confirm": {
+        "title": "Dodaj {name}",
+        "description": "{name} połączył się z Home Assistant jako odtwarzacz CamAlert: strona internetowa lub rozszerzenie w przeglądarce. Dodać ten odtwarzacz do Home Assistant?"
+      },
       "reconfigure": {
         "title": "Zmień odtwarzacz CamAlert",
         "description": "Nowy adres, port, HTTPS lub token tego samego odtwarzacza.",
@@ -74,7 +78,8 @@
       "already_configured": "Ten odtwarzacz jest już dodany.",
       "reconfigure_successful": "Odtwarzacz został zmieniony.",
       "wrong_player": "Ten adres należy do innego odtwarzacza. Dodać go jako nowy odtwarzacz.",
-      "not_camalert": "To urządzenie nie podaje, którym odtwarzaczem CamAlert jest."
+      "not_camalert": "To urządzenie nie podaje, którym odtwarzaczem CamAlert jest.",
+      "browser_player": "Ten odtwarzacz to przeglądarka internetowa: nie ma adresu. Ustawienia zmienia się na stronie odtwarzacza w przeglądarce."
     }
   },
   "options": {

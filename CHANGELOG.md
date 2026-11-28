@@ -9,6 +9,7 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Added
 
+<<<<<<< ours
 - **All players and Home Assistant:** a spoken announcement with a camera (#89). `camalert.show` has the fields
   `announce` (text), `tts` (TTS engine) and `language`: Home Assistant makes a WAV with its text-to-speech and the
   player plays it after the chime, when the new setting *Spoken announcement* allows it (default: doorbell and
@@ -17,6 +18,15 @@ actions and blueprint inputs stay backwards compatible.
 - **All players:** several go2rtc servers at once (#15). The main server stays in *go2rtc address*; *More go2rtc
   servers* lists the others with an optional prefix (`garden=http://192.168.1.20:1984`), whose cameras are called
   `garden.<name>`. Names of the main server do not change. See [cameras](docs/user/cameras.md#several-go2rtc-servers).
+=======
+- **Web player** (#92): a page served by the Home Assistant integration for wall tablets (Fully Kiosk) and smart-TV
+  browsers, and optionally CamAlert windows on top of Home Assistant dashboards in a chosen browser. It signs in with
+  Home Assistant's own login and is added as a player like the others (discovered under Devices & services). See
+  [Web player and browser extension](docs/players/web.md).
+- **Browser extension** (#127): the same player for Chrome and Edge on a desktop PC, without an open tab: an alert
+  opens a small window, a mosaic fills the screen, with the chime. Every release has `camalert-browser-X.Y.Z.zip`
+  (Load unpacked).
+>>>>>>> theirs
 - **Home Assistant:** a doorbell without an automation. Choose the doorbell (event entity or binary sensor) and an
   optional camera in the player's options (**Configure**): every ring shows the camera on that player with priority
   high (#90).

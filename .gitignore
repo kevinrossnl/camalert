@@ -22,3 +22,8 @@ tools/e2e/devices.local.json
 # Android signing keys (#65): never in git
 *.jks
 *.keystore
+
+# web player and browser extension (#92, #127): npm and Playwright output
+players/web/node_modules/
+players/web/test-results/
+players/web/playwright-report/

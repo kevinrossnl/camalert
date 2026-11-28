@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "CamAlert",
+  "description": "CamAlert player for desktop browsers: camera pictures from Home Assistant on your screen when someone rings.",
+  "version": "0",
+  "minimum_chrome_version": "116",
+  "background": {"service_worker": "background.js", "type": "module"},
+  "permissions": ["storage", "alarms", "offscreen"],
+  "optional_host_permissions": ["http://*/*", "https://*/*"],
+  "options_page": "options.html",
+  "action": {"default_title": "CamAlert", "default_popup": "popup.html"},
+  "icons": {"128": "icon.png"}
+}

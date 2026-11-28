@@ -287,7 +287,9 @@ jobs:
   # ---- #104: the GitHub push mirror has no sync on commit; it only runs after a green gate (privacy included) ----
   mirror:
     needs: gate
-    if: needs.gate.result == 'success' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    # Paused (28-11-2026): GitHub gets a filtered copy without the contributor notes; until that job exists, nothing
+    # is mirrored.
+    if: false && needs.gate.result == 'success' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
     runs-on: truenas
     container: {image: "node:20-bookworm"}
     timeout-minutes: 2

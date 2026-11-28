@@ -350,6 +350,10 @@
         "language": {
           "name": "Langue",
           "description": "Langue de l'annonce, par exemple en ou nl. Vide = la langue par défaut du moteur."
+        },
+        "window_id": {
+          "name": "Id de fenêtre",
+          "description": "Une Fenêtre photo à part, à côté des autres fenêtres, par ex. doorbell. Le même id prolonge ou remplace cette fenêtre ; Masquer la caméra avec cet id ne ferme que cette fenêtre. Lettres, chiffres, . _ - (32 au plus). Vide = la fenêtre normale."
         }
       }
     },
@@ -369,7 +373,13 @@
     },
     "hide": {
       "name": "Masquer la caméra",
-      "description": "Ferme la fenêtre de la caméra et revient à la télévision."
+      "description": "Ferme la fenêtre de la caméra et revient à la télévision.",
+      "fields": {
+        "window_id": {
+          "name": "Id de fenêtre",
+          "description": "Ne fermer que la fenêtre avec cet id. Vide = tout fermer."
+        }
+      }
     },
     "ptz": {
       "name": "Contrôle de la caméra (PTZ)",

@@ -41,6 +41,11 @@ interface Controller {
     val events: List<Map<String, Any?>>
     fun show(stream: String?, seconds: Int?, mode: String?, priority: String?, source: String, label: String?, eventId: String? = null): String
     fun hide()
+    /** #87: a photo window with its own id (a player without several windows: the normal window). */
+    fun showWindow(stream: String?, seconds: Int?, mode: String?, priority: String?, source: String, label: String?, windowId: String): String =
+        show(stream, seconds, mode, priority, source, label)
+    /** #87: closes only the window with this id. */
+    fun hideWindow(windowId: String) {}
     fun mosaic(streams: String?, seconds: Int): String
     fun tour(streams: String?, interval: Int?): String
     fun hasPtz(name: String): Boolean
@@ -177,8 +182,11 @@ class Api(val data: CoreData = CoreData.load()) {
         val priority = choiceParam(a, "priority", Rules.PRIORITIES)
         val sec = if (Rules.hasSeconds(a["sec"])) Rules.showSeconds(a["sec"], (s["duration"] as? Number)?.toInt() ?: 30) else null  // 0: until hide (#81)
         val (sayUrl, say) = try { Speech.request(a, a["_ip"]) } catch (e: Speech.SpeechError) { throw Invalid(e.message ?: "invalid say_url") }  // #89
-        val res = ctl.show(cam, sec, mode, priority, source, a["label"])
+        val wid = windowId(a)
+        val res = if (wid != null) ctl.showWindow(cam, sec, mode, priority, source, a["label"], wid)  // #87
+                  else ctl.show(cam, sec, mode, priority, source, a["label"])
         val out = linkedMapOf<String, Any?>("result" to (res in listOf("show", "extend", "wake")), "action" to res, "cam" to (cam ?: s["camera"]))
+        if (wid != null) out["id"] = wid
         if (sayUrl != null || say != null) {
             out["spoken"] = Speech.shouldSpeak(s["speak"]?.toString() ?: "high", priority ?: "normal", source, res, sayUrl, say) &&
                 b.speak(sayUrl, say, priority ?: "normal")
@@ -186,7 +194,15 @@ class Api(val data: CoreData = CoreData.load()) {
         return out
     }
 
+    private fun windowId(a: Map<String, String>): String? =
+        try { Windows.idParam(a["id"]) } catch (e: IllegalArgumentException) { throw Invalid(e.message ?: "invalid window id") }
+
     private fun hide(b: Backend, ctl: Controller, a: MutableMap<String, String>, s: Map<String, Any?>, source: String): Any {
+        val wid = windowId(a)
+        if (wid != null) {  // #87: only the window with this id
+            ctl.hideWindow(wid)
+            return mapOf("result" to true, "action" to "hide", "id" to wid)
+        }
         ctl.hide()
         return mapOf("result" to true, "action" to "hide")
     }

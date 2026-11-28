@@ -65,7 +65,8 @@
       "test",
       "tour",
       "update",
-      "webhook"
+      "webhook",
+      "windows"
     ],
     "integration_too_old": false,
     "min_ha_version": "1.0.0",
@@ -100,7 +101,8 @@
       "test",
       "tour",
       "update",
-      "webhook"
+      "webhook",
+      "windows"
     ],
     "configured": true,
     "dnd": false,

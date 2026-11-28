@@ -84,6 +84,52 @@
   },
   {
    "call": [
+    "hide",
+    "doorbell"
+   ],
+   "name": "hide_window",
+   "payload": "{\"id\": \"doorbell\"}",
+   "topic": "camalert/{node}/hide"
+  },
+  {
+   "call": [
+    "hide"
+   ],
+   "name": "hide_window_invalid",
+   "payload": "{\"id\": \"a b\"}",
+   "topic": "camalert/{node}/hide"
+  },
+  {
+   "call": [
+    "show",
+    "garden",
+    null,
+    null,
+    null,
+    "mqtt",
+    null,
+    "doorbell"
+   ],
+   "name": "show_window",
+   "payload": "{\"cam\": \"garden\", \"id\": \"doorbell\"}",
+   "topic": "camalert/{node}/show"
+  },
+  {
+   "call": [
+    "show",
+    "garden",
+    null,
+    null,
+    null,
+    "mqtt",
+    null
+   ],
+   "name": "show_window_invalid",
+   "payload": "{\"cam\": \"garden\", \"id\": \"../x\"}",
+   "topic": "camalert/{node}/show"
+  },
+  {
+   "call": [
     "dnd",
     true
    ],

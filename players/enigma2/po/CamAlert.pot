@@ -854,6 +854,12 @@ msgstr ""
 msgid "Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."
 msgstr ""
 
+msgid "Windows at the same time"
+msgstr ""
+
+msgid "Photo windows with their own id (window_id in Home Assistant) appear next to each other, up to this number. 1 = one window that every request replaces. Each window fetches its own pictures."
+msgstr ""
+
 msgid "Multi-camera window layout"
 msgstr ""
 

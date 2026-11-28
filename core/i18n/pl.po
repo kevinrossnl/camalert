@@ -1140,6 +1140,14 @@ msgstr "Odstęp odświeżania"
 msgid "Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."
 msgstr "Naciśnij OK, aby rzadziej pobierać zdjęcia z kamery (sekundy), np. z wolnej kamery."
 
+#: e2 kodi:31040
+msgid "Windows at the same time"
+msgstr "Okna jednocześnie"
+
+#: e2 kodi:31041
+msgid "Photo windows with their own id (window_id in Home Assistant) appear next to each other, up to this number. 1 = one window that every request replaces. Each window fetches its own pictures."
+msgstr "Każde Okno ze zdjęciem z własnym id (window_id w Home Assistant) pojawia się obok pozostałych, do tej liczby. 1 = jedno okno, które zastępuje każde żądanie. Każde okno pobiera własne zdjęcia."
+
 #: e2 kodi:30056
 msgid "Multi-camera window layout"
 msgstr "Układ okna z kilkoma kamerami"
@@ -2404,6 +2412,14 @@ msgstr "Silnik zamiany tekstu na mowę dla komunikatu. Puste = pierwszy silnik T
 msgid "Language of the announcement, e.g. en or nl. Empty = the engine's default."
 msgstr "Język komunikatu, na przykład en lub nl. Puste = domyślny język silnika."
 
+#: ha:services.hide.fields.window_id.name ha:services.show.fields.window_id.name
+msgid "Window id"
+msgstr "Id okna"
+
+#: ha:services.show.fields.window_id.description
+msgid "A photo window of its own next to the other windows, e.g. doorbell. The same id again extends or replaces that window; Hide camera with this id closes only that window. Letters, digits, . _ - (at most 32). Empty = the normal window."
+msgstr "Osobne Okno ze zdjęciem obok pozostałych okien, np. doorbell. To samo id przedłuża lub zastępuje to okno; Ukryj kamerę z tym id zamyka tylko to okno. Litery, cyfry, . _ - (najwyżej 32). Puste = zwykłe okno."
+
 #: ha:services.mosaic.description
 msgid "Shows several cameras at once in a full-screen mosaic."
 msgstr "Pokazuje kilka kamer naraz w mozaice na pełnym ekranie."
@@ -2419,6 +2435,10 @@ msgstr "Jak długo mozaika pozostaje na ekranie. Puste = ustawienie odtwarzacza.
 #: ha:services.hide.description
 msgid "Closes the camera window and returns to TV."
 msgstr "Zamyka okno kamery i wraca do telewizji."
+
+#: ha:services.hide.fields.window_id.description
+msgid "Only close the window with this id. Empty = close everything."
+msgstr "Zamknąć tylko okno z tym id. Puste = zamknąć wszystko."
 
 #: ha:services.ptz.description
 msgid "Pans, tilts or zooms a camera that is listed with ONVIF or Foscam in the devices file of the player."

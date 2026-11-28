@@ -151,6 +151,8 @@
     <string name="t_f06d0049" formatted="false">Zones noires sur des parties d\'une image de caméra, sur chaque écran CamAlert et sur la vidéo en direct : caméra=x1,y1,x2,y2 entre 0 et 1 de l\'image, plusieurs zones avec +, plusieurs caméras avec |, p. ex. garden=0,0,0.3,0.5. Ne s\'applique pas aux images hors de CamAlert.</string>
     <string name="t_97588905" formatted="false">Intervalle d\'actualisation</string>
     <string name="t_591884e5" formatted="false">Appuyez sur OK pour récupérer moins souvent les photos d\'une caméra (secondes), p. ex. une caméra lente.</string>
+    <string name="t_c798dee9" formatted="false">Fenêtres simultanées</string>
+    <string name="t_c172e13e" formatted="false">Chaque Fenêtre photo avec son propre id (window_id dans Home Assistant) apparaît à côté des autres, jusqu\'à ce nombre. 1 = une seule fenêtre que chaque demande remplace. Chaque fenêtre récupère ses propres images.</string>
     <string name="t_40405b3f" formatted="false">Disposition de la fenêtre multi-caméras</string>
     <string name="t_b90a4fd3" formatted="false">Une demande avec 2 à 4 caméras les affiche ensemble dans une fenêtre multi-caméras.</string>
     <string name="t_88c58adb" formatted="false">Taille du titre</string>

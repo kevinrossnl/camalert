@@ -6,6 +6,15 @@
 import json
 import threading
 
+from ..windows import window_id_param
+
+
+def _wid(value):
+    try:
+        return window_id_param(value) if isinstance(value, str) else None
+    except ValueError:
+        return None
+
 
 def mqtt_command(payload):
     """Payload of a show command: 'front_door' or JSON {"cam": ..., "sec": ..., "mode": ...}."""
@@ -15,8 +24,23 @@ def mqtt_command(payload):
             d = json.loads(text)
         except ValueError:
             return {}
-        return {k: d[k] for k in ("cam", "sec", "mode", "priority", "label") if k in d}
+        out = {k: d[k] for k in ("cam", "sec", "mode", "priority", "label") if k in d}
+        if _wid(d.get("id")):  # #87: an invalid window id is dropped (the normal window)
+            out["id"] = _wid(d.get("id"))
+        return out
     return {"cam": text} if text else {}
+
+
+def mqtt_hide(payload):
+    """Window id of a hide command (#87): JSON {"id": ...} closes that window; anything else (empty) closes all."""
+    text = payload.decode("utf-8", "replace").strip() if isinstance(payload, bytes) else str(payload or "").strip()
+    if text.startswith("{"):
+        try:
+            d = json.loads(text)
+        except ValueError:
+            return None
+        return _wid(d.get("id")) if isinstance(d, dict) else None
+    return None
 
 
 def discovery(node, name, cameras, prefix="camalert", base="homeassistant"):

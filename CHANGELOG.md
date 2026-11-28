@@ -9,6 +9,9 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Added
 
+- **All players:** several photo windows at once. `show` with an `id` (API, MQTT, Home Assistant
+  `window_id`) opens a separate window per id; `hide` with that id closes only that window. The new setting
+  *Maximum windows* (1–3, default 2) limits the number; without an id everything works as before (#87).
 - **All players:** shorter settings screens. On Enigma2 the first screen shows the basic settings and one line per
   section (with what is on there); OK opens a section, BLUE shows the expert settings. On every player the fields
   of Frigate, Foscam, UniFi Protect, MQTT and the active hours only appear once they are turned on (#130).

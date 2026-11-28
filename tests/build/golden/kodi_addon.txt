@@ -52,6 +52,7 @@ file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/triggers/un
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/update.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/urls.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/warm.py
+file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/windows.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/wizard.py
 file rw-r--r-- service.camalert/resources/lib/camalert/controller.py
 file rw-r--r-- service.camalert/resources/lib/camalert/diag.py

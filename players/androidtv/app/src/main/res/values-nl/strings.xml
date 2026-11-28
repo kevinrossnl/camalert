@@ -151,6 +151,8 @@
     <string name="t_f06d0049" formatted="false">Zwarte vlakken over delen van een camerabeeld, op elk CamAlert-scherm en over livevideo: camera=x1,y1,x2,y2 in 0..1 van het beeld, meerdere vlakken met +, meerdere camera\'s met |, bijv. garden=0,0,0.3,0.5. Geldt niet voor beelden buiten CamAlert.</string>
     <string name="t_97588905" formatted="false">Verversinterval</string>
     <string name="t_591884e5" formatted="false">Druk op OK om foto\'s van een camera minder vaak op te halen (seconden), bijv. voor een trage camera.</string>
+    <string name="t_c798dee9" formatted="false">Vensters tegelijk</string>
+    <string name="t_c172e13e" formatted="false">Fotovensters met een eigen id (window_id in Home Assistant) verschijnen naast elkaar, tot dit aantal. 1 = één venster dat elke melding vervangt. Elk venster haalt zelf zijn foto\'s op.</string>
     <string name="t_40405b3f" formatted="false">Indeling van het venster met meerdere camera\'s</string>
     <string name="t_b90a4fd3" formatted="false">Een verzoek met 2-4 camera\'s toont ze samen in één venster met meerdere camera\'s.</string>
     <string name="t_88c58adb" formatted="false">Titelgrootte</string>

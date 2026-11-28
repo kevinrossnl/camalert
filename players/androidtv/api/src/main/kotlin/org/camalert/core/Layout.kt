@@ -22,7 +22,8 @@ object Layout {
     private fun left(p: String) = p == "top_left" || p == "bottom_left"
     private fun top(p: String) = p == "top_left" || p == "top_right"
 
-    fun window(position: String, size: String, sw: Int, sh: Int, titleSize: String = "normal", textSize: String? = "normal"): Window {
+    /** slot > 0 (#87): the next place from the corner towards the centre (core layout.slot_position). */
+    fun window(position: String, size: String, sw: Int, sh: Int, titleSize: String = "normal", textSize: String? = "normal", slot: Int = 0): Window {
         val f = sw / 1920.0
         val (w0, h0) = SIZES[size] ?: SIZES.getValue("medium")
         val w = (w0 * f).toInt()
@@ -31,7 +32,20 @@ object Layout {
         val margin = (40 * f).toInt()
         val x = if (left(position)) margin else sw - w - margin
         val y = if (top(position)) margin else sh - (h + title) - margin
+        if (slot > 0) {
+            val (sx, sy) = slotPosition(slot, position, x, y, w, h + title, sw, sh, margin, (16 * f).toInt())
+            return Window(sx, sy, w, h, title)
+        }
         return Window(x, y, w, h, title)
+    }
+
+    fun slotPosition(slot: Int, position: String, x: Int, y: Int, w: Int, totalH: Int, sw: Int, sh: Int, margin: Int, gap: Int): Pair<Int, Int> {
+        val rows = maxOf(1, Math.floorDiv(sh - 2 * margin + gap, totalH + gap))
+        val col = Math.floorDiv(slot, rows)
+        val row = Math.floorMod(slot, rows)
+        val ny = if (top(position)) y + row * (totalH + gap) else y - row * (totalH + gap)
+        val nx = if (left(position)) x + col * (w + gap) else x - col * (w + gap)
+        return Pair(maxOf(0, minOf(nx, sw - w)), maxOf(0, minOf(ny, sh - totalH)))
     }
 
     fun grid(n: Int, sw: Int, sh: Int, gap: Int = 8): List<Rect> {

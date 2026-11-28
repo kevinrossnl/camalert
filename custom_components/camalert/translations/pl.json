@@ -350,6 +350,10 @@
         "language": {
           "name": "Język",
           "description": "Język komunikatu, na przykład en lub nl. Puste = domyślny język silnika."
+        },
+        "window_id": {
+          "name": "Id okna",
+          "description": "Osobne Okno ze zdjęciem obok pozostałych okien, np. doorbell. To samo id przedłuża lub zastępuje to okno; Ukryj kamerę z tym id zamyka tylko to okno. Litery, cyfry, . _ - (najwyżej 32). Puste = zwykłe okno."
         }
       }
     },
@@ -369,7 +373,13 @@
     },
     "hide": {
       "name": "Ukryj kamerę",
-      "description": "Zamyka okno kamery i wraca do telewizji."
+      "description": "Zamyka okno kamery i wraca do telewizji.",
+      "fields": {
+        "window_id": {
+          "name": "Id okna",
+          "description": "Zamknąć tylko okno z tym id. Puste = zamknąć wszystko."
+        }
+      }
     },
     "ptz": {
       "name": "Sterowanie kamerą (PTZ)",

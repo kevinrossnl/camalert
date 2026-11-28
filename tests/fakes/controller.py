@@ -21,12 +21,19 @@ class RecordingController(object):
         if self.fail == name:
             raise ValueError("boom")
 
-    def show(self, stream=None, seconds=None, mode=None, priority=None, source="api", label=None, event_id=None):
-        self._call("show", stream, seconds, mode, priority, source, label)
+    def show(self, stream=None, seconds=None, mode=None, priority=None, source="api", label=None, event_id=None,
+             window_id=None):
+        if window_id is None:
+            self._call("show", stream, seconds, mode, priority, source, label)
+        else:  # #87
+            self._call("show", stream, seconds, mode, priority, source, label, window_id)
         return self.results["show"]
 
-    def hide(self, resume=True):
-        self._call("hide")
+    def hide(self, resume=True, window_id=None):
+        if window_id is None:
+            self._call("hide")
+        else:  # #87
+            self._call("hide", window_id)
 
     def mosaic(self, streams=None, seconds=0):
         self._call("mosaic", streams, seconds)

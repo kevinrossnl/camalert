@@ -350,6 +350,10 @@
         "language": {
           "name": "Language",
           "description": "Language of the announcement, e.g. en or nl. Empty = the engine's default."
+        },
+        "window_id": {
+          "name": "Window id",
+          "description": "A photo window of its own next to the other windows, e.g. doorbell. The same id again extends or replaces that window; Hide camera with this id closes only that window. Letters, digits, . _ - (at most 32). Empty = the normal window."
         }
       }
     },
@@ -369,7 +373,13 @@
     },
     "hide": {
       "name": "Hide camera",
-      "description": "Closes the camera window and returns to TV."
+      "description": "Closes the camera window and returns to TV.",
+      "fields": {
+        "window_id": {
+          "name": "Window id",
+          "description": "Only close the window with this id. Empty = close everything."
+        }
+      }
     },
     "ptz": {
       "name": "Camera control (PTZ)",

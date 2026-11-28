@@ -84,7 +84,7 @@ DEFAULTS = {
     "mode": "photo", "duration": 30, "position": "top_right", "size": "medium",
     "pause_tv": False, "video_window": "idle", "live_return": True, "live_volume": 100, "live_format": "mp4",
     "limit_hours": False, "from_time": "07:00", "until_time": "23:00", "skip_playing": "off",
-    "alarm_wake": False, "tour_interval": 8, "window_keys": True,
+    "alarm_wake": False, "tour_interval": 8, "max_windows": 2, "window_keys": True,
     "http_port": 8099, "allow": "lan", "token": "", "api_https": False,
     "mqtt_enabled": False, "mqtt_host": "", "mqtt_port": 1883, "mqtt_user": "", "mqtt_password": "",
     "mqtt_discovery": True, "mqtt_name": "",
@@ -116,7 +116,7 @@ CHOICES = {
     "language": ("system", "en", "nl", "de", "fr", "it", "pl"),
 }
 RANGES = {"rtsp_port": (1, 65535), "duration": (5, 300), "frigate_seconds": (5, 300), "foscam_seconds": (5, 300),
-          "foscam_interval": (1, 60), "unifi_seconds": (5, 300), "unifi_interval": (2, 60), "live_volume": (0, 100), "tour_interval": (3, 60), "http_port": (1024, 65535), "mqtt_port": (1, 65535)}
+          "foscam_interval": (1, 60), "unifi_seconds": (5, 300), "unifi_interval": (2, 60), "live_volume": (0, 100), "tour_interval": (3, 60), "max_windows": (1, 3), "http_port": (1024, 65535), "mqtt_port": (1, 65535)}
 
 
 def parse_settings(raw):

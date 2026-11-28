@@ -113,9 +113,19 @@ object MqttTopics {
         if (text.startsWith("{")) {
             val d = try { Json.parse(text) } catch (e: Exception) { return emptyMap() }
             if (d !is Map<*, *>) return emptyMap()
-            return listOf("cam", "sec", "mode", "priority", "label").filter { it in d }.associateWith { d[it] }
+            val out = LinkedHashMap(listOf("cam", "sec", "mode", "priority", "label").filter { it in d }.associateWith { d[it] })
+            Windows.idOrNull(d["id"])?.let { out["id"] = it }  // #87: an invalid window id is dropped
+            return out
         }
         return if (text.isEmpty()) emptyMap() else mapOf("cam" to text)
+    }
+
+    /** Window id of a hide command (#87): JSON {"id": ...} closes that window; anything else closes all. */
+    fun hideId(payload: ByteArray): String? {
+        val text = String(payload, Charsets.UTF_8).trim()
+        if (!text.startsWith("{")) return null
+        val d = try { Json.parse(text) } catch (e: Exception) { return null }
+        return if (d is Map<*, *>) Windows.idOrNull(d["id"]) else null
     }
 
     /** Subscription for this player's own retained discovery configs (#116, core mqtt/topics.discovery_filter). */
@@ -431,13 +441,15 @@ class MqttClient(
                 return
             }
             when (if (topic.startsWith(prefix)) topic.substring(prefix.length) else "") {
-                "hide" -> ctl.hide()
+                "hide" -> MqttTopics.hideId(payload)?.let { ctl.hideWindow(it) } ?: ctl.hide()  // #87
                 "mosaic" -> ctl.mosaic(String(payload, Charsets.UTF_8).trim().ifEmpty { null }, 60)
                 "show" -> {
                     val c = MqttTopics.command(payload)
                     val raw = c["sec"]?.takeIf { Rules.hasSeconds(it) }  // 0: until hide (#81)
                     val sec = raw?.let { Rules.showSeconds(if (it is Double) it.toInt() else it) }
-                    ctl.show(c["cam"]?.toString(), sec, c["mode"]?.toString(), c["priority"]?.toString(), "mqtt", c["label"]?.toString())
+                    val wid = c["id"]?.toString()  // #87
+                    if (wid != null) ctl.showWindow(c["cam"]?.toString(), sec, c["mode"]?.toString(), c["priority"]?.toString(), "mqtt", c["label"]?.toString(), wid)
+                    else ctl.show(c["cam"]?.toString(), sec, c["mode"]?.toString(), c["priority"]?.toString(), "mqtt", c["label"]?.toString())
                 }
                 "dnd/set" -> ctl.setDnd(String(payload, Charsets.UTF_8).trim().uppercase() in listOf("ON", "1", "TRUE"))
             }

@@ -43,7 +43,8 @@
   "test",
   "tour",
   "update",
-  "webhook"
+  "webhook",
+  "windows"
  ],
  "colour_names": {
   "blue": "BLUE",
@@ -834,6 +835,20 @@
    "section": "display",
    "step": null,
    "type": "text",
+   "unit": null
+  },
+  {
+   "choices": null,
+   "default": 2,
+   "help": "Photo windows with their own id (window_id in Home Assistant) appear next to each other, up to this number. 1 = one window that every request replaces. Each window fetches its own pictures.",
+   "id": "max_windows",
+   "label": "Windows at the same time",
+   "level": "advanced",
+   "max": 3,
+   "min": 1,
+   "section": "display",
+   "step": 1,
+   "type": "int",
    "unit": null
   },
   {

@@ -53,7 +53,7 @@ SCREENS = ("none", "photo", "strip", "notification", "live", "mosaic", "tour")  
 
 def status_keys(body):
     return all(k in body for k in STATUS_KEYS) and body["result"] is True and body["api_version"] == 1 and \
-        {"post", "header_token", "show", "ptz", "screen", "settings", "setup", "test"} <= set(body["capabilities"]) and \
+        {"post", "header_token", "show", "ptz", "screen", "settings", "setup", "test", "windows"} <= set(body["capabilities"]) and \
         body["screen"] in SCREENS
 
 
@@ -92,6 +92,20 @@ TABLE = [
         calls=[("show", "garden", 600, None, None, "api", None)]),
     row("show_several_cameras", "/camalert/show", {"cam": "garden, front_door", "mode": "strip"},
         calls=[("show", "garden,front_door", None, "strip", None, "api", None)]),
+    row("show_window_id", "/camalert/show", {"cam": "garden", "id": "doorbell"},  # #87: a window of its own
+        json={"result": True, "action": "show", "cam": "garden", "id": "doorbell"},
+        calls=[("show", "garden", None, None, None, "api", None, "doorbell")]),
+    row("show_window_id_json", "/camalert/show", body=b'{"cam": "garden", "id": "drive-way.2", "sec": 0}',
+        calls=[("show", "garden", 600, None, None, "api", None, "drive-way.2")]),
+    row("show_window_id_empty_is_default", "/camalert/show", {"cam": "garden", "id": ""},
+        json={"result": True, "action": "show", "cam": "garden"},
+        calls=[("show", "garden", None, None, None, "api", None)]),
+    row("show_window_id_invalid", "/camalert/show", {"cam": "garden", "id": "../x"}, code=400,
+        json={"result": False, "error": "invalid window id"}, calls=[]),
+    row("show_window_id_too_long", "/camalert/show", {"cam": "garden", "id": "x" * 33}, code=400, calls=[]),
+    row("hide_window_id", "/camalert/hide", {"id": "doorbell"}, json={"result": True, "action": "hide", "id": "doorbell"},
+        calls=[("hide", "doorbell")]),
+    row("hide_window_id_invalid", "/camalert/hide", {"id": "a b"}, code=400, calls=[]),
     row("show_alias", "/camalert/camalert", json={"result": True, "action": "show"}),
     row("show_ignored", "/camalert/show", {"cam": "garden"}, json={"result": False, "action": "ignore"},
         ctl={"results": {"show": "ignore"}}),

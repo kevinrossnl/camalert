@@ -151,6 +151,8 @@
     <string name="t_f06d0049" formatted="false">Czarne prostokąty na częściach obrazu kamery, na każdym ekranie CamAlert i na wideo na żywo: kamera=x1,y1,x2,y2 w zakresie 0..1 obrazu, kilka prostokątów przez +, kilka kamer przez |, np. garden=0,0,0.3,0.5. Nie dotyczy obrazów poza CamAlert.</string>
     <string name="t_97588905" formatted="false">Odstęp odświeżania</string>
     <string name="t_591884e5" formatted="false">Naciśnij OK, aby rzadziej pobierać zdjęcia z kamery (sekundy), np. z wolnej kamery.</string>
+    <string name="t_c798dee9" formatted="false">Okna jednocześnie</string>
+    <string name="t_c172e13e" formatted="false">Każde Okno ze zdjęciem z własnym id (window_id w Home Assistant) pojawia się obok pozostałych, do tej liczby. 1 = jedno okno, które zastępuje każde żądanie. Każde okno pobiera własne zdjęcia.</string>
     <string name="t_40405b3f" formatted="false">Układ okna z kilkoma kamerami</string>
     <string name="t_b90a4fd3" formatted="false">Żądanie z 2-4 kamerami pokazuje je razem w oknie z kilkoma kamerami.</string>
     <string name="t_88c58adb" formatted="false">Rozmiar tytułu</string>

@@ -21,7 +21,7 @@ from .camalert_core.cameras import slug
 from .camalert_core.keymap import button_event
 from .camalert_core.mqtt.codec import (mqtt_connect, MQTT_DISCONNECT, mqtt_parse_publish, MQTT_PING, mqtt_publish,
                                        mqtt_split, mqtt_subscribe)
-from .camalert_core.mqtt.topics import discovery, discovery_filter, DiscoveryCleaner, mqtt_command
+from .camalert_core.mqtt.topics import discovery, discovery_filter, DiscoveryCleaner, mqtt_command, mqtt_hide
 from .camalert_core.rules import has_seconds, show_seconds
 from .camalert_core.triggers import dispatch, enabled_sources, mqtt_topics
 from .camalert_core.urls import valid_port
@@ -137,14 +137,16 @@ class CamAlertMqtt(Protocol):
             return
         try:
             if action == "hide":
-                ctl.hide()
+                wid = mqtt_hide(payload)  # #87: {"id": ...} closes only that window
+                ctl.hide(window_id=wid) if wid else ctl.hide()
             elif action == "mosaic":
                 text = payload.decode("utf-8", "replace").strip()
                 ctl.mosaic(text or None, 60)
             elif action == "show":
                 cmd = mqtt_command(payload)
                 sec = show_seconds(cmd.get("sec")) if has_seconds(cmd.get("sec")) else None  # 0: until hide (#81)
-                ctl.show(cmd.get("cam"), sec, cmd.get("mode"), cmd.get("priority"), "mqtt", cmd.get("label"))
+                extra = {"window_id": cmd["id"]} if cmd.get("id") else {}  # #87
+                ctl.show(cmd.get("cam"), sec, cmd.get("mode"), cmd.get("priority"), "mqtt", cmd.get("label"), **extra)
         except Exception as e:
             log("MQTT command failed:", e)
         reactor.callLater(0.5, self.publish_state)

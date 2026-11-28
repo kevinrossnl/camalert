@@ -350,6 +350,10 @@
         "language": {
           "name": "Sprache",
           "description": "Sprache der Ansage, zum Beispiel en oder nl. Leer = Standard der Engine."
+        },
+        "window_id": {
+          "name": "Fenster-ID",
+          "description": "Ein eigenes Fotofenster neben den anderen Fenstern, z. B. doorbell. Dieselbe ID verlängert oder ersetzt dieses Fenster; Kamera ausblenden mit dieser ID schließt nur dieses Fenster. Buchstaben, Ziffern, . _ - (höchstens 32). Leer = das normale Fenster."
         }
       }
     },
@@ -369,7 +373,13 @@
     },
     "hide": {
       "name": "Kamera ausblenden",
-      "description": "Schließt das Kamerafenster und kehrt zum Fernsehen zurück."
+      "description": "Schließt das Kamerafenster und kehrt zum Fernsehen zurück.",
+      "fields": {
+        "window_id": {
+          "name": "Fenster-ID",
+          "description": "Nur das Fenster mit dieser ID schließen. Leer = alles schließen."
+        }
+      }
     },
     "ptz": {
       "name": "Kamerasteuerung (PTZ)",

@@ -164,13 +164,15 @@ class CamAlertApi:
 
     async def show(self, cam: str | list | None = None, seconds: int | None = None, mode: str | None = None,
                    priority: str | None = None, label: str | None = None, say: str | None = None,
-                   say_url: str | None = None) -> dict:
+                   say_url: str | None = None, window_id: str | None = None) -> dict:
         cam, mode = show_params(cam, mode)
         if seconds == 0 and self.capabilities is not None and "hold" not in self.capabilities:
             seconds = 300  # #81: a player without "until hide" gets the longest fixed duration instead
         params = {"cam": cam, "sec": seconds, "mode": mode, "priority": priority, "label": label}
         if self.capabilities is not None and "speak" in self.capabilities:  # #89; older players: no say
             params.update(say=say, say_url=say_url)
+        if window_id and self.capabilities is not None and "windows" in self.capabilities:  # #87; older: normal window
+            params["id"] = window_id
         return await self._get("show", params)
 
     async def dnd(self, on: bool | None = None) -> dict:
@@ -215,5 +217,8 @@ class CamAlertApi:
     async def mosaic(self, cams: list[str] | None = None, seconds: int | None = None) -> dict:
         return await self._get("mosaic", {"cam": ",".join(cams) if cams else None, "sec": seconds})
 
-    async def hide(self) -> dict:
+    async def hide(self, window_id: str | None = None) -> dict:
+        """Closes everything; window_id (#87): only that window (players without "windows": everything)."""
+        if window_id and self.capabilities is not None and "windows" in self.capabilities:
+            return await self._get("hide", {"id": window_id})
         return await self._get("hide")

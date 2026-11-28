@@ -7525,6 +7525,386 @@
   },
   {
    "args": [
+    "top_right",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    0
+   ],
+   "kind": "window_slot",
+   "out": [
+    1240,
+    40,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "top_right",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    1
+   ],
+   "kind": "window_slot",
+   "out": [
+    1240,
+    456,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "top_right",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    2
+   ],
+   "kind": "window_slot",
+   "out": [
+    584,
+    40,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "top_right",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    3
+   ],
+   "kind": "window_slot",
+   "out": [
+    584,
+    456,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "top_right",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    4
+   ],
+   "kind": "window_slot",
+   "out": [
+    0,
+    40,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "top_left",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    0
+   ],
+   "kind": "window_slot",
+   "out": [
+    40,
+    40,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "top_left",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    1
+   ],
+   "kind": "window_slot",
+   "out": [
+    40,
+    456,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "top_left",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    2
+   ],
+   "kind": "window_slot",
+   "out": [
+    696,
+    40,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "top_left",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    3
+   ],
+   "kind": "window_slot",
+   "out": [
+    696,
+    456,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "top_left",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    4
+   ],
+   "kind": "window_slot",
+   "out": [
+    1280,
+    40,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "bottom_right",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    0
+   ],
+   "kind": "window_slot",
+   "out": [
+    1240,
+    640,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "bottom_right",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    1
+   ],
+   "kind": "window_slot",
+   "out": [
+    1240,
+    224,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "bottom_right",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    2
+   ],
+   "kind": "window_slot",
+   "out": [
+    584,
+    640,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "bottom_right",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    3
+   ],
+   "kind": "window_slot",
+   "out": [
+    584,
+    224,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "bottom_right",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    4
+   ],
+   "kind": "window_slot",
+   "out": [
+    0,
+    640,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    0
+   ],
+   "kind": "window_slot",
+   "out": [
+    40,
+    640,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    1
+   ],
+   "kind": "window_slot",
+   "out": [
+    40,
+    224,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    2
+   ],
+   "kind": "window_slot",
+   "out": [
+    696,
+    640,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    3
+   ],
+   "kind": "window_slot",
+   "out": [
+    696,
+    224,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1920,
+    1080,
+    "normal",
+    "normal",
+    4
+   ],
+   "kind": "window_slot",
+   "out": [
+    1280,
+    640,
+    640,
+    360,
+    40
+   ]
+  },
+  {
+   "args": [
     3,
     "grid",
     "top_right",
@@ -14350,6 +14730,386 @@
    ],
    "kind": "title_font_text",
    "out": 25
+  },
+  {
+   "args": [
+    "top_right",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    0
+   ],
+   "kind": "window_slot",
+   "out": [
+    828,
+    26,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "top_right",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    1
+   ],
+   "kind": "window_slot",
+   "out": [
+    828,
+    302,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "top_right",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    2
+   ],
+   "kind": "window_slot",
+   "out": [
+    392,
+    26,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "top_right",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    3
+   ],
+   "kind": "window_slot",
+   "out": [
+    392,
+    302,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "top_right",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    4
+   ],
+   "kind": "window_slot",
+   "out": [
+    0,
+    26,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "top_left",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    0
+   ],
+   "kind": "window_slot",
+   "out": [
+    26,
+    26,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "top_left",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    1
+   ],
+   "kind": "window_slot",
+   "out": [
+    26,
+    302,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "top_left",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    2
+   ],
+   "kind": "window_slot",
+   "out": [
+    462,
+    26,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "top_left",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    3
+   ],
+   "kind": "window_slot",
+   "out": [
+    462,
+    302,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "top_left",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    4
+   ],
+   "kind": "window_slot",
+   "out": [
+    854,
+    26,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "bottom_right",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    0
+   ],
+   "kind": "window_slot",
+   "out": [
+    828,
+    428,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "bottom_right",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    1
+   ],
+   "kind": "window_slot",
+   "out": [
+    828,
+    152,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "bottom_right",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    2
+   ],
+   "kind": "window_slot",
+   "out": [
+    392,
+    428,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "bottom_right",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    3
+   ],
+   "kind": "window_slot",
+   "out": [
+    392,
+    152,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "bottom_right",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    4
+   ],
+   "kind": "window_slot",
+   "out": [
+    0,
+    428,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    0
+   ],
+   "kind": "window_slot",
+   "out": [
+    26,
+    428,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    1
+   ],
+   "kind": "window_slot",
+   "out": [
+    26,
+    152,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    2
+   ],
+   "kind": "window_slot",
+   "out": [
+    462,
+    428,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    3
+   ],
+   "kind": "window_slot",
+   "out": [
+    462,
+    152,
+    426,
+    240,
+    26
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    1280,
+    720,
+    "normal",
+    "normal",
+    4
+   ],
+   "kind": "window_slot",
+   "out": [
+    854,
+    428,
+    426,
+    240,
+    26
+   ]
   },
   {
    "args": [
@@ -21181,6 +21941,386 @@
   },
   {
    "args": [
+    "top_right",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    0
+   ],
+   "kind": "window_slot",
+   "out": [
+    2480,
+    80,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "top_right",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    1
+   ],
+   "kind": "window_slot",
+   "out": [
+    2480,
+    912,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "top_right",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    2
+   ],
+   "kind": "window_slot",
+   "out": [
+    1168,
+    80,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "top_right",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    3
+   ],
+   "kind": "window_slot",
+   "out": [
+    1168,
+    912,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "top_right",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    4
+   ],
+   "kind": "window_slot",
+   "out": [
+    0,
+    80,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "top_left",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    0
+   ],
+   "kind": "window_slot",
+   "out": [
+    80,
+    80,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "top_left",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    1
+   ],
+   "kind": "window_slot",
+   "out": [
+    80,
+    912,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "top_left",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    2
+   ],
+   "kind": "window_slot",
+   "out": [
+    1392,
+    80,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "top_left",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    3
+   ],
+   "kind": "window_slot",
+   "out": [
+    1392,
+    912,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "top_left",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    4
+   ],
+   "kind": "window_slot",
+   "out": [
+    2560,
+    80,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "bottom_right",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    0
+   ],
+   "kind": "window_slot",
+   "out": [
+    2480,
+    1280,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "bottom_right",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    1
+   ],
+   "kind": "window_slot",
+   "out": [
+    2480,
+    448,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "bottom_right",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    2
+   ],
+   "kind": "window_slot",
+   "out": [
+    1168,
+    1280,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "bottom_right",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    3
+   ],
+   "kind": "window_slot",
+   "out": [
+    1168,
+    448,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "bottom_right",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    4
+   ],
+   "kind": "window_slot",
+   "out": [
+    0,
+    1280,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    0
+   ],
+   "kind": "window_slot",
+   "out": [
+    80,
+    1280,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    1
+   ],
+   "kind": "window_slot",
+   "out": [
+    80,
+    448,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    2
+   ],
+   "kind": "window_slot",
+   "out": [
+    1392,
+    1280,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    3
+   ],
+   "kind": "window_slot",
+   "out": [
+    1392,
+    448,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
+    "bottom_left",
+    "medium",
+    3840,
+    2160,
+    "normal",
+    "normal",
+    4
+   ],
+   "kind": "window_slot",
+   "out": [
+    2560,
+    1280,
+    1280,
+    720,
+    80
+   ]
+  },
+  {
+   "args": [
     3,
     "grid",
     "top_right",
@@ -21945,6 +23085,40 @@
   {
    "host": "HA.LOCAL.",
    "local": true
+  }
+ ],
+ "max_windows": [
+  {
+   "out": 1,
+   "value": 1
+  },
+  {
+   "out": 2,
+   "value": 2
+  },
+  {
+   "out": 3,
+   "value": 3
+  },
+  {
+   "out": 1,
+   "value": 0
+  },
+  {
+   "out": 3,
+   "value": 9
+  },
+  {
+   "out": 3,
+   "value": "3"
+  },
+  {
+   "out": 2,
+   "value": "x"
+  },
+  {
+   "out": 2,
+   "value": null
   }
  ],
  "metrics": [
@@ -27458,6 +28632,7 @@
     "live_volume": 0,
     "log_level": "normal",
     "log_syslog": "",
+    "max_windows": 2,
     "mode": "photo",
     "more_servers": "",
     "mosaic": "",
@@ -27560,6 +28735,7 @@
     "live_volume": 55,
     "log_level": "normal",
     "log_syslog": "",
+    "max_windows": 2,
     "mode": "photo",
     "more_servers": "",
     "mosaic": "",
@@ -27656,6 +28832,7 @@
     "live_volume": 0,
     "log_level": "normal",
     "log_syslog": "",
+    "max_windows": 2,
     "mode": "photo",
     "more_servers": "",
     "mosaic": "",
@@ -27750,6 +28927,7 @@
     "live_volume": false,
     "log_level": true,
     "log_syslog": true,
+    "max_windows": true,
     "mode": true,
     "more_servers": true,
     "mosaic": true,
@@ -27870,6 +29048,7 @@
     "live_volume": true,
     "log_level": true,
     "log_syslog": true,
+    "max_windows": true,
     "mode": true,
     "more_servers": false,
     "mosaic": true,
@@ -27993,6 +29172,7 @@
     "live_volume": false,
     "log_level": true,
     "log_syslog": true,
+    "max_windows": true,
     "mode": true,
     "more_servers": true,
     "mosaic": true,
@@ -28120,6 +29300,7 @@
     "live_volume": false,
     "log_level": true,
     "log_syslog": true,
+    "max_windows": true,
     "mode": true,
     "more_servers": true,
     "mosaic": true,
@@ -28248,6 +29429,7 @@
     "live_volume": false,
     "log_level": true,
     "log_syslog": true,
+    "max_windows": true,
     "mode": true,
     "more_servers": true,
     "mosaic": true,
@@ -30687,6 +31869,213 @@
    "caller": null,
    "url": "http://100.101.102.103/x",
    "why": null
+  }
+ ],
+ "window_id": [
+  {
+   "out": null,
+   "value": null
+  },
+  {
+   "out": null,
+   "value": ""
+  },
+  {
+   "out": null,
+   "value": " "
+  },
+  {
+   "out": "door",
+   "value": "door"
+  },
+  {
+   "out": "door",
+   "value": " door "
+  },
+  {
+   "out": "drive-way.2_x",
+   "value": "drive-way.2_x"
+  },
+  {
+   "out": "invalid",
+   "value": "a b"
+  },
+  {
+   "out": "invalid",
+   "value": "../x"
+  },
+  {
+   "out": "invalid",
+   "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  },
+  {
+   "out": "invalid",
+   "value": "ä"
+  },
+  {
+   "out": "5",
+   "value": 5
+  }
+ ],
+ "window_slots": [
+  {
+   "ids": [
+    "",
+    "door",
+    "z"
+   ],
+   "limit": 3,
+   "ops": [
+    [
+     "place",
+     "door",
+     "normal"
+    ],
+    [
+     "place",
+     "",
+     "normal"
+    ],
+    [
+     "place",
+     "garden",
+     "high"
+    ],
+    [
+     "place",
+     "door",
+     "alarm"
+    ],
+    [
+     "place",
+     "x",
+     "normal"
+    ],
+    [
+     "remove",
+     "garden",
+     null
+    ],
+    [
+     "place",
+     "y",
+     "normal"
+    ],
+    [
+     "place",
+     "z",
+     "alarm"
+    ]
+   ],
+   "out": [
+    [
+     1,
+     null,
+     false
+    ],
+    [
+     0,
+     null,
+     false
+    ],
+    [
+     2,
+     null,
+     false
+    ],
+    [
+     1,
+     null,
+     true
+    ],
+    [
+     2,
+     "garden",
+     false
+    ],
+    null,
+    [
+     2,
+     "x",
+     false
+    ],
+    [
+     2,
+     "y",
+     false
+    ]
+   ]
+  },
+  {
+   "ids": [
+    "",
+    "b"
+   ],
+   "limit": 2,
+   "ops": [
+    [
+     "place",
+     "a",
+     "normal"
+    ],
+    [
+     "place",
+     "b",
+     "low"
+    ],
+    [
+     "place",
+     "",
+     "alarm"
+    ]
+   ],
+   "out": [
+    [
+     1,
+     null,
+     false
+    ],
+    [
+     1,
+     "a",
+     false
+    ],
+    [
+     0,
+     null,
+     false
+    ]
+   ]
+  },
+  {
+   "ids": [
+    ""
+   ],
+   "limit": 1,
+   "ops": [
+    [
+     "place",
+     "a",
+     "normal"
+    ],
+    [
+     "place",
+     "",
+     "normal"
+    ]
+   ],
+   "out": [
+    [
+     0,
+     null,
+     false
+    ],
+    [
+     0,
+     null,
+     true
+    ]
+   ]
   }
  ],
  "with_cache": [

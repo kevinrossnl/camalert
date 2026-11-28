@@ -46,6 +46,11 @@ class RecordingController(results: Map<String, Any?>? = null, val fail: String? 
     }
 
     override fun hide() = call("hide")
+    override fun showWindow(stream: String?, seconds: Int?, mode: String?, priority: String?, source: String, label: String?, windowId: String): String {
+        call("show", stream, seconds, mode, priority, source, label, windowId)  // #87
+        return results.getValue("show")
+    }
+    override fun hideWindow(windowId: String) = call("hide", windowId)
     override fun mosaic(streams: String?, seconds: Int): String { call("mosaic", streams, seconds); return results.getValue("mosaic") }
     override fun tour(streams: String?, interval: Int?): String { call("tour", streams, interval); return results.getValue("tour") }
     override fun hasPtz(name: String) = name.isNotEmpty() && name in ptz
@@ -66,6 +71,11 @@ class FakeDisplay : Display {
     override fun tour(tiles: List<Tile>, interval: Int) { calls.add("tour ${tiles.joinToString(",") { it.name }} $interval"); current = Screen("tour", tiles[0].name) }
     override fun hide() { calls.add("hide"); current = Screen(null, null) }
     override fun screen() = current
+    val extra = LinkedHashMap<String, String>()  // #87
+    override fun photoWindow(id: String, slot: Int, tile: Tile, seconds: Int, label: String?, priority: String) { calls.add("window $id $slot ${tile.name} $seconds"); extra[id] = tile.name }
+    override fun extendWindow(id: String, seconds: Int) { calls.add("extend-window $id $seconds") }
+    override fun hideWindow(id: String) { calls.add("hide-window $id"); extra.remove(id) }
+    override fun windows(): Map<String, String> = LinkedHashMap(extra)
 }
 
 class FakeEnv(var values: MutableMap<String, Any?> = Schema.validate(emptyMap()).first.toMutableMap()) : PlayerEnv {

@@ -1140,6 +1140,14 @@ msgstr "Aktualisierungsintervall"
 msgid "Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."
 msgstr "OK drücken, um Fotos einer Kamera seltener zu holen (Sekunden), z. B. bei einer langsamen Kamera."
 
+#: e2 kodi:31040
+msgid "Windows at the same time"
+msgstr "Fenster gleichzeitig"
+
+#: e2 kodi:31041
+msgid "Photo windows with their own id (window_id in Home Assistant) appear next to each other, up to this number. 1 = one window that every request replaces. Each window fetches its own pictures."
+msgstr "Fotofenster mit eigener ID (window_id in Home Assistant) erscheinen nebeneinander, bis zu dieser Anzahl. 1 = ein Fenster, das jede Anfrage ersetzt. Jedes Fenster holt seine eigenen Bilder."
+
 #: e2 kodi:30056
 msgid "Multi-camera window layout"
 msgstr "Anordnung im Fenster mit mehreren Kameras"
@@ -2404,6 +2412,14 @@ msgstr "Die Text-zu-Sprache-Engine für die Ansage. Leer = die erste TTS-Engine 
 msgid "Language of the announcement, e.g. en or nl. Empty = the engine's default."
 msgstr "Sprache der Ansage, zum Beispiel en oder nl. Leer = Standard der Engine."
 
+#: ha:services.hide.fields.window_id.name ha:services.show.fields.window_id.name
+msgid "Window id"
+msgstr "Fenster-ID"
+
+#: ha:services.show.fields.window_id.description
+msgid "A photo window of its own next to the other windows, e.g. doorbell. The same id again extends or replaces that window; Hide camera with this id closes only that window. Letters, digits, . _ - (at most 32). Empty = the normal window."
+msgstr "Ein eigenes Fotofenster neben den anderen Fenstern, z. B. doorbell. Dieselbe ID verlängert oder ersetzt dieses Fenster; Kamera ausblenden mit dieser ID schließt nur dieses Fenster. Buchstaben, Ziffern, . _ - (höchstens 32). Leer = das normale Fenster."
+
 #: ha:services.mosaic.description
 msgid "Shows several cameras at once in a full-screen mosaic."
 msgstr "Zeigt mehrere Kameras gleichzeitig in einem Mosaik im Vollbild."
@@ -2419,6 +2435,10 @@ msgstr "Wie lange das Mosaik im Bild bleibt. Leer = Einstellung des Wiedergabege
 #: ha:services.hide.description
 msgid "Closes the camera window and returns to TV."
 msgstr "Schließt das Kamerafenster und kehrt zum Fernsehen zurück."
+
+#: ha:services.hide.fields.window_id.description
+msgid "Only close the window with this id. Empty = close everything."
+msgstr "Nur das Fenster mit dieser ID schließen. Leer = alles schließen."
 
 #: ha:services.ptz.description
 msgid "Pans, tilts or zooms a camera that is listed with ONVIF or Foscam in the devices file of the player."

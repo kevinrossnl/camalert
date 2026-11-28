@@ -30,3 +30,9 @@ Topics (`<id>` = player id, see the device in Home Assistant or `/camalert/statu
 
 The blueprints need the integration; with MQTT only, use the discovered buttons or publish to `camalert/<id>/show`.
 [Frigate](frigate.md) events can come in over the same broker.
+
+## Several windows
+
+On players with the capability `windows`, a JSON show command may carry `"id"` to open or update an extra
+photo window with that id, and a hide command may be `{"id": "..."}` to close only that window. An invalid
+id is ignored, as if no id was given. See [Several windows](api.md#several-windows).

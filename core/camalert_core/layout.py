@@ -25,9 +25,10 @@ def title_font(title_size, screen_w, text_size="normal"):
     return font_px(TITLE_SIZES.get(title_size, TITLE_SIZES["normal"])[1], screen_w, text_size)
 
 
-def window_geometry(position, size, screen_w, screen_h, title_size="normal", text_size="normal"):
+def window_geometry(position, size, screen_w, screen_h, title_size="normal", text_size="normal", slot=0):
     """(x, y, w, h, title_h) for the photo window, scaled from a 1920x1080 design; the title bar grows with the
-    text size (#48)."""
+    text size (#48). slot > 0 (#87, several windows at once): the next place from the corner towards the screen
+    centre (top corners downwards, bottom corners upwards); a full column continues in the next column inwards."""
     f = screen_w / 1920.0
     w, h = SIZES.get(size, SIZES["medium"])
     w, h = int(w * f), int(h * f)
@@ -36,7 +37,20 @@ def window_geometry(position, size, screen_w, screen_h, title_size="normal", tex
     total_h = h + title
     x = margin if position in ("top_left", "bottom_left") else screen_w - w - margin
     y = margin if position in ("top_left", "top_right") else screen_h - total_h - margin
+    if slot > 0:
+        x, y = slot_position(slot, position, x, y, w, total_h, screen_w, screen_h, margin, int(16 * f))
     return x, y, w, h, title
+
+
+def slot_position(slot, position, x, y, w, total_h, screen_w, screen_h, margin, gap):
+    """(x, y) of window place `slot` (0 = the corner itself) for a window of w x total_h at (x, y) (#87)."""
+    rows = max(1, (screen_h - 2 * margin + gap) // (total_h + gap))
+    col, row = divmod(int(slot), rows)
+    down = position in ("top_left", "top_right")
+    right = position in ("top_left", "bottom_left")
+    y = y + row * (total_h + gap) if down else y - row * (total_h + gap)
+    x = x + col * (w + gap) if right else x - col * (w + gap)
+    return max(0, min(x, screen_w - w)), max(0, min(y, screen_h - total_h))
 
 
 def grid(n, screen_w, screen_h, gap=8):

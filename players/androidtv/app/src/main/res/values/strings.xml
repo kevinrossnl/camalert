@@ -152,6 +152,8 @@
     <string name="t_f06d0049" formatted="false">Black boxes over parts of a camera picture, on every CamAlert screen and over live video: camera=x1,y1,x2,y2 in 0..1 of the picture, several boxes with +, several cameras with |, e.g. garden=0,0,0.3,0.5. Not applied to pictures outside CamAlert.</string>
     <string name="t_97588905" formatted="false">Refresh interval</string>
     <string name="t_591884e5" formatted="false">Press OK to fetch a camera\'s photos less often (seconds), e.g. for a slow camera.</string>
+    <string name="t_c798dee9" formatted="false">Windows at the same time</string>
+    <string name="t_c172e13e" formatted="false">Photo windows with their own id (window_id in Home Assistant) appear next to each other, up to this number. 1 = one window that every request replaces. Each window fetches its own pictures.</string>
     <string name="t_40405b3f" formatted="false">Multi-camera window layout</string>
     <string name="t_b90a4fd3" formatted="false">A request with 2-4 cameras shows them together in one multi-camera window.</string>
     <string name="t_88c58adb" formatted="false">Title size</string>

@@ -46,6 +46,8 @@ SHOW_SCHEMA = vol.Schema({
     vol.Optional("announce"): vol.All(cv.string, vol.Length(max=300)),
     vol.Optional("tts"): vol.Any("", cv.entity_domain("tts")),  # "" = first engine (blueprint input left empty)
     vol.Optional("language"): cv.string,
+    # #87: a photo window of its own next to the others (players with the capability "windows")
+    vol.Optional("window_id"): vol.Any("", vol.Match(r"^[A-Za-z0-9_.-]{1,32}$")),
 })
 PTZ_SCHEMA = vol.Schema({
     **TARGET,
@@ -57,7 +59,7 @@ MOSAIC_SCHEMA = vol.Schema({
     vol.Optional("cameras"): vol.All(cv.ensure_list, [cv.string]),
     vol.Optional("seconds"): vol.All(vol.Coerce(int), vol.Range(min=5, max=300)),
 })
-HIDE_SCHEMA = vol.Schema(dict(TARGET))
+HIDE_SCHEMA = vol.Schema({**TARGET, vol.Optional("window_id"): vol.Any("", vol.Match(r"^[A-Za-z0-9_.-]{1,32}$"))})
 
 
 def _error(key: str, **placeholders) -> HomeAssistantError:
@@ -136,7 +138,8 @@ async def async_setup(hass: HomeAssistant, config) -> bool:
         say_url = await async_say_url(hass, say, call.data.get("tts") or None, call.data.get("language") or None) \
             if say else None
         await run(call, lambda api: api.show(call.data.get("camera"), call.data.get("seconds"), call.data.get("mode"),
-                                             call.data.get("priority"), call.data.get("label"), say, say_url))
+                                             call.data.get("priority"), call.data.get("label"), say, say_url,
+                                             call.data.get("window_id") or None))
 
     async def ptz(call: ServiceCall):
         await run(call, lambda api: api.ptz(call.data["camera"], call.data["move"]), "ptz")
@@ -145,7 +148,7 @@ async def async_setup(hass: HomeAssistant, config) -> bool:
         await run(call, lambda api: api.mosaic(call.data.get("cameras"), call.data.get("seconds")), "mosaic")
 
     async def hide(call: ServiceCall):
-        await run(call, lambda api: api.hide())
+        await run(call, lambda api: api.hide(call.data.get("window_id") or None))
 
     hass.services.async_register(DOMAIN, "show", show, schema=SHOW_SCHEMA)
     hass.services.async_register(DOMAIN, "mosaic", mosaic, schema=MOSAIC_SCHEMA)

@@ -90,6 +90,31 @@ def test_announcement_address_rules():
     assert speech.OPTIONS == {"preferred_format": "wav"}
 
 
+async def test_show_and_hide_a_window_with_an_id(hass, player):
+    """#87: window_id goes to the player as id (show and hide); empty = the normal window."""
+    await setup_player(hass, player)
+    await call(hass, "show", {"camera": "garden", "window_id": "doorbell"})
+    assert last(player, "/camalert/show")[1]["id"] == "doorbell"
+    assert player.ctl.calls[-1] == ("show", "garden", None, None, None, "ha", None, "doorbell")
+    await call(hass, "hide", {"window_id": "doorbell"})
+    assert last(player, "/camalert/hide")[1] == {"id": "doorbell"}
+    assert player.ctl.calls[-1] == ("hide", "doorbell")
+    await call(hass, "show", {"camera": "garden", "window_id": ""})
+    assert "id" not in last(player, "/camalert/show")[1]
+    with pytest.raises(vol.Invalid):
+        await call(hass, "show", {"camera": "garden", "window_id": "a b"})
+
+
+async def test_window_id_on_an_older_player(hass, player):
+    """#87: a player without the capability "windows" gets the normal window and a normal hide."""
+    player.capabilities = ["cameras", "header_token", "hide", "post", "show", "status"]
+    await setup_player(hass, player)
+    await call(hass, "show", {"camera": "garden", "window_id": "doorbell"})
+    assert "id" not in last(player, "/camalert/show")[1]
+    await call(hass, "hide", {"window_id": "doorbell"})
+    assert player.ctl.calls[-1] == ("hide",)
+
+
 async def test_mosaic_hide_ptz(hass, player):
     await setup_player(hass, player)
     await call(hass, "mosaic", {"cameras": "front_door, garden", "seconds": 60})

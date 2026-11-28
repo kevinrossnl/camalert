@@ -43,6 +43,7 @@ from .camalert_core.rules import (blocked_by_rules, clock_tuple, cooldown_second
                                   in_time_window, lowered_volume, pick_mode, pick_priority, should_pause)
 from .camalert_core.update import latest_tag, newer_version, UPDATE_INTERVAL
 from .camalert_core.urls import normalize_server, rtsp_url, snapshot_url, split_credentials, tcp_url, valid_port
+from .camalert_core.windows import WindowSlots, max_windows
 from .helpable import HelpBase, help_actions, init_help
 from .keys import actionmap_actions, button_for, key_action, ptz_key
 from .services import chime_command, github_repo, is_media_ref, service_ref, stream_from_ref
@@ -615,11 +616,12 @@ class LiveStillScreen(Screen):
 class PhotoWindow(Screen):
     """Small always-on-top window that keeps fetching a fresh snapshot from go2rtc (about one every 1-2 s)."""
 
-    def __init__(self, session, stream, url, title=None, keys=False, priority="normal"):
+    def __init__(self, session, stream, url, title=None, keys=False, priority="normal", slot=0, wid=None):
         c = config.plugins.camalert
         size = getDesktop(0).size()
         x, y, w, h, t = window_geometry(c.position.value, c.size.value, size.width(), size.height(), c.title_size.value,
-                                        text_size())
+                                        text_size(), slot)  # slot: place of a window with its own id (#87)
+        self.wid = wid
         f = size.width() / 1920.0
         mark = priority_mark(priority, c.priority_border.value)
         base_title = marked_title(title or display_name(stream), priority, c.priority_border.value, _)
@@ -1117,6 +1119,8 @@ class Controller(object):
         Controller.instance = self
         self.session = session
         self.window = None
+        self.extra = {}  # #87: id -> PhotoWindow of a request with its own window id
+        self.slots = WindowSlots()
         self.live_stream = None
         self.previous_ref = None
         self.live_timer = eTimer()
@@ -1264,9 +1268,13 @@ class Controller(object):
         time rules like a high request, but without chime and without the doorbell frame."""
         return self.show(None, None, None, "high", source="menu")
 
-    def show(self, stream=None, seconds=None, mode=None, priority=None, source="api", label=None, event_id=None):
-        """Handles a show request and logs it (source, decision and reason) in camalert.log and the event list."""
+    def show(self, stream=None, seconds=None, mode=None, priority=None, source="api", label=None, event_id=None,
+             window_id=None):
+        """Handles a show request and logs it (source, decision and reason) in camalert.log and the event list.
+        window_id (#87): a photo window of its own next to the others; None = the normal window."""
         self.reason, self.label, self.source = "", (label or "").strip()[:40] or None, source
+        self.slots.limit = max_windows(config.plugins.camalert.max_windows.value)
+        self.wid = window_id if self.slots.limit > 1 else None  # 1 window: every id uses the one window
         cam = stream or config.plugins.camalert.camera.value
         if mode == "log":  # display mode 'log only' (#70): event list and log, nothing on screen, no chime
             self.reason = present.reason("log_only")
@@ -1276,7 +1284,8 @@ class Controller(object):
             self.label = None
             return "ignore"
         wait = cooldown_seconds(cam, config.plugins.camalert.cooldown.value)
-        on_screen = (self.window.stream if self.window else None) == cam
+        shown = self.extra.get(self.wid) if self.wid else self.window
+        on_screen = (shown.stream if shown else None) == cam
         try:
             if not on_screen and pick_priority(priority) != "alarm" and in_cooldown(self.last_shown.get(cam), time.time(), wait):
                 self.reason, result = present.reason("cooldown", wait), "ignore"
@@ -1288,8 +1297,9 @@ class Controller(object):
             self.last_shown[cam] = time.time()
         STATS["requests"][result] = STATS["requests"].get(result, 0) + 1
         STATS["last_event"] = time.time()
-        log("request from %s: camera=%s priority=%s mode=%s label=%s -> %s%s"
-            % (source, cam, pick_priority(priority), mode or "-", label or "-", result,
+        log("request from %s: camera=%s priority=%s mode=%s label=%s%s -> %s%s"
+            % (source, cam, pick_priority(priority), mode or "-", label or "-",
+               (" window=%s" % self.wid) if self.wid else "", result,
                (" (%s)" % self.reason) if self.reason else ""), level="error" if result == "error" else "normal")
         self.record_event(cam, label, source, pick_priority(priority), result, self.reason, event_id)
         if result == "show" and chime_wanted(config.plugins.camalert.chime.value, pick_priority(priority)) \
@@ -1405,22 +1415,29 @@ class Controller(object):
             return action
         pause = action == "show" and not self.paused and \
             should_pause(c.pause_tv.value, mode, self.current_stream() is not None)
+        if mode == "photo" and self.wid:
+            return self.show_extra(self.wid, stream, snap_url, title, seconds, priority)
         if mode == "photo":
             if action == "extend":
                 self.window.extend(seconds)
+                self.slots.place("", priority)
             else:
-                self.hide(resume=False)  # replace an open window, keep a running pause
+                self.hide(resume=False, keep_extra=True)  # replace an open window, keep a running pause
+                slot, evicted, _same = self.slots.place("", priority)
+                if evicted:
+                    self.close_extra(evicted, forget=False)
                 if pause:
                     self.pause_tv()
                 keys = c.window_keys.value and self._tv_on_top()
                 self.window = self.session.instantiateDialog(PhotoWindow, stream, snap_url, title, keys,
-                                                             self.window_priority(priority))
+                                                             self.window_priority(priority), slot)
                 self.window.start(seconds)
                 if keys:
                     self.close_keys()
                     self.keys = KeyHook()
         elif mode == "live":
             if action == "show":
+                self.close_extras()  # full screen: windows with their own id go (#87)
                 if self.live_stream is None:
                     cur = self.session.nav.getCurrentlyPlayingServiceOrGroup()
                     self.previous_ref = cur.toString() if cur else None
@@ -1455,6 +1472,7 @@ class Controller(object):
         self.hide(resume=False)
         keys = config.plugins.camalert.window_keys.value and self._tv_on_top()
         self.window = self.session.instantiateDialog(StripWindow, cams, keys, self.label, self.window_priority(priority))
+        self.slots.place("", priority)
         self.window.start(seconds)
         if keys:
             self.close_keys()
@@ -1836,10 +1854,70 @@ class Controller(object):
         full = self.fullscreens[-1] if self.fullscreens else None
         return screen_name(
             "tour" if isinstance(full, TourScreen) else "mosaic" if full is not None else None,
-            "strip" if isinstance(self.window, StripWindow) else "photo" if self.window is not None else None,
+            "strip" if isinstance(self.window, StripWindow) else "photo" if self.window is not None or self.extra
+            else None,
             self.notice is not None, self.live_stream is not None)
 
-    def hide(self, resume=True):
+    def show_extra(self, wid, stream, snap_url, title, seconds, priority):
+        """#87: a photo window with its own id: extend it (same camera), replace it in its place (other camera), or
+        open it in the next free place; when all places are taken the oldest window of the lowest priority goes."""
+        w = self.extra.get(wid)
+        if w is not None and w.stream == stream:
+            w.extend(seconds)
+            self.slots.place(wid, priority)
+            return "extend"
+        slot, evicted, _same = self.slots.place(wid, priority)
+        if evicted == "":
+            self.close_default()
+        elif evicted:
+            self.close_extra(evicted, forget=False)
+        if w is not None:
+            self.close_extra(wid, forget=False)
+        w = self.session.instantiateDialog(PhotoWindow, stream, snap_url, title, False, self.window_priority(priority),
+                                           slot, wid)
+        self.extra[wid] = w
+        w.start(seconds)
+        reactor.callLater(0.5, _notify)
+        return "show"
+
+    def close_extra(self, wid, forget=True):
+        w = self.extra.pop(wid, None)
+        if forget:
+            self.slots.remove(wid)
+        if w is not None:
+            w.active = False
+            w.close_timer.stop()
+            if getattr(w, "frame", None) is not None:
+                w.frame.stop()
+            w.hide()
+            self.session.deleteDialog(w)
+
+    def close_extras(self):
+        for wid in list(self.extra):
+            self.close_extra(wid)
+
+    def close_default(self):
+        """Closes only the normal window (a window with its own id took its place, #87)."""
+        if self.window is not None:
+            w, self.window = self.window, None
+            self.slots.remove("")
+            self.close_keys()
+            w.active = False
+            w.close_timer.stop()
+            if getattr(w, "frame", None) is not None:
+                w.frame.stop()
+            w.hide()
+            self.session.deleteDialog(w)
+
+    def hide(self, resume=True, window_id=None, keep_extra=False):
+        """Closes everything CamAlert shows; window_id (#87): only that window (an unknown id: nothing)."""
+        if window_id:
+            if window_id in self.extra:
+                self.close_extra(window_id)
+                reactor.callLater(0.1, _notify)
+            return
+        if not keep_extra:
+            self.close_extras()
         self.close_fullscreens()
         self.close_keys()
         self.close_notice()
@@ -1847,6 +1925,7 @@ class Controller(object):
             self.leave_ptz()
         if self.window is not None:
             w, self.window = self.window, None
+            self.slots.remove("")
             w.active = False
             w.close_timer.stop()
             if getattr(w, "frame", None) is not None:
@@ -1861,11 +1940,19 @@ class Controller(object):
 
     def window_closed(self, w):
         reactor.callLater(0.1, _notify)
+        wid = getattr(w, "wid", None)
+        if wid:  # #87: a window with its own id ran out
+            if self.extra.get(wid) is w:
+                del self.extra[wid]
+                self.slots.remove(wid)
+                self.session.deleteDialog(w)
+            return
         self.close_keys()
         if self.ptz_stream:
             self.leave_ptz()
         if self.window is w:
             self.window = None
+            self.slots.remove("")
             self.session.deleteDialog(w)
             self.resume_tv()
 
@@ -1985,6 +2072,9 @@ class Controller(object):
         self.previous_ref = None
 
     def status(self):
-        return {"window": self.window.stream if self.window else None, "live": self.live_stream, "paused": self.paused,
-                "screen": self.screen(),
+        wins = ([{"id": "", "camera": self.window.stream}] if self.window else []) + \
+            [{"id": k, "camera": v.stream} for k, v in sorted(self.extra.items(), key=lambda kv: self.slots.slot(kv[0]) or 0)]
+        first = self.window or (wins and self.extra.get(wins[0]["id"]))
+        return {"window": first.stream if first else None, "live": self.live_stream, "paused": self.paused,
+                "screen": self.screen(), "windows": wins,
                 "dnd": bool(config.plugins.camalert.dnd.value)}

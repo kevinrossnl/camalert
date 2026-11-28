@@ -21,6 +21,8 @@ against it by the contract tests). Answers are JSON (`metrics`: Prometheus text)
 | `POST /camalert/tour` `{"cam": "front_door,garden", "interval": 8}` | Full-screen camera tour (◀ ▶ = previous/next, OK = hold, GREEN/PLAY = live, EXIT/BACK) |
 | `POST /camalert/mosaic` `{"cam": "front_door,garden", "sec": 60}` | Full-screen photo mosaic (up to 9 cameras; without `cam` the *Mosaic cameras* setting) |
 | `POST /camalert/hide` | Close the photo window, multi-camera window, mosaic and tour / return from live view now |
+| `POST /camalert/show` `{"cam": "garden", "id": "garden"}` | Open an extra photo window with its own id next to the normal one (see *Several windows* below) |
+| `POST /camalert/hide` `{"id": "garden"}` | Close only the window with that id |
 | `POST /camalert/dnd` `{"on": 1}` / `{"on": 0}` | Do not disturb on/off; `GET /camalert/dnd` only reports the state |
 | `POST /camalert/ptz` `{"cam": "garden", "move": "left"}` | Move a PTZ camera (`up`, `down`, `left`, `right`, `zoom_in`, `zoom_out`, `home`, `stop`); see [camera control](../user/devices.md) |
 | `POST /camalert/settings` `{"position": "top_left", "size": "small"}` | Window position (`top_right`, `top_left`, `bottom_right`, `bottom_left`) and/or size (`small`, `medium`, `large`) of the photo window; saved on the player and used by the next window. `GET /camalert/settings` only reports them (capability `settings`). `{"guest_mode": true}` switches guest mode (#11, capability `guest`): the player then ignores requests for its guest cameras and leaves them out of the mosaic and tour; `/camalert/status` reports `guest_mode` |
@@ -119,3 +121,19 @@ curl -H "X-CamAlert-Token: $TOKEN" http://192.168.1.30:8099/camalert/status
 
 Node-RED: *http request* node, method POST, URL `http://192.168.1.30:8099/camalert/show`, payload
 `{"cam": "front_door"}`, header `X-CamAlert-Token`.
+
+## Several windows
+
+Players that report the capability `windows` can show several single-camera photo windows at once. Give
+`show` an `id` (`A-Z a-z 0-9 _ . -`, at most 32 characters; anything else is answered with 400
+`invalid window id`). The same id updates its window; a new id opens a new window, stacked from the
+corner towards the centre of the screen. `hide` with an `id` closes only that window; `hide` without an
+id closes everything, as before.
+
+- The normal window (no id) always keeps its own place and is never closed to make room.
+- The setting *Maximum windows* (1–3, default 2) limits the total number of windows including the normal
+  one. When it is full, the oldest id window with the lowest priority is closed. With 1, an id is ignored
+  and every request uses the normal window (the old behaviour).
+- Id windows are photo windows only and take no keys. Live view, the strip, the mosaic and the tour close
+  them; notifications ignore the id.
+- `GET /camalert/status` lists the open id windows as `"windows": [{"id": ..., "camera": ...}]`.

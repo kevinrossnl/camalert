@@ -326,7 +326,8 @@ class CornerKeys(object):
         elif what in ("prev", "next") and self.single():
             self.ctl.other_camera(-1 if what == "prev" else 1)
         elif what in ("close", "close_pass", "live", "prev", "next"):
-            self.ctl.hide()
+            wid = getattr(self, "wid", None)
+            self.ctl.hide(window_id=wid) if wid else self.ctl.hide()  # #87: a window with an id closes only itself
             b = forward_builtin(aid) if what == "close_pass" else None
             if b:
                 kodiapi.builtin(b)
@@ -335,14 +336,15 @@ class CornerKeys(object):
 class PhotoWindow(CornerKeys, PtzMode, xbmcgui.WindowDialog):
     """Corner window with one camera, or a strip of 2-4 cameras."""
 
-    def __init__(self, ctl, cams, s, keys=True, label=None, priority="normal"):
+    def __init__(self, ctl, cams, s, keys=True, label=None, priority="normal", slot=0, wid=None):
         xbmcgui.WindowDialog.__init__(self)
         self.ctl, self.cams, self.keys = ctl, list(cams), keys
+        self.wid = wid  # #87: a window with its own id (closes only itself)
         n = len(self.cams)
         ts = s.get("text_size", "normal")  # #48
         font = title_font_name(s["title_size"], kodiapi.skin_fonts(), ts)
         if n == 1:
-            x, y, w, h, t = window_geometry(s["position"], s["size"], SCREEN_W, SCREEN_H, s["title_size"], ts)
+            x, y, w, h, t = window_geometry(s["position"], s["size"], SCREEN_W, SCREEN_H, s["title_size"], ts, slot)
             tiles = [(0, t, w, h)]
             total_h = h + t
         else:

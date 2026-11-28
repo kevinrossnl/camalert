@@ -19,6 +19,12 @@ interface Display {
     fun tour(tiles: List<Tile>, interval: Int)
     fun hide()
     fun screen(): Screen
+    /** #87: a photo window with its own id at place `slot` (no keys; closes itself after `seconds`). */
+    fun photoWindow(id: String, slot: Int, tile: Tile, seconds: Int, label: String?, priority: String) {}
+    fun extendWindow(id: String, seconds: Int) {}
+    fun hideWindow(id: String) {}
+    /** Open windows with an id: id -> camera. */
+    fun windows(): Map<String, String> = emptyMap()
 }
 
 /** What the player knows about its device. */
@@ -61,6 +67,8 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
     private var namesAt = 0.0
     private val lock = Object()
     val stats = Stats()
+    val slots = WindowSlots()  // #87
+    private val windowId = ThreadLocal<String?>()
 
     class Stats {
         val requests = java.util.TreeMap<String, Int>()
@@ -117,7 +125,8 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
         var reason = ""
         val result: String
         synchronized(lock) {
-            val onScreen = display.screen().stream == cam
+            val wid = windowId.get()
+            val onScreen = (if (wid != null) display.windows()[wid] else display.screen().stream) == cam
             result = try {
                 if (!onScreen && prio != "alarm" && Rules.inCooldown(lastShown[cam], env.now(), wait)) {
                     reason = "cooldown:$wait"
@@ -138,7 +147,8 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
             stats.lastEvent = env.now()
             if (result == "error") stats.errors++
         }
-        env.log("request from $source: camera=$cam priority=$prio mode=${mode ?: "-"} label=${label ?: "-"} -> $result${if (reason.isNotEmpty()) " ($reason)" else ""}",
+        val wlog = windowId.get()?.let { " window=$it" } ?: ""
+        env.log("request from $source: camera=$cam priority=$prio mode=${mode ?: "-"} label=${label ?: "-"}$wlog -> $result${if (reason.isNotEmpty()) " ($reason)" else ""}",
             if (result == "error") "error" else "normal")
         record(cam, lab, source, prio, result, reason, eventId)
         if ((result == "show" || result == "extend") && source != "test" && source != "menu" && Rules.chimeWanted(s["chime"]?.toString() ?: "off", prio)) env.chime()
@@ -176,6 +186,7 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
             if (cams.size <= 4 && m == "photo") {
                 val tiles = cams.mapNotNull { tile(it, s) }.filter { it.snapshot != null }
                 if (tiles.isEmpty()) return Pair("error", "no_address")
+                closeExtras()  // #87: the multi-camera window replaces the windows with an id
                 display.photo(tiles, secs, label, mark)
                 return Pair("show", "")
             }
@@ -193,6 +204,9 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
         if (Rules.blockedByRules(priority, s["limit_hours"] == true, inHours, skip != "off", blockedByPlaying)) {
             return Pair("ignore", if (s["limit_hours"] == true && !inHours) "outside_hours" else "playing")
         }
+        val wid = windowId.get()
+        val shownMode = if (m == "photo" && t.snapshot == null) "live" else m
+        if (wid != null && shownMode == "photo") return Pair(showExtra(wid, t.copy(title = Events.eventTitle(t.title, label)), secs, label, priority, mark), "")
         val screen = display.screen()
         val windowStream = if (screen.kind == "photo" || screen.kind == "notify") screen.stream else if (m == "live" && screen.kind == "live") screen.stream else null
         val current = if (screen.kind == "live") screen.stream else null
@@ -205,11 +219,50 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
             return Pair("extend", "")
         }
         when (shown) {
-            "live" -> display.live(titled, secs, if (priority == "alarm") 100 else (s["live_volume"] as? Number)?.toInt() ?: 100)
+            "live" -> {
+                closeExtras()  // full screen: windows with their own id go (#87)
+                display.live(titled, secs, if (priority == "alarm") 100 else (s["live_volume"] as? Number)?.toInt() ?: 100)
+            }
             "notify" -> display.notify(titled, secs)
             else -> display.photo(listOf(titled), secs, label, mark)
         }
         return Pair("show", "")
+    }
+
+    // --- several windows (#87) -----------------------------------------------------------------------------------
+    override fun showWindow(stream: String?, seconds: Int?, mode: String?, priority: String?, source: String, label: String?, windowId: String): String {
+        slots.limit = Windows.maxWindows(env.settings()["max_windows"])
+        this.windowId.set(if (slots.limit > 1) windowId else null)  // 1 window: every id is the normal window
+        try {
+            return show(stream, seconds, mode, priority, source, label)
+        } finally {
+            this.windowId.remove()
+        }
+    }
+
+    private fun showExtra(wid: String, t: Tile, secs: Int, label: String?, priority: String, mark: String): String {
+        val open = display.windows()
+        slots.ids().filter { it.isNotEmpty() && it !in open }.forEach { slots.remove(it) }  // ran out meanwhile
+        if (open[wid] == t.name) {
+            display.extendWindow(wid, secs)
+            slots.place(wid, priority)
+            return "extend"
+        }
+        val (slot, evicted, _) = slots.place(wid, priority)
+        evicted?.let { display.hideWindow(it) }
+        display.photoWindow(wid, slot, t, secs, label, mark)
+        return "show"
+    }
+
+    private fun closeExtras() {
+        for (id in display.windows().keys) display.hideWindow(id)
+        slots.clear()
+    }
+
+    override fun hideWindow(windowId: String) {
+        if (windowId in display.windows()) display.hideWindow(windowId)
+        slots.remove(windowId)
+        env.changed()
     }
 
     /** The cameras of a mosaic or tour without the ones guest mode hides (#11); null when guest mode hides all. */
@@ -225,6 +278,7 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
         if (!env.screenOn()) return "ignore"
         val tiles = tilesOf(streams, s) ?: return "ignore"
         if (tiles.isEmpty()) return "error"
+        closeExtras()
         display.mosaic(tiles, if (seconds > 0) Rules.clampSeconds(seconds, 60) else 0)
         env.changed()
         return "show"
@@ -235,12 +289,14 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
         if (!env.screenOn()) return "ignore"
         val tiles = tilesOf(streams, s) ?: return "ignore"
         if (tiles.isEmpty()) return "error"
+        closeExtras()
         display.tour(tiles, interval ?: (s["tour_interval"] as? Number)?.toInt() ?: 8)
         env.changed()
         return "show"
     }
 
     override fun hide() {
+        closeExtras()
         display.hide()
         env.changed()
     }
@@ -264,9 +320,14 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
 
     override fun status(): Map<String, Any?> {
         val sc = display.screen()
-        return linkedMapOf("window" to (if (sc.kind == "photo" || sc.kind == "strip" || sc.kind == "notify") sc.stream else null),
+        val extra = display.windows().entries.sortedBy { slots.slot(it.key) ?: 0 }
+        val normal = if (sc.kind == "photo" || sc.kind == "strip" || sc.kind == "notify") sc.stream else null
+        val wins = (if (normal != null && sc.kind != "notify") listOf(mapOf("id" to "", "camera" to normal)) else emptyList()) +
+            extra.map { mapOf("id" to it.key, "camera" to it.value) }
+        return linkedMapOf("window" to (normal ?: extra.firstOrNull()?.value),
             "live" to (if (sc.kind == "live") sc.stream else null), "paused" to false,
-            "dnd" to (env.settings()["dnd"] == true), "screen" to screenName(sc.kind))
+            "dnd" to (env.settings()["dnd"] == true), "screen" to screenName(sc.kind ?: if (extra.isNotEmpty()) "photo" else null),
+            "windows" to wins)
     }
 
     /** The "screen" value of /camalert/status (#63). */

@@ -855,6 +855,12 @@ msgstr "Intervallo di aggiornamento"
 msgid "Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."
 msgstr "Premere OK per scaricare meno spesso le foto di una telecamera (secondi), ad es. per una telecamera lenta."
 
+msgid "Windows at the same time"
+msgstr "Finestre contemporanee"
+
+msgid "Photo windows with their own id (window_id in Home Assistant) appear next to each other, up to this number. 1 = one window that every request replaces. Each window fetches its own pictures."
+msgstr "Ogni Finestra foto con un proprio id (window_id in Home Assistant) appare accanto alle altre, fino a questo numero. 1 = una sola finestra che ogni richiesta sostituisce. Ogni finestra scarica le proprie immagini."
+
 msgid "Multi-camera window layout"
 msgstr "Disposizione della finestra con più telecamere"
 

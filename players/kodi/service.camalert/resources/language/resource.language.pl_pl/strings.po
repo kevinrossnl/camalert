@@ -1592,3 +1592,11 @@ msgstr "Kamery trybu gościa"
 msgctxt "#30985"
 msgid "The cameras guest mode hides, e.g. garden|living_room. Empty = all cameras."
 msgstr "Kamery ukrywane przez tryb gościa, np. garden|living_room. Puste = wszystkie kamery."
+
+msgctxt "#31040"
+msgid "Windows at the same time"
+msgstr "Okna jednocześnie"
+
+msgctxt "#31041"
+msgid "Photo windows with their own id (window_id in Home Assistant) appear next to each other, up to this number. 1 = one window that every request replaces. Each window fetches its own pictures."
+msgstr "Każde Okno ze zdjęciem z własnym id (window_id w Home Assistant) pojawia się obok pozostałych, do tej liczby. 1 = jedno okno, które zastępuje każde żądanie. Każde okno pobiera własne zdjęcia."

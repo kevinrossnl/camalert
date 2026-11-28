@@ -22,6 +22,7 @@ from .camalert_core.frames import LiveStill, STILL_MAX_SECONDS
 from .camalert_core.keymap import button_event, colour_action
 from .camalert_core.present import priority_label, reason as reason_code
 from .camalert_core.privacy import GUEST, guest_hidden
+from .camalert_core.windows import WindowSlots, max_windows
 from .camalert_core.rules import (blocked_by_rules, clamp_seconds, clock_tuple, cooldown_seconds, decide, dnd_blocks,
                                   in_cooldown, in_time_window, pick_mode, pick_priority)
 
@@ -88,6 +89,9 @@ class Controller(object):
         self.lock = threading.RLock()
         self.player = xbmc.Player()
         self.window = None
+        self.extra = {}  # #87: id -> PhotoWindow of a request with its own window id
+        self.slots = WindowSlots()
+        self.wid = None
         self.full = None
         self.live_stream = None
         self.live_timer = None
@@ -165,8 +169,10 @@ class Controller(object):
         """The priority a window marks (#48): none for what the viewer asked for himself (#13)."""
         return "normal" if getattr(self, "source", None) == "menu" else pick_priority(priority)
 
-    def show(self, stream=None, seconds=None, mode=None, priority=None, source="api", label=None, event_id=None):
-        """Handles a show request; logs it (source, decision, reason) and keeps it in the event list."""
+    def show(self, stream=None, seconds=None, mode=None, priority=None, source="api", label=None, event_id=None,
+             window_id=None):
+        """Handles a show request; logs it (source, decision, reason) and keeps it in the event list.
+        window_id (#87): a photo window of its own next to the others; None = the normal window."""
         s = kodiapi.settings()
         cam = stream or s["camera"]
         if mode == "log":  # display mode 'log only' (#71): event list and log, nothing on screen, no chime
@@ -178,7 +184,10 @@ class Controller(object):
         wait = cooldown_seconds(cam, s["cooldown"])
         with self.lock:
             self.reason, self.label, self.source = "", (label or "").strip()[:40] or None, source
-            on_screen = (self.window.stream if self.window else None) == cam
+            self.slots.limit = max_windows(s.get("max_windows", 2))
+            self.wid = window_id if self.slots.limit > 1 else None  # 1 window: every id uses the one window
+            shown = self.extra.get(self.wid) if self.wid else self.window
+            on_screen = (shown.stream if shown else None) == cam
             try:
                 if not on_screen and pick_priority(priority) != "alarm" and \
                         in_cooldown(self.last_shown.get(cam), time.time(), wait):
@@ -197,8 +206,9 @@ class Controller(object):
         STATS["last_event"] = time.time()
         if result == "error":
             STATS["errors"] += 1
-        kodiapi.log("request from %s: camera=%s priority=%s mode=%s label=%s -> %s%s"
-                    % (source, cam, pick_priority(priority), mode or "-", label or "-", result,
+        kodiapi.log("request from %s: camera=%s priority=%s mode=%s label=%s%s -> %s%s"
+                    % (source, cam, pick_priority(priority), mode or "-", label or "-",
+                       (" window=%s" % window_id) if window_id else "", result,
                        (" (%s)" % reason) if reason else ""), "error" if result == "error" else "normal")
         self.record_event(cam, label, source, pick_priority(priority), result, reason, event_id)
         if result in ("show", "extend") and chime_wanted(s["chime"], pick_priority(priority)) \
@@ -296,6 +306,10 @@ class Controller(object):
         if action == "ignore":
             self.reason = reason_code("on_screen")
             return action
+        if mode == "photo" and self.wid:
+            result = self._show_extra(self.wid, stream, title, snap, seconds, s, priority)
+            self.changed()
+            return result
         if mode == "photo":
             ours = self.video_url is not None and kind == "camera" and f.split("|", 1)[0] == self.video_url
             vmode = video_window_mode(s["video_window"], self._busy() and not ours, kind, priority,
@@ -308,8 +322,9 @@ class Controller(object):
                 self._close_window()
                 self._maybe_pause(s, kind, was_paused)
                 mark = self.window_priority(priority)
+                slot = self._default_slot(priority)
                 self.window = open_window(lambda: PhotoWindow(self, [(stream, title, snap)], s, s["window_keys"],
-                                                              None, mark))
+                                                              None, mark, slot=slot))
                 self.window.start(seconds)
         elif mode == "live":
             self._live(stream, live, title, seconds, s, priority, kind, f, pos, was_paused, action, snap)
@@ -339,6 +354,8 @@ class Controller(object):
         if not tiles:
             return "error"
         self._close_window()
+        self._close_extras()  # #87: like the mosaic, the multi-camera window replaces the windows with an id
+        self.slots.place("", priority)
         kind, _f, _p, was_paused = self.playing()
         self._maybe_pause(s, kind, was_paused)
         label = self.label
@@ -359,6 +376,7 @@ class Controller(object):
                         self.saved_volume = vol
                         kodiapi.jsonrpc("Application.SetVolume", {"volume": kodi_volume(vol, s["live_volume"])})
             self._close_window(keep=True)
+            self._close_extras()  # full screen: windows with their own id go (#87)
             self.player.play(url, live_item(url, title))
             self.live_stream = stream
             self._start_still(stream, snap, s, url)
@@ -397,6 +415,7 @@ class Controller(object):
         w = open_window(lambda: VideoWindow(name, path, "Default", "720p").setup(self, stream, title, snap, s, mark,
                                                                                    geo))
         self.window = w
+        self._default_slot(priority)  # #87: the video window keeps the corner; ids stack next to it
         w.start(seconds)
         self._play_in_window(w, live, title, snap, s, priority)
 
@@ -626,7 +645,54 @@ class Controller(object):
             w.extend(s["duration"])
             self.changed()
 
+    # --- several windows (#87) ------------------------------------------------------------------------------------
+    def _default_slot(self, priority):
+        slot, evicted, _same = self.slots.place("", priority)
+        if evicted:
+            self._close_extra(evicted, forget=False)
+        return slot
+
+    def _show_extra(self, wid, stream, title, snap, seconds, s, priority):
+        """A photo window with its own id: extend (same camera), replace in its place (other camera), or open in the
+        next free place; when all places are taken the oldest window of the lowest priority goes. Always photos:
+        Kodi has one player, only the normal window can be a video window (#129)."""
+        w = self.extra.get(wid)
+        if w is not None and w.stream == stream:
+            w.extend(seconds)
+            self.slots.place(wid, priority)
+            return "extend"
+        slot, evicted, _same = self.slots.place(wid, priority)
+        if evicted == "":
+            self._close_window()
+        elif evicted:
+            self._close_extra(evicted, forget=False)
+        if w is not None:
+            self._close_extra(wid, forget=False)
+        mark = self.window_priority(priority)
+        w = open_window(lambda: PhotoWindow(self, [(stream, title, snap)], s, False, None, mark, slot=slot, wid=wid))
+        self.extra[wid] = w
+        w.start(seconds)
+        return "show"
+
+    def _close_extra(self, wid, forget=True):
+        w = self.extra.pop(wid, None)
+        if forget:
+            self.slots.remove(wid)
+        if w is not None:
+            w.stop()
+
+    def _close_extras(self):
+        for wid in list(self.extra):
+            self._close_extra(wid)
+
     def window_timeout(self, w):
+        wid = getattr(w, "wid", None)
+        if wid:
+            with self.lock:
+                if self.extra.get(wid) is w:
+                    self._close_extra(wid)
+            self.changed()
+            return
         with self.lock:
             if self.window is w:
                 self._close_window()
@@ -637,6 +703,7 @@ class Controller(object):
         """Closes the corner window. A video window (#129) also stops the camera stream; unless keep (another
         window or live view follows), the volume comes back and what the video window paused plays again."""
         w, self.window = self.window, None
+        self.slots.remove("")
         if w is not None:
             w.stop()
             if isinstance(w, VideoWindow) and self.video_url and self._video_running(self.video_url):
@@ -647,8 +714,16 @@ class Controller(object):
             self._restore_volume()
             self._finish_video_plan()
 
-    def hide(self, resume=True):
+    def hide(self, resume=True, window_id=None):
+        """Closes everything CamAlert shows; window_id (#87): only that window (an unknown id: nothing)."""
+        if window_id:
+            with self.lock:
+                if window_id in self.extra:
+                    self._close_extra(window_id)
+            self.changed()
+            return
         with self.lock:
+            self._close_extras()
             self._close_window()
             if self.full is not None:
                 f, self.full = self.full, None
@@ -681,6 +756,7 @@ class Controller(object):
             return "error"
         with self.lock:
             self._close_window()
+            self._close_extras()  # #87
             if self.full is not None:
                 self.full.stop()
             self.full = open_window(lambda: FullScreen(self, cams, s, tour, seconds, interval or s["tour_interval"]))
@@ -707,12 +783,16 @@ class Controller(object):
 
     def status(self):
         s = kodiapi.settings()
-        return {"window": self.window.stream if self.window else None, "live": self.live_stream,
-                "paused": self.paused, "dnd": s["dnd"], "screen": self.screen()}
+        extra = sorted(self.extra.items(), key=lambda kv: self.slots.slot(kv[0]) or 0)
+        wins = ([{"id": "", "camera": self.window.stream}] if self.window else []) + \
+            [{"id": k, "camera": v.stream} for k, v in extra]
+        first = self.window or (extra[0][1] if extra else None)
+        return {"window": first.stream if first else None, "live": self.live_stream,
+                "paused": self.paused, "dnd": s["dnd"], "screen": self.screen(), "windows": wins}
 
     def screen(self):
         """What CamAlert shows now, for status "screen" (#63). Kodi notifications are toasts: not tracked."""
-        full, w = self.full, self.window
+        full, w = self.full, self.window or next(iter(self.extra.values()), None)
         return screen_name("tour" if getattr(full, "tour", False) else "mosaic" if full is not None else None,
                            None if w is None else "strip" if len(getattr(w, "cams", ())) > 1 else "photo",
                            False, self.live_stream is not None)

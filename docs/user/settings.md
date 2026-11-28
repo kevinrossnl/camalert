@@ -60,6 +60,7 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Keep cameras ready | – |  | advanced | all | Only while this player is on: keeps the MJPEG stream of these cameras open so the photo window shows them at once, e.g. front_door=front_door_jpeg. Empty = off. |
 | Privacy masks | – |  | advanced | all | Black boxes over parts of a camera picture, on every CamAlert screen and over live video: camera=x1,y1,x2,y2 in 0..1 of the picture, several boxes with +, several cameras with \|, e.g. garden=0,0,0.3,0.5. Not applied to pictures outside CamAlert. |
 | Refresh interval | – |  | advanced | all | Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera. |
+| Windows at the same time | `2` | 1–3 | advanced | all | Photo windows with their own id (window_id in Home Assistant) appear next to each other, up to this number. 1 = one window that every request replaces. Each window fetches its own pictures. |
 | Multi-camera window layout | `auto` | `auto` / `vertical` / `horizontal` / `grid` | advanced | all | A request with 2-4 cameras shows them together in one multi-camera window. |
 | Title size | `normal` | `small` / `normal` / `large` | advanced | all |  |
 | Text size | `normal` | `normal` / `large` / `xlarge` | advanced | all | All CamAlert texts: window titles, key hints, camera control, tour, mosaic and lists. |

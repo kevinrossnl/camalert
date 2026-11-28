@@ -76,8 +76,11 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
     private val wm = ctx.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     @Volatile private var state = Screen(null, null)
     private var win: Win? = null  // main thread only
+    private val extras = LinkedHashMap<String, PhotoWin>()  // #87: windows with their own id, main thread only
+    @Volatile private var extraState: Map<String, String> = emptyMap()  // id -> camera, for any thread
 
     override fun screen() = state
+    override fun windows() = extraState
 
     fun allowed() = Settings.canDrawOverlays(ctx)
 
@@ -116,6 +119,42 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
         main.post { close() }
     }
 
+    // --- several windows (#87) ---------------------------------------------------------------------------------------
+    override fun photoWindow(id: String, slot: Int, tile: Tile, seconds: Int, label: String?, priority: String) {
+        extraState = extraState + (id to tile.name)
+        main.post { openExtra(id, PhotoWin(listOf(tile), seconds, label, priority = priority, wid = id, slot = slot)) }
+    }
+
+    override fun extendWindow(id: String, seconds: Int) {
+        main.post { extras[id]?.extend(seconds) }
+    }
+
+    override fun hideWindow(id: String) {
+        extraState = extraState - id
+        main.post {
+            extras.remove(id)?.detach()
+            host.changed()
+        }
+    }
+
+    private fun openExtra(id: String, w: PhotoWin) {
+        extras.remove(id)?.detach()
+        if (!allowed()) {
+            extraState = extraState - id
+            host.changed()
+            return
+        }
+        extras[id] = w
+        try {
+            w.attach()
+        } catch (e: Exception) {
+            CamLog.log("overlay failed: $e", "error")
+            extras.remove(id)
+            extraState = extraState - id
+        }
+        host.changed()
+    }
+
     // --- windows -------------------------------------------------------------------------------------------------------
     private fun open(w: Win) {
         close()
@@ -145,6 +184,16 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
 
     /** Called by a window that closes itself (timeout, BACK). */
     private fun closed(w: Win) {
+        val wid = (w as? PhotoWin)?.wid
+        if (wid != null) {  // #87: a window with its own id ran out
+            if (extras[wid] === w) {
+                extras.remove(wid)
+                w.detach()
+                extraState = extraState - wid
+                host.changed()
+            }
+            return
+        }
         if (win !== w) return
         win = null
         w.detach()
@@ -456,8 +505,8 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
 
     // --- photo window, multi-camera window, notification ---------------------------------------------------------------
     private inner class PhotoWin(var tiles: List<Tile>, val seconds: Int, val label: String?, val notify: Boolean = false,
-                                 val priority: String = "normal") :
-        Win(!notify && host.settings()["window_keys"] != false) {
+                                 val priority: String = "normal", val wid: String? = null, val slot: Int = 0) :
+        Win(wid == null && !notify && host.settings()["window_keys"] != false) {  // #87: id windows take no keys
         override val context = "window"
         lateinit var title: TextView
         var image: ImageView? = null
@@ -474,7 +523,7 @@ class Overlay(private val ctx: Context, private val host: Host) : Display {
             val g: Layout.Window
             val rects: List<Layout.Rect>
             if (tiles.size == 1) {
-                g = Layout.window(pos, size, m.widthPixels, m.heightPixels, ts, textSize())
+                g = Layout.window(pos, size, m.widthPixels, m.heightPixels, ts, textSize(), slot)
                 rects = listOf(Layout.Rect(0, g.title, g.w, g.h))
             } else {
                 g = Layout.strip(tiles.size, s["strip_layout"]?.toString() ?: "auto", pos, size, m.widthPixels, m.heightPixels, textSize())

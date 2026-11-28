@@ -38,12 +38,13 @@ from .schema import BY_ID as _SCHEMA
 from .selfupdate import UpdateError, check_request
 from .speech import SpeechError, should_speak, speech_request
 from .urls import go2rtc_state, normalize_server
+from .windows import window_id_param
 
 API_VERSION = 1
 MIN_HA_VERSION = "1.0.0"  # oldest Home Assistant integration that understands this API version
 CAPABILITIES = ("cameras", "dnd", "events", "guest", "header_token", "hide", "hold", "log", "metrics", "mosaic", "post", "ptz",
                 "screen", "settings", "setup", "show", "signed_buttons", "speak", "status", "strip", "test", "tour", "update",
-                "webhook")
+                "webhook", "windows")
 # Settings a caller may change through /camalert/settings (#84), with their choices from the settings schema.
 DISPLAY_SETTINGS = {k: tuple(_SCHEMA[k].choices) for k in ("position", "size")}
 # What /camalert/status reports as "screen" (#63): the top-most CamAlert screen, "none" when nothing is shown.
@@ -225,15 +226,32 @@ def _show(b, ctl, a, s, source):
         say_url, say = speech_request(a, a.get("_ip"))  # #89, checked before anything is shown
     except SpeechError as e:
         raise Invalid(str(e))
-    res = ctl.show(cam, sec, mode, priority, source, label)
+    wid = _window_id(a.get("id"))
+    if wid:  # #87: a photo window of its own; without an id the call (and the contract) is as before
+        res = ctl.show(cam, sec, mode, priority, source, label, window_id=wid)
+    else:
+        res = ctl.show(cam, sec, mode, priority, source, label)
     out = {"result": res in ("show", "extend", "wake"), "action": res, "cam": cam or s["camera"]}
+    if wid:
+        out["id"] = wid
     if say_url or say:
         out["spoken"] = bool(should_speak(s.get("speak", "high"), priority or "normal", source, res, say_url, say)
                              and b.speak(say_url, say, priority or "normal"))
     return out
 
 
+def _window_id(value):
+    try:
+        return window_id_param(value)
+    except ValueError as e:
+        raise Invalid(str(e))
+
+
 def _hide(b, ctl, a, s, source):
+    wid = _window_id(a.get("id"))
+    if wid:  # #87: only the window with this id
+        ctl.hide(window_id=wid)
+        return {"result": True, "action": "hide", "id": wid}
     ctl.hide()
     return {"result": True, "action": "hide"}
 

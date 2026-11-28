@@ -742,6 +742,66 @@ class _KodiModules(object):
     def _played(self):
         return [c for c in kodi_stubs.calls("xbmc.Player.") if c[0] in ("xbmc.Player.play", "xbmc.Player.stop")]
 
+    # --- #87: several windows ----------------------------------------------------------------------------------
+    def test_windows_with_an_id(self):
+        """#87: a photo window with its own id appears next to the normal one, stacked from the corner; the same id
+        extends or replaces it in its place; hide with an id closes only that window; the id windows are always
+        photos (Kodi has one player)."""
+        ctl_mod, ctl, _resumed = self._video_ctl(video_window="off", max_windows=3)
+        self.addCleanup(ctl.hide)  # no window may keep fetching pictures after the test
+        display = Built.module("display")
+        self.assertEqual(ctl.show("garden", 10, "photo", "normal", "test"), "show")
+        self.assertEqual(ctl.show("front_door", 10, "photo", "high", "test", window_id="door"), "show")
+        self.assertIsInstance(ctl.extra["door"], display.PhotoWindow)
+        self.assertEqual(ctl.extra["door"].wid, "door")
+        self.assertEqual((ctl.slots.slot(""), ctl.slots.slot("door")), (0, 1))
+        st = ctl.status()
+        self.assertEqual(st["windows"], [{"id": "", "camera": "garden"}, {"id": "door", "camera": "front_door"}])
+        self.assertEqual(st["screen"], "photo")
+        self.assertEqual(ctl.show("front_door", 10, "photo", "high", "test", window_id="door"), "extend")
+        self.assertEqual(ctl.show("garden", 10, "photo", "high", "test", window_id="door"), "show")
+        self.assertEqual((ctl.extra["door"].stream, ctl.slots.slot("door")), ("garden", 1))
+        ctl.hide(window_id="other")
+        self.assertEqual(sorted(ctl.extra), ["door"])
+        ctl.hide(window_id="door")
+        self.assertEqual(ctl.extra, {})
+        self.assertIsNotNone(ctl.window)
+        ctl.show("front_door", 10, "photo", "high", "test", window_id="door")
+        w = ctl.extra["door"]
+        ctl.window_timeout(w)                                  # it ran out: only that window goes
+        self.assertEqual(ctl.extra, {})
+        self.assertIsNotNone(ctl.window)
+        ctl.show("front_door", 10, "photo", "high", "test", window_id="door")
+        ctl.hide()
+        self.assertEqual((ctl.window, ctl.extra, ctl.slots.ids()), (None, {}, []))
+
+    def test_one_window_setting_is_the_old_behaviour(self):
+        ctl_mod, ctl, _resumed = self._video_ctl(video_window="off", max_windows=1)
+        self.addCleanup(ctl.hide)  # no window may keep fetching pictures after the test
+        ctl.show("garden", 10, "photo", "normal", "test")
+        ctl.show("front_door", 10, "photo", "normal", "test", window_id="door")
+        self.assertEqual(ctl.extra, {})
+        self.assertEqual(ctl.window.stream, "front_door")
+
+    def test_full_replaces_the_oldest_lowest_priority(self):
+        ctl_mod, ctl, _resumed = self._video_ctl(video_window="off", max_windows=2)
+        self.addCleanup(ctl.hide)  # no window may keep fetching pictures after the test
+        ctl.show("garden", 10, "photo", "normal", "test")
+        ctl.show("front_door", 10, "photo", "normal", "test", window_id="a")
+        ctl.show("garden", 10, "photo", "high", "test", window_id="b")  # one id place: "a" goes, never the normal one
+        self.assertEqual(sorted(ctl.extra), ["b"])
+        self.assertEqual(ctl.window.stream, "garden")
+
+    def test_id_window_key_closes_only_itself(self):
+        ctl_mod, ctl, _resumed = self._video_ctl(video_window="off", max_windows=2)
+        self.addCleanup(ctl.hide)  # no window may keep fetching pictures after the test
+        ctl.show("garden", 10, "photo", "normal", "test")
+        ctl.show("front_door", 10, "photo", "normal", "test", window_id="door")
+        back = type("A", (), {"getId": lambda self: 92, "getButtonCode": lambda self: 0})()
+        ctl.extra["door"].onAction(back)
+        self.assertEqual(ctl.extra, {})
+        self.assertIsNotNone(ctl.window)
+
     def test_video_window_when_nothing_plays(self):
         """#129: Kodi plays nothing: the photo window plays the camera's live stream as video ('windowed', so Kodi
         stays where it is); when it ends the stream stops and nothing is resumed."""

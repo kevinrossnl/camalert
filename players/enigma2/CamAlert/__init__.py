@@ -153,6 +153,7 @@ _add("mosaic", lambda: ConfigText(default="", fixed_size=False))
 _add("alarm_wake", lambda: ConfigYesNo(default=False))
 _add("window_keys", lambda: ConfigYesNo(default=True))
 _add("tour_interval", lambda: ConfigSelectionNumber(3, 60, 1, default=8))
+_add("max_windows", lambda: ConfigSelectionNumber(1, 3, 1, default=2))  # #87
 _add("mqtt_enabled", lambda: ConfigYesNo(default=False))
 _add("mqtt_host", lambda: ConfigText(default="", fixed_size=False))
 _add("mqtt_port", lambda: ConfigNumber(default=1883))

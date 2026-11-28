@@ -31,6 +31,7 @@ for p in (os.path.join(ROOT, "core"), TESTS):
 
 from camalert_core import (access, api, discovery, frames, keymap, layout, present, privacy, rules, schema,  # noqa: E402
                            settingsui, style)
+from camalert_core import windows as win  # noqa: E402
 from camalert_core.devices.config import PTZ_ACTIONS  # noqa: E402
 from camalert_core.mqtt import topics as mqtt_topics  # noqa: E402
 from camalert_core.obs import log as obslog, metrics as obsmetrics  # noqa: E402
@@ -167,6 +168,13 @@ def _settings_ui_cases():
     return cases
 
 
+def _wid(v):
+    try:
+        return win.window_id_param(v)
+    except ValueError:
+        return "invalid"
+
+
 def core_reference():
     resolver = _fake_resolver()
     hints = []
@@ -217,6 +225,10 @@ def core_reference():
                 geometry.append({"kind": "window_text", "args": ["bottom_left", "medium", sw, sh, ts, txt],
                                  "out": list(layout.window_geometry("bottom_left", "medium", sw, sh, ts, txt))})
                 geometry.append({"kind": "title_font_text", "args": [ts, sw, txt], "out": layout.title_font(ts, sw, txt)})
+            for pos in (layout.POSITIONS if txt == "normal" else ()):  # #87: several windows, place 0..4
+                for slot in range(5):
+                    geometry.append({"kind": "window_slot", "args": [pos, "medium", sw, sh, "normal", txt, slot],
+                                     "out": list(layout.window_geometry(pos, "medium", sw, sh, "normal", txt, slot))})
             x, y, w, h, title, tiles = layout.strip_geometry(3, "grid", "top_right", "medium", sw, sh, txt)
             geometry.append({"kind": "strip_text", "args": [3, "grid", "top_right", "medium", sw, sh, txt],
                              "out": [x, y, w, h, title, [list(t) for t in tiles]]})
@@ -248,9 +260,27 @@ def core_reference():
                          for n in ("garden", "front_door") for on in (False, True)
                          for t in ("", "garden", " garden , drive ", "a b|c")],
     }
+    slot_cases = []  # #87: the same sequence of places on every player
+    for limit, ops in ((3, [("place", "door", "normal"), ("place", "", "normal"), ("place", "garden", "high"),
+                            ("place", "door", "alarm"), ("place", "x", "normal"), ("remove", "garden", None),
+                            ("place", "y", "normal"), ("place", "z", "alarm")]),
+                       (2, [("place", "a", "normal"), ("place", "b", "low"), ("place", "", "alarm")]),
+                       (1, [("place", "a", "normal"), ("place", "", "normal")])):
+        slots, out = win.WindowSlots(limit), []
+        for op, wid, prio in ops:
+            if op == "place":
+                out.append(list(slots.place(wid, prio)))
+            else:
+                slots.remove(wid)
+                out.append(None)
+        slot_cases.append({"limit": limit, "ops": [list(o) for o in ops], "out": out, "ids": slots.ids()})
     return {
         "privacy": privacy_cases,
         "style": style_cases,
+        "window_slots": slot_cases,
+        "window_id": [{"value": v, "out": (lambda x: x)(_wid(v))} for v in
+                      (None, "", " ", "door", " door ", "drive-way.2_x", "a b", "../x", "x" * 33, "ä", 5)],
+        "max_windows": [{"value": v, "out": win.max_windows(v)} for v in (1, 2, 3, 0, 9, "3", "x", None)],
         "_": HEADER,
         "geometry": geometry,
         "redact": [{"in": t, "out": obslog.redact(t)} for t in REDACT],

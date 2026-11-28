@@ -350,6 +350,10 @@
         "language": {
           "name": "Lingua",
           "description": "Lingua dell'annuncio, per esempio en o nl. Vuoto = la lingua predefinita del motore."
+        },
+        "window_id": {
+          "name": "Id finestra",
+          "description": "Una Finestra foto a sé, accanto alle altre finestre, ad es. doorbell. Lo stesso id prolunga o sostituisce quella finestra; Nascondi telecamera con questo id chiude solo quella finestra. Lettere, cifre, . _ - (al massimo 32). Vuoto = la finestra normale."
         }
       }
     },
@@ -369,7 +373,13 @@
     },
     "hide": {
       "name": "Nascondi telecamera",
-      "description": "Chiude la finestra della telecamera e torna alla TV."
+      "description": "Chiude la finestra della telecamera e torna alla TV.",
+      "fields": {
+        "window_id": {
+          "name": "Id finestra",
+          "description": "Chiudere solo la finestra con questo id. Vuoto = chiudere tutto."
+        }
+      }
     },
     "ptz": {
       "name": "Controllo telecamera (PTZ)",

@@ -855,6 +855,12 @@ msgstr "Verversinterval"
 msgid "Press OK to fetch a camera's photos less often (seconds), e.g. for a slow camera."
 msgstr "Druk op OK om foto's van een camera minder vaak op te halen (seconden), bijv. voor een trage camera."
 
+msgid "Windows at the same time"
+msgstr "Vensters tegelijk"
+
+msgid "Photo windows with their own id (window_id in Home Assistant) appear next to each other, up to this number. 1 = one window that every request replaces. Each window fetches its own pictures."
+msgstr "Fotovensters met een eigen id (window_id in Home Assistant) verschijnen naast elkaar, tot dit aantal. 1 = één venster dat elke melding vervangt. Elk venster haalt zelf zijn foto's op."
+
 msgid "Multi-camera window layout"
 msgstr "Indeling van het venster met meerdere camera's"
 

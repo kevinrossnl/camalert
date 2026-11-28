@@ -27,6 +27,41 @@ class PlayerControllerTest {
         ctl.show(cam, sec, mode, priority, "api", null)
 
     @Test
+    fun windowsWithAnId() {  // #87
+        env.values["max_windows"] = 3
+        assertEquals("show", show("front_door"))
+        assertEquals("show", ctl.showWindow("garden", null, null, "high", "api", null, "door"))
+        assertEquals("show", ctl.showWindow("driveway", null, null, null, "api", null, "drive"))
+        assertEquals(listOf("photo front_door 30", "window door 1 garden 30", "window drive 2 driveway 30"), display.calls)
+        assertEquals(listOf(mapOf("id" to "", "camera" to "front_door"), mapOf("id" to "door", "camera" to "garden"),
+            mapOf("id" to "drive", "camera" to "driveway")), ctl.status()["windows"])
+        assertEquals("extend", ctl.showWindow("garden", 20, null, "high", "api", null, "door"))
+        assertEquals("extend-window door 20", display.calls.last())
+        assertEquals("show", ctl.showWindow("front_door", null, null, "alarm", "api", null, "x"))  // full: "drive" (normal) goes
+        assertEquals(listOf("hide-window drive", "window x 2 front_door 30"), display.calls.takeLast(2))
+        ctl.hideWindow("door")
+        assertEquals(listOf("x"), display.extra.keys.toList())
+        ctl.hide()
+        assertEquals(emptyMap<String, String>(), display.extra)
+        assertEquals(emptyList<String>(), ctl.slots.ids())
+    }
+
+    @Test
+    fun oneWindowSettingIsTheOldBehaviour() {  // #87
+        env.values["max_windows"] = 1
+        ctl.showWindow("garden", null, null, null, "api", null, "door")
+        assertEquals(listOf("photo garden 30"), display.calls)
+        assertEquals(emptyMap<String, String>(), display.extra)
+    }
+
+    @Test
+    fun liveClosesIdWindows() {  // #87
+        ctl.showWindow("garden", null, null, null, "api", null, "door")
+        show("front_door", "live")
+        assertEquals(emptyMap<String, String>(), display.extra)
+    }
+
+    @Test
     fun photoWindowWithDefaults() {
         assertEquals("show", show())
         assertEquals(listOf("photo front_door 30"), display.calls)

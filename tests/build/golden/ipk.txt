@@ -52,6 +52,7 @@ data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_co
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/update.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/urls.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/warm.py
+data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/windows.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/wizard.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/chime.wav
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/diagnostics.py

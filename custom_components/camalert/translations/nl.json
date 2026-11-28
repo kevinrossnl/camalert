@@ -350,6 +350,10 @@
         "language": {
           "name": "Taal",
           "description": "Taal van de melding, bijvoorbeeld en of nl. Leeg = de standaard van de engine."
+        },
+        "window_id": {
+          "name": "Venster-id",
+          "description": "Een eigen Fotovenster naast de andere vensters, bijv. doorbell. Dezelfde id opnieuw verlengt of vervangt dat venster; Camera verbergen met deze id sluit alleen dat venster. Letters, cijfers, . _ - (maximaal 32). Leeg = het normale venster."
         }
       }
     },
@@ -369,7 +373,13 @@
     },
     "hide": {
       "name": "Camera verbergen",
-      "description": "Sluit het cameravenster en gaat terug naar tv."
+      "description": "Sluit het cameravenster en gaat terug naar tv.",
+      "fields": {
+        "window_id": {
+          "name": "Venster-id",
+          "description": "Alleen het venster met deze id sluiten. Leeg = alles sluiten."
+        }
+      }
     },
     "ptz": {
       "name": "Camerabediening (PTZ)",

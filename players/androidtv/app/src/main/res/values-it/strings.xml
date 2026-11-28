@@ -151,6 +151,8 @@
     <string name="t_f06d0049" formatted="false">Riquadri neri su parti dell\'immagine di una telecamera, in ogni schermata di CamAlert e sul video live: telecamera=x1,y1,x2,y2 tra 0 e 1 dell\'immagine, più riquadri con +, più telecamere con |, ad es. garden=0,0,0.3,0.5. Non vale per le immagini fuori da CamAlert.</string>
     <string name="t_97588905" formatted="false">Intervallo di aggiornamento</string>
     <string name="t_591884e5" formatted="false">Premere OK per scaricare meno spesso le foto di una telecamera (secondi), ad es. per una telecamera lenta.</string>
+    <string name="t_c798dee9" formatted="false">Finestre contemporanee</string>
+    <string name="t_c172e13e" formatted="false">Ogni Finestra foto con un proprio id (window_id in Home Assistant) appare accanto alle altre, fino a questo numero. 1 = una sola finestra che ogni richiesta sostituisce. Ogni finestra scarica le proprie immagini.</string>
     <string name="t_40405b3f" formatted="false">Disposizione della finestra con più telecamere</string>
     <string name="t_b90a4fd3" formatted="false">Una richiesta con 2-4 telecamere le mostra insieme in una finestra con più telecamere.</string>
     <string name="t_88c58adb" formatted="false">Dimensione del titolo</string>

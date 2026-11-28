@@ -51,6 +51,12 @@ COMMANDS = [
     ("mosaic_cameras", "camalert/{node}/mosaic", "a,b", ("mosaic", "a,b", 60)),
     ("mosaic_all", "camalert/{node}/mosaic", "", ("mosaic", None, 60)),
     ("hide", "camalert/{node}/hide", "", ("hide",)),
+    ("hide_window", "camalert/{node}/hide", json.dumps({"id": "doorbell"}), ("hide", "doorbell")),  # #87
+    ("hide_window_invalid", "camalert/{node}/hide", json.dumps({"id": "a b"}), ("hide",)),
+    ("show_window", "camalert/{node}/show", json.dumps({"cam": "garden", "id": "doorbell"}),
+     ("show", "garden", None, None, None, "mqtt", None, "doorbell")),
+    ("show_window_invalid", "camalert/{node}/show", json.dumps({"cam": "garden", "id": "../x"}),
+     ("show", "garden", None, None, None, "mqtt", None)),
     ("dnd_on", "camalert/{node}/dnd/set", "ON", ("dnd", True)),
     ("dnd_off", "camalert/{node}/dnd/set", "OFF", ("dnd", False)),
     ("frigate_person", "frigate/events", FRIGATE_EVENT, ("show", "garden", 30, "photo", "normal", "frigate", "Person")),  # frigate_seconds/_mode (#39)

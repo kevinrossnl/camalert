@@ -51,6 +51,10 @@ show:
       example: en
       selector:
         text:
+    window_id:
+      example: doorbell
+      selector:
+        text:
 mosaic:
   target:
     entity:
@@ -73,6 +77,11 @@ hide:
   target:
     entity:
       integration: camalert
+  fields:
+    window_id:
+      example: doorbell
+      selector:
+        text:
 ptz:
   target:
     entity:

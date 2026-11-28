@@ -141,6 +141,24 @@ class CoreReferenceTest {
     }
 
     @Test
+    fun windowSlots() {  // #87
+        for (c in cases("window_slots")) {
+            val slots = WindowSlots((c["limit"] as Number).toInt())
+            val got = (c["ops"] as List<List<Any?>>).map { op ->
+                if (op[0] == "place") slots.place(op[1] as String, op[2] as String).let { listOf(it.first, it.second, it.third) }
+                else { slots.remove(op[1] as String); null }
+            }
+            assertEquals("limit ${c["limit"]}", Json.write(c["out"]), Json.write(got))
+            assertEquals(Json.write(c["ids"]), Json.write(slots.ids()))
+        }
+        for (c in cases("window_id")) {
+            val got = try { Windows.idParam(c["value"]) } catch (e: IllegalArgumentException) { "invalid" }
+            assertEquals("${c["value"]}", c["out"], got)
+        }
+        for (c in cases("max_windows")) assertEquals("${c["value"]}", (c["out"] as Number).toInt(), Windows.maxWindows(c["value"]))
+    }
+
+    @Test
     fun geometry() {
         for (c in cases("geometry")) {
             val a = c["args"] as List<Any?>
@@ -154,6 +172,7 @@ class CoreReferenceTest {
                 "strip_text" -> Layout.strip(i(0), a[1] as String, a[2] as String, a[3] as String, i(4), i(5), a[6] as String).let { w ->
                     listOf(w.x, w.y, w.w, w.h, w.title, w.tiles.map { listOf(it.x, it.y, it.w, it.h) }) }
                 "title_font_text" -> Layout.titleFont(a[0] as String, i(1), a[2] as String)
+                "window_slot" -> Layout.window(a[0] as String, a[1] as String, i(2), i(3), a[4] as String, a[5] as String, i(6)).let { listOf(it.x, it.y, it.w, it.h, it.title) }
                 else -> Layout.titleFont(a[0] as String, i(1))
             }
             assertEquals("${c["kind"]} $a", Json.write(c["out"]), Json.write(got))

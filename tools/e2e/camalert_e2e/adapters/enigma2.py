@@ -15,6 +15,7 @@ from .camalert import CamAlert
 PREFIX = "config.plugins.camalert."
 BOX_DIR = "/tmp/camalert-e2e"
 DEVICES_FILE = "/etc/enigma2/camalert_devices.conf"
+SETTINGS_FILE = "/etc/enigma2/settings"
 DEVICES_BACKUP = DEVICES_FILE + ".e2e-backup"
 
 # Settings changed for every run: nothing rings, nothing reaches Home Assistant, no real trigger interferes, no rule
@@ -91,6 +92,20 @@ class Box(object):
 
     def cleanup(self):
         self.shell.run("rm -rf %s" % BOX_DIR, check=False)
+
+    def read_settings(self):
+        """{key without prefix: text} of the CamAlert lines in the receiver's settings file."""
+        out = self.shell.run("grep '^config\\.plugins\\.camalert\\.' %s; true" % SETTINGS_FILE)
+        lines = [x for x in out.splitlines() if x.startswith(PREFIX) and "=" in x]
+        return {k[len(PREFIX):]: v for k, v in (x.split("=", 1) for x in lines)}
+
+    def write_settings(self, values):
+        """Replaces the CamAlert lines of the settings file with values (#77). OpenWebif saveconfig only changes
+        Enigma2's memory: when the receiver saved its settings during the run (it does on entering standby, e.g.
+        in alarm_wake) the file kept the run's safe values. The other lines and the file itself (owner, mode) stay."""
+        body = "".join("%s%s=%s\n" % (PREFIX, k, v) for k, v in sorted(values.items()))
+        self.shell.run("f=%s; t=$f.e2e-new; grep -v '^config\\.plugins\\.camalert\\.' $f > $t; cat >> $t && "
+                       "cat $t > $f; rm -f $t" % SETTINGS_FILE, body)
 
     def read_ptz_calls(self):
         return self.shell.run("cat %s/ptz-calls.txt 2>/dev/null; true" % BOX_DIR)
@@ -250,7 +265,27 @@ class Enigma2(object):
                 problems.append("settings differ after restore: %s" % ", ".join(sorted(wrong)))
         except Exception as e:  # noqa: BLE001
             problems.append("settings check: %s" % e)
+            after = None
+        if ch.get("settings") and after is not None:
+            attempt("settings file", lambda: self._persist_settings(after, sorted(ch["settings"])))
         return problems
+
+    def _persist_settings(self, memory, keys):
+        """The settings file gets the restored values too (#77, found on a real receiver after alarm_wake). Only the
+        keys the run changed are compared (CamAlert itself updates a few keys in memory while it runs); when one of
+        them differs, all CamAlert lines are written from memory, which is what Enigma2 would write itself."""
+        if self.box is None:
+            return  # no ssh: Enigma2 writes the restored values itself at its next save
+
+        def wrong():
+            f = self.box.read_settings()
+            return [k for k in keys if not same_setting(f.get(k), memory.get(k))]
+        if not wrong():
+            return
+        self.box.write_settings(memory)
+        left = wrong()
+        if left:
+            raise SafetyError("settings file still differs for %s" % ", ".join(left))
 
     def _restore_dnd(self, dnd):
         if bool(self.camalert.status().get("dnd")) != dnd:

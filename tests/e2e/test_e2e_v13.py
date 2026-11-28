@@ -36,6 +36,23 @@ class TestNewScenarios(Base):
         self.assertTrue(rx.standby)
         self.assertEqual(rx.saved, SAVED)
 
+    def test_alarm_wake_leaves_the_settings_file_restored(self):
+        """Found on a real receiver: entering standby during alarm_wake saved the run's safe values to the
+        settings file; saveconfig only fixed memory. The runner now rewrites the CamAlert lines of the file."""
+        rx = self.receiver()
+        res, _data = self.run_on(rx, scenarios=["alarm_wake"])
+        self.assertEqual(statuses(res), {"alarm_wake": "passed"})
+        self.assertEqual(res["restore"], [])
+        self.assertEqual(rx.box.settings_file, SAVED)
+        self.assertEqual(rx.box.settings_writes, 1)
+
+    def test_settings_file_untouched_when_it_already_matches(self):
+        rx = self.receiver()
+        rx.box.settings_file["update_seen"] = "1.0.0"  # a key CamAlert updates by itself: not the runner's business
+        res, _data = self.run_on(rx, scenarios=["chime_muted"])
+        self.assertEqual(res["restore"], [])
+        self.assertEqual(rx.box.settings_writes, 0)
+
     def test_alarm_wake_never_on_a_quiet_device(self):
         rx = self.receiver()
         res, _data = self.run_on(rx, options={"nobody_watching": ["boven"], "allow_quiet": True},

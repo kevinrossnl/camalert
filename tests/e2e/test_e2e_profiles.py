@@ -25,14 +25,14 @@ class TestProfiles(unittest.TestCase):
         except ImportError:
             self.skipTest("PyYAML not installed")
         devices, ha = profiles.load(profiles.EXAMPLE_FILE)
-        self.assertEqual(sorted(devices), ["bedroom", "kodi_living_room", "living_room"])
+        self.assertEqual(sorted(devices), ["bedroom", "fire_tv", "kodi_bedroom_fake", "kodi_living_room", "living_room"])
         self.assertTrue(devices["bedroom"]["quiet"])
         self.assertEqual(ha["token_env"], "HA_TOKEN")
 
     def test_refused(self):
         bad = [
             dict(token="abc"), dict(password="x"), dict(ha_token="x"), dict(colour=1), dict(type="tv"),
-            dict(host=""), dict(cameras="fake"), dict(type="kodi", cameras="fake", ssh="k"),
+            dict(host=""), dict(cameras="fake"), dict(type="kodi", cameras="fake"),
             dict(quiet=True), dict(allowed_hours="10-22"), dict(allowed_hours="10:00-10:00"),
             dict(watching="ha"), dict(type="kodi", jsonrpc="ssh"), dict(type="kodi", jsonrpc="udp"),
             dict(real_cameras="a,b"),

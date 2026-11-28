@@ -40,9 +40,10 @@ def preconditions(profile, info, minute, options, ha=None, confirm=ask):
     out.append(Check("not recording", not info.get("recording")))
     out.append(Check("no timer within 30 min", not info.get("timer_soon"),
                      "%d timer(s)" % info["timer_soon"] if info.get("timer_soon") else ""))
-    if profile["type"] == "kodi":
+    if profile["type"] in ("kodi", "androidtv"):
         out.append(Check("nothing playing", not info.get("playing"),
                          "%d active player(s)" % info["playing"] if info.get("playing") else ""))
+    if profile["type"] == "kodi":
         return out
     if info.get("standby"):
         out.append(Check("nobody watching", True, "receiver in standby"))

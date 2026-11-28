@@ -7,6 +7,7 @@ import time
 
 from . import report as report_mod
 from . import scenarios as sc
+from .adapters.androidtv import AndroidTv
 from .adapters.enigma2 import Enigma2
 from .adapters.ha import HomeAssistant
 from .adapters.kodi import Kodi
@@ -25,7 +26,7 @@ class Timeout(Exception):
 
 
 def make_device(profile, environ=None):
-    return (Enigma2 if profile["type"] == "enigma2" else Kodi)(profile, environ)
+    return {"enigma2": Enigma2, "kodi": Kodi, "androidtv": AndroidTv}[profile["type"]](profile, environ)
 
 
 def make_ha(ha_cfg, environ=None):

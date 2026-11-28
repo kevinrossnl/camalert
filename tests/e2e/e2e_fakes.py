@@ -112,7 +112,14 @@ class Backend(api.Backend):
         self.saved = saved if saved is not None else {}  # position / size set over /camalert/settings (#84)
 
     def settings(self):
-        return dict(DEFAULTS, dnd=self.ctl.dnd, **{k: self.saved[k] for k in ("position", "size") if k in self.saved})
+        return dict(DEFAULTS, dnd=self.ctl.dnd, **{k: self.saved[k] for k in ("position", "size", "server", "camera")
+                                                    if k in self.saved})
+
+    def set_setup(self, server, camera):
+        """/camalert/setup (#122): the fake Kodi keeps the go2rtc address (FakeKodi.server)."""
+        self.saved["server"] = server
+        if camera:
+            self.saved["camera"] = camera
 
     def set_display(self, key, value):
         if value == DEFAULTS.get(key):
@@ -175,6 +182,8 @@ class FakeBox(object):
     def __init__(self):
         self.devices, self.backup, self.files, self.procs, self.ptz, self.next_pid = REAL_DEVICES, None, {}, {}, [], 100
         self.fail_go2rtc = False
+        self.settings_file = {}  # the CamAlert lines of /etc/enigma2/settings
+        self.settings_writes = 0
 
     def upload(self, name, text):
         self.files[name] = text
@@ -217,6 +226,13 @@ class FakeBox(object):
     def read_ptz_calls(self):
         return "\n".join(self.ptz)
 
+    def read_settings(self):
+        return dict(self.settings_file)
+
+    def write_settings(self, values):
+        self.settings_writes += 1
+        self.settings_file = dict(values)
+
 
 def schema_text(key):
     return config_text(schema.defaults("enigma2")[key])
@@ -232,6 +248,7 @@ class Receiver(object):
         self.timers, self.mute_works, self.set0_works = list(timers), mute_works, set0_works
         self.service = "1:0:19:1:1:1:C00000:0:0:0:"
         self.saved = dict(saved or {})
+        self.box.settings_file = dict(self.saved)  # the file matches memory at the start
         self.saveconfig_calls, self.grabs, self.blank_grabs, self.keys = [], 0, 0, []
         self.ctl = SimController(clock, self.box)
         self.ctl.receiver = self
@@ -340,6 +357,8 @@ class Receiver(object):
             return ({"result": True, "value": value},)
         if path == "/api/powerstate":
             self.standby = {"4": False, "5": True}.get(q.get("newstate"), self.standby)
+            if q.get("newstate") == "5":
+                self.box.settings_file = dict(self.saved)  # like Enigma2: entering standby saves the settings file
             return ({"result": True, "instandby": self.standby},)
         if path == "/api/remotecontrol":
             self.keys.append(int(q.get("command", 0)))
@@ -366,7 +385,10 @@ class FakeKodi(object):
         self.mute_works, self.requests = mute_works, []
         self.speed, self.pause_on_show = 1, False  # kodi_resume (#77): a player that stays paused is a bug
         self.ctl = SimController(clock, on_change=self._changed)
-        self.api = api_server(Backend(self.ctl, lambda: ["porch", "shed", "yard"]))
+        self.saved = {"server": "http://192.168.1.5:1984"}  # the add-on's settings (go2rtc address, #77 fake mode)
+        self.api = api_server(Backend(self.ctl, lambda: fakes.NAMES if "127.0.0.1" in self.saved.get("server", "")
+                                      else ["porch", "shed", "yard"], self.saved))
+        self.box = FakeBox()
         kodi = self
 
         class Handler(BaseRequestHandler):
@@ -396,6 +418,16 @@ class FakeKodi(object):
         for s in (self.api, self.rpc):
             s.shutdown()
             s.server_close()
+
+    def shell(self):
+        """ssh to the Kodi device: only the add-on's settings.xml is read."""
+        kodi = self
+
+        class Shell(object):
+            def run(self, cmd, stdin=None, check=True):
+                return '<settings version="2"><setting id="chime">off</setting><setting id="server">%s</setting>' \
+                       '</settings>' % kodi.saved.get("server", "")
+        return Shell()
 
     def profile(self, **kw):
         p = {"type": "kodi", "host": "127.0.0.1", "camalert_port": self.api.server_address[1], "jsonrpc": "tcp",
@@ -442,3 +474,70 @@ def free_port():
     port = s.getsockname()[1]
     s.close()
     return port
+
+
+class FakeAndroid(object):
+    """Android TV / Fire TV (#68): the CamAlert API + an adb fake (device state, fake go2rtc folder, screencap)."""
+
+    def __init__(self, clock, awake=True, playing=0, volume=9, front="com.amazon.tv.launcher"):
+        self.clock, self.awake, self.playing, self.vol, self.front = clock, awake, playing, volume, front
+        self.saved = {"server": "http://192.168.1.5:1984"}
+        self.ctl = SimController(clock)
+        self.api = api_server(Backend(self.ctl, lambda: fakes.NAMES if "127.0.0.1" in self.saved.get("server", "")
+                                      else ["porch", "shed"], self.saved))
+        self.fake_running, self.pushed, self.commands = False, [], []
+        self.adb = FakeAdb(self)
+
+    def close(self):
+        self.api.shutdown()
+        self.api.server_close()
+
+    def settings_for_geometry(self):
+        d = schema.defaults("enigma2")
+        return {k: self.saved.get(k, d[k]) for k in ("position", "size", "title_size", "strip_layout")}
+
+    def osd(self):
+        return Receiver.osd(self)
+
+    def profile(self, **kw):
+        p = {"type": "androidtv", "host": "127.0.0.1", "camalert_port": self.api.server_address[1],
+             "allowed_hours": "00:00-23:59", "restore_server": "http://192.168.1.5:1984"}
+        p.update(kw)
+        return p
+
+
+class FakeAdb(object):
+    def __init__(self, tv):
+        self.tv = tv
+
+    def connect(self):
+        pass
+
+    def push(self, local, remote):
+        self.tv.pushed.append(remote)
+
+    def screencap(self):
+        return self.tv.osd()
+
+    def shell(self, cmd):
+        tv = self.tv
+        tv.commands.append(cmd)
+        if cmd.startswith("dumpsys power"):
+            return "  mWakefulness=%s\n" % ("Awake" if tv.awake else "Asleep")
+        if cmd == "dumpsys media_session":
+            return "\n".join("    state=PlaybackState {state=3, position=0}" for _ in range(tv.playing))
+        if cmd.startswith("dumpsys activity"):
+            return "  mResumedActivity: ActivityRecord{1 u0 %s/.Main t1}\n" % tv.front
+        if cmd.startswith("media volume") and "--get" in cmd:
+            return "[v] volume is %d in range [0..15]\n" % tv.vol
+        if cmd.startswith("media volume") and "--set" in cmd:
+            tv.vol = int(cmd.split("--set")[1].split()[0])
+        if "KEYCODE_WAKEUP" in cmd:
+            tv.awake = True
+        if "KEYCODE_SLEEP" in cmd:
+            tv.awake = False
+        if "toybox nc -s 127.0.0.1" in cmd:
+            tv.fake_running = True
+        if cmd.startswith("for p in $(pidof toybox nc"):
+            tv.fake_running = False
+        return ""

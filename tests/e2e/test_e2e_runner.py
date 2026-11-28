@@ -42,6 +42,8 @@ class Base(unittest.TestCase):
 
         def factory(profile, environ=None):
             if profile["type"] == "kodi":
+                if profile.get("ssh"):
+                    return Kodi(profile, environ, sleep=clock.sleep, shell=dev.shell(), box=dev.box)
                 return Kodi(profile, environ, sleep=clock.sleep)
             return Enigma2(profile, environ, box=dev.box, sleep=clock.sleep)
         return factory
@@ -55,6 +57,11 @@ class Base(unittest.TestCase):
         self.runner.ha = None
         data = self.runner.run([name], scenarios)
         return data["devices"][0], data
+
+
+def fakes_names():
+    from camalert_e2e import fakes
+    return fakes.NAMES
 
 
 def _at(hour, minute=0):
@@ -373,6 +380,20 @@ class TestKodiRun(Base):
         self.assertEqual((k.volume, k.muted), (60, False))
         self.assertIn("Application.SetMute", k.requests)
         self.assertIn("Application.SetVolume", k.requests)
+
+    def test_fake_cameras_on_kodi(self):
+        """#77: the fake go2rtc on the Kodi device, the add-on pointed at it with /camalert/setup and back."""
+        k = self.kodi()
+        res, _ = self.run_on(k, name="kodi", cameras="fake", ssh="kodi-test",
+                             scenarios=["show", "strip", "mosaic", "tour", "ptz"])
+        by = {s["name"]: s["status"] for s in res["scenarios"]}
+        self.assertEqual(by, dict(show="passed", strip="passed", mosaic="passed", tour="passed", ptz="skipped"), res)
+        self.assertEqual(res["restore"], [])
+        self.assertEqual(k.saved["server"], "http://192.168.1.5:1984")  # original address back
+        self.assertEqual(k.box.procs, {})  # fake go2rtc stopped
+        self.assertEqual(k.box.files, {})  # and removed
+        shown = [c[1] for c in k.ctl.calls if c[0] == "show"]
+        self.assertTrue(shown and all(c.split(",")[0] in fakes_names() for c in shown), shown)
 
     def test_chime_all_is_skipped(self):
         k = self.kodi()

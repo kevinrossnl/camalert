@@ -44,8 +44,9 @@ fi
 """
 
 
-def files(folder):
-    """Writes the frames, the stream list and serve.sh into folder."""
+def files(folder, unreachable=UNREACHABLE):
+    """Writes the frames, the stream list and serve.sh into folder. unreachable: the camera that answers 500
+    ("" = every camera works, as the e2e runner wants, #77)."""
     ctype = "image/png"
     for name, rgb in go2rtc.CAMERAS.items():
         ctype, data = go2rtc.frame(640, rgb)
@@ -57,7 +58,7 @@ def files(folder):
     with open(os.path.join(folder, "ctype"), "w") as f:
         f.write(ctype)
     with open(os.path.join(folder, "serve.sh"), "w", newline="\n") as f:
-        f.write(SERVE % {"dir": DIR, "bad": UNREACHABLE})
+        f.write(SERVE % {"dir": DIR, "bad": unreachable or "-none-"})
 
 
 def stop_command():

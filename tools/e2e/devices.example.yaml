@@ -34,6 +34,19 @@ devices:
     real_cameras: [front_door, garden]
     allowed_hours: "10:00-23:00"
     # resume_file: special://home/media/test.mp4   # kodi_resume scenario: a short test film on the player
+  kodi_bedroom_fake:
+    type: kodi
+    host: 192.168.1.31
+    ssh: kodi-bedroom                       # fake cameras on Kodi (#77): needs ssh and CamAlert 1.3+
+    cameras: fake
+    allowed_hours: "10:00-22:00"
+  fire_tv:
+    type: androidtv
+    host: 192.168.1.40
+    adb_port: 5555                          # network debugging on the device; `adb connect` is done by the runner
+    cameras: fake
+    restore_server: http://192.168.1.5:1984 # the app's own go2rtc address, sent back after a fake-camera run
+    allowed_hours: "10:00-22:00"
 ha:
   url: http://192.168.1.5:8123
   token_env: HA_TOKEN                       # long-lived token; without it the ha scenario is skipped

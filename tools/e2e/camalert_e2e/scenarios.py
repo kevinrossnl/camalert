@@ -55,6 +55,11 @@ class Context(object):
     def fake(self):
         return self.colours is not None
 
+    @property
+    def shots(self):
+        """Fake cameras and a device that can take screenshots (Kodi cannot, #77)."""
+        return self.fake and self.shot is not None and getattr(self.device, "screenshots", True)
+
     def wait_window(self, want, timeout=10.0):
         """Polls /camalert/status until window == want; returns the last value."""
         end = self.clock() + timeout
@@ -82,7 +87,7 @@ class Context(object):
         return got
 
     def screenshot(self, label):
-        if not self.fake or self.shot is None:
+        if not self.shots:
             return None
         return geometry.load(self.shot(label))
 
@@ -100,7 +105,7 @@ def show(ctx, r):
         return
     r.check(ctx.wait_window(cam) == cam, "status window = first camera")
     ctx.check_screen(r, "photo", "photo window")
-    if ctx.fake:
+    if ctx.shots:
         # the window appears before its picture is loaded (seen on a real receiver): try a few screenshots
         for attempt in range(5):
             ok, detail = geometry.check_photo(ctx.screenshot("show"), cam, ctx.colours[cam], ctx.settings)
@@ -121,7 +126,7 @@ def strip(ctx, r):
         return
     r.check(ctx.wait_window(",".join(cams)) == ",".join(cams), "status window = both cameras")
     ctx.check_screen(r, "strip", "multi-camera window")
-    if ctx.fake:
+    if ctx.shots:
         # like the photo window: the tiles appear before their pictures are loaded (seen on a real receiver)
         for attempt in range(5):
             img = ctx.screenshot("strip")
@@ -305,7 +310,7 @@ def settings(ctx, r):
         cam = ctx.cams[0]
         if _answer(r, *ctx.camalert.action("show", cam=cam, mode="photo", sec=10, priority="normal")):
             r.check(ctx.wait_window(cam) == cam, "window shown with the new position")
-            if ctx.fake:
+            if ctx.shots:
                 s = dict(ctx.settings, position="bottom_left", size="small")
                 for attempt in range(5):
                     ok, detail = geometry.check_photo(ctx.screenshot("settings"), cam, ctx.colours[cam], s)

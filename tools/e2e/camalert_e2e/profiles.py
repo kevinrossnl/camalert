@@ -11,7 +11,7 @@ HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCAL_FILE = os.path.join(HERE, "devices.local.yaml")
 EXAMPLE_FILE = os.path.join(HERE, "devices.example.yaml")
 
-TYPES = ("enigma2", "kodi")
+TYPES = ("enigma2", "kodi", "androidtv")
 CAMERAS = ("fake", "real")
 WATCHING = ("confirm", "ha")
 SECRET_WORDS = re.compile(r"(token|password|passwd|secret|key)$", re.I)
@@ -25,7 +25,11 @@ PER_TYPE = {
     "enigma2": {"openwebif_port": 80, "openwebif_user_env": "", "openwebif_password_env": "",
                 "fake_go2rtc_port": 19841, "fake_ptz_port": 19842},
     "kodi": {"jsonrpc": "tcp", "jsonrpc_port": 9090, "jsonrpc_user_env": "", "jsonrpc_password_env": "",
-             "resume_file": ""},  # kodi_resume scenario (#77): a short test film on the player (path or URL)
+             "resume_file": "",  # kodi_resume scenario (#77): a short test film on the player (path or URL)
+             "fake_go2rtc_port": 19841},  # cameras: fake (#77): the fake go2rtc on the Kodi device
+    # Android TV / Fire TV (#68): adb over the network; restore_server = the app's go2rtc address, needed for
+    # cameras: fake (the runner cannot read the app's private settings)
+    "androidtv": {"adb": "adb", "adb_port": 5555, "restore_server": ""},
 }
 HA_KEYS = {"url": "", "token_env": "HA_TOKEN"}
 MQTT_KEYS = {"host": "", "port": 1883, "user_env": "", "password_env": "", "prefix": "camalert"}  # mqtt scenario
@@ -81,8 +85,10 @@ def device(name, raw):
         raise ProfileError("device %s: host missing" % name)
     if out["cameras"] not in CAMERAS:
         raise ProfileError("device %s: cameras must be fake or real" % name)
-    if out["cameras"] == "fake" and (kind != "enigma2" or not out["ssh"]):
-        raise ProfileError("device %s: fake cameras need an Enigma2 receiver with ssh" % name)
+    if out["cameras"] == "fake" and kind != "androidtv" and not out["ssh"]:
+        raise ProfileError("device %s: fake cameras need ssh" % name)
+    if out["cameras"] == "fake" and kind == "androidtv" and not out["restore_server"]:
+        raise ProfileError("device %s: fake cameras need restore_server (the app's go2rtc address)" % name)
     if out["watching"] not in WATCHING:
         raise ProfileError("device %s: watching must be confirm or ha" % name)
     if out["watching"] == "ha" and not out["ha_media_player"]:

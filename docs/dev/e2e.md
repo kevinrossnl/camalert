@@ -1,6 +1,7 @@
 # End-to-end tests on real players
 
-`tools/e2e/run.py` runs a few CamAlert scenarios on a real Enigma2 receiver or Kodi player and puts everything
+`tools/e2e/run.py` runs a few CamAlert scenarios on a real Enigma2 receiver, Kodi player or Android TV / Fire TV
+player and puts everything
 back afterwards (#35). It runs on demand from a computer in your own network, **never on GitHub** and never in CI.
 The unit tests of the runner itself (`tests/e2e/`) use fake devices only.
 
@@ -13,17 +14,19 @@ names of environment variables (`token_env`, `openwebif_password_env`, ...); the
 
 | Key | What |
 |---|---|
-| `type` | `enigma2` or `kodi` |
+| `type` | `enigma2`, `kodi` or `androidtv` |
 | `host`, `camalert_port` | the player and its CamAlert API port (8099) |
 | `allowed_hours` | e.g. `"10:00-22:00"`: outside this window the player is skipped |
 | `quiet`, `sleep_hours` | a quiet player (bedroom) also needs `--allow-quiet` and is never used in its sleep hours |
 | `watching` | `confirm` (asks, or `--nobody-watching <name>`) or `ha` (`ha_media_player` must be idle/off) |
-| `cameras` | `fake` (Enigma2 with `ssh`: demo cameras on the receiver, screenshots, PTZ) or `real` |
+| `cameras` | `fake` (demo cameras on the player itself) or `real`. Enigma2 with `ssh`: screenshots and PTZ. Kodi with `ssh` (CamAlert 1.3+): no screenshots, no PTZ. Android TV with `restore_server`: screenshots, no PTZ |
 | `ssh` | host alias from `~/.ssh/config` (key login) |
 | `jsonrpc` | Kodi: `tcp` (port 9090), `http` (8080, user/password from `*_env`) or `ssh` |
 | `ha_device_id` | the player's CamAlert device in Home Assistant, for the `ha` scenario |
 | `scenarios`, `timeout` | default scenario list, global time limit in seconds (600) |
 | `resume_file` | Kodi: a short test film on the player (path or URL), for the `kodi_resume` scenario |
+| `adb`, `adb_port` | Android TV: the adb binary (`adb`) and the device's adb port over the network (5555; enable network debugging on the device) |
+| `restore_server` | Android TV with `cameras: fake`: the app's own go2rtc address, sent back after the run (the app's settings are private, so the runner cannot read it) |
 
 The `ha` section has `url` and `token_env` (default `HA_TOKEN`, a long-lived token). Without a token the `ha`
 scenario is skipped. The optional `mqtt` section (`host`, `port`, `user_env`, `password_env`, `prefix`) is the
@@ -58,7 +61,8 @@ The CI runs every scenario against the fake devices (`tests/e2e/test_e2e_v13.py`
 1. **Preconditions**, any failure skips the player (never forced): inside `allowed_hours`; quiet players only with
    `--allow-quiet` and never in `sleep_hours`; not recording and no timer within 30 minutes; nobody watching
    (receiver in standby and `--wake`, Home Assistant reports the media player idle, an interactive confirmation or
-   `--nobody-watching <name>`); Kodi: nothing playing.
+   `--nobody-watching <name>`); Kodi and Android TV: nothing playing (Android: no media session in state playing;
+   a screen that is off counts as standby and needs `--wake`).
 2. **Snapshot** of channel, volume, mute, standby, do not disturb and the saved CamAlert settings (Kodi: volume, mute,
    window) to `reports/state/` before the first change; every later change is written there first.
 3. **Never mute** (#102). Muting caused too many problems (a mute left behind, OpenWebif `set=mute` *toggles*, checks
@@ -72,6 +76,11 @@ The CI runs every scenario against the fake devices (`tests/e2e/test_e2e_v13.py`
 5. **Fake cameras** (`cameras: fake`): the fake go2rtc (`tests/fakes/go2rtc.py`) and a fake Foscam PTZ camera
    (`tools/e2e/fake_ptz.py`) run on the receiver on `127.0.0.1`; the camera devices file is moved aside on the
    receiver itself (never copied off it) and replaced by the fake camera, so PTZ can never move a real camera.
+   **Kodi** (CamAlert 1.3+, `ssh`): the fake go2rtc runs on the Kodi device, the runner reads the add-on's go2rtc
+   address from its settings.xml, points the add-on at the fake with `/camalert/setup` (#122) and sends the old
+   address back the same way (checked in settings.xml). **Android TV** (CamAlert 1.3+): the fake go2rtc of
+   `players/androidtv/testing/fake_go2rtc_on_device.py` runs on the device (adb), and `/camalert/setup` switches to it
+   and back to `restore_server`.
 6. **Nothing left on screen.** Before the run the receiver's OSD must be clear (no menu or dialog: someone may be
    using it). After every scenario and in the restore, the runner looks at the OSD (only counted, never stored) and
    closes screens that are still open with EXIT. Every scenario checks `/camalert/status` `screen` while its screen
@@ -79,6 +88,10 @@ The CI runs every scenario against the fake devices (`tests/e2e/test_e2e_v13.py`
    then only a note. With a player older than 1.0 (no `screen`), the EXIT cleanup itself counts as a failed check.
 7. **Restore in `finally`**: hide, close leftover screens, devices file, fake processes stopped, settings, do not disturb, channel,
    volume and mute (read back), standby. `--restore last` does the same from the state file after a crash.
+   Enigma2 keeps settings changed through OpenWebif `saveconfig` in memory only, but writes them to
+   `/etc/enigma2/settings` whenever it saves (entering standby does, e.g. in `alarm_wake`). With `ssh` the runner
+   therefore also compares the CamAlert lines of that file with the restored settings and rewrites only those lines
+   when they differ (#77, found on a real receiver). Without `ssh` the file follows at Enigma2's next save.
 
 ## Checks and report
 
@@ -87,6 +100,16 @@ State first (`/camalert/status`, OpenWebif, Kodi `GUI.GetProperties`), then OSD 
 every demo camera has its own solid colour, and the runner compares where each colour is with the geometry from
 `camalert_core.layout` (photo window, multi-camera window, mosaic grid), with tolerances.
 
+Android TV screenshots come from `adb exec-out screencap -p` (fake cameras only); only the geometry checks use them,
+and they stay in the git-ignored report folder.
+
 The report goes to `reports/<run>/` (git-ignored): `report.json`, `junit.xml`, `report.html` and the screenshots.
 Addresses, ssh names, secrets and real camera names (shown as `cam1`, `cam2`) are replaced, and the text is checked
 with the patterns of `tools/check_private.py` and the private denylist. Look at screenshots before you share one.
+
+## No scheduled runs
+
+The runner is started by hand. A nightly run on the workstation runner was considered (#77) and dropped: every run
+switches real TVs on or shows windows on them, the allowed hours of a household do not match a fixed schedule, and
+the CI already runs every scenario against the fake devices on every push. Run it after a release on the players
+you test on.

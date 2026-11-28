@@ -81,14 +81,16 @@ The Kodi screenshots were taken on Kodi 21 (LibreELEC) with Estuary at 1920x1080
 `players/androidtv/testing/screenshots.py` (#69) does it over adb with the demo cameras of the fake go2rtc that it
 starts on the device itself (`fake_go2rtc_on_device.py`, `http://127.0.0.1:11984`):
 
-1. **Neutral first, never mute.** Nobody watching, nothing playing. In the app's settings note the go2rtc address
-   and set it to `http://127.0.0.1:11984` (settings are private to the app: the tool cannot read or restore them).
-2. `python3 players/androidtv/testing/screenshots.py --serial <ip>:5555 --out <folder> [--token-env CAMALERT_TOKEN]`
-   takes the test lock of the device (`/data/local/tmp/camalert-test.lock`), opens photo window, multi-camera window,
-   mosaic, tour and the settings screen through the API (with `test=1`), takes `adb exec-out screencap -p`, crops
-   the photo and multi-camera window to CamAlert's own window (the launcher behind it is third-party content),
-   strips metadata and gives the lock back.
-3. **Restore:** put the old go2rtc address back in the app; the tool already stopped the fake go2rtc.
+1. **Neutral first, never mute.** Nobody watching, nothing playing. Note the app's go2rtc address (Settings ›
+   go2rtc): settings are private to the app, so the tool cannot read it.
+2. `python3 players/androidtv/testing/screenshots.py --serial <ip>:5555 --out <folder> --restore-server <address>
+   [--token-env CAMALERT_TOKEN]` takes the test lock of the device (`/data/local/tmp/camalert-test.lock`), points
+   the app at the fake go2rtc with `/camalert/setup` (CamAlert 1.3+, #122), opens photo window, multi-camera
+   window, mosaic, tour and the settings screen through the API (with `test=1`), takes `adb exec-out screencap -p`,
+   crops the photo and multi-camera window to CamAlert's own window (the launcher behind it is third-party
+   content), strips metadata, sends `<address>` back with `/camalert/setup` (also after an error) and gives the
+   lock back. An app older than 1.3: leave out `--restore-server` and change the address in the app by hand.
+3. **Check:** the app lists your own cameras again; the tool already stopped the fake go2rtc.
 4. Review every picture against the [privacy checklist](privacy.md) before it goes into `images/androidtv/`.
 
 ## How to take them (Home Assistant)

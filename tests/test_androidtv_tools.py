@@ -77,6 +77,8 @@ class TestScreenshots(unittest.TestCase):
         class Api(object):
             def call(self, name, **p):
                 calls.append((name, p))
+                if name == "cameras":
+                    return {"result": True, "cameras": [{"name": "front_door"}]}
                 return {"result": True, "position": "bottom_left", "size": "small"} if name == "status" else {}
         a = Api()
         a.calls = calls
@@ -102,6 +104,18 @@ class TestScreenshots(unittest.TestCase):
         self.assertIn(("show", {"cam": "front_door", "mode": "photo", "sec": 60, "priority": "normal",
                                 "label": "Person"}), api.calls)
         self.assertTrue(any("SettingsActivity" in " ".join(c) for c in self.commands))
+
+    def test_switches_go2rtc_and_back(self):
+        """CamAlert 1.3+: /camalert/setup to the fake go2rtc first, back to the app's own address at the end."""
+        dev = self.S.Device("192.0.2.30:5555", "adb", run=self.fake_run)
+        api = self.api()
+        with tempfile.TemporaryDirectory() as d:
+            self.S.take(dev, api, ["photo"], d, wait=0, sleep=lambda s: None, strip=lambda p: None,
+                        restore_server="http://192.0.2.5:1984")
+        setups = [c[1]["server"] for c in api.calls if c[0] == "setup"]
+        self.assertEqual(setups, ["http://127.0.0.1:11984", "http://192.0.2.5:1984"])
+        self.assertEqual(api.calls[-1], ("setup", {"server": "http://192.0.2.5:1984"}))
+        self.assertEqual(self.lock, "")
 
     def test_busy_device_is_left_alone(self):
         dev = self.S.Device("192.0.2.30:5555", "adb", run=self.fake_run)

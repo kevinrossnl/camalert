@@ -3,10 +3,13 @@
 
     python3 players/androidtv/testing/screenshots.py --serial 192.168.1.30:5555 --out shots/ [--token-env CAMALERT_TOKEN]
                                                      [--scenes photo,strip,mosaic,tour,settings] [--adb adb]
+                                                     [--restore-server http://192.168.1.5:1984]
 
-Before: the app's go2rtc address must point at the fake go2rtc ON the device (http://127.0.0.1:11984, see
-fake_go2rtc_on_device.py, which this tool starts and stops); change it in the app's settings by hand and put
-the old address back afterwards (the tool cannot read it: settings are private to the app). Never on a device
+The app's go2rtc address must point at the fake go2rtc ON the device (http://127.0.0.1:11984, see
+fake_go2rtc_on_device.py, which this tool starts and stops). With CamAlert 1.3+ give --restore-server (the app's
+own go2rtc address): the tool switches with /camalert/setup (#122) and sends that address back at the end, also
+after an error. Without it, change the address in the app's settings by hand and put it back afterwards (the tool
+cannot read it: settings are private to the app). Never on a device
 someone watches; the tool takes the per-device test lock (/data/local/tmp/camalert-test.lock, younger than 20 min
 = busy) and gives it back. Every request carries test=1 (no chime). Nothing is muted.
 
@@ -80,7 +83,7 @@ class Api(object):
         self.base, self.token, self.opener = "http://%s:%d/camalert/" % (host, port), token, opener
 
     def call(self, name, **params):
-        data = json.dumps(dict(params, test="1")).encode() if params or name != "status" else None
+        data = json.dumps(dict(params, test="1")).encode() if params or name not in ("status", "cameras") else None
         req = urllib.request.Request(self.base + name, data=data, method="POST" if data else "GET",
                                      headers={"Content-Type": "application/json"})
         if self.token:
@@ -144,14 +147,21 @@ def close_scene(scene, api, dev):
         dev.shell("input keyevent KEYCODE_BACK")
 
 
-def take(dev, api, scenes, out, wait=4.0, sleep=time.sleep, strip=None):
-    """Takes the scenes into out/<scene>.png; returns the written files. Always hides and frees the lock."""
+def take(dev, api, scenes, out, wait=4.0, sleep=time.sleep, strip=None, restore_server=None):
+    """Takes the scenes into out/<scene>.png; returns the written files. Always hides and frees the lock; with
+    restore_server the app is pointed at the fake go2rtc first and at restore_server again at the end."""
     if strip is None:
         strip = strip_file
     os.makedirs(out, exist_ok=True)
     written = []
     dev.take_lock()
     try:
+        if restore_server:
+            api.call("setup", server="http://127.0.0.1:%d" % fake.PORT)
+            for _ in range(20):
+                if CAMS[0] in [c.get("name") for c in (api.call("cameras").get("cameras") or [])]:
+                    break
+                sleep(0.5)
         status = api.call("status")
         for scene in scenes:
             open_scene(scene, api, dev)
@@ -172,6 +182,8 @@ def take(dev, api, scenes, out, wait=4.0, sleep=time.sleep, strip=None):
     finally:
         try:
             api.call("hide")
+            if restore_server:
+                api.call("setup", server=restore_server)
         finally:
             dev.free_lock()
     return written
@@ -184,6 +196,8 @@ def main(argv=None):
     ap.add_argument("--out", required=True)
     ap.add_argument("--token-env", default="", help="environment variable with the CamAlert access token")
     ap.add_argument("--scenes", default=",".join(SCENES))
+    ap.add_argument("--restore-server", default="", help="the app's own go2rtc address (CamAlert 1.3+): switch to "
+                    "the fake with /camalert/setup and back to this address at the end")
     a = ap.parse_args(argv)
     scenes = [s for s in a.scenes.split(",") if s]
     bad = [s for s in scenes if s not in SCENES]
@@ -195,7 +209,7 @@ def main(argv=None):
     api = Api(dev.host, os.environ.get(a.token_env, "") if a.token_env else "")
     fake.main(["start", "--serial", a.serial, "--adb", a.adb])
     try:
-        files = take(dev, api, scenes, a.out)
+        files = take(dev, api, scenes, a.out, restore_server=a.restore_server or None)
     except Busy as e:
         print(e)
         return 1

@@ -8,8 +8,9 @@ import time
 import xbmcgui
 
 from . import kodiapi, sources
-from .klogic import (PTZ_TOGGLE as TOGGLE_IDS, SCREEN_H, SCREEN_W, colour_name, forward_builtin, frame_name, key_action,
-                     live_key, mosaic_key, ptz_action, text_font_name, title_font_name, tour_key)
+from .klogic import (PTZ_TOGGLE as TOGGLE_IDS, SCREEN_H, SCREEN_W, VIDEO_FRAME, VIDEO_HINT, VIDEO_TITLE, colour_name,
+                     forward_builtin, frame_name, key_action, live_key, mosaic_key, ptz_action, text_font_name,
+                     title_font_name, tour_key, video_window_xml)
 from .camalert_core.cameras import parse_orientation, parse_refresh, refresh_delay
 from .camalert_core.events import event_title
 from .camalert_core.present import key_hint, tile_label, tour_status
@@ -218,9 +219,9 @@ class Frame(object):
     """The priority frame of a window (#48): four bars in the priority colour, steady or flashing (at most
     style.FLASH_PER_SECOND); the title carries the priority word too, so colour is never the only signal."""
 
-    def __init__(self, win, x, y, w, h, mark):
-        self.mark, self.controls, self.timer, self.on = mark, [], None, True
-        if not mark:
+    def __init__(self, win, x, y, w, h, mark, controls=None):
+        self.mark, self.controls, self.timer, self.on = mark, list(controls or []), None, True
+        if not mark or controls is not None:
             return
         b = 6
         colour = "FF" + mark["colour"].lstrip("#")
@@ -248,7 +249,46 @@ class Frame(object):
             t.cancel()
 
 
-class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
+class CornerKeys(object):
+    """Remote keys of the corner windows (photo window and video window, #129): colour keys, camera control, OK =
+    live, LEFT/RIGHT = other camera, BACK closes; any other key closes and is passed on."""
+
+    def single(self):
+        return True
+
+    def window_key(self, action):
+        aid = action.getId()
+        kodiapi.log("photo window key %d / button %d" % (aid, action.getButtonCode()), "verbose")
+        if self.ptz_action(aid):
+            return
+        colour = colour_name(action.getButtonCode())
+        if colour and self.single():
+            if self.ctl.colour_key(self.stream, colour) == "ptz" and self.ptz_toggle(self.stream):
+                self.ptz_used()
+            else:
+                self.extend(self.duration)
+            return
+        if self.keys and aid in TOGGLE_IDS and self.single():
+            if self.ptz_toggle(self.stream):
+                self.ptz_used()
+            return
+        what = key_action(aid) if self.keys else ("pass" if aid in VOLUME_KEYS or aid == 107 else "close_pass")
+        if what == "pass":
+            if aid in VOLUME_KEYS:
+                kodiapi.builtin(VOLUME_KEYS[aid])
+            return
+        if what == "live" and self.single():
+            self.ctl.window_to_live(self.stream)
+        elif what in ("prev", "next") and self.single():
+            self.ctl.other_camera(-1 if what == "prev" else 1)
+        elif what in ("close", "close_pass", "live", "prev", "next"):
+            self.ctl.hide()
+            b = forward_builtin(aid) if what == "close_pass" else None
+            if b:
+                kodiapi.builtin(b)
+
+
+class PhotoWindow(CornerKeys, PtzMode, xbmcgui.WindowDialog):
     """Corner window with one camera, or a strip of 2-4 cameras."""
 
     def __init__(self, ctl, cams, s, keys=True, label=None, priority="normal"):
@@ -344,6 +384,9 @@ class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
         else:
             self.ptz_label(self.ptz is not None)
 
+    def single(self):
+        return len(self.tiles) == 1
+
     def ptz_used(self):
         self.extend(max(self.duration, 30))
 
@@ -360,35 +403,133 @@ class PhotoWindow(PtzMode, xbmcgui.WindowDialog):
             pass
 
     def onAction(self, action):
-        aid = action.getId()
-        kodiapi.log("photo window key %d / button %d" % (aid, action.getButtonCode()), "verbose")
-        if self.ptz_action(aid):
+        self.window_key(action)
+
+
+VIDEO_XML_DIR = ("videowindow", "resources", "skins", "Default")
+
+
+def video_xml(s, priority):
+    """Writes the skin XML of the video window for the current settings into the profile (Kodi loads window XML
+    from <scriptPath>/resources/skins/Default/720p/) and returns (file name, script path, geometry)."""
+    import hashlib
+    import shutil
+    ts = s.get("text_size", "normal")
+    x, y, w, h, t = window_geometry(s["position"], s["size"], SCREEN_W, SCREEN_H, s["title_size"], ts)
+    fonts = kodiapi.skin_fonts()
+    hint_h = max(22, t - 8)
+    mark = priority_mark(priority, s.get("priority_border", "steady"))
+    xml = video_window_xml(x, y, w, h, t, title_font_name(s["title_size"], fonts, ts),
+                           title_font_name("small", fonts, ts), hint_h, mark)
+    base = os.path.join(kodiapi.profile_dir(), *VIDEO_XML_DIR)
+    folder, media = os.path.join(base, "720p"), os.path.join(base, "media")
+    for d in (folder, media):
+        os.makedirs(d, exist_ok=True)
+    if not os.path.exists(os.path.join(media, "white.png")):
+        shutil.copyfile(white(), os.path.join(media, "white.png"))
+    name = "camalert-video-%s.xml" % hashlib.sha1(xml.encode("utf-8")).hexdigest()[:10]
+    path = os.path.join(folder, name)
+    if not os.path.exists(path):
+        for old in os.listdir(folder):  # one file per look; old looks are not needed any more
+            if old.startswith("camalert-video-"):
+                _remove(os.path.join(folder, old))
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(xml)
+    return name, os.path.join(kodiapi.profile_dir(), VIDEO_XML_DIR[0]), (x, y, w, h, t)
+
+
+def _remove(path):
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+
+
+class VideoWindow(CornerKeys, PtzMode, xbmcgui.WindowXMLDialog):
+    """#129: the corner window with the camera's live stream as video (Kodi plays it 'windowed'; the skin's video
+    window control shows it inside this dialog). The controller starts and stops the stream; the window shows the
+    first picture (still) until the video runs, the title, the key hint and the priority frame."""
+
+    def setup(self, ctl, name, title, snap, s, priority="normal"):
+        self.ctl, self.stream, self.keys, self.settings = ctl, name, s["window_keys"], s
+        self.snap, self.duration, self.priority = snap, s["duration"], priority
+        self.title_text = marked_title(title, priority, s.get("priority_border", "steady"), kodiapi.core_tr())
+        self.timer, self.frame, self.closed, self.still_path = None, None, False, ""
+        return self
+
+    def onInit(self):
+        self.label = self.getControl(VIDEO_TITLE)
+        self.hint_label = self.getControl(VIDEO_HINT)
+        mark = priority_mark(self.priority, self.settings.get("priority_border", "steady"))
+        bars = []
+        if mark:
+            bars = [self.getControl(cid) for cid in VIDEO_FRAME]
+        self.frame = Frame(self, 0, 0, 0, 0, mark, bars)
+        self.frame.start()
+        self.ptz_label(False)
+
+    def start(self, seconds):
+        if self.snap:
+            threading.Thread(target=self.fetch_still, daemon=True).start()
+        self.extend(seconds)
+
+    def fetch_still(self):
+        """The first picture (warm feed / Protect / go2rtc cache, #109-#111) under the video until it runs."""
+        path = os.path.join(kodiapi.temp_dir(), "video_still_%x.jpg" % (id(self) & 0xffffff))
+        try:
+            sources.picture(self.stream, self.snap, path, self.settings["verify_ssl"], True, self.settings)
+        except Exception as e:
+            kodiapi.log("still picture for the video window failed: %s" % e, "verbose")
             return
-        colour = colour_name(action.getButtonCode())
-        if colour and len(self.tiles) == 1:
-            if self.ctl.colour_key(self.stream, colour) == "ptz" and self.ptz_toggle(self.stream):
-                self.ptz_used()
-            else:
-                self.extend(self.duration)
+        if self.closed:
+            _remove(path)
             return
-        if self.keys and aid in TOGGLE_IDS and len(self.tiles) == 1:
-            if self.ptz_toggle(self.stream):
-                self.ptz_used()
+        self.still_path = path
+        self.setProperty("still", path)
+
+    def extend(self, seconds):
+        if self.timer:
+            self.timer.cancel()
+        self.timer = threading.Timer(seconds, lambda: self.ctl.window_timeout(self))
+        self.timer.daemon = True
+        self.timer.start()
+
+    def switch(self, name, title, url):
+        """Another camera (LEFT/RIGHT): the controller plays its stream; here the title and the still."""
+        self.stream, self.snap = name, url
+        self.title_text = marked_title(title, self.priority, self.settings.get("priority_border", "steady"),
+                                       kodiapi.core_tr())
+        self.setProperty("still", "")
+        if url:
+            threading.Thread(target=self.fetch_still, daemon=True).start()
+        self.ptz_label(False)
+
+    def ptz_label(self, on):
+        if getattr(self, "label", None) is None:
             return
-        what = key_action(aid) if self.keys else ("pass" if aid in VOLUME_KEYS or aid == 107 else "close_pass")
-        if what == "pass":
-            if aid in VOLUME_KEYS:
-                kodiapi.builtin(VOLUME_KEYS[aid])
-            return
-        if what == "live" and len(self.tiles) == 1:
-            self.ctl.window_to_live(self.stream)
-        elif what in ("prev", "next") and len(self.tiles) == 1:
-            self.ctl.other_camera(-1 if what == "prev" else 1)
-        elif what in ("close", "close_pass", "live", "prev", "next"):
-            self.ctl.hide()
-            b = forward_builtin(aid) if what == "close_pass" else None
-            if b:
-                kodiapi.builtin(b)
+        self.label.setLabel(self.title_text)
+        self.hint_label.setLabel(hint("ptz", self.settings) if on else
+                                 hint("window", self.settings, has_ptz(self.stream, self.settings)))
+
+    def ptz_used(self):
+        self.extend(max(self.duration, 30))
+
+    def stop(self):
+        self.closed = True
+        if self.timer:
+            self.timer.cancel()
+        if self.frame is not None:
+            self.frame.stop()
+        if self.ptz is not None:
+            self.ptz.stop()
+        _remove(self.still_path)
+        try:
+            self.close()
+        except Exception:
+            pass
+
+    def onAction(self, action):
+        self.window_key(action)
 
 
 class FullScreen(xbmcgui.WindowDialog):

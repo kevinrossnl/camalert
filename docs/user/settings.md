@@ -35,6 +35,7 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Window position | `top_right` | `top_right` / `top_left` / `bottom_right` / `bottom_left` | basic | all |  |
 | Window size | `medium` | `small` / `medium` / `large` | basic | all |  |
 | Return to what was playing | Yes |  | advanced | Enigma2, Kodi | Switch back to what you were watching when the time is up. |
+| Video in the photo window | `idle` | `off` / `idle` / `pause` | advanced | Kodi | Smooth video instead of photos. When nothing plays: only while Kodi plays nothing. Also pause what plays: a film or live TV stops for the window and plays on from where it was afterwards. |
 | Pause what is playing meanwhile | No |  | advanced | Enigma2, Kodi | Pauses the channel (timeshift) while the camera is shown. Needs a hard disk or USB stick for timeshift. |
 | Volume during live view (%) | `100`% (Android TV: `0`) | 0–100, step 10 | advanced | all | Percentage of the current volume while the camera is shown. 100 = unchanged. |
 | Remote control in photo window | Yes |  | advanced | all | OK = live, LEFT/RIGHT = other camera, EXIT = close. Any other key closes it too. |

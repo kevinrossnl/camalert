@@ -38,6 +38,7 @@
         <setting id="refresh" type="string" label="30064" help="30065"><level>1</level><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><heading>30064</heading></control></setting>
         <setting id="pick_refresh" type="action" label="30296"><level>1</level><data>RunScript(service.camalert,pick,refresh)</data><control type="button" format="action"><close>true</close></control></setting>
         <setting id="window_keys" type="boolean" label="30066" help="30067"><level>1</level><default>true</default><control type="toggle"/></setting>
+        <setting id="video_window" type="string" label="30820" help="30823"><level>1</level><default>idle</default><constraints><options><option label="30234">off</option><option label="30821">idle</option><option label="30822">pause</option></options></constraints><control type="spinner" format="string"/></setting>
         <setting id="pause_tv" type="boolean" label="30068" help="30069"><level>1</level><default>false</default><control type="toggle"/></setting>
         <setting id="live_return" type="boolean" label="30070" help="30071"><level>1</level><default>true</default><control type="toggle"/></setting>
         <setting id="live_volume" type="integer" label="30072" help="30073"><level>1</level><default>100</default><constraints><minimum>0</minimum><step>10</step><maximum>100</maximum></constraints><control type="slider" format="integer"><popup>false</popup></control></setting>

@@ -1020,6 +1020,14 @@ msgstr "Revenir à la lecture précédente"
 msgid "Switch back to what you were watching when the time is up."
 msgstr "Revenir à ce que vous regardiez une fois le temps écoulé."
 
+#: e2 kodi:30820
+msgid "Video in the photo window"
+msgstr "Vidéo dans la fenêtre photo"
+
+#: e2 kodi:30823
+msgid "Smooth video instead of photos. When nothing plays: only while Kodi plays nothing. Also pause what plays: a film or live TV stops for the window and plays on from where it was afterwards."
+msgstr "Une vidéo fluide au lieu de photos. Quand rien n'est lu : seulement si Kodi ne lit rien. Mettre aussi la lecture en pause : un film ou la TV en direct s'arrête pour la fenêtre et reprend ensuite là où il en était."
+
 #: e2 kodi:30068
 msgid "Pause what is playing meanwhile"
 msgstr "Mettre la lecture en pause"
@@ -1835,6 +1843,14 @@ msgstr "Touches de couleur : secret de signature (Home Assistant)"
 #: kodi:30801
 msgid "Home Assistant can install a new CamAlert release on this add-on (only the official release, only a newer version, checked with its checksum). Never while something plays."
 msgstr "Home Assistant peut installer une nouvelle version de CamAlert dans cet add-on (uniquement la version officielle, uniquement une version plus récente, vérifiée par sa somme de contrôle). Jamais pendant une lecture."
+
+#: kodi:30821
+msgid "When nothing plays"
+msgstr "Quand rien n'est lu"
+
+#: kodi:30822
+msgid "Also pause what plays"
+msgstr "Mettre aussi la lecture en pause"
 
 #: ha:config.flow_title
 msgid "{name}"

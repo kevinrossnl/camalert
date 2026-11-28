@@ -90,6 +90,44 @@ class _KodiLogic(object):
     def setUp(self):
         self.k = Built.module("klogic", self.kodi)
 
+    def test_video_window_mode(self):
+        """#129: video in the photo window when nothing plays; with 'pause' (or for an alarm) a film or live TV
+        stops for it; music, a camera and turned cameras keep the snapshots."""
+        m = self.k.video_window_mode
+        for setting, busy, kind, prio, rotated, want in (
+                ("idle", False, "none", "normal", False, "idle"),
+                ("pause", False, "none", "normal", False, "idle"),
+                ("off", False, "none", "alarm", False, None),
+                ("idle", True, "video", "normal", False, None),
+                ("idle", True, "video", "high", False, None),
+                ("idle", True, "livetv", "alarm", False, "pause"),
+                ("pause", True, "video", "normal", False, "pause"),
+                ("pause", True, "livetv", "normal", False, "pause"),
+                ("pause", True, "none", "alarm", False, None),      # music
+                ("pause", True, "camera", "alarm", False, None),    # live view of a camera
+                ("idle", False, "none", "normal", True, None),      # turned camera
+                ("bogus", False, "none", "normal", False, None)):
+            self.assertEqual(m(setting, busy, kind, prio, rotated), want, (setting, busy, kind, prio, rotated))
+        self.assertEqual(self.k.DEFAULTS["video_window"], "idle")
+        self.assertEqual(self.k.CHOICES["video_window"], ("off", "idle", "pause"))
+
+    def test_video_window_xml(self):
+        import xml.etree.ElementTree as ET
+        x = self.k.video_window_xml(840, 40, 400, 225, 30, "font13 & <b>", "font12", 22)
+        root = ET.fromstring(x)
+        video = [c for c in root.iter("control") if c.get("type") == "videowindow"]
+        self.assertEqual([(c.findtext("left"), c.findtext("top"), c.findtext("width"), c.findtext("height"))
+                          for c in video], [("840", "70", "400", "225")])  # under the title bar
+        ids = {c.get("id") for c in root.iter("control") if c.get("id")}
+        self.assertTrue({str(self.k.VIDEO_TITLE), str(self.k.VIDEO_HINT), str(self.k.VIDEO_STILL)} <= ids)
+        self.assertFalse({str(i) for i in self.k.VIDEO_FRAME} & ids)
+        self.assertIn("font13 &amp; &lt;b&gt;", x)
+        marked = ET.fromstring(self.k.video_window_xml(0, 0, 400, 225, 30, "f", "f", 22,
+                                                       {"colour": "#E69F00", "flash": False, "label": "x"}))
+        bars = [c for c in marked.iter("control") if c.get("id") in {str(i) for i in self.k.VIDEO_FRAME}]
+        self.assertEqual(len(bars), 4)
+        self.assertEqual({b.find("texture").get("colordiffuse") for b in bars}, {"FFE69F00"})
+
     # UI guideline (#2, 8a "Key mapping (target)"): every Kodi screen, key -> action. Extra Kodi keys are allowed
     # (STOP, MENU/INFO, PgUp/PgDn, UP in the tour); the guideline keys must all be there.
     GUIDELINE = (
@@ -680,6 +718,146 @@ class _KodiModules(object):
         finally:
             for k in ("cooldown", "camera", "substreams", "server"):
                 Built.store.pop(k, None)
+
+    # --- #129: video in the photo window ---------------------------------------------------------------------
+    def _video_ctl(self, **settings):
+        ctl_mod = Built.module("controller")
+        Built.store.update(dict({"server": self.go2rtc.url, "camera": "garden"}, **settings))
+        for k in ["server", "camera"] + list(settings):
+            self.addCleanup(Built.store.pop, k, None)
+        ctl = ctl_mod.Controller()
+        ctl.names, ctl.names_at = ["garden", "front_door"], __import__("time").time()
+        ctl._watch_video = lambda *a: None  # started by hand in the tests that need it
+        resumed = []
+        ctl._resume = lambda plan: resumed.append(plan)
+        return ctl_mod, ctl, resumed
+
+    def _plays(self, ctl, file, pos=100.0, video=True):
+        p = ctl.player
+        p.isPlaying = lambda: bool(file)
+        p.isPlayingVideo = lambda: bool(file) and video
+        p.getPlayingFile = lambda: file
+        p.getTime = lambda: pos
+
+    def _played(self):
+        return [c for c in kodi_stubs.calls("xbmc.Player.") if c[0] in ("xbmc.Player.play", "xbmc.Player.stop")]
+
+    def test_video_window_when_nothing_plays(self):
+        """#129: Kodi plays nothing: the photo window plays the camera's live stream as video ('windowed', so Kodi
+        stays where it is); when it ends the stream stops and nothing is resumed."""
+        ctl_mod, ctl, resumed = self._video_ctl()
+        display = Built.module("display")
+        self.assertEqual(ctl.show("garden", 10, "photo", "normal", "test"), "show")
+        self.assertIsInstance(ctl.window, display.VideoWindow)
+        (name, args, kw), = [c for c in self._played() if c[0] == "xbmc.Player.play"]
+        self.assertIn("src=garden", args[0])
+        self.assertIs(args[2] if len(args) > 2 else kw.get("windowed"), True)
+        self.assertEqual(ctl.video_url, args[0])
+        self.assertEqual(ctl.status()["screen"], "photo")
+        xml = ctl.window._args  # what Kodi gets: the skin XML written into the profile
+        self.assertTrue(xml[0].startswith("camalert-video-") and xml[2:4] == ("Default", "720p"), xml)
+        folder = os.path.join(xml[1], "resources", "skins", "Default")
+        self.assertTrue(os.path.exists(os.path.join(folder, "720p", xml[0])))
+        self.assertTrue(os.path.exists(os.path.join(folder, "media", "white.png")))
+        self._plays(ctl, args[0])  # the camera runs: ending the window stops it
+        ctl.window_timeout(ctl.window)
+        self.assertIsNone(ctl.window)
+        self.assertEqual(self._played()[-1][0], "xbmc.Player.stop")
+        self.assertEqual((ctl.video_url, resumed), (None, []))
+
+    def test_video_window_setting_music_and_turned_cameras_keep_photos(self):
+        display = Built.module("display")
+        for settings, playing, prio in (({"video_window": "off"}, "", "alarm"),
+                                        ({}, "/music/song.flac", "alarm"),       # music plays: never stopped
+                                        ({}, "/films/a.mkv", "normal"),         # 'idle' does not pause a film
+                                        ({"orientation": "garden=rot180"}, "", "normal")):
+            _m, ctl, _r = self._video_ctl(**settings)
+            self._plays(ctl, playing, video=not playing.endswith(".flac"))
+            kodi_stubs.CALLS[:] = []
+            ctl.show("garden", 10, "photo", prio, "test")
+            self.assertIsInstance(ctl.window, display.PhotoWindow, (settings, playing, prio))
+            self.assertEqual(self._played(), [], (settings, playing))
+            ctl.hide()
+
+    def test_video_window_pauses_a_film_and_plays_it_on(self):
+        """#129 'pause': the film stops for the video window and plays on from where it was (2 s back); a second
+        alert keeps the first plan; alarm pauses even with 'idle'."""
+        ctl_mod, ctl, resumed = self._video_ctl(video_window="pause")
+        display = Built.module("display")
+        self._plays(ctl, "/films/a.mkv", 100.0)
+        self.assertEqual(ctl.show("garden", 10, "photo", "normal", "test"), "show")
+        self.assertIsInstance(ctl.window, display.VideoWindow)
+        self.assertEqual([c[0] for c in self._played()][:2], ["xbmc.Player.stop", "xbmc.Player.play"])
+        self.assertEqual(ctl.video_plan, {"file": "/films/a.mkv", "seek": 98.0, "paused": False})
+        self._plays(ctl, ctl.video_url)  # now the camera plays
+        ctl.show("front_door", 10, "photo", "high", "test")  # another camera meanwhile: same film to go back to
+        self.assertEqual(ctl.video_plan["file"], "/films/a.mkv")
+        self.assertEqual(ctl.window.stream, "front_door")
+        ctl.hide()
+        self.assertEqual(resumed, [{"file": "/films/a.mkv", "seek": 98.0, "paused": False}])
+        self.assertIsNone(ctl.video_plan)
+
+        _m, ctl, resumed = self._video_ctl()  # 'idle' + alarm: pauses too
+        self._plays(ctl, "pvr://channels/tv/All/1.pvr", 0.0)
+        ctl.show("garden", 10, "photo", "alarm", "test")
+        self.assertIsInstance(ctl.window, display.VideoWindow)
+        self.assertEqual(ctl.video_plan["file"], "pvr://channels/tv/All/1.pvr")
+
+    def test_video_window_to_live_keeps_the_film(self):
+        """OK in the video window: full-screen live view; the paused film plays on after live, not before."""
+        _m, ctl, resumed = self._video_ctl(video_window="pause")
+        ctl._show_overlay = lambda *a: None
+        ctl._start_still = lambda *a: None
+        self._plays(ctl, "/films/a.mkv", 50.0)
+        ctl.show("garden", 10, "photo", "normal", "test")
+        self._plays(ctl, ctl.video_url)
+        ctl.window_to_live("garden")
+        self.assertEqual(resumed, [])
+        self.assertEqual(ctl.live_stream, "garden")
+        self.assertEqual(ctl.resume["file"], "/films/a.mkv")
+
+    def test_video_window_falls_back_to_photos(self):
+        """No video within VIDEO_START_SECONDS: the photo window with snapshots instead; what it paused plays on
+        when that ends. Something else started meanwhile: the window just closes."""
+        ctl_mod, ctl, resumed = self._video_ctl(video_window="pause")
+        display = Built.module("display")
+        watch = ctl_mod.Controller._watch_video
+        self._plays(ctl, "/films/a.mkv", 100.0)
+        ctl.show("garden", 10, "photo", "normal", "test")
+        w = ctl.window
+        self._plays(ctl, "")  # the stream never starts
+        watch(ctl, w, ctl.video_url, w.snap, Built.module("kodiapi").settings(), "normal")
+        self.assertIsInstance(ctl.window, display.PhotoWindow)
+        self.assertEqual(resumed, [])
+        ctl.window_timeout(ctl.window)
+        self.assertEqual(resumed[0]["file"], "/films/a.mkv")
+
+        _m, ctl, resumed = self._video_ctl()
+        ctl.show("garden", 10, "photo", "normal", "test")
+        w = ctl.window
+        self._plays(ctl, "/films/b.mkv")  # someone started a film
+        kodi_stubs.CALLS[:] = []
+        watch(ctl, w, ctl.video_url, w.snap, Built.module("kodiapi").settings(), "normal")
+        self.assertIsNone(ctl.window)
+        self.assertEqual([c for c in self._played() if c[0] == "xbmc.Player.stop"], [])
+
+    def test_video_window_keys_and_other_camera(self):
+        _m, ctl, _r = self._video_ctl()
+        ctl.show("garden", 10, "photo", "high", "test")
+        w = ctl.window
+        w.onInit()
+        self.assertIn("garden", w.label.label.lower())
+        kodi_stubs.CALLS[:] = []
+        ctl.other_camera(1)
+        (_n, args, _kw), = [c for c in self._played() if c[0] == "xbmc.Player.play"]
+        self.assertIn("src=front_door", args[0])
+        self.assertEqual(w.stream, "front_door")
+        calls = []
+        ctl.window_to_live = lambda s: calls.append(("live", s))
+        ctl.hide = lambda *a: calls.append(("hide",))
+        w.onAction(self.Action(7))
+        w.onAction(self.Action(92))
+        self.assertEqual(calls, [("live", "front_door"), ("hide",)])
 
     def test_window_ends_the_screensaver_first(self):
         """#119: a CamAlert window (every priority) first ends a running screensaver, CamAlert's own (#99) or

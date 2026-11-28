@@ -764,6 +764,12 @@ msgstr ""
 msgid "Switch back to what you were watching when the time is up."
 msgstr ""
 
+msgid "Video in the photo window"
+msgstr ""
+
+msgid "Smooth video instead of photos. When nothing plays: only while Kodi plays nothing. Also pause what plays: a film or live TV stops for the window and plays on from where it was afterwards."
+msgstr ""
+
 msgid "Pause what is playing meanwhile"
 msgstr ""
 

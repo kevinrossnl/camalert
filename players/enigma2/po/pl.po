@@ -765,6 +765,12 @@ msgstr "Wróć do poprzedniego odtwarzania"
 msgid "Switch back to what you were watching when the time is up."
 msgstr "Po upływie czasu wróć do oglądanego programu."
 
+msgid "Video in the photo window"
+msgstr "Wideo w oknie ze zdjęciem"
+
+msgid "Smooth video instead of photos. When nothing plays: only while Kodi plays nothing. Also pause what plays: a film or live TV stops for the window and plays on from where it was afterwards."
+msgstr "Płynne wideo zamiast zdjęć. Gdy nic nie jest odtwarzane: tylko gdy Kodi nic nie odtwarza. Wstrzymaj też to, co jest odtwarzane: film lub telewizja na żywo zatrzymuje się na czas okna, a potem gra dalej od miejsca, w którym była."
+
 msgid "Pause what is playing meanwhile"
 msgstr "Wstrzymaj odtwarzanie w tym czasie"
 

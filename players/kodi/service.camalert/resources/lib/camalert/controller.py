@@ -11,10 +11,11 @@ import xbmc
 import xbmcgui
 
 from . import kodiapi, sources
-from .display import FullScreen, LiveOverlay, LiveStillWindow, PhotoWindow, open_window
-from .klogic import blocked_by_playing, chime_wanted, kodi_volume, live_mime, playing_kind, resume_plan
+from .display import FullScreen, LiveOverlay, LiveStillWindow, PhotoWindow, VideoWindow, open_window, video_xml
+from .klogic import (blocked_by_playing, chime_wanted, kodi_volume, live_mime, playing_kind, resume_plan,
+                     video_window_mode)
 from .camalert_core.access import url_target
-from .camalert_core.cameras import known_camera, neighbour, parse_cams, slug
+from .camalert_core.cameras import known_camera, neighbour, parse_cams, parse_orientation, slug
 from .camalert_core.api import screen_name
 from .camalert_core.events import TEST_SOURCE, add_event, event_title, is_test
 from .camalert_core.frames import LiveStill, STILL_MAX_SECONDS
@@ -23,6 +24,7 @@ from .camalert_core.present import priority_label, reason as reason_code
 from .camalert_core.rules import (blocked_by_rules, clamp_seconds, clock_tuple, cooldown_seconds, decide, dnd_blocks,
                                   in_cooldown, in_time_window, pick_mode, pick_priority)
 
+VIDEO_START_SECONDS = 8  # #129: no video in the window by then: snapshots instead
 STATS = {"errors": 0, "requests": {}, "started": time.time(), "last_event": 0, "unreachable": 0}
 
 
@@ -93,6 +95,8 @@ class Controller(object):
         self.still = LiveStill()  # #91: still picture until the camera picture is on screen
         self.still_win = None
         self.resume = None
+        self.video_plan = None  # #129: what played before the video window paused it (resume_plan)
+        self.video_url = None   # #129: the stream the video window plays
         self.saved_volume = None
         self.paused = False
         self.names, self.names_at = [], 0.0
@@ -284,8 +288,13 @@ class Controller(object):
             self.reason = reason_code("on_screen")
             return action
         if mode == "photo":
+            ours = self.video_url is not None and kind == "camera" and f.split("|", 1)[0] == self.video_url
+            vmode = video_window_mode(s["video_window"], self._busy() and not ours, kind, priority,
+                                      stream in parse_orientation(s.get("orientation", "")))
             if action == "extend":
                 self.window.extend(seconds)
+            elif vmode and live:
+                self._video_window(stream, title, live, snap, seconds, s, priority, vmode, kind, f, pos, was_paused)
             else:
                 self._close_window()
                 self._maybe_pause(s, kind, was_paused)
@@ -333,19 +342,111 @@ class Controller(object):
     def _live(self, stream, url, title, seconds, s, priority, kind, f, pos, was_paused, action, snap=None):
         if action == "show":
             if self.live_stream is None:
-                self.resume = resume_plan(f, pos, kind, was_paused) if s["live_return"] else None
-                if priority != "alarm" and s["live_volume"] < 100:
+                plan = self._take_video_plan()  # #129: from the video window to full screen: same film to go back to
+                self.resume = plan or (resume_plan(f, pos, kind, was_paused) if s["live_return"] else None)
+                if self.saved_volume is None and priority != "alarm" and s["live_volume"] < 100:
                     vol = (kodiapi.jsonrpc("Application.GetProperties", {"properties": ["volume"]}) or {}).get("volume")
                     if vol is not None:
                         self.saved_volume = vol
                         kodiapi.jsonrpc("Application.SetVolume", {"volume": kodi_volume(vol, s["live_volume"])})
-            self._close_window()
+            self._close_window(keep=True)
             self.player.play(url, live_item(url, title))
             self.live_stream = stream
             self._start_still(stream, snap, s, url)
             threading.Thread(target=self._show_overlay, args=(stream, title), daemon=True).start()
         self.live_seconds = seconds
         self.extend_live()
+
+    # --- video in the photo window (#129) -----------------------------------------------------------------------
+    def _busy(self):
+        try:
+            return bool(self.player.isPlaying())
+        except RuntimeError:
+            return False
+
+    def _take_video_plan(self):
+        plan, self.video_plan = self.video_plan, None
+        return plan
+
+    def _video_window(self, stream, title, live, snap, seconds, s, priority, vmode, kind, f, pos, was_paused):
+        """The photo window with the camera's live stream as video. 'pause': remember what plays (a second alert
+        keeps the first plan), stop it, and play it again from there when the window ends."""
+        if vmode == "pause" and self.video_plan is None:
+            self.video_plan = resume_plan(f, pos, kind, was_paused)
+            kodiapi.log("video window: pausing %s at %ds" % (kind, int(pos)))
+        self._close_window(keep=True)
+        if vmode == "pause" and kind in ("video", "livetv"):
+            self.player.stop()
+            xbmc.sleep(300)
+        if self.saved_volume is None and priority != "alarm" and s["live_volume"] < 100:
+            vol = (kodiapi.jsonrpc("Application.GetProperties", {"properties": ["volume"]}) or {}).get("volume")
+            if vol is not None:
+                self.saved_volume = vol
+                kodiapi.jsonrpc("Application.SetVolume", {"volume": kodi_volume(vol, s["live_volume"])})
+        mark = self.window_priority(priority)
+        name, path, _geo = video_xml(s, mark)
+        w = open_window(lambda: VideoWindow(name, path, "Default", "720p").setup(self, stream, title, snap, s, mark))
+        self.window = w
+        w.start(seconds)
+        self._play_in_window(w, live, title, snap, s, priority)
+
+    def _play_in_window(self, w, live, title, snap, s, priority):
+        self.video_url = live
+        self.player.play(live, live_item(live, title), True)  # windowed: Kodi stays where it is
+        threading.Thread(target=self._watch_video, args=(w, live, snap, s, priority), daemon=True).start()
+
+    def _video_running(self, live):
+        kind, f = self.playing()[:2]
+        return kind == "camera" and f.split("|", 1)[0] == live
+
+    def _watch_video(self, w, live, snap, s, priority):
+        """Snapshots instead when the stream does not start within VIDEO_START_SECONDS or stops while the window is
+        open; the window just closes when someone starts something else."""
+        started = False
+        for i in range(int(VIDEO_START_SECONDS * 4) + 100000):
+            xbmc.sleep(250)
+            with self.lock:
+                if self.window is not w or self.video_url != live:
+                    return
+                if self._video_running(live):
+                    if not started:
+                        kodiapi.log("video window: %s runs after %.1fs" % (w.stream, i / 4.0), "verbose")
+                    started = True
+                    continue
+                if started or i >= VIDEO_START_SECONDS * 4:
+                    other = self.playing()[0] not in ("none", "camera")
+                    if other:
+                        kodiapi.log("video window: something else plays, closing")
+                        self.video_url = None
+                        self.video_plan = None
+                        self._close_window(keep=True)
+                    else:
+                        kodiapi.log("video window: no video for %s, photos instead" % w.stream)
+                        self._video_to_photos(w, s, priority)
+                    self.changed()
+                    return
+
+    def _video_to_photos(self, w, s, priority):
+        stream, title, snap = w.stream, w.title_text, w.snap
+        self.video_url = None
+        self._close_window(keep=True)
+        self._restore_volume()
+        if snap:
+            self.window = open_window(lambda: PhotoWindow(self, [(stream, title, snap)], s, s["window_keys"], None,
+                                                          self.window_priority(priority)))
+            self.window.start(s["duration"])
+        else:
+            self._finish_video_plan()
+
+    def _restore_volume(self):
+        if self.saved_volume is not None and self.live_stream is None:
+            kodiapi.jsonrpc("Application.SetVolume", {"volume": self.saved_volume})
+            self.saved_volume = None
+
+    def _finish_video_plan(self):
+        plan = self._take_video_plan()
+        if plan:
+            self._resume(plan)
 
     def _start_still(self, stream, snap, s, live_url):
         """#91: fetch a picture (warm feed, Protect, go2rtc cache, frame.jpeg) in a thread while the stream opens,
@@ -487,8 +588,15 @@ class Controller(object):
         threading.Thread(target=go, daemon=True).start()
 
     def window_to_live(self, stream):
+        with self.lock:
+            plan = self._take_video_plan()  # #129: what the video window paused plays again after live, not now
         self.hide(resume=False)
         self.show(stream, None, "live", "high")
+        with self.lock:
+            if plan and self.live_stream == stream:
+                self.resume = plan
+            elif plan:
+                self._resume(plan)
 
     def other_camera(self, step):
         w = self.window
@@ -497,7 +605,13 @@ class Controller(object):
         s = kodiapi.settings()
         target = neighbour(self.names or self.refresh_names(s), w.stream, step)
         u = sources.camera_urls(target, s) if target else None
-        if u and u[1]:
+        if u and isinstance(w, VideoWindow) and u[0]:
+            with self.lock:
+                w.switch(target, u[2], u[1])
+                w.extend(s["duration"])
+                self._play_in_window(w, u[0], u[2], u[1], s, w.priority)
+            self.changed()
+        elif u and u[1]:
             w.switch(target, u[2], u[1])
             w.extend(s["duration"])
             self.changed()
@@ -509,10 +623,19 @@ class Controller(object):
                 self.resume_tv()
         self.changed()
 
-    def _close_window(self):
+    def _close_window(self, keep=False):
+        """Closes the corner window. A video window (#129) also stops the camera stream; unless keep (another
+        window or live view follows), the volume comes back and what the video window paused plays again."""
         w, self.window = self.window, None
         if w is not None:
             w.stop()
+            if isinstance(w, VideoWindow) and self.video_url and self._video_running(self.video_url):
+                self.player.stop()
+            if isinstance(w, VideoWindow):
+                self.video_url = None
+        if not keep:
+            self._restore_volume()
+            self._finish_video_plan()
 
     def hide(self, resume=True):
         with self.lock:

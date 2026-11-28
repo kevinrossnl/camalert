@@ -143,6 +143,20 @@ def _jsonrpc(version):
     return execute
 
 
+class FakeControl(object):
+    """What Window.getControl returns for a control of a skin XML window (#129): labels and visibility are kept."""
+
+    def __init__(self, cid):
+        self.cid, self.label, self.visible = cid, "", True
+
+    def setLabel(self, label="", *a, **kw):
+        self.label = label
+        _record("control.setLabel", (self.cid, label), {})
+
+    def setVisible(self, visible):
+        self.visible = bool(visible)
+
+
 def install(settings=None, profile="/tmp/camalert-test-profile", version=DEFAULT_VERSION, addon_path=None):
     """Puts strict xbmc, xbmcgui, xbmcaddon, xbmcvfs, xbmcplugin modules of one Kodi version into sys.modules.
     Returns the settings store (dict) behind xbmcaddon.Addon().getSetting/setSetting."""
@@ -193,7 +207,8 @@ def install(settings=None, profile="/tmp/camalert-test-profile", version=DEFAULT
         "xbmcgui": {
             "functions": {},
             "classes": {
-                "Window": {"getProperty": lambda self, key: ""},
+                "Window": {"getProperty": lambda self, key: "",
+                           "getControl": lambda self, iControlId: FakeControl(iControlId)},
                 "Dialog": {"ok": lambda self, *a, **kw: True, "select": lambda self, *a, **kw: -1,
                            "yesno": lambda self, *a, **kw: False, "browse": lambda self, *a, **kw: ""},
                 "WindowDialog": {"__init__": lambda self, *a, **kw: setattr(self, "controls", []),

@@ -387,7 +387,8 @@
   "pause_tv": "Android cannot pause another app",
   "ptz_password": "the default camera login is kept with the camera devices, never with the settings (#66)",
   "ptz_user": "the default camera login is kept with the camera devices, never with the settings (#66)",
-  "source": "go2rtc only for now (direct mode with a camera file: follow-up, #124)"
+  "source": "go2rtc only for now (direct mode with a camera file: follow-up, #124)",
+  "video_window": "the photo window is an overlay over the other app; video in it: follow-up (#129 is Kodi)"
  },
  "preset_labels": {
   "simple": "Simple: large text, large window, 60 seconds"

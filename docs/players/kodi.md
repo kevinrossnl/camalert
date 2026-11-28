@@ -88,6 +88,15 @@ with the reason in small grey text.
 - **Photo window** – a camera in a corner while the film or TV keeps playing. Remote: **OK** = live,
   **◀ ▶** = other camera, **MENU** (or **INFO**) = camera control (PTZ), **BACK** = close, any other key closes the
   window and does what it normally does. Volume keys keep working.
+- **Video in the photo window** (setting *Video in the photo window*, #129) – Kodi can play only one video at a
+  time, so a photo window over a film shows fresh pictures (about 1 per second, 5 with a
+  [ready camera](../user/settings.md)). When **nothing plays** (menu, screensaver), the photo window plays the
+  camera's live stream as smooth **video**, with sound at the *live view volume*; Kodi stays where it was. With
+  **Also pause what plays**, a film or live TV stops for the window and plays on afterwards from where it was
+  (2 seconds back; live TV goes back to the same channel, the missed part is not kept). An **alarm** does this
+  even with *When nothing plays*. Music and turned cameras keep the pictures, and so does a stream that does not
+  start within 8 seconds. **OK** in the video window = full-screen live view; the paused film plays on after it.
+  Some skins (Estuary) also show the playing video dimmed behind the home menu.
 - **Multi-camera window** – a request for 2 to 4 cameras (`cam=front_door,garden`) shows them together in one
   window (below each other, next to each other or 2×2); more cameras open the mosaic.
 - **Live view** – the camera full screen with a small bar: **◀ ▶** other camera, **MENU** = PTZ, **BACK** = back. When the

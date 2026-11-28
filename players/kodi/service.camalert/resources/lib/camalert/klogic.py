@@ -81,7 +81,7 @@ DEFAULTS = {
     "verify_ssl": True, "camera_file": "", "camera": "", "titles": "", "mosaic": "",
     "orientation": "", "refresh": "", "strip_layout": "auto", "protect_snapshots": True, "ready_cameras": "",
     "mode": "photo", "duration": 30, "position": "top_right", "size": "medium",
-    "pause_tv": False, "live_return": True, "live_volume": 100, "live_format": "mp4",
+    "pause_tv": False, "video_window": "idle", "live_return": True, "live_volume": 100, "live_format": "mp4",
     "limit_hours": False, "from_time": "07:00", "until_time": "23:00", "skip_playing": "off",
     "alarm_wake": False, "tour_interval": 8, "window_keys": True,
     "http_port": 8099, "allow": "lan", "token": "", "api_https": False,
@@ -111,6 +111,7 @@ CHOICES = {
     "log_level": ("off", "errors", "normal", "verbose"), "ptz_key": ("blue", "yellow", "red", "green", "off"),
     "title_size": ("small", "normal", "large"), "chime": ("off", "high", "all"),
     "text_size": ("normal", "large", "xlarge"), "priority_border": ("off", "steady", "flash"),
+    "video_window": ("off", "idle", "pause"),
     "language": ("system", "en", "nl", "de", "fr", "it", "pl"),
 }
 RANGES = {"rtsp_port": (1, 65535), "duration": (5, 300), "frigate_seconds": (5, 300), "foscam_seconds": (5, 300),
@@ -190,6 +191,64 @@ def blocked_by_playing(setting, kind):
     if setting == "all":
         return kind in ("video", "livetv")
     return False
+
+
+def video_window_mode(setting, busy, kind, priority, rotated=False):
+    """#129: how the photo window shows a camera on Kodi. 'idle': the camera's live stream as video in the window
+    (nothing plays); 'pause': stop what plays, video in the window, then play it again from where it was; None:
+    snapshots as before (something plays that the setting does not pause, music, a camera, or a turned camera:
+    Kodi cannot turn a video in a window). Priority alarm pauses a film or live TV unless the setting is off."""
+    if setting not in ("idle", "pause") or rotated:
+        return None
+    if not busy:
+        return "idle"
+    if kind in ("video", "livetv") and (setting == "pause" or priority == "alarm"):
+        return "pause"
+    return None
+
+
+def _xml_text(text):
+    return (text or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+VIDEO_TITLE, VIDEO_HINT, VIDEO_STILL = 102, 104, 101
+VIDEO_FRAME = (110, 111, 112, 113)
+
+
+def video_window_xml(x, y, w, h, t, title_font, hint_font, hint_h, mark=None):
+    """Skin XML (720p coordinates, like SCREEN_W/SCREEN_H) of the video window (#129): dark background, the still
+    picture (window property 'still') under the video window (so the first picture shows until the video runs),
+    title bar on top, key hint strip at the bottom, and the priority frame (#48) when mark is set. Label texts are
+    set from Python (VIDEO_TITLE, VIDEO_HINT); the frame bars (VIDEO_FRAME) flash from Python too."""
+    total = h + t
+    parts = ['<?xml version="1.0" encoding="UTF-8"?>', "<window>", "  <zorder>2</zorder>", "  <controls>"]
+
+    def image(cid, cx, cy, cw, ch, texture, colour=None, extra=""):
+        idattr = ' id="%d"' % cid if cid else ""
+        diffuse = ' colordiffuse="%s"' % colour if colour else ""
+        parts.append('    <control type="image"%s><left>%d</left><top>%d</top><width>%d</width><height>%d</height>'
+                     '%s<texture%s>%s</texture></control>' % (idattr, cx, cy, cw, ch, extra, diffuse, texture))
+
+    def label(cid, cx, cy, cw, ch, font, colour, align):
+        parts.append('    <control type="label" id="%d"><left>%d</left><top>%d</top><width>%d</width>'
+                     '<height>%d</height><font>%s</font><textcolor>%s</textcolor><align>%s</align>'
+                     '<aligny>center</aligny><label></label></control>'
+                     % (cid, cx, cy, cw, ch, _xml_text(font), colour, align))
+
+    image(100, x, y, w, total, "white.png", "FF202020")
+    image(VIDEO_STILL, x, y + t, w, h, "$INFO[Window.Property(still)]", extra="<aspectratio>keep</aspectratio>")
+    parts.append('    <control type="videowindow"><left>%d</left><top>%d</top><width>%d</width><height>%d</height>'
+                 '</control>' % (x, y + t, w, h))
+    label(VIDEO_TITLE, x + 8, y, w - 16, t, title_font, "FFFFFFFF", "left")
+    image(103, x, y + total - hint_h, w, hint_h, "white.png", "99000000")
+    label(VIDEO_HINT, x + 8, y + total - hint_h, w - 16, hint_h, hint_font, "FFDDDDDD", "center")
+    if mark:
+        b, colour = 6, "FF" + mark["colour"].lstrip("#")
+        for cid, (fx, fy, fw, fh) in zip(VIDEO_FRAME, ((x, y, w, b), (x, y + total - b, w, b), (x, y, b, total),
+                                                       (x + w - b, y, b, total))):
+            image(cid, fx, fy, fw, fh, "white.png", colour)
+    parts += ["  </controls>", "</window>", ""]
+    return "\n".join(parts)
 
 
 def resume_plan(file, position, kind, paused=False):

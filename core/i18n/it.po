@@ -1020,6 +1020,14 @@ msgstr "Torna a ciò che era in riproduzione"
 msgid "Switch back to what you were watching when the time is up."
 msgstr "Torna a ciò che stavi guardando allo scadere del tempo."
 
+#: e2 kodi:30820
+msgid "Video in the photo window"
+msgstr "Video nella finestra foto"
+
+#: e2 kodi:30823
+msgid "Smooth video instead of photos. When nothing plays: only while Kodi plays nothing. Also pause what plays: a film or live TV stops for the window and plays on from where it was afterwards."
+msgstr "Video fluido invece delle foto. Quando non è in riproduzione nulla: solo se Kodi non riproduce nulla. Metti in pausa anche la riproduzione: un film o la TV in diretta si ferma per la finestra e poi riprende da dove era."
+
 #: e2 kodi:30068
 msgid "Pause what is playing meanwhile"
 msgstr "Metti in pausa la riproduzione"
@@ -1835,6 +1843,14 @@ msgstr "Tasti colorati: segreto di firma (Home Assistant)"
 #: kodi:30801
 msgid "Home Assistant can install a new CamAlert release on this add-on (only the official release, only a newer version, checked with its checksum). Never while something plays."
 msgstr "Home Assistant può installare una nuova versione di CamAlert in questo add-on (solo la versione ufficiale, solo una versione più recente, verificata con il checksum). Mai durante una riproduzione."
+
+#: kodi:30821
+msgid "When nothing plays"
+msgstr "Quando non è in riproduzione nulla"
+
+#: kodi:30822
+msgid "Also pause what plays"
+msgstr "Metti in pausa anche la riproduzione"
 
 #: ha:config.flow_title
 msgid "{name}"

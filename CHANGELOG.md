@@ -20,6 +20,11 @@ actions and blueprint inputs stay backwards compatible.
   `SHA256SUMS` of the release, and reports the progress. Enigma2 installs in standby without a (coming) recording
   and restarts its GUI quietly; Kodi installs when nothing plays; Android TV opens the system installer, to be
   confirmed on the TV. New setting *Allow updates from Home Assistant* (on), new API route `POST /camalert/update`.
+- **Kodi:** smooth **video in the photo window** (#129). When Kodi plays nothing, the photo window plays the camera's
+  live stream as video instead of a picture every second; Kodi stays where it is. The new setting *Video in the photo
+  window* can also **pause what plays**: a film or live TV stops for the window and plays on from where it was
+  afterwards (an alarm always does this unless the setting is off). Music, turned cameras and a stream that does
+  not start keep the pictures.
 
 ### Security
 

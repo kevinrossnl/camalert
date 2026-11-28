@@ -86,7 +86,8 @@ class TestSchema(unittest.TestCase):
         platform_only = sorted(s.id for s in e2_kodi if not {"enigma2", "kodi"} <= set(s.platforms))
         self.assertEqual(platform_only, ["auto_bouquet", "bouquet_name", "bouquet_position", "camera_file",
                                          "event_folder", "live_format", "picons", "ptz_password", "ptz_user",
-                                         "skip_recording", "update_check", "update_checked", "update_seen"])
+                                         "skip_recording", "update_check", "update_checked", "update_seen",
+                                         "video_window"])
 
     def test_android_tv_platform(self):
         """#67: Android TV is a platform of the schema; every Kodi setting it lacks has a reason in MISSING, its own

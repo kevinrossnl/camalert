@@ -1532,3 +1532,19 @@ msgstr "Consenti aggiornamenti da Home Assistant"
 msgctxt "#30801"
 msgid "Home Assistant can install a new CamAlert release on this add-on (only the official release, only a newer version, checked with its checksum). Never while something plays."
 msgstr "Home Assistant può installare una nuova versione di CamAlert in questo add-on (solo la versione ufficiale, solo una versione più recente, verificata con il checksum). Mai durante una riproduzione."
+
+msgctxt "#30820"
+msgid "Video in the photo window"
+msgstr "Video nella finestra foto"
+
+msgctxt "#30821"
+msgid "When nothing plays"
+msgstr "Quando non è in riproduzione nulla"
+
+msgctxt "#30822"
+msgid "Also pause what plays"
+msgstr "Metti in pausa anche la riproduzione"
+
+msgctxt "#30823"
+msgid "Smooth video instead of photos. When nothing plays: only while Kodi plays nothing. Also pause what plays: a film or live TV stops for the window and plays on from where it was afterwards."
+msgstr "Video fluido invece delle foto. Quando non è in riproduzione nulla: solo se Kodi non riproduce nulla. Metti in pausa anche la riproduzione: un film o la TV in diretta si ferma per la finestra e poi riprende da dove era."

@@ -166,12 +166,14 @@ CamAlert › A TV with a notification app** and pick the app:
 
 | App | On the TV | What CamAlert sends | Live view |
 |---|---|---|---|
-| [PiPup](https://github.com/rogro82/PiPup) (or a fork, e.g. [mhoogenbosch/PiPup](https://github.com/mhoogenbosch/PiPup)) | the app; give it the overlay permission once (`adb shell appops set nl.rogro82.pipup SYSTEM_ALERT_WINDOW allow`) | the go2rtc picture, port 7979 | yes (go2rtc RTSP) |
+| [PiPup](https://github.com/rogro82/PiPup) (or a fork, e.g. [mhoogenbosch/PiPup](https://github.com/mhoogenbosch/PiPup)) | the app, **Android 8 or newer** (Fire OS 7 or newer); give it the overlay permission once (`adb shell appops set nl.rogro82.pipup SYSTEM_ALERT_WINDOW allow`) | the go2rtc picture, port 7979 | yes (go2rtc RTSP) |
 | [TvOverlay](https://github.com/gugutab/TvOverlay) | the app from the Play Store | the go2rtc picture, port 5001 | yes (go2rtc RTSP) |
 | [Notifications for Android TV / Fire TV](https://www.home-assistant.io/integrations/nfandroidtv/) | the app, set up in Home Assistant's own integration | through that integration's notify entity | no |
 
 - The TV fetches pictures and live video straight from **go2rtc**, so enter a go2rtc address in your local network
   (e.g. `http://192.168.1.10:1984`). The camera list comes from the same go2rtc.
+- PiPup does not work on Android 7 (Fire OS 6, e.g. the first Fire TV Stick 4K): it answers every request, but
+  Android refuses its window (`BadTokenException` in the log), so nothing appears. Use the CamAlert app there.
 - Notifications for Android TV / Fire TV only shows a picture when Home Assistant has a camera entity with the
   camera's name (`camera.front_door`); otherwise the text only.
 - Such a TV is a player like the others: `camalert.show`, `camalert.hide`, the doorbell option, the blueprints,

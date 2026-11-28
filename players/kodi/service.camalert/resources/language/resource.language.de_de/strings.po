@@ -1520,3 +1520,7 @@ msgstr "Die Einstellungen konnten nicht gelesen werden: %s"
 msgctxt "#30795"
 msgid "There is no import to undo."
 msgstr "Es gibt keinen Import zum Rückgängigmachen."
+
+msgctxt "#30880"
+msgid "Colour keys: signing secret (Home Assistant)"
+msgstr "Farbtasten: Signaturschlüssel (Home Assistant)"

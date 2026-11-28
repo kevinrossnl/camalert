@@ -20,7 +20,12 @@ turns that into the key name GREEN. The mosaic closes with OK or EXIT/BACK on bo
 Colour keys (red/green/yellow/blue) go to Home Assistant while a camera is on screen, except the configured
 PTZ key on a camera with PTZ (colour_action()).
 """
+import binascii
+import hashlib
+import hmac
 import json
+import os
+import time
 
 KEYMAP = {
     "enigma2": {
@@ -108,7 +113,24 @@ def action_menu(has_ptz=False, ptz_key="blue", ha_buttons=True):
     return out
 
 
-def button_event(node, camera, button):
-    """Payload for camalert/<id>/button (MQTT event entity) and the Home Assistant webhook."""
-    return json.dumps({"event_type": button, "button": button, "camera": camera or "", "receiver": node},
-                      sort_keys=True)
+# Signed colour keys (#82): Home Assistant gives the player a secret with the webhook; every key press to the webhook
+# carries a time, a one-time nonce and an HMAC-SHA256 over both, so nothing else on the network can fake or replay
+# a press (a green key may open a gate). Home Assistant accepts a nonce once and only within BUTTON_MAX_AGE seconds.
+BUTTON_MAX_AGE = 60
+
+
+def button_signature(secret, node, camera, button, ts, nonce):
+    """Hex HMAC-SHA256 of one key press; the custom_components/camalert copy must give the same value."""
+    msg = "|".join([str(node or ""), str(camera or ""), str(button or ""), str(int(ts)), str(nonce or "")])
+    return hmac.new(str(secret).encode("utf-8"), msg.encode("utf-8"), hashlib.sha256).hexdigest()
+
+
+def button_event(node, camera, button, secret=None, now=None, nonce=None):
+    """Payload for camalert/<id>/button (MQTT event entity) and the Home Assistant webhook. With the webhook secret
+    (#82) the payload also carries ts, nonce and sig; MQTT payloads are never signed (the broker has its own login)."""
+    data = {"event_type": button, "button": button, "camera": camera or "", "receiver": node}
+    if secret:
+        ts = int(time.time() if now is None else now)
+        nonce = nonce or binascii.hexlify(os.urandom(16)).decode("ascii")
+        data.update(ts=ts, nonce=nonce, sig=button_signature(secret, node, camera, button, ts, nonce))
+    return json.dumps(data, sort_keys=True)

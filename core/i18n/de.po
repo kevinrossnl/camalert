@@ -1820,6 +1820,10 @@ msgstr "Wähle die Einstellungsdatei"
 msgid "There is no import to undo."
 msgstr "Es gibt keinen Import zum Rückgängigmachen."
 
+#: kodi:30880
+msgid "Colour keys: signing secret (Home Assistant)"
+msgstr "Farbtasten: Signaturschlüssel (Home Assistant)"
+
 #: ha:config.flow_title
 msgid "{name}"
 msgstr "{name}"

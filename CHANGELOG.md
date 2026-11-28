@@ -16,6 +16,13 @@ actions and blueprint inputs stay backwards compatible.
   picture, the buttons **Show on TV** and **Do not disturb 1 h**, and an optional critical notification (on by
   default for the alarm). Motion now also reaches the phone when nobody is home (#128).
 
+### Security
+
+- **Home Assistant and all players:** colour keys are signed (#82). The integration gives every player a fresh secret
+  with the webhook; each key press carries a time, a one-time number and an HMAC, and Home Assistant accepts it only
+  once and only while it is fresh. Something else on the network can no longer fake or replay a key press (GREEN
+  may open a gate). Players from before 1.4 keep working; their presses arrive with `verified: false`.
+
 ## [1.3.1] - 2026-11-27
 
 ### Fixed

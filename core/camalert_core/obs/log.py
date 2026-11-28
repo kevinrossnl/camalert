@@ -20,12 +20,12 @@ def log_allowed(setting, level):
 _REDACT = [
     (re.compile(r"(?i)(\b[a-z][a-z0-9+.-]*://)[^/\s:@]*:[^/\s@]*@"), r"\1***:***@"),  # user:pass@ in urls
     (re.compile(r"(?i)(\b[a-z][a-z0-9+.-]*://)[^/\s:@]+@"), r"\1***@"),               # user@ (token as user)
-    (re.compile(r"(?i)([?&](?:token|pwd|pass|password|passwd|usr|user|key|apikey|api_key|access_token|auth)=)[^&\s\"']*"),
+    (re.compile(r"(?i)([?&](?:token|pwd|pass|password|passwd|usr|user|key|apikey|api_key|access_token|auth|secret)=)[^&\s\"']*"),
      r"\1***"),
     (re.compile(r"(?i)(\bauthorization\s*[:=]\s*)(?:bearer\s+|basic\s+)?[^\s,;\"']+"), r"\1***"),
-    (re.compile(r"(?i)(\"(?:token|password|pwd|access_token|api_key)\"\s*:\s*\")[^\"]*(\")"), r"\1***\2"),
+    (re.compile(r"(?i)(\"(?:token|password|pwd|access_token|api_key|secret)\"\s*:\s*\")[^\"]*(\")"), r"\1***\2"),
     (re.compile(r"(?i)(<(?:\w+:)?(?:Password|Nonce|Username)[^>]*>)[^<]*"), r"\1***"),
-    (re.compile(r"(?i)\b((?:password|passwd|token|pwd)\s*[=:]\s*)[^\s&,;|\"']+"), r"\1***"),
+    (re.compile(r"(?i)\b((?:password|passwd|token|pwd|secret)\s*[=:]\s*)[^\s&,;|\"']+"), r"\1***"),
 ]
 
 

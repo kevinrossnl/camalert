@@ -61,7 +61,10 @@ the Android TV app uses Android's network service discovery.
   player).
 - An event entity **Remote button**: while a camera is on screen, the colour keys of the remote fire an event
   (`red`, `green`, `yellow`, `blue`, with the camera as attribute). The integration also fires the bus event
-  `camalert_button` (`device_id`, `player`, `camera`, `button`; `receiver` is kept for older automations). Use the
+  `camalert_button` (`device_id`, `player`, `camera`, `button`, `verified`; `receiver` is kept for older
+  automations). Key presses are signed by the player and accepted only once and only while fresh (`verified: true`),
+  so nothing else on the network can fake one ([details](api.md#security)); a player older than 1.4 sends unsigned
+  presses (`verified: false`). Use the
   blueprint *CamAlert - remote button does something* to, for example, open the gate with GREEN when the doorbell
   camera shows who is there ([remote keys](../user/keys.md#colour-keys-to-home-assistant)).
 - A notify entity **Notification**: the action `notify.send_message` shows the message (at most 40 characters) as

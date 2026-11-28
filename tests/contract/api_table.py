@@ -43,7 +43,7 @@ def prometheus(body):
 
 STATUS_KEYS = ("result", "version", "id", "name", "window", "live", "paused", "dnd", "platform", "api_version",
                "capabilities", "min_ha_version", "mqtt", "screen", "position", "size",
-               "configured")
+               "configured", "button_signing")
 SCREENS = ("none", "photo", "strip", "notification", "live", "mosaic", "tour")  # status "screen" (#63)
 
 
@@ -172,7 +172,15 @@ TABLE = [
     row("ptz_unknown_move", "/camalert/ptz", {"cam": "garden", "move": "jump"}, code=400, calls=[]),
     row("webhook_not_http", "/camalert/webhook", {"url": "ftp://192.168.1.20/x"}, code=400, json={"result": False}),
     row("webhook_set", "/camalert/webhook", {"url": "http://192.168.1.20:8123/api/webhook/abc"},
-        json={"result": True, "webhook": True}),
+        json={"result": True, "webhook": True, "signed": False}),
+    row("webhook_set_signed", "/camalert/webhook", {"url": "http://192.168.1.20:8123/api/webhook/abc",
+                                                     "secret": "ab" * 32},
+        json={"result": True, "webhook": True, "signed": True}),  # #82: colour keys signed with this secret
+    row("webhook_invalid_secret", "/camalert/webhook", {"url": "http://192.168.1.20:8123/api/webhook/abc",
+                                                         "secret": "not hex"}, code=400, json={"result": False}),
+    row("webhook_removed_drops_secret", "/camalert/webhook", {"url": "", "secret": "ab" * 32},
+        settings={"ha_webhook": "http://192.168.1.20:8123/api/webhook/abc", "ha_webhook_secret": "cd" * 32},
+        json={"result": True, "webhook": False, "signed": False}),
     row("webhook_local_name", "/camalert/webhook", {"url": "http://homeassistant.local:8123/api/webhook/abc"},
         json={"result": True, "webhook": True}),
     row("webhook_internet_refused", "/camalert/webhook", {"url": "http://" + WAN + "/api/webhook/abc"}, code=400,

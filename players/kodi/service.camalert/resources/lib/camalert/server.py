@@ -79,8 +79,9 @@ class Backend(api.Backend):
             ctl.names, ctl.names_at = [c["name"] for c in cams], time.time()
         return cams
 
-    def set_webhook(self, url):
+    def set_webhook(self, url, secret=""):
         kodiapi.set_setting("ha_webhook", url)
+        kodiapi.set_setting("ha_webhook_secret", secret)  # signs the colour keys (#82)
 
     def set_display(self, key, value):
         kodiapi.set_setting(key, value)  # window position or size from the API (#84)

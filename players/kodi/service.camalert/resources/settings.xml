@@ -117,6 +117,7 @@
         <setting id="token" type="string" label="30166" help="30167"><level>1</level><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><heading>30166</heading><hidden>true</hidden></control></setting>
         <setting id="api_https" type="boolean" label="30168" help="30169"><level>2</level><default>false</default><control type="toggle"/></setting>
         <setting id="ha_webhook" type="string" label="30253"><level>4</level><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><heading>30253</heading></control></setting>
+        <setting id="ha_webhook_secret" type="string" label="30880"><level>4</level><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><heading>30880</heading><hidden>true</hidden></control></setting>
       </group>
     </category>
     <category id="log" label="30007">

@@ -34,7 +34,8 @@ class HttpContractTest {
         override fun node() = Pair("node1", "CamAlert test")
         override fun cameras(): List<Map<String, Any?>> =
             (cams ?: error("no camera list")).map { mapOf("name" to it, "title" to Cameras.displayName(it).let { t -> t.substring(0, 1) + t.substring(1).lowercase() }, "snapshot" to true) }
-        override fun setWebhook(url: String) { hook = url }
+        var secret: String? = null
+        override fun setWebhook(url: String, secret: String) { hook = url; this.secret = secret }
         val display = HashMap<String, String>()
         override fun setDisplay(key: String, value: String) { display[key] = value }
         var setup: Pair<String, String?>? = null
@@ -165,7 +166,7 @@ class HttpContractTest {
             override fun statusExtra() = current!!.statusExtra()
             override fun node() = current!!.node()
             override fun logTail(lines: Int) = current!!.logTail(lines)
-            override fun setWebhook(url: String) = current!!.setWebhook(url)
+            override fun setWebhook(url: String, secret: String) = current!!.setWebhook(url, secret)
             override fun setDisplay(key: String, value: String) = current!!.setDisplay(key, value)
             override fun setSetup(server: String, camera: String?) = current!!.setSetup(server, camera)
             override fun resolve(host: String) = Exported.resolve(host)

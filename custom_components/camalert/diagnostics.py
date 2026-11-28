@@ -8,7 +8,7 @@ from homeassistant.const import CONF_HOST
 from .api import INTEGRATION_VERSION, CamAlertError
 from .const import CONF_TOKEN
 
-TO_REDACT = {CONF_TOKEN, CONF_HOST, "password", "token", "pwd", "id", "unique_id", "ha_webhook", "webhook", "snapshot", "url"}
+TO_REDACT = {CONF_TOKEN, CONF_HOST, "password", "token", "pwd", "id", "unique_id", "ha_webhook", "ha_webhook_secret", "secret", "webhook", "snapshot", "url"}
 
 
 async def async_get_config_entry_diagnostics(hass, entry):

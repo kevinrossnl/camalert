@@ -134,6 +134,7 @@ SETTINGS = [
     S('mqtt_discovery', 'home_assistant', 'advanced', 'bool', True, platforms=('enigma2', 'kodi', 'androidtv'), label='Home Assistant discovery', help='Creates a device with a button per camera in Home Assistant.', kodi_label=30118),
     S('mqtt_name', 'home_assistant', 'advanced', 'text', '', platforms=('enigma2', 'kodi', 'androidtv'), label='Name in Home Assistant', help="Empty = CamAlert + the receiver's host name.", kodi_label=30120),
     S('ha_webhook', 'home_assistant', 'internal', 'text', '', platforms=('enigma2', 'kodi', 'androidtv'), label='Home Assistant webhook', kodi_label=30253),
+    S('ha_webhook_secret', 'home_assistant', 'internal', 'password', '', platforms=('enigma2', 'kodi', 'androidtv'), label='Colour keys: signing secret (Home Assistant)', kodi_label=30880),
     S('api_https', 'api', 'expert', 'bool', False, platforms=('enigma2', 'kodi', 'androidtv'), label='Use HTTPS for the API', help='Uses a self-signed certificate; callers must turn off certificate checking.', kodi_label=30168),
     S('http_port', 'api', 'expert', 'int', 8099, min=1024, max=65535, step=1, platforms=('enigma2', 'kodi', 'androidtv'), label='HTTP port', help='Port of the CamAlert API on this receiver (default 8099).', kodi_label=30160),
     S('allow', 'api', 'advanced', 'choice', 'lan', choices=('lan', 'any'), platforms=('enigma2', 'kodi', 'androidtv'), label='Allowed callers', help="'Local network only' is recommended.", kodi_label=30162),

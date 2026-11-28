@@ -1820,6 +1820,10 @@ msgstr "Plik ustawień"
 msgid "There is no import to undo."
 msgstr "Brak importu do cofnięcia."
 
+#: kodi:30880
+msgid "Colour keys: signing secret (Home Assistant)"
+msgstr "Kolorowe przyciski: sekret podpisu (Home Assistant)"
+
 #: ha:config.flow_title
 msgid "{name}"
 msgstr "{name}"

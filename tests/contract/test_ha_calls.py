@@ -94,7 +94,7 @@ class HaCallsCase(object):
         self.assertEqual([c["name"] for c in out["cameras"]], ["front_door", "garden"])
         self.assertEqual(ctl.calls, [("show", "garden,front_door", 20, "strip", "high", "ha", "Person"), ("dnd", True),
                                      ("ptz", "left", "garden"), ("mosaic", "garden", 30), ("hide",)])
-        self.assertEqual(out["webhook"], {"result": True, "webhook": True})
+        self.assertEqual(out["webhook"], {"result": True, "webhook": True, "signed": False})
         posts = [p for m, p, _h, _b in session.sent if m == "POST"]
         self.assertEqual(posts, ["/camalert/show", "/camalert/dnd", "/camalert/ptz", "/camalert/mosaic",
                                  "/camalert/hide", "/camalert/webhook", "/camalert/webhook"])

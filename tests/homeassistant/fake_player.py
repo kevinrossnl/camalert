@@ -26,7 +26,7 @@ from fakes.controller import RecordingController  # noqa: E402
 LAN = "192.168.1.5"
 CALLER_HEADER = "X-Test-Caller"  # only this fake: which address the core sees as the caller
 DEFAULTS = {"enabled": True, "allow": "lan", "token": "", "camera": "front_door", "duration": 30, "dnd": False,
-            "ha_webhook": "", "position": "top_right", "size": "medium",
+            "ha_webhook": "", "ha_webhook_secret": "", "position": "top_right", "size": "medium",
             "server": "http://192.168.1.10:1984", "source": "go2rtc"}  # set up; "" = a new player (#122)
 
 
@@ -52,9 +52,17 @@ class Backend(api.Backend):
         return [{"name": n, "title": n.replace("_", " ").capitalize(), "snapshot": True}
                 for n in self.player.cameras]
 
-    def set_webhook(self, url):
+    def set_webhook(self, url, secret=""):
         self.player.settings["ha_webhook"] = url
+        self.player.settings["ha_webhook_secret"] = secret  # signs the colour keys (#82)
         self.player.webhooks.append(url)
+
+    def press(self, camera, button, **kw):
+        """The JSON body this player posts for a colour key (signed when Home Assistant gave it a secret)."""
+        import json
+        from camalert_core.keymap import button_event
+        return json.loads(button_event(self.player.node_id, camera, button,
+                                       self.player.settings.get("ha_webhook_secret") or None, **kw))
 
     def set_display(self, key, value):
         self.player.settings[key] = value

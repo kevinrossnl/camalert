@@ -34,8 +34,9 @@ class FakeBackend(api.Backend):
             raise OSError("go2rtc down")
         return [{"name": n, "title": n.replace("_", " ").capitalize(), "snapshot": True} for n in self.camera_list]
 
-    def set_webhook(self, url):
+    def set_webhook(self, url, secret=""):
         self.webhook = url
+        self.secret = secret
 
     def set_display(self, key, value):
         self.values[key] = value

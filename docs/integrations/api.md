@@ -25,7 +25,7 @@ against it by the contract tests). Answers are JSON (`metrics`: Prometheus text)
 | `POST /camalert/ptz` `{"cam": "garden", "move": "left"}` | Move a PTZ camera (`up`, `down`, `left`, `right`, `zoom_in`, `zoom_out`, `home`, `stop`); see [camera control](../user/devices.md) |
 | `POST /camalert/settings` `{"position": "top_left", "size": "small"}` | Window position (`top_right`, `top_left`, `bottom_right`, `bottom_left`) and/or size (`small`, `medium`, `large`) of the photo window; saved on the player and used by the next window. `GET /camalert/settings` only reports them (capability `settings`) |
 | `POST /camalert/setup` `{"server": "http://192.168.1.10:1984", "camera": "front_door"}` | Sets the go2rtc address (and optionally the default camera) of the player, as Home Assistant does after adding it (capability `setup`). A player that was **never set up** (no go2rtc address, not *without go2rtc*, first-start wizard not finished) takes any http(s) address; a player that **is set up** only an address in the local network (the same rule as the webhook), otherwise `409` `{"result": false, "error": "already set up"}`. An invalid address is always `400`. The token and *Allowed callers* apply as for every action; the player shows *Settings received from Home Assistant* |
-| `POST /camalert/webhook` `{"url": "..."}` | Where to post remote control colour keys (set automatically by the Home Assistant integration; empty `url` removes it). Must point into the local network |
+| `POST /camalert/webhook` `{"url": "...", "secret": "<64 hex>"}` | Where to post remote control colour keys (set automatically by the Home Assistant integration; empty `url` removes it). Must point into the local network. With `secret` (32–128 hex characters, capability `signed_buttons`, #82) every key press is signed (see below); the answer says `"signed": true` and the status `"button_signing": true` |
 | `GET /camalert/status` | What is on screen (`screen`: `none`, `photo`, `strip`, `notification`, `live`, `mosaic` or `tour`; `window` / `live`: the camera), do-not-disturb state, version, `platform` (`enigma2`/`kodi`), `api_version`, `capabilities`, `min_ha_version`, `mqtt`, `position`, `size`, `configured` (`false` while the player was never set up) |
 | `GET /camalert/cameras` | List of cameras (name, title, has snapshot) |
 | `GET /camalert/events` | The last 20 requests: time, camera, label, source, priority, what CamAlert did and why |
@@ -76,6 +76,14 @@ If your go2rtc address starts with `https://` (for example behind a reverse prox
   `.internal`), or a host name that resolves **only** to such addresses (for example a split-DNS name of Home
   Assistant). The name is resolved when the webhook is set and again before every post; if it resolves to any
   other address, the request is refused (400) or the post is skipped.
+- Colour keys can start actions such as opening a gate, so they are **signed** (#82). The Home Assistant integration
+  gives the player a fresh random secret with the webhook every time it starts. Every key press then carries `ts`
+  (Unix time), a one-time `nonce` (32 hex) and `sig` = HMAC-SHA256(secret, `receiver|camera|button|ts|nonce`), in
+  hex. The integration accepts a press only with the right signature, at most 60 seconds old and with a nonce it has
+  not seen; anything else on the network cannot fake or replay a key press. The secret is sent once, in the
+  `/camalert/webhook` request: use HTTPS or a token if you do not trust your network. MQTT button payloads are
+  not signed (the broker has its own login). A player without `signed_buttons` still works, its key presses are
+  marked `verified: false`.
 - Never forward port 8099 to the internet.
 
 ### Where passwords and tokens are stored

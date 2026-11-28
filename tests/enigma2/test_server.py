@@ -62,9 +62,16 @@ class TestEnigma2Server(unittest.TestCase):
     def test_webhook_is_saved(self):
         ans = self.a.call(Request("/camalert/webhook", {"url": "http://192.168.1.20:8123/api/webhook/x"},
                                   settings={"ha_webhook": ""}))
-        self.assertEqual(ans.body, {"result": True, "webhook": True})
+        self.assertEqual(ans.body, {"result": True, "webhook": True, "signed": False})
         self.assertEqual(self.a.c.ha_webhook.value, "http://192.168.1.20:8123/api/webhook/x")
         self.assertIn("configfile.save", self.a.env.rec.names())
+
+    def test_webhook_secret_is_saved_and_signs_keys(self):
+        """#82: the secret from Home Assistant is saved, and colour keys to the webhook carry a signature."""
+        ans = self.a.call(Request("/camalert/webhook", {"url": "http://192.168.1.20:8123/api/webhook/x",
+                                                        "secret": "ab" * 32}, settings={"ha_webhook": ""}))
+        self.assertEqual(ans.body, {"result": True, "webhook": True, "signed": True})
+        self.assertEqual(self.a.c.ha_webhook_secret.value, "ab" * 32)
 
     def test_setup_from_home_assistant(self):
         """#122: the go2rtc address and camera are saved, the camera list refreshed and a message shown."""

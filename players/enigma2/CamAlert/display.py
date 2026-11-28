@@ -1541,7 +1541,8 @@ class Controller(object):
         hook = config.plugins.camalert.ha_webhook.value.strip()
         if hook:
             from .mqtt import node_id
-            body = button_event(node_id(), camera, button).encode("utf-8")
+            secret = config.plugins.camalert.ha_webhook_secret.value or None  # signed keys (#82)
+            body = button_event(node_id(), camera, button, secret).encode("utf-8")
 
             def post():
                 why = url_target(hook)  # checked again on use: a host name may resolve elsewhere now (#53)

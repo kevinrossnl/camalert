@@ -16,11 +16,11 @@ object Obs {
     private val REDACT = listOf(
         Regex("(?i)(\\b[a-z][a-z0-9+.-]*://)[^/\\s:@]*:[^/\\s@]*@") to "$1***:***@",
         Regex("(?i)(\\b[a-z][a-z0-9+.-]*://)[^/\\s:@]+@") to "$1***@",
-        Regex("(?i)([?&](?:token|pwd|pass|password|passwd|usr|user|key|apikey|api_key|access_token|auth)=)[^&\\s\"']*") to "$1***",
+        Regex("(?i)([?&](?:token|pwd|pass|password|passwd|usr|user|key|apikey|api_key|access_token|auth|secret)=)[^&\\s\"']*") to "$1***",
         Regex("(?i)(\\bauthorization\\s*[:=]\\s*)(?:bearer\\s+|basic\\s+)?[^\\s,;\"']+") to "$1***",
-        Regex("(?i)(\"(?:token|password|pwd|access_token|api_key)\"\\s*:\\s*\")[^\"]*(\")") to "$1***$2",
+        Regex("(?i)(\"(?:token|password|pwd|access_token|api_key|secret)\"\\s*:\\s*\")[^\"]*(\")") to "$1***$2",
         Regex("(?i)(<(?:\\w+:)?(?:Password|Nonce|Username)[^>]*>)[^<]*") to "$1***",
-        Regex("(?i)\\b((?:password|passwd|token|pwd)\\s*[=:]\\s*)[^\\s&,;|\"']+") to "$1***",
+        Regex("(?i)\\b((?:password|passwd|token|pwd|secret)\\s*[=:]\\s*)[^\\s&,;|\"']+") to "$1***",
     )
 
     /** Removes passwords, tokens and user:pass@ from anything that goes to a log, a status page or diagnostics. */

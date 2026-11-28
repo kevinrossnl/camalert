@@ -35,6 +35,7 @@
   "settings",
   "setup",
   "show",
+  "signed_buttons",
   "status",
   "strip",
   "test",
@@ -1478,6 +1479,20 @@
    "section": "home_assistant",
    "step": null,
    "type": "text",
+   "unit": null
+  },
+  {
+   "choices": null,
+   "default": "",
+   "help": null,
+   "id": "ha_webhook_secret",
+   "label": "Colour keys: signing secret (Home Assistant)",
+   "level": "internal",
+   "max": null,
+   "min": null,
+   "section": "home_assistant",
+   "step": null,
+   "type": "password",
    "unit": null
   },
   {

@@ -185,19 +185,40 @@ async def _register_webhook(hass: HomeAssistant, entry, api) -> None:
     from homeassistant.helpers.dispatcher import async_dispatcher_send
     from homeassistant.helpers.network import NoURLAvailableError, get_url
 
+    from .signing import ButtonGuard
+    guard = ButtonGuard()  # a fresh secret per start: sent to the player below (#82)
+    entry.runtime_data.button_guard = guard
+    refused = {"n": 0}
+
+    def signs() -> bool:
+        """The player signs its keys (#82): then an unsigned or wrong press is refused."""
+        return api.capabilities is not None and "signed_buttons" in api.capabilities
+
     async def handle(hass, webhook_id, request):
         try:
             data = await request.json()
         except ValueError:
             return None
+        if not isinstance(data, dict):
+            return None
         button = str(data.get("button") or "")
         camera = str(data.get("camera") or "")
         if button not in BUTTONS:
             return None
+        verified = False
+        if signs():
+            why = guard.check(data)
+            if why:
+                refused["n"] += 1
+                if refused["n"] <= 3 or refused["n"] % 100 == 0:
+                    _LOGGER.warning("%s: colour key refused (%s, %d so far)", entry.title, why, refused["n"])
+                return None
+            verified = True
         device = player_device(hass, entry)
         # "receiver" is kept for automations written before 1.0 (same value as "player")
         hass.bus.async_fire(EVENT_BUTTON, {"device_id": device.id if device else None, "player": entry.title,
-                                          "receiver": entry.title, "camera": camera, "button": button})
+                                          "receiver": entry.title, "camera": camera, "button": button,
+                                          "verified": verified})
         async_dispatcher_send(hass, SIGNAL_BUTTON % entry.entry_id, button, camera)
         return None
 
@@ -213,10 +234,26 @@ async def _register_webhook(hass: HomeAssistant, entry, api) -> None:
         return
     if not api.supports("webhook"):
         return
-    try:
-        await api.webhook(url)
-    except CamAlertError as err:  # older player without /webhook, or HA's url is not in the local network
-        _LOGGER.info("%s: colour keys only via MQTT (webhook: %s)", entry.title, err)
+
+    async def send() -> None:
+        try:
+            await api.webhook(url, guard.secret if signs() else None)
+        except CamAlertError as err:  # older player without /webhook, or HA's url is not in the local network
+            _LOGGER.info("%s: colour keys only via MQTT (webhook: %s)", entry.title, err)
+
+    await send()
+    coordinator = entry.runtime_data
+    last = {"at": float("-inf")}  # monotonic() may be small right after a boot
+
+    def check_signing() -> None:
+        """The player lost its secret (reset, reinstalled, settings imported): send it again, at most every 10 min."""
+        import time
+        data = coordinator.data or {}
+        if signs() and data.get("button_signing") is False and time.monotonic() - last["at"] > 600:
+            last["at"] = time.monotonic()
+            hass.async_create_task(send())
+
+    entry.async_on_unload(coordinator.async_add_listener(check_signing))
 
 
 async def async_unload_entry(hass: HomeAssistant, entry) -> bool:

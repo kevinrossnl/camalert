@@ -59,7 +59,8 @@ class Backend(api.Backend):
         c = config.plugins.camalert
         return {"enabled": c.enabled.value, "allow": c.allow.value, "token": c.token.value,
                 "duration": int(c.duration.value), "camera": c.camera.value, "dnd": bool(c.dnd.value),
-                "ha_webhook": c.ha_webhook.value, "position": c.position.value, "size": c.size.value,
+                "ha_webhook": c.ha_webhook.value, "ha_webhook_secret": c.ha_webhook_secret.value,
+                "position": c.position.value, "size": c.size.value,
                 "server": c.server.value, "source": c.source.value, "wizard_done": _wizard_done(c)}
 
     def controller(self):
@@ -80,12 +81,15 @@ class Backend(api.Backend):
             ctl._names, ctl._names_at = [c["name"] for c in cams], time.time()
         return cams
 
-    def set_webhook(self, url):
-        """Called from a thread (the webhook route resolves host names, #53): save on the main thread."""
+    def set_webhook(self, url, secret=""):
+        """Called from a thread (the webhook route resolves host names, #53): save on the main thread. secret signs
+        the colour keys (#82)."""
         def save():
             c = config.plugins.camalert
             c.ha_webhook.value = url
             c.ha_webhook.save()
+            c.ha_webhook_secret.value = secret
+            c.ha_webhook_secret.save()
             configfile.save()
         reactor.callFromThread(save)
 

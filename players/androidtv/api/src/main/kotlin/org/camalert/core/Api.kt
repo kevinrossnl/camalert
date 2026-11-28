@@ -58,7 +58,8 @@ interface Backend {
     fun controller(): Controller
     fun node(): Pair<String, String>
     fun cameras(): List<Map<String, Any?>>
-    fun setWebhook(url: String)
+    /** Saves the Home Assistant webhook and the secret that signs the colour keys (#82); "" removes them. */
+    fun setWebhook(url: String, secret: String = "")
     /** Saves position or size (#84); value is one of Api.displaySettings[key]. */
     fun setDisplay(key: String, value: String)
     /** go2rtc address (and default camera, null = keep) sent by Home Assistant; shows the setup message (#122). */
@@ -101,6 +102,7 @@ class Api(val data: CoreData = CoreData.load()) {
     // --- parameters ------------------------------------------------------------------------------------------------
     companion object {
         private val NAME = Regex("^[A-Za-z0-9_.-]+$")
+        private val SECRET = Regex("^[0-9a-f]{32,128}$")  // webhook secret (#82)
         val TRUE = listOf("1", "true", "on", "yes")
         val FALSE = listOf("0", "false", "off", "no")
 
@@ -208,12 +210,14 @@ class Api(val data: CoreData = CoreData.load()) {
 
     private fun webhook(b: Backend, ctl: Controller, a: MutableMap<String, String>, s: Map<String, Any?>, source: String): Any {
         val url = (a["url"] ?: "").trim()
+        val secret = if (url.isNotEmpty()) (a["secret"] ?: "").trim().lowercase() else ""
         if (url.isNotEmpty()) localUrl(b, url, a["_ip"])
-        if (url != (s["ha_webhook"] ?: "")) {
-            b.setWebhook(url)
-            b.log("Home Assistant webhook ${if (url.isNotEmpty()) "set" else "removed"}")
+        if (secret.isNotEmpty() && !SECRET.matches(secret)) throw Invalid("invalid secret")
+        if (url != (s["ha_webhook"] ?: "") || secret != (s["ha_webhook_secret"]?.toString() ?: "")) {
+            b.setWebhook(url, secret)
+            b.log("Home Assistant webhook ${if (url.isNotEmpty()) (if (secret.isNotEmpty()) "set, keys signed" else "set") else "removed"}")
         }
-        return mapOf("result" to true, "webhook" to url.isNotEmpty())
+        return mapOf("result" to true, "webhook" to url.isNotEmpty(), "signed" to secret.isNotEmpty())
     }
 
     private fun cameras(b: Backend, ctl: Controller, a: MutableMap<String, String>, s: Map<String, Any?>, source: String): Any {
@@ -264,6 +268,7 @@ class Api(val data: CoreData = CoreData.load()) {
         out["min_ha_version"] = data.minHaVersion
         for (k in displaySettings.keys) out[k] = s[k]  // #84
         out["configured"] = configured(s)  // #122
+        out["button_signing"] = (s["ha_webhook"]?.toString() ?: "").isNotEmpty() && (s["ha_webhook_secret"]?.toString() ?: "").isNotEmpty()  // #82
         out.putAll(b.statusExtra())
         if (out["screen"] !in data.screens) {  // a controller that does not know it (#63)
             out["screen"] = if (out["window"] != null) "photo" else if (out["live"] != null) "live" else "none"

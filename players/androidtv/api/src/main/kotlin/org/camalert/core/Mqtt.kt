@@ -146,9 +146,25 @@ object MqttTopics {
         return msgs
     }
 
-    /** Payload of camalert/<id>/button and the Home Assistant webhook (core keymap.button_event). */
-    fun buttonEvent(node: String, camera: String?, button: String) =
-        Json.write(mapOf("event_type" to button, "button" to button, "camera" to (camera ?: ""), "receiver" to node), sortKeys = true)
+    /** Payload of camalert/<id>/button and the Home Assistant webhook (core keymap.button_event). With the webhook
+     *  secret (#82) it also carries ts, nonce and sig, an HMAC-SHA256 the integration checks once per nonce. */
+    fun buttonEvent(node: String, camera: String?, button: String, secret: String? = null, now: Long? = null, nonce: String? = null): String {
+        val data = linkedMapOf<String, Any?>("event_type" to button, "button" to button, "camera" to (camera ?: ""), "receiver" to node)
+        if (!secret.isNullOrEmpty()) {
+            val ts = now ?: (System.currentTimeMillis() / 1000)
+            val n = nonce ?: ByteArray(16).also { java.security.SecureRandom().nextBytes(it) }.joinToString("") { "%02x".format(it) }
+            data["ts"] = ts; data["nonce"] = n; data["sig"] = buttonSignature(secret, node, camera, button, ts, n)
+        }
+        return Json.write(data, sortKeys = true)
+    }
+
+    /** Hex HMAC-SHA256 of one key press (core keymap.button_signature). */
+    fun buttonSignature(secret: String, node: String?, camera: String?, button: String?, ts: Long, nonce: String?): String {
+        val msg = listOf(node ?: "", camera ?: "", button ?: "", ts.toString(), nonce ?: "").joinToString("|")
+        val mac = javax.crypto.Mac.getInstance("HmacSHA256")
+        mac.init(javax.crypto.spec.SecretKeySpec(secret.toByteArray(Charsets.UTF_8), "HmacSHA256"))
+        return mac.doFinal(msg.toByteArray(Charsets.UTF_8)).joinToString("") { "%02x".format(it) }
+    }
 }
 
 /** Frigate detections via MQTT (core triggers/frigate.py). */

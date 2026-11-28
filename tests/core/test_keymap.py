@@ -1,5 +1,6 @@
 """camalert_core.keymap: the remote-key map of every player (#42), colour keys and the button event."""
 import json
+import sys
 import unittest
 
 import _paths
@@ -87,3 +88,40 @@ class TestKeymap(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestSignedButtons(unittest.TestCase):
+    """#82: colour keys to the Home Assistant webhook carry ts, nonce and an HMAC; MQTT payloads never do."""
+    SECRET = "ab" * 32
+
+    def test_unsigned_payload_unchanged(self):
+        self.assertEqual(json.loads(keymap.button_event("node1", "gate", "green")),
+                         {"event_type": "green", "button": "green", "camera": "gate", "receiver": "node1"})
+
+    def test_signed_payload(self):
+        d = json.loads(keymap.button_event("node1", "gate", "green", self.SECRET, now=1700000000, nonce="0f" * 16))
+        self.assertEqual((d["ts"], d["nonce"]), (1700000000, "0f" * 16))
+        # fixed vector: the Kotlin port (MqttTopics.buttonSignature) and the integration must give the same value
+        self.assertEqual(d["sig"], keymap.button_signature(self.SECRET, "node1", "gate", "green", 1700000000, "0f" * 16))
+        self.assertEqual(d["sig"], "9475c980198548186a1f9043e69695c6726fdaa8a541b2217a0815ea4c35370e")  # also in Kotlin
+
+    def test_nonce_is_fresh(self):
+        a = json.loads(keymap.button_event("n", "c", "red", self.SECRET))
+        b = json.loads(keymap.button_event("n", "c", "red", self.SECRET))
+        self.assertNotEqual(a["nonce"], b["nonce"])
+        self.assertRegex(a["nonce"], r"^[0-9a-f]{32}$")
+
+    def test_integration_checks_the_same_signature(self):
+        sys.path.insert(0, _paths.HA)
+        try:
+            import signing  # custom_components/camalert/signing.py: stdlib only
+        finally:
+            sys.path.remove(_paths.HA)
+        d = json.loads(keymap.button_event("node1", "gate", "green", self.SECRET, now=1700000000, nonce="0f" * 16))
+        self.assertEqual(signing.signature(self.SECRET, "node1", "gate", "green", 1700000000, "0f" * 16), d["sig"])
+        g = signing.ButtonGuard(self.SECRET, clock=lambda: 1700000010)
+        self.assertIsNone(g.check(d))
+        self.assertEqual(g.check(d), "used twice")
+        self.assertEqual(signing.ButtonGuard(self.SECRET, clock=lambda: 1700000500).check(d), "too old")
+        self.assertEqual(signing.ButtonGuard("cd" * 32, clock=lambda: 1700000010).check(d), "wrong signature")
+        self.assertEqual(g.check({"button": "green"}), "not signed")

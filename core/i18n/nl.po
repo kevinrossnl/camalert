@@ -1820,6 +1820,10 @@ msgstr "Kies het instellingenbestand"
 msgid "There is no import to undo."
 msgstr "Er is geen import om ongedaan te maken."
 
+#: kodi:30880
+msgid "Colour keys: signing secret (Home Assistant)"
+msgstr "Kleurtoetsen: geheim voor ondertekening (Home Assistant)"
+
 #: ha:config.flow_title
 msgid "{name}"
 msgstr "{name}"

@@ -168,8 +168,12 @@ class CamAlertApi:
             raise CamAlertAlreadySetUp(data.get("error") or "refused")
         return data
 
-    async def webhook(self, url: str) -> dict:
-        return await self._get("webhook", {"url": url} if url else {"url": ""})
+    async def webhook(self, url: str, secret: str | None = None) -> dict:
+        """Where the colour keys go; secret (#82) makes the player sign every key press."""
+        params = {"url": url} if url else {"url": ""}
+        if url and secret:
+            params["secret"] = secret
+        return await self._get("webhook", params)
 
     async def ptz(self, cam: str, move: str) -> dict:
         return await self._get("ptz", {"cam": cam, "move": move})

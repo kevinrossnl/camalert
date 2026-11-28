@@ -1520,3 +1520,7 @@ msgstr ""
 msgctxt "#30795"
 msgid "There is no import to undo."
 msgstr ""
+
+msgctxt "#30880"
+msgid "Colour keys: signing secret (Home Assistant)"
+msgstr ""

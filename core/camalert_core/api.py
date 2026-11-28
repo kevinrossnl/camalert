@@ -38,7 +38,7 @@ from .urls import go2rtc_state, normalize_server
 API_VERSION = 1
 MIN_HA_VERSION = "1.0.0"  # oldest Home Assistant integration that understands this API version
 CAPABILITIES = ("cameras", "dnd", "events", "header_token", "hide", "hold", "log", "metrics", "mosaic", "post", "ptz",
-                "screen", "settings", "setup", "show", "status", "strip", "test", "tour", "webhook")
+                "screen", "settings", "setup", "show", "signed_buttons", "status", "strip", "test", "tour", "webhook")
 # Settings a caller may change through /camalert/settings (#84), with their choices from the settings schema.
 DISPLAY_SETTINGS = {k: tuple(_SCHEMA[k].choices) for k in ("position", "size")}
 # What /camalert/status reports as "screen" (#63): the top-most CamAlert screen, "none" when nothing is shown.
@@ -89,7 +89,8 @@ class Backend(object):
         """[{name, title, snapshot}] of every camera (may block: a network call in go2rtc mode)."""
         raise NotImplementedError
 
-    def set_webhook(self, url):
+    def set_webhook(self, url, secret=""):
+        """Saves the Home Assistant webhook and the secret that signs the colour keys (#82); "" removes them."""
         raise NotImplementedError
 
     def set_display(self, key, value):
@@ -236,14 +237,22 @@ def _ptz(b, ctl, a, s, source):
     return {"result": ctl.ptz_move(move, cam), "cam": cam, "move": move}
 
 
+SECRET = re.compile(r"^[0-9a-f]{32,128}$")
+
+
 def _webhook(b, ctl, a, s, source):
+    """url: where colour keys go; secret (#82, optional): signs every key press (keymap.button_event), so only the
+    player can send them. Without a url both are removed."""
     url = (a.get("url") or "").strip()
+    secret = (a.get("secret") or "").strip().lower() if url else ""
     if url:
         local_url(url, a.get("_ip"))
-    if url != s.get("ha_webhook", ""):
-        b.set_webhook(url)
-        b.log("Home Assistant webhook %s" % ("set" if url else "removed"))
-    return {"result": True, "webhook": bool(url)}
+    if secret and not SECRET.match(secret):
+        raise Invalid("invalid secret")
+    if url != s.get("ha_webhook", "") or secret != (s.get("ha_webhook_secret") or ""):
+        b.set_webhook(url, secret)
+        b.log("Home Assistant webhook %s" % (("set, keys signed" if secret else "set") if url else "removed"))
+    return {"result": True, "webhook": bool(url), "signed": bool(secret)}
 
 
 def _settings(b, ctl, a, s, source):
@@ -294,6 +303,7 @@ def _status(b, ctl, a, s, source):
                api_version=API_VERSION, capabilities=list(CAPABILITIES), min_ha_version=MIN_HA_VERSION)
     out.update({k: s.get(k) for k in DISPLAY_SETTINGS})  # #84
     out["configured"] = configured(s)  # #122
+    out["button_signing"] = bool(s.get("ha_webhook") and s.get("ha_webhook_secret"))  # #82
     out.update(b.status_extra())
     if out.get("screen") not in SCREENS:  # a player that does not know it yet (#63)
         out["screen"] = screen_name(window="photo" if out.get("window") else None, live=bool(out.get("live")))

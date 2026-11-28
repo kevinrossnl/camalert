@@ -57,6 +57,7 @@
       "settings",
       "setup",
       "show",
+      "signed_buttons",
       "status",
       "strip",
       "test",
@@ -71,6 +72,7 @@
   },
   "status": {
     "api_version": 1,
+    "button_signing": false,
     "capabilities": [
       "cameras",
       "dnd",
@@ -87,6 +89,7 @@
       "settings",
       "setup",
       "show",
+      "signed_buttons",
       "status",
       "strip",
       "test",

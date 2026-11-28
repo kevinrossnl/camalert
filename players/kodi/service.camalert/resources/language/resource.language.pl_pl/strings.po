@@ -1520,3 +1520,7 @@ msgstr "Nie można odczytać ustawień: %s"
 msgctxt "#30795"
 msgid "There is no import to undo."
 msgstr "Brak importu do cofnięcia."
+
+msgctxt "#30880"
+msgid "Colour keys: signing secret (Home Assistant)"
+msgstr "Kolorowe przyciski: sekret podpisu (Home Assistant)"

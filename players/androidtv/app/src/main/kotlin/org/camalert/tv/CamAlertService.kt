@@ -151,7 +151,10 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
             val titles = Cameras.parseMap(s["titles"]?.toString())
             return cameraNames().map { n -> mapOf("name" to n, "title" to Cameras.titleFor(n, titles), "snapshot" to true) }
         }
-        override fun setWebhook(url: String) = store.set("ha_webhook", url)
+        override fun setWebhook(url: String, secret: String) {
+            store.set("ha_webhook", url)
+            store.set("ha_webhook_secret", secret)  // signs the colour keys (#82)
+        }
         override fun setDisplay(key: String, value: String) = store.set(key, value)  // window position / size (#84)
         override fun setSetup(server: String, camera: String?) {  // go2rtc address from Home Assistant (#122)
             store.set("server", server)
@@ -227,7 +230,8 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
                 try {
                     val why = Access.urlTarget(hook)  // checked again on use: a name may resolve elsewhere now (#53)
                     if (why != null) throw IllegalArgumentException(why)
-                    Net.fetch(hook, true, 5000, MqttTopics.buttonEvent(node, camera, colour).toByteArray())
+                    val secret = s["ha_webhook_secret"]?.toString()?.ifEmpty { null }  // #82
+                    Net.fetch(hook, true, 5000, MqttTopics.buttonEvent(node, camera, colour, secret).toByteArray())
                 } catch (e: Exception) {
                     CamLog.log("button webhook failed: ${e.message}", "error")
                 }

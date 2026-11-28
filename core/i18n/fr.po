@@ -1820,6 +1820,10 @@ msgstr "Choisissez le fichier de paramètres"
 msgid "There is no import to undo."
 msgstr "Il n'y a aucune importation à annuler."
 
+#: kodi:30880
+msgid "Colour keys: signing secret (Home Assistant)"
+msgstr "Touches de couleur : secret de signature (Home Assistant)"
+
 #: ha:config.flow_title
 msgid "{name}"
 msgstr "{name}"

@@ -619,7 +619,7 @@ class Controller(object):
         mqtt.publish_button(camera, button)
         hook = s["ha_webhook"].strip()
         if hook:
-            body = button_event(node_id(), camera, button).encode("utf-8")
+            body = button_event(node_id(), camera, button, s.get("ha_webhook_secret") or None).encode("utf-8")  # #82
 
             def post():
                 try:

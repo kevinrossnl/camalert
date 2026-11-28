@@ -1092,6 +1092,12 @@ msgstr "Cartella foto degli eventi"
 msgid "Small photos of the last 20 events (default /tmp/camalert_events)."
 msgstr "Piccole foto degli ultimi 20 eventi (predefinito /tmp/camalert_events)."
 
+msgid "Allow updates from Home Assistant"
+msgstr "Consenti aggiornamenti da Home Assistant"
+
+msgid "Home Assistant can install a new CamAlert release on this player (only the official release, only a newer version, checked with its checksum)."
+msgstr "Home Assistant può installare una nuova versione di CamAlert su questo lettore (solo la versione ufficiale, solo una versione più recente, verificata con il checksum)."
+
 msgid "Check for updates"
 msgstr "Cerca aggiornamenti"
 

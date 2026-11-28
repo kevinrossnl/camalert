@@ -1,6 +1,7 @@
-"""Update entity per player (#83): the CamAlert version on the player against the latest release on GitHub. It only
-reports an update, with a link to the release notes; installing stays on the player (its own updater, Kodi
-repository or the Android TV app)."""
+"""Update entity per player (#83): the CamAlert version on the player against the latest release on GitHub, with a
+link to the release notes. Players with the capability "update" (#126) also get Install: the player downloads the
+release itself from GitHub (fixed URL, checksum), installs it when it is idle and reports the progress in its
+status (update_state); Home Assistant only says which version."""
 from __future__ import annotations
 
 import logging
@@ -21,6 +22,7 @@ CACHE_SECONDS = 6 * 3600  # GitHub allows 60 requests per hour without a token; 
 RETRY_SECONDS = 3600  # after an error (no internet, rate limit)
 CHECK_INTERVAL = timedelta(hours=1)  # how often the entities look at the cache
 TIMEOUT = 10
+BUSY = ("downloading", "installing", "waiting")  # /status update_state while the player updates (#126)
 
 
 class ReleaseCache:
@@ -67,7 +69,14 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class CamAlertUpdate(CamAlertEntity, UpdateEntity):
     _attr_translation_key = "camalert"
     _attr_title = "CamAlert"
-    _attr_supported_features = UpdateEntityFeature.RELEASE_NOTES  # never INSTALL: only reported
+
+    @property
+    def supported_features(self) -> UpdateEntityFeature:
+        features = UpdateEntityFeature.RELEASE_NOTES
+        caps = (self.coordinator.data or {}).get("capabilities") or []
+        if "update" in caps:  # #126: the player installs a release itself
+            features |= UpdateEntityFeature.INSTALL | UpdateEntityFeature.PROGRESS
+        return features
 
     def __init__(self, coordinator, entry, cache: ReleaseCache):
         super().__init__(coordinator, entry, "update")
@@ -85,6 +94,19 @@ class CamAlertUpdate(CamAlertEntity, UpdateEntity):
     @property
     def installed_version(self) -> str | None:
         return (self.coordinator.data or {}).get("version")
+
+    @property
+    def in_progress(self) -> bool:
+        """True while the player downloads, installs, or waits for a moment it may install in (#126)."""
+        return (self.coordinator.data or {}).get("update_state") in BUSY
+
+    async def async_install(self, version: str | None, backup: bool, **kwargs) -> None:
+        """#126: ask the player to install `version` (default: the latest release)."""
+        version = version or self.latest_version
+        if not version:
+            from . import _error
+            raise _error("request_failed", name=self._entry.title, error="latest release not known yet")
+        await self._call(self.coordinator.api.update(version))
 
     @property
     def latest_version(self) -> str | None:

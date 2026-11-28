@@ -13,6 +13,8 @@ from .display import Controller
 def sessionstart(reason, session=None, **kwargs):
     if reason == 0 and session is not None:
         Controller(session)
+        from . import updater
+        updater.after_restart(session)  # #126: back to standby after an update from Home Assistant
         server.start()
         mqtt.start()
         bouquet.start()

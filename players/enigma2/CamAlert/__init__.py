@@ -215,6 +215,7 @@ _add("unifi_camera_rules", lambda: ConfigText(default="", fixed_size=False))
 _add("event_folder", lambda: ConfigText(default="/tmp/camalert_events", fixed_size=False))
 _add("title_size", lambda: ConfigSelection(default="normal", choices=[
     ("small", _("Small")), ("normal", _("Normal")), ("large", _("Large"))]))
+_add("allow_update", lambda: ConfigYesNo(default=True))  # #126
 _add("update_check", lambda: ConfigYesNo(default=True))
 _add("frigate_url", lambda: ConfigText(default="", fixed_size=False))
 _add("update_checked", lambda: ConfigText(default="0", fixed_size=False))  # internal: time of the last check

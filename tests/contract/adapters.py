@@ -17,6 +17,7 @@ from fakes.controller import RecordingController
 dns.install()  # webhook host names under .example resolve without real DNS (#53)
 
 DEFAULTS = {"enabled": True, "allow": "lan", "token": "", "camera": "front_door", "duration": 30, "dnd": False,
+            "allow_update": True,
             "ha_webhook": "", "ha_webhook_secret": "", "position": "top_right", "size": "medium", "server": "", "source": "go2rtc"}
 
 
@@ -85,6 +86,7 @@ class KodiAdapter(object):
         elif req.body is not None:
             body, ctype = req.body, "application/json"
         r = self.api.Request(req.method, req.path, args, req.ip, req.header, req.user_agent, body, ctype)
+        self.server.BACKEND.start_update = lambda v: ctl.calls.append(("update", v))  # #126: never download here
         resp = self.api.handle(self.server.BACKEND, r)
         ctype = resp.content_type.split(";")[0]
         return Answer(resp.code, resp.body, ctype, ctl, resp.headers)
@@ -174,6 +176,7 @@ class Enigma2Adapter(object):
         for k, v in req.settings.items():
             getattr(self.c, k).value = v
         self.display.Controller.instance = ctl
+        self.server.BACKEND.start_update = lambda v: ctl.calls.append(("update", v))  # #126: never download here
         tw = FakeTwistedRequest(req)
         out = self.server.Api().render(tw)
         if out == 1:  # NOT_DONE_YET: run the deferred work as the reactor thread pool would

@@ -145,6 +145,7 @@ SETTINGS = [
     S('log_level', 'log', 'advanced', 'choice', 'normal', choices=('off', 'errors', 'normal', 'verbose'), platforms=('enigma2', 'kodi', 'androidtv'), label='Log level', help='camalert.log in /home/root/logs (or /tmp). Passwords and tokens are never logged.', kodi_label=30247),
     S('log_syslog', 'log', 'expert', 'text', '', platforms=('enigma2', 'kodi', 'androidtv'), label='Remote syslog (host:port)', help='Optional: also send the log via UDP (RFC 5424), e.g. to Loki/Alloy.', kodi_label=30251),
     S('event_folder', 'log', 'expert', 'text', '/tmp/camalert_events', platforms=('enigma2',), label='Event snapshots folder', help='Small photos of the last 20 events (default /tmp/camalert_events).'),
+    S('allow_update', 'log', 'advanced', 'bool', True, platforms=('enigma2', 'kodi', 'androidtv'), label='Allow updates from Home Assistant', help='Home Assistant can install a new CamAlert release on this player (only the official release, only a newer version, checked with its checksum).', kodi_label=30800),
     S('update_check', 'log', 'advanced', 'bool', True, platforms=('enigma2',), label='Check for updates', help='Looks once a day on GitHub for a new version and shows a message.'),
     S('update_checked', 'log', 'internal', 'text', '0', platforms=('enigma2',), label=None),
     S('update_seen', 'log', 'internal', 'text', '', platforms=('enigma2',), label=None),

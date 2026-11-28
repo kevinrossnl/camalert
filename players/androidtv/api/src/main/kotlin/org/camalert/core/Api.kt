@@ -67,6 +67,10 @@ interface Backend {
     fun logTail(lines: Int): List<String>
     fun metrics(): String
     fun statusExtra(): Map<String, Any?> = emptyMap()
+    /** update_state, update_version, update_error (#126). */
+    fun updateStatus(): Map<String, Any?> = SelfUpdate.UpdateState().asStatus()
+    /** Starts installing release [version] in the background (#126); the version is already checked. */
+    fun startUpdate(version: String): Unit = throw UnsupportedOperationException("update")
     fun log(message: String, level: String = "normal") {}
     /** Host name resolver for the webhook check (blocking). */
     fun resolve(host: String): List<String> = Access.resolve(host)
@@ -84,6 +88,7 @@ class Api(val data: CoreData = CoreData.load()) {
         Route("hide", action = true, handler = ::hide), Route("mosaic", action = true, handler = ::mosaic),
         Route("tour", action = true, handler = ::tour), Route("ptz", action = true, handler = ::ptz),
         Route("webhook", action = true, handler = ::webhook), Route("setup", action = true, handler = ::setup),
+        Route("update", action = true, handler = ::update),
         Route("dnd", handler = ::dnd),
         Route("status", handler = ::status), Route("settings", handler = ::settings), Route("cameras", handler = ::cameras),
         Route("log", sensitive = true, handler = ::log), Route("events", sensitive = true, handler = ::events),
@@ -245,6 +250,24 @@ class Api(val data: CoreData = CoreData.load()) {
             "camera" to (camera ?: s["camera"]?.toString() ?: ""))
     }
 
+    /** Home Assistant installs a newer CamAlert release (#126): 403 when allow_update is off, 409 while an update
+     *  runs, 400 for a version that is not plain X.Y.Z or not newer. */
+    private fun update(b: Backend, ctl: Controller, a: MutableMap<String, String>, s: Map<String, Any?>, source: String): Any {
+        val version = try {
+            SelfUpdate.checkRequest(b.version, a["version"], s["allow_update"] != false)
+        } catch (e: SelfUpdate.UpdateError) {
+            return Response(if ("off" in (e.message ?: "")) 403 else 400, mapOf("result" to false, "error" to e.message))
+        }
+        if (b.updateStatus()["update_state"] in listOf("downloading", "installing", "waiting")) {
+            return Response(409, mapOf("result" to false, "error" to "update in progress"))
+        }
+        b.startUpdate(version)
+        b.log("update to $version requested by ${a["_ip"]}")
+        val out = LinkedHashMap<String, Any?>(b.updateStatus())
+        out["result"] = true; out["version"] = version
+        return out
+    }
+
     private fun settings(b: Backend, ctl: Controller, a: MutableMap<String, String>, s: Map<String, Any?>, source: String): Any {
         val new = displaySettings.mapValues { (k, allowed) -> choiceParam(a, k, allowed) }
         val out = LinkedHashMap<String, Any?>()
@@ -269,6 +292,7 @@ class Api(val data: CoreData = CoreData.load()) {
         for (k in displaySettings.keys) out[k] = s[k]  // #84
         out["configured"] = configured(s)  // #122
         out["button_signing"] = (s["ha_webhook"]?.toString() ?: "").isNotEmpty() && (s["ha_webhook_secret"]?.toString() ?: "").isNotEmpty()  // #82
+        out.putAll(b.updateStatus())  // #126
         out.putAll(b.statusExtra())
         if (out["screen"] !in data.screens) {  // a controller that does not know it (#63)
             out["screen"] = if (out["window"] != null) "photo" else if (out["live"] != null) "live" else "none"

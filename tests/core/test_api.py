@@ -55,6 +55,13 @@ class FakeBackend(api.Backend):
     def status_extra(self):
         return {"mqtt": False}
 
+    def start_update(self, version):  # #126: the player would download and install in the background
+        self.ctl.calls.append(("update", version))
+        self.update_state = "downloading"
+
+    def update_status(self):
+        return {"update_state": getattr(self, "update_state", "idle"), "update_version": None, "update_error": None}
+
     def log(self, message, level="normal"):
         self.logged.append((level, message))
 
@@ -76,6 +83,7 @@ class CoreAdapter(object):
     def call(self, req, ctl=None):
         self.b.ctl = ctl or RecordingController()
         self.b.values = dict(req.settings)
+        self.b.update_state = "idle"  # every row starts on an idle player (#126)
         args, body, ctype = req.args, b"", ""
         if req.method == "POST" and req.body is None:
             args, body, ctype = {}, urlencode(req.args).encode(), "application/x-www-form-urlencoded"

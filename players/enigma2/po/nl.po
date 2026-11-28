@@ -1092,6 +1092,12 @@ msgstr "Map voor gebeurtenisfoto's"
 msgid "Small photos of the last 20 events (default /tmp/camalert_events)."
 msgstr "Kleine foto's van de laatste 20 gebeurtenissen (standaard /tmp/camalert_events)."
 
+msgid "Allow updates from Home Assistant"
+msgstr "Updates vanuit Home Assistant toestaan"
+
+msgid "Home Assistant can install a new CamAlert release on this player (only the official release, only a newer version, checked with its checksum)."
+msgstr "Home Assistant kan een nieuwe CamAlert-release op deze speler installeren (alleen de officiële release, alleen een nieuwere versie, gecontroleerd met de checksum)."
+
 msgid "Check for updates"
 msgstr "Controleren op updates"
 

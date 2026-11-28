@@ -22177,6 +22177,7 @@
    "clean": {
     "alarm_wake": false,
     "allow": "lan",
+    "allow_update": true,
     "api_https": false,
     "camera": "",
     "chime": "high",
@@ -22271,6 +22272,7 @@
    "clean": {
     "alarm_wake": false,
     "allow": "lan",
+    "allow_update": true,
     "api_https": false,
     "camera": "",
     "chime": "off",
@@ -22359,6 +22361,7 @@
    "clean": {
     "alarm_wake": false,
     "allow": "any",
+    "allow_update": true,
     "api_https": false,
     "camera": "",
     "chime": "off",

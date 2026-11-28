@@ -40,7 +40,10 @@ TV device, then run the `appops` line below once from a computer).
 apps after a boot only when they were opened once after installing; some Android TV devices also have a list of
 apps that may start automatically (Settings › Apps › Special app access › *Autostart*): allow CamAlert there.
 
-**Update:** `adb install -r` with the APK of the new release keeps the settings. A debug or self-built APK has
+**Update:** `adb install -r` with the APK of the new release keeps the settings. From Home Assistant: the
+**Install** button of the update entity downloads the release APK (checked against the release's `SHA256SUMS`) and
+opens the system installer on the TV; confirm **Install** there (#126). Fire TV asks once to allow CamAlert to install
+apps (Android 8+: *Install unknown apps*). A debug or self-built APK has
 another signature: replacing it with the release APK (or back) needs `adb uninstall org.camalert.tv` first, which
 removes the app's settings. **Remove:** `adb uninstall org.camalert.tv`.
 

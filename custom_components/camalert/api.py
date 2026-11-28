@@ -10,7 +10,7 @@ from typing import Any
 from urllib.parse import urlencode
 
 INTEGRATION_VERSION = "1.3.1"  # = manifest.json version
-ACTIONS = ("show", "mosaic", "tour", "hide", "ptz", "webhook", "setup")  # change something on the player: POST
+ACTIONS = ("show", "mosaic", "tour", "hide", "ptz", "webhook", "setup", "update")  # change something on the player: POST
 TIMEOUT = 10  # seconds per request
 MODELS = {"enigma2": "Enigma2 receiver", "kodi": "Kodi", "androidtv": "Android TV"}  # device model per /status platform (#44, #64)
 
@@ -123,7 +123,8 @@ class CamAlertApi:
         if resp.status == 400 and isinstance(data, dict) and data.get("error"):
             raise CamAlertError(data["error"])
         if resp.status == 403:
-            raise CamAlertForbidden("forbidden (token or network)")
+            why = data.get("error") if isinstance(data, dict) else ""
+            raise CamAlertForbidden(why if "updates from Home Assistant" in str(why) else "forbidden (token or network)")
         if resp.status == 429:
             raise CamAlertError("too many requests")
         if resp.status in (404, 405, 501):
@@ -166,6 +167,14 @@ class CamAlertApi:
         data = await self._get("setup", {"server": server, "camera": camera})
         if not data.get("result"):
             raise CamAlertAlreadySetUp(data.get("error") or "refused")
+        return data
+
+    async def update(self, version: str) -> dict:
+        """Installs CamAlert release `version` on the player (#126). The player answers at once and reports the
+        progress in /status (update_state); CamAlertError when it refuses (not newer, update running)."""
+        data = await self._get("update", {"version": version})
+        if not data.get("result"):
+            raise CamAlertError(data.get("error") or "refused")
         return data
 
     async def webhook(self, url: str, secret: str | None = None) -> dict:

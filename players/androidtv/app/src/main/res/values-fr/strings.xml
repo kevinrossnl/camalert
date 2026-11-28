@@ -214,6 +214,8 @@
     <string name="t_480df9d8" formatted="false">camalert.log dans /home/root/logs (ou /tmp). Les mots de passe et jetons ne sont jamais journalisés.</string>
     <string name="t_f0a89e87" formatted="false">Syslog distant (hôte:port)</string>
     <string name="t_6b173c7e" formatted="false">Facultatif : envoyer aussi le journal en UDP (RFC 5424), p. ex. vers Loki/Alloy.</string>
+    <string name="t_c11d364c" formatted="false">Autoriser les mises à jour depuis Home Assistant</string>
+    <string name="t_26786f94" formatted="false">Home Assistant peut installer une nouvelle version de CamAlert sur ce lecteur (uniquement la version officielle, uniquement une version plus récente, vérifiée par sa somme de contrôle).</string>
     <string name="t_3ba29a85" formatted="false">API</string>
     <string name="t_f49a21fb" formatted="false">Home Assistant</string>
     <string name="t_979516c6" formatted="false">MQTT</string>

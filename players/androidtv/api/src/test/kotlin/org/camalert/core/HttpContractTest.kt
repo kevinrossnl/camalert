@@ -43,6 +43,7 @@ class HttpContractTest {
         override fun logTail(lines: Int) = listOf("started", "url http://u:pw1@x/ token=abc").take(lines)
         override fun metrics() = PlayerController(FakeEnv(), FakeDisplay()).metrics(version, platform)
         override fun statusExtra() = mapOf("mqtt" to false)
+        override fun startUpdate(version: String) { (ctl as? RecordingController)?.calls?.add(listOf("update", version)) }
         override fun log(message: String, level: String) { logged.add(message) }
         override fun resolve(host: String) = Exported.resolve(host)
     }
@@ -169,6 +170,8 @@ class HttpContractTest {
             override fun setWebhook(url: String, secret: String) = current!!.setWebhook(url, secret)
             override fun setDisplay(key: String, value: String) = current!!.setDisplay(key, value)
             override fun setSetup(server: String, camera: String?) = current!!.setSetup(server, camera)
+            override fun startUpdate(version: String) = current!!.startUpdate(version)
+            override fun updateStatus() = current!!.updateStatus()
             override fun resolve(host: String) = Exported.resolve(host)
         }
         val server = HttpServer(api, proxy, 0, java.net.InetAddress.getLoopbackAddress())

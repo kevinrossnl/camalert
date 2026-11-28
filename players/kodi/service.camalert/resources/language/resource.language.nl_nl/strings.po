@@ -1524,3 +1524,11 @@ msgstr "Er is geen import om ongedaan te maken."
 msgctxt "#30880"
 msgid "Colour keys: signing secret (Home Assistant)"
 msgstr "Kleurtoetsen: geheim voor ondertekening (Home Assistant)"
+
+msgctxt "#30800"
+msgid "Allow updates from Home Assistant"
+msgstr "Updates vanuit Home Assistant toestaan"
+
+msgctxt "#30801"
+msgid "Home Assistant can install a new CamAlert release on this add-on (only the official release, only a newer version, checked with its checksum). Never while something plays."
+msgstr "Home Assistant kan een nieuwe CamAlert-release in deze add-on installeren (alleen de officiële release, alleen een nieuwere versie, gecontroleerd met de checksum). Nooit terwijl er iets speelt."

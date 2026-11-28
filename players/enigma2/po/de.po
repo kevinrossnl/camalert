@@ -1092,6 +1092,12 @@ msgstr "Ordner für Ereignisfotos"
 msgid "Small photos of the last 20 events (default /tmp/camalert_events)."
 msgstr "Kleine Fotos der letzten 20 Ereignisse (Standard /tmp/camalert_events)."
 
+msgid "Allow updates from Home Assistant"
+msgstr "Updates aus Home Assistant erlauben"
+
+msgid "Home Assistant can install a new CamAlert release on this player (only the official release, only a newer version, checked with its checksum)."
+msgstr "Home Assistant kann eine neue CamAlert-Version auf diesem Wiedergabegerät installieren (nur die offizielle Version, nur eine neuere Version, mit Prüfsumme geprüft)."
+
 msgid "Check for updates"
 msgstr "Nach Updates suchen"
 

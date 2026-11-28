@@ -1524,3 +1524,11 @@ msgstr "Brak importu do cofnięcia."
 msgctxt "#30880"
 msgid "Colour keys: signing secret (Home Assistant)"
 msgstr "Kolorowe przyciski: sekret podpisu (Home Assistant)"
+
+msgctxt "#30800"
+msgid "Allow updates from Home Assistant"
+msgstr "Zezwalaj na aktualizacje z Home Assistant"
+
+msgctxt "#30801"
+msgid "Home Assistant can install a new CamAlert release on this add-on (only the official release, only a newer version, checked with its checksum). Never while something plays."
+msgstr "Home Assistant może zainstalować nową wersję CamAlert w tym dodatku (tylko oficjalne wydanie, tylko nowszą wersję, sprawdzoną sumą kontrolną). Nigdy podczas odtwarzania."

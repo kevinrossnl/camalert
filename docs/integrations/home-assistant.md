@@ -72,8 +72,20 @@ the Android TV app uses Android's network service discovery.
   any other title goes before the message, and the player's default camera is shown.
 - An update entity **CamAlert**: the CamAlert version on the player against the
   [latest release](https://github.com/kevinrossnl/camalert/releases/latest), with the release notes. Home Assistant
-  checks GitHub at most once every 6 hours for all players (no account or token). It only tells you there is an
-  update: install it on the player as before.
+  checks GitHub at most once every 6 hours for all players (no account or token). On players with CamAlert 1.4 or
+  newer it has an **Install** button (#126): the player downloads the release itself from CamAlert's GitHub release
+  (a fixed address, never one Home Assistant chooses), only installs a version that is newer than its own, and
+  only when the file matches the release's `SHA256SUMS`. While it works the entity shows *in progress*:
+  - **Enigma2** installs while the Enigma2 receiver is in standby and no recording runs or starts within 10
+    minutes; until then it waits. Then the GUI restarts quietly (the TV is not switched on) and the box goes back to
+    standby. With the CamAlert opkg feed every release also comes through the normal software update.
+  - **Kodi** installs as soon as nothing plays; the add-on restarts with the new version.
+  - **Android TV / Fire TV** downloads the APK and opens the system installer: someone confirms **Install** on the
+    TV (Android never lets an app update itself silently). Fire TV asks once to allow CamAlert to install apps.
+    Not confirmed within 10 minutes: the entity reports it.
+
+  The setting *Allow updates from Home Assistant* (on by default) turns this off per player; the API token and
+  *Allowed callers* apply as for every action. Older players only report the update.
 - Two selects **Window position** and **Window size** (under *Configuration*): where the photo window appears and
   how big it is, the same settings as on the player. A change is saved on the player and used by the next window,
   so an automation can, for example, make the window small in the evening or large for the doorbell. Only players

@@ -1456,6 +1456,14 @@ msgstr "Ordner für Ereignisfotos"
 msgid "Small photos of the last 20 events (default /tmp/camalert_events)."
 msgstr "Kleine Fotos der letzten 20 Ereignisse (Standard /tmp/camalert_events)."
 
+#: e2 kodi:30800
+msgid "Allow updates from Home Assistant"
+msgstr "Updates aus Home Assistant erlauben"
+
+#: e2
+msgid "Home Assistant can install a new CamAlert release on this player (only the official release, only a newer version, checked with its checksum)."
+msgstr "Home Assistant kann eine neue CamAlert-Version auf diesem Wiedergabegerät installieren (nur die offizielle Version, nur eine neuere Version, mit Prüfsumme geprüft)."
+
 #: e2
 msgid "Check for updates"
 msgstr "Nach Updates suchen"
@@ -1823,6 +1831,10 @@ msgstr "Es gibt keinen Import zum Rückgängigmachen."
 #: kodi:30880
 msgid "Colour keys: signing secret (Home Assistant)"
 msgstr "Farbtasten: Signaturschlüssel (Home Assistant)"
+
+#: kodi:30801
+msgid "Home Assistant can install a new CamAlert release on this add-on (only the official release, only a newer version, checked with its checksum). Never while something plays."
+msgstr "Home Assistant kann eine neue CamAlert-Version in diesem Add-on installieren (nur die offizielle Version, nur eine neuere Version, mit Prüfsumme geprüft). Nie während etwas abgespielt wird."
 
 #: ha:config.flow_title
 msgid "{name}"

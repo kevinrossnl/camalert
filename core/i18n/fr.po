@@ -1456,6 +1456,14 @@ msgstr "Dossier des photos d'événements"
 msgid "Small photos of the last 20 events (default /tmp/camalert_events)."
 msgstr "Petites photos des 20 derniers événements (par défaut /tmp/camalert_events)."
 
+#: e2 kodi:30800
+msgid "Allow updates from Home Assistant"
+msgstr "Autoriser les mises à jour depuis Home Assistant"
+
+#: e2
+msgid "Home Assistant can install a new CamAlert release on this player (only the official release, only a newer version, checked with its checksum)."
+msgstr "Home Assistant peut installer une nouvelle version de CamAlert sur ce lecteur (uniquement la version officielle, uniquement une version plus récente, vérifiée par sa somme de contrôle)."
+
 #: e2
 msgid "Check for updates"
 msgstr "Rechercher des mises à jour"
@@ -1823,6 +1831,10 @@ msgstr "Il n'y a aucune importation à annuler."
 #: kodi:30880
 msgid "Colour keys: signing secret (Home Assistant)"
 msgstr "Touches de couleur : secret de signature (Home Assistant)"
+
+#: kodi:30801
+msgid "Home Assistant can install a new CamAlert release on this add-on (only the official release, only a newer version, checked with its checksum). Never while something plays."
+msgstr "Home Assistant peut installer une nouvelle version de CamAlert dans cet add-on (uniquement la version officielle, uniquement une version plus récente, vérifiée par sa somme de contrôle). Jamais pendant une lecture."
 
 #: ha:config.flow_title
 msgid "{name}"

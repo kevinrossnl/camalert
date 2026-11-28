@@ -1091,6 +1091,12 @@ msgstr ""
 msgid "Small photos of the last 20 events (default /tmp/camalert_events)."
 msgstr ""
 
+msgid "Allow updates from Home Assistant"
+msgstr ""
+
+msgid "Home Assistant can install a new CamAlert release on this player (only the official release, only a newer version, checked with its checksum)."
+msgstr ""
+
 msgid "Check for updates"
 msgstr ""
 

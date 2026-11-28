@@ -26,7 +26,7 @@ from fakes.controller import RecordingController  # noqa: E402
 LAN = "192.168.1.5"
 CALLER_HEADER = "X-Test-Caller"  # only this fake: which address the core sees as the caller
 DEFAULTS = {"enabled": True, "allow": "lan", "token": "", "camera": "front_door", "duration": 30, "dnd": False,
-            "ha_webhook": "", "ha_webhook_secret": "", "position": "top_right", "size": "medium",
+            "ha_webhook": "", "ha_webhook_secret": "", "position": "top_right", "size": "medium", "allow_update": True,
             "server": "http://192.168.1.10:1984", "source": "go2rtc"}  # set up; "" = a new player (#122)
 
 
@@ -81,6 +81,14 @@ class Backend(api.Backend):
     def status_extra(self):
         return {"mqtt": False}
 
+    def update_status(self):
+        return dict(self.player.update)
+
+    def start_update(self, version):  # #126: the player would download and install in the background
+        self.player.updates.append(version)
+        self.player.ctl.calls.append(("update", version))
+        self.player.update.update(update_state="downloading", update_version=version)
+
     def log(self, message, level="normal"):
         self.logged.append((level, message))
 
@@ -92,6 +100,8 @@ class FakePlayer(object):
         self.cameras = list(cameras) if cameras is not None else None
         self.ctl = RecordingController()
         self.webhooks = []
+        self.updates = []  # versions Home Assistant asked to install (#126)
+        self.update = {"update_state": "idle", "update_version": None, "update_error": None}
         self.requests = []  # (method, path, headers, body text)
         self.status_override = None
         self.delay = 0.0
@@ -145,6 +155,7 @@ class FakePlayer(object):
     def reset(self):
         api.LIMIT.seen.clear()
         api.WARNED.clear()
+        self.update.update(update_state="idle", update_version=None, update_error=None)
 
     async def _handle(self, request):
         body = await request.read()

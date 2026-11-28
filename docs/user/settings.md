@@ -137,5 +137,6 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Log level | `normal` | `off` / `errors` / `normal` / `verbose` | advanced | all | camalert.log in /home/root/logs (or /tmp). Passwords and tokens are never logged. |
 | Remote syslog (host:port) | – |  | expert | all | Optional: also send the log via UDP (RFC 5424), e.g. to Loki/Alloy. |
 | Event snapshots folder | `/tmp/camalert_events` |  | expert | Enigma2 | Small photos of the last 20 events (default /tmp/camalert_events). |
+| Allow updates from Home Assistant | Yes |  | advanced | all | Home Assistant can install a new CamAlert release on this player (only the official release, only a newer version, checked with its checksum). |
 | Check for updates | Yes |  | advanced | Enigma2 | Looks once a day on GitHub for a new version and shows a message. |
 <!-- END generated: settings -->

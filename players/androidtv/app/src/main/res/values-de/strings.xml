@@ -214,6 +214,8 @@
     <string name="t_480df9d8" formatted="false">camalert.log in /home/root/logs (oder /tmp). Passwörter und Tokens werden nie protokolliert.</string>
     <string name="t_f0a89e87" formatted="false">Entferntes Syslog (Host:Port)</string>
     <string name="t_6b173c7e" formatted="false">Optional: Log zusätzlich per UDP (RFC 5424) senden, z. B. an Loki/Alloy.</string>
+    <string name="t_c11d364c" formatted="false">Updates aus Home Assistant erlauben</string>
+    <string name="t_26786f94" formatted="false">Home Assistant kann eine neue CamAlert-Version auf diesem Wiedergabegerät installieren (nur die offizielle Version, nur eine neuere Version, mit Prüfsumme geprüft).</string>
     <string name="t_3ba29a85" formatted="false">API</string>
     <string name="t_f49a21fb" formatted="false">Home Assistant</string>
     <string name="t_979516c6" formatted="false">MQTT</string>

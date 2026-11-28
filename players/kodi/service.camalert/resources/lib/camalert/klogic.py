@@ -96,7 +96,7 @@ DEFAULTS = {
     "unifi_enabled": False, "unifi_kinds": "ring,person", "unifi_cameras": "", "unifi_priority": "normal",
     "unifi_mode": "photo", "unifi_seconds": 30, "unifi_interval": 5, "unifi_rules": "",
     "unifi_camera_rules": "",
-    "log_level": "normal", "log_syslog": "", "ptz_key": "blue", "ha_buttons": True, "ha_webhook": "", "ha_webhook_secret": "", "wizard_done": False,
+    "log_level": "normal", "log_syslog": "", "allow_update": True, "ptz_key": "blue", "ha_buttons": True, "ha_webhook": "", "ha_webhook_secret": "", "wizard_done": False,
     "text_size": "normal", "priority_border": "steady", "language": "system",
     "title_size": "normal", "chime": "off", "frigate_url": "", "cooldown": "", "substreams": "",
 }

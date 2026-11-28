@@ -16,6 +16,7 @@ badging uses-permission: name='android.permission.FOREGROUND_SERVICE_SPECIAL_USE
 badging uses-permission: name='android.permission.POST_NOTIFICATIONS'
 badging uses-permission: name='android.permission.SYSTEM_ALERT_WINDOW'
 badging uses-permission: name='android.permission.WAKE_LOCK'
+badging uses-permission: name='android.permission.REQUEST_INSTALL_PACKAGES'
 badging application-debuggable
 badging launchable-activity: name='org.camalert.tv.SettingsActivity'  label='' icon=''
 badging leanback-launchable-activity: name='org.camalert.tv.SettingsActivity'  label='' icon='' banner=''

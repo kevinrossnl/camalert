@@ -214,6 +214,8 @@
     <string name="t_480df9d8" formatted="false">camalert.log in /home/root/logs (o /tmp). Password e token non vengono mai registrati.</string>
     <string name="t_f0a89e87" formatted="false">Syslog remoto (host:porta)</string>
     <string name="t_6b173c7e" formatted="false">Facoltativo: invia il log anche via UDP (RFC 5424), ad es. a Loki/Alloy.</string>
+    <string name="t_c11d364c" formatted="false">Consenti aggiornamenti da Home Assistant</string>
+    <string name="t_26786f94" formatted="false">Home Assistant può installare una nuova versione di CamAlert su questo lettore (solo la versione ufficiale, solo una versione più recente, verificata con il checksum).</string>
     <string name="t_3ba29a85" formatted="false">API</string>
     <string name="t_f49a21fb" formatted="false">Home Assistant</string>
     <string name="t_979516c6" formatted="false">MQTT</string>

@@ -60,6 +60,7 @@ class Backend(api.Backend):
         return {"enabled": c.enabled.value, "allow": c.allow.value, "token": c.token.value,
                 "duration": int(c.duration.value), "camera": c.camera.value, "dnd": bool(c.dnd.value),
                 "ha_webhook": c.ha_webhook.value, "ha_webhook_secret": c.ha_webhook_secret.value,
+                "allow_update": bool(c.allow_update.value),
                 "position": c.position.value, "size": c.size.value,
                 "server": c.server.value, "source": c.source.value, "wizard_done": _wizard_done(c)}
 
@@ -131,6 +132,15 @@ class Backend(api.Backend):
     def status_extra(self):
         from . import mqtt
         return {"mqtt": mqtt.connected()}
+
+    def update_status(self):
+        from . import updater
+        return updater.STATE.as_status()
+
+    def start_update(self, version):
+        """#126: download, check, and install while in standby without a recording (updater.py)."""
+        from . import updater
+        updater.start(version)
 
     def log(self, message, level="normal"):
         log(message, level=level)

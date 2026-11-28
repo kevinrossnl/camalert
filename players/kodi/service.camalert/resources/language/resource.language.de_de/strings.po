@@ -1524,3 +1524,11 @@ msgstr "Es gibt keinen Import zum Rückgängigmachen."
 msgctxt "#30880"
 msgid "Colour keys: signing secret (Home Assistant)"
 msgstr "Farbtasten: Signaturschlüssel (Home Assistant)"
+
+msgctxt "#30800"
+msgid "Allow updates from Home Assistant"
+msgstr "Updates aus Home Assistant erlauben"
+
+msgctxt "#30801"
+msgid "Home Assistant can install a new CamAlert release on this add-on (only the official release, only a newer version, checked with its checksum). Never while something plays."
+msgstr "Home Assistant kann eine neue CamAlert-Version in diesem Add-on installieren (nur die offizielle Version, nur eine neuere Version, mit Prüfsumme geprüft). Nie während etwas abgespielt wird."

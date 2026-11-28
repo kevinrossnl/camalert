@@ -31,6 +31,7 @@ import org.camalert.core.MqttTopics
 import org.camalert.core.Obs
 import org.camalert.core.PlayerController
 import org.camalert.core.PlayerEnv
+import org.camalert.core.SelfUpdate
 import org.camalert.core.Present
 import org.camalert.core.Tile
 import org.camalert.core.Unifi
@@ -167,7 +168,61 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         override fun logTail(lines: Int) = CamLog.tail(lines)
         override fun metrics() = controller.metrics(version, PLATFORM)
         override fun statusExtra() = mapOf("mqtt" to mqttConnected())
+        override fun updateStatus() = updateState.asStatus()
+        override fun startUpdate(version: String) = this@CamAlertService.startUpdate(version)
         override fun log(message: String, level: String) = CamLog.log(message, level)
+    }
+
+    // --- update from Home Assistant (#126) -------------------------------------------------------------------------
+    private val updateState = SelfUpdate.UpdateState()
+
+    /** Downloads the release APK from the fixed GitHub URL, checks it against SHA256SUMS and opens the system
+     *  installer; someone confirms on the TV (Android never lets an app update itself silently). */
+    fun startUpdate(version: String) {
+        updateState.set("downloading", version)
+        CamLog.log("update to $version: downloading")
+        Thread({
+            try {
+                val (name, data) = SelfUpdate.fetch(PLATFORM, version) { url ->
+                    Net.fetch(url, true, 60000, max = SelfUpdate.MAX_BYTES + 1)
+                }
+                val dir = UpdateFileProvider.dir(cacheDir).apply { mkdirs() }
+                dir.listFiles()?.forEach { it.delete() }
+                val file = java.io.File(dir, name)
+                file.writeBytes(data)
+                main.post { openInstaller(file, version) }
+            } catch (e: Exception) {
+                updateFailed(e.message ?: e.toString())
+            }
+        }, "camalert-update").start()
+    }
+
+    private fun updateFailed(why: String) {
+        updateState.set("failed", error = why.take(200))
+        CamLog.log("update failed: $why", "error")
+    }
+
+    private fun openInstaller(file: java.io.File, version: String) {
+        if (Build.VERSION.SDK_INT >= 26 && !packageManager.canRequestPackageInstalls()) {
+            // Android 8+: the user allows CamAlert to install apps once, then starts the update again
+            startActivity(Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+                android.net.Uri.parse("package:$packageName")).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            updateFailed("allow CamAlert to install apps on the TV (opened there), then install again")
+            return
+        }
+        updateState.set("waiting", version)  // until someone confirms in the installer on the TV
+        CamLog.log("update to $version: waiting for confirmation on the TV")
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW)
+                .setDataAndType(UpdateFileProvider.uri(file), UpdateFileProvider.APK_TYPE)
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK))
+        } catch (e: Exception) {
+            updateFailed("installer not available: ${e.message}")
+            return
+        }
+        main.postDelayed({  // nobody confirmed (or cancelled): report it instead of waiting forever
+            if (updateState.state == "waiting" && updateState.version == version) updateFailed("not confirmed on the TV")
+        }, 10 * 60 * 1000L)
     }
 
     private val host = object : Overlay.Host {

@@ -31,6 +31,7 @@
  },
  "defaults": {
   "allow": "lan",
+  "allow_update": true,
   "camera": "front_door",
   "dnd": false,
   "duration": 30,
@@ -89,6 +90,7 @@
    "path": "/camalert/hide",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -123,6 +125,7 @@
    "path": "/camalert/hide",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -154,6 +157,7 @@
    "path": "/camalert/hide",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -189,6 +193,7 @@
    "path": "/camalert/hide",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -224,6 +229,7 @@
    "path": "/camalert/hide",
    "settings": {
     "allow": "any",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -257,6 +263,7 @@
    "path": "/camalert/hide",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -288,6 +295,7 @@
    "path": "/camalert/hide",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -323,6 +331,7 @@
    "path": "/camalert/hide",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -358,6 +367,7 @@
    "path": "/camalert/status",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -392,6 +402,7 @@
    "path": "/camalert/hide",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -426,6 +437,7 @@
    "path": "/camalert/nonsense",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -457,6 +469,7 @@
    "path": "/camalert/hide",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -493,6 +506,7 @@
    "path": "/camalert/hide",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -545,6 +559,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -590,6 +605,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -634,6 +650,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -678,6 +695,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -722,6 +740,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -763,6 +782,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -807,6 +827,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -841,6 +862,7 @@
    "path": "/camalert/camalert",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -881,6 +903,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -917,6 +940,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -950,6 +974,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -984,6 +1009,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1018,6 +1044,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1059,6 +1086,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1090,6 +1118,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1137,6 +1166,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1181,6 +1211,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1225,6 +1256,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1262,6 +1294,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1301,6 +1334,7 @@
    "path": "/camalert/mosaic",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1348,6 +1382,7 @@
    "path": "/camalert/show",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1390,6 +1425,7 @@
    "path": "/camalert/mosaic",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1429,6 +1465,7 @@
    "path": "/camalert/mosaic",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1462,6 +1499,7 @@
    "path": "/camalert/mosaic",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1501,6 +1539,7 @@
    "path": "/camalert/tour",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1540,6 +1579,7 @@
    "path": "/camalert/tour",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1578,6 +1618,7 @@
    "path": "/camalert/tour",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1619,6 +1660,7 @@
    "path": "/camalert/dnd",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1660,6 +1702,7 @@
    "path": "/camalert/dnd",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1696,6 +1739,7 @@
    "path": "/camalert/dnd",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": true,
     "duration": 30,
@@ -1729,6 +1773,7 @@
    "path": "/camalert/dnd",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1766,6 +1811,7 @@
    "path": "/camalert/settings",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1803,6 +1849,7 @@
    "path": "/camalert/settings",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1841,6 +1888,7 @@
    "path": "/camalert/settings",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1876,6 +1924,7 @@
    "path": "/camalert/settings",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1911,6 +1960,7 @@
    "path": "/camalert/settings",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1946,6 +1996,7 @@
    "path": "/camalert/settings",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -1984,6 +2035,7 @@
    "path": "/camalert/settings",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2023,6 +2075,7 @@
    "path": "/camalert/setup",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2060,6 +2113,7 @@
    "path": "/camalert/setup",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2096,6 +2150,7 @@
    "path": "/camalert/setup",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2132,6 +2187,7 @@
    "path": "/camalert/setup",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2167,6 +2223,7 @@
    "path": "/camalert/setup",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2203,6 +2260,7 @@
    "path": "/camalert/setup",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2238,6 +2296,7 @@
    "path": "/camalert/setup",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2273,6 +2332,7 @@
    "path": "/camalert/setup",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2309,6 +2369,7 @@
    "path": "/camalert/setup",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2342,6 +2403,7 @@
    "path": "/camalert/setup",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2378,6 +2440,7 @@
    "path": "/camalert/setup",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2411,6 +2474,7 @@
    "path": "/camalert/setup",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2444,6 +2508,340 @@
    "path": "/camalert/setup",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "ha_webhook_secret": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "version": "99.0.0"
+   },
+   "body": null,
+   "calls": [
+    [
+     "update",
+     "99.0.0"
+    ]
+   ],
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "result": true,
+    "version": "99.0.0"
+   },
+   "method": "POST",
+   "name": "update_newer",
+   "path": "/camalert/update",
+   "settings": {
+    "allow": "lan",
+    "allow_update": true,
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "ha_webhook_secret": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "version": "v99.0.1"
+   },
+   "body": null,
+   "calls": [
+    [
+     "update",
+     "99.0.1"
+    ]
+   ],
+   "cameras": null,
+   "check": null,
+   "code": 200,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "result": true,
+    "version": "99.0.1"
+   },
+   "method": "POST",
+   "name": "update_v_prefix",
+   "path": "/camalert/update",
+   "settings": {
+    "allow": "lan",
+    "allow_update": true,
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "ha_webhook_secret": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "version": "0.0.0"
+   },
+   "body": null,
+   "calls": [],
+   "cameras": null,
+   "check": null,
+   "code": 400,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "error": "not newer than the installed version",
+    "result": false
+   },
+   "method": "POST",
+   "name": "update_not_newer",
+   "path": "/camalert/update",
+   "settings": {
+    "allow": "lan",
+    "allow_update": true,
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "ha_webhook_secret": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "version": "99.0"
+   },
+   "body": null,
+   "calls": [],
+   "cameras": null,
+   "check": null,
+   "code": 400,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "error": "invalid version",
+    "result": false
+   },
+   "method": "POST",
+   "name": "update_invalid_version",
+   "path": "/camalert/update",
+   "settings": {
+    "allow": "lan",
+    "allow_update": true,
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "ha_webhook_secret": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "version": "../99.0.0"
+   },
+   "body": null,
+   "calls": [],
+   "cameras": null,
+   "check": null,
+   "code": 400,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "error": "invalid version"
+   },
+   "method": "POST",
+   "name": "update_path_in_version",
+   "path": "/camalert/update",
+   "settings": {
+    "allow": "lan",
+    "allow_update": true,
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "ha_webhook_secret": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {},
+   "body": null,
+   "calls": [],
+   "cameras": null,
+   "check": null,
+   "code": 400,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "error": "invalid version"
+   },
+   "method": "POST",
+   "name": "update_missing_version",
+   "path": "/camalert/update",
+   "settings": {
+    "allow": "lan",
+    "allow_update": true,
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "ha_webhook_secret": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "version": "99.0.0"
+   },
+   "body": null,
+   "calls": [],
+   "cameras": null,
+   "check": null,
+   "code": 403,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": {
+    "error": "updates from Home Assistant are off",
+    "result": false
+   },
+   "method": "POST",
+   "name": "update_off",
+   "path": "/camalert/update",
+   "settings": {
+    "allow": "lan",
+    "allow_update": false,
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "ha_webhook_secret": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": ""
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "version": "99.0.0"
+   },
+   "body": null,
+   "calls": [],
+   "cameras": null,
+   "check": null,
+   "code": 403,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "192.168.1.5",
+   "json": null,
+   "method": "POST",
+   "name": "update_needs_the_token",
+   "path": "/camalert/update",
+   "settings": {
+    "allow": "lan",
+    "allow_update": true,
+    "camera": "front_door",
+    "dnd": false,
+    "duration": 30,
+    "enabled": true,
+    "ha_webhook": "",
+    "ha_webhook_secret": "",
+    "position": "top_right",
+    "server": "",
+    "size": "medium",
+    "source": "go2rtc",
+    "token": "secret"
+   },
+   "user_agent": ""
+  },
+  {
+   "args": {
+    "version": "99.0.0"
+   },
+   "body": null,
+   "calls": [],
+   "cameras": null,
+   "check": null,
+   "code": 403,
+   "ctl": {},
+   "header": null,
+   "headers": {},
+   "ip": "8.8.8.8",
+   "json": null,
+   "method": "POST",
+   "name": "update_from_wan_refused",
+   "path": "/camalert/update",
+   "settings": {
+    "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2488,6 +2886,7 @@
    "path": "/camalert/ptz",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2524,6 +2923,7 @@
    "path": "/camalert/ptz",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2558,6 +2958,7 @@
    "path": "/camalert/ptz",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2593,6 +2994,7 @@
    "path": "/camalert/webhook",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2630,6 +3032,7 @@
    "path": "/camalert/webhook",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2668,6 +3071,7 @@
    "path": "/camalert/webhook",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2704,6 +3108,7 @@
    "path": "/camalert/webhook",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2742,6 +3147,7 @@
    "path": "/camalert/webhook",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2778,6 +3184,7 @@
    "path": "/camalert/webhook",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2813,6 +3220,7 @@
    "path": "/camalert/webhook",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2846,6 +3254,7 @@
    "path": "/camalert/webhook",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2879,6 +3288,7 @@
    "path": "/camalert/webhook",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2912,6 +3322,7 @@
    "path": "/camalert/webhook",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2948,6 +3359,7 @@
    "path": "/camalert/webhook",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -2981,6 +3393,7 @@
    "path": "/camalert/webhook",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -3017,6 +3430,7 @@
    "path": "/camalert/webhook",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -3048,6 +3462,7 @@
    "path": "/camalert/status",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -3096,6 +3511,7 @@
    "path": "/camalert/cameras",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -3129,6 +3545,7 @@
    "path": "/camalert/events",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -3164,6 +3581,7 @@
    "path": "/camalert/log",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -3195,6 +3613,7 @@
    "path": "/camalert/metrics",
    "settings": {
     "allow": "lan",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -3226,6 +3645,7 @@
    "path": "/camalert/log",
    "settings": {
     "allow": "any",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -3257,6 +3677,7 @@
    "path": "/camalert/events",
    "settings": {
     "allow": "any",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -3288,6 +3709,7 @@
    "path": "/camalert/metrics",
    "settings": {
     "allow": "any",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,
@@ -3321,6 +3743,7 @@
    "path": "/camalert/log",
    "settings": {
     "allow": "any",
+    "allow_update": true,
     "camera": "front_door",
     "dnd": false,
     "duration": 30,

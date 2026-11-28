@@ -15,6 +15,11 @@ actions and blueprint inputs stay backwards compatible.
 - **Home Assistant:** phone notifications in the doorbell, motion and alarm blueprints: several phones, the camera
   picture, the buttons **Show on TV** and **Do not disturb 1 h**, and an optional critical notification (on by
   default for the alarm). Motion now also reaches the phone when nobody is home (#128).
+- **Home Assistant:** an **Install** button on the update entity of every player (#126). The player downloads the
+  release from CamAlert's own GitHub release (fixed address), only a newer version, checked against the new
+  `SHA256SUMS` of the release, and reports the progress. Enigma2 installs in standby without a (coming) recording
+  and restarts its GUI quietly; Kodi installs when nothing plays; Android TV opens the system installer, to be
+  confirmed on the TV. New setting *Allow updates from Home Assistant* (on), new API route `POST /camalert/update`.
 
 ### Security
 

@@ -10,6 +10,8 @@ camera list, log, metrics); everything else happens here, so Enigma2 and Kodi an
     GET  /camalert/<action>   reads: status, cameras, dnd (state), settings, events, log, metrics
     POST /camalert/settings   position=... and/or size=...: the photo window of this player (#84)
     POST /camalert/setup      server=<go2rtc address> [camera=...]: Home Assistant sets the player up (#122)
+    POST /camalert/update     version=X.Y.Z: install that CamAlert release (#126; fixed GitHub URL, newer only,
+                              SHA256SUMS checked; setting allow_update). Progress in status: update_state
                               (GET of an action still works, but is deprecated and logged once per caller)
     Parameters: query string, form body or JSON object body.
     test=1 on any request (#62): the caller source becomes "test": no chime, the event is tagged "test".
@@ -33,12 +35,13 @@ from .events import TEST_SOURCE, caller_source
 from .obs.log import redact
 from .rules import MODES, PRIORITIES, clamp_seconds, has_seconds, show_seconds
 from .schema import BY_ID as _SCHEMA
+from .selfupdate import UpdateError, check_request
 from .urls import go2rtc_state, normalize_server
 
 API_VERSION = 1
 MIN_HA_VERSION = "1.0.0"  # oldest Home Assistant integration that understands this API version
 CAPABILITIES = ("cameras", "dnd", "events", "header_token", "hide", "hold", "log", "metrics", "mosaic", "post", "ptz",
-                "screen", "settings", "setup", "show", "signed_buttons", "status", "strip", "test", "tour", "webhook")
+                "screen", "settings", "setup", "show", "signed_buttons", "status", "strip", "test", "tour", "update", "webhook")
 # Settings a caller may change through /camalert/settings (#84), with their choices from the settings schema.
 DISPLAY_SETTINGS = {k: tuple(_SCHEMA[k].choices) for k in ("position", "size")}
 # What /camalert/status reports as "screen" (#63): the top-most CamAlert screen, "none" when nothing is shown.
@@ -110,6 +113,15 @@ class Backend(object):
 
     def status_extra(self):
         return {}
+
+    def update_status(self):
+        """{update_state, update_version, update_error} (#126; camalert_core.selfupdate.UpdateState.as_status)."""
+        return {"update_state": "idle", "update_version": None, "update_error": None}
+
+    def start_update(self, version):
+        """Starts installing release `version` in the background (#126). Returns at once; progress goes to
+        update_status(). The version is already checked (plain X.Y.Z, newer than the installed one)."""
+        raise NotImplementedError
 
     def log(self, message, level="normal"):
         pass
@@ -288,6 +300,20 @@ def _setup(b, ctl, a, s, source):
     return {"result": True, "configured": True, "server": server, "camera": camera or s.get("camera") or ""}
 
 
+def _update(b, ctl, a, s, source):
+    """Home Assistant installs a newer CamAlert release (#126). 403 when allow_update is off, 409 while an update
+    runs, 400 for a version that is not plain X.Y.Z or not newer than the installed one."""
+    try:
+        version = check_request(b.version, a.get("version"), bool(s.get("allow_update", True)))
+    except UpdateError as e:
+        return Response(403 if "off" in str(e) else 400, {"result": False, "error": str(e)})
+    if b.update_status().get("update_state") in ("downloading", "installing", "waiting"):
+        return Response(409, {"result": False, "error": "update in progress"})
+    b.start_update(version)
+    b.log("update to %s requested by %s" % (version, a.get("_ip")))
+    return dict(b.update_status(), result=True, version=version)
+
+
 def _cameras(b, ctl, a, s, source):
     try:
         cams = b.cameras()
@@ -304,6 +330,7 @@ def _status(b, ctl, a, s, source):
     out.update({k: s.get(k) for k in DISPLAY_SETTINGS})  # #84
     out["configured"] = configured(s)  # #122
     out["button_signing"] = bool(s.get("ha_webhook") and s.get("ha_webhook_secret"))  # #82
+    out.update(b.update_status())  # #126
     out.update(b.status_extra())
     if out.get("screen") not in SCREENS:  # a player that does not know it yet (#63)
         out["screen"] = screen_name(window="photo" if out.get("window") else None, live=bool(out.get("live")))
@@ -326,7 +353,8 @@ def _metrics(b, ctl, a, s, source):
 ROUTES = {r.name: r for r in (
     Route("show", _show, action=True), Route("camalert", _show, action=True), Route("hide", _hide, action=True),
     Route("mosaic", _mosaic, action=True), Route("tour", _tour, action=True), Route("ptz", _ptz, action=True),
-    Route("webhook", _webhook, action=True, blocking=True), Route("setup", _setup, action=True, blocking=True), Route("dnd", _dnd, writes=("on",)),
+    Route("webhook", _webhook, action=True, blocking=True), Route("setup", _setup, action=True, blocking=True),
+    Route("update", _update, action=True), Route("dnd", _dnd, writes=("on",)),
     Route("status", _status), Route("settings", _settings, writes=tuple(DISPLAY_SETTINGS)),
     Route("cameras", _cameras, blocking=True), Route("log", _log, sensitive=True),
     Route("events", _events, sensitive=True), Route("metrics", _metrics, sensitive=True),

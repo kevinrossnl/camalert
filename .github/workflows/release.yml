@@ -157,6 +157,23 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: ${{ steps.apk.outputs.file }}
+      # #126: players updated from Home Assistant only install a file whose SHA-256 is listed here. Written after
+      # the APK (this job needs build), over every release file, so it is published once and complete.
+      - uses: actions/download-artifact@v8
+        with:
+          name: packages
+          path: dist
+      - name: SHA256SUMS
+        run: |
+          cd dist
+          ls *.ipk service.camalert-*.zip repository.camalert-*.zip camalert-homeassistant-*.zip camalert-androidtv-*.apk \
+            2>/dev/null | sort | xargs sha256sum > SHA256SUMS
+          cat SHA256SUMS
+          grep -q '_all\.ipk$' SHA256SUMS && grep -q 'service\.camalert-.*\.zip$' SHA256SUMS
+      - name: add SHA256SUMS to the release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: dist/SHA256SUMS
 
   pages:
     # GitHub Pages only for a public repository (GitHub Free has no Pages for private ones); the release itself

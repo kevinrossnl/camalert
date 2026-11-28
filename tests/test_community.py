@@ -94,6 +94,25 @@ class ReleaseWorkflow(unittest.TestCase):
                                  "dist/camalert-homeassistant-*.zip"])
         self.assertEqual(release["with"]["body_path"], "dist/release-notes.md")
 
+    def test_release_checksums(self):
+        """#126: SHA256SUMS over every release file, written after the APK and attached to the release; players
+        updated from Home Assistant install nothing that is not listed there."""
+        steps = self.wf["jobs"]["android"]["steps"]
+        names = [s.get("name", s.get("uses", "")) for s in steps]
+        self.assertLess(names.index("add the APK to the release"), names.index("SHA256SUMS"))
+        run = next(s for s in steps if s.get("name") == "SHA256SUMS")["run"]
+        for part in ("*.ipk", "service.camalert-*.zip", "camalert-homeassistant-*.zip", "camalert-androidtv-*.apk",
+                     "sha256sum > SHA256SUMS"):
+            self.assertIn(part, run)
+        upload = next(s for s in steps if s.get("name") == "add SHA256SUMS to the release")
+        self.assertEqual(upload["with"]["files"], "dist/SHA256SUMS")
+        dl = next(s for s in steps if s.get("uses", "").startswith("actions/download-artifact"))
+        self.assertEqual(dl["with"]["name"], "packages")
+        import sys
+        sys.path.insert(0, os.path.join(ROOT, "core"))
+        from camalert_core import selfupdate
+        self.assertEqual(selfupdate.SUMS, "SHA256SUMS")
+
     def test_android_release_apk(self):
         """#65: on a tag a release-signed APK is added to the release. The key only comes from secrets (never from git);
         without them the job says so and the release of the other players goes on."""

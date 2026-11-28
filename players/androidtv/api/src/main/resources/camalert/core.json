@@ -40,6 +40,7 @@
   "strip",
   "test",
   "tour",
+  "update",
   "webhook"
  ],
  "colour_names": {
@@ -1585,6 +1586,20 @@
    "section": "log",
    "step": null,
    "type": "text",
+   "unit": null
+  },
+  {
+   "choices": null,
+   "default": true,
+   "help": "Home Assistant can install a new CamAlert release on this player (only the official release, only a newer version, checked with its checksum).",
+   "id": "allow_update",
+   "label": "Allow updates from Home Assistant",
+   "level": "advanced",
+   "max": null,
+   "min": null,
+   "section": "log",
+   "step": null,
+   "type": "bool",
    "unit": null
   }
  ],

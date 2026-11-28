@@ -1456,6 +1456,14 @@ msgstr "Map voor gebeurtenisfoto's"
 msgid "Small photos of the last 20 events (default /tmp/camalert_events)."
 msgstr "Kleine foto's van de laatste 20 gebeurtenissen (standaard /tmp/camalert_events)."
 
+#: e2 kodi:30800
+msgid "Allow updates from Home Assistant"
+msgstr "Updates vanuit Home Assistant toestaan"
+
+#: e2
+msgid "Home Assistant can install a new CamAlert release on this player (only the official release, only a newer version, checked with its checksum)."
+msgstr "Home Assistant kan een nieuwe CamAlert-release op deze speler installeren (alleen de officiële release, alleen een nieuwere versie, gecontroleerd met de checksum)."
+
 #: e2
 msgid "Check for updates"
 msgstr "Controleren op updates"
@@ -1823,6 +1831,10 @@ msgstr "Er is geen import om ongedaan te maken."
 #: kodi:30880
 msgid "Colour keys: signing secret (Home Assistant)"
 msgstr "Kleurtoetsen: geheim voor ondertekening (Home Assistant)"
+
+#: kodi:30801
+msgid "Home Assistant can install a new CamAlert release on this add-on (only the official release, only a newer version, checked with its checksum). Never while something plays."
+msgstr "Home Assistant kan een nieuwe CamAlert-release in deze add-on installeren (alleen de officiële release, alleen een nieuwere versie, gecontroleerd met de checksum). Nooit terwijl er iets speelt."
 
 #: ha:config.flow_title
 msgid "{name}"

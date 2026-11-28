@@ -107,6 +107,15 @@ class Backend(api.Backend):
         from . import mqtt
         return {"mqtt": mqtt.connected()}
 
+    def update_status(self):
+        from . import kupdater
+        return kupdater.STATE.as_status()
+
+    def start_update(self, version):
+        """#126: download, check and swap the add-on folder when nothing plays (kupdater.py)."""
+        from . import kupdater
+        kupdater.start(version)
+
     def log(self, message, level="normal"):
         kodiapi.log(message, level)
 

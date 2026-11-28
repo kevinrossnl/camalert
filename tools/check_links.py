@@ -7,7 +7,7 @@
 Collects every http(s) URL in README.md, docs/**/*.md, CHANGELOG.md and the blueprints (also inside code blocks:
 download links are worth checking), skips placeholders (<player>, {...}), private and example addresses
 (192.168.x, homeassistant.local, example.com, localhost) and GitHub's own permalinks that need a login. Each URL is
-asked with HEAD, then GET when HEAD is refused (403/405/501); 2xx and 3xx are fine, 429 and timeouts are only
+asked with HEAD, then GET when HEAD gives an error; 2xx and 3xx are fine, 429 and timeouts are only
 warnings (retried the next night), 404/410/5xx are broken. With --issue the result goes into one issue titled
 TITLE: created when something is broken, updated while it stays broken, closed when everything works again.
 Needs REPO_TOKEN (the workflow's forgejo.token), GITHUB_SERVER_URL and GITHUB_REPOSITORY (set by Forgejo Actions).
@@ -81,7 +81,7 @@ def check(url, opener=fetch):
     """(status, detail) for one URL."""
     try:
         code = opener(url, "HEAD")
-        if code in (403, 405, 501) or code is None:
+        if code is None or code >= 400:  # some servers answer HEAD wrongly (405, 501, even 404): ask with GET
             code = opener(url, "GET")
     except Exception as e:  # noqa: BLE001 - network trouble is a warning, not a broken link
         return WARNING, "%s" % e.__class__.__name__

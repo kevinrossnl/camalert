@@ -63,6 +63,9 @@ Two-way audio is not possible on the player. To talk, also send a notification w
 blueprints do not have an input for that yet.
 
 ## Without Home Assistant or MQTT
+Full examples for Loxone, KNX, ioBroker, openHAB and Homey: [other smart-home systems](../integrations/smart-home.md);
+Apple TV: [the doorbell through Apple Home](../integrations/apple-tv.md).
+
 | System | Example |
 |---|---|
 | Node-RED | `http request` node, method POST, URL `http://<player>:8099/camalert/show`, payload `{"cam": "front_door", "priority": "high"}` |

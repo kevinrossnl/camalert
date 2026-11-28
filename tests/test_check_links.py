@@ -43,9 +43,10 @@ class TestCheckLinks(unittest.TestCase):
         self.assertEqual(cl.check("u", opener({"HEAD": 200})), (cl.OK, "200"))
         self.assertEqual(cl.check("u", opener({"HEAD": 301})), (cl.OK, "301"))
         self.assertEqual(cl.check("u", opener({"HEAD": 405, "GET": 200})), (cl.OK, "200"))  # HEAD refused
-        self.assertEqual(cl.check("u", opener({"HEAD": 404})), (cl.BROKEN, "404"))
-        self.assertEqual(cl.check("u", opener({"HEAD": 429})), (cl.WARNING, "429"))
-        self.assertEqual(cl.check("u", opener({"HEAD": 503})), (cl.BROKEN, "503"))
+        self.assertEqual(cl.check("u", opener({"HEAD": 404, "GET": 404})), (cl.BROKEN, "404"))
+        self.assertEqual(cl.check("u", opener({"HEAD": 404, "GET": 200})), (cl.OK, "200"))  # HEAD answered wrongly
+        self.assertEqual(cl.check("u", opener({"HEAD": 429, "GET": 429})), (cl.WARNING, "429"))
+        self.assertEqual(cl.check("u", opener({"HEAD": 503, "GET": 503})), (cl.BROKEN, "503"))
 
         def down(url, method):
             raise OSError("timed out")

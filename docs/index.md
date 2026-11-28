@@ -39,6 +39,8 @@ words used on screen and in these pages are listed in the [glossary](user/glossa
 | [Frigate](integrations/frigate.md) | Frigate events straight from MQTT, without Home Assistant |
 | [HTTP API](integrations/api.md) | For other systems and scripts |
 | [Monitoring](integrations/monitoring.md) | Prometheus metrics, Grafana dashboard, remote syslog |
+| [Loxone, KNX, ioBroker, openHAB, Homey](integrations/smart-home.md) | The doorbell on the TV from other smart-home systems, with examples |
+| [Apple TV](integrations/apple-tv.md) | No CamAlert player, but the doorbell through Apple Home and Home Assistant's HomeKit Bridge |
 
 ## Developers
 

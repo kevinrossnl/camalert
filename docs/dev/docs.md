@@ -35,7 +35,8 @@ Use the terms of the [glossary](../user/glossary.md) verbatim. **Player** = Enig
 
 - the generated blocks are up to date (`tools/docs.py check`);
 - every relative link and image in `README.md`, `docs/**/*.md`, the `DEVELOPMENT.md` files and the other READMEs points
-  to an existing file, and every `#anchor` to an existing heading (#36; external links are not checked);
+  to an existing file, and every `#anchor` to an existing heading (#36; external links are checked nightly, see
+  below);
 - every page under `docs/` is reachable from `docs/index.md`;
 - no forbidden synonym (glossary) and no "receiver" where Kodi is meant, outside the Enigma2 page and the dev pages;
 - there is one `DEVELOPMENT.md` per main folder and the files they name exist (#36);
@@ -51,3 +52,13 @@ Use the terms of the [glossary](../user/glossary.md) verbatim. **Player** = Enig
 - every Kodi version with an API fixture is on the [compatibility](compatibility.md) page;
 - the `tools/ci.sh` areas and the `tools/docs.py` / `tools/i18n/i18n.py` subcommands named in the `DEVELOPMENT.md` files,
   `tests/README.md` and `docs/dev/` exist.
+
+## External links (nightly)
+
+`tools/check_links.py` checks every http(s) link in `README.md`, `CHANGELOG.md`, `docs/**/*.md` and the blueprints,
+download links in code blocks included; placeholders (`<player>`, `vX.Y.Z`) and private or example addresses are
+skipped (#79). It runs in the nightly workflow (`.forgejo/workflows/nightly.yml`, job `links`), never on a push and
+never in the gate. A broken link (404, 410, 5xx) opens or updates one issue, *Nightly link check: broken external
+links*; when everything works again the issue gets a comment and is closed. 401, 403, 429 and timeouts are only
+warnings (some sites refuse robots; the next night tries again). Run it yourself with
+`python3 tools/check_links.py` (exit 1 when a link is broken).

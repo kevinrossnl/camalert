@@ -1,4 +1,5 @@
-# Nightly long tests (#21, #34): more property-test examples and the whole Python 3.8 .. 3.13 matrix.
+# Nightly long tests (#21, #34): more property-test examples and the whole Python 3.8 .. 3.13 matrix; the external
+# link check of the docs (#79), which reports in one issue and never fails the run.
 # Never blocks a push or the GitHub mirror (not part of tests.yml / gate). Runs only on the workstation runner
 # (decision 24-11-2026: no Python matrix on the NAS); when the workstation is offline the night is simply skipped.
 # Start by hand: Actions › nightly › Run workflow.
@@ -49,3 +50,15 @@ jobs:
         with:
           name: nightly
           path: junit-py*.xml
+
+  links:
+    needs: pick-runner
+    runs-on: ${{ needs.pick-runner.outputs.runner }}
+    container: {image: "node:20-bookworm"}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: external links in the docs (one issue, never fails)
+        env:
+          REPO_TOKEN: ${{ forgejo.token }}
+        run: python3 tools/check_links.py --issue

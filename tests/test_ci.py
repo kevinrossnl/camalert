@@ -224,7 +224,9 @@ class Workflow(unittest.TestCase):
         job = wf["jobs"]["long-tests"]
         self.assertEqual(job["runs-on"], "${{ needs.pick-runner.outputs.runner }}")
         self.assertEqual(job["if"], "needs.pick-runner.outputs.mode == 'parallel'")  # never on the NAS
-        self.assertEqual(set(wf["jobs"]), {"pick-runner", "long-tests"})  # no gate, no mirror
+        self.assertEqual(set(wf["jobs"]), {"pick-runner", "long-tests", "links"})  # no gate, no mirror
+        links = wf["jobs"]["links"]  # #79: reports in one issue, never fails
+        self.assertIn("tools/check_links.py --issue", json.dumps(links))
 
     def test_force_runner_input(self):
         on = self.wf.get("on", self.wf.get(True))

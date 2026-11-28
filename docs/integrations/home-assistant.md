@@ -96,7 +96,7 @@ the Android TV app uses Android's network service discovery.
 
 | Action | Fields |
 |---|---|
-| `camalert.show` | players (target), cameras (one or more: 2–4 are shown together in one multi-camera window), seconds (0 = until `camalert.hide`, at most 10 minutes; older players get 300 s), mode (photo / live / notify / strip), priority (normal / high / alarm), label (who/what, e.g. Person) |
+| `camalert.show` | players (target), cameras (one or more: 2–4 are shown together in one multi-camera window), seconds (0 = until `camalert.hide`, at most 10 minutes; older players get 300 s), mode (photo / live / notify / strip), priority (normal / high / alarm), label (who/what, e.g. Person), announce (text spoken on the players, see below), tts (TTS engine), language |
 | `camalert.ptz` | players, camera, move (up / down / left / right / zoom_in / zoom_out / home / stop) |
 | `camalert.mosaic` | players, cameras (list), seconds |
 | `camalert.hide` | players |
@@ -105,6 +105,14 @@ Target (*players*): one or more CamAlert players (devices), their entities or th
 player. Existing automations with `target: device_id:` keep working.
 
 ![The action camalert.show in Developer tools › Actions](../images/homeassistant/action-show.png)
+
+**Spoken announcement** (#89): with `announce` Home Assistant turns the text into speech with a TTS engine (`tts`,
+default the first one; `language` optional) as a WAV file and sends it with the camera. The player plays it next to
+the TV sound, after the chime, when its setting *Spoken announcement* allows it (default: doorbell and alarm,
+priority high and alarm; never for a test). Enigma2 and Kodi play the WAV; the Android TV app plays the WAV or, when
+Home Assistant has no TTS engine, speaks the text with Android's own speech engine. The player fetches the WAV only
+from the local network (Home Assistant's LAN address). A muted player stays silent. The doorbell blueprint has the
+inputs `announce`, `announce_speakers` and `tts_engine`.
 
 An action that fails (player not reachable, unknown camera, not supported) raises a translated error in the
 automation trace; with several players all are tried first.

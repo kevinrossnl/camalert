@@ -40,6 +40,7 @@ data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_co
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/schema.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/selfupdate.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/settingsfile.py
+data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/speech.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/style.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/triggers/__init__.py
 data -rw-r--r-- ./usr/lib/enigma2/python/Plugins/Extensions/CamAlert/camalert_core/triggers/foscam.py

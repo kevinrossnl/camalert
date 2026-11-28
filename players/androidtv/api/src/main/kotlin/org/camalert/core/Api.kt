@@ -72,6 +72,8 @@ interface Backend {
     /** Starts installing release [version] in the background (#126); the version is already checked. */
     fun startUpdate(version: String): Unit = throw UnsupportedOperationException("update")
     fun log(message: String, level: String = "normal") {}
+    /** #89: play the WAV at url (or speak text) in the background; true when it will be spoken. Never blocks. */
+    fun speak(url: String?, text: String?, priority: String): Boolean = false
     /** Host name resolver for the webhook check (blocking). */
     fun resolve(host: String): List<String> = Access.resolve(host)
 }
@@ -172,8 +174,14 @@ class Api(val data: CoreData = CoreData.load()) {
         val mode = choiceParam(a, "mode", Rules.MODES + "strip")
         val priority = choiceParam(a, "priority", Rules.PRIORITIES)
         val sec = if (Rules.hasSeconds(a["sec"])) Rules.showSeconds(a["sec"], (s["duration"] as? Number)?.toInt() ?: 30) else null  // 0: until hide (#81)
+        val (sayUrl, say) = try { Speech.request(a, a["_ip"]) } catch (e: Speech.SpeechError) { throw Invalid(e.message ?: "invalid say_url") }  // #89
         val res = ctl.show(cam, sec, mode, priority, source, a["label"])
-        return mapOf("result" to (res in listOf("show", "extend", "wake")), "action" to res, "cam" to (cam ?: s["camera"]))
+        val out = linkedMapOf<String, Any?>("result" to (res in listOf("show", "extend", "wake")), "action" to res, "cam" to (cam ?: s["camera"]))
+        if (sayUrl != null || say != null) {
+            out["spoken"] = Speech.shouldSpeak(s["speak"]?.toString() ?: "high", priority ?: "normal", source, res, sayUrl, say) &&
+                b.speak(sayUrl, say, priority ?: "normal")
+        }
+        return out
     }
 
     private fun hide(b: Backend, ctl: Controller, a: MutableMap<String, String>, s: Map<String, Any?>, source: String): Any {

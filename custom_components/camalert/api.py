@@ -148,11 +148,15 @@ class CamAlertApi:
         return (await self._get("cameras")).get("cameras", [])
 
     async def show(self, cam: str | list | None = None, seconds: int | None = None, mode: str | None = None,
-                   priority: str | None = None, label: str | None = None) -> dict:
+                   priority: str | None = None, label: str | None = None, say: str | None = None,
+                   say_url: str | None = None) -> dict:
         cam, mode = show_params(cam, mode)
         if seconds == 0 and self.capabilities is not None and "hold" not in self.capabilities:
             seconds = 300  # #81: a player without "until hide" gets the longest fixed duration instead
-        return await self._get("show", {"cam": cam, "sec": seconds, "mode": mode, "priority": priority, "label": label})
+        params = {"cam": cam, "sec": seconds, "mode": mode, "priority": priority, "label": label}
+        if self.capabilities is not None and "speak" in self.capabilities:  # #89; older players: no say
+            params.update(say=say, say_url=say_url)
+        return await self._get("show", params)
 
     async def dnd(self, on: bool | None = None) -> dict:
         return await self._get("dnd", {} if on is None else {"on": "1" if on else "0"})

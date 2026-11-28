@@ -35,7 +35,10 @@ against it by the contract tests). Answers are JSON (`metrics`: Prometheus text)
 
 Parameters: `cam` (go2rtc stream name, or several separated by commas; only letters, digits, `_`, `.`, `-`),
 `sec` (5–300; `0` = until `hide` or a new `show`, at most 600 s, capability `hold`, #81), `mode` (`photo`, `live`, `notify`, `strip` = multi-camera window), `label` (optional
-who/what shown before the camera name in the title, e.g. `Person`), `priority` (`normal` follows the player's
+who/what shown before the camera name in the title, e.g. `Person`), `say` and `say_url` (optional spoken
+announcement, capability `speak`, #89: `say` is the text, at most 300 characters; `say_url` a WAV file in the local
+network, an IP address or a `.local` name, that the player plays next to the TV sound; the answer then has
+`"spoken": true/false`; the player setting `speak` = off / high / all decides, never for a test), `priority` (`normal` follows the player's
 active hours and rules, `high` always, `alarm` always and may wake the player / screen), `test` (`1` on any
 request: a test, e.g. of the [end-to-end runner](../dev/e2e.md): never plays the doorbell chime and is shown with
 the source *Test request* in the event list; Home Assistant automations can skip such events).

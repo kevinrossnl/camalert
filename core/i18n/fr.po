@@ -972,7 +972,7 @@ msgstr "Sous-flux pour le direct"
 msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
 msgstr "Pour les caméras que le récepteur ne peut pas lire (H.265/4K) : front_door=front_door_sub utilise ce flux go2rtc en direct."
 
-#: e2 kodi:30727
+#: e2 kodi:30727 ha:services.show.fields.language.name
 msgid "Language"
 msgstr "Langue"
 
@@ -1123,6 +1123,14 @@ msgstr "Son de sonnette"
 #: e2
 msgid "Plays a short ding-dong for requests with priority high or alarm (doorbell)."
 msgstr "Joue un court ding-dong pour les demandes de priorité haute ou alarme (sonnette)."
+
+#: e2 kodi:30940 ha:services.show.fields.announce.name
+msgid "Spoken announcement"
+msgstr "Annonce vocale"
+
+#: e2
+msgid "Plays the text Home Assistant sends with a request (for example \"Someone is at the door\"), for doorbell and alarm (high) or all requests. Never for a test."
+msgstr "Lit le texte que Home Assistant envoie avec une demande (par exemple \"Quelqu'un est à la porte\"), pour la sonnette et l'alarme (haute) ou pour toutes les demandes. Jamais pour un test."
 
 #: e2
 msgid "Picons for the camera channels"
@@ -1852,6 +1860,10 @@ msgstr "Quand rien n'est lu"
 msgid "Also pause what plays"
 msgstr "Mettre aussi la lecture en pause"
 
+#: kodi:30941
+msgid "Plays the text Home Assistant sends with a camera (for example \"Someone is at the door\"), for doorbell and alarm or for all requests. Follows Kodi's volume; never for a test."
+msgstr "Lit le texte que Home Assistant envoie avec une caméra (par exemple \"Quelqu'un est à la porte\"), pour la sonnette et l'alarme ou pour toutes les demandes. Suit le volume de Kodi ; jamais pour un test."
+
 #: ha:config.flow_title
 msgid "{name}"
 msgstr "{name}"
@@ -2139,6 +2151,22 @@ msgstr "Qui/quoi"
 #: ha:services.show.fields.label.description
 msgid "Optional text before the camera name in the title, e.g. Person."
 msgstr "Texte facultatif avant le nom de la caméra dans le titre, p. ex. Personne."
+
+#: ha:services.show.fields.announce.description
+msgid "Text the players speak with the camera, e.g. \"Someone is at the door\". Home Assistant makes the speech with a TTS engine; the player setting Spoken announcement decides for which requests (default: doorbell and alarm)."
+msgstr "Texte que les lecteurs prononcent avec la caméra, par exemple \"Quelqu'un est à la porte\". Home Assistant produit la voix avec un moteur TTS ; le réglage Annonce vocale du lecteur décide pour quelles demandes (par défaut : sonnette et alarme)."
+
+#: ha:services.show.fields.tts.name
+msgid "TTS engine"
+msgstr "Moteur TTS"
+
+#: ha:services.show.fields.tts.description
+msgid "The text-to-speech engine for the announcement. Empty = the first TTS engine of Home Assistant."
+msgstr "Le moteur de synthèse vocale pour l'annonce. Vide = le premier moteur TTS de Home Assistant."
+
+#: ha:services.show.fields.language.description
+msgid "Language of the announcement, e.g. en or nl. Empty = the engine's default."
+msgstr "Langue de l'annonce, par exemple en ou nl. Vide = la langue par défaut du moteur."
 
 #: ha:services.mosaic.description
 msgid "Shows several cameras at once in a full-screen mosaic."

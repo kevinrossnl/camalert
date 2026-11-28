@@ -266,6 +266,26 @@ def chime():
         log("chime failed: %s" % e, "error")
 
 
+def say(url):
+    """#89: spoken announcement, a WAV from Home Assistant, through Kodi's GUI sound (follows volume and mute).
+    Blocking: call in a thread."""
+    import time
+    from .camalert_core.speech import fetch_wav
+    data = fetch_wav(url)
+    for old in os.listdir(temp_dir()):  # Kodi may still read the previous file: a new name, old ones removed
+        if old.startswith("camalert-say-"):
+            try:
+                os.remove(os.path.join(temp_dir(), old))
+            except OSError:
+                pass
+    path = os.path.join(temp_dir(), "camalert-say-%d.wav" % int(time.time() * 1000))
+    with open(path, "wb") as f:
+        f.write(data)
+    time.sleep(1.2)  # after the window and the chime
+    xbmc.playSFX(path, False)
+    log("spoken announcement", "verbose")
+
+
 def friendly_name():
     return info("System.FriendlyName") or "Kodi"
 

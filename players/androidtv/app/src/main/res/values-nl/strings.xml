@@ -154,6 +154,8 @@
     <string name="t_89750080" formatted="false">Prioriteit hoog: oranje rand en het woord Deurbel. Alarm: roodoranje rand en het woord ALARM. Knipperend: één keer per seconde.</string>
     <string name="t_d930321b" formatted="false">Deurbelgeluid</string>
     <string name="t_d9efc589" formatted="false">Speelt een kort ding-dong bij verzoeken met prioriteit hoog of alarm (deurbel).</string>
+    <string name="t_8b6cbb0a" formatted="false">Gesproken melding</string>
+    <string name="t_7c331b62" formatted="false">Speelt de tekst af die Home Assistant met een verzoek meestuurt (bijvoorbeeld \"Er staat iemand aan de deur\"), bij deurbel en alarm (hoog) of bij alle verzoeken. Nooit bij een test.</string>
     <string name="t_f2d70813" formatted="false">Formaat van het live beeld</string>
     <string name="t_12ab8fa8" formatted="false">MP4 via HTTP werkt met elke go2rtc-installatie; RTSP heeft de RTSP-poort van go2rtc nodig; HLS is het stabielst maar loopt een paar seconden achter.</string>
     <string name="t_99b77887" formatted="false">Alleen tussen bepaalde tijden</string>

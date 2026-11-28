@@ -251,6 +251,18 @@
         "label": {
           "name": "Qui/quoi",
           "description": "Texte facultatif avant le nom de la caméra dans le titre, p. ex. Personne."
+        },
+        "announce": {
+          "name": "Annonce vocale",
+          "description": "Texte que les lecteurs prononcent avec la caméra, par exemple \"Quelqu'un est à la porte\". Home Assistant produit la voix avec un moteur TTS ; le réglage Annonce vocale du lecteur décide pour quelles demandes (par défaut : sonnette et alarme)."
+        },
+        "tts": {
+          "name": "Moteur TTS",
+          "description": "Le moteur de synthèse vocale pour l'annonce. Vide = le premier moteur TTS de Home Assistant."
+        },
+        "language": {
+          "name": "Langue",
+          "description": "Langue de l'annonce, par exemple en ou nl. Vide = la langue par défaut du moteur."
         }
       }
     },

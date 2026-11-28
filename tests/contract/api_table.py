@@ -33,6 +33,10 @@ def no_snapshot_paths(body):
     return ev and ev[0]["camera"] == "garden" and all("snapshot" not in e for e in ev)
 
 
+def no_spoken_key(body):
+    return isinstance(body, dict) and "spoken" not in body  # #89: only with say / say_url
+
+
 def log_lines(body):
     return isinstance(body.get("lines"), list)
 
@@ -95,6 +99,26 @@ TABLE = [
         json={"result": False, "error": "invalid camera name"}, calls=[]),
     row("show_camera_url_refused", "/camalert/show", {"cam": "http://203.0.113.9/x.jpg"}, code=400, calls=[]),
     row("show_invalid_mode", "/camalert/show", {"cam": "garden", "mode": "fullscreen"}, code=400, calls=[]),
+    # #89 spoken announcement: say_url only into the local network (no DNS: IP addresses and local names), checked
+    # before anything is shown; never spoken for a test, or below the `speak` setting (default high)
+    row("show_say_url_internet_refused", "/camalert/show", {"cam": "garden", "say_url": "http://8.8.8.8/x.wav"},
+        code=400, json={"result": False}, calls=[]),
+    row("show_say_url_dns_name_refused", "/camalert/show", {"cam": "garden", "say_url": "https://tts.example.com/x.wav"},
+        code=400, json={"result": False}, calls=[]),
+    row("show_say_url_not_http_refused", "/camalert/show", {"cam": "garden", "say_url": "file:///etc/passwd"},
+        code=400, calls=[]),
+    row("show_say_test_not_spoken", "/camalert/show",
+        {"cam": "garden", "priority": "high", "say": "Someone is at the door",
+         "say_url": "http://192.168.1.20:8123/api/tts_proxy/abc.wav", "test": "1"},
+        json={"result": True, "action": "show", "spoken": False}),
+    row("show_say_normal_priority_not_spoken", "/camalert/show",
+        {"cam": "garden", "say": "Motion", "say_url": "http://192.168.1.20:8123/api/tts_proxy/abc.wav"},
+        json={"result": True, "action": "show", "spoken": False}),
+    row("show_say_off_not_spoken", "/camalert/show",
+        {"cam": "garden", "priority": "high", "say": "Someone is at the door"}, settings={"speak": "off"},
+        json={"result": True, "action": "show", "spoken": False}),
+    row("show_without_say_has_no_spoken_key", "/camalert/show", {"cam": "garden"},
+        check=no_spoken_key),
     row("show_invalid_priority", "/camalert/show", {"cam": "garden", "priority": "urgent"}, code=400, calls=[]),
     row("show_json_body", "/camalert/show", body=b'{"cam": "garden", "sec": 20, "priority": "high"}',
         calls=[("show", "garden", 20, None, "high", "api", None)]),

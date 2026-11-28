@@ -154,6 +154,8 @@
     <string name="t_89750080" formatted="false">Priorità alta: cornice arancione e la parola Campanello. Allarme: cornice rosso-arancione e la parola ALLARME. Lampeggiante: una volta al secondo.</string>
     <string name="t_d930321b" formatted="false">Suono del campanello</string>
     <string name="t_d9efc589" formatted="false">Riproduce un breve din-don per le richieste con priorità alta o allarme (campanello).</string>
+    <string name="t_8b6cbb0a" formatted="false">Annuncio vocale</string>
+    <string name="t_7c331b62" formatted="false">Riproduce il testo che Home Assistant invia con una richiesta (per esempio \"C\'è qualcuno alla porta\"), per campanello e allarme (alta) o per tutte le richieste. Mai per un test.</string>
     <string name="t_f2d70813" formatted="false">Formato della visione live</string>
     <string name="t_12ab8fa8" formatted="false">MP4 via HTTP funziona con ogni installazione di go2rtc; RTSP richiede la porta RTSP di go2rtc; HLS è il più robusto ma ha qualche secondo di ritardo.</string>
     <string name="t_99b77887" formatted="false">Solo in determinati orari</string>

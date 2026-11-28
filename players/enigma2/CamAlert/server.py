@@ -50,6 +50,21 @@ def _wizard_done(c):
         return False
 
 
+SAY_PATH = "/tmp/camalert-say.wav"
+
+
+def _say(url):
+    """In a thread: download the announcement (WAV, local network) and play it after the chime (#89)."""
+    from .camalert_core.speech import fetch_wav
+    from .services import chime_command
+    data = fetch_wav(url)
+    with open(SAY_PATH, "wb") as f:
+        f.write(data)
+    time.sleep(1.2)  # after the window opened and the chime (if any) started
+    subprocess.Popen(chime_command(SAY_PATH), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    log("spoken announcement", level="verbose")
+
+
 class Backend(api.Backend):
     """What camalert_core.api needs from the Enigma2 plugin."""
     platform = "enigma2"
@@ -60,7 +75,7 @@ class Backend(api.Backend):
         return {"enabled": c.enabled.value, "allow": c.allow.value, "token": c.token.value,
                 "duration": int(c.duration.value), "camera": c.camera.value, "dnd": bool(c.dnd.value),
                 "ha_webhook": c.ha_webhook.value, "ha_webhook_secret": c.ha_webhook_secret.value,
-                "allow_update": bool(c.allow_update.value),
+                "allow_update": bool(c.allow_update.value), "speak": c.speak.value,
                 "position": c.position.value, "size": c.size.value,
                 "server": c.server.value, "source": c.source.value, "wizard_done": _wizard_done(c)}
 
@@ -102,6 +117,19 @@ class Backend(api.Backend):
             item.save()
             configfile.save()
         reactor.callFromThread(save)
+
+    def speak(self, url, text, priority):
+        """#89: fetch the WAV in a thread and play it next to the TV sound (ALSA, like the chime). Text without an
+        audio url cannot be spoken on a receiver (no speech engine)."""
+        if not url:
+            log("spoken announcement skipped: no audio url (a receiver has no speech engine)", level="verbose")
+            return False
+        ctl = Controller.instance
+        if ctl is not None and ctl.muted():
+            log("spoken announcement skipped: the receiver is muted")
+            return False
+        threads.deferToThread(_say, url).addErrback(lambda e: log("spoken announcement failed:", e.getErrorMessage()))
+        return True
 
     def set_setup(self, server, camera):
         """go2rtc address (and default camera) from Home Assistant (#122): saved on the main thread, then the

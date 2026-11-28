@@ -843,6 +843,12 @@ msgstr "Türklingelton"
 msgid "Plays a short ding-dong for requests with priority high or alarm (doorbell)."
 msgstr "Spielt ein kurzes Ding-Dong bei Anfragen mit Priorität hoch oder Alarm (Türklingel)."
 
+msgid "Spoken announcement"
+msgstr "Gesprochene Ansage"
+
+msgid "Plays the text Home Assistant sends with a request (for example \"Someone is at the door\"), for doorbell and alarm (high) or all requests. Never for a test."
+msgstr "Spielt den Text ab, den Home Assistant mit einer Anfrage sendet (zum Beispiel \"Jemand ist an der Tür\"), bei Türklingel und Alarm (hoch) oder bei allen Anfragen. Nie bei einem Test."
+
 msgid "Picons for the camera channels"
 msgstr "Picons für die Kamerakanäle"
 

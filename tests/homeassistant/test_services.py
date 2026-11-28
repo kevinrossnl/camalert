@@ -51,6 +51,45 @@ async def test_show_until_hide_on_an_older_player(hass, player):
     assert last(player, "/camalert/show")[1]["sec"] == 300
 
 
+async def test_show_with_announcement(hass, player, monkeypatch):
+    """#89: the text goes to a TTS engine once per call; every player gets the text and the WAV address."""
+    made = []
+
+    async def fake_say_url(hass_, text, engine=None, language=None):
+        made.append((text, engine, language))
+        return "http://192.168.1.2:8123/api/tts_proxy/abc.wav"
+    monkeypatch.setattr("custom_components.camalert.async_say_url", fake_say_url)
+    await setup_player(hass, player)
+    await call(hass, "show", {"camera": "garden", "priority": "high", "announce": "Someone is at the door",
+                              "tts": "tts.piper", "language": "en"})
+    body = last(player, "/camalert/show")[1]
+    assert body["say"] == "Someone is at the door"
+    assert body["say_url"] == "http://192.168.1.2:8123/api/tts_proxy/abc.wav"
+    assert made == [("Someone is at the door", "tts.piper", "en")]
+    await call(hass, "show", {"camera": "garden"})
+    assert "say" not in last(player, "/camalert/show")[1] and len(made) == 1
+    with pytest.raises(vol.Invalid):
+        await call(hass, "show", {"camera": "garden", "announce": "x" * 301})
+
+
+async def test_show_announcement_skipped_for_an_older_player(hass, player, monkeypatch):
+    async def fake_say_url(*a, **kw):
+        return "http://192.168.1.2:8123/api/tts_proxy/abc.wav"
+    monkeypatch.setattr("custom_components.camalert.async_say_url", fake_say_url)
+    player.capabilities = ["cameras", "header_token", "hide", "post", "show", "status"]
+    await setup_player(hass, player)
+    await call(hass, "show", {"camera": "garden", "announce": "Hello"})
+    body = last(player, "/camalert/show")[1]
+    assert "say" not in body and "say_url" not in body
+
+
+def test_announcement_address_rules():
+    from custom_components.camalert import speech
+    assert speech._plain_host("192.168.1.2") and speech._plain_host("homeassistant.local")
+    assert speech._plain_host("homeassistant") and not speech._plain_host("ha.example.com")
+    assert speech.OPTIONS == {"preferred_format": "wav"}
+
+
 async def test_mosaic_hide_ptz(hass, player):
     await setup_player(hass, player)
     await call(hass, "mosaic", {"cameras": "front_door, garden", "seconds": 60})

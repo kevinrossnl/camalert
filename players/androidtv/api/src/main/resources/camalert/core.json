@@ -36,6 +36,7 @@
   "setup",
   "show",
   "signed_buttons",
+  "speak",
   "status",
   "strip",
   "test",
@@ -888,6 +889,24 @@
    "help": "Plays a short ding-dong for requests with priority high or alarm (doorbell).",
    "id": "chime",
    "label": "Doorbell chime",
+   "level": "advanced",
+   "max": null,
+   "min": null,
+   "section": "display",
+   "step": null,
+   "type": "choice",
+   "unit": null
+  },
+  {
+   "choices": [
+    "off",
+    "high",
+    "all"
+   ],
+   "default": "high",
+   "help": "Plays the text Home Assistant sends with a request (for example \"Someone is at the door\"), for doorbell and alarm (high) or all requests. Never for a test.",
+   "id": "speak",
+   "label": "Spoken announcement",
    "level": "advanced",
    "max": null,
    "min": null,

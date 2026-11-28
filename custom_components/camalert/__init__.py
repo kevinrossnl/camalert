@@ -19,6 +19,7 @@ from .coordinator import CamAlertCoordinator
 from .doorbell import Doorbell
 from .parent import link_parent
 from .phone import async_setup_phone_actions
+from .speech import async_say_url
 
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS = [Platform.BUTTON, Platform.SENSOR, Platform.SWITCH, Platform.EVENT, Platform.NOTIFY, Platform.UPDATE,
@@ -41,6 +42,10 @@ SHOW_SCHEMA = vol.Schema({
     vol.Optional("mode"): vol.In(MODES),
     vol.Optional("priority"): vol.In(PRIORITIES),
     vol.Optional("label"): cv.string,
+    # #89: text spoken on the players (a TTS engine of Home Assistant makes a WAV), optional engine and language
+    vol.Optional("announce"): vol.All(cv.string, vol.Length(max=300)),
+    vol.Optional("tts"): vol.Any("", cv.entity_domain("tts")),  # "" = first engine (blueprint input left empty)
+    vol.Optional("language"): cv.string,
 })
 PTZ_SCHEMA = vol.Schema({
     **TARGET,
@@ -118,8 +123,11 @@ async def async_setup(hass: HomeAssistant, config) -> bool:
             raise _error("several_failed", errors="; ".join(str(e) for e in errors))
 
     async def show(call: ServiceCall):
+        say = call.data.get("announce") or None
+        say_url = await async_say_url(hass, say, call.data.get("tts") or None, call.data.get("language") or None) \
+            if say else None
         await run(call, lambda api: api.show(call.data.get("camera"), call.data.get("seconds"), call.data.get("mode"),
-                                             call.data.get("priority"), call.data.get("label")))
+                                             call.data.get("priority"), call.data.get("label"), say, say_url))
 
     async def ptz(call: ServiceCall):
         await run(call, lambda api: api.ptz(call.data["camera"], call.data["move"]), "ptz")

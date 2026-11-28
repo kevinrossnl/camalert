@@ -17,7 +17,7 @@ from fakes.controller import RecordingController
 dns.install()  # webhook host names under .example resolve without real DNS (#53)
 
 DEFAULTS = {"enabled": True, "allow": "lan", "token": "", "camera": "front_door", "duration": 30, "dnd": False,
-            "allow_update": True,
+            "allow_update": True, "speak": "high",
             "ha_webhook": "", "ha_webhook_secret": "", "position": "top_right", "size": "medium", "server": "", "source": "go2rtc"}
 
 

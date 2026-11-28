@@ -109,6 +109,7 @@ class HttpContractTest {
             ev.isNotEmpty() && ev[0]["camera"] == "garden" && ev.all { "snapshot" !in it }
         }
         "log_lines" -> (body as Map<String, Any?>)["lines"] is List<*>
+        "no_spoken_key" -> body is Map<*, *> && "spoken" !in body  // #89
         "prometheus" -> body is String && "camalert_uptime_seconds" in body && "camalert_requests_total" in body
         else -> error("unknown check $name: add it here")
     }

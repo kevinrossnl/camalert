@@ -843,6 +843,12 @@ msgstr "Dźwięk dzwonka"
 msgid "Plays a short ding-dong for requests with priority high or alarm (doorbell)."
 msgstr "Odtwarza krótkie ding-dong dla żądań o priorytecie wysokim lub alarm (dzwonek)."
 
+msgid "Spoken announcement"
+msgstr "Komunikat głosowy"
+
+msgid "Plays the text Home Assistant sends with a request (for example \"Someone is at the door\"), for doorbell and alarm (high) or all requests. Never for a test."
+msgstr "Odtwarza tekst, który Home Assistant wysyła z żądaniem (na przykład \"Ktoś jest przy drzwiach\"), dla dzwonka i alarmu (wysoki) lub dla wszystkich żądań. Nigdy podczas testu."
+
 msgid "Picons for the camera channels"
 msgstr "Pikony dla kanałów kamer"
 

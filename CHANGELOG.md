@@ -9,6 +9,11 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Added
 
+- **All players and Home Assistant:** a spoken announcement with a camera (#89). `camalert.show` has the fields
+  `announce` (text), `tts` (TTS engine) and `language`: Home Assistant makes a WAV with its text-to-speech and the
+  player plays it after the chime, when the new setting *Spoken announcement* allows it (default: doorbell and
+  alarm). The Android TV app can also speak the text with Android's own speech engine. The doorbell blueprint has
+  the inputs `announce`, `announce_speakers` (speak it on media players too) and `tts_engine`.
 - **Home Assistant:** a doorbell without an automation. Choose the doorbell (event entity or binary sensor) and an
   optional camera in the player's options (**Configure**): every ring shows the camera on that player with priority
   high (#90).

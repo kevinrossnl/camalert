@@ -36,12 +36,14 @@ from .obs.log import redact
 from .rules import MODES, PRIORITIES, clamp_seconds, has_seconds, show_seconds
 from .schema import BY_ID as _SCHEMA
 from .selfupdate import UpdateError, check_request
+from .speech import SpeechError, should_speak, speech_request
 from .urls import go2rtc_state, normalize_server
 
 API_VERSION = 1
 MIN_HA_VERSION = "1.0.0"  # oldest Home Assistant integration that understands this API version
 CAPABILITIES = ("cameras", "dnd", "events", "header_token", "hide", "hold", "log", "metrics", "mosaic", "post", "ptz",
-                "screen", "settings", "setup", "show", "signed_buttons", "status", "strip", "test", "tour", "update", "webhook")
+                "screen", "settings", "setup", "show", "signed_buttons", "speak", "status", "strip", "test", "tour", "update",
+                "webhook")
 # Settings a caller may change through /camalert/settings (#84), with their choices from the settings schema.
 DISPLAY_SETTINGS = {k: tuple(_SCHEMA[k].choices) for k in ("position", "size")}
 # What /camalert/status reports as "screen" (#63): the top-most CamAlert screen, "none" when nothing is shown.
@@ -95,6 +97,12 @@ class Backend(object):
     def set_webhook(self, url, secret=""):
         """Saves the Home Assistant webhook and the secret that signs the colour keys (#82); "" removes them."""
         raise NotImplementedError
+
+    def speak(self, url, text, priority):
+        """Plays the spoken announcement of a shown request (#89) in the background: the WAV at url (in the local
+        network) next to the TV sound, or (Android TV) the text with the player's own speech engine. Returns
+        True when it will be spoken (False: not supported, muted). Never blocks."""
+        return False
 
     def set_display(self, key, value):
         """Saves position or size (#84); value is one of DISPLAY_SETTINGS[key]."""
@@ -209,8 +217,16 @@ def _show(b, ctl, a, s, source):
     priority = choice_param(a, "priority", PRIORITIES)
     sec = show_seconds(a.get("sec"), s["duration"]) if has_seconds(a.get("sec")) else None  # 0: until hide (#81)
     label = a.get("label")
+    try:
+        say_url, say = speech_request(a, a.get("_ip"))  # #89, checked before anything is shown
+    except SpeechError as e:
+        raise Invalid(str(e))
     res = ctl.show(cam, sec, mode, priority, source, label)
-    return {"result": res in ("show", "extend", "wake"), "action": res, "cam": cam or s["camera"]}
+    out = {"result": res in ("show", "extend", "wake"), "action": res, "cam": cam or s["camera"]}
+    if say_url or say:
+        out["spoken"] = bool(should_speak(s.get("speak", "high"), priority or "normal", source, res, say_url, say)
+                             and b.speak(say_url, say, priority or "normal"))
+    return out
 
 
 def _hide(b, ctl, a, s, source):

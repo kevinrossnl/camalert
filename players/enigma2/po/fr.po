@@ -843,6 +843,12 @@ msgstr "Son de sonnette"
 msgid "Plays a short ding-dong for requests with priority high or alarm (doorbell)."
 msgstr "Joue un court ding-dong pour les demandes de priorité haute ou alarme (sonnette)."
 
+msgid "Spoken announcement"
+msgstr "Annonce vocale"
+
+msgid "Plays the text Home Assistant sends with a request (for example \"Someone is at the door\"), for doorbell and alarm (high) or all requests. Never for a test."
+msgstr "Lit le texte que Home Assistant envoie avec une demande (par exemple \"Quelqu'un est à la porte\"), pour la sonnette et l'alarme (haute) ou pour toutes les demandes. Jamais pour un test."
+
 msgid "Picons for the camera channels"
 msgstr "Picons pour les chaînes des caméras"
 

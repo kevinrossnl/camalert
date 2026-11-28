@@ -59,6 +59,19 @@ class TestEnigma2Server(unittest.TestCase):
         self.assertEqual(ans.content_type, "text/plain")
         self.assertIn("camalert_uptime_seconds", ans.body)
 
+    def test_spoken_announcement_runs_in_a_thread(self):
+        """#89: the WAV is fetched and played in a thread (never on the GUI thread); no url = nothing to play."""
+        b = self.a.server.Backend()
+        url = "http://192.168.1.20:8123/api/tts_proxy/abc.wav"
+        before = len(self.a.env.reactor.deferred)
+        self.assertTrue(b.speak(url, "Someone is at the door", "high"))
+        new = self.a.env.reactor.deferred[before:]
+        self.assertEqual([d.fn.__name__ for d in new], ["_say"])
+        self.assertEqual(new[0].args, (url,))
+        self.assertFalse(b.speak(None, "Someone is at the door", "high"))  # a receiver has no speech engine
+        self.assertEqual(len(self.a.env.reactor.deferred), before + 1)
+        self.assertEqual(self.a.c.speak.value, "high")
+
     def test_webhook_is_saved(self):
         ans = self.a.call(Request("/camalert/webhook", {"url": "http://192.168.1.20:8123/api/webhook/x"},
                                   settings={"ha_webhook": ""}))

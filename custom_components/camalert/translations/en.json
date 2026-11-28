@@ -251,6 +251,18 @@
         "label": {
           "name": "Who/what",
           "description": "Optional text before the camera name in the title, e.g. Person."
+        },
+        "announce": {
+          "name": "Spoken announcement",
+          "description": "Text the players speak with the camera, e.g. \"Someone is at the door\". Home Assistant makes the speech with a TTS engine; the player setting Spoken announcement decides for which requests (default: doorbell and alarm)."
+        },
+        "tts": {
+          "name": "TTS engine",
+          "description": "The text-to-speech engine for the announcement. Empty = the first TTS engine of Home Assistant."
+        },
+        "language": {
+          "name": "Language",
+          "description": "Language of the announcement, e.g. en or nl. Empty = the engine's default."
         }
       }
     },

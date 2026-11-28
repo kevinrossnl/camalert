@@ -24,7 +24,8 @@ class TestExport(unittest.TestCase):
         from contract import api_table, mqtt_table
         http = X.http_contract()
         self.assertEqual([r["name"] for r in http["rows"]], [r["name"] for r in api_table.TABLE])
-        self.assertTrue(all(r["check"] in (None, "status_keys", "no_snapshot_paths", "log_lines", "prometheus")
+        self.assertTrue(all(r["check"] in (None, "status_keys", "no_snapshot_paths", "log_lines", "prometheus",
+                                            "no_spoken_key")
                             for r in http["rows"]), "a new check needs its Kotlin twin in HttpContractTest.kt")
         mqtt = X.mqtt_contract()
         self.assertEqual(len(mqtt["commands"]), len(mqtt_table.COMMANDS))

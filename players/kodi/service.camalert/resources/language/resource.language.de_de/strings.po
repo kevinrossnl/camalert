@@ -1548,3 +1548,11 @@ msgstr "Auch pausieren, was läuft"
 msgctxt "#30823"
 msgid "Smooth video instead of photos. When nothing plays: only while Kodi plays nothing. Also pause what plays: a film or live TV stops for the window and plays on from where it was afterwards."
 msgstr "Flüssiges Video statt Fotos. Wenn nichts läuft: nur, solange Kodi nichts abspielt. Auch pausieren, was läuft: ein Film oder Live-TV stoppt für das Fenster und läuft danach dort weiter, wo er war."
+
+msgctxt "#30940"
+msgid "Spoken announcement"
+msgstr "Gesprochene Ansage"
+
+msgctxt "#30941"
+msgid "Plays the text Home Assistant sends with a camera (for example \"Someone is at the door\"), for doorbell and alarm or for all requests. Follows Kodi's volume; never for a test."
+msgstr "Spielt den Text ab, den Home Assistant mit einer Kamera sendet (zum Beispiel \"Jemand ist an der Tür\"), bei Türklingel und Alarm oder bei allen Anfragen. Folgt der Kodi-Lautstärke; nie bei einem Test."

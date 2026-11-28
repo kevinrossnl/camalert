@@ -972,7 +972,7 @@ msgstr "Strumienie pomocnicze na żywo"
 msgid "For cameras the receiver cannot play (H.265/4K): front_door=front_door_sub uses that go2rtc stream for live view."
 msgstr "Dla kamer, których odbiornik nie odtworzy (H.265/4K): front_door=front_door_sub używa tego strumienia go2rtc na żywo."
 
-#: e2 kodi:30727
+#: e2 kodi:30727 ha:services.show.fields.language.name
 msgid "Language"
 msgstr "Język"
 
@@ -1123,6 +1123,14 @@ msgstr "Dźwięk dzwonka"
 #: e2
 msgid "Plays a short ding-dong for requests with priority high or alarm (doorbell)."
 msgstr "Odtwarza krótkie ding-dong dla żądań o priorytecie wysokim lub alarm (dzwonek)."
+
+#: e2 kodi:30940 ha:services.show.fields.announce.name
+msgid "Spoken announcement"
+msgstr "Komunikat głosowy"
+
+#: e2
+msgid "Plays the text Home Assistant sends with a request (for example \"Someone is at the door\"), for doorbell and alarm (high) or all requests. Never for a test."
+msgstr "Odtwarza tekst, który Home Assistant wysyła z żądaniem (na przykład \"Ktoś jest przy drzwiach\"), dla dzwonka i alarmu (wysoki) lub dla wszystkich żądań. Nigdy podczas testu."
 
 #: e2
 msgid "Picons for the camera channels"
@@ -1852,6 +1860,10 @@ msgstr "Gdy nic nie jest odtwarzane"
 msgid "Also pause what plays"
 msgstr "Wstrzymaj też to, co jest odtwarzane"
 
+#: kodi:30941
+msgid "Plays the text Home Assistant sends with a camera (for example \"Someone is at the door\"), for doorbell and alarm or for all requests. Follows Kodi's volume; never for a test."
+msgstr "Odtwarza tekst, który Home Assistant wysyła z kamerą (na przykład \"Ktoś jest przy drzwiach\"), dla dzwonka i alarmu lub dla wszystkich żądań. Używa głośności Kodi; nigdy podczas testu."
+
 #: ha:config.flow_title
 msgid "{name}"
 msgstr "{name}"
@@ -2139,6 +2151,22 @@ msgstr "Kto/co"
 #: ha:services.show.fields.label.description
 msgid "Optional text before the camera name in the title, e.g. Person."
 msgstr "Opcjonalny tekst przed nazwą kamery w tytule, np. Osoba."
+
+#: ha:services.show.fields.announce.description
+msgid "Text the players speak with the camera, e.g. \"Someone is at the door\". Home Assistant makes the speech with a TTS engine; the player setting Spoken announcement decides for which requests (default: doorbell and alarm)."
+msgstr "Tekst, który odtwarzacze wypowiadają z kamerą, na przykład \"Ktoś jest przy drzwiach\". Home Assistant tworzy mowę silnikiem TTS; ustawienie Komunikat głosowy odtwarzacza decyduje, dla których żądań (domyślnie: dzwonek i alarm)."
+
+#: ha:services.show.fields.tts.name
+msgid "TTS engine"
+msgstr "Silnik TTS"
+
+#: ha:services.show.fields.tts.description
+msgid "The text-to-speech engine for the announcement. Empty = the first TTS engine of Home Assistant."
+msgstr "Silnik zamiany tekstu na mowę dla komunikatu. Puste = pierwszy silnik TTS w Home Assistant."
+
+#: ha:services.show.fields.language.description
+msgid "Language of the announcement, e.g. en or nl. Empty = the engine's default."
+msgstr "Język komunikatu, na przykład en lub nl. Puste = domyślny język silnika."
 
 #: ha:services.mosaic.description
 msgid "Shows several cameras at once in a full-screen mosaic."

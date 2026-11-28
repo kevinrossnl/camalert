@@ -98,7 +98,7 @@ DEFAULTS = {
     "unifi_camera_rules": "",
     "log_level": "normal", "log_syslog": "", "allow_update": True, "ptz_key": "blue", "ha_buttons": True, "ha_webhook": "", "ha_webhook_secret": "", "wizard_done": False,
     "text_size": "normal", "priority_border": "steady", "language": "system",
-    "title_size": "normal", "chime": "off", "frigate_url": "", "cooldown": "", "substreams": "",
+    "title_size": "normal", "chime": "off", "speak": "high", "frigate_url": "", "cooldown": "", "substreams": "",
 }
 CHOICES = {
     "source": ("go2rtc", "direct"), "mode": ("photo", "live", "notify"),
@@ -109,7 +109,7 @@ CHOICES = {
     "foscam_mode": ("photo", "live", "notify"), "foscam_priority": ("normal", "high", "alarm"),
     "unifi_mode": ("photo", "live", "notify", "log"), "unifi_priority": ("normal", "high", "alarm"),
     "log_level": ("off", "errors", "normal", "verbose"), "ptz_key": ("blue", "yellow", "red", "green", "off"),
-    "title_size": ("small", "normal", "large"), "chime": ("off", "high", "all"),
+    "title_size": ("small", "normal", "large"), "chime": ("off", "high", "all"), "speak": ("off", "high", "all"),
     "text_size": ("normal", "large", "xlarge"), "priority_border": ("off", "steady", "flash"),
     "video_window": ("off", "idle", "pause"),
     "language": ("system", "en", "nl", "de", "fr", "it", "pl"),

@@ -154,6 +154,8 @@
     <string name="t_89750080" formatted="false">Priorité haute : cadre orange et le mot Sonnette. Alarme : cadre rouge-orange et le mot ALARME. Clignotant : une fois par seconde.</string>
     <string name="t_d930321b" formatted="false">Son de sonnette</string>
     <string name="t_d9efc589" formatted="false">Joue un court ding-dong pour les demandes de priorité haute ou alarme (sonnette).</string>
+    <string name="t_8b6cbb0a" formatted="false">Annonce vocale</string>
+    <string name="t_7c331b62" formatted="false">Lit le texte que Home Assistant envoie avec une demande (par exemple \"Quelqu\'un est à la porte\"), pour la sonnette et l\'alarme (haute) ou pour toutes les demandes. Jamais pour un test.</string>
     <string name="t_f2d70813" formatted="false">Format du direct</string>
     <string name="t_12ab8fa8" formatted="false">Le MP4 via HTTP fonctionne avec toute installation go2rtc ; le RTSP nécessite le port RTSP de go2rtc ; le HLS est le plus robuste mais a quelques secondes de retard.</string>
     <string name="t_99b77887" formatted="false">Seulement à certaines heures</string>

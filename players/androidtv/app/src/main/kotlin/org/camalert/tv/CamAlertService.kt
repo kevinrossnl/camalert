@@ -13,7 +13,9 @@ import android.content.pm.ServiceInfo
 import android.media.AudioManager
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
+import android.media.MediaPlayer
 import android.media.ToneGenerator
+import android.speech.tts.TextToSpeech
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
@@ -32,6 +34,7 @@ import org.camalert.core.Obs
 import org.camalert.core.PlayerController
 import org.camalert.core.PlayerEnv
 import org.camalert.core.SelfUpdate
+import org.camalert.core.Speech
 import org.camalert.core.Present
 import org.camalert.core.Tile
 import org.camalert.core.Unifi
@@ -153,6 +156,7 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         override fun settings() = this@CamAlertService.settings()
         override fun controller(): Controller = this@CamAlertService.controller
         override fun node() = Pair(node, nodeName())
+        override fun speak(url: String?, text: String?, priority: String): Boolean = this@CamAlertService.speak(url, text)
         override fun cameras(): List<Map<String, Any?>> {
             val s = settings()
             if (s["source"]?.toString() == "direct")  // #124: title and snapshot from the camera list
@@ -487,7 +491,71 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         }, "camalert-unifi").apply { isDaemon = true; start() }
     }
 
+    private var tts: TextToSpeech? = null
+    private var ttsReady = false
+    private var sayPlayer: MediaPlayer? = null
+
+    /** #89: the WAV from Home Assistant (local network) on the music stream, or the text with Android's own speech
+     *  engine when there is no audio url (or it fails). In a thread; true when something will be spoken. */
+    private fun speak(url: String?, text: String?): Boolean {
+        val am = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        if (am.isStreamMute(AudioManager.STREAM_MUSIC)) {
+            CamLog.log("spoken announcement skipped: muted")
+            return false
+        }
+        Thread {
+            try { Thread.sleep(1200) } catch (e: InterruptedException) { return@Thread }  // after the window and the chime
+            var played = false
+            if (url != null) {
+                try {
+                    val data = Net.fetch(url, true, 10000, null, Speech.MAX_AUDIO + 1)
+                    if (data.size > Speech.MAX_AUDIO || !Speech.isWav(data)) throw IllegalArgumentException("not a WAV file")
+                    val file = java.io.File(cacheDir, "camalert-say.wav")
+                    file.writeBytes(data)
+                    main.post { playWav(file.path) }
+                    played = true
+                } catch (e: Exception) {
+                    CamLog.log("spoken announcement failed: $e")
+                }
+            }
+            if (!played && text != null) main.post { sayText(text) }
+        }.start()
+        return true
+    }
+
+    @Suppress("DEPRECATION")  // setAudioStreamType: setAudioAttributes needs API 26, minSdk is 25
+    private fun playWav(path: String) {
+        try {
+            sayPlayer?.release()
+            sayPlayer = MediaPlayer().apply {
+                setAudioStreamType(AudioManager.STREAM_MUSIC)
+                setDataSource(path)
+                setOnCompletionListener { it.release(); if (sayPlayer === it) sayPlayer = null }
+                prepare()
+                start()
+            }
+            CamLog.log("spoken announcement", "verbose")
+        } catch (e: Exception) {
+            CamLog.log("spoken announcement failed: $e")
+        }
+    }
+
+    private fun sayText(text: String) {
+        val engine = tts
+        if (engine != null && ttsReady) {
+            engine.speak(text, TextToSpeech.QUEUE_FLUSH, null, "camalert")
+            return
+        }
+        tts = TextToSpeech(this) { status ->
+            ttsReady = status == TextToSpeech.SUCCESS
+            if (ttsReady) tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "camalert")
+            else CamLog.log("spoken announcement failed: no speech engine on this device")
+        }
+    }
+
     override fun onDestroy() {
+        tts?.shutdown(); tts = null
+        sayPlayer?.release(); sayPlayer = null
         CamLog.log("CamAlert stopped")
         unifiThread?.interrupt()
         foscamThread?.interrupt()

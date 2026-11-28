@@ -842,6 +842,12 @@ msgstr ""
 msgid "Plays a short ding-dong for requests with priority high or alarm (doorbell)."
 msgstr ""
 
+msgid "Spoken announcement"
+msgstr ""
+
+msgid "Plays the text Home Assistant sends with a request (for example \"Someone is at the door\"), for doorbell and alarm (high) or all requests. Never for a test."
+msgstr ""
+
 msgid "Picons for the camera channels"
 msgstr ""
 

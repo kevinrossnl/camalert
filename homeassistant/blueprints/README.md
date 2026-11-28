@@ -39,6 +39,9 @@ Order in every blueprint: **trigger → `players` → `camera`/`cameras` → `mo
 | `phone_camera` | Camera entity for that notification: its picture (`/api/camera_proxy/...`) and tapping opens the camera; empty = text only | empty | doorbell, doorbell webOS, motion, alarm |
 | `phone_buttons` | Buttons on the phone notification: **Show on TV** (these players, priority high) and **Do not disturb 1 h** (these players); handled by the CamAlert integration (1.4+) | `true` | doorbell, doorbell webOS, motion, alarm |
 | `phone_critical` | Critical notification: comes through silent mode and Do not disturb (iOS critical alert, Android alarm channel) | `false` (alarm: `true`) | doorbell, doorbell webOS, motion, alarm |
+| `announce` | Spoken announcement, e.g. "Someone is at the door": on the players (their setting *Spoken announcement*; CamAlert 1.4+) and on `announce_speakers` (#89); empty = none | empty | doorbell |
+| `announce_speakers` | Media players that also speak the announcement with Home Assistant's text-to-speech (`tts.speak`) | empty | doorbell |
+| `tts_engine` | TTS engine for the announcement; empty = the first TTS engine of Home Assistant | empty | doorbell |
 | `webos_live_url` | Live view on the LG TV: page with the stream that the TV opens in its browser for the duration (e.g. go2rtc `http://192.168.1.10:1984/stream.html?src=front_door&mode=mse`); needs `tv`; afterwards the TV goes back to its input or app (scene `scene.camalert_webos_before`); empty = only the notification | empty | doorbell webOS |
 
 **Added in 1.3** (optional, at the end, the default changes nothing):

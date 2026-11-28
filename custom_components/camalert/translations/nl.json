@@ -251,6 +251,18 @@
         "label": {
           "name": "Wie/wat",
           "description": "Optionele tekst vóór de cameranaam in de titel, bijv. Persoon."
+        },
+        "announce": {
+          "name": "Gesproken melding",
+          "description": "Tekst die de spelers bij de camera uitspreken, bijvoorbeeld \"Er staat iemand aan de deur\". Home Assistant maakt de spraak met een TTS-engine; de instelling Gesproken melding van de speler bepaalt bij welke verzoeken (standaard: deurbel en alarm)."
+        },
+        "tts": {
+          "name": "TTS-engine",
+          "description": "De tekst-naar-spraak-engine voor de melding. Leeg = de eerste TTS-engine van Home Assistant."
+        },
+        "language": {
+          "name": "Taal",
+          "description": "Taal van de melding, bijvoorbeeld en of nl. Leeg = de standaard van de engine."
         }
       }
     },

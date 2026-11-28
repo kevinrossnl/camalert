@@ -154,6 +154,8 @@
     <string name="t_89750080" formatted="false">Priorytet wysoki: pomarańczowa ramka i słowo Dzwonek. Alarm: czerwono-pomarańczowa ramka i słowo ALARM. Migająca: raz na sekundę.</string>
     <string name="t_d930321b" formatted="false">Dźwięk dzwonka</string>
     <string name="t_d9efc589" formatted="false">Odtwarza krótkie ding-dong dla żądań o priorytecie wysokim lub alarm (dzwonek).</string>
+    <string name="t_8b6cbb0a" formatted="false">Komunikat głosowy</string>
+    <string name="t_7c331b62" formatted="false">Odtwarza tekst, który Home Assistant wysyła z żądaniem (na przykład \"Ktoś jest przy drzwiach\"), dla dzwonka i alarmu (wysoki) lub dla wszystkich żądań. Nigdy podczas testu.</string>
     <string name="t_f2d70813" formatted="false">Format obrazu na żywo</string>
     <string name="t_12ab8fa8" formatted="false">MP4 przez HTTP działa z każdą instalacją go2rtc; RTSP wymaga portu RTSP go2rtc; HLS jest najbardziej niezawodny, ale ma kilka sekund opóźnienia.</string>
     <string name="t_99b77887" formatted="false">Tylko w określonych godzinach</string>

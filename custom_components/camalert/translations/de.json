@@ -251,6 +251,18 @@
         "label": {
           "name": "Wer/was",
           "description": "Optionaler Text vor dem Kameranamen im Titel, z. B. Person."
+        },
+        "announce": {
+          "name": "Gesprochene Ansage",
+          "description": "Text, den die Wiedergabegeräte mit der Kamera sprechen, zum Beispiel \"Jemand ist an der Tür\". Home Assistant erzeugt die Sprache mit einer TTS-Engine; die Einstellung Gesprochene Ansage des Wiedergabegeräts bestimmt, bei welchen Anfragen (Standard: Türklingel und Alarm)."
+        },
+        "tts": {
+          "name": "TTS-Engine",
+          "description": "Die Text-zu-Sprache-Engine für die Ansage. Leer = die erste TTS-Engine von Home Assistant."
+        },
+        "language": {
+          "name": "Sprache",
+          "description": "Sprache der Ansage, zum Beispiel en oder nl. Leer = Standard der Engine."
         }
       }
     },

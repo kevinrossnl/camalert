@@ -154,6 +154,8 @@
     <string name="t_89750080" formatted="false">Priorität hoch: orangefarbener Rahmen und das Wort Türklingel. Alarm: rotoranger Rahmen und das Wort ALARM. Blinkend: einmal pro Sekunde.</string>
     <string name="t_d930321b" formatted="false">Türklingelton</string>
     <string name="t_d9efc589" formatted="false">Spielt ein kurzes Ding-Dong bei Anfragen mit Priorität hoch oder Alarm (Türklingel).</string>
+    <string name="t_8b6cbb0a" formatted="false">Gesprochene Ansage</string>
+    <string name="t_7c331b62" formatted="false">Spielt den Text ab, den Home Assistant mit einer Anfrage sendet (zum Beispiel \"Jemand ist an der Tür\"), bei Türklingel und Alarm (hoch) oder bei allen Anfragen. Nie bei einem Test.</string>
     <string name="t_f2d70813" formatted="false">Format der Live-Ansicht</string>
     <string name="t_12ab8fa8" formatted="false">MP4 über HTTP funktioniert mit jeder go2rtc-Installation; RTSP braucht den RTSP-Port von go2rtc; HLS ist am robustesten, hängt aber ein paar Sekunden hinterher.</string>
     <string name="t_99b77887" formatted="false">Nur zu bestimmten Zeiten</string>

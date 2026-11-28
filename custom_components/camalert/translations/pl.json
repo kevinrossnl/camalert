@@ -251,6 +251,18 @@
         "label": {
           "name": "Kto/co",
           "description": "Opcjonalny tekst przed nazwą kamery w tytule, np. Osoba."
+        },
+        "announce": {
+          "name": "Komunikat głosowy",
+          "description": "Tekst, który odtwarzacze wypowiadają z kamerą, na przykład \"Ktoś jest przy drzwiach\". Home Assistant tworzy mowę silnikiem TTS; ustawienie Komunikat głosowy odtwarzacza decyduje, dla których żądań (domyślnie: dzwonek i alarm)."
+        },
+        "tts": {
+          "name": "Silnik TTS",
+          "description": "Silnik zamiany tekstu na mowę dla komunikatu. Puste = pierwszy silnik TTS w Home Assistant."
+        },
+        "language": {
+          "name": "Język",
+          "description": "Język komunikatu, na przykład en lub nl. Puste = domyślny język silnika."
         }
       }
     },

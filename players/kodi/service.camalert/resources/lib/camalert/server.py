@@ -61,6 +61,25 @@ class Backend(api.Backend):
     def settings(self):
         return kodiapi.settings()
 
+    def speak(self, url, text, priority):
+        """#89: the WAV from Home Assistant through Kodi's GUI sound, in a thread. Kodi has no speech engine for
+        text alone."""
+        if not url:
+            kodiapi.log("spoken announcement skipped: no audio url", "verbose")
+            return False
+        if kodiapi.cond("Player.Muted"):
+            kodiapi.log("spoken announcement skipped: Kodi is muted")
+            return False
+
+        def run():
+            try:
+                kodiapi.say(url)
+            except Exception as e:  # noqa: BLE001 - network, not a WAV
+                kodiapi.log("spoken announcement failed: %s" % e)
+        import threading
+        threading.Thread(target=run, daemon=True).start()
+        return True
+
     def controller(self):
         from .controller import Controller
         return Controller.instance

@@ -39,6 +39,18 @@ show:
       example: Person
       selector:
         text:
+    announce:
+      example: Someone is at the door
+      selector:
+        text:
+    tts:
+      selector:
+        entity:
+          domain: tts
+    language:
+      example: en
+      selector:
+        text:
 mosaic:
   target:
     entity:

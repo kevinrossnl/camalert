@@ -843,6 +843,12 @@ msgstr "Suono del campanello"
 msgid "Plays a short ding-dong for requests with priority high or alarm (doorbell)."
 msgstr "Riproduce un breve din-don per le richieste con priorità alta o allarme (campanello)."
 
+msgid "Spoken announcement"
+msgstr "Annuncio vocale"
+
+msgid "Plays the text Home Assistant sends with a request (for example \"Someone is at the door\"), for doorbell and alarm (high) or all requests. Never for a test."
+msgstr "Riproduce il testo che Home Assistant invia con una richiesta (per esempio \"C'è qualcuno alla porta\"), per campanello e allarme (alta) o per tutte le richieste. Mai per un test."
+
 msgid "Picons for the camera channels"
 msgstr "Picon per i canali delle telecamere"
 

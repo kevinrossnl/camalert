@@ -49,6 +49,7 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Text size | `normal` | `normal` / `large` / `xlarge` | advanced | all | All CamAlert texts: window titles, key hints, camera control, tour, mosaic and lists. |
 | Doorbell and alarm marking | `steady` | `off` / `steady` / `flash` | advanced | all | Priority high: orange frame and the word Doorbell. Alarm: red-orange frame and the word ALARM. Flashing: once per second. |
 | Doorbell chime | `off` | `off` / `high` / `all` | advanced | all | Plays a short ding-dong for requests with priority high or alarm (doorbell). |
+| Spoken announcement | `high` | `off` / `high` / `all` | advanced | all | Plays the text Home Assistant sends with a request (for example "Someone is at the door"), for doorbell and alarm (high) or all requests. Never for a test. |
 | Picons for the camera channels | No |  | advanced | Enigma2 | Makes a simple picon (camera + name) for every camera channel; existing picons are never replaced. |
 | Live stream format | `mp4` | `mp4` / `hls` / `rtsp` | expert | Kodi, Android TV | MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc's RTSP port; HLS is the most robust but lags a few seconds. |
 

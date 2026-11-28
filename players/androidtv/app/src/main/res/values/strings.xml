@@ -155,6 +155,8 @@
     <string name="t_89750080" formatted="false">Priority high: orange frame and the word Doorbell. Alarm: red-orange frame and the word ALARM. Flashing: once per second.</string>
     <string name="t_d930321b" formatted="false">Doorbell chime</string>
     <string name="t_d9efc589" formatted="false">Plays a short ding-dong for requests with priority high or alarm (doorbell).</string>
+    <string name="t_8b6cbb0a" formatted="false">Spoken announcement</string>
+    <string name="t_7c331b62" formatted="false">Plays the text Home Assistant sends with a request (for example \"Someone is at the door\"), for doorbell and alarm (high) or all requests. Never for a test.</string>
     <string name="t_f2d70813" formatted="false">Live stream format</string>
     <string name="t_12ab8fa8" formatted="false">MP4 over HTTP works with every go2rtc set-up; RTSP needs go2rtc\'s RTSP port; HLS is the most robust but lags a few seconds.</string>
     <string name="t_99b77887" formatted="false">Only between certain times</string>

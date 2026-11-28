@@ -91,9 +91,38 @@ blueprint:
       default: false
       selector:
         boolean:
+    announce:
+      name: Spoken announcement (optional)
+      description: >-
+        Text spoken when the doorbell rings, e.g. "Someone is at the door": on the players (their setting Spoken
+        announcement, default for doorbell and alarm; needs CamAlert 1.4) and on the speakers below. Empty = none.
+      default: ""
+      selector:
+        text:
+    announce_speakers:
+      name: Also announce on these speakers (optional)
+      description: Media players that speak the announcement with Home Assistant's text-to-speech. Empty = none.
+      default: []
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - domain: media_player
+    tts_engine:
+      name: TTS engine (optional)
+      description: The text-to-speech engine for the announcement. Empty = the first TTS engine of Home Assistant.
+      default: ""
+      selector:
+        entity:
+          filter:
+            - domain: tts
 mode: single
 max_exceeded: silent
 variables:
+  announce_in: !input announce
+  announce_speakers_in: !input announce_speakers
+  tts_engine_in: !input tts_engine
+  tts_entity: "{{ tts_engine_in or (states.tts | map(attribute='entity_id') | list | first | default('')) }}"
   label_in: !input label
   camera_in: !input camera
   phone_notify_in: !input phone_notify
@@ -145,6 +174,22 @@ actions:
           mode: !input mode
           priority: high
           label: "{{ label_in | trim }}"
+          announce: "{{ announce_in | trim }}"
+          tts: "{{ tts_engine_in }}"
+        continue_on_error: true
+  # #89 (#12): the announcement on speakers too, with Home Assistant's text-to-speech; never blocks the rest
+  - if:
+      - condition: template
+        value_template: >-
+          {{ announce_in | trim | length > 0 and tts_entity != ''
+             and (announce_speakers_in if announce_speakers_in is list else [announce_speakers_in]) | select | list | count > 0 }}
+    then:
+      - action: tts.speak
+        target:
+          entity_id: "{{ tts_entity }}"
+        data:
+          media_player_entity_id: "{{ announce_speakers_in }}"
+          message: "{{ announce_in | trim }}"
         continue_on_error: true
   # #14: also on the phone (Companion app), also when nobody is home; never blocks the TV part
   - if:

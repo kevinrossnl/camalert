@@ -251,6 +251,18 @@
         "label": {
           "name": "Chi/cosa",
           "description": "Testo facoltativo prima del nome della telecamera nel titolo, ad es. Persona."
+        },
+        "announce": {
+          "name": "Annuncio vocale",
+          "description": "Testo che i lettori pronunciano con la telecamera, per esempio \"C'è qualcuno alla porta\". Home Assistant crea la voce con un motore TTS; l'impostazione Annuncio vocale del lettore decide per quali richieste (predefinito: campanello e allarme)."
+        },
+        "tts": {
+          "name": "Motore TTS",
+          "description": "Il motore di sintesi vocale per l'annuncio. Vuoto = il primo motore TTS di Home Assistant."
+        },
+        "language": {
+          "name": "Lingua",
+          "description": "Lingua dell'annuncio, per esempio en o nl. Vuoto = la lingua predefinita del motore."
         }
       }
     },

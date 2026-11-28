@@ -1,7 +1,7 @@
 {
   "domain": "camalert",
   "name": "CamAlert",
-  "after_dependencies": ["hassio", "network"],
+  "after_dependencies": ["hassio", "media_source", "network", "tts"],
   "categories": ["security_safety.cameras", "media_entertainment.tv_streaming"],
   "codeowners": ["@kevinrossnl"],
   "config_flow": true,

@@ -1,5 +1,6 @@
 """The blueprints in a real Home Assistant (#33, #45): each one passes Home Assistant's blueprint schema, makes a
 valid automation with the frozen inputs, and that automation sends the expected action to the player."""
+import json
 import os
 import shutil
 
@@ -57,6 +58,27 @@ async def test_doorbell(hass, player, blueprints):
     hass.states.async_set("binary_sensor.door", "on")
     await hass.async_block_till_done()
     assert player.ctl.calls[-1] == ("show", "front_door", 30, "photo", "high", "ha", None)
+
+
+async def test_doorbell_announcement(hass, player, blueprints):
+    """#89 (#12): the text goes to the players with camalert.show and to the speakers with tts.speak."""
+    from pytest_homeassistant_custom_component.common import async_mock_service
+    spoken = async_mock_service(hass, "tts", "speak")
+    entry = await setup_player(hass, player)
+    hass.states.async_set("binary_sensor.door", "off")
+    hass.states.async_set("tts.piper", "unknown")
+    await automations(hass, ("door", "camalert_doorbell.yaml", {
+        "doorbell": ["binary_sensor.door"], "players": [player_device(hass, entry).id], "camera": "front_door",
+        "announce": "Someone is at the door", "announce_speakers": ["media_player.kitchen"]}))
+    hass.states.async_set("binary_sensor.door", "on")
+    await hass.async_block_till_done()
+    assert player.ctl.calls[-1] == ("show", "front_door", 30, "photo", "high", "ha", None)
+    show = [json.loads(b) for m, p, h, b in player.requests if p == "/camalert/show"][-1]
+    assert show["say"] == "Someone is at the door"
+    assert len(spoken) == 1
+    assert spoken[0].data["message"] == "Someone is at the door"
+    assert spoken[0].data["media_player_entity_id"] == ["media_player.kitchen"]
+    assert spoken[0].data["entity_id"] in (["tts.piper"], "tts.piper")
 
 
 async def test_motion_with_label(hass, player, blueprints):

@@ -16,7 +16,8 @@ import _paths  # noqa: E402
 FROZEN = {
     "camalert_doorbell.yaml": [("doorbell", None), ("players", None), ("camera", None), ("mode", "photo"),
                                ("seconds", 30), ("label", ""), ("presence", []), ("phone_notify", ""),
-                               ("phone_camera", ""), ("phone_buttons", True), ("phone_critical", False)],
+                               ("phone_camera", ""), ("phone_buttons", True), ("phone_critical", False),
+                               ("announce", ""), ("announce_speakers", []), ("tts_engine", "")],
     "camalert_motion.yaml": [("motion", None), ("players", None), ("cameras", ""), ("mode", "photo"),
                              ("several", "strip"), ("seconds", 30), ("label", ""), ("when", "armed"),
                              ("alarm_panel", ""), ("from_time", "22:00:00"), ("until_time", "07:00:00"),

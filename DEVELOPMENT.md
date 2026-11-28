@@ -23,6 +23,9 @@ file table of that folder: read the root file **and** the one of the folder you 
   are public on GitHub and cannot be removed without rewriting history. `PUBLIC` in `check_private.py` lists the only
   allowed exceptions (the GitHub owner name). Images: the checklist in [docs/dev/privacy.md](docs/dev/privacy.md).
 - Commit author: `CamAlert developers <noreply@camalert.invalid>`.
+- **Everything in git is in English** (from 28-11-2026): commit messages, issue titles and texts, comments on issues
+  and PRs, code comments and docs. The repository is public and read internationally. Translations live only in
+  the i18n catalogue (`core/i18n`). Older Dutch commits and issues stay as they are.
 - Only commit when `check_private.py` **and** the tests pass (do not pipe them through `tail`, that hides the exit code).
 
 ## How we work

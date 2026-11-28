@@ -108,7 +108,7 @@ async def test_options_send_the_address(hass, player, setup):
         result["flow_id"], {"parent_device": "auto", "go2rtc_server": "http://192.168.1.20:1984", "camera": "garden"})
     assert result["type"] is FlowResultType.CREATE_ENTRY
     assert (player.settings["server"], player.settings["camera"]) == ("http://192.168.1.20:1984", "garden")
-    assert entry.options == {"parent_device": "auto"}  # the address is sent, not kept in the options
+    assert entry.options == {"parent_device": "auto", "doorbell": [], "doorbell_camera": ""}  # the address is sent, not kept
     await hass.async_block_till_done()
 
 

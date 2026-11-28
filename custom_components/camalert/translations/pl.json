@@ -85,12 +85,16 @@
         "data": {
           "parent_device": "Pokaż pod urządzeniem",
           "go2rtc_server": "Wyślij adres go2rtc",
-          "camera": "Domyślna kamera"
+          "camera": "Domyślna kamera",
+          "doorbell": "Dzwonek",
+          "doorbell_camera": "Kamera dzwonka"
         },
         "data_description": {
           "parent_device": "Automatycznie: urządzenie integracji Enigma2, Kodi lub Android TV o tym samym adresie co odtwarzacz. Można też wybrać urządzenie samodzielnie albo żadne.",
           "go2rtc_server": "Opcjonalnie: wysyła ten adres go2rtc do odtwarzacza. Odtwarzacz, który jest już skonfigurowany, przyjmuje tylko adres z sieci lokalnej. Puste: odtwarzacz zachowuje własne ustawienie.",
-          "camera": "Opcjonalnie, razem z adresem go2rtc: nazwa go2rtc domyślnej kamery, np. front_door."
+          "camera": "Opcjonalnie, razem z adresem go2rtc: nazwa go2rtc domyślnej kamery, np. front_door.",
+          "doorbell": "Opcjonalnie: gdy jeden z nich zadzwoni (zdarzenie dzwonka lub czujnik binarny, który się włączy), odtwarzacz pokaże kamerę z priorytetem wysokim. Automatyzacja nie jest potrzebna; blueprinty pozostają do własnych reguł.",
+          "doorbell_camera": "Nazwa go2rtc kamery pokazywanej przy dzwonku, np. front_door. Puste: domyślna kamera odtwarzacza."
         }
       }
     },

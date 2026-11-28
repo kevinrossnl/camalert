@@ -104,6 +104,39 @@ blueprint:
       default: false
       selector:
         boolean:
+    phone_notify:
+      name: Also notify phones (optional)
+      description: >-
+        Notify actions of the Home Assistant Companion app, comma-separated, e.g. notify.mobile_app_my_phone
+        (`notify.` may be left out). Empty = no phone notification.
+      default: ""
+      selector:
+        text:
+    phone_camera:
+      name: Camera entity for the phone (optional)
+      description: >-
+        Camera entity (e.g. camera.front_door): the phone notification shows its picture and opens the camera when
+        tapped. Empty = text only.
+      default: ""
+      selector:
+        entity:
+          filter:
+            - domain: camera
+    phone_buttons:
+      name: Buttons on the phone notification
+      description: >-
+        "Show on TV" (shows the camera on these players) and "Do not disturb 1 h" (on these players). Needs the
+        CamAlert integration 1.4 or newer.
+      default: true
+      selector:
+        boolean:
+    phone_critical:
+      name: Critical phone notification
+      description: >-
+        Comes through the phone's silent mode and Do not disturb (iOS critical alert, Android alarm channel).
+      default: false
+      selector:
+        boolean:
 mode: single
 max_exceeded: silent
 variables:
@@ -136,6 +169,27 @@ variables:
     {%- if cams_in | trim != '' -%}{{ cams_in.split(',') | map('trim') | reject('eq', '') | list }}
     {%- else -%}{{ [trigger.entity_id.split('.')[1] | regex_replace('_(motion|person_detected|person|occupancy)$', '')] }}
     {%- endif -%}
+  phone_notify_in: !input phone_notify
+  phone_camera_in: !input phone_camera
+  phone_buttons_in: !input phone_buttons
+  phone_critical_in: !input phone_critical
+  players_in: !input players
+  phone_targets: >-
+    {{ phone_notify_in.split(',') | map('trim') | reject('eq', '')
+       | map('regex_replace', '^(?!notify\\.)', 'notify.') | list }}
+  phone_message: "{{ label ~ ' - ' ~ cams | join(', ') }}"
+  phone_data: >-
+    {% set cam = phone_camera_in %}
+    {% set devs = (players_in if players_in is list else [players_in]) | join(',') %}
+    {% set d = {'tag': 'camalert_motion_' ~ cams[0], 'group': 'camalert'} %}
+    {% if cam %}{% set d = dict(d, image='/api/camera_proxy/' ~ cam, entity_id=cam,
+       clickAction='entityId:' ~ cam, url='entityId:' ~ cam) %}{% endif %}
+    {% if phone_buttons_in %}{% set d = dict(d, actions=[
+       {'action': 'CAMALERT_SHOW|' ~ (cams | join(',')) ~ '|' ~ devs, 'title': 'Show on TV'},
+       {'action': 'CAMALERT_DND|60|' ~ devs, 'title': 'Do not disturb 1 h'}]) %}{% endif %}
+    {% if phone_critical_in %}{% set d = dict(d, push={'sound': {'name': 'default', 'critical': 1, 'volume': 1.0}},
+       ttl=0, priority='high', channel='alarm_stream') %}{% endif %}
+    {{ d }}
 triggers:
   - trigger: state
     entity_id: !input motion
@@ -149,34 +203,52 @@ conditions:
          or (when == 'time' and in_time)
          or (when == 'armed_or_time' and (armed or in_time))
          or (when == 'armed_and_time' and armed and in_time) }}
-  - condition: template
-    value_template: "{{ someone_home }}"
 actions:
+  # #128: presence only gates the TV; the phone also gets it when nobody is home
   - if:
       - condition: template
-        value_template: "{{ cams | length > 1 and (several == 'mosaic' or cams | length > 4) }}"
+        value_template: "{{ someone_home }}"
     then:
-      - action: camalert.mosaic
-        target:
-          device_id: !input players
-        data:
-          cameras: "{{ cams }}"
-          seconds: "{{ 300 if hold else seconds_in }}"
-        continue_on_error: true
-    else:
-      - action: camalert.show
-        target:
-          device_id: !input players
-        data:
-          camera: "{{ cams if cams | length > 1 else cams[0] }}"
-          seconds: "{{ 0 if hold else seconds_in }}"
-          mode: "{{ 'strip' if cams | length > 1 else mode_single }}"
-          priority: high
-          label: "{{ label }}"
+      - if:
+          - condition: template
+            value_template: "{{ cams | length > 1 and (several == 'mosaic' or cams | length > 4) }}"
+        then:
+          - action: camalert.mosaic
+            target:
+              device_id: !input players
+            data:
+              cameras: "{{ cams }}"
+              seconds: "{{ 300 if hold else seconds_in }}"
+            continue_on_error: true
+        else:
+          - action: camalert.show
+            target:
+              device_id: !input players
+            data:
+              camera: "{{ cams if cams | length > 1 else cams[0] }}"
+              seconds: "{{ 0 if hold else seconds_in }}"
+              mode: "{{ 'strip' if cams | length > 1 else mode_single }}"
+              priority: high
+              label: "{{ label }}"
+            continue_on_error: true
+  # #128: also on the phones (Companion app), with buttons; never waits for the hold part below
+  - if:
+      - condition: template
+        value_template: "{{ phone_notify_in | trim | length > 0 }}"
+    then:
+      - repeat:
+          for_each: "{{ phone_targets }}"
+          sequence:
+            - action: "{{ repeat.item }}"
+              data:
+                title: CamAlert
+                message: "{{ phone_message }}"
+                data: "{{ phone_data }}"
+              continue_on_error: true
         continue_on_error: true
   - if:
       - condition: template
-        value_template: "{{ hold }}"
+        value_template: "{{ hold and someone_home }}"
     then:
       # #81: wait until every motion sensor is off again (the player's limit is 10 minutes), then hide
       - wait_template: >-

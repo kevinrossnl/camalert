@@ -111,10 +111,10 @@ blueprint:
           filter:
             - domain: [person, device_tracker, group, zone]
     phone_notify:
-      name: Also notify a phone (optional)
+      name: Also notify phones (optional)
       description: >-
-        Notify action of the Home Assistant Companion app, e.g. notify.mobile_app_my_phone (`notify.` may be left
-        out): a notification "Doorbell - camera" also when nobody is home. Empty = no phone notification.
+        Notify actions of the Home Assistant Companion app, comma-separated, e.g. notify.mobile_app_my_phone
+        (`notify.` may be left out): a notification "Doorbell - camera" also when nobody is home. Empty = none.
       default: ""
       selector:
         text:
@@ -137,6 +137,21 @@ blueprint:
       default: ""
       selector:
         text:
+    phone_buttons:
+      name: Buttons on the phone notification
+      description: >-
+        "Show on TV" (shows the camera on these players) and "Do not disturb 1 h" (on these players). Needs the
+        CamAlert integration 1.4 or newer.
+      default: true
+      selector:
+        boolean:
+    phone_critical:
+      name: Critical phone notification
+      description: >-
+        Comes through the phone's silent mode and Do not disturb (iOS critical alert, Android alarm channel).
+      default: false
+      selector:
+        boolean:
 mode: single
 max_exceeded: silent
 variables:
@@ -150,13 +165,25 @@ variables:
   snapshot_url_in: !input snapshot_url
   phone_notify_in: !input phone_notify
   phone_camera_in: !input phone_camera
-  phone_action: >-
-    {% set a = phone_notify_in | trim %}{{ a if a.startswith('notify.') else 'notify.' ~ a }}
+  phone_buttons_in: !input phone_buttons
+  phone_critical_in: !input phone_critical
+  players_in: !input players
+  phone_targets: >-
+    {{ phone_notify_in.split(',') | map('trim') | reject('eq', '')
+       | map('regex_replace', '^(?!notify\\.)', 'notify.') | list }}
   phone_message: "{{ (label_in | trim or 'Doorbell') ~ ' - ' ~ camera_in }}"
   phone_data: >-
-    {{ {'image': '/api/camera_proxy/' ~ phone_camera_in, 'entity_id': phone_camera_in,
-        'clickAction': 'entityId:' ~ phone_camera_in, 'url': 'entityId:' ~ phone_camera_in}
-       if phone_camera_in else {} }}
+    {% set cam = phone_camera_in %}
+    {% set devs = (players_in if players_in is list else [players_in]) | join(',') %}
+    {% set d = {'tag': 'camalert_' ~ camera_in, 'group': 'camalert'} %}
+    {% if cam %}{% set d = dict(d, image='/api/camera_proxy/' ~ cam, entity_id=cam,
+       clickAction='entityId:' ~ cam, url='entityId:' ~ cam) %}{% endif %}
+    {% if phone_buttons_in %}{% set d = dict(d, actions=[
+       {'action': 'CAMALERT_SHOW|' ~ camera_in ~ '|' ~ devs, 'title': 'Show on TV'},
+       {'action': 'CAMALERT_DND|60|' ~ devs, 'title': 'Do not disturb 1 h'}]) %}{% endif %}
+    {% if phone_critical_in %}{% set d = dict(d, push={'sound': {'name': 'default', 'critical': 1, 'volume': 1.0}},
+       ttl=0, priority='high', channel='alarm_stream') %}{% endif %}
+    {{ d }}
   webos_live_url_in: !input webos_live_url
   seconds_in: !input seconds
   presence_in: !input presence
@@ -198,11 +225,15 @@ actions:
       - condition: template
         value_template: "{{ phone_notify_in | trim | length > 0 }}"
     then:
-      - action: "{{ phone_action }}"
-        data:
-          title: CamAlert
-          message: "{{ phone_message }}"
-          data: "{{ phone_data }}"
+      - repeat:
+          for_each: "{{ phone_targets }}"
+          sequence:
+            - action: "{{ repeat.item }}"
+              data:
+                title: CamAlert
+                message: "{{ phone_message }}"
+                data: "{{ phone_data }}"
+              continue_on_error: true
         continue_on_error: true
   - if:
       - condition: template

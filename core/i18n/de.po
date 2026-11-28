@@ -840,7 +840,7 @@ msgstr "keine Einstellungsdatei"
 msgid "made by a newer CamAlert"
 msgstr "von einem neueren CamAlert erstellt"
 
-#: e2 kodi:30552
+#: e2 kodi:30552 ha:options.step.init.data.doorbell
 msgid "Doorbell"
 msgstr "Türklingel"
 
@@ -1964,6 +1964,10 @@ msgstr "Unter Gerät anzeigen"
 msgid "Send go2rtc address"
 msgstr "go2rtc-Adresse senden"
 
+#: ha:options.step.init.data.doorbell_camera
+msgid "Doorbell camera"
+msgstr "Türklingel-Kamera"
+
 #: ha:options.step.init.data_description.parent_device
 msgid "Automatic: the device of the Enigma2, Kodi or Android TV integration with the same address as the player. Or choose a device yourself, or none."
 msgstr "Automatisch: das Gerät der Enigma2-, Kodi- oder Android-TV-Integration mit derselben Adresse wie das Wiedergabegerät. Oder wähle selbst ein Gerät oder keines."
@@ -1975,6 +1979,14 @@ msgstr "Optional: schickt diese go2rtc-Adresse an das Wiedergabegerät. Ein scho
 #: ha:options.step.init.data_description.camera
 msgid "Optional, with the go2rtc address: the go2rtc name of the default camera, e.g. front_door."
 msgstr "Optional, zusammen mit der go2rtc-Adresse: der go2rtc-Name der Standardkamera, z. B. front_door."
+
+#: ha:options.step.init.data_description.doorbell
+msgid "Optional: when one of these rings (a doorbell event, or a binary sensor that turns on), the player shows the camera with priority high. No automation needed; blueprints remain for your own rules."
+msgstr "Optional: Klingelt eine davon (ein Türklingel-Ereignis oder ein Binärsensor, der einschaltet), zeigt das Wiedergabegerät die Kamera mit Priorität hoch. Keine Automatisierung nötig; Blueprints bleiben für deine eigenen Regeln."
+
+#: ha:options.step.init.data_description.doorbell_camera
+msgid "The go2rtc name of the camera to show for the doorbell, e.g. front_door. Empty: the player's default camera."
+msgstr "Der go2rtc-Name der Kamera, die bei der Türklingel erscheint, z. B. front_door. Leer: die Standardkamera des Wiedergabegeräts."
 
 #: ha:entity.button.show.name
 msgid "Show {camera}"

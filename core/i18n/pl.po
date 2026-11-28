@@ -840,7 +840,7 @@ msgstr "to nie jest plik ustawień"
 msgid "made by a newer CamAlert"
 msgstr "utworzony przez nowszą wersję CamAlert"
 
-#: e2 kodi:30552
+#: e2 kodi:30552 ha:options.step.init.data.doorbell
 msgid "Doorbell"
 msgstr "Dzwonek"
 
@@ -1964,6 +1964,10 @@ msgstr "Pokaż pod urządzeniem"
 msgid "Send go2rtc address"
 msgstr "Wyślij adres go2rtc"
 
+#: ha:options.step.init.data.doorbell_camera
+msgid "Doorbell camera"
+msgstr "Kamera dzwonka"
+
 #: ha:options.step.init.data_description.parent_device
 msgid "Automatic: the device of the Enigma2, Kodi or Android TV integration with the same address as the player. Or choose a device yourself, or none."
 msgstr "Automatycznie: urządzenie integracji Enigma2, Kodi lub Android TV o tym samym adresie co odtwarzacz. Można też wybrać urządzenie samodzielnie albo żadne."
@@ -1975,6 +1979,14 @@ msgstr "Opcjonalnie: wysyła ten adres go2rtc do odtwarzacza. Odtwarzacz, który
 #: ha:options.step.init.data_description.camera
 msgid "Optional, with the go2rtc address: the go2rtc name of the default camera, e.g. front_door."
 msgstr "Opcjonalnie, razem z adresem go2rtc: nazwa go2rtc domyślnej kamery, np. front_door."
+
+#: ha:options.step.init.data_description.doorbell
+msgid "Optional: when one of these rings (a doorbell event, or a binary sensor that turns on), the player shows the camera with priority high. No automation needed; blueprints remain for your own rules."
+msgstr "Opcjonalnie: gdy jeden z nich zadzwoni (zdarzenie dzwonka lub czujnik binarny, który się włączy), odtwarzacz pokaże kamerę z priorytetem wysokim. Automatyzacja nie jest potrzebna; blueprinty pozostają do własnych reguł."
+
+#: ha:options.step.init.data_description.doorbell_camera
+msgid "The go2rtc name of the camera to show for the doorbell, e.g. front_door. Empty: the player's default camera."
+msgstr "Nazwa go2rtc kamery pokazywanej przy dzwonku, np. front_door. Puste: domyślna kamera odtwarzacza."
 
 #: ha:entity.button.show.name
 msgid "Show {camera}"

@@ -85,12 +85,16 @@
         "data": {
           "parent_device": "Tonen onder apparaat",
           "go2rtc_server": "go2rtc-adres sturen",
-          "camera": "Standaardcamera"
+          "camera": "Standaardcamera",
+          "doorbell": "Deurbel",
+          "doorbell_camera": "Deurbelcamera"
         },
         "data_description": {
           "parent_device": "Automatisch: het apparaat van de Enigma2-, Kodi- of Android TV-integratie met hetzelfde adres als de speler. Of kies zelf een apparaat, of geen.",
           "go2rtc_server": "Optioneel: stuurt dit go2rtc-adres naar de speler. Een speler die al is ingesteld, neemt alleen een adres in je eigen netwerk aan. Leeg: de speler houdt zijn eigen instelling.",
-          "camera": "Optioneel, samen met het go2rtc-adres: de go2rtc-naam van de standaardcamera, bijv. front_door."
+          "camera": "Optioneel, samen met het go2rtc-adres: de go2rtc-naam van de standaardcamera, bijv. front_door.",
+          "doorbell": "Optioneel: gaat een van deze over (een deurbel-event, of een binaire sensor die aan gaat), dan toont de speler de camera met prioriteit hoog. Geen automatisering nodig; blueprints blijven voor je eigen regels.",
+          "doorbell_camera": "De go2rtc-naam van de camera die bij de deurbel verschijnt, bijv. front_door. Leeg: de standaardcamera van de speler."
         }
       }
     },

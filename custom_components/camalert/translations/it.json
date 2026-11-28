@@ -85,12 +85,16 @@
         "data": {
           "parent_device": "Mostra sotto il dispositivo",
           "go2rtc_server": "Invia indirizzo go2rtc",
-          "camera": "Telecamera predefinita"
+          "camera": "Telecamera predefinita",
+          "doorbell": "Campanello",
+          "doorbell_camera": "Telecamera del campanello"
         },
         "data_description": {
           "parent_device": "Automatico: il dispositivo dell'integrazione Enigma2, Kodi o Android TV con lo stesso indirizzo del lettore. Oppure scegliere un dispositivo, o nessuno.",
           "go2rtc_server": "Facoltativo: invia questo indirizzo go2rtc al lettore. Un lettore già configurato accetta solo un indirizzo della rete locale. Vuoto: il lettore mantiene la propria impostazione.",
-          "camera": "Facoltativo, insieme all'indirizzo go2rtc: il nome go2rtc della telecamera predefinita, ad es. front_door."
+          "camera": "Facoltativo, insieme all'indirizzo go2rtc: il nome go2rtc della telecamera predefinita, ad es. front_door.",
+          "doorbell": "Facoltativo: quando uno di questi suona (un evento del campanello o un sensore binario che si attiva), il lettore mostra la telecamera con priorità alta. Nessuna automazione necessaria; i blueprint restano per le proprie regole.",
+          "doorbell_camera": "Il nome go2rtc della telecamera da mostrare per il campanello, ad es. front_door. Vuoto: la telecamera predefinita del lettore."
         }
       }
     },

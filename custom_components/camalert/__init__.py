@@ -16,7 +16,9 @@ from .api import CamAlertApi, CamAlertError, CamAlertNotSupported
 from .const import (BUTTONS, CONF_HTTPS, CONF_TOKEN, CONF_VERIFY_SSL, DEFAULT_PORT, DOMAIN, EVENT_BUTTON, MODES,
                     PRIORITIES, PTZ_MOVES, SIGNAL_BUTTON)
 from .coordinator import CamAlertCoordinator
+from .doorbell import Doorbell
 from .parent import link_parent
+from .phone import async_setup_phone_actions
 
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS = [Platform.BUTTON, Platform.SENSOR, Platform.SWITCH, Platform.EVENT, Platform.NOTIFY, Platform.UPDATE,
@@ -132,6 +134,7 @@ async def async_setup(hass: HomeAssistant, config) -> bool:
     hass.services.async_register(DOMAIN, "mosaic", mosaic, schema=MOSAIC_SCHEMA)
     hass.services.async_register(DOMAIN, "hide", hide, schema=HIDE_SCHEMA)
     hass.services.async_register(DOMAIN, "ptz", ptz, schema=PTZ_SCHEMA)
+    async_setup_phone_actions(hass)  # #128: buttons of the blueprints' phone notifications
     return True
 
 
@@ -145,13 +148,20 @@ async def async_setup_entry(hass: HomeAssistant, entry) -> bool:
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     link_parent(hass, entry)
     entry.async_on_unload(entry.add_update_listener(_options_changed))
+    coordinator.doorbell = Doorbell(hass, entry)  # #90: doorbell without an automation
+    coordinator.doorbell.start()
+    entry.async_on_unload(coordinator.doorbell.stop)
     await _register_webhook(hass, entry, api)
     return True
 
 
 async def _options_changed(hass: HomeAssistant, entry) -> None:
-    """New parent device chosen in the options: link it right away (no reload needed)."""
+    """Options changed: link the parent device (#86) and watch the chosen doorbell entities (#90), without a
+    reload."""
     link_parent(hass, entry)
+    doorbell = getattr(getattr(entry, "runtime_data", None), "doorbell", None)
+    if doorbell is not None:
+        doorbell.start()
 
 
 def player_device(hass: HomeAssistant, entry):

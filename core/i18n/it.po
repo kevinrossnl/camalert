@@ -840,7 +840,7 @@ msgstr "non è un file di impostazioni"
 msgid "made by a newer CamAlert"
 msgstr "creato da una versione più recente di CamAlert"
 
-#: e2 kodi:30552
+#: e2 kodi:30552 ha:options.step.init.data.doorbell
 msgid "Doorbell"
 msgstr "Campanello"
 
@@ -1964,6 +1964,10 @@ msgstr "Mostra sotto il dispositivo"
 msgid "Send go2rtc address"
 msgstr "Invia indirizzo go2rtc"
 
+#: ha:options.step.init.data.doorbell_camera
+msgid "Doorbell camera"
+msgstr "Telecamera del campanello"
+
 #: ha:options.step.init.data_description.parent_device
 msgid "Automatic: the device of the Enigma2, Kodi or Android TV integration with the same address as the player. Or choose a device yourself, or none."
 msgstr "Automatico: il dispositivo dell'integrazione Enigma2, Kodi o Android TV con lo stesso indirizzo del lettore. Oppure scegliere un dispositivo, o nessuno."
@@ -1975,6 +1979,14 @@ msgstr "Facoltativo: invia questo indirizzo go2rtc al lettore. Un lettore già c
 #: ha:options.step.init.data_description.camera
 msgid "Optional, with the go2rtc address: the go2rtc name of the default camera, e.g. front_door."
 msgstr "Facoltativo, insieme all'indirizzo go2rtc: il nome go2rtc della telecamera predefinita, ad es. front_door."
+
+#: ha:options.step.init.data_description.doorbell
+msgid "Optional: when one of these rings (a doorbell event, or a binary sensor that turns on), the player shows the camera with priority high. No automation needed; blueprints remain for your own rules."
+msgstr "Facoltativo: quando uno di questi suona (un evento del campanello o un sensore binario che si attiva), il lettore mostra la telecamera con priorità alta. Nessuna automazione necessaria; i blueprint restano per le proprie regole."
+
+#: ha:options.step.init.data_description.doorbell_camera
+msgid "The go2rtc name of the camera to show for the doorbell, e.g. front_door. Empty: the player's default camera."
+msgstr "Il nome go2rtc della telecamera da mostrare per il campanello, ad es. front_door. Vuoto: la telecamera predefinita del lettore."
 
 #: ha:entity.button.show.name
 msgid "Show {camera}"

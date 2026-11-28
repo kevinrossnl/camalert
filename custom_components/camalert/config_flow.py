@@ -5,19 +5,23 @@ on another address gets the new address."""
 from __future__ import annotations
 
 import logging
+import re
 
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import callback
-from homeassistant.helpers.selector import SelectSelector, SelectSelectorConfig, SelectSelectorMode
+from homeassistant.helpers.selector import (EntitySelector, EntitySelectorConfig, SelectSelector, SelectSelectorConfig,
+                                            SelectSelectorMode)
 
 from .api import CamAlertCertificateError, CamAlertError, CamAlertForbidden
 from .const import CONF_HTTPS, CONF_TOKEN, CONF_VERIFY_SSL, DEFAULT_PORT, DEFAULT_VERIFY_SSL, DOMAIN
+from .doorbell import CONF_DOORBELL, CONF_DOORBELL_CAMERA
 from .go2rtc_setup import CONF_CAMERA, CONF_GO2RTC, offer_setup, send, suggested_go2rtc
 from .parent import CONF_PARENT, PARENT_AUTO, PARENT_NONE, parent_choices
 
 _LOGGER = logging.getLogger(__name__)
+_CAMERA = re.compile(r"^[A-Za-z0-9_.-]+$")  # one go2rtc name (#90)
 TXT_ID, TXT_NAME, TXT_HTTPS = "id", "name", "https"
 
 
@@ -164,6 +168,11 @@ class CamAlertOptionsFlow(config_entries.OptionsFlow):
             camera = user_input.pop(CONF_CAMERA, "")
             if server and can_setup:  # #122: a player that is set up only takes a local-network address
                 errors = await send(api, server, camera)
+            # #90: an emptied field is missing from the input: store it empty, not the old value
+            user_input.setdefault(CONF_DOORBELL, [])
+            user_input[CONF_DOORBELL_CAMERA] = (user_input.get(CONF_DOORBELL_CAMERA) or "").strip()
+            if user_input[CONF_DOORBELL_CAMERA] and not _CAMERA.match(user_input[CONF_DOORBELL_CAMERA]):
+                errors[CONF_DOORBELL_CAMERA] = "invalid_camera"
             if not errors:
                 return self.async_create_entry(data=dict(self.config_entry.options, **user_input))
         current = (user_input or {}).get(CONF_PARENT) or self.config_entry.options.get(CONF_PARENT, PARENT_AUTO)
@@ -173,6 +182,11 @@ class CamAlertOptionsFlow(config_entries.OptionsFlow):
             current = PARENT_AUTO
         fields = {vol.Required(CONF_PARENT, default=current): SelectSelector(SelectSelectorConfig(
             options=options, mode=SelectSelectorMode.DROPDOWN, translation_key=CONF_PARENT))}
+        opts = dict(self.config_entry.options, **(user_input or {}))
+        fields[vol.Optional(CONF_DOORBELL, description={"suggested_value": opts.get(CONF_DOORBELL) or []})] = \
+            EntitySelector(EntitySelectorConfig(domain=["event", "binary_sensor"], multiple=True))
+        fields[vol.Optional(CONF_DOORBELL_CAMERA,
+                            description={"suggested_value": opts.get(CONF_DOORBELL_CAMERA) or ""})] = str
         if can_setup:  # #122: send Home Assistant's go2rtc address to the player (empty = leave it alone)
             fields[vol.Optional(CONF_GO2RTC)] = str
             fields[vol.Optional(CONF_CAMERA)] = str

@@ -16,19 +16,23 @@ import _paths  # noqa: E402
 FROZEN = {
     "camalert_doorbell.yaml": [("doorbell", None), ("players", None), ("camera", None), ("mode", "photo"),
                                ("seconds", 30), ("label", ""), ("presence", []), ("phone_notify", ""),
-                               ("phone_camera", "")],
+                               ("phone_camera", ""), ("phone_buttons", True), ("phone_critical", False)],
     "camalert_motion.yaml": [("motion", None), ("players", None), ("cameras", ""), ("mode", "photo"),
                              ("several", "strip"), ("seconds", 30), ("label", ""), ("when", "armed"),
                              ("alarm_panel", ""), ("from_time", "22:00:00"), ("until_time", "07:00:00"),
-                             ("presence", []), ("until_motion_ends", False)],
+                             ("presence", []), ("until_motion_ends", False),
+                             ("phone_notify", ""), ("phone_camera", ""), ("phone_buttons", True),
+                             ("phone_critical", False)],
     "camalert_alarm.yaml": [("alarm_panel", None), ("players", None), ("camera", None), ("mode", "live"),
-                            ("seconds", 300), ("label", "Alarm")],
+                            ("seconds", 300), ("label", "Alarm"), ("phone_notify", ""), ("phone_camera", ""),
+                            ("phone_buttons", True), ("phone_critical", True)],
     "camalert_button.yaml": [("button", "green"), ("players", None), ("camera", ""), ("action", None)],
     "camalert_doorbell_webos.yaml": [("doorbell", None), ("players", None), ("camera", None), ("mode", "photo"),
                                      ("seconds", 30), ("label", ""), ("webos_notify", None), ("message", ""),
                                      ("snapshot_camera", ""), ("snapshot_file", "/media/camalert_webos.jpg"),
                                      ("tv", ""), ("snapshot_url", ""), ("presence", []), ("phone_notify", ""),
-                                     ("phone_camera", ""), ("webos_live_url", "")],
+                                     ("phone_camera", ""), ("webos_live_url", ""), ("phone_buttons", True),
+                                     ("phone_critical", False)],
     "camalert_doorbell_screens.yaml": [("doorbell", None), ("players", None), ("camera", None), ("mode", "photo"),
                                        ("seconds", 30), ("label", ""), ("cast_players", []), ("cast_camera", ""),
                                        ("androidtv_notify", ""), ("androidtv_snapshot_url", ""), ("presence", [])],
@@ -139,7 +143,8 @@ class TestBlueprints(unittest.TestCase):
     def test_phone_is_not_gated_by_presence(self):
         """#14: the phone notification is a separate top-level step, not behind the presence gate and not behind a
         delay (live view, #94), so it also arrives when nobody is home; empty phone_notify (the default) = nothing."""
-        for name in ("camalert_doorbell.yaml", "camalert_doorbell_webos.yaml"):
+        for name in ("camalert_doorbell.yaml", "camalert_doorbell_webos.yaml", "camalert_motion.yaml",
+                     "camalert_alarm.yaml"):
             d = self.load(os.path.join(_paths.BLUEPRINTS, name))
             phone = [i for i, a in enumerate(d["actions"])
                      if a.get("if", [{}])[0].get("value_template") == "{{ phone_notify_in | trim | length > 0 }}"]

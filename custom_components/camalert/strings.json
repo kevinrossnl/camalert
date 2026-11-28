@@ -85,12 +85,16 @@
         "data": {
           "parent_device": "Show under device",
           "go2rtc_server": "Send go2rtc address",
-          "camera": "Default camera"
+          "camera": "Default camera",
+          "doorbell": "Doorbell",
+          "doorbell_camera": "Doorbell camera"
         },
         "data_description": {
           "parent_device": "Automatic: the device of the Enigma2, Kodi or Android TV integration with the same address as the player. Or choose a device yourself, or none.",
           "go2rtc_server": "Optional: sends this go2rtc address to the player. A player that is already set up only accepts an address in your local network. Empty: the player keeps its own setting.",
-          "camera": "Optional, with the go2rtc address: the go2rtc name of the default camera, e.g. front_door."
+          "camera": "Optional, with the go2rtc address: the go2rtc name of the default camera, e.g. front_door.",
+          "doorbell": "Optional: when one of these rings (a doorbell event, or a binary sensor that turns on), the player shows the camera with priority high. No automation needed; blueprints remain for your own rules.",
+          "doorbell_camera": "The go2rtc name of the camera to show for the doorbell, e.g. front_door. Empty: the player's default camera."
         }
       }
     },

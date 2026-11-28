@@ -98,6 +98,41 @@ automation trace; with several players all are tried first.
 
 What `normal`, `high` and `alarm` do on the player: [features › priorities](../user/features.md#priorities).
 
+### Doorbell without an automation
+
+Open the player in **Settings › Devices & services › CamAlert**, press **Configure** and pick your doorbell under
+**Doorbell**: an event entity (for example `event.front_door_doorbell` of UniFi Protect, Reolink or Ring) or a binary
+sensor that turns on when someone rings. Optionally fill in **Doorbell camera** (the go2rtc name, e.g. `front_door`;
+empty = the player's default camera). From then on every ring shows that camera on this player with priority high
+and the label *Doorbell*, without an automation (#90).
+
+- An event entity counts when its event type is a ring (`ring`, `doorbell`, `press`, `pressed`, `single`, ...) or
+  when the entity is a doorbell (device class `doorbell`); a binary sensor counts when it turns from off to on.
+- After a restart of Home Assistant, or when the doorbell comes back from unavailable, nothing is shown.
+- Two rings within 15 seconds give one window (a press and a release, or two entities of one doorbell).
+- Want more (several players, presence, a phone, other screens)? Use the doorbell blueprint below instead, or
+  as well: the 15 seconds keep it to one window per player.
+
+### Notifications on your phone
+
+Phones are covered by the [Home Assistant Companion app](https://companion.home-assistant.io/): the doorbell,
+motion and alarm blueprints have **Also notify phones** (#14, #128). Fill in the notify actions of your phones,
+comma-separated, e.g. `mobile_app_my_phone, mobile_app_other_phone`. Each phone gets:
+
+- the camera picture when you fill in **Camera entity for the phone** (`camera.front_door`); tapping the
+  notification opens that camera;
+- with **Buttons on the phone notification** (on by default): **Show on TV** (shows the camera on the blueprint's
+  players, priority high) and **Do not disturb 1 h** (turns Do not disturb on for those players and off again after
+  an hour; a restart of Home Assistant in that hour leaves it on). The CamAlert integration handles both buttons;
+  no extra automation is needed;
+- with **Critical phone notification** (on by default for the alarm): the notification comes through the phone's
+  silent mode and Do not disturb (iOS critical alert, Android alarm channel);
+- one notification per camera: a new one replaces the previous one instead of piling up.
+
+The phone notification follows the blueprint's own conditions (for motion: armed and/or the time window), but not
+*Only when someone is home*: the phone also gets it when nobody is home. The picture outside your home needs
+remote access to Home Assistant (Nabu Casa or your own address).
+
 ### Ready-made blueprints
 
 Import them via **Settings › Automations & scenes › Blueprints › Import blueprint** and paste the address:

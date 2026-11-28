@@ -840,7 +840,7 @@ msgstr "pas un fichier de paramètres"
 msgid "made by a newer CamAlert"
 msgstr "créé par une version plus récente de CamAlert"
 
-#: e2 kodi:30552
+#: e2 kodi:30552 ha:options.step.init.data.doorbell
 msgid "Doorbell"
 msgstr "Sonnette"
 
@@ -1964,6 +1964,10 @@ msgstr "Afficher sous l'appareil"
 msgid "Send go2rtc address"
 msgstr "Envoyer l'adresse go2rtc"
 
+#: ha:options.step.init.data.doorbell_camera
+msgid "Doorbell camera"
+msgstr "Caméra de la sonnette"
+
 #: ha:options.step.init.data_description.parent_device
 msgid "Automatic: the device of the Enigma2, Kodi or Android TV integration with the same address as the player. Or choose a device yourself, or none."
 msgstr "Automatique : l'appareil de l'intégration Enigma2, Kodi ou Android TV ayant la même adresse que le lecteur. Ou choisissez vous-même un appareil, ou aucun."
@@ -1975,6 +1979,14 @@ msgstr "Facultatif : envoie cette adresse go2rtc au lecteur. Un lecteur déjà c
 #: ha:options.step.init.data_description.camera
 msgid "Optional, with the go2rtc address: the go2rtc name of the default camera, e.g. front_door."
 msgstr "Facultatif, avec l'adresse go2rtc : le nom go2rtc de la caméra par défaut, par ex. front_door."
+
+#: ha:options.step.init.data_description.doorbell
+msgid "Optional: when one of these rings (a doorbell event, or a binary sensor that turns on), the player shows the camera with priority high. No automation needed; blueprints remain for your own rules."
+msgstr "Facultatif : quand l'un d'eux sonne (un événement de sonnette, ou un capteur binaire qui s'active), le lecteur affiche la caméra avec la priorité haute. Aucune automatisation nécessaire ; les blueprints restent pour vos propres règles."
+
+#: ha:options.step.init.data_description.doorbell_camera
+msgid "The go2rtc name of the camera to show for the doorbell, e.g. front_door. Empty: the player's default camera."
+msgstr "Le nom go2rtc de la caméra à afficher pour la sonnette, p. ex. front_door. Vide : la caméra par défaut du lecteur."
 
 #: ha:entity.button.show.name
 msgid "Show {camera}"

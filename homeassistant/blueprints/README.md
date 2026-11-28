@@ -35,8 +35,10 @@ Order in every blueprint: **trigger → `players` → `camera`/`cameras` → `mo
 | Key | Meaning | Default | Blueprints |
 |---|---|---|---|
 | `presence` | Only when someone is home: persons, device trackers or groups (state `home`) or zones (someone in it, e.g. `zone.home`); empty = always. Only the TV part waits for it (players, LG TV) | empty | doorbell, doorbell webOS, motion |
-| `phone_notify` | Notify action of the Companion app, e.g. `notify.mobile_app_my_phone` (`notify.` may be left out): "Doorbell - camera" on the phone, also when nobody is home; empty = none | empty | doorbell, doorbell webOS |
-| `phone_camera` | Camera entity for that notification: its picture (`/api/camera_proxy/...`) and tapping opens the camera; empty = text only | empty | doorbell, doorbell webOS |
+| `phone_notify` | Notify actions of the Companion app, comma-separated, e.g. `notify.mobile_app_my_phone` (`notify.` may be left out): "Doorbell - camera" (motion: "Motion - cameras", alarm: "Alarm - camera") on the phones, also when nobody is home (#14, #128); empty = none | empty | doorbell, doorbell webOS, motion, alarm |
+| `phone_camera` | Camera entity for that notification: its picture (`/api/camera_proxy/...`) and tapping opens the camera; empty = text only | empty | doorbell, doorbell webOS, motion, alarm |
+| `phone_buttons` | Buttons on the phone notification: **Show on TV** (these players, priority high) and **Do not disturb 1 h** (these players); handled by the CamAlert integration (1.4+) | `true` | doorbell, doorbell webOS, motion, alarm |
+| `phone_critical` | Critical notification: comes through silent mode and Do not disturb (iOS critical alert, Android alarm channel) | `false` (alarm: `true`) | doorbell, doorbell webOS, motion, alarm |
 | `webos_live_url` | Live view on the LG TV: page with the stream that the TV opens in its browser for the duration (e.g. go2rtc `http://192.168.1.10:1984/stream.html?src=front_door&mode=mse`); needs `tv`; afterwards the TV goes back to its input or app (scene `scene.camalert_webos_before`); empty = only the notification | empty | doorbell webOS |
 
 **Added in 1.3** (optional, at the end, the default changes nothing):

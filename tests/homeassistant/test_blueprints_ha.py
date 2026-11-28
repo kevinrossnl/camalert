@@ -356,9 +356,13 @@ async def test_phone_with_camera_also_when_nobody_home(hass, player, blueprints)
         "phone_camera": "camera.front_door"}))
     await _ring(hass)
     assert _shows(player) == []
+    dev = player_device(hass, entry).id
     assert phone == [{"title": "CamAlert", "message": "Doorbell - front_door", "data": {
+        "tag": "camalert_front_door", "group": "camalert",
         "image": "/api/camera_proxy/camera.front_door", "entity_id": "camera.front_door",
-        "clickAction": "entityId:camera.front_door", "url": "entityId:camera.front_door"}}]
+        "clickAction": "entityId:camera.front_door", "url": "entityId:camera.front_door",
+        "actions": [{"action": "CAMALERT_SHOW|front_door|" + dev, "title": "Show on TV"},
+                    {"action": "CAMALERT_DND|60|" + dev, "title": "Do not disturb 1 h"}]}}]
 
 
 async def test_phone_text_only_and_webos(hass, player, blueprints):
@@ -371,7 +375,8 @@ async def test_phone_text_only_and_webos(hass, player, blueprints):
         "webos_notify": "notify.lg_webos_tv_living_room", "phone_notify": "notify.mobile_app_phone"}))
     await _ring(hass)
     assert len(_shows(player)) == 1 and len(tv) == 1
-    assert phone == [{"title": "CamAlert", "message": "Doorbell - front_door", "data": {}}]
+    assert len(phone) == 1 and phone[0]["message"] == "Doorbell - front_door"
+    assert "image" not in phone[0]["data"] and len(phone[0]["data"]["actions"]) == 2
 
 
 def _record_services(hass, *names):
@@ -463,3 +468,72 @@ async def test_webos_live_view_not_when_tv_off(hass, player, blueprints):
     await _ring(hass)
     assert calls == [] and len(_shows(player)) == 1
 
+
+
+def _fake_phones(hass, *names):
+    """Notify actions of several Companion apps (#128): record (phone, data)."""
+    calls = []
+    for name in names:
+        async def record(call, name=name):
+            calls.append((name, dict(call.data)))
+        hass.services.async_register("notify", name, record)
+    return calls
+
+
+async def test_phones_several_no_buttons_critical(hass, player, blueprints):
+    """#128: comma-separated phones, buttons off, critical on (iOS critical sound, Android alarm channel)."""
+    entry = await setup_player(hass, player)
+    phones = _fake_phones(hass, "mobile_app_one", "mobile_app_two")
+    hass.states.async_set("binary_sensor.door", "off")
+    await automations(hass, ("door", "camalert_doorbell.yaml", {
+        "doorbell": ["binary_sensor.door"], "players": [player_device(hass, entry).id], "camera": "front_door",
+        "phone_notify": "mobile_app_one, notify.mobile_app_two", "phone_buttons": False, "phone_critical": True}))
+    await _ring(hass)
+    assert [p for p, _d in phones] == ["mobile_app_one", "mobile_app_two"]
+    data = phones[0][1]["data"]
+    assert "actions" not in data
+    assert data["push"] == {"sound": {"name": "default", "critical": 1, "volume": 1.0}}
+    assert data["ttl"] == 0 and data["priority"] == "high" and data["channel"] == "alarm_stream"
+
+
+async def test_motion_phone_when_nobody_home(hass, player, blueprints):
+    """#128: presence only gates the TV; the phone gets the motion (same 'when' rules) with the cameras."""
+    entry = await setup_player(hass, player)
+    phones = _fake_phones(hass, "mobile_app_one")
+    hass.states.async_set("binary_sensor.garden_motion", "off")
+    hass.states.async_set("person.one", "not_home")
+    await automations(hass, ("motion", "camalert_motion.yaml", {
+        "motion": ["binary_sensor.garden_motion"], "players": [player_device(hass, entry).id],
+        "when": "always", "presence": ["person.one"], "phone_notify": "mobile_app_one"}))
+    hass.states.async_set("binary_sensor.garden_motion", "on")
+    await hass.async_block_till_done()
+    assert _shows(player) == []
+    assert len(phones) == 1 and phones[0][1]["message"] == "Motion - garden"
+    assert phones[0][1]["data"]["actions"][0]["action"].startswith("CAMALERT_SHOW|garden|")
+
+
+async def test_motion_when_rule_also_for_the_phone(hass, player, blueprints):
+    entry = await setup_player(hass, player)
+    phones = _fake_phones(hass, "mobile_app_one")
+    hass.states.async_set("binary_sensor.garden_motion", "off")
+    await automations(hass, ("motion", "camalert_motion.yaml", {
+        "motion": ["binary_sensor.garden_motion"], "players": [player_device(hass, entry).id],
+        "when": "armed", "phone_notify": "mobile_app_one"}))  # no alarm panel: never armed
+    hass.states.async_set("binary_sensor.garden_motion", "on")
+    await hass.async_block_till_done()
+    assert phones == [] and _shows(player) == []
+
+
+async def test_alarm_phone_is_critical_by_default(hass, player, blueprints):
+    entry = await setup_player(hass, player)
+    phones = _fake_phones(hass, "mobile_app_one")
+    hass.states.async_set("alarm_control_panel.home", "armed_away")
+    await automations(hass, ("alarm", "camalert_alarm.yaml", {
+        "alarm_panel": "alarm_control_panel.home", "players": [player_device(hass, entry).id],
+        "camera": "garden", "phone_notify": "mobile_app_one", "phone_camera": "camera.garden"}))
+    hass.states.async_set("alarm_control_panel.home", "triggered")
+    await hass.async_block_till_done()
+    assert player.ctl.calls[-1] == ("show", "garden", 300, "live", "alarm", "ha", "Alarm")
+    assert phones[0][1]["message"] == "Alarm - garden"
+    data = phones[0][1]["data"]
+    assert data["push"]["sound"]["critical"] == 1 and data["image"] == "/api/camera_proxy/camera.garden"

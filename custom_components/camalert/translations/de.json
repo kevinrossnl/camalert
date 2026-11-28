@@ -85,12 +85,16 @@
         "data": {
           "parent_device": "Unter Gerät anzeigen",
           "go2rtc_server": "go2rtc-Adresse senden",
-          "camera": "Standardkamera"
+          "camera": "Standardkamera",
+          "doorbell": "Türklingel",
+          "doorbell_camera": "Türklingel-Kamera"
         },
         "data_description": {
           "parent_device": "Automatisch: das Gerät der Enigma2-, Kodi- oder Android-TV-Integration mit derselben Adresse wie das Wiedergabegerät. Oder wähle selbst ein Gerät oder keines.",
           "go2rtc_server": "Optional: schickt diese go2rtc-Adresse an das Wiedergabegerät. Ein schon eingerichtetes Wiedergabegerät nimmt nur eine Adresse in deinem lokalen Netzwerk an. Leer: das Wiedergabegerät behält seine eigene Einstellung.",
-          "camera": "Optional, zusammen mit der go2rtc-Adresse: der go2rtc-Name der Standardkamera, z. B. front_door."
+          "camera": "Optional, zusammen mit der go2rtc-Adresse: der go2rtc-Name der Standardkamera, z. B. front_door.",
+          "doorbell": "Optional: Klingelt eine davon (ein Türklingel-Ereignis oder ein Binärsensor, der einschaltet), zeigt das Wiedergabegerät die Kamera mit Priorität hoch. Keine Automatisierung nötig; Blueprints bleiben für deine eigenen Regeln.",
+          "doorbell_camera": "Der go2rtc-Name der Kamera, die bei der Türklingel erscheint, z. B. front_door. Leer: die Standardkamera des Wiedergabegeräts."
         }
       }
     },

@@ -7,6 +7,15 @@ actions and blueprint inputs stay backwards compatible.
 
 ## [Unreleased]
 
+### Added
+
+- **Home Assistant:** a doorbell without an automation. Choose the doorbell (event entity or binary sensor) and an
+  optional camera in the player's options (**Configure**): every ring shows the camera on that player with priority
+  high (#90).
+- **Home Assistant:** phone notifications in the doorbell, motion and alarm blueprints: several phones, the camera
+  picture, the buttons **Show on TV** and **Do not disturb 1 h**, and an optional critical notification (on by
+  default for the alarm). Motion now also reaches the phone when nobody is home (#128).
+
 ## [1.3.1] - 2026-11-27
 
 ### Fixed

@@ -85,12 +85,16 @@
         "data": {
           "parent_device": "Afficher sous l'appareil",
           "go2rtc_server": "Envoyer l'adresse go2rtc",
-          "camera": "Caméra par défaut"
+          "camera": "Caméra par défaut",
+          "doorbell": "Sonnette",
+          "doorbell_camera": "Caméra de la sonnette"
         },
         "data_description": {
           "parent_device": "Automatique : l'appareil de l'intégration Enigma2, Kodi ou Android TV ayant la même adresse que le lecteur. Ou choisissez vous-même un appareil, ou aucun.",
           "go2rtc_server": "Facultatif : envoie cette adresse go2rtc au lecteur. Un lecteur déjà configuré n'accepte qu'une adresse de votre réseau local. Vide : le lecteur garde son propre réglage.",
-          "camera": "Facultatif, avec l'adresse go2rtc : le nom go2rtc de la caméra par défaut, par ex. front_door."
+          "camera": "Facultatif, avec l'adresse go2rtc : le nom go2rtc de la caméra par défaut, par ex. front_door.",
+          "doorbell": "Facultatif : quand l'un d'eux sonne (un événement de sonnette, ou un capteur binaire qui s'active), le lecteur affiche la caméra avec la priorité haute. Aucune automatisation nécessaire ; les blueprints restent pour vos propres règles.",
+          "doorbell_camera": "Le nom go2rtc de la caméra à afficher pour la sonnette, p. ex. front_door. Vide : la caméra par défaut du lecteur."
         }
       }
     },

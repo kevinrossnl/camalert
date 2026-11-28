@@ -93,6 +93,9 @@ the Android TV app uses Android's network service discovery.
   how big it is, the same settings as on the player. A change is saved on the player and used by the next window,
   so an automation can, for example, make the window small in the evening or large for the doorbell. Only players
   from CamAlert 1.3 on have them.
+- A button **Problem report** (under *Diagnostic*, players from 1.4, #132): writes the player's problem report
+  (passwords and tokens removed) and the diagnostics into one file in `/config/camalert_reports/`, and shows a
+  notification with the file and a link to a pre-filled GitHub issue. Paste the file's contents into the issue.
 - **Download diagnostics** on the integration entry: version, platform, capabilities, status, last events and the
   player's log (redacted).
 - Actions for automations and scripts:

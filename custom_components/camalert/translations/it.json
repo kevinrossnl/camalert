@@ -194,6 +194,9 @@
       },
       "hide": {
         "name": "Nascondi telecamera"
+      },
+      "problem_report": {
+        "name": "Rapporto del problema"
       }
     },
     "sensor": {

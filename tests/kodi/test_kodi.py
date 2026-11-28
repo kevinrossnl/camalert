@@ -1674,6 +1674,7 @@ class _KodiModules(object):
         xbmcgui.Dialog.ok = lambda self, heading, message: rec.said.append(message)
         fakes = {"send": lambda **cmd: rec.sent.append(cmd), "events": lambda: rec.calls.append("events"),
                  "diagnostics": lambda: rec.calls.append("diagnostics"),
+                 "problem_report": lambda: rec.calls.append("problem_report"),
                  "open_settings": lambda: rec.calls.append("settings"),
                  "time": types.SimpleNamespace(sleep=lambda s: None, time=__import__("time").time)}
         for name, fake in fakes.items():
@@ -1681,7 +1682,8 @@ class _KodiModules(object):
             setattr(script, name, fake)
         return script, rec
 
-    MENU = ["Show mosaic", "Start tour", "Show camera", "Event list", "Diagnostics", "Settings", "Start the wizard again",
+    MENU = ["Show mosaic", "Start tour", "Show camera", "Event list", "Diagnostics", "Report a problem", "Settings",
+            "Start the wizard again",
             "Export settings", "Import settings", "Undo the last import"]  # #7
 
     def test_menu_without_arguments(self):
@@ -1690,7 +1692,7 @@ class _KodiModules(object):
         Built.store["camera"] = "garden"
         self.addCleanup(Built.store.pop, "camera", None)
         cases = [([0], [{"do": "mosaic"}], []), ([1], [{"do": "tour"}], []), ([3], [], ["events"]),
-                 ([4], [], ["diagnostics"]), ([5], [], ["settings"]), ([-1], [], [])]
+                 ([4], [], ["diagnostics"]), ([5], [], ["problem_report"]), ([6], [], ["settings"]), ([-1], [], [])]
         for answers, sent, calls in cases:
             rec.seen[:], rec.sent[:], rec.calls[:] = [], [], []
             rec.answers[:] = answers

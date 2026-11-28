@@ -47,6 +47,9 @@ top of the dashboard, using the dashboard's own login. This only works in the br
 for every user. The module is loaded by the integration (`/camalert_static/page/frontend.js`) and does nothing
 elsewhere.
 
+**Report a problem.** The panel (**⚙**) has **Report a problem**: a QR code to a pre-filled GitHub issue and a
+download of the report without passwords or tokens ([troubleshooting](../user/troubleshooting.md)).
+
 **Limits.** One go2rtc server per browser player for now (*More go2rtc servers*, #15, is not used yet). A
 background tab or a tablet with its screen off gets nothing (Fully Kiosk can wake the screen on
 motion or with its own Home Assistant integration). Smart-TV browsers without WebRTC show live view as MJPEG.

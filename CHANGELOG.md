@@ -12,6 +12,15 @@ actions and blueprint inputs stay backwards compatible.
 - **All players:** several photo windows at once. `show` with an `id` (API, MQTT, Home Assistant
   `window_id`) opens a separate window per id; `hide` with that id closes only that window. The new setting
   *Maximum windows* (1–3, default 2) limits the number; without an id everything works as before (#87).
+- **All players:** **Report a problem** (#132). Enigma2 and Kodi (CamAlert menu), the Android TV / Fire TV app
+  (settings) and the web player show a short summary and a QR code that opens a pre-filled GitHub issue (player and
+  versions); the full report (settings, status and the last log lines, without passwords, tokens or secrets) can be
+  saved and pasted into the issue. Also as `GET /camalert/report` (capability `report`, local network or token only).
+  See [Troubleshooting](docs/user/troubleshooting.md).
+- **Home Assistant:** a **Problem report** button per player (#132): the player's report and the diagnostics in one
+  file under `/config/camalert_reports/`, with a notification and the issue link.
+- **GitHub:** the bug report form matches the report, new reports get a label per player and one friendly question
+  when the version or report is missing; nothing is ever closed automatically (#132).
 - **All players:** shorter settings screens. On Enigma2 the first screen shows the basic settings and one line per
   section (with what is on there); OK opens a section, BLUE shows the expert settings. On every player the fields
   of Frigate, Foscam, UniFi Protect, MQTT and the active hours only appear once they are turned on (#130).

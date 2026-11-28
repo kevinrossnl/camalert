@@ -112,6 +112,10 @@ class SettingsActivity : FragmentActivity() {
                 title = getString(R.string.events)
                 intent = Intent(ctx, InfoActivity::class.java).putExtra("what", "events")
             })
+            screen.addPreference(Preference(ctx).apply {  // #132
+                title = Tr(ctx)("Report a problem")
+                intent = Intent(ctx, ReportActivity::class.java)
+            })
             preferenceScreen = screen
             summaries()
         }

@@ -211,6 +211,10 @@ class CamAlertApi:
     async def log(self, lines: int = 300) -> list[str]:
         return (await self._get("log", {"lines": lines})).get("lines", [])
 
+    async def report(self) -> dict:
+        """#132: {"report": ..., "issue_url": ...}, already without secrets on the player."""
+        return await self._get("report")
+
     async def events(self) -> list[dict]:
         return (await self._get("events")).get("events", [])
 

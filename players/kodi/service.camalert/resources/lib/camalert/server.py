@@ -133,6 +133,14 @@ class Backend(api.Backend):
         from . import kupdater
         return kupdater.STATE.as_status()
 
+    def report_settings(self):
+        """#132: {schema id: value}; camalert_core.report drops the secrets."""
+        return kodiapi.report_values()
+
+    def report_extra(self):
+        """#132: Kodi version and OS (no serial numbers or addresses)."""
+        return kodiapi.system_info()
+
     def start_update(self, version):
         """#126: download, check and swap the add-on folder when nothing plays (kupdater.py)."""
         from . import kupdater

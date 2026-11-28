@@ -27,6 +27,36 @@ def _settings():
     return out
 
 
+def report_values():
+    """{schema id: value} for the problem report (#132): like current(), keyed by the schema id."""
+    out = {}
+    for s, cfg in _settings():
+        v = cfg.value
+        if isinstance(cfg, ConfigClock):
+            v = "%02d:%02d" % (int(v[0]), int(v[1]))
+        out[s.id] = v
+    return out
+
+
+def image_info(path="/etc/image-version"):
+    """{"model": ..., "image": ..., "python": ...} for the problem report (#132)."""
+    import platform
+    info = {}
+    try:
+        with open(path) as f:
+            for line in f:
+                k, _sep, v = line.strip().partition("=")
+                info[k] = v
+    except (IOError, OSError):
+        pass
+    out = {"python": platform.python_version()}
+    if info.get("box_type") or info.get("machinebuild"):
+        out["model"] = info.get("box_type") or info.get("machinebuild")
+    if info.get("distro"):
+        out["image"] = ("%s %s" % (info["distro"], info.get("imageversion", ""))).strip()
+    return out
+
+
 def current():
     """{key: value} of every setting this receiver has, in schema types (time as HH:MM)."""
     out = {}

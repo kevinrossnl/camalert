@@ -868,6 +868,26 @@ msgstr "in pausa"
 msgid "tour"
 msgstr "giro"
 
+#: e2 kodi:30584 web
+msgid "Report a problem"
+msgstr "Segnalare un problema"
+
+#: e2 kodi:30588 web
+msgid "Scan the code with your phone: a GitHub issue opens with the player and the versions filled in. Then paste the full report (without passwords or tokens) from the saved file."
+msgstr "Scansionare il codice con il telefono: si apre una segnalazione GitHub con il lettore e le versioni già compilati. Poi incollare il rapporto completo (senza password né token) dal file salvato."
+
+#: e2 kodi:30585 web
+msgid "Save the report"
+msgstr "Salvare il rapporto"
+
+#: e2 kodi:30586
+msgid "Report saved in %s"
+msgstr "Rapporto salvato in %s"
+
+#: e2 kodi:30587
+msgid "Could not save the report: %s"
+msgstr "Impossibile salvare il rapporto: %s"
+
 #: e2 kodi:30572
 msgid "not a settings file"
 msgstr "non è un file di impostazioni"
@@ -2275,6 +2295,10 @@ msgstr "Mosaico"
 #: ha:entity.button.hide.name ha:services.hide.name
 msgid "Hide camera"
 msgstr "Nascondi telecamera"
+
+#: ha:entity.button.problem_report.name
+msgid "Problem report"
+msgstr "Rapporto del problema"
 
 #: ha:entity.sensor.on_screen.name
 msgid "Camera on screen"

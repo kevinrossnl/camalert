@@ -42,9 +42,9 @@ from .windows import window_id_param
 
 API_VERSION = 1
 MIN_HA_VERSION = "1.0.0"  # oldest Home Assistant integration that understands this API version
-CAPABILITIES = ("cameras", "dnd", "events", "guest", "header_token", "hide", "hold", "log", "metrics", "mosaic", "post", "ptz",
-                "screen", "settings", "setup", "show", "signed_buttons", "speak", "status", "strip", "test", "tour", "update",
-                "webhook", "windows")
+CAPABILITIES = ("cameras", "dnd", "events", "guest", "header_token", "hide", "hold", "log", "metrics", "mosaic",
+                "post", "ptz", "report", "screen", "settings", "setup", "show", "signed_buttons", "speak", "status",
+                "strip", "test", "tour", "update", "webhook", "windows")
 # Settings a caller may change through /camalert/settings (#84), with their choices from the settings schema.
 DISPLAY_SETTINGS = {k: tuple(_SCHEMA[k].choices) for k in ("position", "size")}
 # What /camalert/status reports as "screen" (#63): the top-most CamAlert screen, "none" when nothing is shown.
@@ -135,6 +135,16 @@ class Backend(object):
         """Starts installing release `version` in the background (#126). Returns at once; progress goes to
         update_status(). The version is already checked (plain X.Y.Z, newer than the installed one)."""
         raise NotImplementedError
+
+    def report_settings(self):
+        """{schema id: value} of this player's settings for the problem report (#132). Secrets are dropped again
+        by camalert_core.report, but a player may leave them out already."""
+        return {}
+
+    def report_extra(self):
+        """Player details for the problem report (#132): model, image / OS and versions, e.g. {"model": ...,
+        "image": ..., "kodi": ..., "android": ...}. Never addresses, serial numbers or user names."""
+        return {}
 
     def log(self, message, level="normal"):
         pass
@@ -389,6 +399,14 @@ def _log(b, ctl, a, s, source):
     return {"result": True, "lines": [redact(x) for x in b.log_tail(min(n, 2000))]}
 
 
+def _report(b, ctl, a, s, source):
+    """The problem report (#132): status, settings without secrets, the last log lines, all scrubbed, plus the
+    pre-filled GitHub issue link that the players show as a QR code."""
+    from .report import build, issue_url
+    rep = build(_status(b, ctl, a, s, source), b.report_settings(), b.log_tail(100), b.report_extra())
+    return {"result": True, "report": rep, "issue_url": issue_url(rep)}
+
+
 def _events(b, ctl, a, s, source):
     return {"result": True, "events": [{k: v for k, v in e.items() if k != "snapshot"} for e in ctl.events]}
 
@@ -404,6 +422,7 @@ ROUTES = {r.name: r for r in (
     Route("update", _update, action=True), Route("dnd", _dnd, writes=("on",)),
     Route("status", _status), Route("settings", _settings, writes=tuple(DISPLAY_SETTINGS) + ("guest_mode",)),
     Route("cameras", _cameras, blocking=True), Route("log", _log, sensitive=True),
+    Route("report", _report, sensitive=True, blocking=True),
     Route("events", _events, sensitive=True), Route("metrics", _metrics, sensitive=True),
 )}
 

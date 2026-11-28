@@ -58,7 +58,7 @@ Foscam, UniFi Protect and MQTT show their settings once they are turned on. Expe
 | RED / EXIT | Cancel: every CamAlert setting goes back to what it was |
 | YELLOW | Create channel list (see below) |
 | BLUE | Test: asks to save, then shows the default camera |
-| MENU | Diagnostics, event list, show all settings |
+| MENU | Diagnostics, Report a problem ([troubleshooting](../user/troubleshooting.md)), event list, show all settings |
 | HELP | The keys of this screen |
 
 ## What you see

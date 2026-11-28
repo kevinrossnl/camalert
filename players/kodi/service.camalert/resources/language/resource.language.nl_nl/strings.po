@@ -1385,6 +1385,26 @@ msgctxt "#30583"
 msgid "Guest mode"
 msgstr "Gastmodus"
 
+msgctxt "#30584"
+msgid "Report a problem"
+msgstr "Probleem melden"
+
+msgctxt "#30585"
+msgid "Save the report"
+msgstr "Rapport opslaan"
+
+msgctxt "#30586"
+msgid "Report saved in %s"
+msgstr "Rapport opgeslagen in %s"
+
+msgctxt "#30587"
+msgid "Could not save the report: %s"
+msgstr "Kon het rapport niet opslaan: %s"
+
+msgctxt "#30588"
+msgid "Scan the code with your phone: a GitHub issue opens with the player and the versions filled in. Then paste the full report (without passwords or tokens) from the saved file."
+msgstr "Scan de code met je telefoon: er opent een GitHub-issue waarin de speler en de versies al zijn ingevuld. Plak daarna het volledige rapport (zonder wachtwoorden of tokens) uit het opgeslagen bestand."
+
 msgctxt "#30720"
 msgid "Text size"
 msgstr "Tekstgrootte"

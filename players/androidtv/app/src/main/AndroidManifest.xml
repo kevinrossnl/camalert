@@ -50,6 +50,11 @@
             android:theme="@style/Theme.CamAlert" />
 
         <activity
+            android:name=".ReportActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CamAlert" />
+
+        <activity
             android:name=".ClipActivity"
             android:exported="false"
             android:theme="@style/Theme.CamAlert" />

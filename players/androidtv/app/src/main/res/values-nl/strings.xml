@@ -302,6 +302,11 @@
     <string name="t_b58ee195" formatted="false">%s naar Home Assistant</string>
     <string name="t_46b14e9b" formatted="false">gepauzeerd</string>
     <string name="t_6ad1f969" formatted="false">rondgang</string>
+    <string name="t_202538d9" formatted="false">Probleem melden</string>
+    <string name="t_af073226" formatted="false">Scan de code met je telefoon: er opent een GitHub-issue waarin de speler en de versies al zijn ingevuld. Plak daarna het volledige rapport (zonder wachtwoorden of tokens) uit het opgeslagen bestand.</string>
+    <string name="t_4fdb935f" formatted="false">Rapport opslaan</string>
+    <string name="t_bd6cbd20" formatted="false">Rapport opgeslagen in %s</string>
+    <string name="t_18057012" formatted="false">Kon het rapport niet opslaan: %s</string>
     <string name="t_9ee51c54" formatted="false">geen instellingenbestand</string>
     <string name="t_53025dac" formatted="false">gemaakt door een nieuwere CamAlert</string>
     <string name="t_9dc41ec9" formatted="false">Deurbel</string>

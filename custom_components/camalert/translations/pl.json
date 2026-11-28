@@ -194,6 +194,9 @@
       },
       "hide": {
         "name": "Ukryj kamerę"
+      },
+      "problem_report": {
+        "name": "Raport o problemie"
       }
     },
     "sensor": {

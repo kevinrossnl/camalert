@@ -1,0 +1,27 @@
+# GitHub issues into Forgejo (#132): tools/issue_sync.py copies the issues of the public GitHub mirror into this
+# repository (label `github`, marker `<!-- github-issue: N -->`). Only reads GitHub, never writes there.
+# Dry run unless the repository variable ISSUE_SYNC is `on` (Settings › Actions › Variables); a dry run only logs
+# numbers and titles. Never blocks a push or the GitHub mirror (not part of tests.yml / gate).
+# Start by hand: Actions › issue-sync › Run workflow.
+name: issue-sync
+on:
+  schedule:
+    - cron: "41 * * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: truenas
+    container: {image: "node:20-bookworm"}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: GitHub issues into Forgejo
+        env:
+          ISSUE_SYNC: ${{ vars.ISSUE_SYNC }}
+          GITHUB_REPO: kevinrossnl/camalert
+          GH_ISSUES_TOKEN: ${{ secrets.GH_ISSUES_TOKEN }}
+          FORGEJO_URL: ${{ forgejo.server_url }}
+          FORGEJO_REPO: ${{ forgejo.repository }}
+          FORGEJO_TOKEN: ${{ secrets.CAMALERT_SYNC_TOKEN }}
+        run: python3 tools/issue_sync.py

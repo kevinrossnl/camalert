@@ -175,6 +175,40 @@ def _wid(v):
         return "invalid"
 
 
+QR_TEXTS = ("a", "CamAlert", "https://github.com/kevinrossnl/camalert/issues/new?template=bug_report.yml&player=Kodi",
+            "Kamera vor der Tür – ü€", "x" * 150, "0123456789" * 40)
+
+
+def _qr_reference():
+    from camalert_core import qr
+    return [{"text": t, "level": lv, "rows": qr.text_rows(qr.encode(t, lv), 0)} for t in QR_TEXTS for lv in ("L", "M")]
+
+
+def _report_reference():
+    from camalert_core import report
+    scrub = ("plain text", "http://user:pw@192.168.1.10:1984/api", "rtsp://admin:password@203.0.113.5:554/s1",
+             "https://ha.example.com/api/webhook/abcDEF_1", "mail me@example.org now", "ip 8.8.8.8 and 10.0.0.2",
+             "version 1.2.300.4", "http://nas.lan:8080 http://homeassistant:8123 http://[fd12:3456::1]:1984",
+             "http://[2001:db8::1]/x token=abc", "Authorization: Bearer xyz", "https://cams.example.org/x?pwd=1")
+    status = {"result": True, "version": "1.4.0", "platform": "androidtv", "id": "atv624d10ebc856", "name": "Living room",
+              "screen": "photo", "mqtt": "connected", "capabilities": ["show"], "dnd": False, "window": "front_door"}
+    settings = {"server": "http://admin:pw@192.168.1.10:1984", "token": "abc", "mqtt_password": "x", "camera": "front_door",
+                "ha_webhook": "http://192.168.1.7:8123/api/webhook/abc", "ha_webhook_secret": "s",
+                "more_servers": "garden=http://cams.example.org:1984", "duration": 30, "dnd": False}
+    log = ["2026-11-28 10:00:00 INFO started"] + ["line %d" % i for i in range(120)] + [
+        "2026-11-28 10:01:00 ERROR snapshot failed for front_door: http://u:p@203.0.113.9/x",
+        "2026-11-28 10:02:00 INFO request from ha: camera=front_door -> show"]
+    extra = {"model": "AFTMM", "android": "7.1.2", "os": "Fire OS 6"}
+    builds = []
+    for st, se, lg, ex in ((status, settings, log, extra), ({"version": "", "platform": "kodi"}, {}, [], {}),
+                           (dict(status, platform="enigma2", screen="none"), {"camera": "x"}, ["ERROR " + "z" * 900] * 3,
+                            {"model": "Solo 4K", "image": "openATV 7.6"})):
+        rep = report.build(st, se, lg, ex, now=1795000000.7)
+        builds.append({"status": st, "settings": se, "log": lg, "extra": ex, "now": 1795000000.7, "out": rep,
+                       "summary": report.summary(rep), "issue_url": report.issue_url(rep)})
+    return {"scrub": [{"in": t, "out": report.scrub(t)} for t in scrub], "build": builds}
+
+
 def core_reference():
     resolver = _fake_resolver()
     hints = []
@@ -315,6 +349,8 @@ def core_reference():
                           ("x1", "é" * 40, "androidtv", "1.3.0-dev", 1, 8099, False),
                           ("", "no id", "androidtv", "1", 1, 8099, False))],
         "metrics": metrics,
+        "qr": _qr_reference(),
+        "report": _report_reference(),
         "action_menu": [{"has_ptz": p, "ptz_key": k, "ha_buttons": b,
                          "out": [[kind, colour] for kind, colour in keymap.action_menu(p, k, b)],
                          "labels": [present.action_label(kind, colour, lambda t: t)
@@ -576,6 +612,7 @@ def runtime():
         "tile_labels": present.TILE_LABELS,
         "frame_cache_seconds": frames.CACHE_SECONDS,
         "still_max_seconds": frames.STILL_MAX_SECONDS,
+        "report": __import__("camalert_core.report", fromlist=["x"]).constants(),  # #132
         "text_sizes": layout.TEXT_SIZES,
         "border_modes": list(style.BORDER_MODES),
         "priority_colours": style.PRIORITY_COLOURS,

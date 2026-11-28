@@ -302,6 +302,11 @@
     <string name="t_b58ee195" formatted="false">%s a Home Assistant</string>
     <string name="t_46b14e9b" formatted="false">in pausa</string>
     <string name="t_6ad1f969" formatted="false">giro</string>
+    <string name="t_202538d9" formatted="false">Segnalare un problema</string>
+    <string name="t_af073226" formatted="false">Scansionare il codice con il telefono: si apre una segnalazione GitHub con il lettore e le versioni già compilati. Poi incollare il rapporto completo (senza password né token) dal file salvato.</string>
+    <string name="t_4fdb935f" formatted="false">Salvare il rapporto</string>
+    <string name="t_bd6cbd20" formatted="false">Rapporto salvato in %s</string>
+    <string name="t_18057012" formatted="false">Impossibile salvare il rapporto: %s</string>
     <string name="t_9ee51c54" formatted="false">non è un file di impostazioni</string>
     <string name="t_53025dac" formatted="false">creato da una versione più recente di CamAlert</string>
     <string name="t_9dc41ec9" formatted="false">Campanello</string>

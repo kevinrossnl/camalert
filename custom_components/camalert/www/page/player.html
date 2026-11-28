@@ -27,6 +27,12 @@
   #panel button { padding: .55em 1em; font-size: 1em; border-radius: 4px; border: 0; cursor: pointer; }
   #panel h2 { margin: .2em 0 .6em; font-weight: 400; }
   #panel .small { font-size: .85em; opacity: .7; }
+  #report { position: fixed; inset: 0; background: rgba(0,0,0,.92); display: none; z-index: 30; padding: 2em;
+            box-sizing: border-box; overflow: auto; }
+  #report.open { display: flex; gap: 2em; flex-wrap: wrap; align-items: flex-start; }
+  #report pre { white-space: pre-wrap; flex: 1 1 20em; margin: 0; font: inherit; }
+  #report canvas { background: #fff; max-width: 90vw; }
+  #report button { padding: .55em 1em; font-size: 1em; border-radius: 4px; border: 0; cursor: pointer; margin-right: .5em; }
 </style>
 </head>
 <body>
@@ -48,8 +54,11 @@
   <label><input id="f-dnd" type="checkbox"> <span data-t="Do not disturb"></span></label>
   <label><input id="f-dashboard" type="checkbox"> <span data-t="Also show alerts on Home Assistant dashboards in this browser"></span></label>
   <div class="row"><button id="save" type="submit" data-t="Save"></button><button id="close" type="button" data-t="Close"></button></div>
+  <div class="row"><button id="report-open" type="button" data-t="Report a problem"></button></div>
   <p class="small" data-t="Add this player in Home Assistant under Settings › Devices &amp; services: it is listed as discovered."></p>
 </form>
+<div id="report"><div><canvas id="report-qr"></canvas></div><div style="flex:1 1 20em"><pre id="report-text"></pre>
+  <p><button id="report-save" type="button" data-t="Save the report"></button><button id="report-close" type="button" data-t="Close"></button></p></div></div>
 <script type="module" src="page.js"></script>
 </body>
 </html>

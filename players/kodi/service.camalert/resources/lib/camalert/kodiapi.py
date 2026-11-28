@@ -159,6 +159,26 @@ def settings():
     return parse_settings(raw)
 
 
+def report_values():
+    """{schema id: value} for the problem report (#132): Kodi keys mapped back to the schema ids."""
+    from .camalert_core import schema
+    cur = settings()
+    out = {}
+    for s in schema.for_platform("kodi"):
+        k = s.key("kodi")
+        if k in cur:
+            out[s.id] = cur[k]
+    return out
+
+
+def system_info():
+    """{"kodi": ..., "os": ..., "python": ...} for the problem report (#132)."""
+    busy = [xbmc.getLocalizedString(503)]
+    os_name = os_label(xbmc.getInfoLabel("System.OSVersionInfo"), busy, platform.platform(terse=True))
+    return {"kodi": xbmc.getInfoLabel("System.BuildVersion").split(" ")[0], "os": os_name,
+            "python": platform.python_version()}
+
+
 def migrate_settings():
     """Moves settings saved by a version-1 add-on to their schema-version-2 keys (once; afterwards there is
     nothing left to move). Returns the keys that were written."""

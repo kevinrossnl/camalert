@@ -194,6 +194,9 @@
       },
       "hide": {
         "name": "Camera verbergen"
+      },
+      "problem_report": {
+        "name": "Probleemrapport"
       }
     },
     "sensor": {

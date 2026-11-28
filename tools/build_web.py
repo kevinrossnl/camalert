@@ -26,7 +26,7 @@ HA_WWW = os.path.join(ROOT, "custom_components", "camalert", "www")
 EXTENSION = os.path.join(WEB, "extension")
 sys.path.insert(0, os.path.join(ROOT, "core"))
 
-from camalert_core import api, layout, rules, schema, style  # noqa: E402
+from camalert_core import api, layout, report, rules, schema, style  # noqa: E402
 
 # what the browser player answers (a subset of the HTTP players: no PTZ, tour, webhook, update or HTTP specifics)
 CAPABILITIES = ("cameras", "dnd", "events", "hide", "hold", "log", "mosaic", "screen", "settings", "setup", "show",
@@ -36,8 +36,8 @@ SETTINGS = ("server", "camera", "titles", "ready_cameras", "duration", "position
             "priority_border", "chime", "dnd", "language")
 # what goes into www/ (the web player served by Home Assistant): core + page + frontend module + chime
 WWW_FILES = ("core/api.js", "core/controller.js", "core/generated.js", "core/i18n.js", "core/pictures.js",
-             "core/player.js", "core/store.js", "core/transport.js", "core/ui.js", "page/auth.js", "page/player.html",
-             "page/page.js", "page/frontend.js", "chime.wav")
+             "core/player.js", "core/qr.js", "core/report.js", "core/store.js", "core/transport.js", "core/ui.js",
+             "page/auth.js", "page/player.html", "page/page.js", "page/frontend.js", "chime.wav")
 
 
 def version():
@@ -85,6 +85,7 @@ def data():
         "background": style.BACKGROUND,
         "flashMs": style.FLASH_MS,
         "languageNames": dict(style.LANGUAGE_NAMES),
+        "report": report.constants(),  # #132
     }
 
 

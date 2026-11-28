@@ -7,6 +7,7 @@ import time
 import xbmcgui
 
 from . import kodiapi, ptz, sources
+from .camalert_core.report import TITLE as REPORT_TITLE
 
 
 def send(**cmd):
@@ -158,9 +159,16 @@ def open_settings():
 
 # #106: what opening the add-on (Add-ons > Program add-ons, a favourite) offers: (label id, action)
 MENU = ((30171, lambda: send(do="mosaic")), (30172, lambda: send(do="tour")), (30205, lambda: show_camera()),
-        (30204, lambda: events()), (30201, lambda: diagnostics()), (30284, lambda: open_settings()),
+        (30204, lambda: events()), (30201, lambda: diagnostics()), (REPORT_TITLE, lambda: problem_report()),
+        (30284, lambda: open_settings()),
         (30456, lambda: wizard()), (30780, lambda: settings_io("export_dialog")),
         (30781, lambda: settings_io("import_dialog")), (30782, lambda: settings_io("undo_dialog")))
+
+
+def problem_report():
+    """#132: Report a problem (summary, QR code, save the report)."""
+    from . import kreport
+    kreport.run()
 
 
 def settings_io(action):
@@ -182,7 +190,9 @@ def show_camera():
 
 
 def menu():
-    i = xbmcgui.Dialog().select("CamAlert", [kodiapi.tr(label) for label, _action in MENU])
+    core = kodiapi.core_tr()
+    labels = [kodiapi.tr(label) if isinstance(label, int) else core(label) for label, _action in MENU]
+    i = xbmcgui.Dialog().select("CamAlert", labels)
     if 0 <= i < len(MENU):
         MENU[i][1]()
 
@@ -309,6 +319,8 @@ def run(args):
         send(do=what)
     elif what == "diagnostics":
         diagnostics()
+    elif what == "report":
+        problem_report()
     elif what == "events":
         events()
     elif what == "wizard":

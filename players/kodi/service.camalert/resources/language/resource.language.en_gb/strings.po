@@ -1385,6 +1385,26 @@ msgctxt "#30583"
 msgid "Guest mode"
 msgstr ""
 
+msgctxt "#30584"
+msgid "Report a problem"
+msgstr ""
+
+msgctxt "#30585"
+msgid "Save the report"
+msgstr ""
+
+msgctxt "#30586"
+msgid "Report saved in %s"
+msgstr ""
+
+msgctxt "#30587"
+msgid "Could not save the report: %s"
+msgstr ""
+
+msgctxt "#30588"
+msgid "Scan the code with your phone: a GitHub issue opens with the player and the versions filled in. Then paste the full report (without passwords or tokens) from the saved file."
+msgstr ""
+
 msgctxt "#30720"
 msgid "Text size"
 msgstr ""

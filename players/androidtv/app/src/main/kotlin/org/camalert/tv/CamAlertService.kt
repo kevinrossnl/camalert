@@ -94,6 +94,9 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
 
     fun settings() = store.values()
 
+    /** #132: {"report": ..., "issue_url": ...} for ReportActivity. */
+    fun problemReport(): Map<String, Any?> = api.problemReport(backend)
+
     fun nodeName(s: Map<String, Any?> = settings()) = s["mqtt_name"]?.toString()?.trim()?.ifEmpty { null } ?: "CamAlert ${deviceName(this)}"
 
     @Volatile var composites: Set<String> = emptySet()  // own mosaic streams of the last camera list (#125)
@@ -198,6 +201,10 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
             }
         }
         override fun logTail(lines: Int) = CamLog.tail(lines)
+        override fun reportSettings(): Map<String, Any?> = settings()  // #132: secrets are dropped by Report
+        override fun reportExtra(): Map<String, Any?> = mapOf(  // #132: never serial numbers or addresses
+            "model" to "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}",
+            "android" to android.os.Build.VERSION.RELEASE)
         override fun metrics() = controller.metrics(version, PLATFORM)
         override fun statusExtra() = mapOf("mqtt" to mqttConnected())
         override fun updateStatus() = updateState.asStatus()

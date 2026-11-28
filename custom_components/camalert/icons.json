@@ -3,7 +3,8 @@
     "button": {
       "show": {"default": "mdi:cctv"},
       "mosaic": {"default": "mdi:view-grid"},
-      "hide": {"default": "mdi:close-box-outline"}
+      "hide": {"default": "mdi:close-box-outline"},
+      "problem_report": {"default": "mdi:bug-outline"}
     },
     "sensor": {
       "on_screen": {"default": "mdi:television", "state": {"none": "mdi:television-off"}}

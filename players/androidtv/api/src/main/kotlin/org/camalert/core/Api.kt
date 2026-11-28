@@ -79,6 +79,10 @@ interface Backend {
     /** Starts installing release [version] in the background (#126); the version is already checked. */
     fun startUpdate(version: String): Unit = throw UnsupportedOperationException("update")
     fun log(message: String, level: String = "normal") {}
+    /** #132: {schema id: value} of the settings for the problem report (secrets are dropped again by Report). */
+    fun reportSettings(): Map<String, Any?> = emptyMap()
+    /** #132: player details for the problem report (model, OS, versions); never addresses or serial numbers. */
+    fun reportExtra(): Map<String, Any?> = emptyMap()
     /** #89: play the WAV at url (or speak text) in the background; true when it will be spoken. Never blocks. */
     fun speak(url: String?, text: String?, priority: String): Boolean = false
     /** Host name resolver for the webhook check (blocking). */
@@ -100,7 +104,7 @@ class Api(val data: CoreData = CoreData.load()) {
         Route("update", action = true, handler = ::update),
         Route("dnd", handler = ::dnd),
         Route("status", handler = ::status), Route("settings", handler = ::settings), Route("cameras", handler = ::cameras),
-        Route("log", sensitive = true, handler = ::log), Route("events", sensitive = true, handler = ::events),
+        Route("log", sensitive = true, handler = ::log), Route("report", sensitive = true, handler = ::report), Route("events", sensitive = true, handler = ::events),
         Route("metrics", sensitive = true, handler = ::metrics),
     ).associateBy { it.name }
 
@@ -336,6 +340,21 @@ class Api(val data: CoreData = CoreData.load()) {
             out["screen"] = if (out["window"] != null) "photo" else if (out["live"] != null) "live" else "none"
         }
         return out
+    }
+
+    private val reports by lazy { Report(data) }
+
+    /** #132: the problem report, scrubbed, plus the pre-filled GitHub issue link for the QR code. */
+    /** #132: the problem report for the player's own "Report a problem" screen (same answer as GET /camalert/report). */
+    @Suppress("UNCHECKED_CAST")
+    fun problemReport(b: Backend, source: String = "menu"): Map<String, Any?> =
+        report(b, b.controller(), mutableMapOf(), b.settings(), source) as Map<String, Any?>
+
+    private fun report(b: Backend, ctl: Controller, a: MutableMap<String, String>, s: Map<String, Any?>, source: String): Any {
+        @Suppress("UNCHECKED_CAST")
+        val st = status(b, ctl, a, s, source) as Map<String, Any?>
+        val rep = reports.build(st, b.reportSettings(), b.logTail(100), b.reportExtra())
+        return mapOf("result" to true, "report" to rep, "issue_url" to reports.issueUrl(rep))
     }
 
     private fun log(b: Backend, ctl: Controller, a: MutableMap<String, String>, s: Map<String, Any?>, source: String): Any {

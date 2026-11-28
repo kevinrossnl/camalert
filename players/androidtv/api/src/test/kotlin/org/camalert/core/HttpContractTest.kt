@@ -111,6 +111,14 @@ class HttpContractTest {
             ev.isNotEmpty() && ev[0]["camera"] == "garden" && ev.all { "snapshot" !in it }
         }
         "log_lines" -> (body as Map<String, Any?>)["lines"] is List<*>
+        "report_ok" -> {  // #132
+            val b = body as Map<String, Any?>
+            val rep = b["report"] as? Map<String, Any?> ?: emptyMap()
+            val url = b["issue_url"] as? String ?: ""
+            b["result"] == true && (rep["report"] as? Number)?.toInt() == 1 && rep["log"] is List<*> &&
+                (rep["settings"] as? Map<*, *>)?.containsKey("token") == false && "secret" !in rep.toString() &&
+                url.startsWith("https://github.com/kevinrossnl/camalert/issues/new?") && url.toByteArray().size <= 600
+        }
         "no_spoken_key" -> body is Map<*, *> && "spoken" !in body  // #89
         "prometheus" -> body is String && "camalert_uptime_seconds" in body && "camalert_requests_total" in body
         else -> error("unknown check $name: add it here")

@@ -55,6 +55,44 @@ export const DATA = {
     "alarm": "ALARM",
     "high": "Doorbell"
   },
+  "report": {
+    "error_lines": 10,
+    "file_name": "camalert-report.txt",
+    "issues_url": "https://github.com/kevinrossnl/camalert/issues/new",
+    "local_suffixes": [
+      ".local",
+      ".lan",
+      ".home",
+      ".home.arpa",
+      ".internal"
+    ],
+    "log_lines": 100,
+    "player_labels": {
+      "androidtv": "Android TV / Fire TV app",
+      "browser": "Web player or browser extension",
+      "enigma2": "Enigma2 receiver",
+      "kodi": "Kodi"
+    },
+    "secret_ids": [
+      "ha_webhook",
+      "ha_webhook_secret",
+      "mqtt_password",
+      "ptz_password",
+      "token"
+    ],
+    "status_dropped": [
+      "capabilities"
+    ],
+    "texts": {
+      "help": "Scan the code with your phone: a GitHub issue opens with the player and the versions filled in. Then paste the full report (without passwords or tokens) from the saved file.",
+      "save": "Save the report",
+      "save_failed": "Could not save the report: %s",
+      "saved": "Report saved in %s",
+      "title": "Report a problem"
+    },
+    "url_max": 600,
+    "version": 1
+  },
   "screens": [
     "none",
     "photo",

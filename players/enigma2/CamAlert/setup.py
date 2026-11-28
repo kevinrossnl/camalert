@@ -228,7 +228,9 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
         self.build()
 
     def menu(self):
-        choices = [(_("Diagnostics"), "diag"), (_("Event list"), "events"), (_("Start the wizard again"), "wizard"),
+        from .camalert_core.report import TITLE as REPORT_TITLE
+        choices = [(_("Diagnostics"), "diag"), (_(REPORT_TITLE), "report"), (_("Event list"), "events"),
+                   (_("Start the wizard again"), "wizard"),
                    (_(PRESET_LABELS["simple"]), "simple"),
                    (_("Export settings"), "export"), (_("Import settings"), "import")]
         if settingsio.backups().latest() is not None:
@@ -267,6 +269,9 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
             c.all_settings.value = not c.all_settings.value
             c.all_settings.save()
             self.build()
+        elif choice[1] == "report":  # #132
+            from .diagnostics import ReportScreen
+            self.session.open(ReportScreen)
         else:
             self.session.open(DiagnosticsScreen if choice[1] == "diag" else EventsScreen)
 

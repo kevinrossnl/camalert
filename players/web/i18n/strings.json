@@ -46,5 +46,8 @@
   "Talk",
   "Stop talking",
   "Talking needs the page over HTTPS",
-  "Talking did not start"
+  "Talking did not start",
+  "Report a problem",
+  "Save the report",
+  "Scan the code with your phone: a GitHub issue opens with the player and the versions filled in. Then paste the full report (without passwords or tokens) from the saved file."
 ]

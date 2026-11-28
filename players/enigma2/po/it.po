@@ -651,6 +651,21 @@ msgstr "in pausa"
 msgid "tour"
 msgstr "giro"
 
+msgid "Report a problem"
+msgstr "Segnalare un problema"
+
+msgid "Scan the code with your phone: a GitHub issue opens with the player and the versions filled in. Then paste the full report (without passwords or tokens) from the saved file."
+msgstr "Scansionare il codice con il telefono: si apre una segnalazione GitHub con il lettore e le versioni già compilati. Poi incollare il rapporto completo (senza password né token) dal file salvato."
+
+msgid "Save the report"
+msgstr "Salvare il rapporto"
+
+msgid "Report saved in %s"
+msgstr "Rapporto salvato in %s"
+
+msgid "Could not save the report: %s"
+msgstr "Impossibile salvare il rapporto: %s"
+
 msgid "not a settings file"
 msgstr "non è un file di impostazioni"
 

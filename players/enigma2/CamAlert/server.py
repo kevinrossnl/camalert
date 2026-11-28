@@ -169,6 +169,16 @@ class Backend(api.Backend):
         from . import updater
         return updater.STATE.as_status()
 
+    def report_settings(self):
+        """#132: {schema id: value}; camalert_core.report drops the secrets."""
+        from .settingsio import report_values
+        return report_values()
+
+    def report_extra(self):
+        """#132: model and image from /etc/image-version (no serial numbers or addresses)."""
+        from .settingsio import image_info
+        return image_info()
+
     def start_update(self, version):
         """#126: download, check, and install while in standby without a recording (updater.py)."""
         from . import updater

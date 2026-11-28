@@ -1,0 +1,18 @@
+# Labels a new bug report by player and kindly asks for a missing version or problem report (#132).
+# Never closes anything. tools/issue_triage.py does the work; it needs no other secret than GITHUB_TOKEN.
+name: issue-triage
+on:
+  issues:
+    types: [opened, edited]
+permissions:
+  issues: write
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: label and ask
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 tools/issue_triage.py

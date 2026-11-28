@@ -1,5 +1,6 @@
 // The web player page (#92) in Chromium against the fake Home Assistant.
 import { expect, test } from "@playwright/test";
+import { readFileSync } from "node:fs";
 import { FakeHA, TOKEN } from "../fake/server.mjs";
 
 let fake;
@@ -78,6 +79,26 @@ test("talk button only for a camera with a talk-back stream (#98)", async ({ pag
   await expect(page.locator("camalert-layer .win .talk")).toHaveCount(0);
   expect((await fake.request("cameras")).body.cameras.map((c) => c.name)).not.toContain("front_door_talk");
   await fake.request("hide");
+});
+
+test("report a problem: QR code, summary without the token, download (#132)", async ({ page }) => {
+  await open(page);
+  await page.click("#gear");
+  await page.click("#report-open");
+  await expect(page.locator("#report")).toHaveClass(/open/);
+  await expect(page.locator("#report-text")).toContainText("CamAlert");
+  const qr = await page.evaluate(() => document.getElementById("report-qr").width);
+  expect(qr).toBeGreaterThan(100);
+  const download = page.waitForEvent("download");
+  await page.click("#report-save");
+  const file = await download;
+  expect(file.suggestedFilename()).toBe("camalert-report.txt");
+  const body = readFileSync(await file.path(), "utf8");
+  expect(body).toContain("CamAlert");
+  expect(body).not.toContain(TOKEN);
+  expect(body).not.toMatch(/access_token|refresh_token/);
+  await page.click("#report-close");
+  await expect(page.locator("#report")).not.toHaveClass(/open/);
 });
 
 test("settings panel and language", async ({ page }) => {

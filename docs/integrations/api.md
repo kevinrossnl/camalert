@@ -34,6 +34,7 @@ against it by the contract tests). Answers are JSON (`metrics`: Prometheus text)
 | `GET /camalert/events` | The last 20 requests: time, camera, label, source, priority, what CamAlert did and why |
 | `GET /camalert/metrics` | Prometheus metrics (see [monitoring](monitoring.md)) |
 | `GET /camalert/log?lines=200` | The end of `camalert.log` (passwords and tokens are always removed) |
+| `GET /camalert/report` | The problem report (#132, capability `report`): `report` with the version, platform, player versions, status, the settings (passwords, tokens and secrets removed, addresses with their user and password removed) and the last 100 log lines, and `issue_url`, the pre-filled GitHub issue that the players show as a QR code |
 
 Parameters: `cam` (go2rtc stream name, or several separated by commas; only letters, digits, `_`, `.`, `-`),
 `sec` (5–300; `0` = until `hide` or a new `show`, at most 600 s, capability `hold`, #81), `mode` (`photo`, `live`, `notify`, `strip` = multi-camera window), `label` (optional
@@ -74,7 +75,7 @@ If your go2rtc address starts with `https://` (for example behind a reverse prox
   including the documentation ranges (192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32).
 - Set an **access token** in the settings if other people use your network; send it in the `X-CamAlert-Token`
   header. Tokens are compared in constant time.
-- `log`, `events` and `metrics` never answer callers outside the local network unless a token is set (even with
+- `log`, `report`, `events` and `metrics` never answer callers outside the local network unless a token is set (even with
   *Allowed callers: any address*).
 - CamAlert only fetches pictures and streams of the configured cameras (go2rtc server or camera file): requests
   name a camera, never a URL. The webhook must point into the local network: the caller's address, an address

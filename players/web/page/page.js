@@ -4,6 +4,8 @@
 // The web player page (#92): signs in with Home Assistant, connects as a browser player, draws the CamAlert
 // windows and has a small settings panel. Served by the integration at /camalert_static/page/player.html.
 import { DATA } from "../core/generated.js";
+import { encode, draw } from "../core/qr.js";
+import * as report from "../core/report.js";
 import { Player } from "../core/player.js";
 import { Store, localStorageBackend } from "../core/store.js";
 import { HaSocket } from "../core/transport.js";
@@ -126,3 +128,35 @@ if (new URLSearchParams(location.search).has("settings")) openPanel();
 player.start();
 // for the end-to-end tests and the browser console
 globalThis.camalert = { player, store, link, view };
+
+// #132: Report a problem. A summary, a QR code that opens a pre-filled GitHub issue on a phone, and the full
+// report (without secrets) to download and paste into the issue.
+let lastReport = null;
+
+function browserName() {
+  const m = /(Edg|Chrome|Firefox|Version)\/(\d+)/.exec(navigator.userAgent || "");
+  if (!m) return "browser";
+  return `${{ Edg: "Edge", Version: "Safari" }[m[1]] || m[1]} ${m[2]}`;
+}
+
+async function openReport() {
+  const t = tr();
+  const status = (await player.request("status")).body || {};
+  lastReport = report.build(status, store.settings(), player.logTail(DATA.report.log_lines),
+                            { browser: browserName() });
+  draw($("report-qr"), encode(report.issueUrl(lastReport), "M"), 6);
+  $("report-text").textContent = [t(DATA.report.texts.help), "", ...report.summary(lastReport)].join("\n");
+  $("panel").classList.remove("open");
+  $("report").classList.add("open");
+}
+
+$("report-open").addEventListener("click", () => { openReport().catch((e) => player.log(`report failed: ${e}`, "error")); });
+$("report-close").addEventListener("click", () => $("report").classList.remove("open"));
+$("report-save").addEventListener("click", () => {
+  if (!lastReport) return;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([report.text(lastReport)], { type: "text/plain" }));
+  a.download = DATA.report.file_name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+});

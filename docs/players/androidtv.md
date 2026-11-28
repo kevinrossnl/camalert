@@ -126,7 +126,7 @@ allow that port in your firewall from Home Assistant to the TV device.
 
 ## Logs and diagnostics
 
-*Diagnostics* and the *event list* are in the settings. The log is also on the API (`/camalert/log`) and in
+*Diagnostics*, the *event list* and *Report a problem* ([troubleshooting](../user/troubleshooting.md)) are in the settings. The log is also on the API (`/camalert/log`) and in
 `adb logcat -s CamAlert`. Passwords and tokens are never logged.
 
 ## Testing with demo cameras

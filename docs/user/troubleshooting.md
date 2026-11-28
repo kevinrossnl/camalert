@@ -1,5 +1,16 @@
 # Troubleshooting
 
+**Report a problem**
+- Every player has **Report a problem**: in the CamAlert menu on Enigma2 (after *Diagnostics*) and Kodi, in the
+  settings of the Android TV / Fire TV app, and as a button on the web player's panel. It shows a short summary and
+  a QR code: scan it with your phone and a GitHub issue opens with the player and the versions already filled in.
+- Save the full report (Enigma2: GREEN, into the export folder; Kodi: choose a folder; Android TV: the app's files
+  folder; web: a download) and paste it into the issue. Passwords, tokens, secrets and the user and password in
+  camera addresses are removed; read it once before you post it anyway.
+- In Home Assistant the **Problem report** button of a player writes the player's report and the diagnostics into
+  one file under `/config/camalert_reports/` and shows a notification with the issue link.
+- Scripts can fetch the same report with `GET /camalert/report` ([API](../integrations/api.md)).
+
 **The photo window or test shows nothing**
 - Diagnostics say *go2rtc address not set* or *No valid go2rtc address*? Enter the address of your go2rtc server in
   the settings (there is no default address, #73); until then CamAlert has no cameras and contacts nothing.

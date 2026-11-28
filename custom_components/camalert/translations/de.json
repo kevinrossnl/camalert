@@ -194,6 +194,9 @@
       },
       "hide": {
         "name": "Kamera ausblenden"
+      },
+      "problem_report": {
+        "name": "Problembericht"
       }
     },
     "sensor": {

@@ -26,7 +26,8 @@ async def test_entities_of_a_player(hass, player):
     await setup_player(hass, player)
     ids = sorted(e.entity_id for e in er.async_entries_for_config_entry(
         er.async_get(hass), hass.config_entries.async_entries("camalert")[0].entry_id))
-    assert ids == ["button.living_room_hide_camera", "button.living_room_mosaic", "button.living_room_show_front_door",
+    assert ids == ["button.living_room_hide_camera", "button.living_room_mosaic", "button.living_room_problem_report",
+                   "button.living_room_show_front_door",
                    "button.living_room_show_garden", "event.living_room_remote_button",
                    "notify.living_room_notification", "select.living_room_window_position",
                    "select.living_room_window_size", SENSOR, SWITCH, "switch.living_room_guest_mode",

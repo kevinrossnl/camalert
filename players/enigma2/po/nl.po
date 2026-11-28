@@ -651,6 +651,21 @@ msgstr "gepauzeerd"
 msgid "tour"
 msgstr "rondgang"
 
+msgid "Report a problem"
+msgstr "Probleem melden"
+
+msgid "Scan the code with your phone: a GitHub issue opens with the player and the versions filled in. Then paste the full report (without passwords or tokens) from the saved file."
+msgstr "Scan de code met je telefoon: er opent een GitHub-issue waarin de speler en de versies al zijn ingevuld. Plak daarna het volledige rapport (zonder wachtwoorden of tokens) uit het opgeslagen bestand."
+
+msgid "Save the report"
+msgstr "Rapport opslaan"
+
+msgid "Report saved in %s"
+msgstr "Rapport opgeslagen in %s"
+
+msgid "Could not save the report: %s"
+msgstr "Kon het rapport niet opslaan: %s"
+
 msgid "not a settings file"
 msgstr "geen instellingenbestand"
 

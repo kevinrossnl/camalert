@@ -868,6 +868,26 @@ msgstr "gepauzeerd"
 msgid "tour"
 msgstr "rondgang"
 
+#: e2 kodi:30584 web
+msgid "Report a problem"
+msgstr "Probleem melden"
+
+#: e2 kodi:30588 web
+msgid "Scan the code with your phone: a GitHub issue opens with the player and the versions filled in. Then paste the full report (without passwords or tokens) from the saved file."
+msgstr "Scan de code met je telefoon: er opent een GitHub-issue waarin de speler en de versies al zijn ingevuld. Plak daarna het volledige rapport (zonder wachtwoorden of tokens) uit het opgeslagen bestand."
+
+#: e2 kodi:30585 web
+msgid "Save the report"
+msgstr "Rapport opslaan"
+
+#: e2 kodi:30586
+msgid "Report saved in %s"
+msgstr "Rapport opgeslagen in %s"
+
+#: e2 kodi:30587
+msgid "Could not save the report: %s"
+msgstr "Kon het rapport niet opslaan: %s"
+
 #: e2 kodi:30572
 msgid "not a settings file"
 msgstr "geen instellingenbestand"
@@ -2275,6 +2295,10 @@ msgstr "Mozaïek"
 #: ha:entity.button.hide.name ha:services.hide.name
 msgid "Hide camera"
 msgstr "Camera verbergen"
+
+#: ha:entity.button.problem_report.name
+msgid "Problem report"
+msgstr "Probleemrapport"
 
 #: ha:entity.sensor.on_screen.name
 msgid "Camera on screen"

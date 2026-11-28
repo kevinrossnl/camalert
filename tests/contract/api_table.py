@@ -41,6 +41,16 @@ def log_lines(body):
     return isinstance(body.get("lines"), list)
 
 
+def report_ok(body):
+    """#132: the problem report, scrubbed, with a pre-filled issue link short enough for a QR code."""
+    rep, url = body.get("report") or {}, body.get("issue_url") or ""
+    text = repr(rep)
+    return (body.get("result") is True and rep.get("report") == 1 and isinstance(rep.get("log"), list)
+            and isinstance(rep.get("settings"), dict) and "token" not in rep["settings"]
+            and "secret" not in text and url.startswith("https://github.com/kevinrossnl/camalert/issues/new?")
+            and len(url.encode("utf-8")) <= 600)
+
+
 def prometheus(body):
     return isinstance(body, str) and "camalert_uptime_seconds" in body and "camalert_requests_total" in body
 
@@ -267,6 +277,10 @@ TABLE = [
     get("log_from_wan_needs_token", "/camalert/log", ip=WAN, settings={"allow": "any"}, code=403),
     get("events_from_wan_needs_token", "/camalert/events", ip=WAN, settings={"allow": "any"}, code=403),
     get("metrics_from_wan_needs_token", "/camalert/metrics", ip=WAN, settings={"allow": "any"}, code=403),
+    get("report", "/camalert/report", settings={"token": ""}, check=report_ok),
+    get("report_with_token_hides_it", "/camalert/report", header="secret", settings={"token": "secret"},
+        check=report_ok),
+    get("report_from_wan_needs_token", "/camalert/report", ip=WAN, settings={"allow": "any"}, code=403),
     get("log_from_wan_with_token", "/camalert/log", ip=WAN, header="secret",
         settings={"allow": "any", "token": "secret"}, json={"result": True}),
 ]

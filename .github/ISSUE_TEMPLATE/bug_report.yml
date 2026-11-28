@@ -6,6 +6,7 @@ body:
     attributes:
       value: |
         Thanks for reporting! Please check [Troubleshooting](https://github.com/kevinrossnl/camalert/blob/main/docs/user/troubleshooting.md) first.
+        **Easiest:** use *Report a problem* on the player (Enigma2 MENU in the settings, Kodi add-on menu, Android TV settings, web player settings) or the *Problem report* button in Home Assistant. Scan the QR code with your phone: this form opens with the player and versions filled in, and the player shows (or saves) the full report, already without secrets, to paste below.
         **Remove secrets** from everything you paste: passwords, tokens, RTSP addresses with keys, public IP addresses, host names, e-mail addresses and camera names you do not want to share.
         Security problems: do not open an issue, see [SECURITY.md](https://github.com/kevinrossnl/camalert/blob/main/SECURITY.md).
   - type: dropdown
@@ -16,8 +17,10 @@ body:
       options:
         - Enigma2 receiver
         - Kodi
-        - Android TV / Fire TV app (preview)
+        - Android TV / Fire TV app
+        - Web player or browser extension
         - Home Assistant integration or blueprint
+        - TV with a notification app (PiPup, TvOverlay, Notifications for Android TV)
         - Other / not sure
     validations:
       required: true
@@ -71,8 +74,8 @@ body:
   - type: textarea
     id: logs
     attributes:
-      label: Log excerpt and diagnostics (secrets removed)
-      description: "The CamAlert log (Enigma2: /home/root/logs/camalert.log or the diagnostics screen; Kodi: the add-on log) and/or the Home Assistant diagnostics download. Paste only the relevant lines."
+      label: Problem report, log excerpt and diagnostics (secrets removed)
+      description: "Best: the problem report of the player (Report a problem) or of Home Assistant (Problem report button). Otherwise the CamAlert log (Enigma2: /home/root/logs/camalert.log or the diagnostics screen; Kodi: the add-on log) and/or the Home Assistant diagnostics download. Check it once more for private details before you post."
       render: text
   - type: checkboxes
     id: checks

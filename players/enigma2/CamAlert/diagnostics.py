@@ -226,3 +226,73 @@ class EventsScreen(Screen, HelpBase):
             self.session.open(MoviePlayer, ref)
         except Exception as ex:
             log("clip playback failed:", ex)
+
+
+REPORT_QR = "/tmp/camalert-report-qr.png"
+
+
+def _build_report():
+    """(report, issue url, qr png path): in a thread (the camera list may need the network)."""
+    from .server import BACKEND
+    from .camalert_core import qr, report
+    rep, url = report.make(BACKEND)
+    with open(REPORT_QR, "wb") as f:
+        f.write(qr.png(qr.encode(url, "M"), scale=6, border=4))
+    return rep, url
+
+
+class ReportScreen(Screen, HelpBase):
+    """Report a problem (#132): a summary, a QR code that opens a pre-filled GitHub issue on a phone, and GREEN to
+    save the full report (without secrets) next to the settings export."""
+
+    def __init__(self, session):
+        from .camalert_core import report
+        f = self.f = getDesktop(0).size().width() / 1920.0
+        self.skin = _skin("CamAlertReport", f,
+                          '<widget name="text" position="%d,%d" size="%d,%d" font="Regular;%d" />'
+                          '<widget name="qr" position="%d,%d" size="%d,%d" alphatest="on" />'
+                          % (int(20 * f), int(20 * f), int(860 * f), int(800 * f), int(26 * f),
+                             int(920 * f), int(40 * f), int(540 * f), int(540 * f)))
+        Screen.__init__(self, session)
+        init_help(self)
+        self.setTitle(_(report.TITLE))
+        self.report = None
+        self["text"] = ScrollLabel(_("Checking..."))
+        self["qr"] = Pixmap()
+        self["key_red"] = StaticText(_("Close"))
+        self["key_green"] = Label(_(report.SAVE))
+        self.picload = ePicLoad()
+        close, up, down = (self.close, _("Close")), (self["text"].pageUp, _("Scroll")), (self["text"].pageDown, _("Scroll"))
+        help_actions(self, "actions", "OkCancelActions", {"cancel": close, "ok": close}, -1)
+        help_actions(self, "colour_actions", "ColorActions", {"red": close, "green": (self.save, _(report.SAVE))}, -1)
+        help_actions(self, "direction_actions", "DirectionActions", {"up": up, "down": down, "left": up, "right": down}, -1)
+        self.onLayoutFinish.append(self.run)
+
+    def run(self):
+        threads.deferToThread(_build_report).addCallbacks(self.done, lambda e: self["text"].setText(str(e.value)))
+
+    def done(self, result):
+        from .camalert_core import report
+        self.report = result[0]
+        self["text"].setText("\n".join([_(report.HELP), ""] + report.summary(self.report)))
+        size = int(540 * self.f)
+        self.picload.setPara((size, size, 1, 1, False, 1, "#ffffffff"))
+        if self.picload.startDecode(REPORT_QR, 0, 0, False) == 0:
+            ptr = self.picload.getData()
+            if ptr is not None:
+                self["qr"].instance.setPixmap(ptr)
+
+    def save(self):
+        from Screens.MessageBox import MessageBox
+        from .camalert_core import report
+        from .settingsio import export_dir
+        if self.report is None:
+            return
+        path = os.path.join(export_dir(), report.FILE_NAME)
+        try:
+            with open(path, "w") as f:
+                f.write(report.text(self.report))
+        except (IOError, OSError) as e:
+            self.session.open(MessageBox, _(report.SAVE_FAILED) % e, MessageBox.TYPE_ERROR)
+            return
+        self.session.open(MessageBox, _(report.SAVED) % path, MessageBox.TYPE_INFO)

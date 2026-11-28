@@ -650,6 +650,21 @@ msgstr ""
 msgid "tour"
 msgstr ""
 
+msgid "Report a problem"
+msgstr ""
+
+msgid "Scan the code with your phone: a GitHub issue opens with the player and the versions filled in. Then paste the full report (without passwords or tokens) from the saved file."
+msgstr ""
+
+msgid "Save the report"
+msgstr ""
+
+msgid "Report saved in %s"
+msgstr ""
+
+msgid "Could not save the report: %s"
+msgstr ""
+
 msgid "not a settings file"
 msgstr ""
 

@@ -67,6 +67,7 @@ file rw-r--r-- service.camalert/resources/lib/camalert/service.py
 file rw-r--r-- service.camalert/resources/lib/camalert/sources.py
 file rw-r--r-- service.camalert/resources/media/chime.wav
 file rw-r--r-- service.camalert/resources/media/white.png
+file rw-r--r-- service.camalert/resources/restart.py
 file rw-r--r-- service.camalert/resources/settings.xml
 file rw-r--r-- service.camalert/screensaver.py
 file rw-r--r-- service.camalert/service.py

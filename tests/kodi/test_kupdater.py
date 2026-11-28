@@ -113,6 +113,22 @@ class TestKodiUpdater(unittest.TestCase):
         up.run("9.0.0")
         self.assertEqual(up.STATE.as_status()["update_error"], "checksum does not match")
 
+    def test_reload_registers_and_restarts_the_service(self):
+        """UpdateLocalAddons only registers the new version; restart.py (a separate script) restarts the service."""
+        up.kodiapi.addon_path = self.saved_api[0]  # the real add-on folder, not this test's temp copy
+        del kodi_stubs.CALLS[:]
+        self.saved["reload_addons"]()
+        builtins = [c[1][0] for c in kodi_stubs.CALLS if c[0] == "xbmc.executebuiltin"]
+        self.assertEqual(builtins[0], "UpdateLocalAddons")
+        self.assertTrue(builtins[1].startswith("RunScript(") and builtins[1].endswith("restart.py)"), builtins)
+        restart = os.path.join(_paths.KODI_ADDON, "resources", "restart.py")
+        self.assertTrue(os.path.isfile(restart))
+        del kodi_stubs.CALLS[:]
+        import runpy
+        runpy.run_path(restart, run_name="__main__")
+        rpc = [c[1][0] for c in kodi_stubs.CALLS if c[0] == "xbmc.executeJSONRPC"]
+        self.assertEqual([('"enabled": false' in c, '"enabled": true' in c) for c in rpc], [(True, False), (False, True)])
+
     def test_start_runs_in_a_thread(self):
         import threading
         done = threading.Event()

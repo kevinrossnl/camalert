@@ -5,7 +5,8 @@
 The release zip is downloaded from CamAlert's fixed GitHub URL and checked against SHA256SUMS
 (camalert_core.selfupdate). It must hold only service.camalert/... with that version in addon.xml. While Kodi
 plays something the update waits ("waiting"); then the add-on folder is swapped (the old one goes to Kodi's temp
-folder) and Kodi is told to look at its local add-ons again, which restarts the service with the new code.
+folder) and Kodi is told to look at its local add-ons again. That only registers the new version: the running
+service keeps the old code, so resources/restart.py (RunScript, its own interpreter) turns the add-on off and on.
 """
 import io
 import os
@@ -42,7 +43,9 @@ def sleep(seconds):
 
 
 def reload_addons():
+    """Register the new version, then restart the service from a separate script (tested on LibreELEC 21)."""
     kodiapi.builtin("UpdateLocalAddons")
+    kodiapi.builtin("RunScript(%s)" % kodiapi.addon_path("resources", "restart.py"))
 
 
 # --- checks --------------------------------------------------------------------------------------------------------

@@ -30,4 +30,9 @@ enigma2 sources of each image; the source and commit are in each file. Not cover
 Python versions (#21): the CI area `pymatrix` runs the core, Enigma2, Kodi and contract tests on Python 3.8, 3.9,
 3.10, 3.11, 3.12 and 3.13 (one uv venv each, workstation runner only; the NAS fallback skips it). The nightly
 workflow (`.forgejo/workflows/nightly.yml`) repeats it with the long property-test profile (#34).
-Not yet: a headless Kodi container smoke test (#37).
+Every night the job `kodi-smoke` of the same workflow runs the add-on in a real, headless Kodi 21 (#37): a Debian
+trixie container with Xvfb, workstation only. `tests/kodi_container/smoke.py` builds the add-on zip, starts Kodi
+with a temporary profile and the fake go2rtc, enables the add-on over JSON-RPC, sends it the fake go2rtc with
+`/camalert/setup`, opens and hides the photo window and the mosaic (`test=1`) and fails on any Python exception of
+the add-on in `kodi.log`. Run it yourself on a computer with `kodi` and `xvfb-run` installed:
+`python3 tests/kodi_container/smoke.py` (never touches your own Kodi profile).

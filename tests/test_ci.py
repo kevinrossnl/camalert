@@ -224,7 +224,10 @@ class Workflow(unittest.TestCase):
         job = wf["jobs"]["long-tests"]
         self.assertEqual(job["runs-on"], "${{ needs.pick-runner.outputs.runner }}")
         self.assertEqual(job["if"], "needs.pick-runner.outputs.mode == 'parallel'")  # never on the NAS
-        self.assertEqual(set(wf["jobs"]), {"pick-runner", "long-tests", "links"})  # no gate, no mirror
+        self.assertEqual(set(wf["jobs"]), {"pick-runner", "long-tests", "links", "kodi-smoke"})  # no gate, no mirror
+        smoke = wf["jobs"]["kodi-smoke"]  # #37: a real Kodi under Xvfb, workstation only (~1 GB of packages)
+        self.assertEqual(smoke["if"], "needs.pick-runner.outputs.mode == 'parallel'")
+        self.assertIn("tests/kodi_container/smoke.py", json.dumps(smoke))
         links = wf["jobs"]["links"]  # #79: reports in one issue, never fails
         self.assertIn("tools/check_links.py --issue", json.dumps(links))
 

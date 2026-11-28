@@ -1,5 +1,6 @@
 # Nightly long tests (#21, #34): more property-test examples and the whole Python 3.8 .. 3.13 matrix; the external
-# link check of the docs (#79), which reports in one issue and never fails the run.
+# link check of the docs (#79), which reports in one issue and never fails the run; the smoke test of the Kodi add-on
+# in a real, headless Kodi 21 (#37: Debian trixie container with Xvfb, workstation only).
 # Never blocks a push or the GitHub mirror (not part of tests.yml / gate). Runs only on the workstation runner
 # (decision 24-11-2026: no Python matrix on the NAS); when the workstation is offline the night is simply skipped.
 # Start by hand: Actions › nightly › Run workflow.
@@ -62,3 +63,19 @@ jobs:
         env:
           REPO_TOKEN: ${{ forgejo.token }}
         run: python3 tools/check_links.py --issue
+
+  kodi-smoke:
+    needs: pick-runner
+    if: needs.pick-runner.outputs.mode == 'parallel'
+    runs-on: ${{ needs.pick-runner.outputs.runner }}
+    container: {image: "debian:trixie"}
+    timeout-minutes: 30
+    steps:
+      - name: Kodi, Xvfb, git
+        run: |
+          apt-get update -qq
+          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \
+            kodi xvfb xauth python3 git ca-certificates nodejs > /dev/null
+      - uses: actions/checkout@v4
+      - name: smoke test in a headless Kodi
+        run: python3 tests/kodi_container/smoke.py

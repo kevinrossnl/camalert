@@ -74,7 +74,8 @@ class TestSettingsUi(unittest.TestCase):
     def test_summary(self):
         self.assertEqual(ui.section_summary("triggers", "enigma2", {}), ([], 0))
         on, changed = ui.section_summary("triggers", "enigma2", {"unifi_enabled": True, "unifi_seconds": 60})
-        self.assertEqual((on, changed), (["UniFi Protect events"], 1))
+        self.assertEqual((on, changed), (["UniFi Protect"], 1))
+        self.assertEqual(ui.section_summary("home_assistant", "enigma2", {"mqtt_enabled": True})[0], ["MQTT"])
         self.assertEqual(ui.section_summary("display", "enigma2", {"tour_interval": 12})[1], 1)
 
 

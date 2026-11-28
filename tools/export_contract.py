@@ -527,6 +527,7 @@ def runtime():
         "levels": list(schema.LEVELS),
         "settings_depends": {k: [p, list(v)] for k, (p, v) in settingsui.DEPENDS.items()},  # #130
         "settings_https_only": list(settingsui.HTTPS_ONLY),
+        "settings_short_names": dict(settingsui.SHORT_NAMES),
         "settings": [_setting(s) for s in androidtv_settings()],
         "not_on_androidtv": NOT_ON_ANDROIDTV,
         "androidtv_defaults": schema.DEFAULT_REASONS[PLATFORM],

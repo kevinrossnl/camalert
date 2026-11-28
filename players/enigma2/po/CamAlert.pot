@@ -326,6 +326,9 @@ msgstr ""
 msgid "as fast as possible"
 msgstr ""
 
+msgid "Sections"
+msgstr ""
+
 msgid "OK opens the settings of this section."
 msgstr ""
 

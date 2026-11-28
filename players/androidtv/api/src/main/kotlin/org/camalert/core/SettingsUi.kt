@@ -37,7 +37,7 @@ class SettingsUi(private val data: CoreData = CoreData.load()) {
     /** (labels of the switches that are on, number of other non-basic settings that differ from the default). */
     fun summary(section: String, values: Map<String, Any?>): Pair<List<String>, Int> {
         val sw = switches(section)
-        val on = sw.filter { value(values, it.id) == true }.map { it.label ?: it.id }
+        val on = sw.filter { value(values, it.id) == true }.map { data.settingsShortNames[it.id] ?: it.label ?: it.id }
         val ids = sw.map { it.id }.toSet()
         val changed = shown().count {
             it.section == section && it.level != "basic" && it.id !in ids && value(values, it.id) != it.default

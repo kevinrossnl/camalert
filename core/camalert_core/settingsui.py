@@ -43,6 +43,10 @@ DEPENDS = {
     "unifi_seconds": ("unifi_enabled", (True,)), "unifi_interval": ("unifi_enabled", (True,)),
     "unifi_rules": ("unifi_enabled", (True,)), "unifi_camera_rules": ("unifi_enabled", (True,)),
 }
+# Short names of the switches in a section's line on the first screen (product names: not translated), so the
+# line fits; a switch without a short name shows its label.
+SHORT_NAMES = {"frigate_enabled": "Frigate", "foscam_enabled": "Foscam", "unifi_enabled": "UniFi Protect",
+               "mqtt_enabled": "MQTT"}
 # Certificates only matter with https (or direct mode, where a camera can be https): not one parent value.
 HTTPS_ONLY = ("verify_ssl",)
 LEVEL_ORDER = {"basic": 0, "advanced": 1, "expert": 2}
@@ -117,9 +121,9 @@ def switches(section, platform):
 
 
 def section_summary(section, platform, values):
-    """(label msgids of the switches that are on, number of other settings that differ from the default) for the
-    line of a section on the first screen; the player translates and joins them."""
-    on = [s.label for s in switches(section, platform) if _value(values, s.id, platform) is True]
+    """(short names or label msgids of the switches that are on, number of other settings that differ from the
+    default) for the line of a section on the first screen; the player translates the labels and joins them."""
+    on = [SHORT_NAMES.get(s.id, s.label) for s in switches(section, platform) if _value(values, s.id, platform) is True]
     sw = {s.id for s in switches(section, platform)}
     changed = 0
     for s in _shown(platform):

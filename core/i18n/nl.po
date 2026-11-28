@@ -437,6 +437,10 @@ msgid "as fast as possible"
 msgstr "zo snel mogelijk"
 
 #: e2
+msgid "Sections"
+msgstr "Onderdelen"
+
+#: e2
 msgid "OK opens the settings of this section."
 msgstr "OK opent de instellingen van dit onderdeel."
 

@@ -6,7 +6,7 @@ Screenshots in the docs show **only CamAlert's own screens**, never a camera pic
 
 | File | What |
 |---|---|
-| `images/enigma2/settings-1.png`, `settings-2.png` | settings screen (General/Display, Display/Rules/Triggers) |
+| `images/enigma2/settings-1.png`, `settings-2.png` | settings: the first screen (basic settings and the sections, #130) and the Triggers section |
 | `images/enigma2/photo-window.png` | photo window with a label (*Person · Front door*) and the key hint |
 | `images/enigma2/notification.png` | notification mode: small window with label and priority |
 | `images/enigma2/multi-camera-window.png` | multi-camera window with one camera *not reachable* |

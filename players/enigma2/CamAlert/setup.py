@@ -176,6 +176,7 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
         if self.section is None:
             for s in settingsui.main_settings("enigma2", v):
                 rows.append(self.item(s, c))
+            rows.append(("-- %s --" % _("Sections"), ConfigNothing(), ""))
             for section in settingsui.sections("enigma2"):
                 el = ConfigSelection(choices=[("x", self.summary(section, v))])
                 self.section_rows[id(el)] = section

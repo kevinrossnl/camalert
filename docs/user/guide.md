@@ -72,7 +72,7 @@ sees the wizard.
 Open **Menu › Plugins › CamAlert** (Kodi: **Add-ons › My add-ons › Services › CamAlert › Configure**; the settings
 have the same names, Enigma2-only steps are marked):
 
-![CamAlert settings: general and display](../images/enigma2/settings-1.png)
+![CamAlert settings: the basic settings and one line per section](../images/enigma2/settings-1.png)
 
 
 1. **go2rtc address**: `http://<go2rtc-address>:1984` (for example `http://192.168.1.10:1984`). A new install has no

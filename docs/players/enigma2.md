@@ -41,12 +41,16 @@ The feed only holds the **latest** release. To go back to an older version, down
 ## Settings
 
 **Menu › Plugins › CamAlert**. The screen uses your skin's own settings layout, with a help text for the selected
-row and section headings: General, Display, Rules, Triggers, Camera control, Home Assistant / MQTT, API, Channel list,
-Log. Which rows you see follows *Menu › Setup › System › Settings level* (simple / intermediate / expert); MENU ›
-*Show all settings* shows everything. Every setting is listed in [settings](../user/settings.md).
+row. The first screen holds the basic settings and, under *Sections*, one line per section (General, Display, Rules,
+Triggers, Camera control, Home Assistant, API, Channel list, Log) that says what is on there or how many settings
+differ from the default (#130). **OK** opens a section; there **GREEN** goes back and **RED** undoes the changes of
+that section, while **Save** on the first screen keeps everything. Fields that do not apply are hidden: Frigate,
+Foscam, UniFi Protect and MQTT show their settings once they are turned on. Expert settings show after **BLUE**
+(*More settings*) in a section or via MENU; the receiver keeps that choice. Every setting is listed in
+[settings](../user/settings.md).
 
-![Settings: general and display](../images/enigma2/settings-1.png)
-![Settings: display, rules and triggers](../images/enigma2/settings-2.png)
+![Settings: the basic settings and one line per section](../images/enigma2/settings-1.png)
+![Settings: the Triggers section](../images/enigma2/settings-2.png)
 
 | Key | In the settings |
 |---|---|

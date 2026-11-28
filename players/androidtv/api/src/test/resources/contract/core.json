@@ -28057,7 +28057,7 @@
     ],
     "home_assistant": [
      [
-      "MQTT (Home Assistant without YAML)"
+      "MQTT"
      ],
      0
     ],
@@ -28071,7 +28071,7 @@
     ],
     "triggers": [
      [
-      "Frigate events"
+      "Frigate"
      ],
      0
     ]
@@ -28196,8 +28196,8 @@
     ],
     "triggers": [
      [
-      "Frigate events",
-      "UniFi Protect events"
+      "Frigate",
+      "UniFi Protect"
      ],
      1
     ]

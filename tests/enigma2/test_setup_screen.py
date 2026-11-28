@@ -71,13 +71,14 @@ class TestSetupScreen(unittest.TestCase):
         sections = ["General", "Display", "Rules", "Triggers", "Camera control", "Home Assistant", "API",
                     "Channel list", "Log and diagnostics"]
         self.assertEqual(labels[-len(sections):], sections)
+        self.assertEqual(labels[-len(sections) - 1], "-- Sections --")
         self.assertLessEqual(len(labels), 20)
         self.assertEqual(s.help_texts[0], "Turn the HTTP API and the camera display on or off.")
         values = self.ca.setup.values
         self.assertEqual(s.summary("log", values(self.c)), "default")
         self.c.foscam_enabled.value = True
         self.c.tour_interval.value = 12
-        self.assertEqual(s.summary("triggers", values(self.c)), "Foscam motion and sound alarms")
+        self.assertEqual(s.summary("triggers", values(self.c)), "Foscam")
         self.assertEqual(s.summary("display", values(self.c)), "1 changed")
 
     def test_section_screen_and_ok(self):

@@ -327,6 +327,9 @@ msgstr "normale"
 msgid "as fast as possible"
 msgstr "le plus vite possible"
 
+msgid "Sections"
+msgstr "Rubriques"
+
 msgid "OK opens the settings of this section."
 msgstr "OK ouvre les réglages de cette rubrique."
 

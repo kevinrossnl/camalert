@@ -1986,6 +1986,12 @@
  "settings_https_only": [
   "verify_ssl"
  ],
+ "settings_short_names": {
+  "foscam_enabled": "Foscam",
+  "frigate_enabled": "Frigate",
+  "mqtt_enabled": "MQTT",
+  "unifi_enabled": "UniFi Protect"
+ },
  "setup_received": "Settings received from Home Assistant",
  "source_labels": {
   "api": "API",

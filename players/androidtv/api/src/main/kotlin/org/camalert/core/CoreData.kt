@@ -25,6 +25,7 @@ class CoreData(val raw: Map<String, Any?>) {
             Pair(v[0] as String, (v[1] as List<Any?>))
         }
     val settingsHttpsOnly = (raw["settings_https_only"] as List<String>?) ?: emptyList()
+    val settingsShortNames = (raw["settings_short_names"] as Map<String, String>?) ?: emptyMap()
     val keymap = (raw["keymap"] as Map<String, Map<String, List<String>>>)
     val contexts = raw["contexts"] as List<String>
     val keyNames = raw["key_names"] as Map<String, String>

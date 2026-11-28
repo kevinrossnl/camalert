@@ -111,3 +111,34 @@ class TestKodiSettingsSchema(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestKodiVisibility(unittest.TestCase):
+    """#130: settings.xml hides exactly what camalert_core.settingsui hides (same DEPENDS on every player)."""
+
+    def test_visible_conditions_match_the_core(self):
+        _paths.core()
+        from camalert_core import schema, settingsui as ui
+        root = ET.parse(os.path.join(_paths.KODI_ADDON, "resources", "settings.xml")).getroot()
+        kodi = {s.key("kodi"): s for s in schema.for_platform("kodi")}
+
+        def kv(v):
+            return ("true" if v else "false") if isinstance(v, bool) else str(v)
+        problems = []
+        for el in root.iter("setting"):
+            sid = el.get("id")
+            s = kodi.get(sid)
+            if s is None:
+                continue
+            want = sorted((k, kv(v)) for k, vals in ui.chain(s.id, "kodi") for v in vals)
+            got = []
+            for dep in el.iter("dependency"):
+                if dep.get("type") != "visible":
+                    continue
+                if dep.get("setting"):
+                    got.append((dep.get("setting"), (dep.text or "").strip()))
+                for cond in dep.iter("condition"):
+                    got.append((cond.get("setting"), (cond.text or "").strip()))
+            if sorted(got) != want:
+                problems.append((sid, sorted(got), want))
+        self.assertEqual(problems, [])

@@ -29,7 +29,8 @@ for p in (os.path.join(ROOT, "core"), TESTS):
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from camalert_core import access, api, discovery, frames, keymap, layout, present, privacy, rules, schema, style  # noqa: E402
+from camalert_core import (access, api, discovery, frames, keymap, layout, present, privacy, rules, schema,  # noqa: E402
+                           settingsui, style)
 from camalert_core.devices.config import PTZ_ACTIONS  # noqa: E402
 from camalert_core.mqtt import topics as mqtt_topics  # noqa: E402
 from camalert_core.obs import log as obslog, metrics as obsmetrics  # noqa: E402
@@ -153,6 +154,19 @@ def _fake_resolver():
     return resolve
 
 
+def _settings_ui_cases():
+    """#130: which settings apply and what the section lines say, for a few sets of values."""
+    cases = []
+    for values in ({}, {"source": "direct", "mode": "live"}, {"mqtt_enabled": True, "frigate_enabled": True},
+                   {"frigate_enabled": True, "unifi_enabled": True, "unifi_seconds": 60, "limit_hours": True},
+                   {"server": "https://192.168.1.10:1984", "mode": "notify", "tour_interval": 12, "log_level": "verbose"}):
+        ids = [s.id for s in androidtv_settings()]
+        cases.append({"values": values, "applies": {i: settingsui.applies(i, values, PLATFORM) for i in ids},
+                      "summary": {sec: list(settingsui.section_summary(sec, PLATFORM, values))
+                                  for sec in settingsui.sections(PLATFORM)}})
+    return cases
+
+
 def core_reference():
     resolver = _fake_resolver()
     hints = []
@@ -260,6 +274,7 @@ def core_reference():
                         ("", '  {"cam": "x"}'), ("application/json", "[1]"), ("application/json", '{"cam": '),
                         ("text/plain", ""))],
         "key_hints": hints,
+        "settings_ui": _settings_ui_cases(),  # #130
         "discovery": [{"args": [i, n, p, v, a, port, h],
                        "info": discovery.service_info(i, n, p, v, a, port, h),
                        "advertise": [discovery.should_advertise({"enabled": e, "allow": al})
@@ -510,6 +525,8 @@ def runtime():
         "schema_version": schema.SCHEMA_VERSION,
         "sections": list(schema.SECTIONS),
         "levels": list(schema.LEVELS),
+        "settings_depends": {k: [p, list(v)] for k, (p, v) in settingsui.DEPENDS.items()},  # #130
+        "settings_https_only": list(settingsui.HTTPS_ONLY),
         "settings": [_setting(s) for s in androidtv_settings()],
         "not_on_androidtv": NOT_ON_ANDROIDTV,
         "androidtv_defaults": schema.DEFAULT_REASONS[PLATFORM],

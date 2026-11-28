@@ -1710,6 +1710,282 @@
    "unit": null
   }
  ],
+ "settings_depends": {
+  "camera_file": [
+   "source",
+   [
+    "direct"
+   ]
+  ],
+  "cooldown": [
+   "source",
+   [
+    "go2rtc"
+   ]
+  ],
+  "foscam_interval": [
+   "foscam_enabled",
+   [
+    true
+   ]
+  ],
+  "foscam_mode": [
+   "foscam_enabled",
+   [
+    true
+   ]
+  ],
+  "foscam_priority": [
+   "foscam_enabled",
+   [
+    true
+   ]
+  ],
+  "foscam_seconds": [
+   "foscam_enabled",
+   [
+    true
+   ]
+  ],
+  "frigate_enabled": [
+   "mqtt_enabled",
+   [
+    true
+   ]
+  ],
+  "frigate_labels": [
+   "frigate_enabled",
+   [
+    true
+   ]
+  ],
+  "frigate_map": [
+   "frigate_enabled",
+   [
+    true
+   ]
+  ],
+  "frigate_mode": [
+   "frigate_enabled",
+   [
+    true
+   ]
+  ],
+  "frigate_prefix": [
+   "frigate_enabled",
+   [
+    true
+   ]
+  ],
+  "frigate_priority": [
+   "frigate_enabled",
+   [
+    true
+   ]
+  ],
+  "frigate_seconds": [
+   "frigate_enabled",
+   [
+    true
+   ]
+  ],
+  "frigate_url": [
+   "frigate_enabled",
+   [
+    true
+   ]
+  ],
+  "from_time": [
+   "limit_hours",
+   [
+    true
+   ]
+  ],
+  "live_return": [
+   "mode",
+   [
+    "live"
+   ]
+  ],
+  "live_volume": [
+   "mode",
+   [
+    "live"
+   ]
+  ],
+  "more_servers": [
+   "source",
+   [
+    "go2rtc"
+   ]
+  ],
+  "mqtt_discovery": [
+   "mqtt_enabled",
+   [
+    true
+   ]
+  ],
+  "mqtt_host": [
+   "mqtt_enabled",
+   [
+    true
+   ]
+  ],
+  "mqtt_name": [
+   "mqtt_enabled",
+   [
+    true
+   ]
+  ],
+  "mqtt_password": [
+   "mqtt_enabled",
+   [
+    true
+   ]
+  ],
+  "mqtt_port": [
+   "mqtt_enabled",
+   [
+    true
+   ]
+  ],
+  "mqtt_user": [
+   "mqtt_enabled",
+   [
+    true
+   ]
+  ],
+  "orientation": [
+   "source",
+   [
+    "go2rtc"
+   ]
+  ],
+  "pause_tv": [
+   "mode",
+   [
+    "photo",
+    "notify"
+   ]
+  ],
+  "position": [
+   "mode",
+   [
+    "photo"
+   ]
+  ],
+  "refresh": [
+   "source",
+   [
+    "go2rtc"
+   ]
+  ],
+  "rtsp_port": [
+   "source",
+   [
+    "go2rtc"
+   ]
+  ],
+  "server": [
+   "source",
+   [
+    "go2rtc"
+   ]
+  ],
+  "size": [
+   "mode",
+   [
+    "photo"
+   ]
+  ],
+  "strip_layout": [
+   "mode",
+   [
+    "photo"
+   ]
+  ],
+  "substreams": [
+   "source",
+   [
+    "go2rtc"
+   ]
+  ],
+  "title_size": [
+   "mode",
+   [
+    "photo"
+   ]
+  ],
+  "titles": [
+   "source",
+   [
+    "go2rtc"
+   ]
+  ],
+  "unifi_camera_rules": [
+   "unifi_enabled",
+   [
+    true
+   ]
+  ],
+  "unifi_cameras": [
+   "unifi_enabled",
+   [
+    true
+   ]
+  ],
+  "unifi_interval": [
+   "unifi_enabled",
+   [
+    true
+   ]
+  ],
+  "unifi_kinds": [
+   "unifi_enabled",
+   [
+    true
+   ]
+  ],
+  "unifi_mode": [
+   "unifi_enabled",
+   [
+    true
+   ]
+  ],
+  "unifi_priority": [
+   "unifi_enabled",
+   [
+    true
+   ]
+  ],
+  "unifi_rules": [
+   "unifi_enabled",
+   [
+    true
+   ]
+  ],
+  "unifi_seconds": [
+   "unifi_enabled",
+   [
+    true
+   ]
+  ],
+  "until_time": [
+   "limit_hours",
+   [
+    true
+   ]
+  ],
+  "window_keys": [
+   "mode",
+   [
+    "photo"
+   ]
+  ]
+ },
+ "settings_https_only": [
+  "verify_ssl"
+ ],
  "setup_received": "Settings received from Home Assistant",
  "source_labels": {
   "api": "API",

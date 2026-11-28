@@ -9,6 +9,9 @@ actions and blueprint inputs stay backwards compatible.
 
 ### Added
 
+- **All players:** shorter settings screens. On Enigma2 the first screen shows the basic settings and one line per
+  section (with what is on there); OK opens a section, BLUE shows the expert settings. On every player the fields
+  of Frigate, Foscam, UniFi Protect, MQTT and the active hours only appear once they are turned on (#130).
 - **All players and Home Assistant:** a spoken announcement with a camera (#89). `camalert.show` has the fields
   `announce` (text), `tts` (TTS engine) and `language`: Home Assistant makes a WAV with its text-to-speech and the
   player plays it after the chime, when the new setting *Spoken announcement* allows it (default: doorbell and

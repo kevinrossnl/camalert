@@ -282,6 +282,9 @@ msgstr "Abbrechen"
 msgid "Save"
 msgstr "Speichern"
 
+msgid "OK"
+msgstr "OK"
+
 msgid "Create channel list"
 msgstr "Kanalliste erstellen"
 
@@ -291,11 +294,20 @@ msgstr "Testen"
 msgid "Close without saving"
 msgstr "Schließen ohne Speichern"
 
-msgid "Choose a value or camera"
-msgstr "Wert oder Kamera wählen"
+msgid "Choose a value or camera, or open a section"
+msgstr "Einen Wert oder eine Kamera wählen oder einen Bereich öffnen"
 
 msgid "Save and show the default camera"
 msgstr "Speichern und die Standardkamera zeigen"
+
+msgid "Undo the changes in this section"
+msgstr "Die Änderungen in diesem Bereich rückgängig machen"
+
+msgid "Back to the first screen"
+msgstr "Zurück zum ersten Bildschirm"
+
+msgid "More settings / fewer settings"
+msgstr "Mehr Einstellungen / weniger Einstellungen"
 
 msgid "Diagnostics, event list, all settings"
 msgstr "Diagnose, Ereignisliste, alle Einstellungen"
@@ -315,8 +327,23 @@ msgstr "normal"
 msgid "as fast as possible"
 msgstr "so schnell wie möglich"
 
-msgid "%d more settings via MENU"
-msgstr "%d weitere Einstellungen über MENU"
+msgid "OK opens the settings of this section."
+msgstr "OK öffnet die Einstellungen dieses Bereichs."
+
+msgid "Fewer settings"
+msgstr "Weniger Einstellungen"
+
+msgid "More settings"
+msgstr "Mehr Einstellungen"
+
+msgid "%d more settings with BLUE"
+msgstr "%d weitere Einstellungen mit BLAU"
+
+msgid "%d changed"
+msgstr "%d geändert"
+
+msgid "default"
+msgstr "Standard"
 
 msgid "Diagnostics"
 msgstr "Diagnose"
@@ -335,12 +362,6 @@ msgstr "Einstellungen importieren"
 
 msgid "Undo the last import"
 msgstr "Letzten Import rückgängig machen"
-
-msgid "Show all settings"
-msgstr "Alle Einstellungen zeigen"
-
-msgid "Show fewer settings"
-msgstr "Weniger Einstellungen zeigen"
 
 msgid "Without passwords and access token"
 msgstr "Ohne Passwörter und Zugriffstoken"

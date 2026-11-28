@@ -96,7 +96,7 @@ class TestSettingsIO(unittest.TestCase):
     def test_menu(self):
         s = self.screen()
         s.menu()
-        self.assertEqual([c[1] for c in self.shown[-1][1]["list"]][-2:], ["export", "import"])  # no undo yet
+        self.assertEqual([c[1] for c in self.shown[-1][1]["list"]][-3:], ["export", "import", "expert"])  # no undo yet
         s.menu_chosen(("Import settings", "import"))
         self.assertIn("No camalert-settings.json found", self.text())
         s.menu_chosen(("Export settings", "export"))
@@ -109,7 +109,7 @@ class TestSettingsIO(unittest.TestCase):
         self.assertEqual(self.c.size.value, "large")
         self.assertIn("1 settings changed.", self.text())
         s.menu()
-        self.assertEqual(self.shown[-1][1]["list"][-1][1], "undo")
+        self.assertIn("undo", [c[1] for c in self.shown[-1][1]["list"]])
         s.menu_chosen(("Undo the last import", "undo"))
         s.undo_confirmed(True)
         self.assertEqual(self.c.size.value, "medium")

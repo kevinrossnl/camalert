@@ -281,6 +281,9 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+msgid "OK"
+msgstr ""
+
 msgid "Create channel list"
 msgstr ""
 
@@ -290,10 +293,19 @@ msgstr ""
 msgid "Close without saving"
 msgstr ""
 
-msgid "Choose a value or camera"
+msgid "Choose a value or camera, or open a section"
 msgstr ""
 
 msgid "Save and show the default camera"
+msgstr ""
+
+msgid "Undo the changes in this section"
+msgstr ""
+
+msgid "Back to the first screen"
+msgstr ""
+
+msgid "More settings / fewer settings"
 msgstr ""
 
 msgid "Diagnostics, event list, all settings"
@@ -314,7 +326,22 @@ msgstr ""
 msgid "as fast as possible"
 msgstr ""
 
-msgid "%d more settings via MENU"
+msgid "OK opens the settings of this section."
+msgstr ""
+
+msgid "Fewer settings"
+msgstr ""
+
+msgid "More settings"
+msgstr ""
+
+msgid "%d more settings with BLUE"
+msgstr ""
+
+msgid "%d changed"
+msgstr ""
+
+msgid "default"
 msgstr ""
 
 msgid "Diagnostics"
@@ -333,12 +360,6 @@ msgid "Import settings"
 msgstr ""
 
 msgid "Undo the last import"
-msgstr ""
-
-msgid "Show all settings"
-msgstr ""
-
-msgid "Show fewer settings"
 msgstr ""
 
 msgid "Without passwords and access token"

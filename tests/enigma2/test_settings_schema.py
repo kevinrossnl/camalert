@@ -46,9 +46,14 @@ def enigma2_settings():
             for mode in ("photo", "live", "notify"):
                 c.source.value, c.mode.value, c.server.value = source, mode, "https://192.168.1.10:1984"
                 c.mqtt_enabled.value = c.frigate_enabled.value = c.limit_hours.value = c.foscam_enabled.value = True
-                c.unifi_enabled.value = True
+                c.unifi_enabled.value = c.all_settings.value = True
                 env.camalert.plugin.main(session)
-                for label, el in session.opened[-1]["config"].list:
+                first = session.opened[-1]
+                lists = list(first["config"].list)
+                for section in env.camalert.setup.settingsui.sections("enigma2"):  # #130: one screen per section
+                    first.open_section(section)
+                    lists += list(session.opened[-1]["config"].list)
+                for label, el in lists:
                     name = ids.get(id(el))
                     if name:
                         out[name]["label"] = label

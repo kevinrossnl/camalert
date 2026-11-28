@@ -18,7 +18,9 @@ import androidx.preference.PreferenceDataStore
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreference
+import android.content.SharedPreferences
 import org.camalert.core.CoreData
+import org.camalert.core.SettingsUi
 import org.camalert.core.Style
 import org.camalert.core.Setting
 
@@ -79,6 +81,7 @@ class SettingsActivity : FragmentActivity() {
             for (section in data.sections) {
                 if (data.settings.none { it.section == section && it.level != "internal" }) continue
                 screen.addPreference(Preference(ctx).apply {
+                    key = "section.$section"
                     title = tr.named("section.$section", section)
                     fragment = Section::class.java.name
                     extras.putString("section", section)
@@ -110,6 +113,27 @@ class SettingsActivity : FragmentActivity() {
                 intent = Intent(ctx, InfoActivity::class.java).putExtra("what", "events")
             })
             preferenceScreen = screen
+            summaries()
+        }
+
+        override fun onResume() {
+            super.onResume()
+            summaries()  // back from a section: its line says what changed (#130)
+        }
+
+        /** Each section's line: the switches that are on there, else how many settings differ from the default. */
+        private fun summaries() {
+            val ctx = context ?: return
+            val tr = Tr(ctx)
+            val ui = SettingsUi()
+            val values = Store(ctx).values()
+            for (section in CoreData.load().sections) {
+                val p = findPreference<Preference>("section.$section") ?: continue
+                val (on, changed) = ui.summary(section, values)
+                val parts = on.map { tr(it) }.toMutableList()
+                if (changed > 0) parts.add(getString(R.string.summary_changed, changed))
+                p.summary = if (parts.isEmpty()) getString(R.string.summary_default) else parts.joinToString(", ")
+            }
         }
     }
 
@@ -146,6 +170,30 @@ class SettingsActivity : FragmentActivity() {
                 true
             }
             preferenceScreen = screen
+            visibility()
+        }
+
+        private val changed = SharedPreferences.OnSharedPreferenceChangeListener { _, _ -> view?.post { visibility() } }
+
+        override fun onResume() {
+            super.onResume()
+            preferenceManager.sharedPreferences?.registerOnSharedPreferenceChangeListener(changed)
+            visibility()
+        }
+
+        override fun onPause() {
+            preferenceManager.sharedPreferences?.unregisterOnSharedPreferenceChangeListener(changed)
+            super.onPause()
+        }
+
+        /** #130: hide what does not apply (Frigate's fields while Frigate is off ...), the same rules everywhere. */
+        private fun visibility() {
+            val ctx = context ?: return
+            val ui = SettingsUi()
+            val values = Store(ctx).values()
+            for (s in CoreData.load().settings) {
+                findPreference<Preference>(s.id)?.isVisible = ui.applies(s.id, values)
+            }
         }
 
         /** UniFi Protect console (#72): kept in its own private file (UnifiLogin), never with the settings. */

@@ -282,6 +282,9 @@ msgstr "Annuler"
 msgid "Save"
 msgstr "Enregistrer"
 
+msgid "OK"
+msgstr "OK"
+
 msgid "Create channel list"
 msgstr "Créer la liste de chaînes"
 
@@ -291,11 +294,20 @@ msgstr "Tester"
 msgid "Close without saving"
 msgstr "Fermer sans enregistrer"
 
-msgid "Choose a value or camera"
-msgstr "Choisir une valeur ou une caméra"
+msgid "Choose a value or camera, or open a section"
+msgstr "Choisir une valeur ou une caméra, ou ouvrir une rubrique"
 
 msgid "Save and show the default camera"
 msgstr "Enregistrer et afficher la caméra par défaut"
+
+msgid "Undo the changes in this section"
+msgstr "Annuler les modifications de cette rubrique"
+
+msgid "Back to the first screen"
+msgstr "Retour au premier écran"
+
+msgid "More settings / fewer settings"
+msgstr "Plus de réglages / moins de réglages"
 
 msgid "Diagnostics, event list, all settings"
 msgstr "Diagnostic, liste des événements, tous les réglages"
@@ -315,8 +327,23 @@ msgstr "normale"
 msgid "as fast as possible"
 msgstr "le plus vite possible"
 
-msgid "%d more settings via MENU"
-msgstr "%d autres réglages via MENU"
+msgid "OK opens the settings of this section."
+msgstr "OK ouvre les réglages de cette rubrique."
+
+msgid "Fewer settings"
+msgstr "Moins de réglages"
+
+msgid "More settings"
+msgstr "Plus de réglages"
+
+msgid "%d more settings with BLUE"
+msgstr "%d autres réglages avec BLEU"
+
+msgid "%d changed"
+msgstr "%d modifiés"
+
+msgid "default"
+msgstr "par défaut"
 
 msgid "Diagnostics"
 msgstr "Diagnostic"
@@ -335,12 +362,6 @@ msgstr "Importer les paramètres"
 
 msgid "Undo the last import"
 msgstr "Annuler la dernière importation"
-
-msgid "Show all settings"
-msgstr "Afficher tous les réglages"
-
-msgid "Show fewer settings"
-msgstr "Afficher moins de réglages"
 
 msgid "Without passwords and access token"
 msgstr "Sans mots de passe ni jeton d'accès"

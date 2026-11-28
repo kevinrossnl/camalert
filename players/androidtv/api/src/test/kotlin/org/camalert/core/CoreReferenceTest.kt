@@ -114,6 +114,24 @@ class CoreReferenceTest {
     }
 
     @Test
+    fun settingsScreensLikeTheCore() {  // #130
+        val ui = SettingsUi()
+        for (c in cases("settings_ui")) {
+            @Suppress("UNCHECKED_CAST")
+            val values = (c["values"] as Map<String, Any?>).mapValues { (_, v) -> if (v is Long) v.toInt() else v }
+            @Suppress("UNCHECKED_CAST")
+            for ((id, want) in c["applies"] as Map<String, Boolean>) assertEquals("$id $values", want, ui.applies(id, values))
+            @Suppress("UNCHECKED_CAST")
+            for ((section, want) in c["summary"] as Map<String, List<Any?>>) {
+                val (on, changed) = ui.summary(section, values)
+                assertEquals("$section $values", want[0], on)
+                assertEquals("$section $values", (want[1] as Number).toInt(), changed)
+            }
+            assertEquals((c["summary"] as Map<*, *>).keys.map { it.toString() }.sorted(), ui.sections().sorted())
+        }
+    }
+
+    @Test
     fun keyHintsComeFromTheCoreKeyMap() {
         val p = Present()
         for (c in cases("key_hints")) {

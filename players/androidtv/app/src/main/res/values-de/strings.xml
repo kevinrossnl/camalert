@@ -4,6 +4,8 @@
     <string name="notification_running">API auf Port %d</string>
     <string name="overlay_missing" formatted="false">CamAlert darf noch keine Fenster über anderen Apps anzeigen. Erlaube es in den Einstellungen oder auf einem Computer: adb shell appops set org.camalert.tv SYSTEM_ALERT_WINDOW allow</string>
     <string name="show_expert" formatted="false">Experteneinstellungen anzeigen</string>
+    <string name="summary_changed">%d geändert</string>
+    <string name="summary_default" formatted="false">Standard</string>
     <string name="diagnostics" formatted="false">Diagnose</string>
     <string name="events" formatted="false">Ereignisliste</string>
     <string name="no_events" formatted="false">Noch keine Ereignisse.</string>

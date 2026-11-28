@@ -19,6 +19,12 @@ class CoreData(val raw: Map<String, Any?>) {
     val levels = raw["levels"] as List<String>
     val settings: List<Setting> = (raw["settings"] as List<Map<String, Any?>>).map { Setting(it) }
     val byId = settings.associateBy { it.id }
+    /** #130: setting id -> (setting it depends on, values of that setting for which it applies). */
+    val settingsDepends: Map<String, Pair<String, List<Any?>>> =
+        ((raw["settings_depends"] as Map<String, List<Any?>>?) ?: emptyMap()).mapValues { (_, v) ->
+            Pair(v[0] as String, (v[1] as List<Any?>))
+        }
+    val settingsHttpsOnly = (raw["settings_https_only"] as List<String>?) ?: emptyList()
     val keymap = (raw["keymap"] as Map<String, Map<String, List<String>>>)
     val contexts = raw["contexts"] as List<String>
     val keyNames = raw["key_names"] as Map<String, String>

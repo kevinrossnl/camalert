@@ -377,6 +377,10 @@ msgid "Save"
 msgstr "Speichern"
 
 #: e2
+msgid "OK"
+msgstr "OK"
+
+#: e2
 msgid "Create channel list"
 msgstr "Kanalliste erstellen"
 
@@ -389,12 +393,24 @@ msgid "Close without saving"
 msgstr "Schließen ohne Speichern"
 
 #: e2
-msgid "Choose a value or camera"
-msgstr "Wert oder Kamera wählen"
+msgid "Choose a value or camera, or open a section"
+msgstr "Einen Wert oder eine Kamera wählen oder einen Bereich öffnen"
 
 #: e2
 msgid "Save and show the default camera"
 msgstr "Speichern und die Standardkamera zeigen"
+
+#: e2
+msgid "Undo the changes in this section"
+msgstr "Die Änderungen in diesem Bereich rückgängig machen"
+
+#: e2
+msgid "Back to the first screen"
+msgstr "Zurück zum ersten Bildschirm"
+
+#: e2
+msgid "More settings / fewer settings"
+msgstr "Mehr Einstellungen / weniger Einstellungen"
 
 #: e2
 msgid "Diagnostics, event list, all settings"
@@ -421,8 +437,28 @@ msgid "as fast as possible"
 msgstr "so schnell wie möglich"
 
 #: e2
-msgid "%d more settings via MENU"
-msgstr "%d weitere Einstellungen über MENU"
+msgid "OK opens the settings of this section."
+msgstr "OK öffnet die Einstellungen dieses Bereichs."
+
+#: e2
+msgid "Fewer settings"
+msgstr "Weniger Einstellungen"
+
+#: e2
+msgid "More settings"
+msgstr "Mehr Einstellungen"
+
+#: e2
+msgid "%d more settings with BLUE"
+msgstr "%d weitere Einstellungen mit BLAU"
+
+#: e2 atv:summary_changed
+msgid "%d changed"
+msgstr "%d geändert"
+
+#: e2 atv:summary_default
+msgid "default"
+msgstr "Standard"
 
 #: e2 kodi:30201 atv:diagnostics
 msgid "Diagnostics"
@@ -447,14 +483,6 @@ msgstr "Einstellungen importieren"
 #: e2 kodi:30782
 msgid "Undo the last import"
 msgstr "Letzten Import rückgängig machen"
-
-#: e2
-msgid "Show all settings"
-msgstr "Alle Einstellungen zeigen"
-
-#: e2
-msgid "Show fewer settings"
-msgstr "Weniger Einstellungen zeigen"
 
 #: e2 kodi:30783
 msgid "Without passwords and access token"

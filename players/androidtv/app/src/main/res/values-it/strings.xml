@@ -4,6 +4,8 @@
     <string name="notification_running">API sulla porta %d</string>
     <string name="overlay_missing" formatted="false">CamAlert non può ancora mostrare finestre sopra altre app. Consentirlo nelle impostazioni o da un computer: adb shell appops set org.camalert.tv SYSTEM_ALERT_WINDOW allow</string>
     <string name="show_expert" formatted="false">Mostrare le impostazioni per esperti</string>
+    <string name="summary_changed">%d modificate</string>
+    <string name="summary_default" formatted="false">predefinite</string>
     <string name="diagnostics" formatted="false">Diagnostica</string>
     <string name="events" formatted="false">Elenco eventi</string>
     <string name="no_events" formatted="false">Ancora nessun evento.</string>

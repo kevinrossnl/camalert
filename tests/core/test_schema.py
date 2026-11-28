@@ -84,7 +84,7 @@ class TestSchema(unittest.TestCase):
             self.assertEqual(b[sid].platforms, schema.PLATFORMS, sid)  # Android TV too since #66
         e2_kodi = set(schema.for_platform("enigma2")) | set(schema.for_platform("kodi"))
         platform_only = sorted(s.id for s in e2_kodi if not {"enigma2", "kodi"} <= set(s.platforms))
-        self.assertEqual(platform_only, ["auto_bouquet", "bouquet_name", "bouquet_position", "camera_file",
+        self.assertEqual(platform_only, ["all_settings", "auto_bouquet", "bouquet_name", "bouquet_position", "camera_file",
                                          "event_folder", "live_format", "picons", "ptz_password", "ptz_user",
                                          "skip_recording", "update_check", "update_checked", "update_seen",
                                          "video_window"])

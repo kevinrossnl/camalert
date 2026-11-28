@@ -4,6 +4,8 @@
     <string name="notification_running">API op poort %d</string>
     <string name="overlay_missing" formatted="false">CamAlert mag nog geen vensters over andere apps tonen. Sta het toe in de instellingen, of op een computer: adb shell appops set org.camalert.tv SYSTEM_ALERT_WINDOW allow</string>
     <string name="show_expert" formatted="false">Expertinstellingen tonen</string>
+    <string name="summary_changed">%d gewijzigd</string>
+    <string name="summary_default" formatted="false">standaard</string>
     <string name="diagnostics" formatted="false">Diagnose</string>
     <string name="events" formatted="false">Gebeurtenissen</string>
     <string name="no_events" formatted="false">Nog geen gebeurtenissen.</string>

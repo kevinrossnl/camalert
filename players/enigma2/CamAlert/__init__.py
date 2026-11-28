@@ -197,6 +197,7 @@ _add("ha_buttons", lambda: ConfigYesNo(default=True))
 _add("ha_webhook", lambda: ConfigText(default="", fixed_size=False))
 _add("ha_webhook_secret", lambda: ConfigPassword(default="", fixed_size=False))  # signed colour keys (#82)
 _add("wizard_done", lambda: ConfigYesNo(default=False))  # first-start wizard (#120)
+_add("all_settings", lambda: ConfigYesNo(default=False))  # settings screens: BLUE shows expert settings (#130)
 _add("text_size", lambda: ConfigSelection(default="normal", choices=[  # #48: every CamAlert screen
     ("normal", _("Normal")), ("large", _("Large")), ("xlarge", _("Extra large"))]))
 _add("priority_border", lambda: ConfigSelection(default="steady", choices=[  # #48: frame + word, never colour alone

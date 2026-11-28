@@ -42,6 +42,7 @@ file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/schema.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/selfupdate.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/servers.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/settingsfile.py
+file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/settingsui.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/speech.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/style.py
 file rw-r--r-- service.camalert/resources/lib/camalert/camalert_core/triggers/__init__.py

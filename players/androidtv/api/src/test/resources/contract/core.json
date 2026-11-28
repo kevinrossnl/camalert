@@ -27710,6 +27710,631 @@
    }
   }
  ],
+ "settings_ui": [
+  {
+   "applies": {
+    "alarm_wake": true,
+    "allow": true,
+    "allow_update": true,
+    "api_https": true,
+    "camera": true,
+    "chime": true,
+    "cooldown": true,
+    "dnd": true,
+    "dnd_level": true,
+    "duration": true,
+    "enabled": true,
+    "foscam_enabled": true,
+    "foscam_interval": false,
+    "foscam_mode": false,
+    "foscam_priority": false,
+    "foscam_seconds": false,
+    "frigate_enabled": false,
+    "frigate_labels": false,
+    "frigate_map": false,
+    "frigate_mode": false,
+    "frigate_prefix": false,
+    "frigate_priority": false,
+    "frigate_seconds": false,
+    "frigate_url": false,
+    "from_time": false,
+    "guest_cameras": true,
+    "guest_mode": true,
+    "ha_buttons": true,
+    "ha_webhook": true,
+    "ha_webhook_secret": true,
+    "http_port": true,
+    "language": true,
+    "limit_hours": true,
+    "live_format": true,
+    "live_volume": false,
+    "log_level": true,
+    "log_syslog": true,
+    "mode": true,
+    "more_servers": true,
+    "mosaic": true,
+    "mqtt_discovery": false,
+    "mqtt_enabled": true,
+    "mqtt_host": false,
+    "mqtt_name": false,
+    "mqtt_password": false,
+    "mqtt_port": false,
+    "mqtt_user": false,
+    "orientation": true,
+    "position": true,
+    "priority_border": true,
+    "privacy_masks": true,
+    "protect_snapshots": true,
+    "ptz_key": true,
+    "ready_cameras": true,
+    "refresh": true,
+    "rtsp_port": true,
+    "server": true,
+    "size": true,
+    "skip_playing": true,
+    "source": true,
+    "speak": true,
+    "strip_layout": true,
+    "substreams": true,
+    "text_size": true,
+    "title_size": true,
+    "titles": true,
+    "token": true,
+    "tour_interval": true,
+    "unifi_camera_rules": false,
+    "unifi_cameras": false,
+    "unifi_enabled": true,
+    "unifi_interval": false,
+    "unifi_kinds": false,
+    "unifi_mode": false,
+    "unifi_priority": false,
+    "unifi_rules": false,
+    "unifi_seconds": false,
+    "until_time": false,
+    "verify_ssl": false,
+    "window_keys": true,
+    "wizard_done": true
+   },
+   "summary": {
+    "api": [
+     [],
+     0
+    ],
+    "camera_control": [
+     [],
+     0
+    ],
+    "display": [
+     [],
+     0
+    ],
+    "general": [
+     [],
+     0
+    ],
+    "home_assistant": [
+     [],
+     0
+    ],
+    "log": [
+     [],
+     0
+    ],
+    "rules": [
+     [],
+     0
+    ],
+    "triggers": [
+     [],
+     0
+    ]
+   },
+   "values": {}
+  },
+  {
+   "applies": {
+    "alarm_wake": true,
+    "allow": true,
+    "allow_update": true,
+    "api_https": true,
+    "camera": true,
+    "chime": true,
+    "cooldown": false,
+    "dnd": true,
+    "dnd_level": true,
+    "duration": true,
+    "enabled": true,
+    "foscam_enabled": true,
+    "foscam_interval": false,
+    "foscam_mode": false,
+    "foscam_priority": false,
+    "foscam_seconds": false,
+    "frigate_enabled": false,
+    "frigate_labels": false,
+    "frigate_map": false,
+    "frigate_mode": false,
+    "frigate_prefix": false,
+    "frigate_priority": false,
+    "frigate_seconds": false,
+    "frigate_url": false,
+    "from_time": false,
+    "guest_cameras": true,
+    "guest_mode": true,
+    "ha_buttons": true,
+    "ha_webhook": true,
+    "ha_webhook_secret": true,
+    "http_port": true,
+    "language": true,
+    "limit_hours": true,
+    "live_format": true,
+    "live_volume": true,
+    "log_level": true,
+    "log_syslog": true,
+    "mode": true,
+    "more_servers": false,
+    "mosaic": true,
+    "mqtt_discovery": false,
+    "mqtt_enabled": true,
+    "mqtt_host": false,
+    "mqtt_name": false,
+    "mqtt_password": false,
+    "mqtt_port": false,
+    "mqtt_user": false,
+    "orientation": false,
+    "position": false,
+    "priority_border": true,
+    "privacy_masks": true,
+    "protect_snapshots": true,
+    "ptz_key": true,
+    "ready_cameras": true,
+    "refresh": false,
+    "rtsp_port": false,
+    "server": false,
+    "size": false,
+    "skip_playing": true,
+    "source": true,
+    "speak": true,
+    "strip_layout": false,
+    "substreams": false,
+    "text_size": true,
+    "title_size": false,
+    "titles": false,
+    "token": true,
+    "tour_interval": true,
+    "unifi_camera_rules": false,
+    "unifi_cameras": false,
+    "unifi_enabled": true,
+    "unifi_interval": false,
+    "unifi_kinds": false,
+    "unifi_mode": false,
+    "unifi_priority": false,
+    "unifi_rules": false,
+    "unifi_seconds": false,
+    "until_time": false,
+    "verify_ssl": true,
+    "window_keys": false,
+    "wizard_done": true
+   },
+   "summary": {
+    "api": [
+     [],
+     0
+    ],
+    "camera_control": [
+     [],
+     0
+    ],
+    "display": [
+     [],
+     0
+    ],
+    "general": [
+     [],
+     0
+    ],
+    "home_assistant": [
+     [],
+     0
+    ],
+    "log": [
+     [],
+     0
+    ],
+    "rules": [
+     [],
+     0
+    ],
+    "triggers": [
+     [],
+     0
+    ]
+   },
+   "values": {
+    "mode": "live",
+    "source": "direct"
+   }
+  },
+  {
+   "applies": {
+    "alarm_wake": true,
+    "allow": true,
+    "allow_update": true,
+    "api_https": true,
+    "camera": true,
+    "chime": true,
+    "cooldown": true,
+    "dnd": true,
+    "dnd_level": true,
+    "duration": true,
+    "enabled": true,
+    "foscam_enabled": true,
+    "foscam_interval": false,
+    "foscam_mode": false,
+    "foscam_priority": false,
+    "foscam_seconds": false,
+    "frigate_enabled": true,
+    "frigate_labels": true,
+    "frigate_map": true,
+    "frigate_mode": true,
+    "frigate_prefix": true,
+    "frigate_priority": true,
+    "frigate_seconds": true,
+    "frigate_url": true,
+    "from_time": false,
+    "guest_cameras": true,
+    "guest_mode": true,
+    "ha_buttons": true,
+    "ha_webhook": true,
+    "ha_webhook_secret": true,
+    "http_port": true,
+    "language": true,
+    "limit_hours": true,
+    "live_format": true,
+    "live_volume": false,
+    "log_level": true,
+    "log_syslog": true,
+    "mode": true,
+    "more_servers": true,
+    "mosaic": true,
+    "mqtt_discovery": true,
+    "mqtt_enabled": true,
+    "mqtt_host": true,
+    "mqtt_name": true,
+    "mqtt_password": true,
+    "mqtt_port": true,
+    "mqtt_user": true,
+    "orientation": true,
+    "position": true,
+    "priority_border": true,
+    "privacy_masks": true,
+    "protect_snapshots": true,
+    "ptz_key": true,
+    "ready_cameras": true,
+    "refresh": true,
+    "rtsp_port": true,
+    "server": true,
+    "size": true,
+    "skip_playing": true,
+    "source": true,
+    "speak": true,
+    "strip_layout": true,
+    "substreams": true,
+    "text_size": true,
+    "title_size": true,
+    "titles": true,
+    "token": true,
+    "tour_interval": true,
+    "unifi_camera_rules": false,
+    "unifi_cameras": false,
+    "unifi_enabled": true,
+    "unifi_interval": false,
+    "unifi_kinds": false,
+    "unifi_mode": false,
+    "unifi_priority": false,
+    "unifi_rules": false,
+    "unifi_seconds": false,
+    "until_time": false,
+    "verify_ssl": false,
+    "window_keys": true,
+    "wizard_done": true
+   },
+   "summary": {
+    "api": [
+     [],
+     0
+    ],
+    "camera_control": [
+     [],
+     0
+    ],
+    "display": [
+     [],
+     0
+    ],
+    "general": [
+     [],
+     0
+    ],
+    "home_assistant": [
+     [
+      "MQTT (Home Assistant without YAML)"
+     ],
+     0
+    ],
+    "log": [
+     [],
+     0
+    ],
+    "rules": [
+     [],
+     0
+    ],
+    "triggers": [
+     [
+      "Frigate events"
+     ],
+     0
+    ]
+   },
+   "values": {
+    "frigate_enabled": true,
+    "mqtt_enabled": true
+   }
+  },
+  {
+   "applies": {
+    "alarm_wake": true,
+    "allow": true,
+    "allow_update": true,
+    "api_https": true,
+    "camera": true,
+    "chime": true,
+    "cooldown": true,
+    "dnd": true,
+    "dnd_level": true,
+    "duration": true,
+    "enabled": true,
+    "foscam_enabled": true,
+    "foscam_interval": false,
+    "foscam_mode": false,
+    "foscam_priority": false,
+    "foscam_seconds": false,
+    "frigate_enabled": false,
+    "frigate_labels": false,
+    "frigate_map": false,
+    "frigate_mode": false,
+    "frigate_prefix": false,
+    "frigate_priority": false,
+    "frigate_seconds": false,
+    "frigate_url": false,
+    "from_time": true,
+    "guest_cameras": true,
+    "guest_mode": true,
+    "ha_buttons": true,
+    "ha_webhook": true,
+    "ha_webhook_secret": true,
+    "http_port": true,
+    "language": true,
+    "limit_hours": true,
+    "live_format": true,
+    "live_volume": false,
+    "log_level": true,
+    "log_syslog": true,
+    "mode": true,
+    "more_servers": true,
+    "mosaic": true,
+    "mqtt_discovery": false,
+    "mqtt_enabled": true,
+    "mqtt_host": false,
+    "mqtt_name": false,
+    "mqtt_password": false,
+    "mqtt_port": false,
+    "mqtt_user": false,
+    "orientation": true,
+    "position": true,
+    "priority_border": true,
+    "privacy_masks": true,
+    "protect_snapshots": true,
+    "ptz_key": true,
+    "ready_cameras": true,
+    "refresh": true,
+    "rtsp_port": true,
+    "server": true,
+    "size": true,
+    "skip_playing": true,
+    "source": true,
+    "speak": true,
+    "strip_layout": true,
+    "substreams": true,
+    "text_size": true,
+    "title_size": true,
+    "titles": true,
+    "token": true,
+    "tour_interval": true,
+    "unifi_camera_rules": true,
+    "unifi_cameras": true,
+    "unifi_enabled": true,
+    "unifi_interval": true,
+    "unifi_kinds": true,
+    "unifi_mode": true,
+    "unifi_priority": true,
+    "unifi_rules": true,
+    "unifi_seconds": true,
+    "until_time": true,
+    "verify_ssl": false,
+    "window_keys": true,
+    "wizard_done": true
+   },
+   "summary": {
+    "api": [
+     [],
+     0
+    ],
+    "camera_control": [
+     [],
+     0
+    ],
+    "display": [
+     [],
+     0
+    ],
+    "general": [
+     [],
+     0
+    ],
+    "home_assistant": [
+     [],
+     0
+    ],
+    "log": [
+     [],
+     0
+    ],
+    "rules": [
+     [],
+     0
+    ],
+    "triggers": [
+     [
+      "Frigate events",
+      "UniFi Protect events"
+     ],
+     1
+    ]
+   },
+   "values": {
+    "frigate_enabled": true,
+    "limit_hours": true,
+    "unifi_enabled": true,
+    "unifi_seconds": 60
+   }
+  },
+  {
+   "applies": {
+    "alarm_wake": true,
+    "allow": true,
+    "allow_update": true,
+    "api_https": true,
+    "camera": true,
+    "chime": true,
+    "cooldown": true,
+    "dnd": true,
+    "dnd_level": true,
+    "duration": true,
+    "enabled": true,
+    "foscam_enabled": true,
+    "foscam_interval": false,
+    "foscam_mode": false,
+    "foscam_priority": false,
+    "foscam_seconds": false,
+    "frigate_enabled": false,
+    "frigate_labels": false,
+    "frigate_map": false,
+    "frigate_mode": false,
+    "frigate_prefix": false,
+    "frigate_priority": false,
+    "frigate_seconds": false,
+    "frigate_url": false,
+    "from_time": false,
+    "guest_cameras": true,
+    "guest_mode": true,
+    "ha_buttons": true,
+    "ha_webhook": true,
+    "ha_webhook_secret": true,
+    "http_port": true,
+    "language": true,
+    "limit_hours": true,
+    "live_format": true,
+    "live_volume": false,
+    "log_level": true,
+    "log_syslog": true,
+    "mode": true,
+    "more_servers": true,
+    "mosaic": true,
+    "mqtt_discovery": false,
+    "mqtt_enabled": true,
+    "mqtt_host": false,
+    "mqtt_name": false,
+    "mqtt_password": false,
+    "mqtt_port": false,
+    "mqtt_user": false,
+    "orientation": true,
+    "position": false,
+    "priority_border": true,
+    "privacy_masks": true,
+    "protect_snapshots": true,
+    "ptz_key": true,
+    "ready_cameras": true,
+    "refresh": true,
+    "rtsp_port": true,
+    "server": true,
+    "size": false,
+    "skip_playing": true,
+    "source": true,
+    "speak": true,
+    "strip_layout": false,
+    "substreams": true,
+    "text_size": true,
+    "title_size": false,
+    "titles": true,
+    "token": true,
+    "tour_interval": true,
+    "unifi_camera_rules": false,
+    "unifi_cameras": false,
+    "unifi_enabled": true,
+    "unifi_interval": false,
+    "unifi_kinds": false,
+    "unifi_mode": false,
+    "unifi_priority": false,
+    "unifi_rules": false,
+    "unifi_seconds": false,
+    "until_time": false,
+    "verify_ssl": true,
+    "window_keys": false,
+    "wizard_done": true
+   },
+   "summary": {
+    "api": [
+     [],
+     0
+    ],
+    "camera_control": [
+     [],
+     0
+    ],
+    "display": [
+     [],
+     1
+    ],
+    "general": [
+     [],
+     0
+    ],
+    "home_assistant": [
+     [],
+     0
+    ],
+    "log": [
+     [],
+     1
+    ],
+    "rules": [
+     [],
+     0
+    ],
+    "triggers": [
+     [],
+     0
+    ]
+   },
+   "values": {
+    "log_level": "verbose",
+    "mode": "notify",
+    "server": "https://192.168.1.10:1984",
+    "tour_interval": 12
+   }
+  }
+ ],
  "show_seconds": [
   {
    "default": 30,

@@ -19,7 +19,7 @@ from . import server
 from . import mqtt
 from . import settingsio
 from .helpable import HelpBase, help_actions, init_help
-from .camalert_core import schema
+from .camalert_core import schema, settingsui
 from .camalert_core.style import PRESET_LABELS, PRESETS, preset_changes
 from .display import CAMERA_FILE, Controller, all_camera_names, direct_cameras, open_url, pillow_available
 from .camalert_core.cameras import (display_name, format_map, format_titles, parse_cams, parse_map,
@@ -43,7 +43,6 @@ def fetch_stream_info(srv):
         return stream_info_from_json(r.read().decode("utf-8", "replace"))
 
 
-LEVELS = {"basic": 0, "advanced": 1, "expert": 2}  # config.usage.setup_level: simple / intermediate / expert
 PICKERS = ("titles", "orientation", "refresh")  # per-camera maps, edited with OK in choice lists
 # triggers: Frigate, Foscam and UniFi Protect settings, each under its own sub-heading
 TRIGGER_GROUPS = (("frigate", "Frigate"), ("foscam", "Foscam"), ("unifi", "UniFi Protect"))
@@ -56,50 +55,24 @@ def _section(section):
     return names.get(section, section)
 
 
-def image_level():
-    """0 / 1 / 2 = the image's setup level (simple / intermediate / expert); expert where the image has none."""
-    try:
-        return max(0, min(2, int(config.usage.setup_level.index)))
-    except Exception:
-        return 2
+def values(c):
+    """{id: value} of every schema setting, for the core rules of the settings screens (#130)."""
+    out = {}
+    for s in schema.for_platform("enigma2"):
+        el = getattr(c, s.key("enigma2"), None)
+        if el is not None:
+            out[s.id] = el.value
+    return out
 
 
 def visible(sid, c):
-    """Whether a setting applies with the current values of the others (progressive disclosure)."""
-    go2rtc, mode = c.source.value == "go2rtc", c.mode.value
-    rules = {
-        "server": go2rtc, "rtsp_port": go2rtc, "titles": go2rtc, "orientation": go2rtc, "refresh": go2rtc,
-        "cooldown": go2rtc, "substreams": go2rtc,
-        "verify_ssl": not go2rtc or c.server.value.strip().lower().startswith("https"),
-        "position": mode == "photo", "size": mode == "photo", "window_keys": mode == "photo",
-        "title_size": mode == "photo", "strip_layout": mode == "photo",
-        "pause_tv": mode in ("photo", "notify"), "live_return": mode == "live", "live_volume": mode == "live",
-        "from_time": c.limit_hours.value, "until_time": c.limit_hours.value,
-        "frigate_enabled": c.mqtt_enabled.value,
-    }
-    if sid in rules:
-        return bool(rules[sid])
-    if sid.startswith("frigate_"):
-        return bool(c.mqtt_enabled.value and c.frigate_enabled.value)
-    if sid.startswith("foscam_") and sid != "foscam_enabled":
-        return bool(c.foscam_enabled.value)
-    if sid.startswith("unifi_") and sid != "unifi_enabled":
-        return bool(c.unifi_enabled.value)
-    if sid.startswith("mqtt_"):
-        return sid == "mqtt_enabled" or bool(c.mqtt_enabled.value)
-    return True
+    """Whether a setting applies with the current values of the others (progressive disclosure, #130: the rules
+    are in camalert_core.settingsui, the same on every player)."""
+    return settingsui.applies(sid, values(c), "enigma2")
 
 
-def ordered():
-    """The Enigma2 settings in schema order; inside 'triggers' Frigate first, then Foscam, then UniFi Protect."""
-    settings = [s for s in schema.for_platform("enigma2") if s.level != "internal"]
-
-    def key(item):
-        i, s = item
-        group = [n for n, (prefix, _l) in enumerate(TRIGGER_GROUPS) if s.id.startswith(prefix + "_")]
-        return (schema.SECTIONS.index(s.section), group[0] if s.section == "triggers" and group else 0, i)
-    return [s for _i, s in sorted(enumerate(settings), key=key)]
-
+def section_title(section):
+    return _section(section)
 
 
 def apply_preset(c, name):
@@ -135,30 +108,38 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
             W=v(1100), H=v(820), m=v(20), cw=v(1060), ch=v(588), ih=v(42), fs=v(30), hy=v(616), hh=v(96), hf=v(26),
             fy=v(714), fh=v(32), ff=v(22), ky=v(755), kw=v(250), kh=v(46), k0=v(20), k1=v(290), k2=v(560), k3=v(830))
 
-    def __init__(self, session):
+    def __init__(self, session, section=None):
+        """section None = the first screen (basic settings + one line per section); otherwise that section (#130)."""
         from enigma import getDesktop
         self.skin = self.build_skin(getDesktop(0).size().width())
         Screen.__init__(self, session)
         self.skinName = ["CamAlertSetup", "Setup"]  # after Screen.__init__, which sets it to the class name
         init_help(self)
-        self.setTitle("CamAlert")
-        self.level = image_level()
+        self.section = section
+        self.setTitle("CamAlert" if section is None else "CamAlert - %s" % _section(section))
+        self.section_rows = {}
         self.help_texts = []
         self["description"] = Label("")
         self["footnote"] = Label("CamAlert %s" % __version__)
         ConfigListScreen.__init__(self, [], session=session, on_change=self.build)
         self["key_red"] = StaticText(_("Cancel"))
-        self["key_green"] = StaticText(_("Save"))
-        self["key_yellow"] = StaticText(_("Create channel list"))
-        self["key_blue"] = StaticText(_("Test"))
+        self["key_green"] = StaticText(_("Save") if section is None else _("OK"))
+        self["key_yellow"] = StaticText(_("Create channel list") if section is None else "")
+        self["key_blue"] = StaticText(_("Test") if section is None else "")
         self["key_menu"] = StaticText("MENU")
         help_actions(self, "actions", "SetupActions", {
             "cancel": (self.cancel, _("Close without saving")), "save": (self.save, _("Save")),
-            "ok": (self.ok, _("Choose a value or camera"))}, -2)
-        help_actions(self, "colour_actions", "ColorActions", {
-            "red": (self.cancel, _("Close without saving")), "green": (self.save, _("Save")),
-            "yellow": (self.make_bouquet, _("Create channel list")),
-            "blue": (self.test, _("Save and show the default camera"))}, -2)
+            "ok": (self.ok, _("Choose a value or camera, or open a section"))}, -2)
+        if section is None:
+            help_actions(self, "colour_actions", "ColorActions", {
+                "red": (self.cancel, _("Close without saving")), "green": (self.save, _("Save")),
+                "yellow": (self.make_bouquet, _("Create channel list")),
+                "blue": (self.test, _("Save and show the default camera"))}, -2)
+        else:  # a section (#130): GREEN back to the first screen (Save there), BLUE more / fewer settings
+            help_actions(self, "colour_actions", "ColorActions", {
+                "red": (self.cancel, _("Undo the changes in this section")),
+                "green": (self.save, _("Back to the first screen")),
+                "blue": (self.toggle_expert, _("More settings / fewer settings"))}, -2)
         help_actions(self, "menu_actions", "MenuActions", {
             "menu": (self.menu, _("Diagnostics, event list, all settings"))}, -2)
         self.build()
@@ -189,27 +170,61 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
 
     def build(self):
         c = config.plugins.camalert
-        rows, section, group = [], None, None
-        self.hidden = 0
-        for s in ordered():
-            if not visible(s.id, c):
-                continue
-            if LEVELS[s.level] > self.level:
-                self.hidden += 1
-                continue
-            if s.section != section:
-                section, group = s.section, None
-                rows.append(("-- %s --" % _section(section), ConfigNothing(), ""))
-            if s.section == "triggers":
-                g = [label for prefix, label in TRIGGER_GROUPS if s.id.startswith(prefix + "_")]
-                if g and g[0] != group:
-                    group = g[0]
-                    rows.append(("   %s" % group, ConfigNothing(), ""))
-            rows.append(self.item(s, c))
+        v = values(c)
+        rows, group = [], None
+        self.section_rows = {}
+        if self.section is None:
+            for s in settingsui.main_settings("enigma2", v):
+                rows.append(self.item(s, c))
+            for section in settingsui.sections("enigma2"):
+                el = ConfigSelection(choices=[("x", self.summary(section, v))])
+                self.section_rows[id(el)] = section
+                rows.append((_section(section), el, _("OK opens the settings of this section.")))
+            self.hidden = 0
+            note = ""
+        else:
+            expert = bool(c.all_settings.value)
+            shown = settingsui.section_settings(self.section, "enigma2", v, expert)
+            if self.section == "triggers":  # Frigate, then Foscam, then UniFi Protect, each under its own heading
+                def grp(s):
+                    g = [n for n, (prefix, _l) in enumerate(TRIGGER_GROUPS) if s.id.startswith(prefix + "_")]
+                    return g[0] if g else len(TRIGGER_GROUPS)
+                shown = sorted(shown, key=grp)  # stable: schema order inside a group
+            for s in shown:
+                if self.section == "triggers":
+                    g = [label for prefix, label in TRIGGER_GROUPS if s.id.startswith(prefix + "_")]
+                    if g and g[0] != group:
+                        group = g[0]
+                        rows.append(("   %s" % group, ConfigNothing(), ""))
+                rows.append(self.item(s, c))
+            self.hidden = settingsui.hidden_expert(self.section, "enigma2", v)
+            self["key_blue"].setText(_("Fewer settings") if expert else (_("More settings") if self.hidden else ""))
+            note = ("   " + _("%d more settings with BLUE") % self.hidden) if self.hidden and not expert else ""
         self.help_texts = [r[2] for r in rows]
         self["config"].list = [getConfigListEntry(r[0], r[1]) for r in rows]
-        self["footnote"].setText("CamAlert %s" % __version__ + (
-            "   " + (_("%d more settings via MENU") % self.hidden) if self.hidden else ""))
+        self["footnote"].setText("CamAlert %s" % __version__ + note)
+
+    def summary(self, section, v):
+        """One line for a section on the first screen: what is on there, else how much differs from the default."""
+        on, changed = settingsui.section_summary(section, "enigma2", v)
+        parts = [_(label) for label in on]
+        if changed:
+            parts.append(_("%d changed") % changed)
+        return ", ".join(parts) if parts else _("default")
+
+    def open_section(self, section):
+        self.session.openWithCallback(self.section_closed, CamAlertSetup, section)
+
+    def section_closed(self, *_args):
+        self.build()
+
+    def toggle_expert(self):
+        c = config.plugins.camalert
+        if not (c.all_settings.value or self.hidden):
+            return
+        c.all_settings.value = not c.all_settings.value
+        c.all_settings.save()
+        self.build()
 
     def menu(self):
         choices = [(_("Diagnostics"), "diag"), (_("Event list"), "events"), (_("Start the wizard again"), "wizard"),
@@ -217,10 +232,8 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
                    (_("Export settings"), "export"), (_("Import settings"), "import")]
         if settingsio.backups().latest() is not None:
             choices.append((_("Undo the last import"), "undo"))
-        if self.level < 2:
-            choices.append((_("Show all settings"), "all"))
-        elif image_level() < 2:
-            choices.append((_("Show fewer settings"), "fewer"))
+        choices.append((_("Fewer settings") if config.plugins.camalert.all_settings.value else _("More settings"),
+                        "expert"))  # #130: expert settings in the section screens
         self.session.openWithCallback(self.menu_chosen, ChoiceBox, title="CamAlert", list=choices)
 
     def menu_chosen(self, choice):
@@ -248,8 +261,10 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
         elif choice[1] == "undo":
             self.session.openWithCallback(self.undo_confirmed, MessageBox, _(
                 "Go back to the settings from before the last import?"))
-        elif choice[1] in ("all", "fewer"):
-            self.level = 2 if choice[1] == "all" else image_level()
+        elif choice[1] == "expert":
+            c = config.plugins.camalert
+            c.all_settings.value = not c.all_settings.value
+            c.all_settings.save()
             self.build()
         else:
             self.session.open(DiagnosticsScreen if choice[1] == "diag" else EventsScreen)
@@ -326,7 +341,10 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
         return True
 
     def ok(self):
-        if self["config"].getCurrent()[1] is getattr(self, "names_entry", None):
+        current = self["config"].getCurrent()
+        if current and id(current[1]) in self.section_rows:  # #130: a section line on the first screen
+            self.open_section(self.section_rows[id(current[1])])
+        elif self["config"].getCurrent()[1] is getattr(self, "names_entry", None):
             if self.server():
                 threads.deferToThread(all_camera_names).addCallbacks(self.choose_title_camera, self.fetch_failed)
         elif self["config"].getCurrent()[1] is getattr(self, "orientation_entry", None):
@@ -497,6 +515,9 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
         Controller.instance.show(c.camera.value, 15, c.mode.value)
 
     def save(self, close=True):
+        if self.section is not None:  # #130: back to the first screen; its Save writes everything, Cancel undoes it
+            self.close()
+            return
         c = config.plugins.camalert
         port_changed = c.http_port.isChanged() or c.api_https.isChanged()
         mqtt_changed = any(x.isChanged() for x in (c.mqtt_enabled, c.mqtt_host, c.mqtt_port, c.mqtt_user, c.mqtt_password,
@@ -518,7 +539,16 @@ class CamAlertSetup(ConfigListScreen, Screen, HelpBase):
             self.close()
 
     def cancel(self):
-        """Undoes every change, also those made in the choice lists (names, orientation, refresh, mosaic)."""
-        for el in config.plugins.camalert.content.items.values():
-            el.cancel()
+        """Undoes every change, also those made in the choice lists (names, orientation, refresh, mosaic). In a
+        section screen (#130) only the changes of that section."""
+        c = config.plugins.camalert
+        if self.section is None:
+            for el in c.content.items.values():
+                el.cancel()
+        else:
+            for s in schema.for_platform("enigma2"):
+                if s.section == self.section and s.level not in ("internal", "basic"):
+                    el = getattr(c, s.key("enigma2"), None)
+                    if el is not None:
+                        el.cancel()
         self.close()

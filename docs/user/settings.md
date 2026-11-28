@@ -1,10 +1,24 @@
 # Settings
 
 Every setting of CamAlert, from the one settings schema of all players (`core/camalert_core/schema.py`). The labels
-are the English ones; on the player they appear in your menu language. *Level*: **basic** is always shown,
-**advanced** and **expert** follow the settings level of the player (Enigma2: *Menu › Setup › System › Settings
-level*; Kodi: the level button in the settings dialog). *Players* says which players have a setting (**all** =
-Enigma2, Kodi and Android TV); a player with its own default is named next to the default.
+are the English ones; on the player they appear in your menu language. *Players* says which players have a setting
+(**all** = Enigma2, Kodi and Android TV); a player with its own default is named next to the default.
+
+## How the settings screens are organised
+
+- **Enigma2:** the first screen holds the **basic** settings (go2rtc address, default camera, display mode,
+  duration, window, active hours, Do not disturb). Below them is one line per section (Display, Rules, Triggers,
+  Home Assistant ...) that says what is on there, or how many settings differ from the default; **OK** opens it.
+  In a section, **GREEN** goes back (Save on the first screen keeps everything, Cancel there undoes everything) and
+  **RED** undoes the changes of that section. **Expert** settings show after **BLUE** (*More settings*) in a
+  section, or via MENU; the Enigma2 box keeps that choice.
+- **Kodi:** one tab per section; **advanced** and **expert** follow the level button of Kodi's settings dialog.
+- **Android TV:** one screen per section, each with a line saying what is on there; *Show expert settings* on the
+  first screen.
+- **On every player** a setting that only matters while another one is on is hidden otherwise: the fields of
+  Frigate, Foscam, UniFi Protect and MQTT appear once they are turned on, the active hours once *Only between
+  certain times* is on, the window settings only for the photo window, the go2rtc fields only with go2rtc. The rules
+  are the same everywhere (`core/camalert_core/settingsui.py`).
 
 How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi](../players/kodi.md#settings),
 [Android TV](../players/androidtv.md#settings).

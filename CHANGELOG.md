@@ -30,6 +30,8 @@ actions and blueprint inputs stay backwards compatible.
   Basic and Digest; a camera without snapshot url opens live view.
 - **Android TV:** the event list is a list now (#124): OK shows the camera of an event, and with a Frigate address an
   event from Frigate offers *Play Frigate clip* in a full-screen player.
+- **Docs:** screenshots of the Android TV app with demo cameras (photo window, multi-camera window, mosaic, tour,
+  settings) in [Android TV and Fire TV](docs/players/androidtv.md#what-you-see) (#69).
 
 ### Security
 

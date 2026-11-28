@@ -23,6 +23,7 @@ import argparse
 import io
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -107,6 +108,49 @@ def crop_box(scene, status, width, height):
     return None
 
 
+FRAME = re.compile(r"mFrame=\[(-?\d+),(-?\d+)\]\[(-?\d+),(-?\d+)\]")
+BOUNDS = re.compile(r'bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"')
+SETTINGS_PANEL = "org.camalert.tv:id/settings_preference_fragment_container"
+
+
+def overlay_frame(dumpsys):
+    """(x0, y0, x1, y1) of CamAlert's overlay window ("Window{... CamAlert}") in `dumpsys window windows`, or None.
+    The real frame: the core's window_geometry differs from what Android lays out (title bar, hint line)."""
+    block = None
+    for line in dumpsys.splitlines():
+        if "Window{" in line:
+            block = line.rstrip().endswith(" CamAlert}:")
+        elif block:
+            m = FRAME.search(line)
+            if m:
+                return tuple(int(v) for v in m.groups())
+    return None
+
+
+def panel_frame(ui_xml):
+    """(x0, y0, x1, y1) of the settings panel in a uiautomator dump, or None. The settings screen fills the whole
+    display with the launcher (third-party content) visible next to the panel."""
+    for node in re.findall(r"<node [^>]*>", ui_xml):
+        if 'resource-id="%s"' % SETTINGS_PANEL in node:
+            m = BOUNDS.search(node)
+            if m:
+                return tuple(int(v) for v in m.groups())
+    return None
+
+
+def measured_box(scene, dev):
+    """The crop box measured on the device, None when it cannot be measured (then crop_box computes it)."""
+    try:
+        if scene in ("photo", "strip"):
+            return overlay_frame(dev.shell("dumpsys window windows"))
+        if scene == "settings":
+            return panel_frame(dev.shell("uiautomator dump /data/local/tmp/ui.xml >/dev/null 2>&1; "
+                                         "cat /data/local/tmp/ui.xml; rm -f /data/local/tmp/ui.xml"))
+    except Exception:  # noqa: BLE001 - fall back to the computed box
+        return None
+    return None
+
+
 def strip_file(path):
     """tools/check_images.py --strip for one file: removes metadata in place, pixels untouched."""
     import check_images
@@ -171,8 +215,11 @@ def take(dev, api, scenes, out, wait=4.0, sleep=time.sleep, strip=None, restore_
                 from PIL import Image
                 w, h = Image.open(io.BytesIO(png)).size
                 path = os.path.join(out, "%s.png" % scene)
+                box = measured_box(scene, dev) or crop_box(scene, status, w, h)
+                if box is None and scene == "settings":
+                    raise RuntimeError("settings panel not found: refusing a full-screen picture of the launcher")
                 with open(path, "wb") as f:
-                    f.write(crop(png, crop_box(scene, status, w, h)))
+                    f.write(crop(png, box))
                 if strip is not None:
                     strip(path)
                 written.append(path)

@@ -105,6 +105,16 @@ event and, while it waits, the next login attempt.
   opens a still picture of the camera is shown at once, until the first video frame (#91).
 - **Notification** – a small window with the snapshot and the title.
 
+Screenshots with demo cameras on a Fire TV Stick 4K (CamAlert 1.3):
+
+| | |
+|---|---|
+| ![Photo window with a label and the key hint](../images/androidtv/photo-window.png) | **Photo window**: title (*Person · Front door*) with the key hint `OK = live   ◀ ▶ = other camera   MENU = actions   BACK = close` |
+| ![Multi-camera window with one camera not reachable](../images/androidtv/multi-camera-window.png) | **Multi-camera window**: 2–4 cameras; a camera that does not answer shows *Camera not reachable* |
+| ![Mosaic of four demo cameras](../images/androidtv/mosaic.png) | **Mosaic**: up to 9 cameras, one tile *Camera not reachable*; OK or BACK closes |
+| ![Tour with its key hint](../images/androidtv/tour.png) | **Tour**: ◀ ▶ = other camera, OK = pause, GREEN or PLAY = live view, BACK or STOP = close |
+| ![Settings of the app](../images/androidtv/settings.png) | **Settings** (open the CamAlert app), in sections; *Show expert settings* shows the rest |
+
 ## API and Home Assistant
 
 The app listens on port **8099** (setting *HTTP port*) with exactly the API of the other players:

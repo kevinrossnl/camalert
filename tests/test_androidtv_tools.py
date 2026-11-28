@@ -69,6 +69,9 @@ class TestScreenshots(unittest.TestCase):
             self.lock = cmd.split("'")[1]
         elif cmd.startswith("rm -f"):
             self.lock = ""
+        elif cmd.startswith("uiautomator dump"):  # the settings panel, measured (#69)
+            out = ('<node resource-id="org.camalert.tv:id/settings_preference_fragment_container" '
+                   'bounds="[1200,0][1920,1080]" />')
         return types.SimpleNamespace(stdout=out.encode())
 
     def api(self):
@@ -137,6 +140,33 @@ class TestScreenshots(unittest.TestCase):
                 x0, y0, x1, y1 = self.S.crop_box(scene, {"position": pos, "size": "large"}, 1920, 1080)
                 self.assertTrue(0 <= x0 < x1 <= 1920 and 0 <= y0 < y1 <= 1080, (pos, scene))
         self.assertIsNone(self.S.crop_box("mosaic", {}, 1920, 1080))
+
+    def test_measured_frames(self):
+        """#69: crop to the frame Android really laid out (dumpsys / uiautomator), not to the computed geometry:
+        the computed box cut the hint line and showed third-party launcher content next to the window."""
+        dumpsys = ("  Window #3 Window{1 u0 com.amazon.tv.launcher/.ui.HomeActivity_vNext}:\n"
+                   "    mFrame=[0,0][1920,1080] last=[0,0][1920,1080]\n"
+                   "  Window #2 Window{3de0bd0 u0 CamAlert}:\n"
+                   "    mAttrs=WM.LayoutParams{(1240,40)(640x436) gr=#800033 ty=2002}\n"
+                   "    mFrame=[1240,40][1880,476] last=[1240,40][1880,476]\n")
+        self.assertEqual(self.S.overlay_frame(dumpsys), (1240, 40, 1880, 476))
+        self.assertIsNone(self.S.overlay_frame("  Window #1 Window{1 u0 Other}:\n    mFrame=[0,0][9,9]\n"))
+        ui = ('<node class="android.widget.FrameLayout" bounds="[0,0][1920,1080]" />'
+              '<node resource-id="org.camalert.tv:id/settings_preference_fragment_container" '
+              'class="android.widget.FrameLayout" package="org.camalert.tv" bounds="[1200,0][1920,1080]" />')
+        self.assertEqual(self.S.panel_frame(ui), (1200, 0, 1920, 1080))
+        self.assertIsNone(self.S.panel_frame('<node bounds="[0,0][1920,1080]" />'))
+
+        class Dev(object):
+            def __init__(self, out):
+                self.out = out
+
+            def shell(self, cmd):
+                return self.out
+
+        self.assertEqual(self.S.measured_box("photo", Dev(dumpsys)), (1240, 40, 1880, 476))
+        self.assertEqual(self.S.measured_box("settings", Dev(ui)), (1200, 0, 1920, 1080))
+        self.assertIsNone(self.S.measured_box("mosaic", Dev(dumpsys)))
 
 
 if __name__ == "__main__":

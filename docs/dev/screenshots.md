@@ -87,8 +87,9 @@ starts on the device itself (`fake_go2rtc_on_device.py`, `http://127.0.0.1:11984
    [--token-env CAMALERT_TOKEN]` takes the test lock of the device (`/data/local/tmp/camalert-test.lock`), points
    the app at the fake go2rtc with `/camalert/setup` (CamAlert 1.3+, #122), opens photo window, multi-camera
    window, mosaic, tour and the settings screen through the API (with `test=1`), takes `adb exec-out screencap -p`,
-   crops the photo and multi-camera window to CamAlert's own window (the launcher behind it is third-party
-   content), strips metadata, sends `<address>` back with `/camalert/setup` (also after an error) and gives the
+   crops the photo and multi-camera window to CamAlert's own window and the settings screen to its panel, as
+   Android really laid them out (`dumpsys window`, `uiautomator dump`; the launcher next to them is third-party
+   content, so a settings picture without a measured panel is refused), strips metadata, sends `<address>` back with `/camalert/setup` (also after an error) and gives the
    lock back. An app older than 1.3: leave out `--restore-server` and change the address in the app by hand.
 3. **Check:** the app lists your own cameras again; the tool already stopped the fake go2rtc.
 4. Review every picture against the [privacy checklist](privacy.md) before it goes into `images/androidtv/`.

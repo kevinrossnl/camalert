@@ -134,6 +134,9 @@ export const DATA = {
       ],
       "default": "system"
     },
+    "more_servers": {
+      "default": ""
+    },
     "position": {
       "choices": [
         "top_right",

@@ -35,6 +35,9 @@ TIMEOUT = 10  # seconds a browser has to answer a request
 BROWSER_ID = re.compile(r"^[a-z0-9]{6,32}$")
 # what the go2rtc view forwards (GET unless noted); everything else is refused
 GO2RTC_PATHS = {"api/streams": "GET", "api/frame.jpeg": "GET", "api/stream.mjpeg": "GET", "api/webrtc": "POST"}
+# #131: s<n>/<path> goes to the n-th go2rtc server of the player (s1 = "server", s2... = "more_servers" in its hello)
+SERVER_PATH = re.compile(r"^s([2-9]|1[0-6])/(.+)$")
+MAX_SERVERS = 16
 FRAME_MAX = 8 * 1024 * 1024
 LAN = tuple(ipaddress.ip_network(n) for n in (
     "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "100.64.0.0/10", "127.0.0.0/8", "169.254.0.0/16",
@@ -73,6 +76,15 @@ async def lan_server(hass, server: str) -> str | None:
             return None
         ok = bool(infos) and all(_lan_ip(i[4][0]) for i in infos)
     return "%s://%s" % (p.scheme, p.netloc) if ok else None
+
+
+def server_of(hello: dict, n) -> str:
+    """The go2rtc address a browser player asked for: "server" (s1), or n >= 2 for the (n-1)-th entry of its
+    "more_servers" (#131: the player sends them in the order of their ids, comma separated)."""
+    if n == "server":
+        return hello.get("server", "")
+    more = [x.strip() for x in (hello.get("more_servers") or "").split(",") if x.strip()][:MAX_SERVERS - 1]
+    return more[n - 2] if 2 <= n <= len(more) + 1 else ""
 
 
 class _Conn:
@@ -195,10 +207,11 @@ def _ws_commands():
         vol.Optional("name", default=""): vol.All(str, vol.Length(max=64)),
         vol.Optional("version", default=""): vol.All(str, vol.Length(max=32)),
         vol.Optional("server", default=""): vol.All(str, vol.Length(max=256)),
+        vol.Optional("more_servers", default=""): vol.All(str, vol.Length(max=4096)),
     })
     @websocket_api.callback
     def ws_connect(hass, connection, msg):
-        hello = {k: msg[k] for k in (CONF_BROWSER_ID, "name", "version", "server")}
+        hello = {k: msg[k] for k in (CONF_BROWSER_ID, "name", "version", "server", "more_servers")}
         connection.subscriptions[msg["id"]] = hub(hass).connect(connection, msg["id"], hello)
         connection.send_result(msg["id"])
         hub(hass).discover(hello)
@@ -238,13 +251,16 @@ def _view_class():
 
         async def _target(self, request, browser_id, path, method):
             hass = request.app["hass"]
+            hello_key, m = "server", SERVER_PATH.match(path)
+            if m:
+                hello_key, path = int(m.group(1)), m.group(2)
             if GO2RTC_PATHS.get(path) != method:
                 raise web.HTTPNotFound()
             known = any(e.unique_id == browser_id and is_browser(e.data)
                         for e in hass.config_entries.async_entries(DOMAIN))
             if not known:
                 raise web.HTTPNotFound()
-            base = await lan_server(hass, hub(hass).hello(browser_id).get("server", ""))
+            base = await lan_server(hass, server_of(hub(hass).hello(browser_id), hello_key))
             if not base:
                 raise web.HTTPForbidden(text="go2rtc address not set or not in the local network")
             return hass, "%s/%s" % (base, path)

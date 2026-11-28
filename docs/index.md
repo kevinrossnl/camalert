@@ -52,6 +52,7 @@ words used on screen and in these pages are listed in the [glossary](user/glossa
 | [Translating](dev/translating.md) | The master catalogue and how to add or improve a language |
 | [Privacy checklist](dev/privacy.md) | What CI checks, and what you check before adding text or images |
 | [Screenshots](dev/screenshots.md) | How the screenshots are made without camera or TV content |
+| [Chrome Web Store](dev/webstore/README.md) | Listing texts, permission justifications and images of the browser extension |
 | [End-to-end tests](dev/e2e.md) | Scenarios on a real receiver or Kodi player: muted, state restored |
 | [Docs](dev/docs.md) | Structure of these pages, generated parts, docs tests |
 

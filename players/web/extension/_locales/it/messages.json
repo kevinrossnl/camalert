@@ -1,0 +1,10 @@
+{
+  "name": {
+    "message": "CamAlert",
+    "description": "name of the extension (never translated)"
+  },
+  "description": {
+    "message": "Lettore CamAlert per browser desktop: le immagini delle telecamere di Home Assistant sullo schermo quando qualcuno suona.",
+    "description": "short description in the store and the extensions page (132 characters at most)"
+  }
+}

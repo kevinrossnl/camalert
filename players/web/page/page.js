@@ -82,8 +82,8 @@ function openPanel() {
   for (const key of ["position", "size", "text_size", "chime"]) fillSelect($(`f-${key}`), key, CHOICE_LABELS[key], t);
   fillSelect($("f-language"), "language", null, t);
   $("f-name").value = store.name;
-  for (const key of ["server", "camera", "duration", "position", "size", "text_size", "chime", "language"]) {
-    $(`f-${key}`).value = s[key];
+  for (const key of ["server", "more_servers", "camera", "duration", "position", "size", "text_size", "chime", "language"]) {
+    $(`f-${key}`).value = s[key] ?? "";
   }
   $("f-dnd").checked = !!s.dnd;
   $("f-dashboard").checked = localStorage.getItem(DASHBOARD_KEY) === "1";
@@ -105,7 +105,7 @@ $("panel").addEventListener("submit", (ev) => {
   ev.preventDefault();
   if ($("f-name").value.trim() !== store.name) store.setName($("f-name").value);
   store.set({
-    server: $("f-server").value, camera: $("f-camera").value, duration: $("f-duration").value,
+    server: $("f-server").value, more_servers: $("f-more_servers").value, camera: $("f-camera").value, duration: $("f-duration").value,
     position: $("f-position").value, size: $("f-size").value, text_size: $("f-text_size").value,
     chime: $("f-chime").value, language: $("f-language").value, dnd: $("f-dnd").checked,
   });

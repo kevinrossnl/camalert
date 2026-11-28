@@ -59,7 +59,7 @@ jobs:
         run: python3 tools/build_ipk.py dist
       - name: build Kodi add-on and repository add-on
         run: python3 tools/build_kodi.py dist --repo-url "https://${{ github.repository_owner }}.github.io/camalert/kodi"
-      - name: build the browser extension (#127, Load unpacked or the Chrome Web Store later)
+      - name: build the browser extensions (#127, #131: Chrome/Edge and Firefox)
         run: python3 tools/build_web.py dist dist
       - name: build Home Assistant zip (manual install; HACS installs from the repository)
         run: |

@@ -1,0 +1,10 @@
+{
+  "name": {
+    "message": "CamAlert",
+    "description": "name of the extension (never translated)"
+  },
+  "description": {
+    "message": "CamAlert-Player für Desktop-Browser: Kamerabilder aus Home Assistant auf deinem Bildschirm, wenn jemand klingelt.",
+    "description": "short description in the store and the extensions page (132 characters at most)"
+  }
+}

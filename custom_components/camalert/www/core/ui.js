@@ -124,10 +124,12 @@ class Tile {
       } catch (e) {
         p.log(`live ${this.cam}: WebRTC failed (${e.message}), MJPEG instead`);
       }
-      await this._stream(urls(p.base(), this.cam).mjpeg);
+      const at = source(p, this.cam);
+      await this._stream(urls(at.base, this.cam, "", at.stream).mjpeg);
       return;
     }
-    const src = pictureSources(p.base(), this.cam, p.settings().ready_cameras);
+    const at = source(p, this.cam);
+    const src = pictureSources(at.base, this.cam, p.settings().ready_cameras, at.stream);
     if (src.stream) await this._stream(src.stream);
     else this._frames(src.first, src.next);
   }
@@ -138,8 +140,12 @@ class Tile {
     img.alt = "";
     img.onload = () => this.msg.remove();
     img.onerror = () => { this.msg.textContent = this.view.tr("Camera not reachable"); };
-    const path = url.slice(url.indexOf("/api/"));
-    img.src = this.view.absolute(await this.view.link.sign(path));
+    if (this.view.link.direct) {
+      img.src = url; // straight from go2rtc (MQTT, #131): nothing to sign
+    } else {
+      const path = url.slice(url.indexOf("/api/"));
+      img.src = this.view.absolute(await this.view.link.sign(path));
+    }
     this.el.insertBefore(img, this.msg);
   }
 
@@ -192,7 +198,8 @@ class Tile {
       pc.onicegatheringstatechange = () => pc.iceGatheringState === "complete" && r();
       setTimeout(r, 1500);
     });
-    const r = await this.view.player.authFetch(urls(this.view.player.base(), this.cam).webrtc, {
+    const at = source(this.view.player, this.cam);
+    const r = await this.view.player.authFetch(urls(at.base, this.cam, "", at.stream).webrtc, {
       method: "POST", headers: { "Content-Type": "application/sdp" }, body: pc.localDescription.sdp,
     });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -221,6 +228,11 @@ class Tile {
   }
 }
 
+/** {base, stream(name)} of a camera: its go2rtc server (#131); a player without src() has one server. */
+export function source(player, cam) {
+  return player.src ? player.src(cam) : { base: player.base(), stream: (n) => n };
+}
+
 const TALK_MAX_MS = 60000; // talking stops by itself after a minute
 
 /** Talking to a camera from the browser's microphone (#98): WebRTC to go2rtc's "<camera>_talk" stream, whose
@@ -229,6 +241,7 @@ export class Talk {
   constructor(player, stream, deps = {}) {
     this.player = player;
     this.stream = stream;
+    this.base = deps.base || null; // the go2rtc server of the camera (#131); default the main one
     this.media = deps.media || (globalThis.navigator && globalThis.navigator.mediaDevices);
     this.Peer = deps.Peer || globalThis.RTCPeerConnection;
     this.pc = null;
@@ -256,7 +269,7 @@ export class Talk {
       pc.onicegatheringstatechange = () => pc.iceGatheringState === "complete" && r();
       setTimeout(r, 1500);
     });
-    const r = await this.player.authFetch(urls(this.player.base(), this.stream).webrtc, {
+    const r = await this.player.authFetch(urls(this.base || this.player.base(), this.stream).webrtc, {
       method: "POST", headers: { "Content-Type": "application/sdp" }, body: pc.localDescription.sdp,
     });
     if (!r.ok) {
@@ -390,7 +403,8 @@ export class DomView {
       if (this.talk && this.talk.on) {
         this.talk.stop();
       } else {
-        this.talk = new Talk(this.player, stream, { media: this.deps.media, Peer: this.deps.Peer });
+        this.talk = new Talk(this.player, stream, { media: this.deps.media, Peer: this.deps.Peer,
+                                                    base: source(this.player, cam).base });
         try {
           await this.talk.start();
         } catch (err) {
@@ -459,7 +473,8 @@ export class DomView {
     this.note = el;
     this.noteTimer = setTimeout(() => this._closeNote(), (seconds || 10) * 1000);
     try {
-      const r = await this.player.authFetch(urls(this.player.base(), cam).cached);
+      const at = source(this.player, cam);
+      const r = await this.player.authFetch(urls(at.base, cam, "", at.stream).cached);
       if (r.ok && this.note === el) {
         const img = document.createElement("img");
         img.alt = "";

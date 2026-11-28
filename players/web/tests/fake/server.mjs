@@ -5,6 +5,10 @@
 // camalert/browser/* commands, auth/sign_path), the integration's static files (/camalert_static/ = www/), the
 // go2rtc view (/api/camalert/go2rtc/<id>/...: fake streams, frames, MJPEG; WebRTC refused so the MJPEG fallback runs)
 // and /auth/token. Tests call fake.request(action, params) and get the browser's answer.
+// #131: a second go2rtc server behind the view (/api/camalert/go2rtc/<id>/s2/...: STREAMS2), go2rtc itself without
+// Home Assistant (/api/streams, /api/frame.jpeg: the pictures of an MQTT player) and an MQTT broker over WebSocket
+// (/mqtt, QoS 0): fake.mqttPublish(topic, payload) and fake.mqtt.published.
+import { parsePublish, publish, split } from "../../core/mqtt.js";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import http from "node:http";
@@ -25,12 +29,17 @@ export const STREAMS = {
   front_door_talk: { producers: [{ url: "exec:ffmpeg -f alaw -ar 8000 -ac 1 -i - -c:a aac -f adts udp://192.168.1.14:7004#backchannel=1#audio=alaw/8000" }] },
 };
 
-function frame(text) {
+export const STREAMS2 = {
+  cam: { producers: [{ url: "rtsp://192.168.1.21:554/stream1" }] },
+};
+
+function frame(text, op = 1) {
   const body = Buffer.from(text);
   const len = body.length;
-  const head = len < 126 ? Buffer.from([0x81, len])
-    : len < 65536 ? Buffer.from([0x81, 126, len >> 8, len & 255])
-      : Buffer.concat([Buffer.from([0x81, 127, 0, 0, 0, 0]), Buffer.from([len >>> 24, (len >> 16) & 255, (len >> 8) & 255, len & 255])]);
+  const b0 = 0x80 | op;
+  const head = len < 126 ? Buffer.from([b0, len])
+    : len < 65536 ? Buffer.from([b0, 126, len >> 8, len & 255])
+      : Buffer.concat([Buffer.from([b0, 127, 0, 0, 0, 0]), Buffer.from([len >>> 24, (len >> 16) & 255, (len >> 8) & 255, len & 255])]);
   return Buffer.concat([head, body]);
 }
 
@@ -60,6 +69,7 @@ function parse(buf) {
       data = Buffer.from(data.map((b, i) => b ^ m[i % 4]));
     }
     if (op === 1) out.push(data.toString("utf8"));
+    if (op === 2) out.push(data);
     if (op === 8) closed = true;
     buf = buf.subarray(need);
   }
@@ -76,6 +86,52 @@ export class FakeHA {
     this.go2rtcRequests = [];
     this.webrtc = 500;
     this.acceptToken = TOKEN;
+    this.mqtt = { socks: new Set(), published: [], connects: [] };
+  }
+
+  /** The fake broker (#131): one binary WebSocket per client; CONNECT, SUBSCRIBE and PUBLISH, QoS 0. */
+  _mqtt(sock) {
+    let buf = Buffer.alloc(0);
+    let bytes = new Uint8Array(0);
+    sock.on("data", (d) => {
+      const [frames, rest, closed] = parse(Buffer.concat([buf, d]));
+      buf = rest;
+      for (const f of frames) {
+        if (typeof f === "string") continue;
+        const all = new Uint8Array([...bytes, ...f]);
+        const { packets, rest: left } = split(all);
+        bytes = left;
+        for (const p of packets) {
+          if (p.type === 1) {
+            this.mqtt.connects.push(Buffer.from(p.body));
+            this.mqtt.socks.add(sock);
+            sock.write(frame(Buffer.from([0x20, 2, 0, 0]), 2));
+          } else if (p.type === 8) {
+            sock.write(frame(Buffer.from([0x90, 3, p.body[0], p.body[1], 0]), 2));
+          } else if (p.type === 3) {
+            this.mqtt.published.push(Object.assign(parsePublish(p.flags, p.body), { retain: !!(p.flags & 1) }));
+          }
+        }
+      }
+      if (closed) sock.end();
+    });
+    const gone = () => { this.mqtt.socks.delete(sock); this.sockets.delete(sock); };
+    sock.on("close", gone);
+    sock.on("error", gone);
+  }
+
+  /** Sends a PUBLISH to every connected MQTT client. */
+  mqttPublish(topic, payload) {
+    for (const sock of this.mqtt.socks) sock.write(frame(Buffer.from(publish(topic, payload)), 2));
+  }
+
+  /** Waits for an MQTT client to connect. */
+  async mqttConnected(timeout = 10000) {
+    const t0 = Date.now();
+    while (!this.mqtt.socks.size) {
+      if (Date.now() - t0 > timeout) throw new Error("no MQTT client connected");
+      await new Promise((r) => setTimeout(r, 50));
+    }
   }
 
   async start(port = 0) {
@@ -98,9 +154,14 @@ export class FakeHA {
   _upgrade(req, sock) {
     const key = req.headers["sec-websocket-key"];
     const accept = createHash("sha1").update(key + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11").digest("base64");
+    const mqtt = req.url.startsWith("/mqtt");
     sock.write("HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n" +
-               `Sec-WebSocket-Accept: ${accept}\r\n\r\n`);
+               (mqtt ? "Sec-WebSocket-Protocol: mqtt\r\n" : "") + `Sec-WebSocket-Accept: ${accept}\r\n\r\n`);
     this.sockets.add(sock);
+    if (mqtt) {
+      this._mqtt(sock);
+      return;
+    }
     let buf = Buffer.alloc(0);
     let authed = false;
     sock.on("data", (d) => {
@@ -187,16 +248,24 @@ export class FakeHA {
       res.writeHead(200, { "Content-Type": "text/html" }).end(await readFile(path.join(HERE, "dashboard.html")));
       return;
     }
-    const m = /^\/api\/camalert\/go2rtc\/([a-z0-9]+)\/(.+)$/.exec(u.pathname);
+    let m = /^\/api\/camalert\/go2rtc\/([a-z0-9]+)\/(.+)$/.exec(u.pathname);
+    const direct = !m && /^\/api\/(streams|frame\.jpeg|stream\.mjpeg|webrtc)$/.test(u.pathname); // go2rtc itself
+    if (direct) m = [u.pathname, "direct", u.pathname.slice(1)];
     if (m) {
       const signed = u.searchParams.get("authSig") === "fake";
-      if (req.headers.authorization !== `Bearer ${TOKEN}` && !signed) {
+      if (!direct && req.headers.authorization !== `Bearer ${TOKEN}` && !signed) {
         res.writeHead(401).end();
         return;
       }
-      this.go2rtcRequests.push(`${req.method} ${m[2]}?${u.searchParams.toString()}`);
+      if (direct && req.headers.authorization) { // go2rtc never gets the Home Assistant token
+        res.writeHead(400).end();
+        return;
+      }
+      this.go2rtcRequests.push(`${req.method} ${direct ? "direct " : ""}${m[2]}?${u.searchParams.toString()}`);
+      const second = /^s2\//.test(m[2]);
+      if (second) m[2] = m[2].slice(3);
       if (m[2] === "api/streams") {
-        res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify(STREAMS));
+        res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify(second ? STREAMS2 : STREAMS));
       } else if (m[2] === "api/frame.jpeg") {
         res.writeHead(200, { "Content-Type": "image/jpeg" }).end(JPEG);
       } else if (m[2] === "api/stream.mjpeg") {

@@ -50,6 +50,20 @@ test("connects, shows a photo window, a live window, a mosaic and hides", async 
   expect((await fake.request("status")).body.screen).toBe("none");
 });
 
+test("several go2rtc servers: prefixed names through /s2/ of the view (#131)", async ({ page }) => {
+  await open(page, { more_servers: "garden2=http://192.168.1.20:1984" });
+  expect(fake.hellos.at(-1)).toMatchObject({ server: "http://192.168.1.10:1984", more_servers: "http://192.168.1.20:1984" });
+  const cams = await fake.request("cameras");
+  expect(cams.body.cameras.map((c) => c.name)).toEqual(["all", "front_door", "garden", "garden2.cam"]);
+  fake.go2rtcRequests.length = 0;
+  await fake.request("show", { cam: "garden2.cam" });
+  const win = page.locator("camalert-layer .win");
+  await expect(win.locator(".bar")).toHaveText("Garden2.cam");
+  await expect(win.locator("img")).toHaveAttribute("src", /^blob:/);
+  expect(fake.go2rtcRequests).toContain("GET s2/api/frame.jpeg?src=cam&cache=10s");
+  await fake.request("hide");
+});
+
 test("warm feed, notification, settings and setup from Home Assistant", async ({ page }) => {
   await open(page, { ready_cameras: "front_door=front_door_jpeg", server: "" });
   expect((await fake.request("status")).body.configured).toBe(false);

@@ -24,6 +24,7 @@ Screenshots in the docs show **only CamAlert's own screens**, never a camera pic
 | `images/homeassistant/device.png` | Home Assistant: a CamAlert player device with its buttons, switch, sensor and event entity |
 | `images/homeassistant/action-show.png` | Home Assistant: the action `camalert.show` in *Developer tools › Actions* |
 | `images/homeassistant/blueprint-doorbell.png` | Home Assistant: an automation from the doorbell blueprint |
+| `dev/webstore/*.png` | Chrome Web Store images of the browser extension (#131): made by `tools/webstore_images.py`, see [Chrome Web Store](webstore/README.md) |
 
 The Enigma2 screenshots were taken on openATV 8.0.1 with its default skin (MetrixHD; last refresh 27-11-2026 on a
 VU+ Solo 4K with CamAlert 1.1.0+). MetrixHD draws its OSD at 1280x720 even with a 2160p video mode (framebuffer

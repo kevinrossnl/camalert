@@ -152,21 +152,24 @@ function q(s) {
   return encodeURIComponent(s).replace(/%2C/g, ",");
 }
 
-/** URLs of one camera behind the Home Assistant view (base = https://ha.example:8123/api/camalert/go2rtc/<id>). */
-export function urls(base, cam, readyText = "") {
+/** URLs of one camera behind the Home Assistant view (base = https://ha.example:8123/api/camalert/go2rtc/<id>, or
+ *  that plus /s<n> for another go2rtc server, #131; or go2rtc itself with MQTT, #131). stream(name) gives the go2rtc
+ *  stream of a camera name (several servers: "garden.cam" -> "cam"); by default the name itself. */
+export function urls(base, cam, readyText = "", stream = (n) => n) {
   const ready = parseReady(readyText)[cam];
+  const src = stream(cam);
   return {
-    warm: ready ? `${base}/api/stream.mjpeg?src=${q(ready)}` : null,
-    cached: `${base}/api/frame.jpeg?src=${q(cam)}&cache=10s`,
-    frame: `${base}/api/frame.jpeg?src=${q(cam)}`,
-    mjpeg: `${base}/api/stream.mjpeg?src=${q(cam)}`,
-    webrtc: `${base}/api/webrtc?src=${q(cam)}`,
+    warm: ready ? `${base}/api/stream.mjpeg?src=${q(stream(ready))}` : null,
+    cached: `${base}/api/frame.jpeg?src=${q(src)}&cache=10s`,
+    frame: `${base}/api/frame.jpeg?src=${q(src)}`,
+    mjpeg: `${base}/api/stream.mjpeg?src=${q(src)}`,
+    webrtc: `${base}/api/webrtc?src=${q(src)}`,
   };
 }
 
 /** The order in which a window asks for its pictures: warm feed first (a moving picture), else the cached frame
  *  once and new frames after it. */
-export function pictureSources(base, cam, readyText = "") {
-  const u = urls(base, cam, readyText);
+export function pictureSources(base, cam, readyText = "", stream = (n) => n) {
+  const u = urls(base, cam, readyText, stream);
   return u.warm ? { stream: u.warm, first: null, next: null } : { stream: null, first: u.cached, next: u.frame };
 }

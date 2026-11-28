@@ -1,0 +1,10 @@
+{
+  "name": {
+    "message": "CamAlert",
+    "description": "name of the extension (never translated)"
+  },
+  "description": {
+    "message": "CamAlert-speler voor desktopbrowsers: camerabeelden uit Home Assistant op je scherm als er iemand aanbelt.",
+    "description": "short description in the store and the extensions page (132 characters at most)"
+  }
+}

@@ -50,16 +50,21 @@ elsewhere.
 **Report a problem.** The panel (**⚙**) has **Report a problem**: a QR code to a pre-filled GitHub issue and a
 download of the report without passwords or tokens ([troubleshooting](../user/troubleshooting.md)).
 
-**Limits.** One go2rtc server per browser player for now (*More go2rtc servers*, #15, is not used yet). A
-background tab or a tablet with its screen off gets nothing (Fully Kiosk can wake the screen on
+**More go2rtc servers** (#131) works as on the other players: `garden=http://192.168.1.20:1984` shows the cameras
+of that server as `garden.<name>`; without a prefix they keep their names (`s2.<name>` when the main server has the
+same name). Home Assistant forwards to each of them under the same local-network rule.
+
+**Limits.** A background tab or a tablet with its screen off gets nothing (Fully Kiosk can wake the screen on
 motion or with its own Home Assistant integration). Smart-TV browsers without WebRTC show live view as MJPEG.
 
 ## Browser extension
 
-1. Download `camalert-browser-X.Y.Z.zip` from the [latest release](https://github.com/kevinrossnl/camalert/releases/latest)
-   and unpack it.
-2. Chrome or Edge: open `chrome://extensions`, turn on **Developer mode**, press **Load unpacked** and choose the
-   unpacked folder.
+1. Download `camalert-browser-X.Y.Z.zip` (Chrome, Edge) or `camalert-browser-firefox-X.Y.Z.zip` (Firefox 140 or
+   newer) from the [latest release](https://github.com/kevinrossnl/camalert/releases/latest).
+2. Chrome or Edge: unpack the zip, open `chrome://extensions`, turn on **Developer mode**, press **Load unpacked**
+   and choose the unpacked folder. Once CamAlert is in the Chrome Web Store, install it from there instead (it then
+   updates by itself). Firefox: until CamAlert is on addons.mozilla.org, open `about:debugging`, **This Firefox**,
+   **Load Temporary Add-on** and choose the zip (it stays until Firefox restarts).
 3. Open the extension's options. Enter the address of Home Assistant and a long-lived access token. Create the token
    in your Home Assistant profile (Security), preferably for a separate user that is not an administrator. Allow the
    extension access to that address when Chrome asks.
@@ -69,13 +74,26 @@ An alert opens a small window in the corner of the screen (alarm: in front of ev
 screen. The chime plays from the extension itself. The token stays in the browser's local extension storage; it is
 never synced and never logged.
 
-**Limits.** Only while the browser runs. Firefox and the Chrome Web Store come later.
+**MQTT instead of Home Assistant** (#131). Under **Connection** choose **MQTT broker over WebSocket** and enter the
+broker's WebSocket address (Mosquitto: a `listener 1884` with `protocol websockets`, so `ws://192.168.1.20:1884/mqtt`
+or `wss://` behind HTTPS), user and password. The extension then uses the same topics as the other players
+(`camalert/<id>/show`, `mosaic`, `hide`, `dnd/set`; it publishes `state`, `dnd` and `availability`) and announces
+itself through Home Assistant MQTT discovery: a device with a button per camera. Pictures come straight from go2rtc,
+so the extension asks for access to the go2rtc addresses too. Without the Home Assistant connection there is no
+CamAlert device in the integration (no actions, blueprints or talk-back); the password stays in the browser's local
+extension storage like the token.
+
+**Limits.** Only while the browser runs. In Firefox the extension is a Manifest V2 add-on with a background page:
+Firefox stops a Manifest V3 background after a short idle time, which would close the connection that brings the
+alerts.
 
 ## For developers
 
 The shared core is plain JavaScript (`players/web/core/`, ES modules, no dependencies). Its rules, choices,
 colours and texts are generated from the Python core (`python3 tools/build_web.py update`, texts with
-`python3 tools/i18n/i18n.py build`). Tests: `node --test players/web/tests/unit/*.test.mjs` and, with Playwright,
+`python3 tools/i18n/i18n.py build`). Packages: `python3 tools/build_web.py dist dist` (Chrome/Edge and Firefox); the Chrome Web Store listing, permission
+justifications and screenshots are in [docs/dev/webstore/](../dev/webstore/README.md).
+Tests: `node --test players/web/tests/unit/*.test.mjs` and, with Playwright,
 `cd players/web && npm ci && npx playwright test` (the web page and the extension in Chromium against a fake
 Home Assistant). CI area: `sh tools/ci.sh web`.
 

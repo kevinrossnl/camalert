@@ -6,8 +6,11 @@
     python3 tools/build_web.py update   writes players/web/core/generated.js (rules, choices, colours and layout from
                                         the Python core) and copies the web player into custom_components/camalert/www/
     python3 tools/build_web.py check    exit 1 when a generated file or the copy is not up to date (tests run this)
-    python3 tools/build_web.py dist DIR builds DIR/camalert-browser-<version>.zip (the extension, Manifest V3)
-    python3 tools/build_web.py unpacked DIR   writes the extension as a folder (Load unpacked; end-to-end tests)
+    python3 tools/build_web.py dist DIR builds DIR/camalert-browser-<version>.zip (Chrome and Edge, Manifest V3;
+                                        also the Chrome Web Store upload) and DIR/camalert-browser-firefox-<version>.zip
+                                        (Firefox, #131)
+    python3 tools/build_web.py unpacked DIR [firefox]   writes the extension as a folder (Load unpacked; end-to-end
+                                        tests; Firefox: about:debugging, Load Temporary Add-on)
 
 The shared core (players/web/core/) is plain JavaScript (ES modules, no dependencies); the translated texts come from
 tools/i18n/i18n.py (players/web/core/i18n.js). The Home Assistant integration serves the web player from www/.
@@ -32,12 +35,12 @@ from camalert_core import api, layout, report, rules, schema, style  # noqa: E40
 CAPABILITIES = ("cameras", "dnd", "events", "hide", "hold", "log", "mosaic", "screen", "settings", "setup", "show",
                 "status", "test")
 # the settings a browser player keeps (localStorage / chrome.storage.local), with the schema's defaults
-SETTINGS = ("server", "camera", "titles", "ready_cameras", "duration", "position", "size", "text_size",
+SETTINGS = ("server", "more_servers", "camera", "titles", "ready_cameras", "duration", "position", "size", "text_size",
             "priority_border", "chime", "dnd", "language")
 # what goes into www/ (the web player served by Home Assistant): core + page + frontend module + chime
 WWW_FILES = ("core/api.js", "core/controller.js", "core/generated.js", "core/i18n.js", "core/pictures.js",
-             "core/player.js", "core/qr.js", "core/report.js", "core/store.js", "core/transport.js", "core/ui.js",
-             "page/auth.js", "page/player.html", "page/page.js", "page/frontend.js", "chime.wav")
+             "core/player.js", "core/qr.js", "core/report.js", "core/servers.js", "core/store.js", "core/transport.js",
+             "core/ui.js", "page/auth.js", "page/player.html", "page/page.js", "page/frontend.js", "chime.wav")
 
 
 def version():
@@ -141,32 +144,75 @@ def update():
             f.write(body)
 
 
-def extension_files():
-    """{name in the zip: bytes}: the extension folder plus the shared core and the chime."""
+BROWSERS = ("chrome", "firefox")
+CHROME_ONLY = ("offscreen.html", "offscreen.js")  # Firefox has no offscreen documents: its background page plays
+FIREFOX_ONLY = ("background.html",)  # the persistent background page that runs background.js
+GECKO_ID = "camalert@camalert.invalid"  # never change it: Firefox and addons.mozilla.org know the add-on by it
+FIREFOX_MIN = "140.0"  # Extended Support Release 140: the first with data_collection_permissions
+
+
+def firefox_manifest(m):
+    """The Firefox manifest from the Chrome one (#131): Manifest V2 with a persistent background page, because an
+    MV3 event page in Firefox is stopped after a short idle time and would drop the WebSocket that brings alerts.
+    The same files run in both (extension/ext.js picks `browser` or `chrome`)."""
+    out = {"manifest_version": 2, "name": m["name"], "description": m["description"],
+           "default_locale": m["default_locale"], "version": m["version"],
+           "background": {"page": "background.html", "persistent": True},
+           "permissions": [p for p in m["permissions"] if p != "offscreen"],
+           "optional_permissions": list(m["optional_host_permissions"]),
+           "options_ui": {"page": m["options_page"], "open_in_tab": True},
+           "browser_action": dict(m["action"], default_icon=m["icons"]),
+           "icons": m["icons"],
+           "browser_specific_settings": {"gecko": {
+               "id": GECKO_ID, "strict_min_version": FIREFOX_MIN,
+               # addons.mozilla.org: the extension collects and sends no data to its developers
+               "data_collection_permissions": {"required": ["none"]}}}}
+    return out
+
+
+def extension_files(browser="chrome"):
+    """{name in the zip: bytes}: the extension folder plus the shared core and the chime, for chrome (Chrome, Edge)
+    or firefox."""
+    if browser not in BROWSERS:
+        raise ValueError(browser)
+    skip = FIREFOX_ONLY if browser == "chrome" else CHROME_ONLY
     files = {}
     for base, _dirs, names in os.walk(EXTENSION):
         for name in names:
             p = os.path.join(base, name)
-            files[os.path.relpath(p, EXTENSION).replace(os.sep, "/")] = open(p, "rb").read()
+            rel = os.path.relpath(p, EXTENSION).replace(os.sep, "/")
+            if rel not in skip:
+                files[rel] = open(p, "rb").read()
     for name in os.listdir(CORE_JS):
         if name.endswith(".js"):
             files["core/" + name] = open(os.path.join(CORE_JS, name), "rb").read()
     files["chime.wav"] = open(os.path.join(ROOT, "players", "enigma2", "CamAlert", "chime.wav"), "rb").read()
     manifest = json.loads(files["manifest.json"])
     manifest["version"] = re.sub(r"[^0-9.]", "", version())
+    if browser == "firefox":
+        manifest = firefox_manifest(manifest)
     files["manifest.json"] = (json.dumps(manifest, indent=2) + "\n").encode("utf-8")
     return files
 
 
-def dist(target):
+def package(target, browser="chrome"):
+    """DIR/camalert-browser[-firefox]-<version>.zip (fixed dates: the same sources give the same zip)."""
     os.makedirs(target, exist_ok=True)
-    path = os.path.join(target, "camalert-browser-%s.zip" % version())
+    name = "camalert-browser-%s.zip" if browser == "chrome" else "camalert-browser-" + browser + "-%s.zip"
+    path = os.path.join(target, name % version())
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
-        for name, body in sorted(extension_files().items()):
+        for name, body in sorted(extension_files(browser).items()):
             info = zipfile.ZipInfo(name, date_time=(2026, 1, 1, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o644 << 16
             z.writestr(info, body)
+    return path
+
+
+def dist(target):
+    """Both packages; returns the path of the Chrome one (the Firefox one is next to it)."""
+    path = package(target, "chrome")
+    package(target, "firefox")
     return path
 
 
@@ -182,7 +228,7 @@ def main(argv):
         return 1 if bad else 0
     if cmd == "unpacked":  # the extension as a folder (Load unpacked; the end-to-end tests)
         target = argv[2]
-        for name, body in extension_files().items():
+        for name, body in extension_files(argv[3] if len(argv) > 3 else "chrome").items():
             p = os.path.join(target, *name.split("/"))
             os.makedirs(os.path.dirname(p), exist_ok=True)
             with open(p, "wb") as f:

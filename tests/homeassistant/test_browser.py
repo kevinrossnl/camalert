@@ -16,8 +16,8 @@ BID = "webtest0000001"
 class FakeBrowser:
     """A browser player on a Home Assistant WebSocket test client: answers the requests like the JS core."""
 
-    def __init__(self, ws, bid=BID, name="Wall tablet", server="http://127.0.0.1:1984"):
-        self.ws, self.bid, self.name, self.server = ws, bid, name, server
+    def __init__(self, ws, bid=BID, name="Wall tablet", server="http://127.0.0.1:1984", more=None):
+        self.ws, self.bid, self.name, self.server, self.more = ws, bid, name, server, more
         self.requests = []
         self.screen = "none"
         self.task = None
@@ -25,8 +25,11 @@ class FakeBrowser:
         self.answer = None  # override: f(action, params) -> (code, body) or None
 
     async def connect(self):
-        await self.ws.send_json({"id": 1, "type": "camalert/browser/connect", "browser_id": self.bid,
-                                 "name": self.name, "version": "1.3.1", "server": self.server})
+        hello = {"id": 1, "type": "camalert/browser/connect", "browser_id": self.bid, "name": self.name,
+                 "version": "1.3.1", "server": self.server}
+        if self.more is not None:
+            hello["more_servers"] = self.more
+        await self.ws.send_json(hello)
         msg = await self.ws.receive_json()
         assert msg["success"], msg
         self.task = asyncio.create_task(self._loop())
@@ -272,6 +275,38 @@ async def test_go2rtc_view_and_static_files(hass, hass_ws_client, hass_client, s
     b2 = await FakeBrowser(await hass_ws_client(hass), server=url).connect()
     assert (await client.get("/api/camalert/go2rtc/%s/api/streams" % BID)).status == 502
     await b2.close()
+
+
+async def test_go2rtc_view_with_several_servers(hass, hass_ws_client, hass_client, socket_enabled):
+    """#131: /s<n>/ goes to the n-th go2rtc server of the player's hello (s1 = server, s2... = more_servers)."""
+    await _ha(hass)
+    main, url1, seen1 = await go2rtc_fake()
+    other, url2, seen2 = await go2rtc_fake()
+    browser_entry().add_to_hass(hass)
+    b = await FakeBrowser(await hass_ws_client(hass), server=url1, more=url2 + ",http://203.0.113.5:1984").connect()
+    client = await hass_client()
+    assert (await client.get("/api/camalert/go2rtc/%s/api/frame.jpeg?src=a" % BID)).status == 200
+    assert seen1[-1] == ("GET", "/api/frame.jpeg", "src=a") and not seen2
+    assert (await client.get("/api/camalert/go2rtc/%s/s2/api/frame.jpeg?src=b" % BID)).status == 200
+    assert seen2[-1] == ("GET", "/api/frame.jpeg", "src=b")
+    r = await client.post("/api/camalert/go2rtc/%s/s2/api/webrtc?src=b" % BID, data="v=0 offer")
+    assert r.status == 200 and seen2[-1] == ("POST", "/api/webrtc", "v=0 offer")
+    # the third server is outside the local network; a fourth does not exist; s1/ is not a server path
+    assert (await client.get("/api/camalert/go2rtc/%s/s3/api/streams" % BID)).status == 403
+    assert (await client.get("/api/camalert/go2rtc/%s/s4/api/streams" % BID)).status == 403
+    assert (await client.get("/api/camalert/go2rtc/%s/s1/api/streams" % BID)).status == 404
+    assert (await client.get("/api/camalert/go2rtc/%s/s2/api/config" % BID)).status == 404
+    await b.close()
+    await main.cleanup()
+    await other.cleanup()
+
+
+def test_server_of():
+    from custom_components.camalert.browser import server_of
+    hello = {"server": "http://a:1984", "more_servers": "http://b:1984, http://c:1984"}
+    assert server_of(hello, "server") == "http://a:1984"
+    assert [server_of(hello, n) for n in (2, 3, 4)] == ["http://b:1984", "http://c:1984", ""]
+    assert server_of({}, 2) == "" and server_of({"more_servers": ""}, "server") == ""
 
 
 async def test_go2rtc_view_only_in_the_local_network_and_with_login(hass, hass_ws_client, hass_client,

@@ -352,7 +352,7 @@ msgstr "Attivatori"
 msgid "Camera control"
 msgstr "Controllo telecamera"
 
-#: e2 kodi:30501
+#: e2 kodi:30501 web
 msgid "Home Assistant"
 msgstr "Home Assistant"
 
@@ -984,11 +984,11 @@ msgstr "Si consiglia go2rtc. Senza go2rtc, elenca le telecamere in %s"
 msgid "Address of your go2rtc server, e.g. http://192.168.1.10:1984"
 msgstr "Indirizzo del server go2rtc, ad es. http://192.168.1.10:1984"
 
-#: e2 kodi:30960
+#: e2 kodi:30960 web
 msgid "More go2rtc servers"
 msgstr "Altri server go2rtc"
 
-#: e2 kodi:30961
+#: e2 kodi:30961 web
 msgid "Other go2rtc servers, separated by commas, each with an optional prefix: garden=http://192.168.1.20:1984. Their cameras are called garden.<name>; without a prefix they keep their names (s2.<name> if the main server has the same name)."
 msgstr "Altri server go2rtc, separati da virgole, ciascuno con un prefisso facoltativo: garden=http://192.168.1.20:1984. Le loro telecamere si chiamano garden.<nome>; senza prefisso mantengono il nome (s2.<nome> se il server principale ha lo stesso nome)."
 
@@ -1460,11 +1460,11 @@ msgstr "Porta MQTT"
 msgid "Usually 1883."
 msgstr "Di solito 1883."
 
-#: e2 kodi:30116
+#: e2 kodi:30116 web
 msgid "MQTT user"
 msgstr "Utente MQTT"
 
-#: e2 kodi:30117
+#: e2 kodi:30117 web
 msgid "MQTT password"
 msgstr "Password MQTT"
 
@@ -2643,3 +2643,23 @@ msgstr "Per parlare la pagina deve essere aperta via HTTPS"
 #: web
 msgid "Talking did not start"
 msgstr "La conversazione non è partita"
+
+#: web
+msgid "Connection"
+msgstr "Connessione"
+
+#: web
+msgid "MQTT broker over WebSocket"
+msgstr "Broker MQTT tramite WebSocket"
+
+#: web
+msgid "WebSocket address of the MQTT broker"
+msgstr "Indirizzo WebSocket del broker MQTT"
+
+#: web
+msgid "Connecting to the MQTT broker..."
+msgstr "Connessione al broker MQTT..."
+
+#: web
+msgid "Connected to the MQTT broker"
+msgstr "Collegato al broker MQTT"

@@ -1,0 +1,10 @@
+{
+  "name": {
+    "message": "CamAlert",
+    "description": "name of the extension (never translated)"
+  },
+  "description": {
+    "message": "Lecteur CamAlert pour navigateurs de bureau : les images des caméras de Home Assistant sur votre écran quand on sonne.",
+    "description": "short description in the store and the extensions page (132 characters at most)"
+  }
+}

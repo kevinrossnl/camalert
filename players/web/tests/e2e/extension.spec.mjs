@@ -77,3 +77,37 @@ test("options page saves the player settings", async () => {
     .toMatchObject({ name: "Desk 2", settings: { size: "large" } });
   await page.close();
 });
+
+test("MQTT over WebSocket instead of Home Assistant: commands, state, discovery, pictures from go2rtc (#131)", async () => {
+  const broker = fake.url.replace("http", "ws") + "/mqtt";
+  await sw.evaluate(([url, server]) => chrome.storage.local.set({
+    player: { id: "webext00000002", name: "Desk", settings: { server, camera: "front_door" } },
+    ha: { mode: "mqtt", mqtt: { url, user: "cam", password: "pw" } },
+  }), [broker, fake.url]);
+  await fake.mqttConnected();
+  expect(fake.mqtt.connects.at(-1).includes("camalert/webext00000002/availability")).toBe(true);
+  await expect.poll(() => fake.mqtt.published.map((m) => m.topic))
+    .toContain("homeassistant/button/camalert_webext00000002/show_garden/config");
+  expect(fake.mqtt.published).toContainEqual({ topic: "camalert/webext00000002/availability", payload: "online",
+                                               retain: true });
+
+  fake.go2rtcRequests.length = 0;
+  const popup = ctx.waitForEvent("page");
+  fake.mqttPublish("camalert/webext00000002/show", '{"cam": "garden", "priority": "high"}');
+  const page = await popup;
+  const win = page.locator("camalert-layer .win");
+  await expect(win.locator(".bar")).toHaveText("Doorbell · Garden");
+  await expect(win.locator("img")).toHaveAttribute("src", /^blob:/);
+  expect(fake.go2rtcRequests).toContain("GET direct api/frame.jpeg?src=garden&cache=10s");
+  await expect.poll(() => fake.mqtt.published.filter((m) => m.topic === "camalert/webext00000002/state").map((m) => m.payload))
+    .toContain("garden");
+
+  const closed = page.waitForEvent("close");
+  fake.mqttPublish("camalert/webext00000002/hide", "");
+  await closed;
+  fake.mqttPublish("camalert/webext00000002/dnd/set", "ON");
+  await expect.poll(() => fake.mqtt.published.some((m) => m.topic === "camalert/webext00000002/dnd" && m.payload === "ON"))
+    .toBe(true);
+  // back to Home Assistant for the other tests
+  await sw.evaluate(([url, token]) => chrome.storage.local.set({ ha: { url, token } }), [fake.url, TOKEN]);
+});

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<!-- CamAlert extension (#127): options. The token stays in chrome.storage.local (never synced). -->
+<!-- CamAlert extension (#127, #131): options. The token and the MQTT password stay in chrome.storage.local (never
+     synced). -->
 <html><head><meta charset="utf-8"><title>CamAlert</title>
 <style>
   body { font-family: sans-serif; max-width: 34em; margin: 1.5em auto; padding: 0 1em; color: #222; }
@@ -13,11 +14,23 @@
 <body>
 <h1>CamAlert</h1>
 <form id="f" autocomplete="off">
-  <label for="url" data-t="Home Assistant address"></label><input id="url" placeholder="http://192.168.1.20:8123" required>
+  <label for="mode" data-t="Connection"></label>
+  <select id="mode"><option value="ha" data-t="Home Assistant"></option>
+    <option value="mqtt" data-t="MQTT broker over WebSocket"></option></select>
+  <div id="ha-box">
+  <label for="url" data-t="Home Assistant address"></label><input id="url" placeholder="http://192.168.1.20:8123">
   <label for="token" data-t="Access token"></label><input id="token" type="password" autocomplete="off">
   <p class="small" data-t="Create a long-lived access token in your Home Assistant profile, preferably for a separate user that is not an administrator."></p>
+  </div>
+  <div id="mqtt-box" hidden>
+  <label for="mqtt_url" data-t="WebSocket address of the MQTT broker"></label><input id="mqtt_url" placeholder="ws://192.168.1.20:1884/mqtt">
+  <label for="mqtt_user" data-t="MQTT user"></label><input id="mqtt_user" autocomplete="off">
+  <label for="mqtt_password" data-t="MQTT password"></label><input id="mqtt_password" type="password" autocomplete="off">
+  </div>
   <label for="name" data-t="Name"></label><input id="name" maxlength="64">
   <label for="server" data-t="go2rtc address"></label><input id="server" placeholder="http://192.168.1.10:1984">
+  <label for="more_servers" data-t="More go2rtc servers"></label><input id="more_servers" placeholder="garden=http://192.168.1.20:1984">
+  <p class="small" data-t="Other go2rtc servers, separated by commas, each with an optional prefix: garden=http://192.168.1.20:1984. Their cameras are called garden.&lt;name&gt;; without a prefix they keep their names (s2.&lt;name&gt; if the main server has the same name)."></p>
   <label for="camera" data-t="Default camera"></label><input id="camera">
   <label for="duration" data-t="Duration (seconds)"></label><input id="duration" type="number" min="5" max="300" step="5">
   <label for="position" data-t="Window position"></label><select id="position"></select>

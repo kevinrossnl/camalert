@@ -51,6 +51,12 @@ actions and blueprint inputs stay backwards compatible.
 - **Browser extension** (#127): the same player for Chrome and Edge on a desktop PC, without an open tab: an alert
   opens a small window, a mosaic fills the screen, with the chime. Every release has `camalert-browser-X.Y.Z.zip`
   (Load unpacked).
+- **Browser players** (#131): a Firefox build of the extension (`camalert-browser-firefox-X.Y.Z.zip`), the Chrome
+  extension ready for the Chrome Web Store (16/48/128 px icons, listing texts in `docs/dev/webstore/`), *More go2rtc
+  servers* in the web player and the extension (cameras as `<prefix>.<name>`, like the other players; Home Assistant
+  forwards to the n-th server of the player), and MQTT over WebSocket as an alternative to the Home Assistant
+  connection in the extension (the same topics and Home Assistant discovery as the other players; pictures straight
+  from go2rtc).
 - **All players:** privacy masks and guest mode (#11). *Privacy masks* puts black boxes over parts of a camera
   picture (for example a neighbour's window) on every CamAlert screen: photo window, multi-camera window,
   notification, mosaic, tour, the still picture of live view, live video, and Kodi's video in the window. Boxes are

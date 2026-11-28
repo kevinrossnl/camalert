@@ -134,7 +134,7 @@ export async function handle(player, action, params = {}) {
         return answer(200, Object.assign(ctl.status(), {
           result: true, version: DATA.version, id, name, platform: "browser", api_version: DATA.apiVersion,
           capabilities: DATA.capabilities, min_ha_version: DATA.minHaVersion, configured: player.configured(),
-          position: s.position, size: s.size, dnd: !!s.dnd, mqtt: false,
+          position: s.position, size: s.size, dnd: !!s.dnd, mqtt: !!(player.link && player.link.direct),
         }));
       }
       case "show":

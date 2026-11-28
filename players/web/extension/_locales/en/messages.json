@@ -1,0 +1,10 @@
+{
+  "name": {
+    "message": "CamAlert",
+    "description": "name of the extension (never translated)"
+  },
+  "description": {
+    "message": "CamAlert player for desktop browsers: camera pictures from Home Assistant on your screen when someone rings.",
+    "description": "short description in the store and the extensions page (132 characters at most)"
+  }
+}

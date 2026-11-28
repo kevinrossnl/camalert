@@ -6,7 +6,8 @@
 import { handle } from "./api.js";
 import { Controller } from "./controller.js";
 import { DATA } from "./generated.js";
-import { overviewCameras, streamInfo, titleFor, parseTitles } from "./pictures.js";
+import { overviewCameras, parseReady, streamInfo, titleFor, parseTitles } from "./pictures.js";
+import { combine, resolve, serverList } from "./servers.js";
 
 const LOG_MAX = 500;
 
@@ -14,7 +15,7 @@ export class Player {
   /**
    * @param {object} o  store (Store), link (HaSocket | FrontendLink), haUrl (http(s)://host:port of Home Assistant),
    *                    token: async () => access token (for the go2rtc view), fetch, view (set later with setView),
-   *                    clock
+   *                    clock, direct (true: pictures straight from go2rtc, without Home Assistant: MQTT, #131)
    */
   constructor(o) {
     this.o = Object.assign({ fetch: (...a) => globalThis.fetch(...a) }, o);
@@ -32,7 +33,7 @@ export class Player {
     }, o.clock);
     this.store.onChange((keys) => {
       // new hello for Home Assistant: after the answer to the request that changed it has gone out
-      if (keys.includes("server") || keys.includes("name")) setTimeout(() => this.link.restart(), 500);
+      if (["server", "more_servers", "name"].some((k) => keys.includes(k))) setTimeout(() => this.link.restart(), 500);
       if (this.view && this.view.settingsChanged) this.view.settingsChanged(keys);
     });
   }
@@ -52,8 +53,13 @@ export class Player {
   }
 
   hello() {
-    return { browser_id: this.store.id, name: this.store.name || "", version: DATA.version,
-             server: this.store.settings().server || "" };
+    const out = { browser_id: this.store.id, name: this.store.name || "", version: DATA.version,
+                  server: this.store.settings().server || "" };
+    // #131: the other go2rtc servers in the order of their ids (s2, s3, ...); Home Assistant's view forwards
+    // /api/camalert/go2rtc/<id>/s<n>/... to the n-th. Only sent when there are any (older integrations refuse it).
+    const more = this.servers().slice(1).map((x) => x.url);
+    if (more.length) out.more_servers = more.join(",");
+    return out;
   }
 
   request(action, params) {
@@ -91,24 +97,73 @@ export class Player {
     return this.lines.slice(-n);
   }
 
-  // --- go2rtc through Home Assistant -----------------------------------------------------------------------------
-  /** Base URL of Home Assistant's go2rtc view for this player. */
+  // --- go2rtc through Home Assistant (or straight, with MQTT) ---------------------------------------------------
+  /** The go2rtc servers (#15, #131): [{id, url, prefix}], the main one first. */
+  servers() {
+    const s = this.store.settings();
+    return serverList(s.server, s.more_servers);
+  }
+
+  /** Base URL of the main go2rtc server: Home Assistant's go2rtc view for this player, or go2rtc itself. */
   base() {
-    return `${this.o.haUrl.replace(/\/$/, "")}/api/camalert/go2rtc/${this.store.id}`;
+    return this._base(this.servers()[0] || null);
+  }
+
+  _base(srv) {
+    if (this.o.direct) return srv ? srv.url : "";
+    const root = `${this.o.haUrl.replace(/\/$/, "")}/api/camalert/go2rtc/${this.store.id}`;
+    return !srv || srv.id === "s1" ? root : `${root}/${srv.id}`;
+  }
+
+  /** {base, stream(name)} of a camera: the base URL of its go2rtc server and its stream name there. */
+  src(cam) {
+    const servers = this.servers();
+    const mapping = this._info ? this._info.mapping : null;
+    const [srv] = resolve(cam, servers, mapping);
+    return { base: this._base(srv), stream: (n) => resolve(n, servers, mapping)[1] };
   }
 
   async authFetch(url, opts = {}) {
-    const token = await this.o.token();
+    const token = this.o.direct ? null : await this.o.token();
     const headers = Object.assign({}, opts.headers || {}, token ? { Authorization: `Bearer ${token}` } : {});
     return this.o.fetch(url, Object.assign({}, opts, { headers }));
   }
 
+  async _streams(srv) {
+    const r = await this.authFetch(`${this._base(srv)}/api/streams`);
+    if (!r.ok) throw new Error(`go2rtc: HTTP ${r.status}`);
+    return r.json();
+  }
+
   async streamInfo() {
     if (!this.configured()) return { names: [], composites: new Set(), talks: {} };
-    const r = await this.authFetch(`${this.base()}/api/streams`);
-    if (!r.ok) throw new Error(`go2rtc: HTTP ${r.status}`);
-    const info = streamInfo(await r.json(), this.store.settings().ready_cameras);
-    this._info = { at: Date.now(), info };
+    const ready = this.store.settings().ready_cameras;
+    const servers = this.servers();
+    if (servers.length <= 1) {
+      const info = streamInfo(await this._streams(servers[0]), ready);
+      this._info = { at: Date.now(), info, mapping: null };
+      return info;
+    }
+    // several servers (#131): every server at once; one that does not answer is left out, all down is an error
+    const got = await Promise.allSettled(servers.map((srv) => this._streams(srv)));
+    const per = [];
+    got.forEach((g, i) => {
+      if (g.status === "fulfilled") per.push([servers[i], streamInfo(g.value, "")]);
+      else this.log(`go2rtc ${servers[i].url}: ${g.reason && g.reason.message}`, "error");
+    });
+    if (!per.length) throw new Error("go2rtc: no server reachable");
+    const all = combine(per.map(([srv, x]) => [srv, x.names, x.composites]));
+    const helpers = new Set(Object.entries(parseReady(ready)).filter(([c, st]) => st !== c).map(([, st]) => st));
+    const names = all.names.filter((n) => !helpers.has(n));
+    const talks = {};
+    for (const [srv, x] of per) {
+      for (const [stream, talk] of Object.entries(x.talks)) {
+        const name = Object.keys(all.mapping).find((k) => all.mapping[k][0] === srv.url && all.mapping[k][1] === stream);
+        if (name) talks[name] = talk;
+      }
+    }
+    const info = { names, composites: new Set([...all.composites].filter((n) => names.includes(n))), talks };
+    this._info = { at: Date.now(), info, mapping: all.mapping };
     return info;
   }
 

@@ -3,8 +3,9 @@
 //
 // The extension's alert window (#127): asks the service worker what to show and draws it with the shared DomView.
 import { DomView } from "./core/ui.js";
+import { ext } from "./ext.js";
 
-const ask = (msg) => chrome.runtime.sendMessage(Object.assign({ target: "background" }, msg));
+const ask = (msg) => ext.runtime.sendMessage(Object.assign({ target: "background" }, msg));
 
 async function main() {
   const r = await ask({ type: "screen" });
@@ -15,13 +16,18 @@ async function main() {
     configured: () => !!r.settings.server,
     title: (c) => r.titles[c] || c,
     base: () => r.base,
+    src: (c) => { // the go2rtc server of a camera (#131)
+      const at = (r.sources || {})[c] || { base: r.base, streams: {} };
+      return { base: at.base, stream: (n) => at.streams[n] || n };
+    },
     log: () => {},
     authFetch: (url, opts = {}) => fetch(url, Object.assign({}, opts, {
-      headers: Object.assign({}, opts.headers || {}, { Authorization: `Bearer ${token}` }) })),
+      headers: Object.assign({}, opts.headers || {}, token ? { Authorization: `Bearer ${token}` } : {}) })),
+    talkStream: async () => null,
     overview: async () => r.spec.cams || [],
     controller: { hide: () => ask({ type: "hide" }) },
   };
-  const link = { sign: async (path) => {
+  const link = { direct: !!r.direct, sign: async (path) => {
     const s = await ask({ type: "sign", path });
     if (!s || s.error) throw new Error((s && s.error) || "sign failed");
     return s.path;

@@ -68,6 +68,18 @@ test("warm feed, notification, settings and setup from Home Assistant", async ({
   expect((await fake.request("setup", { server: "http://198.51.100.7:1984" })).code).toBe(409);
 });
 
+test("talk button only for a camera with a talk-back stream (#98)", async ({ page }) => {
+  await open(page);
+  await fake.request("show", { cam: "front_door", sec: 30 });
+  await expect(page.locator("camalert-layer .win .talk")).toHaveText("Talk");
+  await fake.request("show", { cam: "garden", sec: 30 });
+  await expect(page.locator("camalert-layer .win")).toHaveAttribute("data-screen", "photo");
+  await page.waitForTimeout(500);
+  await expect(page.locator("camalert-layer .win .talk")).toHaveCount(0);
+  expect((await fake.request("cameras")).body.cameras.map((c) => c.name)).not.toContain("front_door_talk");
+  await fake.request("hide");
+});
+
 test("settings panel and language", async ({ page }) => {
   await open(page);
   await page.click("#gear");

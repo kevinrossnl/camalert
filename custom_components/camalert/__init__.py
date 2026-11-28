@@ -239,6 +239,9 @@ async def _register_webhook(hass: HomeAssistant, entry, api) -> None:
                                           "receiver": entry.title, "camera": camera, "button": button,
                                           "verified": verified})
         async_dispatcher_send(hass, SIGNAL_BUTTON % entry.entry_id, button, camera)
+        from .reply import async_play_reply, reply_text
+        if reply_text(entry.options, button):  # #98: quick reply on the doorbell's speaker
+            hass.async_create_task(async_play_reply(hass, entry, button, camera, verified))
         return None
 
     wid = _webhook_id(entry)

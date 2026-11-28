@@ -150,7 +150,13 @@
           "doorbell": "Sonnette",
           "doorbell_camera": "Caméra de la sonnette",
           "active_from": "Actif à partir de",
-          "active_until": "Actif jusqu'à"
+          "active_until": "Actif jusqu'à",
+          "reply_speaker": "Haut-parleur des réponses",
+          "reply_tts": "Voix des réponses (TTS)",
+          "reply_red": "Réponse sur ROUGE",
+          "reply_green": "Réponse sur VERT",
+          "reply_yellow": "Réponse sur JAUNE",
+          "reply_blue": "Réponse sur BLEU"
         },
         "data_description": {
           "parent_device": "Automatique : l'appareil de l'intégration Enigma2, Kodi ou Android TV ayant la même adresse que le lecteur. Ou choisissez vous-même un appareil, ou aucun.",
@@ -159,7 +165,13 @@
           "doorbell": "Facultatif : quand l'un d'eux sonne (un événement de sonnette, ou un capteur binaire qui s'active), le lecteur affiche la caméra avec la priorité haute. Aucune automatisation nécessaire ; les blueprints restent pour vos propres règles.",
           "doorbell_camera": "Le nom go2rtc de la caméra à afficher pour la sonnette, p. ex. front_door. Vide : la caméra par défaut du lecteur.",
           "active_from": "Application de notification seulement : les demandes de priorité normale ne s'affichent qu'entre ces heures. Vide : toute la journée. Haute et alarme passent toujours.",
-          "active_until": "Fin des heures actives ; peut être après minuit, p. ex. 07:00 à 23:00 ou 22:00 à 06:00."
+          "active_until": "Fin des heures actives ; peut être après minuit, p. ex. 07:00 à 23:00 ou 22:00 à 06:00.",
+          "reply_speaker": "Facultatif : réponses rapides depuis la TV. Si une touche de couleur ci-dessous a un texte, appuyer dessus pendant qu'une caméra est à l'écran prononce ce texte sur ce lecteur multimédia, p. ex. le haut-parleur de la caméra de la sonnette (UniFi Protect : media_player.<camera>_speaker). Vide : pas de réponses.",
+          "reply_tts": "Facultatif : le moteur TTS des réponses. Vide : le premier moteur TTS de Home Assistant.",
+          "reply_red": "Texte pour ROUGE, p. ex. Veuillez laisser le colis devant la porte. Vide : ROUGE envoie seulement son événement habituel.",
+          "reply_green": "Texte pour VERT. Vide : VERT envoie seulement son événement habituel (laissez vide si VERT ouvre un portail).",
+          "reply_yellow": "Texte pour JAUNE, p. ex. J'arrive.",
+          "reply_blue": "Texte pour BLEU. La touche de contrôle de la caméra d'une caméra PTZ n'envoie jamais de réponse."
         }
       }
     },

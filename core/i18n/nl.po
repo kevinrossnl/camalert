@@ -2180,6 +2180,30 @@ msgstr "Actief vanaf"
 msgid "Active until"
 msgstr "Actief tot"
 
+#: ha:options.step.init.data.reply_speaker
+msgid "Reply speaker"
+msgstr "Luidspreker voor antwoorden"
+
+#: ha:options.step.init.data.reply_tts
+msgid "Reply voice (TTS)"
+msgstr "Stem voor antwoorden (TTS)"
+
+#: ha:options.step.init.data.reply_red
+msgid "Reply on RED"
+msgstr "Antwoord op ROOD"
+
+#: ha:options.step.init.data.reply_green
+msgid "Reply on GREEN"
+msgstr "Antwoord op GROEN"
+
+#: ha:options.step.init.data.reply_yellow
+msgid "Reply on YELLOW"
+msgstr "Antwoord op GEEL"
+
+#: ha:options.step.init.data.reply_blue
+msgid "Reply on BLUE"
+msgstr "Antwoord op BLAUW"
+
 #: ha:options.step.init.data_description.parent_device
 msgid "Automatic: the device of the Enigma2, Kodi or Android TV integration with the same address as the player. Or choose a device yourself, or none."
 msgstr "Automatisch: het apparaat van de Enigma2-, Kodi- of Android TV-integratie met hetzelfde adres als de speler. Of kies zelf een apparaat, of geen."
@@ -2207,6 +2231,30 @@ msgstr "Alleen voor een meldingsapp: verzoeken met prioriteit normaal verschijne
 #: ha:options.step.init.data_description.active_until
 msgid "End of the active hours; may be after midnight, e.g. 07:00 to 23:00 or 22:00 to 06:00."
 msgstr "Einde van de actieve uren; mag na middernacht vallen, bijv. 07:00 tot 23:00 of 22:00 tot 06:00."
+
+#: ha:options.step.init.data_description.reply_speaker
+msgid "Optional: quick replies from the TV. When a colour key below has a text, pressing it while a camera is on screen speaks the text on this media player, e.g. the doorbell camera's speaker (UniFi Protect: media_player.<camera>_speaker). Empty: no replies."
+msgstr "Optioneel: snelle antwoorden vanaf de tv. Heeft een kleurtoets hieronder een tekst, dan spreekt die toets de tekst uit op deze mediaspeler terwijl er een camera in beeld is, bijvoorbeeld de luidspreker van de deurbelcamera (UniFi Protect: media_player.<camera>_speaker). Leeg: geen antwoorden."
+
+#: ha:options.step.init.data_description.reply_tts
+msgid "Optional: the TTS engine for the replies. Empty: the first TTS engine of Home Assistant."
+msgstr "Optioneel: de TTS-engine voor de antwoorden. Leeg: de eerste TTS-engine van Home Assistant."
+
+#: ha:options.step.init.data_description.reply_red
+msgid "Text for RED, e.g. Please leave the parcel at the door. Empty: RED only sends its normal event."
+msgstr "Tekst voor ROOD, bijvoorbeeld Leg het pakket maar bij de deur. Leeg: ROOD stuurt alleen zijn gewone gebeurtenis."
+
+#: ha:options.step.init.data_description.reply_green
+msgid "Text for GREEN. Empty: GREEN only sends its normal event (keep it empty when GREEN opens a gate)."
+msgstr "Tekst voor GROEN. Leeg: GROEN stuurt alleen zijn gewone gebeurtenis (laat het leeg als GROEN een poort opent)."
+
+#: ha:options.step.init.data_description.reply_yellow
+msgid "Text for YELLOW, e.g. I'm coming."
+msgstr "Tekst voor GEEL, bijvoorbeeld Ik kom eraan."
+
+#: ha:options.step.init.data_description.reply_blue
+msgid "Text for BLUE. The camera control key of a PTZ camera never sends a reply."
+msgstr "Tekst voor BLAUW. De toets voor camerabediening van een PTZ-camera stuurt nooit een antwoord."
 
 #: ha:entity.button.show.name
 msgid "Show {camera}"
@@ -2535,3 +2583,19 @@ msgstr "Toegang tot deze Home Assistant toestaan"
 #: web
 msgid "Open the web player"
 msgstr "Webspeler openen"
+
+#: web
+msgid "Talk"
+msgstr "Praten"
+
+#: web
+msgid "Stop talking"
+msgstr "Stoppen met praten"
+
+#: web
+msgid "Talking needs the page over HTTPS"
+msgstr "Praten werkt alleen als de pagina via HTTPS is geopend"
+
+#: web
+msgid "Talking did not start"
+msgstr "Praten is niet gestart"

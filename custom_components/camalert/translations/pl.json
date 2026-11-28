@@ -150,7 +150,13 @@
           "doorbell": "Dzwonek",
           "doorbell_camera": "Kamera dzwonka",
           "active_from": "Aktywne od",
-          "active_until": "Aktywne do"
+          "active_until": "Aktywne do",
+          "reply_speaker": "Głośnik odpowiedzi",
+          "reply_tts": "Głos odpowiedzi (TTS)",
+          "reply_red": "Odpowiedź na CZERWONY",
+          "reply_green": "Odpowiedź na ZIELONY",
+          "reply_yellow": "Odpowiedź na ŻÓŁTY",
+          "reply_blue": "Odpowiedź na NIEBIESKI"
         },
         "data_description": {
           "parent_device": "Automatycznie: urządzenie integracji Enigma2, Kodi lub Android TV o tym samym adresie co odtwarzacz. Można też wybrać urządzenie samodzielnie albo żadne.",
@@ -159,7 +165,13 @@
           "doorbell": "Opcjonalnie: gdy jeden z nich zadzwoni (zdarzenie dzwonka lub czujnik binarny, który się włączy), odtwarzacz pokaże kamerę z priorytetem wysokim. Automatyzacja nie jest potrzebna; blueprinty pozostają do własnych reguł.",
           "doorbell_camera": "Nazwa go2rtc kamery pokazywanej przy dzwonku, np. front_door. Puste: domyślna kamera odtwarzacza.",
           "active_from": "Tylko dla aplikacji powiadomień: żądania o priorytecie normalnym pojawiają się tylko w tych godzinach. Puste: cały dzień. Wysoki i alarm zawsze przechodzą.",
-          "active_until": "Koniec aktywnych godzin; może wypadać po północy, np. 07:00–23:00 lub 22:00–06:00."
+          "active_until": "Koniec aktywnych godzin; może wypadać po północy, np. 07:00–23:00 lub 22:00–06:00.",
+          "reply_speaker": "Opcjonalnie: szybkie odpowiedzi z telewizora. Jeśli kolorowy przycisk poniżej ma tekst, jego naciśnięcie, gdy na ekranie jest kamera, odtwarza ten tekst na tym odtwarzaczu multimediów, np. przez głośnik kamery przy drzwiach (UniFi Protect: media_player.<camera>_speaker). Puste: bez odpowiedzi.",
+          "reply_tts": "Opcjonalnie: silnik TTS dla odpowiedzi. Puste: pierwszy silnik TTS w Home Assistant.",
+          "reply_red": "Tekst dla przycisku CZERWONY, np. Proszę zostawić paczkę pod drzwiami. Puste: CZERWONY wysyła tylko swoje zwykłe zdarzenie.",
+          "reply_green": "Tekst dla przycisku ZIELONY. Puste: ZIELONY wysyła tylko swoje zwykłe zdarzenie (zostawić puste, jeśli ZIELONY otwiera bramę).",
+          "reply_yellow": "Tekst dla przycisku ŻÓŁTY, np. Już idę.",
+          "reply_blue": "Tekst dla przycisku NIEBIESKI. Przycisk sterowania kamerą PTZ nigdy nie wysyła odpowiedzi."
         }
       }
     },

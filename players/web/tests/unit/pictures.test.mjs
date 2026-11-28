@@ -13,7 +13,7 @@ test("names and titles", () => {
 });
 
 test("helper and composite streams (#117, #125)", () => {
-  assert.deepEqual([...derivedStreams(STREAMS)], ["front_door_jpeg"]);
+  assert.deepEqual([...derivedStreams(STREAMS)], ["front_door_jpeg", "front_door_talk"]);
   assert.deepEqual([...compositeStreams(STREAMS)], ["all"]);
   const running = { cam: { producers: [{ url: "rtsp://192.168.1.10/x" }] },
                     cam_jpeg: { producers: [{ url: "rtsp://127.0.0.1:8554/cam?video&source=ffmpeg:cam%23video%3Dmjpeg" }] } };
@@ -32,4 +32,22 @@ test("picture order: warm feed, else cached frame then new frames", () => {
   const s = pictureSources(base, "garden", "front_door=front_door_jpeg");
   assert.equal(s.first, `${base}/api/frame.jpeg?src=garden&cache=10s`);
   assert.equal(s.next, `${base}/api/frame.jpeg?src=garden`);
+});
+
+test("talk-back streams (#98): <camera>_talk with only a backchannel, never a camera", async () => {
+  const { talkStreams, isBackchannel } = await import("../../core/pictures.js");
+  const talk = "exec:ffmpeg -f alaw -ar 8000 -ac 1 -i - -c:a aac -f adts udp://192.168.1.14:7004#backchannel=1#audio=alaw/8000";
+  const data = { front_door: { producers: [{ url: "rtsp://192.168.1.10/x" }] },
+                 front_door_talk: { producers: [{ url: talk }] },
+                 garden_talk: { producers: [{ url: talk }] },
+                 side: { producers: [{ url: "rtsp://192.168.1.12/y" }] },
+                 side_talk: { producers: [{ url: "rtsp://192.168.1.12/z" }] } };
+  assert.ok(isBackchannel(talk));
+  assert.ok(!isBackchannel("rtsp://192.168.1.10/x") && !isBackchannel(undefined));
+  assert.deepEqual(talkStreams(data), { front_door: "front_door_talk" });
+  assert.ok(derivedStreams(data).has("front_door_talk") && derivedStreams(data).has("garden_talk"));
+  const info = streamInfo(data, "");
+  assert.deepEqual(info.names, ["front_door", "side", "side_talk"]);
+  assert.deepEqual(info.talks, { front_door: "front_door_talk" });
+  assert.deepEqual(talkStreams(null), {});
 });

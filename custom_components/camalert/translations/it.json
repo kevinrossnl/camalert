@@ -150,7 +150,13 @@
           "doorbell": "Campanello",
           "doorbell_camera": "Telecamera del campanello",
           "active_from": "Attivo dalle",
-          "active_until": "Attivo fino alle"
+          "active_until": "Attivo fino alle",
+          "reply_speaker": "Altoparlante per le risposte",
+          "reply_tts": "Voce delle risposte (TTS)",
+          "reply_red": "Risposta su ROSSO",
+          "reply_green": "Risposta su VERDE",
+          "reply_yellow": "Risposta su GIALLO",
+          "reply_blue": "Risposta su BLU"
         },
         "data_description": {
           "parent_device": "Automatico: il dispositivo dell'integrazione Enigma2, Kodi o Android TV con lo stesso indirizzo del lettore. Oppure scegliere un dispositivo, o nessuno.",
@@ -159,7 +165,13 @@
           "doorbell": "Facoltativo: quando uno di questi suona (un evento del campanello o un sensore binario che si attiva), il lettore mostra la telecamera con priorità alta. Nessuna automazione necessaria; i blueprint restano per le proprie regole.",
           "doorbell_camera": "Il nome go2rtc della telecamera da mostrare per il campanello, ad es. front_door. Vuoto: la telecamera predefinita del lettore.",
           "active_from": "Solo per un'app di notifica: le richieste con priorità normale appaiono solo tra questi orari. Vuoto: tutto il giorno. Alta e allarme passano sempre.",
-          "active_until": "Fine dell'orario attivo; può essere dopo mezzanotte, ad es. dalle 07:00 alle 23:00 o dalle 22:00 alle 06:00."
+          "active_until": "Fine dell'orario attivo; può essere dopo mezzanotte, ad es. dalle 07:00 alle 23:00 o dalle 22:00 alle 06:00.",
+          "reply_speaker": "Facoltativo: risposte rapide dalla TV. Se un tasto colorato qui sotto ha un testo, premendolo mentre una telecamera è sullo schermo il testo viene pronunciato su questo lettore multimediale, ad es. l'altoparlante della telecamera del campanello (UniFi Protect: media_player.<camera>_speaker). Vuoto: nessuna risposta.",
+          "reply_tts": "Facoltativo: il motore TTS per le risposte. Vuoto: il primo motore TTS di Home Assistant.",
+          "reply_red": "Testo per ROSSO, ad es. Lasciare il pacco davanti alla porta, grazie. Vuoto: ROSSO invia solo il suo evento normale.",
+          "reply_green": "Testo per VERDE. Vuoto: VERDE invia solo il suo evento normale (lasciare vuoto se VERDE apre un cancello).",
+          "reply_yellow": "Testo per GIALLO, ad es. Arrivo subito.",
+          "reply_blue": "Testo per BLU. Il tasto del controllo telecamera di una telecamera PTZ non invia mai una risposta."
         }
       }
     },

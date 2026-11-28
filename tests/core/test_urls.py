@@ -72,6 +72,26 @@ class TestUrls(unittest.TestCase):
         self.assertEqual(urls.overview_cameras(["a", "b"], None), ["a", "b"])
         self.assertEqual(urls.stream_info_from_json("not json"), ([], set()))
 
+    def test_talk_streams(self):
+        """#98: <camera>_talk with only a backchannel source is a talk-back stream, never a camera."""
+        talk = "exec:ffmpeg -f alaw -ar 8000 -ac 1 -i - -c:a aac -ar 22050 -ac 1 -f adts udp://192.168.1.14:7004#backchannel=1#audio=alaw/8000"
+        streams = {
+            "front_door": {"producers": [{"url": "rtsp://192.168.1.10:7447/abc"}]},
+            "front_door_talk": {"producers": [{"url": talk}]},
+            "garden_talk": {"producers": [{"url": talk}]},  # no camera "garden": not a talk stream
+            "side_talk": {"producers": [{"url": "rtsp://192.168.1.12/x"}]},  # a camera that happens to end in _talk
+            "side": {"producers": [{"url": "rtsp://192.168.1.12/y"}]},
+        }
+        self.assertEqual(urls.talk_streams(streams), {"front_door": "front_door_talk"})
+        self.assertIn("front_door_talk", urls.derived_streams(streams))
+        self.assertIn("garden_talk", urls.derived_streams(streams))
+        self.assertNotIn("side_talk", urls.derived_streams(streams))
+        import json
+        self.assertEqual(urls.streams_from_json(json.dumps(streams)), ["front_door", "side", "side_talk"])
+        self.assertTrue(urls.is_backchannel(talk))
+        self.assertFalse(urls.is_backchannel("ffmpeg:front_door#audio=aac") or urls.is_backchannel(None))
+        self.assertEqual(urls.talk_streams(None), {})
+
     def test_derived_stream_while_running(self):
         """#117 seen on a real go2rtc 1.9.15: while a derived stream runs, its producer url is go2rtc's own RTSP
         server with the original source in the query, not ``ffmpeg:<stream>#...``."""

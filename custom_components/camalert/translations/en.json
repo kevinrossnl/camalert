@@ -150,7 +150,13 @@
           "doorbell": "Doorbell",
           "doorbell_camera": "Doorbell camera",
           "active_from": "Active from",
-          "active_until": "Active until"
+          "active_until": "Active until",
+          "reply_speaker": "Reply speaker",
+          "reply_tts": "Reply voice (TTS)",
+          "reply_red": "Reply on RED",
+          "reply_green": "Reply on GREEN",
+          "reply_yellow": "Reply on YELLOW",
+          "reply_blue": "Reply on BLUE"
         },
         "data_description": {
           "parent_device": "Automatic: the device of the Enigma2, Kodi or Android TV integration with the same address as the player. Or choose a device yourself, or none.",
@@ -159,7 +165,13 @@
           "doorbell": "Optional: when one of these rings (a doorbell event, or a binary sensor that turns on), the player shows the camera with priority high. No automation needed; blueprints remain for your own rules.",
           "doorbell_camera": "The go2rtc name of the camera to show for the doorbell, e.g. front_door. Empty: the player's default camera.",
           "active_from": "Notification app only: requests with priority normal are shown only between these times. Empty: all day. High and alarm always come through.",
-          "active_until": "End of the active hours; may be after midnight, e.g. 07:00 to 23:00 or 22:00 to 06:00."
+          "active_until": "End of the active hours; may be after midnight, e.g. 07:00 to 23:00 or 22:00 to 06:00.",
+          "reply_speaker": "Optional: quick replies from the TV. When a colour key below has a text, pressing it while a camera is on screen speaks the text on this media player, e.g. the doorbell camera's speaker (UniFi Protect: media_player.<camera>_speaker). Empty: no replies.",
+          "reply_tts": "Optional: the TTS engine for the replies. Empty: the first TTS engine of Home Assistant.",
+          "reply_red": "Text for RED, e.g. Please leave the parcel at the door. Empty: RED only sends its normal event.",
+          "reply_green": "Text for GREEN. Empty: GREEN only sends its normal event (keep it empty when GREEN opens a gate).",
+          "reply_yellow": "Text for YELLOW, e.g. I'm coming.",
+          "reply_blue": "Text for BLUE. The camera control key of a PTZ camera never sends a reply."
         }
       }
     },

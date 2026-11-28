@@ -66,13 +66,22 @@ function producers(info) {
   return Array.isArray(p) && p.length ? p : null;
 }
 
-/** Helper streams (#117): every source transcodes another stream of the same go2rtc. */
+/** True for a go2rtc producer that only takes audio towards a camera (exec:...#backchannel=1, #98). */
+export function isBackchannel(url) {
+  return typeof url === "string" && url.includes("#backchannel=1");
+}
+
+/** Helper streams (#117): every source transcodes another stream of the same go2rtc; and talk-back streams (#98). */
 export function derivedStreams(data) {
   const out = new Set();
   if (!data || typeof data !== "object") return out;
   for (const [name, info] of Object.entries(data)) {
     const p = producers(info);
     if (!p) continue;
+    if (p.every((x) => isBackchannel(x && x.url))) {
+      out.add(name);
+      continue;
+    }
     const bases = p.map((x) => sourceStream(x && x.url));
     if (bases.every((b) => b !== null && b !== name && b in data)) out.add(name);
   }
@@ -110,15 +119,28 @@ export function compositeStreams(data) {
   return out;
 }
 
-/** {names, composites} from a go2rtc /api/streams answer: camera names sorted, helpers (#117 and Keep cameras
+/** {camera: talk stream} (#98, urls.talk_streams): "<camera>_talk" whose every source is a backchannel. */
+export function talkStreams(data) {
+  const out = {};
+  if (!data || typeof data !== "object" || Array.isArray(data)) return out;
+  for (const [name, info] of Object.entries(data)) {
+    if (!name.endsWith("_talk")) continue;
+    const base = name.slice(0, -5);
+    const p = producers(info);
+    if (base && base in data && p && p.every((x) => isBackchannel(x && x.url))) out[base] = name;
+  }
+  return out;
+}
+
+/** {names, composites, talks} from a go2rtc /api/streams answer: camera names sorted, helpers (#117 and Keep cameras
  *  ready helpers) left out. */
 export function streamInfo(data, readyText = "") {
-  if (!data || typeof data !== "object" || Array.isArray(data)) return { names: [], composites: new Set() };
+  if (!data || typeof data !== "object" || Array.isArray(data)) return { names: [], composites: new Set(), talks: {} };
   const skip = derivedStreams(data);
   for (const [cam, stream] of Object.entries(parseReady(readyText))) if (stream !== cam) skip.add(stream);
   const names = Object.keys(data).filter((k) => NAME.test(k) && !skip.has(k)).sort();
   const composites = new Set([...compositeStreams(data)].filter((n) => names.includes(n)));
-  return { names, composites };
+  return { names, composites, talks: talkStreams(data) };
 }
 
 /** The default list of a mosaic or overview: every camera except composite streams (#125). */

@@ -78,9 +78,39 @@ def derived_streams(data):
         producers = info.get("producers") if isinstance(info, dict) else None
         if not isinstance(producers, list) or not producers:
             continue
-        bases = [_source_stream(p.get("url") if isinstance(p, dict) else None) for p in producers]
+        urls_ = [p.get("url") if isinstance(p, dict) else None for p in producers]
+        if all(is_backchannel(u) for u in urls_):  # #98: a talk-back stream only sends audio to a camera
+            out.add(name)
+            continue
+        bases = [_source_stream(u) for u in urls_]
         if all(b is not None and b != name and b in data for b in bases):
             out.add(name)
+    return out
+
+
+TALK_SUFFIX = "_talk"
+
+
+def is_backchannel(url):
+    """True for a go2rtc producer that only takes audio towards a camera (``exec:...#backchannel=1``, #98)."""
+    return isinstance(url, str) and "#backchannel=1" in url
+
+
+def talk_streams(data):
+    """{camera: talk stream} from a go2rtc /api/streams answer (#98): a stream ``<camera>_talk`` whose every source
+    is a backchannel (``exec:ffmpeg ... -f adts udp://<camera>:<port>#backchannel=1``) lets a browser with a
+    microphone talk to that camera. The talk stream itself is never a camera (derived_streams)."""
+    if not isinstance(data, dict):
+        return {}
+    out = {}
+    for name, info in data.items():
+        if not name.endswith(TALK_SUFFIX):
+            continue
+        base = name[:-len(TALK_SUFFIX)]
+        producers = info.get("producers") if isinstance(info, dict) else None
+        if base and base in data and isinstance(producers, list) and producers and \
+                all(is_backchannel(p.get("url") if isinstance(p, dict) else None) for p in producers):
+            out[base] = name
     return out
 
 

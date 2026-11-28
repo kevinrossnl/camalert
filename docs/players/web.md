@@ -75,3 +75,9 @@ colours and texts are generated from the Python core (`python3 tools/build_web.p
 `python3 tools/i18n/i18n.py build`). Tests: `node --test players/web/tests/unit/*.test.mjs` and, with Playwright,
 `cd players/web && npm ci && npx playwright test` (the web page and the extension in Chromium against a fake
 Home Assistant). CI area: `sh tools/ci.sh web`.
+
+## Talking to the door
+
+When go2rtc has a talk-back stream `<camera>_talk`, the window of that camera has a **Talk** button: the
+browser's microphone goes to the camera's speaker. It needs the page over HTTPS. See
+[Talking back](../integrations/talk-back.md).

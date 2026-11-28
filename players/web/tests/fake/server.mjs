@@ -22,6 +22,7 @@ export const STREAMS = {
   garden: { producers: [{ url: "rtsp://192.168.1.11:554/stream1" }] },
   front_door_jpeg: { producers: [{ url: "ffmpeg:front_door#video=mjpeg" }] },
   all: { producers: [{ url: "exec:ffmpeg -i rtsp://127.0.0.1:8554/front_door -i rtsp://127.0.0.1:8554/garden -filter_complex x" }] },
+  front_door_talk: { producers: [{ url: "exec:ffmpeg -f alaw -ar 8000 -ac 1 -i - -c:a aac -f adts udp://192.168.1.14:7004#backchannel=1#audio=alaw/8000" }] },
 };
 
 function frame(text) {

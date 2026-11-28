@@ -7,7 +7,7 @@ import { DATA } from "../core/generated.js";
 import { Player } from "../core/player.js";
 import { Store, localStorageBackend } from "../core/store.js";
 import { HaSocket } from "../core/transport.js";
-import { DomView, language, translator } from "../core/ui.js";
+import { DomView, clockText, language, translator } from "../core/ui.js";
 import { HaAuth } from "./auth.js";
 
 export const DASHBOARD_KEY = "camalert.dashboard";
@@ -119,7 +119,7 @@ $("sound").addEventListener("click", () => {
 store.onChange(render);
 
 setInterval(() => {
-  $("clock").textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  $("clock").textContent = clockText(new Date(), language(store.settings().language));
 }, 1000);
 render();
 if (new URLSearchParams(location.search).has("settings")) openPanel();

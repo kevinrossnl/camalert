@@ -42,6 +42,7 @@ words used on screen and in these pages are listed in the [glossary](user/glossa
 | [Monitoring](integrations/monitoring.md) | Prometheus metrics, Grafana dashboard, remote syslog |
 | [Loxone, KNX, ioBroker, openHAB, Homey](integrations/smart-home.md) | The doorbell on the TV from other smart-home systems, with examples |
 | [Apple TV](integrations/apple-tv.md) | No CamAlert player, but the doorbell through Apple Home and Home Assistant's HomeKit Bridge |
+| [Talking back](integrations/talk-back.md) | Answer the door: quick replies with a colour key, or talk from a phone, tablet or PC |
 
 ## Developers
 

@@ -95,6 +95,17 @@ class WarmTest {
     }
 
     @Test
+    fun talkStreamIsNeverACamera() {  // #98: <camera>_talk with only a backchannel source
+        fun p(url: String) = mapOf("producers" to listOf(mapOf("url" to url)))
+        val talk = "exec:ffmpeg -f alaw -ar 8000 -ac 1 -i - -c:a aac -f adts udp://192.168.1.14:7004#backchannel=1#audio=alaw/8000"
+        val streams = mapOf("front_door" to p("rtsp://192.168.1.10:7447/abc"), "front_door_talk" to p(talk),
+            "side_talk" to p("rtsp://192.168.1.12/x"))
+        assertEquals(setOf("front_door_talk"), Urls.derivedStreams(streams))
+        assertTrue(Urls.isBackchannel(talk))
+        assertFalse(Urls.isBackchannel(null))
+    }
+
+    @Test
     fun parserInChunksAndWithoutLength() {
         val all = part("one") + part("two", false) + part("three")
         val p = MjpegParser()

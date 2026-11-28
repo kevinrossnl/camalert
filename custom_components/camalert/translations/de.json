@@ -150,7 +150,13 @@
           "doorbell": "Türklingel",
           "doorbell_camera": "Türklingel-Kamera",
           "active_from": "Aktiv ab",
-          "active_until": "Aktiv bis"
+          "active_until": "Aktiv bis",
+          "reply_speaker": "Lautsprecher für Antworten",
+          "reply_tts": "Stimme für Antworten (TTS)",
+          "reply_red": "Antwort auf ROT",
+          "reply_green": "Antwort auf GRÜN",
+          "reply_yellow": "Antwort auf GELB",
+          "reply_blue": "Antwort auf BLAU"
         },
         "data_description": {
           "parent_device": "Automatisch: das Gerät der Enigma2-, Kodi- oder Android-TV-Integration mit derselben Adresse wie das Wiedergabegerät. Oder wähle selbst ein Gerät oder keines.",
@@ -159,7 +165,13 @@
           "doorbell": "Optional: Klingelt eine davon (ein Türklingel-Ereignis oder ein Binärsensor, der einschaltet), zeigt das Wiedergabegerät die Kamera mit Priorität hoch. Keine Automatisierung nötig; Blueprints bleiben für deine eigenen Regeln.",
           "doorbell_camera": "Der go2rtc-Name der Kamera, die bei der Türklingel erscheint, z. B. front_door. Leer: die Standardkamera des Wiedergabegeräts.",
           "active_from": "Nur für eine Benachrichtigungs-App: Anfragen mit Priorität normal erscheinen nur zwischen diesen Zeiten. Leer: den ganzen Tag. Hoch und Alarm kommen immer durch.",
-          "active_until": "Ende der aktiven Zeit; darf nach Mitternacht liegen, z. B. 07:00 bis 23:00 oder 22:00 bis 06:00."
+          "active_until": "Ende der aktiven Zeit; darf nach Mitternacht liegen, z. B. 07:00 bis 23:00 oder 22:00 bis 06:00.",
+          "reply_speaker": "Optional: schnelle Antworten vom Fernseher. Hat eine Farbtaste unten einen Text, spricht die Taste diesen Text auf diesem Wiedergabegerät, während eine Kamera im Bild ist, z. B. über den Lautsprecher der Türklingelkamera (UniFi Protect: media_player.<camera>_speaker). Leer: keine Antworten.",
+          "reply_tts": "Optional: die TTS-Engine für die Antworten. Leer: die erste TTS-Engine von Home Assistant.",
+          "reply_red": "Text für ROT, z. B. Bitte das Paket vor die Tür legen. Leer: ROT sendet nur sein normales Ereignis.",
+          "reply_green": "Text für GRÜN. Leer: GRÜN sendet nur sein normales Ereignis (leer lassen, wenn GRÜN ein Tor öffnet).",
+          "reply_yellow": "Text für GELB, z. B. Ich komme.",
+          "reply_blue": "Text für BLAU. Die Taste für die Kamerasteuerung einer PTZ-Kamera sendet nie eine Antwort."
         }
       }
     },

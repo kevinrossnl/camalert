@@ -19,6 +19,13 @@ export function language(setting, nav = globalThis.navigator) {
   return TEXTS[l] ? l : "en";
 }
 
+/** The clock text "14:08" in the player's language (24 hours except English), not the browser's locale. */
+export function clockText(date, lang) {
+  const opts = { hour: "2-digit", minute: "2-digit" };
+  if (lang !== "en") opts.hourCycle = "h23";
+  return date.toLocaleTimeString(lang || "en", opts);
+}
+
 export function translator(lang) {
   const t = TEXTS[lang] || {};
   return (msgid) => t[msgid] || msgid;
@@ -81,6 +88,9 @@ const CSS = `
 .note { right: 2vw; bottom: 3vh; width: 28vw; min-width: 260px; border-radius: 6px; padding: .5em;
   border: 4px solid transparent; }
 .note img { width: 100%; display: block; margin-top: .4em; }
+.talk { margin-left: auto; padding: .1em .8em; border-radius: 1em; border: 0; font: inherit; font-size: .8em;
+  background: #444; color: #fff; cursor: pointer; }
+.talk.on { background: #c0392b; }
 .notice { left: 50%; bottom: 6vh; transform: translateX(-50%); padding: .6em 1.2em; border-radius: 6px; }
 `;
 
@@ -211,6 +221,62 @@ class Tile {
   }
 }
 
+const TALK_MAX_MS = 60000; // talking stops by itself after a minute
+
+/** Talking to a camera from the browser's microphone (#98): WebRTC to go2rtc's "<camera>_talk" stream, whose
+ *  exec backchannel sends the audio to the camera's speaker. Needs a secure page (HTTPS) for the microphone. */
+export class Talk {
+  constructor(player, stream, deps = {}) {
+    this.player = player;
+    this.stream = stream;
+    this.media = deps.media || (globalThis.navigator && globalThis.navigator.mediaDevices);
+    this.Peer = deps.Peer || globalThis.RTCPeerConnection;
+    this.pc = null;
+    this.mic = null;
+    this.timer = null;
+  }
+
+  static possible(media = globalThis.navigator && globalThis.navigator.mediaDevices, secure = globalThis.isSecureContext) {
+    return Boolean(secure && media && media.getUserMedia);
+  }
+
+  get on() {
+    return this.pc !== null;
+  }
+
+  async start() {
+    if (this.pc) return;
+    this.mic = await this.media.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+    const pc = new this.Peer({ iceServers: [] });
+    this.pc = pc;
+    for (const t of this.mic.getAudioTracks()) pc.addTransceiver(t, { direction: "sendonly" });
+    await pc.setLocalDescription(await pc.createOffer());
+    await new Promise((r) => {
+      if (pc.iceGatheringState === "complete") return r();
+      pc.onicegatheringstatechange = () => pc.iceGatheringState === "complete" && r();
+      setTimeout(r, 1500);
+    });
+    const r = await this.player.authFetch(urls(this.player.base(), this.stream).webrtc, {
+      method: "POST", headers: { "Content-Type": "application/sdp" }, body: pc.localDescription.sdp,
+    });
+    if (!r.ok) {
+      this.stop();
+      throw new Error(`HTTP ${r.status}`);
+    }
+    await pc.setRemoteDescription({ type: "answer", sdp: await r.text() });
+    this.timer = setTimeout(() => this.stop(), TALK_MAX_MS);
+  }
+
+  stop() {
+    if (this.timer) clearTimeout(this.timer);
+    this.timer = null;
+    if (this.mic) for (const t of this.mic.getTracks()) t.stop();
+    this.mic = null;
+    if (this.pc) this.pc.close();
+    this.pc = null;
+  }
+}
+
 export class DomView {
   /**
    * @param {HTMLElement} host   element that gets the shadow root (appended to document.body when not attached)
@@ -245,6 +311,8 @@ export class DomView {
   }
 
   _clear() {
+    if (this.talk) this.talk.stop();
+    this.talk = null;
     for (const t of this.tiles) t.stop();
     this.tiles = [];
     if (this.current) this.current.remove();
@@ -303,6 +371,38 @@ export class DomView {
     this.layer.appendChild(el);
     this.current = el;
     this._tiles(body, cams, mode === "live", cams.length > 1);
+    if (cams.length === 1) this._talkButton(el, bar, cams[0]);
+  }
+
+  /** #98: a "Talk" button in the title bar when go2rtc has a talk-back stream for the camera. */
+  async _talkButton(el, bar, cam) {
+    const stream = await this.player.talkStream(cam);
+    if (!stream || this.current !== el) return;
+    const btn = document.createElement("button");
+    btn.className = "talk";
+    btn.textContent = this.tr("Talk");
+    btn.addEventListener("click", async (e) => {
+      e.stopPropagation(); // a click on the window closes it; this one must not
+      if (!Talk.possible(this.deps.media, this.deps.secure ?? globalThis.isSecureContext)) {
+        this.toast(this.tr("Talking needs the page over HTTPS"));
+        return;
+      }
+      if (this.talk && this.talk.on) {
+        this.talk.stop();
+      } else {
+        this.talk = new Talk(this.player, stream, { media: this.deps.media, Peer: this.deps.Peer });
+        try {
+          await this.talk.start();
+        } catch (err) {
+          this.player.log(`talk ${cam}: ${err.message}`);
+          this.toast(this.tr("Talking did not start"));
+        }
+      }
+      const on = Boolean(this.talk && this.talk.on);
+      btn.classList.toggle("on", on);
+      btn.textContent = this.tr(on ? "Stop talking" : "Talk");
+    });
+    bar.appendChild(btn);
   }
 
   async mosaic(cams, _seconds) {

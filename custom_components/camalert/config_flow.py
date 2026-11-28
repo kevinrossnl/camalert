@@ -15,10 +15,11 @@ from homeassistant.helpers.selector import (EntitySelector, EntitySelectorConfig
                                             SelectSelectorMode, TimeSelector)
 
 from .api import CamAlertCertificateError, CamAlertError, CamAlertForbidden
-from .const import CONF_HTTPS, CONF_TOKEN, CONF_VERIFY_SSL, DEFAULT_PORT, DEFAULT_VERIFY_SSL, DOMAIN
+from .const import BUTTONS, CONF_HTTPS, CONF_TOKEN, CONF_VERIFY_SSL, DEFAULT_PORT, DEFAULT_VERIFY_SSL, DOMAIN
 from .doorbell import CONF_DOORBELL, CONF_DOORBELL_CAMERA
 from .go2rtc_setup import CONF_CAMERA, CONF_GO2RTC, offer_setup, send, suggested_go2rtc
 from .parent import CONF_PARENT, PARENT_AUTO, PARENT_NONE, parent_choices
+from .reply import CONF_REPLY, CONF_REPLY_SPEAKER, CONF_REPLY_TTS, REPLY_MAX, SUGGESTED
 
 _LOGGER = logging.getLogger(__name__)
 _CAMERA = re.compile(r"^[A-Za-z0-9_.-]+$")  # one go2rtc name (#90)
@@ -290,6 +291,13 @@ class CamAlertOptionsFlow(config_entries.OptionsFlow):
             if is_app(self.config_entry.data):  # #95: emptied active hours = all day
                 for key in (CONF_ACTIVE_FROM, CONF_ACTIVE_UNTIL):
                     user_input.setdefault(key, "")
+            reply_keys = [CONF_REPLY_SPEAKER, CONF_REPLY_TTS] + [CONF_REPLY % c for c in BUTTONS]
+            replies = {k: (user_input.pop(k, "") or "").strip() for k in reply_keys}  # #98
+            for c in BUTTONS:
+                replies[CONF_REPLY % c] = replies[CONF_REPLY % c][:REPLY_MAX]
+            if not replies[CONF_REPLY_SPEAKER] and CONF_REPLY_SPEAKER not in self.config_entry.options:
+                replies = {}  # replies never set up: keep the options clean (the suggestions are not stored)
+            user_input.update(replies)  # once set up, an emptied field is stored empty
             user_input[CONF_DOORBELL_CAMERA] = (user_input.get(CONF_DOORBELL_CAMERA) or "").strip()
             if user_input[CONF_DOORBELL_CAMERA] and not _CAMERA.match(user_input[CONF_DOORBELL_CAMERA]):
                 errors[CONF_DOORBELL_CAMERA] = "invalid_camera"
@@ -311,6 +319,16 @@ class CamAlertOptionsFlow(config_entries.OptionsFlow):
         if is_app(self.config_entry.data):  # #95: the player's active hours live in Home Assistant
             for key in (CONF_ACTIVE_FROM, CONF_ACTIVE_UNTIL):
                 fields[vol.Optional(key, description={"suggested_value": opts.get(key)})] = TimeSelector()
+        if not is_app(self.config_entry.data):
+            # #98: quick replies: a colour key speaks a text on the doorbell's speaker
+            suggest = SUGGESTED if CONF_REPLY_SPEAKER not in self.config_entry.options else {}
+            fields[vol.Optional(CONF_REPLY_SPEAKER, description={"suggested_value": opts.get(CONF_REPLY_SPEAKER)})] = \
+                EntitySelector(EntitySelectorConfig(domain="media_player"))
+            fields[vol.Optional(CONF_REPLY_TTS, description={"suggested_value": opts.get(CONF_REPLY_TTS)})] = \
+                EntitySelector(EntitySelectorConfig(domain="tts"))
+            for colour in BUTTONS:
+                key = CONF_REPLY % colour
+                fields[vol.Optional(key, description={"suggested_value": opts.get(key, suggest.get(colour, ""))})] = str
         if can_setup:  # #122: send Home Assistant's go2rtc address to the player (empty = leave it alone)
             fields[vol.Optional(CONF_GO2RTC)] = str
             fields[vol.Optional(CONF_CAMERA)] = str

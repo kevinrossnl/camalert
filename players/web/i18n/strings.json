@@ -42,5 +42,9 @@
   "Create a long-lived access token in your Home Assistant profile, preferably for a separate user that is not an administrator.",
   "Allow access to this Home Assistant",
   "Open the web player",
-  "Settings"
+  "Settings",
+  "Talk",
+  "Stop talking",
+  "Talking needs the page over HTTPS",
+  "Talking did not start"
 ]

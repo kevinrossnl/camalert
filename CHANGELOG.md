@@ -17,6 +17,13 @@ actions and blueprint inputs stay backwards compatible.
   the camera picture (and with PiPup or TvOverlay the live video) from go2rtc. `camalert.show`, `camalert.hide`, the
   doorbell option, the blueprints, Do not disturb, window position and size and active hours work; mosaic, tour,
   camera control, colour keys and updates do not. See [Home Assistant](docs/integrations/home-assistant.md#a-tv-with-a-notification-app-no-camalert-on-the-tv).
+- **Home Assistant:** quick replies from the TV (#98). In a player's options, choose the doorbell camera's speaker
+  (or any media player) and give a colour key a text, e.g. *I'm coming.*: pressing that key while a camera is on
+  screen speaks the text there. Only signed key presses count; every reply also fires `camalert_reply`.
+- **Web player:** **Talk** to the door from a phone, tablet or PC (#98). With a go2rtc stream `<camera>_talk` (an
+  `exec` back-channel to the camera's speaker; `tools/talkback.py` writes the line and reads UniFi Protect's
+  talk-back settings), the camera's window has a Talk button. Needs the page over HTTPS for the microphone. See
+  [Talking back](docs/integrations/talk-back.md). A `_talk` stream is never shown as a camera on any player.
 - **All players and Home Assistant:** a spoken announcement with a camera (#89). `camalert.show` has the fields
   `announce` (text), `tts` (TTS engine) and `language`: Home Assistant makes a WAV with its text-to-speech and the
   player plays it after the chime, when the new setting *Spoken announcement* allows it (default: doorbell and
@@ -75,6 +82,8 @@ actions and blueprint inputs stay backwards compatible.
 
 - **Core:** a show request with an infinite duration no longer raises an error (`show_seconds`, like
   `clamp_seconds` in #34).
+- **Web player:** the clock follows the player's language (24 hours in Dutch, German, French, Italian and Polish)
+  instead of the browser's locale.
 - **Android TV:** camera control via ONVIF and UniFi Protect's "retry later" with a date no longer crash the app on
   Android 7 (Fire OS 6): they used Java APIs that only exist from Android 8.
 

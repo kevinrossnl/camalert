@@ -104,10 +104,22 @@ export class Player {
   }
 
   async streamInfo() {
-    if (!this.configured()) return { names: [], composites: new Set() };
+    if (!this.configured()) return { names: [], composites: new Set(), talks: {} };
     const r = await this.authFetch(`${this.base()}/api/streams`);
     if (!r.ok) throw new Error(`go2rtc: HTTP ${r.status}`);
-    return streamInfo(await r.json(), this.store.settings().ready_cameras);
+    const info = streamInfo(await r.json(), this.store.settings().ready_cameras);
+    this._info = { at: Date.now(), info };
+    return info;
+  }
+
+  /** The talk-back stream of a camera (#98: "<camera>_talk" in go2rtc), or null. Uses a list at most 60 s old. */
+  async talkStream(cam) {
+    try {
+      const fresh = this._info && Date.now() - this._info.at < 60000 ? this._info.info : await this.streamInfo();
+      return (fresh.talks || {})[cam] || null;
+    } catch (e) {
+      return null;
+    }
   }
 
   /** [{name, title, snapshot}] like the other players' /camalert/cameras. */

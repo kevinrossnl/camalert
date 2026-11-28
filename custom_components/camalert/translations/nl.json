@@ -150,7 +150,13 @@
           "doorbell": "Deurbel",
           "doorbell_camera": "Deurbelcamera",
           "active_from": "Actief vanaf",
-          "active_until": "Actief tot"
+          "active_until": "Actief tot",
+          "reply_speaker": "Luidspreker voor antwoorden",
+          "reply_tts": "Stem voor antwoorden (TTS)",
+          "reply_red": "Antwoord op ROOD",
+          "reply_green": "Antwoord op GROEN",
+          "reply_yellow": "Antwoord op GEEL",
+          "reply_blue": "Antwoord op BLAUW"
         },
         "data_description": {
           "parent_device": "Automatisch: het apparaat van de Enigma2-, Kodi- of Android TV-integratie met hetzelfde adres als de speler. Of kies zelf een apparaat, of geen.",
@@ -159,7 +165,13 @@
           "doorbell": "Optioneel: gaat een van deze over (een deurbel-event, of een binaire sensor die aan gaat), dan toont de speler de camera met prioriteit hoog. Geen automatisering nodig; blueprints blijven voor je eigen regels.",
           "doorbell_camera": "De go2rtc-naam van de camera die bij de deurbel verschijnt, bijv. front_door. Leeg: de standaardcamera van de speler.",
           "active_from": "Alleen voor een meldingsapp: verzoeken met prioriteit normaal verschijnen alleen tussen deze tijden. Leeg: de hele dag. Hoog en alarm komen altijd door.",
-          "active_until": "Einde van de actieve uren; mag na middernacht vallen, bijv. 07:00 tot 23:00 of 22:00 tot 06:00."
+          "active_until": "Einde van de actieve uren; mag na middernacht vallen, bijv. 07:00 tot 23:00 of 22:00 tot 06:00.",
+          "reply_speaker": "Optioneel: snelle antwoorden vanaf de tv. Heeft een kleurtoets hieronder een tekst, dan spreekt die toets de tekst uit op deze mediaspeler terwijl er een camera in beeld is, bijvoorbeeld de luidspreker van de deurbelcamera (UniFi Protect: media_player.<camera>_speaker). Leeg: geen antwoorden.",
+          "reply_tts": "Optioneel: de TTS-engine voor de antwoorden. Leeg: de eerste TTS-engine van Home Assistant.",
+          "reply_red": "Tekst voor ROOD, bijvoorbeeld Leg het pakket maar bij de deur. Leeg: ROOD stuurt alleen zijn gewone gebeurtenis.",
+          "reply_green": "Tekst voor GROEN. Leeg: GROEN stuurt alleen zijn gewone gebeurtenis (laat het leeg als GROEN een poort opent).",
+          "reply_yellow": "Tekst voor GEEL, bijvoorbeeld Ik kom eraan.",
+          "reply_blue": "Tekst voor BLAUW. De toets voor camerabediening van een PTZ-camera stuurt nooit een antwoord."
         }
       }
     },

@@ -139,6 +139,31 @@ and the label *Doorbell*, without an automation (#90).
 - Want more (several players, presence, a phone, other screens)? Use the doorbell blueprint below instead, or
   as well: the 15 seconds keep it to one window per player.
 
+### Quick replies from the TV
+
+None of the TV players has a microphone, so you cannot talk back from the TV itself (#98). What you can do: answer
+with a colour key. Open the player in **Settings › Devices & services › CamAlert**, press **Configure** and:
+
+1. Choose **Reply speaker**: the media player that speaks the reply, normally the doorbell camera's own speaker
+   (UniFi Protect: `media_player.<camera>_speaker`; any media player works, e.g. a smart speaker in the hall).
+2. Optionally choose **Reply voice (TTS)**; empty = the first TTS engine of Home Assistant.
+3. Give a colour key a text under **Reply on RED/GREEN/YELLOW/BLUE**, e.g. *Please leave the parcel at the door.*
+   or *I'm coming.* (RED and YELLOW are suggested; they only work once a speaker is chosen).
+
+While a camera is on screen, that colour key now speaks its text on the speaker. On a Fire TV without colour keys
+the keys are in the action menu (**MENU**). Good to know:
+
+- Only signed key presses count (#82): nothing else on the network can make the doorbell talk. A player that does
+  not sign its keys yet (older than 1.4) gets no replies; update it.
+- The colour key's own event (`camalert_button`) still fires, so existing automations keep working. Keep a key
+  without text when it already does something else (e.g. GREEN opens a gate).
+- Every reply also fires the event `camalert_reply` (player, camera, button, text, speaker), for a log or a
+  notification.
+- Home Assistant must reach the camera's speaker; for UniFi Protect that is UDP port 7004 to the camera.
+
+To really talk to the door from a phone, tablet or PC while the TV shows the picture, see
+[Talking back](talk-back.md).
+
 ### Notifications on your phone
 
 Phones are covered by the [Home Assistant Companion app](https://companion.home-assistant.io/): the doorbell,

@@ -218,11 +218,16 @@ object Urls {
             val name = k.toString()
             val producers = (info as? Map<*, *>)?.get("producers") as? List<*> ?: continue
             if (producers.isEmpty()) continue
-            val bases = producers.map { p -> sourceStream((p as? Map<*, *>)?.get("url") as? String) }
+            val urls = producers.map { p -> (p as? Map<*, *>)?.get("url") as? String }
+            if (urls.all { isBackchannel(it) }) { out.add(name); continue }  // #98: talk-back stream, not a camera
+            val bases = urls.map { sourceStream(it) }
             if (bases.all { it != null && it != name && it in names }) out.add(name)
         }
         return out
     }
+
+    /** True for a go2rtc producer that only takes audio towards a camera (exec:...#backchannel=1, #98). */
+    fun isBackchannel(url: String?): Boolean = url != null && "#backchannel=1" in url
 
     /** The -i arguments of an exec:ffmpeg ... or ffmpeg:... producer url (#125). */
     private fun inputs(url: String?): List<String> {

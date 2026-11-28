@@ -60,7 +60,7 @@ class Setting(object):
 S = Setting
 SETTINGS = [
     S('enabled', 'general', 'basic', 'bool', True, platforms=('enigma2', 'kodi', 'androidtv'), label='Enable CamAlert', help='Turn the HTTP API and the camera display on or off.', kodi_label=30010),
-    S('source', 'general', 'basic', 'choice', 'go2rtc', choices=('go2rtc', 'direct'), platforms=('enigma2', 'kodi'), label='Cameras via', help='go2rtc is recommended. Without go2rtc, list your cameras in %s', kodi_label=30012),
+    S('source', 'general', 'basic', 'choice', 'go2rtc', choices=('go2rtc', 'direct'), platforms=('enigma2', 'kodi', 'androidtv'), label='Cameras via', help='go2rtc is recommended. Without go2rtc, list your cameras in %s', kodi_label=30012),
     S('server', 'general', 'basic', 'text', '', platforms=('enigma2', 'kodi', 'androidtv'), label='go2rtc address', help='Address of your go2rtc server, e.g. http://192.168.1.10:1984', kodi_label=30016),
     S('rtsp_port', 'general', 'expert', 'int', 8554, min=1, max=65535, step=1, platforms=('enigma2', 'kodi', 'androidtv'), label='go2rtc RTSP port', help='Usually 8554. Used for live view and the camera list.', kodi_label=30018),
     S('camera', 'general', 'basic', 'text', '', platforms=('enigma2', 'kodi', 'androidtv'), label='Default camera', help='Press OK to choose from the cameras in go2rtc.', kodi_label=30024),
@@ -108,7 +108,7 @@ SETTINGS = [
     S('frigate_priority', 'triggers', 'advanced', 'choice', 'normal', choices=('normal', 'high', 'alarm'), platforms=('enigma2', 'kodi', 'androidtv'), label='Frigate priority', kodi_label=30260),
     S('foscam_enabled', 'triggers', 'advanced', 'bool', False, platforms=('enigma2', 'kodi', 'androidtv'), label='Foscam motion and sound alarms', help='Asks the Foscam cameras in %s for motion and sound alarms.', kodi_label=30143),
     S('foscam_priority', 'triggers', 'advanced', 'choice', 'normal', choices=('normal', 'high', 'alarm'), platforms=('enigma2', 'kodi', 'androidtv'), label='Foscam priority', kodi_label=30261),
-    S('frigate_url', 'triggers', 'expert', 'text', '', platforms=('enigma2', 'kodi'), label='Frigate address (for clips)', help='Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an event from the event list.', kodi_label=30237),
+    S('frigate_url', 'triggers', 'expert', 'text', '', platforms=('enigma2', 'kodi', 'androidtv'), label='Frigate address (for clips)', help='Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an event from the event list.', kodi_label=30237),
     S('frigate_mode', 'triggers', 'advanced', 'choice', 'photo', choices=('photo', 'live', 'notify'), platforms=('enigma2', 'kodi', 'androidtv'), label='Display mode', kodi_label=30040),
     S('frigate_seconds', 'triggers', 'advanced', 'int', 30, min=5, max=300, step=5, unit='s', platforms=('enigma2', 'kodi', 'androidtv'), label='Duration (seconds)', kodi_label=30045),
     S('foscam_interval', 'triggers', 'expert', 'int', 2, min=1, max=60, step=1, unit='s', platforms=('enigma2', 'kodi', 'androidtv'), label='Check every (seconds)', kodi_label=30145),
@@ -157,12 +157,11 @@ BY_ID = {s.id: s for s in SETTINGS}
 # and exported for the Android TV player). Every Kodi setting that Android TV lacks needs a reason here.
 MISSING = {
     "androidtv": {
-        "source": "go2rtc only for now (direct mode with a camera file: follow-up, #124)",
-        "camera_file": "go2rtc only for now (#124)",
+        "camera_file": "the camera list of direct mode is edited in the app (Settings, General) and kept in its own "
+                       "private file, because its urls usually hold a camera login (#124)",
         "pause_tv": "Android cannot pause another app",
         "live_return": "live view is an overlay: what was playing keeps playing underneath",
         "video_window": "the photo window is an overlay over the other app; video in it: follow-up (#129 is Kodi)",
-        "frigate_url": "no clip playback from the event list yet (#124)",
         "ptz_user": "the default camera login is kept with the camera devices, never with the settings (#66)",
         "ptz_password": "the default camera login is kept with the camera devices, never with the settings (#66)",
     },

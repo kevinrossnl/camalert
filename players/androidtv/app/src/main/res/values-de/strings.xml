@@ -81,6 +81,13 @@
     <string name="devices_password" formatted="false">Kamerapasswort (Standard)</string>
     <string name="devices_none" formatted="false">keine gültige Zeile</string>
     <string name="devices_where" formatted="false">den Kamerageräten</string>
+    <string name="cameras_title" formatted="false">Kameras ohne go2rtc</string>
+    <string name="cameras_list" formatted="false">Kameraliste</string>
+    <string name="cameras_help" formatted="false">Eine Kamera pro Zeile: Name | RTSP-URL | Snapshot-URL (optional), z. B. Front door | rtsp://user:password\@192.168.1.20:554/stream1 | http://user:password\@192.168.1.20/snapshot.jpg. Wird verwendet, wenn Kameras über auf Direkt von den Kameras steht.</string>
+    <string name="cameras_none" formatted="false">Keine Kameras</string>
+    <string name="cameras_where" formatted="false">der Kameraliste unten</string>
+    <string name="event_show" formatted="false">Kamera anzeigen</string>
+    <string name="event_clip" formatted="false">Frigate-Clip abspielen</string>
     <string name="unifi_no_console" formatted="false">UniFi Protect: keine Konsolenadresse eingestellt</string>
     <string name="wizard_title" formatted="false">CamAlert-Assistent</string>
     <string name="wizard_searching" formatted="false">go2rtc wird in deinem Netzwerk gesucht...</string>
@@ -101,6 +108,8 @@
     <string name="wizard_no" formatted="false">Nein</string>
     <string name="t_bfb3a49f" formatted="false">CamAlert aktivieren</string>
     <string name="t_61786bb1" formatted="false">Schaltet die HTTP-API und die Kameraanzeige ein oder aus.</string>
+    <string name="t_57c6d47e" formatted="false">Kameras über</string>
+    <string name="t_7c54e851" formatted="false">go2rtc wird empfohlen. Ohne go2rtc trägst du deine Kameras in %s ein</string>
     <string name="t_bc6c5ac6" formatted="false">go2rtc-Adresse</string>
     <string name="t_884d0266" formatted="false">Adresse deines go2rtc-Servers, z. B. http://192.168.1.10:1984</string>
     <string name="t_3fed7aa8" formatted="false">go2rtc-RTSP-Port</string>
@@ -173,6 +182,8 @@
     <string name="t_7db549fa" formatted="false">Foscam-Bewegungs- und Geräuschalarme</string>
     <string name="t_a3c5d81f" formatted="false">Fragt die Foscam-Kameras in %s nach Bewegungs- und Geräuschalarmen.</string>
     <string name="t_8d5f7ed0" formatted="false">Foscam-Priorität</string>
+    <string name="t_70dc95aa" formatted="false">Frigate-Adresse (für Clips)</string>
+    <string name="t_caaf26da" formatted="false">Optional, z. B. http://192.168.1.10:5000 - damit lässt sich der Clip eines Ereignisses aus der Ereignisliste abspielen.</string>
     <string name="t_02491587" formatted="false">Prüfen alle (Sekunden)</string>
     <string name="t_3989819d" formatted="false">UniFi-Protect-Ereignisse</string>
     <string name="t_5c8d390b" formatted="false">Fragt die UniFi-Protect-Konsolen in %s nach Ereignissen (Türklingel, Person, Fahrzeug, ...).</string>

@@ -381,13 +381,11 @@
   "notify"
  ],
  "not_on_androidtv": {
-  "camera_file": "go2rtc only for now (#124)",
-  "frigate_url": "no clip playback from the event list yet (#124)",
+  "camera_file": "the camera list of direct mode is edited in the app (Settings, General) and kept in its own private file, because its urls usually hold a camera login (#124)",
   "live_return": "live view is an overlay: what was playing keeps playing underneath",
   "pause_tv": "Android cannot pause another app",
   "ptz_password": "the default camera login is kept with the camera devices, never with the settings (#66)",
   "ptz_user": "the default camera login is kept with the camera devices, never with the settings (#66)",
-  "source": "go2rtc only for now (direct mode with a camera file: follow-up, #124)",
   "video_window": "the photo window is an overlay over the other app; video in it: follow-up (#129 is Kodi)"
  },
  "preset_labels": {
@@ -487,6 +485,23 @@
    "section": "general",
    "step": null,
    "type": "bool",
+   "unit": null
+  },
+  {
+   "choices": [
+    "go2rtc",
+    "direct"
+   ],
+   "default": "go2rtc",
+   "help": "go2rtc is recommended. Without go2rtc, list your cameras in %s",
+   "id": "source",
+   "label": "Cameras via",
+   "level": "basic",
+   "max": null,
+   "min": null,
+   "section": "general",
+   "step": null,
+   "type": "choice",
    "unit": null
   },
   {
@@ -1122,6 +1137,20 @@
    "section": "triggers",
    "step": null,
    "type": "choice",
+   "unit": null
+  },
+  {
+   "choices": null,
+   "default": "",
+   "help": "Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an event from the event list.",
+   "id": "frigate_url",
+   "label": "Frigate address (for clips)",
+   "level": "expert",
+   "max": null,
+   "min": null,
+   "section": "triggers",
+   "step": null,
+   "type": "text",
    "unit": null
   },
   {

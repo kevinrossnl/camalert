@@ -169,6 +169,18 @@ object MqttTopics {
 
 /** Frigate detections via MQTT (core triggers/frigate.py). */
 class Frigate(val settings: Map<String, Any?>) {
+    companion object {
+        private val EVENT_ID = Regex("^[A-Za-z0-9_.-]+$")
+
+        /** Frigate API url of an event clip, or null (core triggers/frigate.frigate_clip_url, #124). */
+        fun clipUrl(frigateUrl: String?, eventId: String?): String? {
+            var base = (frigateUrl ?: "").trim().trimEnd('/')
+            if (base.isEmpty() || eventId.isNullOrEmpty() || !EVENT_ID.matches(eventId)) return null
+            if (!base.startsWith("http://") && !base.startsWith("https://")) base = "http://$base"
+            return "$base/api/events/$eventId/clip.mp4"
+        }
+    }
+
     val seen = HashMap<String, Double>()
     val enabled get() = settings["frigate_enabled"] == true
 

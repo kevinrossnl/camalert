@@ -168,6 +168,16 @@ class CameraDevices(ctx: Context) {
             prefs.getString("user", "") ?: "", prefs.getString("password", "") ?: "").filterValues { it.type != "unifi" }
 }
 
+/**
+ * Direct mode (#124): the cameras.conf lines of the other players (name | rtsp-url | snapshot-url), in their own
+ * private file like the camera devices: the urls usually hold a camera login, so never with the settings.
+ */
+class DirectCameraList(ctx: Context) {
+    val prefs: SharedPreferences = ctx.getSharedPreferences(ctx.packageName + "_cameras", Context.MODE_PRIVATE)
+
+    fun cameras(): List<org.camalert.core.DirectCamera> = org.camalert.core.DirectCameras.parse(prefs.getString("cameras", ""))
+}
+
 /** tr(msgid) for core texts and settings labels: generated resource t_<crc32> (tools/i18n/i18n.py). */
 class Tr(private val ctx: Context) : (String) -> String {
     private val cache = HashMap<String, String>()
@@ -224,6 +234,26 @@ object Net {
     /** GET (or POST with body) -> bytes; IOException on HTTP errors. verify=false accepts self-signed certificates
      *  (setting *Check certificates*, only in your own network). */
     fun fetch(url: String, verify: Boolean = true, timeoutMs: Int = 5000, body: ByteArray? = null, max: Int = 8 shl 20): ByteArray {
+        // user:password@ in the url (camera snapshots in direct mode, #124): answer a 401 with Basic or Digest
+        val (plain, user, password) = org.camalert.core.HttpAuth.split(url)
+        if (user == null) return fetchOnce(url, verify, timeoutMs, body, max, null)
+        try {
+            return fetchOnce(plain, verify, timeoutMs, body, max, null)
+        } catch (e: Unauthorized) {
+            val ch = e.challenge
+            val auth = if (ch.trim().lowercase().startsWith("digest")) {
+                val u = URL(plain)
+                val cnonce = ByteArray(8).also { SecureRandom().nextBytes(it) }.joinToString("") { "%02x".format(it) }
+                org.camalert.core.HttpAuth.digest(ch, if (body != null) "POST" else "GET",
+                    (u.path.ifEmpty { "/" }) + (u.query?.let { "?$it" } ?: ""), user, password ?: "", cnonce)
+            } else org.camalert.core.HttpAuth.basic(user, password ?: "")
+            return fetchOnce(plain, verify, timeoutMs, body, max, auth)
+        }
+    }
+
+    private class Unauthorized(val challenge: String) : java.io.IOException("HTTP 401")
+
+    private fun fetchOnce(url: String, verify: Boolean, timeoutMs: Int, body: ByteArray?, max: Int, auth: String?): ByteArray {
         val c = URL(url).openConnection() as HttpURLConnection
         if (!verify && c is HttpsURLConnection) {
             c.sslSocketFactory = trustAll.socketFactory
@@ -232,6 +262,7 @@ object Net {
         c.connectTimeout = timeoutMs
         c.readTimeout = timeoutMs
         c.setRequestProperty("User-Agent", "CamAlert-AndroidTV")
+        if (auth != null) c.setRequestProperty("Authorization", auth)
         try {
             if (body != null) {
                 c.requestMethod = "POST"
@@ -240,6 +271,7 @@ object Net {
                 c.outputStream.use { it.write(body) }
             }
             val code = c.responseCode
+            if (code == 401 && auth == null) throw Unauthorized(c.getHeaderField("WWW-Authenticate") ?: "Basic")
             if (code !in 200..299) throw java.io.IOException("HTTP $code")
             c.inputStream.use { inp ->
                 val out = ByteArrayOutputStream()

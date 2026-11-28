@@ -66,6 +66,7 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
     lateinit var unifiLogin: UnifiLogin
     /** Camera devices (#66): camera control (ONVIF, Foscam) and Foscam alarms, own private file. */
     lateinit var cameraDevices: CameraDevices
+    lateinit var directCameras: DirectCameraList  // direct mode (#124)
     private val deviceClient = org.camalert.core.DeviceClient(UrlTransport(4000))
     private val foscam = org.camalert.core.FoscamPoller(deviceClient) { m, l -> CamLog.log(m, l) }
     private var foscamThread: Thread? = null
@@ -94,6 +95,10 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
 
     fun cameraNames(): List<String> {
         val s = settings()
+        if (s["source"]?.toString() == "direct") {  // #124: the camera list, no go2rtc
+            composites = emptySet()
+            return directCameras.cameras().map { it.name }
+        }
         val server = Urls.normalizeServer(s["server"]?.toString()) ?: return emptyList()
         val (names, comp) = Urls.streamInfoFromJson(String(Net.fetch("$server/api/streams", s["verify_ssl"] != false, 5000), Charsets.UTF_8))
         composites = comp
@@ -109,6 +114,7 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         override fun setSetting(id: String, value: Any?) = store.set(id, value)
         override fun cameraNames() = this@CamAlertService.cameraNames()
         override fun compositeStreams() = this@CamAlertService.composites
+        override fun directCameras() = this@CamAlertService.directCameras.cameras()
         override fun screenOn() = (getSystemService(Context.POWER_SERVICE) as PowerManager).isInteractive
         override fun wake() {
             @Suppress("DEPRECATION")
@@ -149,6 +155,8 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         override fun node() = Pair(node, nodeName())
         override fun cameras(): List<Map<String, Any?>> {
             val s = settings()
+            if (s["source"]?.toString() == "direct")  // #124: title and snapshot from the camera list
+                return directCameras.cameras().map { c -> mapOf("name" to c.name, "title" to c.title, "snapshot" to (c.snapshot != null)) }
             val titles = Cameras.parseMap(s["titles"]?.toString())
             return cameraNames().map { n -> mapOf("name" to n, "title" to Cameras.titleFor(n, titles), "snapshot" to true) }
         }
@@ -305,6 +313,7 @@ class CamAlertService : Service(), SharedPreferences.OnSharedPreferenceChangeLis
         controller = PlayerController(env, overlay)
         unifiLogin = UnifiLogin(this)
         cameraDevices = CameraDevices(this)
+        directCameras = DirectCameraList(this)
         CamLog.level = settings()["log_level"]?.toString() ?: "normal"
         foreground()
         store.prefs.registerOnSharedPreferenceChangeListener(this)

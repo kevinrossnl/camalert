@@ -25,6 +25,11 @@ actions and blueprint inputs stay backwards compatible.
   window* can also **pause what plays**: a film or live TV stops for the window and plays on from where it was
   afterwards (an alarm always does this unless the setting is off). Music, turned cameras and a stream that does
   not start keep the pictures.
+- **Android TV:** cameras without go2rtc (#124): *Cameras via: Directly from the cameras* with a camera list in the
+  app (the lines of the other players' camera file, kept in private storage). Snapshot urls with a login work with
+  Basic and Digest; a camera without snapshot url opens live view.
+- **Android TV:** the event list is a list now (#124): OK shows the camera of an event, and with a Frigate address an
+  event from Frigate offers *Play Frigate clip* in a full-screen player.
 
 ### Security
 

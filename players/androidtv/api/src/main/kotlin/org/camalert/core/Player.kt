@@ -29,6 +29,8 @@ interface PlayerEnv {
     fun cameraNames(): List<String>
     /** Composite streams (an own mosaic in go2rtc) of the last camera list (#125). */
     fun compositeStreams(): Set<String> = emptySet()
+    /** Direct mode (#124): the cameras of the camera list (no go2rtc). */
+    fun directCameras(): List<DirectCamera> = emptyList()
     fun screenOn(): Boolean = true
     fun wake() {}
     /** "none" | "video" | "audio": what another app plays (for skip_playing). */
@@ -78,8 +80,13 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
 
     fun knownNames(): List<String> = if (names.isEmpty() || env.now() - namesAt > 60) refreshNames() else names
 
-    /** Tile of a camera from the settings (go2rtc), or null without a valid go2rtc address. */
+    /** Tile of a camera from the settings (go2rtc), or null without a valid go2rtc address. In direct mode (#124)
+     *  the camera list gives the RTSP stream and the (optional) snapshot url. */
     fun tile(name: String, s: Map<String, Any?> = env.settings()): Tile? {
+        if (s["source"]?.toString() == "direct") {
+            val cam = env.directCameras().firstOrNull { it.name == name } ?: return null
+            return Tile(name, cam.title, cam.snapshot, cam.rtsp)  // the title from the camera list, as on Enigma2 and Kodi
+        }
         val server = Urls.normalizeServer(s["server"]?.toString()) ?: return null
         val titles = Cameras.parseMap(s["titles"]?.toString())
         val live = Cameras.liveStreamName(name, s["substreams"]?.toString())
@@ -183,11 +190,12 @@ class PlayerController(private val env: PlayerEnv, private val display: Display)
         val action = Rules.decide(false, if (m == "live") null else current, windowStream, name)
         if (action == "ignore") return Pair("ignore", "on_screen")
         val titled = t.copy(title = Events.eventTitle(t.title, label))
+        val shown = if (m == "photo" && t.snapshot == null) "live" else m  // direct mode without snapshot url (#124)
         if (action == "extend") {
             display.extend(secs)
             return Pair("extend", "")
         }
-        when (m) {
+        when (shown) {
             "live" -> display.live(titled, secs, if (priority == "alarm") 100 else (s["live_volume"] as? Number)?.toInt() ?: 100)
             "notify" -> display.notify(titled, secs)
             else -> display.photo(listOf(titled), secs, label, mark)

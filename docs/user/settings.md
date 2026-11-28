@@ -15,7 +15,7 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Setting | Default | Values | Level | Players | What it does |
 |---|---|---|---|---|---|
 | Enable CamAlert | Yes |  | basic | all | Turn the HTTP API and the camera display on or off. |
-| Cameras via | `go2rtc` | `go2rtc` / `direct` | basic | Enigma2, Kodi | go2rtc is recommended. Without go2rtc, list your cameras in the camera file |
+| Cameras via | `go2rtc` | `go2rtc` / `direct` | basic | all | go2rtc is recommended. Without go2rtc, list your cameras in the camera file |
 | go2rtc address | – |  | basic | all | Address of your go2rtc server, e.g. http://192.168.1.10:1984 |
 | go2rtc RTSP port | `8554` | 1–65535 | expert | all | Usually 8554. Used for live view and the camera list. |
 | Default camera | – |  | basic | all | Press OK to choose from the cameras in go2rtc. |
@@ -77,7 +77,7 @@ How the settings look: [Enigma2 receiver](../players/enigma2.md#settings), [Kodi
 | Frigate priority | `normal` | `normal` / `high` / `alarm` | advanced | all |  |
 | Foscam motion and sound alarms | No |  | advanced | all | Asks the Foscam cameras in the camera file for motion and sound alarms. |
 | Foscam priority | `normal` | `normal` / `high` / `alarm` | advanced | all |  |
-| Frigate address (for clips) | – |  | expert | Enigma2, Kodi | Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an event from the event list. |
+| Frigate address (for clips) | – |  | expert | all | Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an event from the event list. |
 | Display mode | `photo` | `photo` / `live` / `notify` | advanced | all |  |
 | Duration (seconds) | `30` s | 5–300, step 5 | advanced | all |  |
 | Check every (seconds) | `2` s | 1–60 | expert | all |  |

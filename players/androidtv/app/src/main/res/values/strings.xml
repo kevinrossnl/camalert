@@ -82,6 +82,13 @@
     <string name="devices_password" formatted="false">Camera password (default)</string>
     <string name="devices_none" formatted="false">no valid line</string>
     <string name="devices_where" formatted="false">the camera devices</string>
+    <string name="cameras_title" formatted="false">Cameras without go2rtc</string>
+    <string name="cameras_list" formatted="false">Camera list</string>
+    <string name="cameras_help" formatted="false">One camera per line: name | rtsp-url | snapshot-url (optional), e.g. Front door | rtsp://user:password\@192.168.1.20:554/stream1 | http://user:password\@192.168.1.20/snapshot.jpg. Used when Cameras via is Directly from the cameras.</string>
+    <string name="cameras_none" formatted="false">No cameras</string>
+    <string name="cameras_where" formatted="false">the camera list below</string>
+    <string name="event_show" formatted="false">Show camera</string>
+    <string name="event_clip" formatted="false">Play Frigate clip</string>
     <string name="unifi_no_console" formatted="false">UniFi Protect: no console address set</string>
     <string name="wizard_title" formatted="false">CamAlert wizard</string>
     <string name="wizard_searching" formatted="false">Searching for go2rtc in your network...</string>
@@ -102,6 +109,8 @@
     <string name="wizard_no" formatted="false">No</string>
     <string name="t_bfb3a49f" formatted="false">Enable CamAlert</string>
     <string name="t_61786bb1" formatted="false">Turn the HTTP API and the camera display on or off.</string>
+    <string name="t_57c6d47e" formatted="false">Cameras via</string>
+    <string name="t_7c54e851" formatted="false">go2rtc is recommended. Without go2rtc, list your cameras in %s</string>
     <string name="t_bc6c5ac6" formatted="false">go2rtc address</string>
     <string name="t_884d0266" formatted="false">Address of your go2rtc server, e.g. http://192.168.1.10:1984</string>
     <string name="t_3fed7aa8" formatted="false">go2rtc RTSP port</string>
@@ -174,6 +183,8 @@
     <string name="t_7db549fa" formatted="false">Foscam motion and sound alarms</string>
     <string name="t_a3c5d81f" formatted="false">Asks the Foscam cameras in %s for motion and sound alarms.</string>
     <string name="t_8d5f7ed0" formatted="false">Foscam priority</string>
+    <string name="t_70dc95aa" formatted="false">Frigate address (for clips)</string>
+    <string name="t_caaf26da" formatted="false">Optional, e.g. http://192.168.1.10:5000 - lets you play the clip of an event from the event list.</string>
     <string name="t_02491587" formatted="false">Check every (seconds)</string>
     <string name="t_3989819d" formatted="false">UniFi Protect events</string>
     <string name="t_5c8d390b" formatted="false">Asks the UniFi Protect consoles in %s for events (doorbell, person, vehicle, ...).</string>

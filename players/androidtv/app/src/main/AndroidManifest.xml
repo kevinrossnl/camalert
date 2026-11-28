@@ -49,6 +49,11 @@
             android:exported="false"
             android:theme="@style/Theme.CamAlert" />
 
+        <activity
+            android:name=".ClipActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CamAlert" />
+
         <service
             android:name=".CamAlertService"
             android:exported="false"

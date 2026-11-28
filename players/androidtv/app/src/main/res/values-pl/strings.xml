@@ -81,6 +81,13 @@
     <string name="devices_password" formatted="false">Hasło kamery (domyślne)</string>
     <string name="devices_none" formatted="false">brak prawidłowego wiersza</string>
     <string name="devices_where" formatted="false">urządzeniach kamer</string>
+    <string name="cameras_title" formatted="false">Kamery bez go2rtc</string>
+    <string name="cameras_list" formatted="false">Lista kamer</string>
+    <string name="cameras_help" formatted="false">Jedna kamera w wierszu: nazwa | adres RTSP | adres zdjęcia (opcjonalnie), np. Front door | rtsp://user:password\@192.168.1.20:554/stream1 | http://user:password\@192.168.1.20/snapshot.jpg. Używane, gdy Kamery przez ma wartość Bezpośrednio z kamer.</string>
+    <string name="cameras_none" formatted="false">Brak kamer</string>
+    <string name="cameras_where" formatted="false">liście kamer poniżej</string>
+    <string name="event_show" formatted="false">Pokaż kamerę</string>
+    <string name="event_clip" formatted="false">Odtwórz klip Frigate</string>
     <string name="unifi_no_console" formatted="false">UniFi Protect: nie ustawiono adresu konsoli</string>
     <string name="wizard_title" formatted="false">Kreator CamAlert</string>
     <string name="wizard_searching" formatted="false">Wyszukiwanie go2rtc w sieci...</string>
@@ -101,6 +108,8 @@
     <string name="wizard_no" formatted="false">Nie</string>
     <string name="t_bfb3a49f" formatted="false">Włącz CamAlert</string>
     <string name="t_61786bb1" formatted="false">Włącza lub wyłącza API HTTP i wyświetlanie kamer.</string>
+    <string name="t_57c6d47e" formatted="false">Kamery przez</string>
+    <string name="t_7c54e851" formatted="false">Zalecane jest go2rtc. Bez go2rtc wpisz kamery do %s</string>
     <string name="t_bc6c5ac6" formatted="false">Adres go2rtc</string>
     <string name="t_884d0266" formatted="false">Adres serwera go2rtc, np. http://192.168.1.10:1984</string>
     <string name="t_3fed7aa8" formatted="false">Port RTSP go2rtc</string>
@@ -173,6 +182,8 @@
     <string name="t_7db549fa" formatted="false">Alarmy ruchu i dźwięku Foscam</string>
     <string name="t_a3c5d81f" formatted="false">Odpytuje kamery Foscam z %s o alarmy ruchu i dźwięku.</string>
     <string name="t_8d5f7ed0" formatted="false">Priorytet Foscam</string>
+    <string name="t_70dc95aa" formatted="false">Adres Frigate (dla klipów)</string>
+    <string name="t_caaf26da" formatted="false">Opcjonalnie, np. http://192.168.1.10:5000 - pozwala odtworzyć klip zdarzenia z listy zdarzeń.</string>
     <string name="t_02491587" formatted="false">Sprawdzaj co (sekundy)</string>
     <string name="t_3989819d" formatted="false">Zdarzenia UniFi Protect</string>
     <string name="t_5c8d390b" formatted="false">Odpytuje konsole UniFi Protect z %s o zdarzenia (dzwonek, osoba, pojazd, ...).</string>

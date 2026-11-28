@@ -129,6 +129,7 @@ class SettingsActivity : FragmentActivity() {
             }
             if (section == "triggers") unifiConsole(screen)
             if (section == "camera_control") cameraDevices(screen)
+            if (section == "general") directCameras(screen)
             if (section == "display") screen.addPreference(Preference(ctx).apply {  // #48: a preset fills in settings
                 title = tr(CoreData.load().presetLabels.getValue("simple"))
                 isIconSpaceReserved = false
@@ -220,12 +221,42 @@ class SettingsActivity : FragmentActivity() {
             }
         }
 
+        /** Cameras without go2rtc (#124): the camera list in its own private file (DirectCameraList). */
+        private fun directCameras(screen: PreferenceScreen) {
+            val ctx = preferenceManager.context
+            val list = DirectCameraList(ctx)
+            val store = object : PreferenceDataStore() {
+                override fun getString(key: String?, defValue: String?) = list.prefs.getString(key, defValue)
+                override fun putString(key: String?, value: String?) {
+                    list.prefs.edit().putString(key, value?.trim()).apply()
+                    CamAlertService.instance?.controller?.refreshNames()
+                }
+            }
+            val cat = PreferenceCategory(ctx).apply { title = getString(R.string.cameras_title); isIconSpaceReserved = false }
+            screen.addPreference(cat)
+            cat.addPreference(EditTextPreference(ctx).apply {
+                preferenceDataStore = store
+                key = "cameras"
+                title = getString(R.string.cameras_list)
+                dialogTitle = title
+                dialogMessage = getString(R.string.cameras_help)
+                isIconSpaceReserved = false
+                setOnBindEditTextListener { e ->
+                    e.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+                }
+                summaryProvider = Preference.SummaryProvider<EditTextPreference> { _ ->
+                    list.cameras().joinToString(", ") { it.title }.ifEmpty { getString(R.string.cameras_none) }
+                }
+            })
+        }
+
         /** %s in a label or help: the place of the cameras (go2rtc), the camera devices (Foscam, PTZ) or, for UniFi
          *  Protect, the console settings. */
         private fun fill(s: Setting, text: String) =
             text.replace("%s", when {
                 s.id.startsWith("unifi_") -> getString(R.string.unifi_where)
                 s.id.startsWith("foscam_") || s.id.startsWith("ptz_") -> getString(R.string.devices_where)
+                s.id == "source" -> getString(R.string.cameras_where)
                 else -> "go2rtc"
             })
 

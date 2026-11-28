@@ -33,11 +33,48 @@ class InfoActivity : Activity() {
         if (what == "events") events() else Thread { diagnostics() }.start()
     }
 
+    /** The event list (#124): OK on an event shows its camera, or offers its Frigate clip when there is one. */
     private fun events() {
         val svc = CamAlertService.instance
-        val list = svc?.controller?.events ?: emptyList()
-        view.text = getString(R.string.events) + "\n\n" +
-            if (list.isEmpty()) getString(R.string.no_events) else list.joinToString("\n") { svc!!.present.eventLine(it) }
+        val list = (svc?.controller?.events ?: emptyList()).reversed()  // newest first
+        if (svc == null || list.isEmpty()) {
+            view.text = getString(R.string.events) + "\n\n" + getString(R.string.no_events)
+            return
+        }
+        val lines = list.map { svc.present.eventLine(it) }
+        val lv = android.widget.ListView(this).apply {
+            adapter = object : android.widget.ArrayAdapter<String>(this@InfoActivity, android.R.layout.simple_list_item_1, lines) {
+                override fun getView(position: Int, convertView: android.view.View?, parent: android.view.ViewGroup): android.view.View =
+                    (super.getView(position, convertView, parent) as TextView).apply {
+                        setTextColor(Color.WHITE)
+                        setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                        typeface = android.graphics.Typeface.MONOSPACE
+                    }
+            }
+            setPadding(48, 32, 48, 32)
+            setOnItemClickListener { _, _, pos, _ -> pick(list[pos]) }
+        }
+        setContentView(lv)
+        lv.requestFocus()
+    }
+
+    private fun pick(e: Map<String, Any?>) {
+        val svc = CamAlertService.instance ?: return
+        val cam = e["camera"]?.toString() ?: return
+        val clip = org.camalert.core.Frigate.clipUrl(svc.settings()["frigate_url"]?.toString(), e["frigate_id"]?.toString())
+        fun showCamera() = Thread { svc.controller.show(cam, null, null, "normal", "menu", null, null) }.start()
+        if (clip == null) {
+            showCamera()
+            return
+        }
+        android.app.AlertDialog.Builder(this)
+            .setTitle(cam)
+            .setItems(arrayOf(getString(R.string.event_show), getString(R.string.event_clip))) { _, which ->
+                if (which == 0) showCamera()
+                else startActivity(android.content.Intent(this, ClipActivity::class.java)
+                    .putExtra("url", clip).putExtra("title", "$cam ${e["label"] ?: ""}".trim()))
+            }
+            .show()
     }
 
     private fun diagnostics() {
@@ -57,7 +94,16 @@ class InfoActivity : Activity() {
         line(Settings.canDrawOverlays(this), "draw over other apps (SYSTEM_ALERT_WINDOW)")
         line(true, "API on port ${Urls.validPort(s["http_port"], 8099)}${if (s["api_https"] == true) " (https)" else ""}, allowed callers: ${s["allow"]}")
         val server = Urls.normalizeServer(s["server"]?.toString())
-        if (server == null) {
+        if (s["source"]?.toString() == "direct") {  // #124: cameras without go2rtc
+            val cams = svc.directCameras.cameras()
+            line(cams.isNotEmpty(), "direct mode: ${cams.size} cameras")
+            for (c in cams.take(12)) {
+                val snap = c.snapshot
+                if (snap == null) { line(null, "snapshot ${c.name}: none (live only)"); continue }
+                val ok = try { Net.fetch(snap, s["verify_ssl"] != false, 6000).isNotEmpty() } catch (e: Exception) { false }
+                line(ok, "snapshot ${c.name}")
+            }
+        } else if (server == null) {
             line(false, "go2rtc address missing or invalid: ${s["server"]}")
         } else {
             val names = try { svc.cameraNames() } catch (e: Exception) { line(false, "go2rtc $server: ${e.message}"); null }

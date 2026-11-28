@@ -172,8 +172,8 @@ class CoreReferenceTest {
             assertEquals(s.id, s.default, s.coerce(s.default))
             assertTrue(s.id, s.level in d.levels && s.section in d.sections)
         }
-        // the basic level of the UI guideline (#2), minus the go2rtc/direct choice (go2rtc only on Android TV)
-        assertEquals(setOf("enabled", "server", "camera", "mode", "duration", "position", "size", "dnd", "limit_hours", "from_time", "until_time"),
+        // the basic level of the UI guideline (#2); the go2rtc/direct choice is on Android TV too since #124
+        assertEquals(setOf("enabled", "source", "server", "camera", "mode", "duration", "position", "size", "dnd", "limit_hours", "from_time", "until_time"),
             d.settings.filter { it.level == "basic" }.map { it.id }.toSet())
     }
 }

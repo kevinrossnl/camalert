@@ -5,7 +5,7 @@ go2rtc is recommended (faster start, fewer connections to your cameras, snapshot
 ## Set up
 
 1. In CamAlert set **Cameras via** to **Directly from the cameras**.
-2. Create the camera file on the player – Enigma2: `/etc/enigma2/camalert_cameras.conf` (for example with *FileCommander*, FTP/WinSCP, or a network share); Kodi: `cameras.conf` in the add-on data folder (or the file set in *Camera file (direct mode)*, see [Kodi](../players/kodi.md#where-things-are)). One camera per line:
+2. Create the camera file on the player – Enigma2: `/etc/enigma2/camalert_cameras.conf` (for example with *FileCommander*, FTP/WinSCP, or a network share); Kodi: `cameras.conf` in the add-on data folder (or the file set in *Camera file (direct mode)*, see [Kodi](../players/kodi.md#where-things-are)); Android TV: *Settings › General › Cameras without go2rtc › Camera list* (see [Android TV](../players/androidtv.md#settings)). One camera per line:
 
    ```
    # name        | live stream (RTSP)                                         | snapshot (optional)

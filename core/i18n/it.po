@@ -1644,11 +1644,11 @@ msgstr "Il servizio CamAlert non è attivo."
 msgid "No events yet."
 msgstr "Ancora nessun evento."
 
-#: kodi:30205 ha:services.show.name
+#: kodi:30205 ha:services.show.name atv:event_show
 msgid "Show camera"
 msgstr "Mostra telecamera"
 
-#: kodi:30206
+#: kodi:30206 atv:event_clip
 msgid "Play Frigate clip"
 msgstr "Riproduci clip Frigate"
 
@@ -2243,6 +2243,26 @@ msgstr "nessuna riga valida"
 #: atv:devices_where
 msgid "the camera devices"
 msgstr "i dispositivi telecamera"
+
+#: atv:cameras_title
+msgid "Cameras without go2rtc"
+msgstr "Telecamere senza go2rtc"
+
+#: atv:cameras_list
+msgid "Camera list"
+msgstr "Elenco telecamere"
+
+#: atv:cameras_help
+msgid "One camera per line: name | rtsp-url | snapshot-url (optional), e.g. Front door | rtsp://user:password@192.168.1.20:554/stream1 | http://user:password@192.168.1.20/snapshot.jpg. Used when Cameras via is Directly from the cameras."
+msgstr "Una telecamera per riga: nome | URL RTSP | URL istantanea (facoltativo), ad es. Front door | rtsp://user:password@192.168.1.20:554/stream1 | http://user:password@192.168.1.20/snapshot.jpg. Usato quando Telecamere tramite è impostato su Direttamente dalle telecamere."
+
+#: atv:cameras_none
+msgid "No cameras"
+msgstr "Nessuna telecamera"
+
+#: atv:cameras_where
+msgid "the camera list below"
+msgstr "l'elenco telecamere qui sotto"
 
 #: atv:unifi_no_console
 msgid "UniFi Protect: no console address set"

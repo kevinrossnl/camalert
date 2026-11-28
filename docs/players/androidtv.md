@@ -52,8 +52,19 @@ removes the app's settings. **Remove:** `adb uninstall org.camalert.tv`.
 Open **CamAlert** from the apps row (or *Settings › Apps › CamAlert › Open*). The settings use the same names,
 defaults and levels as on the other players ([all settings](../user/settings.md)); expert settings are hidden
 until you turn on *Show expert settings*. The *Players* column of the settings list says which ones Android TV has;
-*Volume during live view* starts at 0 here (the app underneath keeps its own sound). Not on Android TV: direct
-mode with a camera file and clip playback from Frigate (#124); pausing what is playing is not possible on Android.
+*Volume during live view* starts at 0 here (the app underneath keeps its own sound). Pausing what is playing is not
+possible on Android.
+
+**Without go2rtc** (#124): set *Cameras via* to *Directly from the cameras* and fill in **Cameras without go2rtc ›
+Camera list** at the bottom of *General*, one camera per line as in the [camera file](../user/without-go2rtc.md)
+of the other players: `Front door | rtsp://user:password@192.168.1.20:554/stream1 | http://user:password@192.168.1.20/snapshot.jpg`.
+The list is kept in the app's own private storage (its urls usually hold a login), apart from the settings. A login
+in the snapshot url works with Basic and Digest; a camera without snapshot url opens live view instead of the photo
+window. go2rtc stays recommended: a Fire TV stick plays one direct RTSP stream well, a mosaic of several less so.
+
+**Event list and Frigate clips** (#124): *Events* lists the latest events, newest first. **OK** on an event shows its
+camera; with *Frigate address (for clips)* set (expert, *Triggers*) an event from Frigate offers **Play Frigate clip**
+as well, a normal full-screen player (**OK** = pause, **◀ ▶** = seek, **BACK** = close).
 
 **Camera control (PTZ) and Foscam alarms** (#66): *Camera control* has **Camera devices** at the bottom, with the
 same lines as `devices.conf` on the other players, one camera per line: `front_door|onvif|192.168.1.30:80|user|password`

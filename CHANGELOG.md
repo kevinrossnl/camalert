@@ -38,6 +38,11 @@ actions and blueprint inputs stay backwards compatible.
   once and only while it is fresh. Something else on the network can no longer fake or replay a key press (GREEN
   may open a gate). Players from before 1.4 keep working; their presses arrive with `verified: false`.
 
+### Fixed
+
+- **Android TV:** camera control via ONVIF and UniFi Protect's "retry later" with a date no longer crash the app on
+  Android 7 (Fire OS 6): they used Java APIs that only exist from Android 8.
+
 ## [1.3.1] - 2026-11-27
 
 ### Fixed

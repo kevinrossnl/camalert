@@ -7,7 +7,6 @@ import java.net.URLEncoder
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.text.SimpleDateFormat
-import java.util.Base64
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -104,7 +103,7 @@ object Devices {
     fun wsseDigest(password: String, nonce: ByteArray, created: String): String {
         val sha = MessageDigest.getInstance("SHA-1")
         sha.update(nonce); sha.update(created.toByteArray(Charsets.UTF_8)); sha.update(password.toByteArray(Charsets.UTF_8))
-        return Base64.getEncoder().encodeToString(sha.digest())
+        return HttpAuth.base64(sha.digest())  // java.util.Base64 needs Android 8; the Fire TV runs Android 7
     }
 
     fun onvifCreated(timestamp: Double): String = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ROOT)
@@ -119,7 +118,7 @@ object Devices {
                 "oasis-200401-wss-wssecurity-secext-1.0.xsd\"><UsernameToken><Username>${xml(user)}</Username>" +
                 "<Password Type=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0" +
                 "#PasswordDigest\">${wsseDigest(password, nonce!!, created!!)}</Password><Nonce EncodingType=\"http://docs.oasis-open.org/wss/2004/01/" +
-                "oasis-200401-wss-soap-message-security-1.0#Base64Binary\">${Base64.getEncoder().encodeToString(nonce)}</Nonce><Created xmlns=\"http://docs." +
+                "oasis-200401-wss-soap-message-security-1.0#Base64Binary\">${HttpAuth.base64(nonce)}</Nonce><Created xmlns=\"http://docs." +
                 "oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">$created</Created>" +
                 "</UsernameToken></Security></s:Header>"
         }

@@ -6,8 +6,6 @@ import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.security.cert.X509Certificate
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
@@ -279,7 +277,10 @@ class LoginBackoff {
                 v.toBigInteger().min(RETRY_AFTER_MAX.toBigInteger()).toDouble()
             } else {
                 try {
-                    ZonedDateTime.parse(v, DateTimeFormatter.RFC_1123_DATE_TIME).toEpochSecond() - now
+                    // HTTP date (RFC 1123). java.time needs Android 8; SimpleDateFormat works on Android 7 (Fire TV).
+                    val f = java.text.SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss zzz", java.util.Locale.US)
+                    f.isLenient = false
+                    f.parse(v)!!.time / 1000.0 - now
                 } catch (e: Exception) {
                     return null
                 }
